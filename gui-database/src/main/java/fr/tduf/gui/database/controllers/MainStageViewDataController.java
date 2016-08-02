@@ -19,7 +19,6 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -27,7 +26,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 
-import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toCollection;
@@ -36,28 +34,24 @@ import static java.util.stream.Collectors.toList;
 /**
  * Specialized controller to display database contents.
  */
-class MainStageViewDataController {
+class MainStageViewDataController extends AbstractMainStageSubController {
     private static final String THIS_CLASS_NAME = MainStageViewDataController.class.getSimpleName();
     private static final Class<MainStageViewDataController> thisClass = MainStageViewDataController.class;
 
-    private final MainStageController mainStageController;
-
     MainStageViewDataController(MainStageController mainStageController) {
-        requireNonNull(mainStageController, "Main stage controller is required.");
-
-        this.mainStageController = mainStageController;
+        super(mainStageController);
     }
 
     void updateDisplayWithLoadedObjects() {
-        if (!mainStageController.getDatabaseObjects().isEmpty()) {
-            mainStageController.setMiner(BulkDatabaseMiner.load(mainStageController.getDatabaseObjects()));
+        if (!getDatabaseObjects().isEmpty()) {
+            setMiner(BulkDatabaseMiner.load(getDatabaseObjects()));
 
-            mainStageController.profilesChoiceBox.getSelectionModel().clearSelection(); // ensures event will be fired even though 1st item is selected
-            mainStageController.profilesChoiceBox.getSelectionModel().selectFirst();
+            getProfilesChoiceBox().getSelectionModel().clearSelection(); // ensures event will be fired even though 1st item is selected
+            getProfilesChoiceBox().getSelectionModel().selectFirst();
 
-            mainStageController.navigationHistory.clear();
+            getNavigationHistory().clear();
 
-            mainStageController.loadDatabaseButton.disableProperty().setValue(true);
+            getLoadDatabaseButton().disableProperty().setValue(true);
 
             updateConfiguration();
         }
@@ -65,11 +59,11 @@ class MainStageViewDataController {
 
     void fillBrowsableEntries() {
         final List<Integer> labelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(
-                mainStageController.getCurrentProfileObject().getName(),
-                mainStageController.getLayoutObject());
+                getCurrentProfileObject().getName(),
+                getLayoutObject());
 
-        final DbDto.Topic currentTopic = mainStageController.getCurrentTopicObject().getTopic();
-        mainStageController.browsableEntries.setAll(
+        final DbDto.Topic currentTopic = getCurrentTopicObject().getTopic();
+        getBrowsableEntries().setAll(
                 getMiner().getDatabaseTopic(currentTopic)
                         .map(topicObject -> topicObject.getData().getEntries().stream()
                                 .map(topicEntry -> getDisplayableEntryForCurrentLocale(topicEntry, labelFieldRanks, currentTopic))
@@ -78,63 +72,61 @@ class MainStageViewDataController {
     }
 
     void updateBrowsableEntryLabel(long internalEntryId) {
-        mainStageController.browsableEntries.stream()
+        getBrowsableEntries().stream()
                 .filter(entry -> entry.internalEntryIdProperty().get() == internalEntryId)
                 .findAny()
                 .ifPresent(entry -> {
                     final List<Integer> labelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(
-                            mainStageController.getCurrentProfileObject().getName(),
-                            mainStageController.getLayoutObject());
+                            getCurrentProfileObject().getName(),
+                            getLayoutObject());
 
-                    final DbDto.Topic currentTopic = mainStageController.getCurrentTopicObject().getTopic();
-                    String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(internalEntryId, currentTopic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
+                    final DbDto.Topic currentTopic = getCurrentTopicObject().getTopic();
+                    String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(internalEntryId, currentTopic, currentLocaleProperty().getValue(), labelFieldRanks, getMiner());
                     entry.setValue(entryValue);
                 });
     }
 
     void fillLocales() {
         Locale.valuesAsStream()
-                .collect(toCollection(() -> mainStageController.localesChoiceBox.getItems()));
+                .collect(toCollection(() -> getLocalesChoiceBox().getItems()));
 
-        mainStageController.currentLocaleProperty = new SimpleObjectProperty<>(UNITED_STATES);
-        mainStageController.localesChoiceBox.valueProperty().bindBidirectional(mainStageController.currentLocaleProperty);
+        getLocalesChoiceBox().valueProperty().bindBidirectional(currentLocaleProperty());
     }
 
     void loadAndFillProfiles() throws IOException {
-        mainStageController.setLayoutObject(new ObjectMapper().readValue(thisClass.getResource(SettingsConstants.PATH_RESOURCE_PROFILES), EditorLayoutDto.class));
-        mainStageController.getLayoutObject().getProfiles()
-                .forEach(profileObject -> mainStageController.profilesChoiceBox.getItems().add(profileObject.getName()));
+        final EditorLayoutDto editorLayoutDto = new ObjectMapper().readValue(thisClass.getResource(SettingsConstants.PATH_RESOURCE_PROFILES), EditorLayoutDto.class);
+        editorLayoutDto.getProfiles()
+                .forEach(profileObject -> getProfilesChoiceBox().getItems().add(profileObject.getName()));
+        setLayoutObject(editorLayoutDto);
     }
 
     void updateAllPropertiesWithItemValues() {
         updateCurrentEntryLabelProperty();
 
-        long entryIndex = mainStageController.currentEntryIndexProperty.getValue();
-        DbDto.Topic currentTopic = mainStageController.currentTopicProperty.getValue();
+        long entryIndex = currentEntryIndexProperty().getValue();
+        DbDto.Topic currentTopic = currentTopicProperty().getValue();
         getMiner().getContentEntryFromTopicWithInternalIdentifier(entryIndex, currentTopic)
                 .ifPresent(entry -> entry.getItems().forEach(this::updateItemProperties));
 
-        mainStageController.getResourceListByTopicLink().entrySet().forEach(this::updateLinkProperties);
+        getResourceListByTopicLink().entrySet().forEach(this::updateLinkProperties);
     }
 
     void updateItemProperties(ContentItemDto item) {
-        mainStageController.rawValuePropertyByFieldRank.get(item.getFieldRank()).set(item.getRawValue());
+        rawValuePropertyByFieldRank().get(item.getFieldRank()).set(item.getRawValue());
 
-        DbDto currentTopicObject = mainStageController.getCurrentTopicObject();
-
-        DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, currentTopicObject.getStructure().getFields());
+        DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, getCurrentTopicObject().getStructure().getFields());
         if (structureField.isAResourceField()) {
             updateResourceProperties(item, structureField);
         }
 
         if (DbStructureDto.FieldType.REFERENCE == structureField.getFieldType()
-                && mainStageController.resolvedValuePropertyByFieldRank.containsKey(item.getFieldRank())) {
+                && resolvedValuePropertyByFieldRank().containsKey(item.getFieldRank())) {
             updateReferenceProperties(item, structureField);
         }
     }
 
     void updateLinkProperties(TopicLinkDto topicLinkObject) {
-        mainStageController.resourceListByTopicLink.entrySet().stream()
+        getResourceListByTopicLink().entrySet().stream()
 
                 .filter(mapEntry -> mapEntry.getKey().equals(topicLinkObject))
 
@@ -167,28 +159,28 @@ class MainStageViewDataController {
     void switchToProfileAndEntry(String profileName, long entryIndex, boolean storeLocation) {
         if (storeLocation) {
             EditorLocation currentLocation = new EditorLocation(
-                    mainStageController.tabPane.selectionModelProperty().get().getSelectedIndex(),
-                    mainStageController.getCurrentProfileObject().getName(),
-                    mainStageController.currentEntryIndexProperty.getValue());
-            mainStageController.getNavigationHistory().push(currentLocation);
+                    getTabPane().selectionModelProperty().get().getSelectedIndex(),
+                    getCurrentProfileObject().getName(),
+                    currentEntryIndexProperty().getValue());
+            getNavigationHistory().push(currentLocation);
         }
 
-        mainStageController.profilesChoiceBox.setValue(profileName);
+        getProfilesChoiceBox().setValue(profileName);
         switchToContentEntry(entryIndex);
     }
 
     void switchToContentEntry(long entryIndex) {
-        if (entryIndex < 0 || entryIndex >= mainStageController.getCurrentTopicObject().getData().getEntries().size()) {
+        if (entryIndex < 0 || entryIndex >= getCurrentTopicObject().getData().getEntries().size()) {
             return;
         }
 
-        mainStageController.currentEntryIndexProperty.setValue(entryIndex);
+        currentEntryIndexProperty().setValue(entryIndex);
         updateAllPropertiesWithItemValues();
     }
 
     void switchToNextEntry() {
-        long currentEntryIndex = mainStageController.currentEntryIndexProperty.getValue();
-        if (currentEntryIndex >= mainStageController.getCurrentTopicObject().getData().getEntries().size() - 1) {
+        long currentEntryIndex = currentEntryIndexProperty().getValue();
+        if (currentEntryIndex >= getCurrentTopicObject().getData().getEntries().size() - 1) {
             return;
         }
 
@@ -196,8 +188,8 @@ class MainStageViewDataController {
     }
 
     void switchToNext10Entry() {
-        long currentEntryIndex = mainStageController.currentEntryIndexProperty.getValue();
-        long lastEntryIndex = mainStageController.getCurrentTopicObject().getData().getEntries().size() - 1L;
+        long currentEntryIndex = currentEntryIndexProperty().getValue();
+        long lastEntryIndex = getCurrentTopicObject().getData().getEntries().size() - 1L;
         if (currentEntryIndex + 10 >= lastEntryIndex) {
             currentEntryIndex = lastEntryIndex;
         } else {
@@ -208,7 +200,7 @@ class MainStageViewDataController {
     }
 
     void switchToPreviousEntry() {
-        long currentEntryIndex = mainStageController.currentEntryIndexProperty.getValue();
+        long currentEntryIndex = currentEntryIndexProperty().getValue();
         if (currentEntryIndex <= 0) {
             return;
         }
@@ -217,7 +209,7 @@ class MainStageViewDataController {
     }
 
     void switchToPrevious10Entry() {
-        long currentEntryIndex = mainStageController.currentEntryIndexProperty.getValue();
+        long currentEntryIndex = currentEntryIndexProperty().getValue();
         if (currentEntryIndex - 10 < 0) {
             currentEntryIndex = 0;
         } else {
@@ -232,7 +224,7 @@ class MainStageViewDataController {
     }
 
     void switchToLastEntry() {
-        switchToContentEntry(mainStageController.getCurrentTopicObject().getData().getEntries().size() - 1L);
+        switchToContentEntry(getCurrentTopicObject().getData().getEntries().size() - 1L);
     }
 
     void switchToEntryWithReference(String entryReference, DbDto.Topic topic) {
@@ -241,14 +233,14 @@ class MainStageViewDataController {
     }
 
     void switchToPreviousLocation() {
-        Deque<EditorLocation> navigationHistory = mainStageController.getNavigationHistory();
+        Deque<EditorLocation> navigationHistory = getNavigationHistory();
         if (navigationHistory.isEmpty()) {
             return;
         }
 
         EditorLocation previousLocation = navigationHistory.pop();
         switchToProfileAndEntry(previousLocation.getProfileName(), previousLocation.getEntryId(), false);
-        mainStageController.tabPane.selectionModelProperty().get().select(previousLocation.getTabId());
+        getTabPane().selectionModelProperty().get().select(previousLocation.getTabId());
     }
 
     List<String> selectEntriesFromTopic(DbDto.Topic topic, String profileName) {
@@ -257,8 +249,8 @@ class MainStageViewDataController {
 
         final Optional<DbStructureDto.Field> potentialUidField = DatabaseStructureQueryHelper.getUidField(databaseObject.getStructure().getFields());
         if (potentialUidField.isPresent()) {
-            Optional<String> potentialEntryReference = getMiner().getContentEntryReferenceWithInternalIdentifier(mainStageController.currentEntryIndexProperty.getValue(), topic);
-            final List<ContentEntryDataItem> selectedItems = mainStageController.getEntriesStageController().initAndShowModalDialogForMultiSelect(potentialEntryReference, topic, profileName);
+            Optional<String> potentialEntryReference = getMiner().getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty().getValue(), topic);
+            final List<ContentEntryDataItem> selectedItems = getEntriesStageController().initAndShowModalDialogForMultiSelect(potentialEntryReference, topic, profileName);
 
             return selectedItems.stream()
 
@@ -271,7 +263,7 @@ class MainStageViewDataController {
     }
 
     List<String> selectFieldsFromTopic(DbDto.Topic topic) {
-        return mainStageController.getFieldsBrowserStageController().initAndShowModalDialog(topic).stream()
+        return getFieldsBrowserStageController().initAndShowModalDialog(topic).stream()
 
                 .map(item -> Integer.valueOf(item.rankProperty().get()).toString())
 
@@ -280,15 +272,15 @@ class MainStageViewDataController {
 
     void updateCurrentEntryLabelProperty() {
         final List<Integer> labelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(
-                mainStageController.getCurrentProfileObject().getName(),
-                mainStageController.getLayoutObject());
+                getCurrentProfileObject().getName(),
+                getLayoutObject());
         String entryLabel = DatabaseQueryHelper.fetchResourceValuesWithEntryId(
-                mainStageController.currentEntryIndexProperty.getValue(),
-                mainStageController.currentTopicProperty.getValue(),
-                mainStageController.currentLocaleProperty.getValue(),
+                currentEntryIndexProperty().getValue(),
+                currentTopicProperty().getValue(),
+                currentLocaleProperty().getValue(),
                 labelFieldRanks,
                 getMiner());
-        mainStageController.currentEntryLabelProperty.setValue(entryLabel);
+        currentEntryLabelProperty().setValue(entryLabel);
     }
 
     Optional<String> resolveInitialDatabaseDirectory() {
@@ -300,14 +292,14 @@ class MainStageViewDataController {
             return pathParameter;
         }
 
-        return mainStageController.getApplicationConfiguration().getDatabasePath()
+        return getApplicationConfiguration().getDatabasePath()
                 .map(Path::toString);
     }
 
     private void updateConfiguration() {
         try {
-            mainStageController.getApplicationConfiguration().setDatabasePath(mainStageController.databaseLocationTextField.getText());
-            mainStageController.getApplicationConfiguration().store();
+            getApplicationConfiguration().setDatabasePath(getDatabaseLocationTextField().getText());
+            getApplicationConfiguration().store();
         } catch (IOException ioe) {
             Log.warn(THIS_CLASS_NAME, "Unable to save application configuration", ioe);
         }
@@ -319,7 +311,7 @@ class MainStageViewDataController {
         long entryInternalIdentifier = topicEntry.getId();
         contentEntryDataItem.setInternalEntryId(entryInternalIdentifier);
 
-        String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
+        String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, currentLocaleProperty().getValue(), labelFieldRanks, getMiner());
         contentEntryDataItem.setValue(entryValue);
 
         String entryReference = Long.toString(entryInternalIdentifier);
@@ -333,8 +325,8 @@ class MainStageViewDataController {
     }
 
     private void updateResourceProperties(ContentItemDto resourceItem, DbStructureDto.Field structureField) {
-        Locale locale = mainStageController.currentLocaleProperty.getValue();
-        DbDto.Topic resourceTopic = mainStageController.getCurrentTopicObject().getTopic();
+        Locale locale = currentLocaleProperty().getValue();
+        DbDto.Topic resourceTopic = getCurrentTopicObject().getTopic();
         if (structureField.getTargetRef() != null) {
             resourceTopic = getMiner().getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
         }
@@ -343,7 +335,7 @@ class MainStageViewDataController {
         String resourceValue = getMiner().getLocalizedResourceValueFromTopicAndReference(resourceReference, resourceTopic, locale)
                 .orElse(DisplayConstants.VALUE_ERROR_RESOURCE_NOT_FOUND);
 
-        mainStageController.resolvedValuePropertyByFieldRank.get(resourceItem.getFieldRank()).set(resourceValue);
+        resolvedValuePropertyByFieldRank().get(resourceItem.getFieldRank()).set(resourceValue);
     }
 
     // Ignore this warning (usage as method reference)
@@ -352,8 +344,8 @@ class MainStageViewDataController {
         ObservableList<ContentEntryDataItem> values = remoteEntry.getValue();
         values.clear();
 
-        final Long currentEntryIndex = mainStageController.currentEntryIndexProperty.getValue();
-        String currentEntryRef = getMiner().getContentEntryReferenceWithInternalIdentifier(currentEntryIndex, mainStageController.currentTopicProperty.getValue())
+        final Long currentEntryIndex = currentEntryIndexProperty().getValue();
+        String currentEntryRef = getMiner().getContentEntryReferenceWithInternalIdentifier(currentEntryIndex, currentTopicProperty().getValue())
                 .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No REF available for entry at id: " + currentEntryIndex));
 
         final DbDto.Topic linkTopic = linkObject.getTopic();
@@ -373,20 +365,20 @@ class MainStageViewDataController {
         DbDto.Topic remoteTopic = getMiner().getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
 
         List<Integer> remoteFieldRanks = new ArrayList<>();
-        Optional<FieldSettingsDto> fieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(structureField.getRank(), mainStageController.profilesChoiceBox.getValue(), mainStageController.getLayoutObject());
+        Optional<FieldSettingsDto> fieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(structureField.getRank(), getProfilesChoiceBox().getValue(), getLayoutObject());
         if (fieldSettings.isPresent()) {
             String remoteReferenceProfile = fieldSettings.get().getRemoteReferenceProfile();
             if (remoteReferenceProfile != null) {
-                remoteFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(remoteReferenceProfile, mainStageController.getLayoutObject());
+                remoteFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(remoteReferenceProfile, getLayoutObject());
             }
         }
 
         String remoteContents = fetchRemoteContentsWithEntryRef(remoteTopic, referenceItem.getRawValue(), remoteFieldRanks);
-        mainStageController.resolvedValuePropertyByFieldRank.get(referenceItem.getFieldRank()).set(remoteContents);
+        resolvedValuePropertyByFieldRank().get(referenceItem.getFieldRank()).set(remoteContents);
     }
 
     private ContentEntryDataItem fetchLinkResourceFromContentEntry(DbDto topicObject, ContentEntryDto contentEntry, TopicLinkDto linkObject) {
-        List<Integer> remoteFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(linkObject.getRemoteReferenceProfile(), mainStageController.getLayoutObject());
+        List<Integer> remoteFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(linkObject.getRemoteReferenceProfile(), getLayoutObject());
         ContentEntryDataItem databaseEntry = new ContentEntryDataItem();
         long entryId = contentEntry.getId();
         databaseEntry.setInternalEntryId(entryId);
@@ -404,7 +396,7 @@ class MainStageViewDataController {
             databaseEntry.setInternalEntryId(entryId);
             databaseEntry.setValue(DatabaseQueryHelper.fetchResourceValuesWithEntryId(
                     entryId, linkObject.getTopic(),
-                    mainStageController.currentLocaleProperty.getValue(),
+                    currentLocaleProperty().getValue(),
                     remoteFieldRanks,
                     getMiner()));
         }
@@ -418,14 +410,10 @@ class MainStageViewDataController {
         if (potentialEntryId.isPresent()) {
             return DatabaseQueryHelper.fetchResourceValuesWithEntryId(
                     potentialEntryId.getAsLong(), remoteTopic,
-                    mainStageController.currentLocaleProperty.getValue(),
+                    currentLocaleProperty().getValue(),
                     remoteFieldRanks,
                     getMiner());
         }
         return DisplayConstants.VALUE_ERROR_ENTRY_NOT_FOUND;
-    }
-
-    private BulkDatabaseMiner getMiner() {
-        return mainStageController.getMiner();
     }
 }

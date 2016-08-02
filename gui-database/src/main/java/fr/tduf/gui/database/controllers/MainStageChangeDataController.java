@@ -7,7 +7,6 @@ import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseChangeHelper;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
 import fr.tduf.libunlimited.high.files.db.interop.TdumtPatchConverter;
 import fr.tduf.libunlimited.high.files.db.interop.tdupe.TdupeGateway;
-import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
@@ -36,26 +35,23 @@ import static java.util.stream.Collectors.toList;
 /**
  * Specialized controller to update database contents.
  */
-public class MainStageChangeDataController {
-    private final MainStageController mainStageController;
-
+// TODO apply code rules
+class MainStageChangeDataController extends AbstractMainStageSubController {
     private DatabaseGenHelper databaseGenHelper;
 
     MainStageChangeDataController(MainStageController mainStageController) {
-        requireNonNull(mainStageController, "Main stage controller is required.");
-
-        this.mainStageController = mainStageController;
+        super(mainStageController);
     }
 
     void updateContentItem(DbDto.Topic topic, int fieldRank, String newRawValue) {
         requireNonNull(getChangeHelper());
 
-        final long currentEntryIndex = mainStageController.currentEntryIndexProperty.getValue();
+        final long currentEntryIndex = currentEntryIndexProperty().getValue();
         getChangeHelper().updateItemRawValueAtIndexAndFieldRank(topic, currentEntryIndex, fieldRank, newRawValue)
-                .ifPresent((updatedItem) -> {
-                    mainStageController.getViewDataController().updateItemProperties(updatedItem);
-                    mainStageController.getViewDataController().updateBrowsableEntryLabel(currentEntryIndex);
-                    mainStageController.getViewDataController().updateCurrentEntryLabelProperty();
+                .ifPresent(updatedItem -> {
+                    getViewDataController().updateItemProperties(updatedItem);
+                    getViewDataController().updateBrowsableEntryLabel(currentEntryIndex);
+                    getViewDataController().updateCurrentEntryLabelProperty();
                 });
     }
 
@@ -85,7 +81,7 @@ public class MainStageChangeDataController {
 
     long addEntryForCurrentTopic() {
         requireNonNull(getChangeHelper());
-        ContentEntryDto newEntry = getChangeHelper().addContentsEntryWithDefaultItems(Optional.<String>empty(), mainStageController.currentTopicProperty.getValue());
+        ContentEntryDto newEntry = getChangeHelper().addContentsEntryWithDefaultItems(empty(), currentTopicProperty().getValue());
 
         return newEntry.getId();
     }
@@ -93,15 +89,15 @@ public class MainStageChangeDataController {
     long duplicateCurrentEntry() {
         requireNonNull(getChangeHelper());
         ContentEntryDto newEntry = getChangeHelper().duplicateEntryWithIdentifier(
-                mainStageController.currentEntryIndexProperty.getValue(),
-                mainStageController.currentTopicProperty.getValue());
+                currentEntryIndexProperty().getValue(),
+                currentTopicProperty().getValue());
 
         return newEntry.getId();
     }
 
     void addLinkedEntry(String sourceEntryRef, Optional<String> targetEntryRef, DbDto.Topic targetTopic) {
         requireNonNull(getChangeHelper());
-        ContentEntryDto newEntry = getChangeHelper().addContentsEntryWithDefaultItems(Optional.<String>empty(), targetTopic);
+        ContentEntryDto newEntry = getChangeHelper().addContentsEntryWithDefaultItems(empty(), targetTopic);
         DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(newEntry, sourceEntryRef, targetEntryRef);
     }
 
@@ -120,17 +116,17 @@ public class MainStageChangeDataController {
     String exportCurrentEntryToPchValue() {
         List<String> values = getRawValuesFromCurrentEntry();
         Optional<String> potentialRef = getMiner().getContentEntryReferenceWithInternalIdentifier(
-                mainStageController.currentEntryIndexProperty.getValue(),
-                mainStageController.currentTopicProperty.getValue());
+                currentEntryIndexProperty().getValue(),
+                currentTopicProperty().getValue());
 
         return TdumtPatchConverter.getContentsValue(potentialRef, values);
     }
 
     boolean exportEntriesToPatchFile(DbDto.Topic currentTopic, List<String> entryReferences, List<String> entryFields, String patchFileLocation) throws IOException {
 
-        return generatePatchObject(currentTopic, entryReferences, entryFields, mainStageController.getDatabaseObjects())
+        return generatePatchObject(currentTopic, entryReferences, entryFields, getDatabaseObjects())
 
-                .map((patchObject) -> {
+                .map(patchObject -> {
                     try {
                         FilesHelper.writeJsonObjectToFile(patchObject, patchFileLocation);
                     } catch (IOException e) {
@@ -145,7 +141,7 @@ public class MainStageChangeDataController {
 
     Optional<String> importPatch(File patchFile) throws IOException, ReflectiveOperationException {
         DbPatchDto patchObject = new ObjectMapper().readValue(patchFile, DbPatchDto.class);
-        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, mainStageController.getDatabaseObjects());
+        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, getDatabaseObjects());
         PatchProperties patchProperties = PatchPropertiesReadWriteHelper.readPatchProperties(patchFile);
 
         final PatchProperties effectiveProperties = patcher.applyWithProperties(patchObject, patchProperties);
@@ -154,15 +150,15 @@ public class MainStageChangeDataController {
     }
 
     void importPerformancePack(String packFile) throws ReflectiveOperationException {
-        long currentEntryIndex = mainStageController.currentEntryIndexProperty.getValue();
-        TdupeGateway gateway = AbstractDatabaseHolder.prepare(TdupeGateway.class, mainStageController.getDatabaseObjects());
+        long currentEntryIndex = currentEntryIndexProperty().getValue();
+        TdupeGateway gateway = AbstractDatabaseHolder.prepare(TdupeGateway.class, getDatabaseObjects());
         gateway.applyPerformancePackToEntryWithIdentifier(currentEntryIndex, packFile);
     }
 
     private List<String> getRawValuesFromCurrentEntry() {
         ContentEntryDto currentEntry = getMiner().getContentEntryFromTopicWithInternalIdentifier(
-                mainStageController.getCurrentEntryIndex(),
-                mainStageController.getCurrentTopic()).get();
+                getCurrentEntryIndex(),
+                getCurrentTopic()).get();
         return currentEntry.getItems().stream()
 
                 .map(ContentItemDto::getRawValue)
@@ -188,12 +184,7 @@ public class MainStageChangeDataController {
         }
     }
 
-    private BulkDatabaseMiner getMiner() {
-        return this.mainStageController.getMiner();
-    }
-
     private DatabaseGenHelper getGenHelper() {
-
         if (databaseGenHelper == null) {
             if (getMiner() == null) {
                 return null;

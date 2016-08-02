@@ -60,6 +60,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static javafx.beans.binding.Bindings.size;
@@ -74,6 +75,23 @@ import static javafx.scene.control.Alert.AlertType.*;
 public class MainStageController extends AbstractGuiController {
     private static final String THIS_CLASS_NAME = MainStageController.class.getSimpleName();
 
+    Property<DbDto.Topic> currentTopicProperty;
+    Property<fr.tduf.libunlimited.common.game.domain.Locale> currentLocaleProperty = new SimpleObjectProperty<>(UNITED_STATES);
+    Property<Long> currentEntryIndexProperty;
+    SimpleStringProperty currentEntryLabelProperty;
+    Map<Integer, SimpleStringProperty> rawValuePropertyByFieldRank = new HashMap<>();
+    Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRank = new HashMap<>();
+    Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> resourceListByTopicLink = new HashMap<>();
+    ObservableList<ContentEntryDataItem> browsableEntries;
+
+    Deque<EditorLocation> navigationHistory = new ArrayDeque<>();
+    ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
+
+    List<DbDto> databaseObjects = new ArrayList<>(18);
+    DbDto currentTopicObject;
+    EditorLayoutDto layoutObject;
+    EditorLayoutDto.EditorProfileDto profileObject;
+
     private final BankSupport bankSupport = new GenuineBnkGateway(new CommandLineHelper());
 
     private DynamicFieldControlsHelper dynamicFieldControlsHelper;
@@ -87,14 +105,9 @@ public class MainStageController extends AbstractGuiController {
     private EntriesStageController entriesStageController;
     private FieldsBrowserStageController fieldsBrowserStageController;
 
-    Property<DbDto.Topic> currentTopicProperty;
-    Property<fr.tduf.libunlimited.common.game.domain.Locale> currentLocaleProperty;
-    Property<Long> currentEntryIndexProperty;
-    SimpleStringProperty currentEntryLabelProperty;
-    Map<Integer, SimpleStringProperty> rawValuePropertyByFieldRank = new HashMap<>();
-    Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRank = new HashMap<>();
-    Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> resourceListByTopicLink = new HashMap<>();
-    ObservableList<ContentEntryDataItem> browsableEntries;
+    private Map<String, VBox> tabContentByName = new HashMap<>();
+
+    private BulkDatabaseMiner databaseMiner;
 
     private BooleanProperty runningServiceProperty = new SimpleBooleanProperty();
     private DatabaseLoader databaseLoader = new DatabaseLoader();
@@ -103,7 +116,19 @@ public class MainStageController extends AbstractGuiController {
     private DatabaseFixer databaseFixer = new DatabaseFixer();
 
     @FXML
+    ChoiceBox<Locale> localesChoiceBox;
+
+    @FXML
+    ChoiceBox<String> profilesChoiceBox;
+
+    @FXML
     Button loadDatabaseButton;
+
+    @FXML
+    TabPane tabPane;
+
+    @FXML
+    TextField databaseLocationTextField;
 
     @FXML
     private Label creditsLabel;
@@ -118,19 +143,7 @@ public class MainStageController extends AbstractGuiController {
     private Label currentEntryLabel;
 
     @FXML
-    ChoiceBox<Locale> localesChoiceBox;
-
-    @FXML
-    ChoiceBox<String> profilesChoiceBox;
-
-    @FXML
-    TabPane tabPane;
-
-    @FXML
     private VBox defaultTab;
-
-    @FXML
-    TextField databaseLocationTextField;
 
     @FXML
     private TextField entryNumberTextField;
@@ -143,20 +156,6 @@ public class MainStageController extends AbstractGuiController {
 
     @FXML
     private Label statusLabel;
-
-    Deque<EditorLocation> navigationHistory = new ArrayDeque<>();
-
-    ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
-
-    private Map<String, VBox> tabContentByName = new HashMap<>();
-
-    private List<DbDto> databaseObjects = new ArrayList<>(18);
-    private DbDto currentTopicObject;
-
-    private EditorLayoutDto layoutObject;
-    private EditorLayoutDto.EditorProfileDto profileObject;
-    private BulkDatabaseMiner databaseMiner;
-
 
     @Override
     protected void init() throws IOException {
@@ -1021,18 +1020,6 @@ public class MainStageController extends AbstractGuiController {
         return resolvedValuePropertyByFieldRank;
     }
 
-    void setLayoutObject(EditorLayoutDto layoutObject) {
-        this.layoutObject = layoutObject;
-    }
-
-    ApplicationConfiguration getApplicationConfiguration() {
-        return applicationConfiguration;
-    }
-
-    Deque<EditorLocation> getNavigationHistory() {
-        return navigationHistory;
-    }
-
     MainStageViewDataController getViewDataController() {
         return viewDataController;
     }
@@ -1049,15 +1036,23 @@ public class MainStageController extends AbstractGuiController {
         return fieldsBrowserStageController;
     }
 
+    // For tests
     List<DbDto> getDatabaseObjects() {
         return databaseObjects;
     }
 
+    // For tests
     long getCurrentEntryIndex() {
         return currentEntryIndexProperty.getValue();
     }
 
+    // For tests
     DbDto.Topic getCurrentTopic() {
         return currentTopicProperty.getValue();
+    }
+
+    // For tests
+    ApplicationConfiguration getApplicationConfiguration() {
+        return applicationConfiguration;
     }
 }
