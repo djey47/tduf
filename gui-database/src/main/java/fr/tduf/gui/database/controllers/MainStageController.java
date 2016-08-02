@@ -85,14 +85,14 @@ public class MainStageController extends AbstractGuiController {
     ObservableList<ContentEntryDataItem> browsableEntries;
 
     Deque<EditorLocation> navigationHistory = new ArrayDeque<>();
-    ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
 
-    List<DbDto> databaseObjects = new ArrayList<>(18);
     DbDto currentTopicObject;
     EditorLayoutDto layoutObject;
     EditorLayoutDto.EditorProfileDto profileObject;
 
     private final BankSupport bankSupport = new GenuineBnkGateway(new CommandLineHelper());
+
+    private ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
 
     private DynamicFieldControlsHelper dynamicFieldControlsHelper;
     private DynamicLinkControlsHelper dynamicLinkControlsHelper;
@@ -108,6 +108,7 @@ public class MainStageController extends AbstractGuiController {
     private Map<String, VBox> tabContentByName = new HashMap<>();
 
     private BulkDatabaseMiner databaseMiner;
+    private List<DbDto> databaseObjects = new ArrayList<>(18);
 
     private BooleanProperty runningServiceProperty = new SimpleBooleanProperty();
     private DatabaseLoader databaseLoader = new DatabaseLoader();

@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
@@ -35,8 +36,9 @@ import static java.util.stream.Collectors.toList;
 /**
  * Specialized controller to update database contents.
  */
-// TODO apply code rules
 class MainStageChangeDataController extends AbstractMainStageSubController {
+    private static final String THIS_CLASS_NAME = MainStageChangeDataController.class.getSimpleName();
+
     private DatabaseGenHelper databaseGenHelper;
 
     MainStageChangeDataController(MainStageController mainStageController) {
@@ -123,19 +125,16 @@ class MainStageChangeDataController extends AbstractMainStageSubController {
     }
 
     boolean exportEntriesToPatchFile(DbDto.Topic currentTopic, List<String> entryReferences, List<String> entryFields, String patchFileLocation) throws IOException {
-
         return generatePatchObject(currentTopic, entryReferences, entryFields, getDatabaseObjects())
-
                 .map(patchObject -> {
                     try {
                         FilesHelper.writeJsonObjectToFile(patchObject, patchFileLocation);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    } catch (IOException ioe) {
+                        Log.warn(THIS_CLASS_NAME, "Unable to write patch object to file: " + patchFileLocation, ioe);
                         return false;
                     }
                     return true;
                 })
-
                 .orElse(false);
     }
 
@@ -158,7 +157,8 @@ class MainStageChangeDataController extends AbstractMainStageSubController {
     private List<String> getRawValuesFromCurrentEntry() {
         ContentEntryDto currentEntry = getMiner().getContentEntryFromTopicWithInternalIdentifier(
                 getCurrentEntryIndex(),
-                getCurrentTopic()).get();
+                getCurrentTopic())
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No content entry for topic: " + getCurrentTopic() + " at id: " + getCurrentEntryIndex()));
         return currentEntry.getItems().stream()
 
                 .map(ContentItemDto::getRawValue)
@@ -179,7 +179,7 @@ class MainStageChangeDataController extends AbstractMainStageSubController {
 
             return of(patchGenerator.makePatch(currentTopic, refRange, fieldRange));
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.warn(THIS_CLASS_NAME, "Unable to generate patch object", e);
             return empty();
         }
     }
