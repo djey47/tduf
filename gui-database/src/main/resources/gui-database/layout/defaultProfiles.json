@@ -1316,7 +1316,7 @@
       "topicLinks": [
         {
           "topic": "CAR_RIMS",
-          "label": "Available Rims",
+          "label": "Rim Options",
           "remoteReferenceProfile": "Rims",
           "toolTip": "List of applicable rims to current vehicle"
         }
@@ -1333,55 +1333,34 @@
         {
           "name": "Car_Brand",
           "rank": 2,
+          "priority": 9990,
           "remoteReferenceProfile": "Brands",
           "label": "Brand"
         },
         {
-          "rank": 3,
-          "hidden": true
-        },
-        {
-          "rank": 4,
-          "hidden": true
-        },
-        {
-          "rank": 5,
-          "hidden": true
-        },
-        {
-          "rank": 6,
-          "hidden": true
-        },
-        {
-          "rank": 7,
-          "hidden": true
-        },
-        {
-          "rank": 8,
-          "hidden": true
-        },
-        {
-          "rank": 9,
-          "hidden": true
-        },
-        {
           "name": "Default_Rims",
           "label": "Default Rims",
-          "priority": 1000,
+          "priority": 9950,
           "rank": 10,
           "remoteReferenceProfile": "Rims"
         },
         {
           "name": "Car_RealName",
-          "rank": 12
+          "rank": 12,
+          "priority": 9980,
+          "label": "Real Name"
         },
         {
           "name": "Model_Name",
-          "rank": 13
+          "rank": 13,
+          "priority": 9970,
+          "label": "Model"
         },
         {
           "name": "Version_Name",
-          "rank": 14
+          "rank": 14,
+          "priority": 9960,
+          "label": "Version"
         }
       ]
     }
