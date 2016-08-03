@@ -35,7 +35,6 @@ import static java.util.stream.Collectors.toList;
 /**
  * Specialized controller to display database contents.
  */
-// FIXME profile switch to a profile with hidden fields causes ClassCast exceptions!
 class MainStageViewDataController extends AbstractMainStageSubController {
     private static final String THIS_CLASS_NAME = MainStageViewDataController.class.getSimpleName();
     private static final Class<MainStageViewDataController> thisClass = MainStageViewDataController.class;
