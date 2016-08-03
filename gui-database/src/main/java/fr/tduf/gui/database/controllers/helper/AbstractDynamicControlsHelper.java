@@ -3,6 +3,7 @@ package fr.tduf.gui.database.controllers.helper;
 import fr.tduf.gui.common.javafx.helper.ControlHelper;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.controllers.MainStageController;
+import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -18,7 +19,7 @@ import java.util.Optional;
 /**
  * Provides all common features to DynamicHelpers.
  */
-public abstract class AbstractDynamicControlsHelper {
+abstract class AbstractDynamicControlsHelper {
 
     protected MainStageController controller;
 
@@ -75,5 +76,9 @@ public abstract class AbstractDynamicControlsHelper {
         contextualButton.setOnAction(action);
 
         fieldPane.getChildren().add(contextualButton);
+    }
+
+    protected BulkDatabaseMiner getMiner() {
+        return controller.getMiner();
     }
 }

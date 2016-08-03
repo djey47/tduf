@@ -11,7 +11,6 @@ import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.libunlimited.framework.base.Strings;
 import fr.tduf.libunlimited.high.files.db.common.helper.BitfieldHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
-import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import javafx.beans.binding.Bindings;
@@ -255,10 +254,5 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         Label resourceValueLabel = addLabel(fieldBox, fieldReadOnly, 450, null);
 
         resourceValueLabel.textProperty().bindBidirectional(property);
-    }
-
-    // TODO Move to abstract
-    private BulkDatabaseMiner getMiner() {
-        return controller.getMiner();
     }
 }
