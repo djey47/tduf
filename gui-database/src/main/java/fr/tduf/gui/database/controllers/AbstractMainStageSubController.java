@@ -62,11 +62,13 @@ abstract class AbstractMainStageSubController {
     }
 
     protected EditorLayoutDto getLayoutObject() {
-        return mainStageController.layoutObject;
+        // Getter kept for testing
+        return mainStageController.getLayoutObject();
     }
 
     protected EditorLayoutDto.EditorProfileDto getCurrentProfileObject() {
-        return mainStageController.profileObject;
+        // Getter kept for testing
+        return mainStageController.getCurrentProfileObject();
     }
 
     protected List<DbDto> getDatabaseObjects() {
@@ -75,7 +77,7 @@ abstract class AbstractMainStageSubController {
     }
 
     protected DbDto getCurrentTopicObject() {
-        return mainStageController.currentTopicObject;
+        return mainStageController.getCurrentTopicObject();
     }
 
     protected Deque<EditorLocation> getNavigationHistory() {
@@ -102,31 +104,37 @@ abstract class AbstractMainStageSubController {
     }
 
     protected Property<Long> currentEntryIndexProperty() {
-        return mainStageController.currentEntryIndexProperty;
-    }
-
-    protected SimpleStringProperty currentEntryLabelProperty() {
-        return mainStageController.currentEntryLabelProperty;
+        // Getter kept for testing
+        return mainStageController.getCurrentEntryIndexProperty();
     }
 
     protected Property<DbDto.Topic> currentTopicProperty() {
-        return mainStageController.currentTopicProperty;
+        // Getter kept for testing
+        return mainStageController.getCurrentTopicProperty();
     }
 
     protected Property<Locale> currentLocaleProperty() {
-        return mainStageController.currentLocaleProperty;
+        // Getter kept for testing
+        return mainStageController.getCurrentLocaleProperty();
+    }
+
+    protected SimpleStringProperty currentEntryLabelProperty() {
+        // Getter kept for testing
+        return mainStageController.getCurrentEntryLabelProperty();
     }
 
     protected Map<Integer, SimpleStringProperty> rawValuePropertyByFieldRank() {
-        return mainStageController.rawValuePropertyByFieldRank;
+        // Getter kept for testing
+        return mainStageController.getRawValuePropertyByFieldRank();
+    }
+
+    protected Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> getResourceListByTopicLink() {
+        // Getter kept for testing
+        return mainStageController.getResourceListByTopicLink();
     }
 
     protected Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRank() {
         return mainStageController.resolvedValuePropertyByFieldRank;
-    }
-
-    protected Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> getResourceListByTopicLink() {
-        return mainStageController.resourceListByTopicLink;
     }
 
     protected TextField getDatabaseLocationTextField() {

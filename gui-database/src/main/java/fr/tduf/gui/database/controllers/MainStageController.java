@@ -1021,6 +1021,22 @@ public class MainStageController extends AbstractGuiController {
         return resolvedValuePropertyByFieldRank;
     }
 
+    Property<DbDto.Topic> getCurrentTopicProperty() {
+        return currentTopicProperty;
+    }
+
+    Property<Long> getCurrentEntryIndexProperty() {
+        return currentEntryIndexProperty;
+    }
+
+    Property<Locale> getCurrentLocaleProperty() {
+        return currentLocaleProperty;
+    }
+
+    SimpleStringProperty getCurrentEntryLabelProperty() {
+        return currentEntryLabelProperty;
+    }
+
     MainStageViewDataController getViewDataController() {
         return viewDataController;
     }
