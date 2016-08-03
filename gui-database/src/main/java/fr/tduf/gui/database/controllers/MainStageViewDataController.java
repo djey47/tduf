@@ -115,7 +115,11 @@ class MainStageViewDataController extends AbstractMainStageSubController {
 
     void updateItemProperties(ContentItemDto item) {
         final int fieldRank = item.getFieldRank();
-        rawValuePropertyByFieldRank().get(fieldRank).set(item.getRawValue());
+        final SimpleStringProperty rawValueProperty = rawValuePropertyByFieldRank().get(fieldRank);
+        if (rawValueProperty == null) {
+            return;
+        }
+        rawValueProperty.set(item.getRawValue());
 
         DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, getCurrentTopicObject().getStructure().getFields());
         if (structureField.isAResourceField()

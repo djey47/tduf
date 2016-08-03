@@ -159,6 +159,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         return targetTopic;
     }
 
+    // TODO Move to abstract
     private BulkDatabaseMiner getMiner() {
         return controller.getMiner();
     }

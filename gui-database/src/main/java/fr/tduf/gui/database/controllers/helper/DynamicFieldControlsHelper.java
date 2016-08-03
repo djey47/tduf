@@ -32,6 +32,9 @@ import static javafx.geometry.Orientation.VERTICAL;
  */
 public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
+    /**
+     * @param controller    : main controller instance
+     */
     public DynamicFieldControlsHelper(MainStageController controller) {
         super(controller);
     }
@@ -57,36 +60,33 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     }
 
     private void addFieldControls(VBox defaultTab, DbStructureDto.Field field, DbDto.Topic currentTopic) {
-
-        String fieldName = field.getName();
         int fieldRank = field.getRank();
+        Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(fieldRank, controller.getCurrentProfileObject().getName(), controller.getLayoutObject());
+        if (!potentialFieldSettings.isPresent()) {
+            return;
+        }
+
+        FieldSettingsDto fieldSettings = potentialFieldSettings.get();
+        if (fieldSettings.isHidden()) {
+            return;
+        }
 
         SimpleStringProperty property = new SimpleStringProperty(DisplayConstants.VALUE_FIELD_DEFAULT);
         controller.getRawValuePropertyByFieldRank().put(fieldRank, property);
 
-        boolean fieldReadOnly = false;
-        String groupName = null;
-        String toolTipText = String.format(DisplayConstants.TOOLTIP_FIELD_TEMPLATE, fieldRank, fieldName);
-        Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(fieldRank, controller.getCurrentProfileObject().getName(), controller.getLayoutObject());
-        if (potentialFieldSettings.isPresent()) {
-            FieldSettingsDto fieldSettings = potentialFieldSettings.get();
-
-            if (fieldSettings.isHidden()) {
-                return;
-            }
-
-            if (fieldSettings.getLabel() != null) {
-                fieldName = fieldSettings.getLabel();
-            }
-
-            fieldReadOnly = fieldSettings.isReadOnly();
-
-            groupName = fieldSettings.getGroup();
-
-            if (fieldSettings.getToolTip() != null) {
-                toolTipText += (":" + fieldSettings.getToolTip());
-            }
+        String fieldName = field.getName();
+        if (fieldSettings.getLabel() != null) {
+            fieldName = fieldSettings.getLabel();
         }
+
+        String toolTipText = String.format(DisplayConstants.TOOLTIP_FIELD_TEMPLATE, fieldRank, fieldName);
+        if (fieldSettings.getToolTip() != null) {
+            toolTipText += (":" + fieldSettings.getToolTip());
+        }
+
+        boolean fieldReadOnly = fieldSettings.isReadOnly();
+
+        String groupName = fieldSettings.getGroup();
 
         HBox fieldBox = addFieldBox(Optional.ofNullable(groupName), 25.0, defaultTab);
 
@@ -257,6 +257,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         resourceValueLabel.textProperty().bindBidirectional(property);
     }
 
+    // TODO Move to abstract
     private BulkDatabaseMiner getMiner() {
         return controller.getMiner();
     }
