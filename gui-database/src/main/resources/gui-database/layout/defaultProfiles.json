@@ -867,6 +867,30 @@
           "remoteReferenceProfile": "Vehicle slots"
         },
         {
+          "name": "Color_ID_1",
+          "rank": 2
+        },
+        {
+          "name": "Color_Name",
+          "rank": 3
+        },
+        {
+          "name": "Color_ID_2",
+          "rank": 4
+        },
+        {
+          "name": "Callipers",
+          "rank": 5
+        },
+        {
+          "name": "Price_dollar",
+          "rank": 6
+        },
+        {
+          "name": "Pad",
+          "rank": 7
+        },
+        {
           "rank": 8,
           "group": "Interior Sets",
           "label": "(1)",
@@ -968,6 +992,30 @@
           "name": "REF",
           "readOnly": "true",
           "label": "(REF) Interior set #"
+        },
+        {
+          "name": "Manufacturer_ID",
+          "rank": 2
+        },
+        {
+          "name": "Interior_Name",
+          "rank": 3
+        },
+        {
+          "name": "Interior_Color_1",
+          "rank": 4
+        },
+        {
+          "name": "Interior_Color_2",
+          "rank": 5
+        },
+        {
+          "name": "Material",
+          "rank": 6
+        },
+        {
+          "name": "Price_dollar",
+          "rank": 7
         }
       ]
     },
@@ -1163,6 +1211,46 @@
           "readOnly": "true",
           "label": "(REF) AfterMarket Pack #",
           "toolTip": "Unique pack number"
+        },
+        {
+          "name": "Pack_ID",
+          "rank": 2
+        },
+        {
+          "name": "Pack_Name",
+          "rank": 3
+        },
+        {
+          "name": "Speed_ratio",
+          "rank": 4
+        },
+        {
+          "name": "Power_ratio",
+          "rank": 5
+        },
+        {
+          "name": "Acceleration_ratio",
+          "rank": 6
+        },
+        {
+          "name": "Free_ratio",
+          "rank": 7
+        },
+        {
+          "name": "CX_ratio",
+          "rank": 8
+        },
+        {
+          "name": "Weight_ratio",
+          "rank": 9
+        },
+        {
+          "name": "Suspension_ratio",
+          "rank": 10
+        },
+        {
+          "name": "Braking_ratio",
+          "rank": 11
         }
       ]
     },
@@ -1172,14 +1260,38 @@
       "entryLabelFieldRanks": [1, 2, 6],
       "fieldSettings": [
         {
+          "name": "FirstName_",
+          "rank": 1
+        },
+        {
+          "name": "Behaviour",
+          "rank": 2
+        },
+        {
           "name": "PNJ",
           "rank": 3,
           "remoteReferenceProfile": "NPCs"
         },
         {
+          "name": "Difficulty",
+          "rank": 4
+        },
+        {
+          "name": "ZoneIndex",
+          "rank": 5
+        },
+        {
           "name": "BotCar",
           "rank": 6,
           "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "name": "ColorIndex",
+          "rank": 7
+        },
+        {
+          "name": "Rarety",
+          "rank": 8
         }
       ]
     },
@@ -1194,6 +1306,18 @@
           "name": "REF",
           "readOnly": "true",
           "label": "(REF) NPC #"
+        },
+        {
+          "name": "ConfigID",
+          "rank": 2
+        },
+        {
+          "name": "Sex",
+          "rank": 3
+        },
+        {
+          "name": "FileConfigID",
+          "rank": 4
         },
         {
           "name": "Clothe",
@@ -1236,6 +1360,34 @@
           "group": "Items",
           "rank": 10,
           "remoteReferenceProfile": "Clothes"
+        },
+        {
+          "name": "Top",
+          "rank": 11
+        },
+        {
+          "name": "Bottom",
+          "rank": 12
+        },
+        {
+          "name": "Shoes",
+          "rank": 13
+        },
+        {
+          "name": "Gloves",
+          "rank": 14
+        },
+        {
+          "name": "Glasses",
+          "rank": 15
+        },
+        {
+          "name": "Helmet",
+          "rank": 16
+        },
+        {
+          "name": "BitField",
+          "rank": 17
         }
       ]
     },
@@ -1249,6 +1401,30 @@
           "name": "REF",
           "readOnly": "true",
           "label": "(REF) Haircut #"
+        },
+        {
+          "name": "ID_HAIR",
+          "rank": 2
+        },
+        {
+          "name": "HairName",
+          "rank": 3
+        },
+        {
+          "name": "Sex",
+          "rank": 4
+        },
+        {
+          "name": "File",
+          "rank": 5
+        },
+        {
+          "name": "Mesh",
+          "rank": 6
+        },
+        {
+          "name": "Material",
+          "rank": 7
         }
       ]
     },
@@ -1264,9 +1440,53 @@
           "label": "(REF) Piece of cloth #"
         },
         {
+          "name": "File_",
+          "rank": 2
+        },
+        {
+          "name": "ID_Num_",
+          "rank": 3
+        },
+        {
+          "name": "Price_dollar",
+          "rank": 4
+        },
+        {
           "name": "Brand_",
           "rank": 5,
           "remoteReferenceProfile": "Brands"
+        },
+        {
+          "name": "ClotheName_",
+          "rank": 6
+        },
+        {
+          "name": "Sex_",
+          "rank": 7
+        },
+        {
+          "name": "DrivingType_",
+          "rank": 8
+        },
+        {
+          "name": "Lenght_",
+          "rank": 9
+        },
+        {
+          "name": "PartType_",
+          "rank": 10
+        },
+        {
+          "name": "Size_",
+          "rank": 11
+        },
+        {
+          "name": "Nb_Colors",
+          "rank": 12
+        },
+        {
+          "name": "BitField",
+          "rank": 13
         }
       ]
     },
@@ -1280,6 +1500,38 @@
           "name": "REF",
           "readOnly": "true",
           "label": "(REF) House  #"
+        },
+        {
+          "name": "Spot_Name_",
+          "rank": 2
+        },
+        {
+          "name": "Realtor_",
+          "rank": 3
+        },
+        {
+          "name": "House_Name_",
+          "rank": 4
+        },
+        {
+          "name": "Level_",
+          "rank": 5
+        },
+        {
+          "name": "Model_",
+          "rank": 6
+        },
+        {
+          "name": "Nb_CarSlots_",
+          "rank": 7
+        },
+        {
+          "name": "Buy_Price_",
+          "rank": 8
+        },
+        {
+          "name": "Sell_Price_",
+          "rank": 9
         }
       ]
     },
@@ -1287,25 +1539,113 @@
       "name": "Achievements",
       "topic": "ACHIEVEMENTS",
       "entryLabelFieldRanks": [5,1],
-      "fieldSettings": []
+      "fieldSettings": [
+        {
+          "name": "Achievement_Event_",
+          "rank": 1
+        },
+        {
+          "name": "TextIndex_",
+          "rank": 2
+        },
+        {
+          "name": "Nb_Achievement_Points_",
+          "rank": 3
+        },
+        {
+          "name": "Ach_Title_",
+          "rank": 4
+        },
+        {
+          "name": "Ach_Desc_",
+          "rank": 5
+        },
+        {
+          "name": "Explanation_",
+          "rank": 6
+        },
+        {
+          "name": "FailedExplain_",
+          "rank": 7
+        },
+        {
+          "name": "Reward_",
+          "rank": 8
+        },
+        {
+          "name": "Reward_Param_",
+          "rank": 9
+        }
+      ]
     },
     {
       "name": "Menus",
       "topic": "MENUS",
       "entryLabelFieldRanks": [2,1],
-      "fieldSettings": []
+      "fieldSettings": [
+        {
+          "name": "Flash_Name_",
+          "rank": 1
+        },
+        {
+          "name": "Libelle_",
+          "rank": 2
+        },
+        {
+          "name": "BitField",
+          "rank": 3
+        }
+      ]
     },
     {
       "name": "Subtitles",
       "topic": "SUB_TITLES",
       "entryLabelFieldRanks": [3],
-      "fieldSettings": []
+      "fieldSettings": [
+        {
+          "name": "SoundFileID_",
+          "rank": 1
+        },
+        {
+          "name": "SoundFileType",
+          "rank": 2
+        },
+        {
+          "name": "Libelle",
+          "rank": 3
+        },
+        {
+          "name": "BitField",
+          "rank": 4
+        }
+      ]
     },
     {
       "name": "Tutorials",
       "topic": "TUTORIALS",
       "entryLabelFieldRanks": [3,1,2],
-      "fieldSettings": []
+      "fieldSettings": [
+        {
+          "name": "Text_ID_",
+          "rank": 1
+        },
+        {
+          "name": "TextIndex_",
+          "rank": 2
+        },
+        {
+          "name": "Libelle_",
+          "rank": 3
+        },
+        {
+          "name": "File_",
+          "rank": 4
+        },
+        {
+          "name": "Time_cent",
+          "rank": 5
+        }
+      ]
     },
 
     {
