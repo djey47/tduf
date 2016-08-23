@@ -4,6 +4,7 @@ import fr.tduf.gui.database.DatabaseEditor;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
+import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
@@ -11,17 +12,21 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
-import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
+import javafx.scene.control.ChoiceBox;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,12 +35,14 @@ import java.util.Optional;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.INTEGER;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 @RunWith(MockitoJUnitRunner.class)
 public class MainStageViewDataControllerTest {
+    @Rule
+    public JavaFXThreadingRule javaFXRule = new JavaFXThreadingRule();
+
     @Mock
     private MainStageController mainStageControllerMock;
 
@@ -47,6 +54,9 @@ public class MainStageViewDataControllerTest {
 
     @InjectMocks
     private MainStageViewDataController controller;
+
+    @Captor
+    private ArgumentCaptor<EditorLayoutDto> editorLayoutCaptor;
 
 
     @Before
@@ -162,5 +172,19 @@ public class MainStageViewDataControllerTest {
 
         // THEN
         assertThat(actualDirectory).contains("/tdu/euro/bnk/database");
+    }
+
+    @Test
+    public void loadAndFillProfiles_shouldSetInMainController() throws IOException {
+        // GIVEN
+        when(mainStageControllerMock.getProfilesChoiceBox()).thenReturn(new ChoiceBox<>());
+
+        // WHEN
+        controller.loadAndFillProfiles();
+
+        // THEN
+        verify(mainStageControllerMock).setLayoutObject(editorLayoutCaptor.capture());
+        final EditorLayoutDto actualLayout = editorLayoutCaptor.getValue();
+        assertThat(actualLayout.getProfiles()).hasSize(18);
     }
 }

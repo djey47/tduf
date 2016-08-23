@@ -714,6 +714,7 @@ public class MainStageController extends AbstractGuiController {
         }
     }
 
+    // TODO move to view data controller
     private void applyProfile(String profileName) {
         profileObject = EditorLayoutHelper.getAvailableProfileByName(profileName, layoutObject);
         currentTopicObject = databaseMiner.getDatabaseTopic(profileObject.getTopic()).get();
@@ -993,6 +994,10 @@ public class MainStageController extends AbstractGuiController {
         return layoutObject;
     }
 
+    void setLayoutObject(EditorLayoutDto layoutObject) {
+        this.layoutObject = layoutObject;
+    }
+
     public Map<String, VBox> getTabContentByName() {
         return tabContentByName;
     }
@@ -1072,4 +1077,9 @@ public class MainStageController extends AbstractGuiController {
     ApplicationConfiguration getApplicationConfiguration() {
         return applicationConfiguration;
     }
+
+    ChoiceBox<String> getProfilesChoiceBox() {
+        return profilesChoiceBox;
+    }
+
 }

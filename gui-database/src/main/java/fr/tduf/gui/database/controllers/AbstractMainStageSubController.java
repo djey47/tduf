@@ -38,7 +38,7 @@ abstract class AbstractMainStageSubController {
     }
 
     protected void setMiner(BulkDatabaseMiner miner) {
-        this.mainStageController.setMiner(miner);
+        mainStageController.setMiner(miner);
     }
 
     protected MainStageViewDataController getViewDataController() {
@@ -58,7 +58,7 @@ abstract class AbstractMainStageSubController {
     }
 
     protected void setLayoutObject(EditorLayoutDto editorLayoutDto) {
-        mainStageController.layoutObject = editorLayoutDto;
+        mainStageController.setLayoutObject(editorLayoutDto);
     }
 
     protected EditorLayoutDto getLayoutObject() {
@@ -142,7 +142,8 @@ abstract class AbstractMainStageSubController {
     }
 
     protected ChoiceBox<String> getProfilesChoiceBox() {
-        return mainStageController.profilesChoiceBox;
+        // Getter kept for testing
+        return mainStageController.getProfilesChoiceBox();
     }
 
     protected ChoiceBox<Locale> getLocalesChoiceBox() {

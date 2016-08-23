@@ -39,10 +39,10 @@ public class MainStageChangeDataControllerTest {
     private BulkDatabaseMiner minerMock;
 
     @Mock
-    MainStageController mainStageController;
+    private MainStageController mainStageController;
 
     @InjectMocks
-    MainStageChangeDataController controller;
+    private MainStageChangeDataController controller;
 
     private ObjectMapper objectMapper;
 
