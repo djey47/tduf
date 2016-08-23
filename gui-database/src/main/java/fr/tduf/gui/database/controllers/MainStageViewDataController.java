@@ -7,6 +7,8 @@ import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.SettingsConstants;
 import fr.tduf.gui.database.common.helper.DatabaseQueryHelper;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
+import fr.tduf.gui.database.controllers.helper.DynamicFieldControlsHelper;
+import fr.tduf.gui.database.controllers.helper.DynamicLinkControlsHelper;
 import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
@@ -21,6 +23,9 @@ import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
+import javafx.scene.layout.VBox;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
@@ -35,13 +40,21 @@ import static java.util.stream.Collectors.toList;
 /**
  * Specialized controller to display database contents.
  */
-class MainStageViewDataController extends AbstractMainStageSubController {
+public class MainStageViewDataController extends AbstractMainStageSubController {
     private static final String THIS_CLASS_NAME = MainStageViewDataController.class.getSimpleName();
     private static final Class<MainStageViewDataController> thisClass = MainStageViewDataController.class;
 
     MainStageViewDataController(MainStageController mainStageController) {
         super(mainStageController);
+
+        dynamicFieldControlsHelper = new DynamicFieldControlsHelper(mainStageController);
+        dynamicLinkControlsHelper = new DynamicLinkControlsHelper(mainStageController);
     }
+
+    private DynamicFieldControlsHelper dynamicFieldControlsHelper;
+    private DynamicLinkControlsHelper dynamicLinkControlsHelper;
+
+    private Map<String, VBox> tabContentByName = new HashMap<>();
 
     void updateDisplayWithLoadedObjects() {
         if (!getDatabaseObjects().isEmpty()) {
@@ -99,6 +112,31 @@ class MainStageViewDataController extends AbstractMainStageSubController {
         editorLayoutDto.getProfiles()
                 .forEach(profileObject -> getProfilesChoiceBox().getItems().add(profileObject.getName()));
         setLayoutObject(editorLayoutDto);
+    }
+
+    // TODO tests
+    void applyProfile(String profileName) {
+        final EditorLayoutDto.EditorProfileDto profileObject = EditorLayoutHelper.getAvailableProfileByName(profileName, getLayoutObject());
+        final DbDto currentTopicObject = getMiner().getDatabaseTopic(profileObject.getTopic()).get();
+
+        currentTopicProperty().setValue(currentTopicObject.getTopic());
+
+        setCurrentProfileObject(profileObject);
+        setCurrentTopicObject(currentTopicObject);
+
+        refreshAll();
+    }
+
+    // TODO tests
+    void refreshAll() {
+        currentEntryIndexProperty().setValue(0L);
+        rawValuePropertyByFieldRank().clear();
+        resolvedValuePropertyByFieldRank().clear();
+        getResourceListByTopicLink().clear();
+
+        fillBrowsableEntries();
+
+        initTabPane();
     }
 
     void updateAllPropertiesWithItemValues() {
@@ -312,6 +350,46 @@ class MainStageViewDataController extends AbstractMainStageSubController {
         }
     }
 
+    private void initTabPane() {
+        initGroupTabs();
+
+        addDynamicControls();
+
+        updateAllPropertiesWithItemValues();
+    }
+
+    private void initGroupTabs() {
+        getDefaultTab().getChildren().clear();
+
+        getTabPane().getTabs().remove(1, getTabPane().getTabs().size());
+        getTabContentByName().clear();
+
+        if (getCurrentProfileObject().getGroups() != null) {
+            getCurrentProfileObject().getGroups().forEach(groupName -> {
+                VBox vbox = new VBox();
+                Tab groupTab = new Tab(groupName, new ScrollPane(vbox));
+
+                getTabPane().getTabs().add(getTabPane().getTabs().size(), groupTab);
+
+                getTabContentByName().put(groupName, vbox);
+            });
+        }
+    }
+
+    private void addDynamicControls() {
+        if (getCurrentProfileObject().getFieldSettings() != null) {
+            dynamicFieldControlsHelper.addAllFieldsControls(
+                    getLayoutObject(),
+                    getProfilesChoiceBox().getValue(),
+                    getCurrentTopicObject().getTopic());
+        }
+
+        if (getCurrentProfileObject().getTopicLinks() != null) {
+            dynamicLinkControlsHelper.addAllLinksControls(
+                    getCurrentProfileObject());
+        }
+    }
+
     private ContentEntryDataItem getDisplayableEntryForCurrentLocale(ContentEntryDto topicEntry, List<Integer> labelFieldRanks, DbDto.Topic topic) {
         ContentEntryDataItem contentEntryDataItem = new ContentEntryDataItem();
 
@@ -422,5 +500,9 @@ class MainStageViewDataController extends AbstractMainStageSubController {
                     getMiner());
         }
         return DisplayConstants.VALUE_ERROR_ENTRY_NOT_FOUND;
+    }
+
+    public Map<String, VBox> getTabContentByName() {
+        return tabContentByName;
     }
 }

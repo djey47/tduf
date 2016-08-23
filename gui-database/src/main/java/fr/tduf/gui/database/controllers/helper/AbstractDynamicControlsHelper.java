@@ -14,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -34,10 +35,11 @@ abstract class AbstractDynamicControlsHelper {
 
         if (potentialGroupName.isPresent()) {
             String groupName = potentialGroupName.get();
-            if (!controller.getTabContentByName().containsKey(groupName)) {
+            final Map<String, VBox> tabContentByName = controller.getViewData().getTabContentByName();
+            if (!tabContentByName.containsKey(groupName)) {
                 throw new IllegalArgumentException("Unknown group name: " + groupName);
             }
-            controller.getTabContentByName().get(groupName).getChildren().add(fieldBox);
+            tabContentByName.get(groupName).getChildren().add(fieldBox);
         } else {
             defaultTab.getChildren().add(fieldBox);
         }

@@ -9,10 +9,7 @@ import fr.tduf.gui.common.services.DatabaseChecker;
 import fr.tduf.gui.common.services.DatabaseFixer;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.SettingsConstants;
-import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
 import fr.tduf.gui.database.controllers.helper.DialogsHelper;
-import fr.tduf.gui.database.controllers.helper.DynamicFieldControlsHelper;
-import fr.tduf.gui.database.controllers.helper.DynamicLinkControlsHelper;
 import fr.tduf.gui.database.converter.CurrentEntryIndexToStringConverter;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.domain.EditorLocation;
@@ -94,8 +91,6 @@ public class MainStageController extends AbstractGuiController {
 
     private ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
 
-    private DynamicFieldControlsHelper dynamicFieldControlsHelper;
-    private DynamicLinkControlsHelper dynamicLinkControlsHelper;
     private DialogsHelper dialogsHelper;
 
     private MainStageViewDataController viewDataController;
@@ -104,8 +99,6 @@ public class MainStageController extends AbstractGuiController {
     private ResourcesStageController resourcesStageController;
     private EntriesStageController entriesStageController;
     private FieldsBrowserStageController fieldsBrowserStageController;
-
-    private Map<String, VBox> tabContentByName = new HashMap<>();
 
     private BulkDatabaseMiner databaseMiner;
     private List<DbDto> databaseObjects = new ArrayList<>(18);
@@ -165,8 +158,6 @@ public class MainStageController extends AbstractGuiController {
         viewDataController = new MainStageViewDataController(this);
         changeDataController = new MainStageChangeDataController(this);
 
-        dynamicFieldControlsHelper = new DynamicFieldControlsHelper(this);
-        dynamicLinkControlsHelper = new DynamicLinkControlsHelper(this);
         dialogsHelper = new DialogsHelper();
 
         runningServiceProperty.bind(databaseLoader.runningProperty()
@@ -542,7 +533,7 @@ public class MainStageController extends AbstractGuiController {
             return;
         }
 
-        applyProfile(newProfileName);
+        viewDataController.applyProfile(newProfileName);
     }
 
     private void handleLocaleChoiceChanged(Locale newLocale) {
@@ -604,7 +595,7 @@ public class MainStageController extends AbstractGuiController {
                 } else {
                     CommonDialogsHelper.showDialog(WARNING, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_KO, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_REMAINING_ERRORS);
                 }
-                refreshAll();
+                viewDataController.refreshAll();
             } else if (FAILED == newState) {
                 CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_KO, databaseFixer.getException().getMessage());
             }
@@ -672,67 +663,6 @@ public class MainStageController extends AbstractGuiController {
         entryNumberComboBox.setCellFactory(new EntryCellFactory());
         entryNumberComboBox.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> handleEntryChoiceChanged((ContentEntryDataItem) newValue));
-    }
-
-    private void initTabPane() {
-        initGroupTabs();
-
-        addDynamicControls();
-
-        viewDataController.updateAllPropertiesWithItemValues();
-    }
-
-    private void initGroupTabs() {
-        defaultTab.getChildren().clear();
-
-        tabPane.getTabs().remove(1, tabPane.getTabs().size());
-        tabContentByName.clear();
-
-        if (profileObject.getGroups() != null) {
-            profileObject.getGroups().forEach(groupName -> {
-                VBox vbox = new VBox();
-                Tab groupTab = new Tab(groupName, new ScrollPane(vbox));
-
-                tabPane.getTabs().add(tabPane.getTabs().size(), groupTab);
-
-                tabContentByName.put(groupName, vbox);
-            });
-        }
-    }
-
-    private void addDynamicControls() {
-        if (profileObject.getFieldSettings() != null) {
-            dynamicFieldControlsHelper.addAllFieldsControls(
-                    layoutObject,
-                    profilesChoiceBox.getValue(),
-                    currentTopicObject.getTopic());
-        }
-
-        if (profileObject.getTopicLinks() != null) {
-            dynamicLinkControlsHelper.addAllLinksControls(
-                    profileObject);
-        }
-    }
-
-    // TODO move to view data controller
-    private void applyProfile(String profileName) {
-        profileObject = EditorLayoutHelper.getAvailableProfileByName(profileName, layoutObject);
-        currentTopicObject = databaseMiner.getDatabaseTopic(profileObject.getTopic()).get();
-
-        currentTopicProperty.setValue(currentTopicObject.getTopic());
-
-        refreshAll();
-    }
-
-    private void refreshAll() {
-        currentEntryIndexProperty.setValue(0L);
-        rawValuePropertyByFieldRank.clear();
-        resolvedValuePropertyByFieldRank.clear();
-        resourceListByTopicLink.clear();
-
-        viewDataController.fillBrowsableEntries();
-
-        initTabPane();
     }
 
     private void browseForDatabaseDirectory() {
@@ -986,8 +916,16 @@ public class MainStageController extends AbstractGuiController {
         return this.currentTopicObject;
     }
 
+    void setCurrentTopicObject(DbDto currentTopicObject) {
+        this.currentTopicObject = currentTopicObject;
+    }
+
     public EditorLayoutDto.EditorProfileDto getCurrentProfileObject() {
         return profileObject;
+    }
+
+    void setCurrentProfileObject(EditorLayoutDto.EditorProfileDto currentProfileObject) {
+        this.profileObject = currentProfileObject;
     }
 
     public EditorLayoutDto getLayoutObject() {
@@ -996,14 +934,6 @@ public class MainStageController extends AbstractGuiController {
 
     void setLayoutObject(EditorLayoutDto layoutObject) {
         this.layoutObject = layoutObject;
-    }
-
-    public Map<String, VBox> getTabContentByName() {
-        return tabContentByName;
-    }
-
-    public VBox getDefaultTab() {
-        return defaultTab;
     }
 
     public Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> getResourceListByTopicLink() {
@@ -1082,4 +1012,11 @@ public class MainStageController extends AbstractGuiController {
         return profilesChoiceBox;
     }
 
+    public VBox getDefaultTab() {
+        return defaultTab;
+    }
+
+    public MainStageViewDataController getViewData() {
+        return viewDataController;
+    }
 }

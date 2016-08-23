@@ -11,10 +11,8 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 
 import java.util.Deque;
 import java.util.List;
@@ -71,6 +69,11 @@ abstract class AbstractMainStageSubController {
         return mainStageController.getCurrentProfileObject();
     }
 
+    protected void setCurrentProfileObject(EditorLayoutDto.EditorProfileDto profileObject) {
+        // Setter kept for testing
+        mainStageController.setCurrentProfileObject(profileObject);
+    }
+
     protected List<DbDto> getDatabaseObjects() {
         // Getter kept for testing
         return mainStageController.getDatabaseObjects();
@@ -78,6 +81,11 @@ abstract class AbstractMainStageSubController {
 
     protected DbDto getCurrentTopicObject() {
         return mainStageController.getCurrentTopicObject();
+    }
+
+    protected void setCurrentTopicObject(DbDto currentTopicObject) {
+        // Setter kept for testing
+        mainStageController.setCurrentTopicObject(currentTopicObject);
     }
 
     protected Deque<EditorLocation> getNavigationHistory() {
@@ -156,5 +164,9 @@ abstract class AbstractMainStageSubController {
 
     protected TabPane getTabPane() {
         return mainStageController.tabPane;
+    }
+
+    protected VBox getDefaultTab() {
+        return mainStageController.getDefaultTab();
     }
 }
