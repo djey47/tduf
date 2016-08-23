@@ -33,12 +33,16 @@ TDUF aims at making Test Drive Unlmited modding easier:
 
 ### What's in this version ? (1.7.0)
 
+* Provides additional launchers without administration privileges (-noadmin)
 
+* DatabaseEditor: remembers last database location
 
 
 ### Fixed issues
 
+* DatabaseEditor: misc fixes
 
+* Library: switch to mono executable on Linux
 
 
 ### Known bugs
@@ -70,6 +74,12 @@ TDUF aims at making Test Drive Unlmited modding easier:
 
     - Launch TDUF-cli.cmd from Windows explorer
     - Follow instructions.
+
+
+
+### Troubleshooting
+
+If you encounter some issues to run tools, launch -noadmin.cmd files instead.
 
 
 
