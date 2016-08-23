@@ -4,6 +4,7 @@ package fr.tduf.gui.installer.controllers;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.helper.InstallerTestsHelper;
 import fr.tduf.gui.installer.stages.VehicleSlotsStageDesigner;
+import fr.tduf.libtesting.common.helper.game.DatabaseHelper;
 import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -31,7 +32,7 @@ public class VehicleSlotsStageControllerTest {
     public void setUp() {
         Log.set(Log.LEVEL_TRACE);
 
-        databaseObjects = InstallerTestsHelper.createDatabaseForReadOnly();
+        databaseObjects = DatabaseHelper.createDatabaseForReadOnly();
     }
 
     @Test

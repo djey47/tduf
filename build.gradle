@@ -136,6 +136,8 @@ project(':cli') {
 
 project('lib-testing') {
     dependencies {
+        compile project(':lib-unlimited')
+
         compile group: 'junit', name: 'junit', version: '4.11'
         compile group: 'org.assertj', name: 'assertj-core', version: "$assertjVersion"
         compile group: 'org.skyscreamer', name: 'jsonassert', version: "$jsonassertVersion"
@@ -174,6 +176,14 @@ project(':gui-database') {
     task execute(type:JavaExec) {
         main 'fr.tduf.gui.database.DatabaseEditor'
         classpath sourceSets.main.runtimeClasspath
+    }
+
+    task copyProfiles(type: Copy) {
+        description 'Copies all default profiles to release directory.'
+        mustRunAfter ':cleanPackDir'
+
+        from 'editorProfiles/'
+        into '../pack/editorProfiles/'
     }
 }
 
@@ -289,6 +299,7 @@ task packFull(dependsOn: [  'cleanTempJarDir', 'cleanPackDir',
                             'markdownToHtml',
                             'copyDoc', 'copyExternalTools', 'copyUtilScripts', 'copyVersionInfo',
                             ':lib-unlimited:copyStructures',
+                            ':gui-database:copyProfiles',
                             'fullJar'], type: Zip) {
     description 'Create single release Zip with ALL components except InstallerKit in releases directory.'
 
