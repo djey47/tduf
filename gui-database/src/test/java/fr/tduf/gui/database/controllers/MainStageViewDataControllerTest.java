@@ -88,14 +88,12 @@ public class MainStageViewDataControllerTest {
         EditorLayoutDto currentLayoutObject = new EditorLayoutDto();
         currentLayoutObject.getProfiles().add(currentProfileObject);
 
-        final HashMap<Integer, SimpleStringProperty> rawValueByFieldRank = new HashMap<>();
-        rawValueByFieldRank.put(1, new SimpleStringProperty("VAL1"));
+        controller.getRawValuesByFieldRank().put(1, new SimpleStringProperty("VAL1"));
 
         Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> resourceListByTopicLink = new HashMap<>();
 
         when(mainStageControllerMock.getCurrentProfileObject()).thenReturn(currentProfileObject);
         when(mainStageControllerMock.getLayoutObject()).thenReturn(currentLayoutObject);
-        when(mainStageControllerMock.getRawValuePropertyByFieldRank()).thenReturn(rawValueByFieldRank);
         when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0L));
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn((currentTopicObject));
         when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(DbDto.Topic.CAR_PHYSICS_DATA));

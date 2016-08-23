@@ -72,20 +72,20 @@ import static javafx.scene.control.Alert.AlertType.*;
 public class MainStageController extends AbstractGuiController {
     private static final String THIS_CLASS_NAME = MainStageController.class.getSimpleName();
 
-    Property<DbDto.Topic> currentTopicProperty;
-    Property<fr.tduf.libunlimited.common.game.domain.Locale> currentLocaleProperty = new SimpleObjectProperty<>(UNITED_STATES);
-    Property<Long> currentEntryIndexProperty;
-    SimpleStringProperty currentEntryLabelProperty;
-    Map<Integer, SimpleStringProperty> rawValuePropertyByFieldRank = new HashMap<>();
-    Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRank = new HashMap<>();
-    Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> resourceListByTopicLink = new HashMap<>();
-    ObservableList<ContentEntryDataItem> browsableEntries;
-
     Deque<EditorLocation> navigationHistory = new ArrayDeque<>();
 
-    DbDto currentTopicObject;
-    EditorLayoutDto layoutObject;
-    EditorLayoutDto.EditorProfileDto profileObject;
+    Property<fr.tduf.libunlimited.common.game.domain.Locale> currentLocaleProperty = new SimpleObjectProperty<>(UNITED_STATES);
+    Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRank = new HashMap<>();
+    ObservableList<ContentEntryDataItem> browsableEntries;
+
+    private Property<DbDto.Topic> currentTopicProperty;
+    private Property<Long> currentEntryIndexProperty;
+    private SimpleStringProperty currentEntryLabelProperty;
+    private Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> resourceListByTopicLink = new HashMap<>();
+
+    private DbDto currentTopicObject;
+    private EditorLayoutDto layoutObject;
+    private EditorLayoutDto.EditorProfileDto profileObject;
 
     private final BankSupport bankSupport = new GenuineBnkGateway(new CommandLineHelper());
 
@@ -253,7 +253,6 @@ public class MainStageController extends AbstractGuiController {
 
         checkDatabase(databaseLocation);
     }
-
 
     @FXML
     public void handleSearchEntryButtonAction() {
@@ -430,8 +429,7 @@ public class MainStageController extends AbstractGuiController {
         return actionEvent -> {
             Log.trace(THIS_CLASS_NAME, "->gotoReferenceButton clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
 
-            databaseMiner.getRemoteContentEntryWithInternalIdentifier(currentTopicObject.getTopic(), fieldRank, currentEntryIndexProperty.getValue(), targetTopic)
-                    .ifPresent(remoteContentEntry -> viewDataController.switchToProfileAndEntry(targetProfileName, remoteContentEntry.getId(), true));
+            viewDataController.switchToProfileAndRemoteEntry(targetProfileName, currentEntryIndexProperty.getValue(), fieldRank, currentTopicProperty.getValue(), targetTopic);
         };
     }
 
@@ -451,10 +449,10 @@ public class MainStageController extends AbstractGuiController {
             if (DatabaseStructureQueryHelper.getUidFieldRank(structureFields).isPresent()) {
                 // Association topic -> browse remote entries in target topic
                 entriesStageController.initAndShowModalDialog(empty(), targetTopic, targetProfileName)
-                        .ifPresent(selectedEntry -> addLinkedEntryWithTargetRef(tableViewSelectionModel, topicLinkObject.getTopic(), selectedEntry, topicLinkObject));
+                        .ifPresent(selectedEntry -> addLinkedEntryWithTargetRefAndUpdateStage(tableViewSelectionModel, topicLinkObject.getTopic(), selectedEntry, topicLinkObject));
             } else {
                 // Direct topic link -> add default entry in target topic
-                addLinkedEntryWithoutTargetRef(tableViewSelectionModel, targetTopic, topicLinkObject);
+                addLinkedEntryWithoutTargetRefAndUpdateStage(tableViewSelectionModel, targetTopic, topicLinkObject);
             }
         };
     }
@@ -692,7 +690,6 @@ public class MainStageController extends AbstractGuiController {
 
         databaseLoader.bankSupportProperty().setValue(bankSupport);
         databaseLoader.databaseLocationProperty().setValue(databaseLocation);
-
         databaseLoader.restart();
     }
 
@@ -706,57 +703,40 @@ public class MainStageController extends AbstractGuiController {
         databaseSaver.bankSupportProperty().setValue(bankSupport);
         databaseSaver.databaseLocationProperty().setValue(databaseLocation);
         databaseSaver.databaseObjectsProperty().setValue(databaseObjects);
-
         databaseSaver.restart();
     }
 
     private void addEntryAndUpdateStage() {
         long newEntryIndex = changeDataController.addEntryForCurrentTopic();
-
         viewDataController.updateEntriesAndSwitchTo(newEntryIndex);
     }
 
     private void duplicateEntryAndUpdateStage() {
         long newEntryIndex = changeDataController.duplicateCurrentEntry();
-
         viewDataController.updateEntriesAndSwitchTo(newEntryIndex);
     }
 
-    private void addLinkedEntryWithTargetRef(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, ContentEntryDataItem linkedEntry, TopicLinkDto topicLinkObject) {
-        String sourceEntryRef = databaseMiner.getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty.getValue(), currentTopicProperty.getValue()).get();
-        Optional<String> targetEntryRef = ofNullable(linkedEntry)
-                .map(entry -> entry.referenceProperty().get());
-
-        changeDataController.addLinkedEntry(sourceEntryRef, targetEntryRef, targetTopic);
-
+    private void addLinkedEntryWithTargetRefAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, ContentEntryDataItem linkedEntry, TopicLinkDto topicLinkObject) {
+        changeDataController.addLinkedEntryWithTargetRef(targetTopic, linkedEntry);
         viewDataController.updateLinkProperties(topicLinkObject);
-
         TableViewHelper.selectLastRowAndScroll(tableViewSelectionModel.getTableView());
     }
 
-    private void addLinkedEntryWithoutTargetRef(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, TopicLinkDto topicLinkObject) {
-        addLinkedEntryWithTargetRef(tableViewSelectionModel, targetTopic, null, topicLinkObject);
+    private void addLinkedEntryWithoutTargetRefAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, TopicLinkDto topicLinkObject) {
+        addLinkedEntryWithTargetRefAndUpdateStage(tableViewSelectionModel, targetTopic, null, topicLinkObject);
     }
 
     private void removeCurrentEntryAndUpdateStage() {
         long currentEntryIndex = currentEntryIndexProperty.getValue();
         changeDataController.removeEntryWithIdentifier(currentEntryIndex, currentTopicProperty.getValue());
-
-        if (currentEntryIndex == 0) {
-            currentEntryIndex = 1;
-        }
         viewDataController.updateEntriesAndSwitchTo(currentEntryIndex - 1);
     }
 
     private void removeLinkedEntryAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
-        int initialRowIndex = tableViewSelectionModel.getSelectedIndex();
         ContentEntryDataItem selectedItem = tableViewSelectionModel.getSelectedItem();
-
         changeDataController.removeEntryWithIdentifier(selectedItem.internalEntryIdProperty().get(), topicLinkObject.getTopic());
-
         viewDataController.updateLinkProperties(topicLinkObject);
-
-        TableViewHelper.selectRowAndScroll(initialRowIndex, tableViewSelectionModel.getTableView());
+        TableViewHelper.selectRowAndScroll(tableViewSelectionModel.getSelectedIndex(), tableViewSelectionModel.getTableView());
     }
 
     private void moveLinkedEntryUpAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
@@ -766,12 +746,8 @@ public class MainStageController extends AbstractGuiController {
             return;
         }
 
-        ContentEntryDataItem selectedItem = tableViewSelectionModel.getSelectedItem();
-
-        changeDataController.moveEntryWithIdentifier(-1, selectedItem.internalEntryIdProperty().get(), topicLinkObject.getTopic());
-
+        changeDataController.moveEntryWithIdentifier(-1, tableViewSelectionModel.getSelectedItem().internalEntryIdProperty().get(), topicLinkObject.getTopic());
         viewDataController.updateLinkProperties(topicLinkObject);
-
         TableViewHelper.selectRowAndScroll(initialRowIndex - 1, tableView);
     }
 
@@ -782,12 +758,8 @@ public class MainStageController extends AbstractGuiController {
             return;
         }
 
-        ContentEntryDataItem selectedItem = tableViewSelectionModel.getSelectedItem();
-
-        changeDataController.moveEntryWithIdentifier(1, selectedItem.internalEntryIdProperty().get(), topicLinkObject.getTopic());
-
+        changeDataController.moveEntryWithIdentifier(1, tableViewSelectionModel.getSelectedItem().internalEntryIdProperty().get(), topicLinkObject.getTopic());
         viewDataController.updateLinkProperties(topicLinkObject);
-
         TableViewHelper.selectRowAndScroll(initialRowIndex + 1, tableView);
     }
 
@@ -800,12 +772,8 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void askForExportOptionsThenExportToFile() throws IOException {
-
-        final DbDto.Topic currentTopic = currentTopicObject.getTopic();
-        final String name = getCurrentProfileObject().getName();
-
-        final List<String> selectedEntryRefs = viewDataController.selectEntriesFromTopic(currentTopic, name);
-        final List<String> selectedEntryFields = viewDataController.selectFieldsFromTopic(currentTopic);
+        final List<String> selectedEntryRefs = viewDataController.selectEntriesFromTopic();
+        final List<String> selectedEntryFields = viewDataController.selectFieldsFromTopic();
 
         Optional<File> potentialFile = CommonDialogsHelper.browseForFilename(false, getWindow());
         if (!potentialFile.isPresent()) {
@@ -814,7 +782,7 @@ public class MainStageController extends AbstractGuiController {
 
         String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_EXPORT;
         String fileLocation = potentialFile.get().getPath();
-        if (changeDataController.exportEntriesToPatchFile(currentTopic, selectedEntryRefs, selectedEntryFields, fileLocation)) {
+        if (changeDataController.exportEntriesToPatchFile(currentTopicProperty.getValue(), selectedEntryRefs, selectedEntryFields, fileLocation)) {
             String message = selectedEntryRefs.isEmpty() ?
                     DisplayConstants.MESSAGE_ALL_ENTRIES_EXPORTED :
                     DisplayConstants.MESSAGE_ENTRIES_EXPORTED;
@@ -863,7 +831,6 @@ public class MainStageController extends AbstractGuiController {
         try {
             String packFilePath = potentialFile.get().getPath();
             changeDataController.importPerformancePack(packFilePath);
-
             viewDataController.updateAllPropertiesWithItemValues();
 
             CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED_PERFORMANCE_PACK, packFilePath);
@@ -877,7 +844,6 @@ public class MainStageController extends AbstractGuiController {
         CommonDialogsHelper.showInputValueDialog(
                 DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SEARCH_ENTRY,
                 DisplayConstants.LABEL_SEARCH_ENTRY)
-
                 .ifPresent(entryReference -> viewDataController.switchToEntryWithReference(entryReference, currentTopicProperty.getValue()));
     }
 
@@ -899,7 +865,6 @@ public class MainStageController extends AbstractGuiController {
         }
         databaseChecker.databaseLocationProperty().setValue(databaseLocation);
         databaseChecker.bankSupportProperty().setValue(bankSupport);
-
         databaseChecker.restart();
     }
 
@@ -908,7 +873,6 @@ public class MainStageController extends AbstractGuiController {
         statusLabel.textProperty().bind(databaseFixer.messageProperty());
 
         databaseFixer.fromService(databaseChecker);
-
         databaseFixer.restart();
     }
 
@@ -948,10 +912,6 @@ public class MainStageController extends AbstractGuiController {
         this.databaseMiner = databaseMiner;
     }
 
-    public Map<Integer, SimpleStringProperty> getRawValuePropertyByFieldRank() {
-        return rawValuePropertyByFieldRank;
-    }
-
     public Map<Integer, SimpleStringProperty> getResolvedValuePropertyByFieldRank() {
         return resolvedValuePropertyByFieldRank;
     }
@@ -972,11 +932,11 @@ public class MainStageController extends AbstractGuiController {
         return currentEntryLabelProperty;
     }
 
-    MainStageViewDataController getViewDataController() {
+    public MainStageViewDataController getViewData() {
         return viewDataController;
     }
 
-    MainStageChangeDataController getChangeDataController() {
+    MainStageChangeDataController getChangeData() {
         return changeDataController;
     }
 
@@ -999,11 +959,6 @@ public class MainStageController extends AbstractGuiController {
     }
 
     // For tests
-    DbDto.Topic getCurrentTopic() {
-        return currentTopicProperty.getValue();
-    }
-
-    // For tests
     ApplicationConfiguration getApplicationConfiguration() {
         return applicationConfiguration;
     }
@@ -1014,9 +969,5 @@ public class MainStageController extends AbstractGuiController {
 
     public VBox getDefaultTab() {
         return defaultTab;
-    }
-
-    public MainStageViewDataController getViewData() {
-        return viewDataController;
     }
 }

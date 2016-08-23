@@ -71,7 +71,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
 
         SimpleStringProperty property = new SimpleStringProperty(DisplayConstants.VALUE_FIELD_DEFAULT);
-        controller.getRawValuePropertyByFieldRank().put(fieldRank, property);
+        controller.getViewData().getRawValuesByFieldRank().put(fieldRank, property);
 
         String fieldName = field.getName();
         if (fieldSettings.getLabel() != null) {
@@ -133,6 +133,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
     }
 
+    // Ignore warning (method ref)
     private void addPercentValueControls(HBox fieldBox, int fieldRank, boolean fieldReadOnly, SimpleStringProperty rawValueProperty) {
         Slider slider = new Slider(0.0, 100.0, 0.0);
         slider.setShowTickLabels(true);
@@ -173,7 +174,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         if (potentialFieldSettings.isPresent() && potentialFieldSettings.get() != null) {
             String targetProfileName = potentialFieldSettings.get().getRemoteReferenceProfile();
             List<Integer> labelFieldRanks = EditorLayoutHelper.getAvailableProfileByName(targetProfileName, controller.getLayoutObject()).getEntryLabelFieldRanks();
-            SimpleStringProperty entryReferenceProperty = controller.getRawValuePropertyByFieldRank().get(fieldRank);
+            SimpleStringProperty entryReferenceProperty = controller.getViewData().getRawValuesByFieldRank().get(fieldRank);
 
             if (!fieldReadOnly) {
                 addContextualButton(
@@ -218,6 +219,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
     }
 
+    // Ignore warning (method ref)
     private void addBitfieldValueControls(HBox fieldBox, int fieldRank, boolean fieldReadOnly, SimpleStringProperty rawValueProperty, DbDto.Topic currentTopic) {
         VBox vbox = new VBox();
 
@@ -229,6 +231,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         fieldBox.getChildren().add(vbox);
     }
 
+    // Ignore warning (method ref)
     private void addBitValueCheckbox(VBox vbox, int fieldRank, DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto ref, boolean fieldReadOnly, SimpleStringProperty rawValueProperty, DbDto.Topic currentTopic, BitfieldHelper bitfieldHelper) {
         int bitIndex = ref.getIndex();
         String displayedIndex = Strings.padStart(Integer.toString(bitIndex), 2, '0');

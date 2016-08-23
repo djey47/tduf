@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.controllers;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
@@ -29,8 +30,7 @@ import static fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange.ALL;
 import static fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange.fromCollection;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
+import static java.util.Optional.*;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -97,11 +97,14 @@ class MainStageChangeDataController extends AbstractMainStageSubController {
         return newEntry.getId();
     }
 
-    void addLinkedEntry(String sourceEntryRef, Optional<String> targetEntryRef, DbDto.Topic targetTopic) {
-        requireNonNull(getChangeHelper());
-        ContentEntryDto newEntry = getChangeHelper().addContentsEntryWithDefaultItems(empty(), targetTopic);
-        DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(newEntry, sourceEntryRef, targetEntryRef);
+    void addLinkedEntryWithTargetRef(DbDto.Topic targetTopic, ContentEntryDataItem linkedEntry) {
+        String sourceEntryRef = getMiner().getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty().getValue(), currentTopicProperty().getValue()).get();
+        Optional<String> targetEntryRef = ofNullable(linkedEntry)
+                .map(entry -> entry.referenceProperty().get());
+
+        addLinkedEntry(sourceEntryRef, targetEntryRef, targetTopic);
     }
+
 
     void addResourceWithReference(DbDto.Topic topic, Locale locale, String newResourceReference, String newResourceValue) {
         requireNonNull(getGenHelper());
@@ -155,15 +158,22 @@ class MainStageChangeDataController extends AbstractMainStageSubController {
     }
 
     private List<String> getRawValuesFromCurrentEntry() {
+        final DbDto.Topic currentTopic = currentTopicProperty().getValue();
         ContentEntryDto currentEntry = getMiner().getContentEntryFromTopicWithInternalIdentifier(
                 getCurrentEntryIndex(),
-                getCurrentTopic())
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No content entry for topic: " + getCurrentTopic() + " at id: " + getCurrentEntryIndex()));
+                currentTopic)
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No content entry for topic: " + currentTopic + " at id: " + getCurrentEntryIndex()));
         return currentEntry.getItems().stream()
 
                 .map(ContentItemDto::getRawValue)
 
                 .collect(toList());
+    }
+
+    private void addLinkedEntry(String sourceEntryRef, Optional<String> targetEntryRef, DbDto.Topic targetTopic) {
+        requireNonNull(getChangeHelper());
+        ContentEntryDto newEntry = getChangeHelper().addContentsEntryWithDefaultItems(empty(), targetTopic);
+        DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(newEntry, sourceEntryRef, targetEntryRef);
     }
 
     private static Optional<DbPatchDto> generatePatchObject(DbDto.Topic currentTopic, List<String> entryReferences, List<String> entryFields, List<DbDto> databaseObjects) {

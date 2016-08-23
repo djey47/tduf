@@ -208,7 +208,7 @@ public class EntriesStageController extends AbstractGuiController {
         fieldRankForUpdate.ifPresent(fieldRank -> {
             // Update mode: will update a particular field in main stage
             String entryReference = selectedEntry.referenceProperty().getValue();
-            mainStageController.getChangeDataController().updateContentItem(mainStageController.getCurrentTopicObject().getTopic(), fieldRank, entryReference);
+            mainStageController.getChangeData().updateContentItem(mainStageController.getCurrentTopicObject().getTopic(), fieldRank, entryReference);
         });
 
         closeWindow();

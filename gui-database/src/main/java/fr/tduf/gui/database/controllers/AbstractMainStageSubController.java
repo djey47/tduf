@@ -40,11 +40,11 @@ abstract class AbstractMainStageSubController {
     }
 
     protected MainStageViewDataController getViewDataController() {
-        return mainStageController.getViewDataController();
+        return mainStageController.getViewData();
     }
 
     protected MainStageChangeDataController getChangeDataController() {
-        return mainStageController.getChangeDataController();
+        return mainStageController.getChangeData();
     }
 
     protected FieldsBrowserStageController getFieldsBrowserStageController() {
@@ -106,11 +106,6 @@ abstract class AbstractMainStageSubController {
         return mainStageController.getCurrentEntryIndex();
     }
 
-    protected DbDto.Topic getCurrentTopic() {
-        // Getter kept for testing
-        return mainStageController.getCurrentTopic();
-    }
-
     protected Property<Long> currentEntryIndexProperty() {
         // Getter kept for testing
         return mainStageController.getCurrentEntryIndexProperty();
@@ -129,11 +124,6 @@ abstract class AbstractMainStageSubController {
     protected SimpleStringProperty currentEntryLabelProperty() {
         // Getter kept for testing
         return mainStageController.getCurrentEntryLabelProperty();
-    }
-
-    protected Map<Integer, SimpleStringProperty> rawValuePropertyByFieldRank() {
-        // Getter kept for testing
-        return mainStageController.getRawValuePropertyByFieldRank();
     }
 
     protected Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> getResourceListByTopicLink() {

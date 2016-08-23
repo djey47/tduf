@@ -202,13 +202,13 @@ public class ResourcesStageController extends AbstractGuiController {
         String resourceReference = selectedResource.referenceProperty().getValue();
         resourceReferenceProperty.set(resourceReference);
 
-        mainStageController.getChangeDataController().updateContentItem(mainStageController.getCurrentTopicObject().getTopic(), fieldRank, resourceReference);
+        mainStageController.getChangeData().updateContentItem(mainStageController.getCurrentTopicObject().getTopic(), fieldRank, resourceReference);
 
         closeWindow();
     }
 
     private void removeResourceAndUpdateMainStage(DbDto.Topic topic, ResourceEntryDataItem selectedResource, Locale locale, boolean forAllLocales, int selectedRowIndex) {
-        mainStageController.getChangeDataController().removeResourceWithReference(topic, locale, selectedResource.referenceProperty().getValue(), forAllLocales);
+        mainStageController.getChangeData().removeResourceWithReference(topic, locale, selectedResource.referenceProperty().getValue(), forAllLocales);
 
         updateAllStages(Optional.empty());
 
@@ -244,18 +244,18 @@ public class ResourcesStageController extends AbstractGuiController {
 
                 .forEach(affectedLocale -> {
                     if (updateResourceMode) {
-                        mainStageController.getChangeDataController().updateResourceWithReference(topic, affectedLocale, currentResourceReference.get(), newResourceReference, newResourceValue);
+                        mainStageController.getChangeData().updateResourceWithReference(topic, affectedLocale, currentResourceReference.get(), newResourceReference, newResourceValue);
                     } else {
-                        mainStageController.getChangeDataController().addResourceWithReference(topic, affectedLocale, newResourceReference, newResourceValue);
+                        mainStageController.getChangeData().addResourceWithReference(topic, affectedLocale, newResourceReference, newResourceValue);
                     }
                 });
     }
 
     private void editResourceForLocale(DbDto.Topic topic, Locale affectedLocale, Optional<String> currentResourceReference, String newResourceReference, String newResourceValue, boolean updateResourceMode) {
         if (updateResourceMode) {
-            mainStageController.getChangeDataController().updateResourceWithReference(topic, affectedLocale, currentResourceReference.get(), newResourceReference, newResourceValue);
+            mainStageController.getChangeData().updateResourceWithReference(topic, affectedLocale, currentResourceReference.get(), newResourceReference, newResourceValue);
         } else {
-            mainStageController.getChangeDataController().addResourceWithReference(topic, affectedLocale, newResourceReference, newResourceValue);
+            mainStageController.getChangeData().addResourceWithReference(topic, affectedLocale, newResourceReference, newResourceValue);
         }
     }
 
@@ -263,7 +263,7 @@ public class ResourcesStageController extends AbstractGuiController {
         updateResourcesStageData();
         resourceReference.ifPresent(this::selectResourceInTableAndScroll);
 
-        mainStageController.getViewDataController().updateAllPropertiesWithItemValues();
+        mainStageController.getViewData().updateAllPropertiesWithItemValues();
     }
 
     private void updateResourcesStageData() {

@@ -8,6 +8,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
+import javafx.beans.property.SimpleObjectProperty;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -155,7 +156,7 @@ public class MainStageChangeDataControllerTest {
                 .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue("36").build())
                 .build();
         when(mainStageController.getCurrentEntryIndex()).thenReturn(1L);
-        when(mainStageController.getCurrentTopic()).thenReturn(CAR_PHYSICS_DATA);
+        when(mainStageController.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(CAR_PHYSICS_DATA));
         when(mainStageController.getMiner()).thenReturn(minerMock);
         when(minerMock.getContentEntryFromTopicWithInternalIdentifier(1L, CAR_PHYSICS_DATA)).thenReturn(Optional.of(entry));
 

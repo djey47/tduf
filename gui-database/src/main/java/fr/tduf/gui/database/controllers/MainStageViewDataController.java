@@ -44,17 +44,19 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     private static final String THIS_CLASS_NAME = MainStageViewDataController.class.getSimpleName();
     private static final Class<MainStageViewDataController> thisClass = MainStageViewDataController.class;
 
+
+    private DynamicFieldControlsHelper dynamicFieldControlsHelper;
+    private DynamicLinkControlsHelper dynamicLinkControlsHelper;
+
+    private Map<String, VBox> tabContentByName = new HashMap<>();
+    private Map<Integer, SimpleStringProperty> rawValuesByFieldRank = new HashMap<>();
+
     MainStageViewDataController(MainStageController mainStageController) {
         super(mainStageController);
 
         dynamicFieldControlsHelper = new DynamicFieldControlsHelper(mainStageController);
         dynamicLinkControlsHelper = new DynamicLinkControlsHelper(mainStageController);
     }
-
-    private DynamicFieldControlsHelper dynamicFieldControlsHelper;
-    private DynamicLinkControlsHelper dynamicLinkControlsHelper;
-
-    private Map<String, VBox> tabContentByName = new HashMap<>();
 
     void updateDisplayWithLoadedObjects() {
         if (!getDatabaseObjects().isEmpty()) {
@@ -130,9 +132,9 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     // TODO tests
     void refreshAll() {
         currentEntryIndexProperty().setValue(0L);
-        rawValuePropertyByFieldRank().clear();
         resolvedValuePropertyByFieldRank().clear();
         getResourceListByTopicLink().clear();
+        rawValuesByFieldRank.clear();
 
         fillBrowsableEntries();
 
@@ -152,7 +154,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     void updateItemProperties(ContentItemDto item) {
         final int fieldRank = item.getFieldRank();
-        final SimpleStringProperty rawValueProperty = rawValuePropertyByFieldRank().get(fieldRank);
+        final SimpleStringProperty rawValueProperty = rawValuesByFieldRank.get(fieldRank);
         if (rawValueProperty == null) {
             return;
         }
@@ -182,6 +184,9 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     void updateEntriesAndSwitchTo(long entryIndex) {
         fillBrowsableEntries();
+        if (entryIndex < 0) {
+            entryIndex = 0;
+        }
         switchToContentEntry(entryIndex);
     }
 
@@ -199,6 +204,11 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
                     switchToProfileAndEntry(targetProfileName, remoteContentEntryId, true);
                 });
+    }
+
+    void switchToProfileAndRemoteEntry(String profileName, long localEntryIndex, int fieldRank, DbDto.Topic localTopic, DbDto.Topic remoteTopic) {
+        getMiner().getRemoteContentEntryWithInternalIdentifier(localTopic, fieldRank, localEntryIndex, remoteTopic)
+                .ifPresent(remoteContentEntry -> switchToProfileAndEntry(profileName, remoteContentEntry.getId(), true));
     }
 
     void switchToProfileAndEntry(String profileName, long entryIndex, boolean storeLocation) {
@@ -288,14 +298,15 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         getTabPane().selectionModelProperty().get().select(previousLocation.getTabId());
     }
 
-    List<String> selectEntriesFromTopic(DbDto.Topic topic, String profileName) {
+    List<String> selectEntriesFromTopic() {
+        DbDto.Topic topic = currentTopicProperty().getValue();
         DbDto databaseObject = getMiner().getDatabaseTopic(topic)
                 .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No database object for topic: " + topic));
 
         final Optional<DbStructureDto.Field> potentialUidField = DatabaseStructureQueryHelper.getUidField(databaseObject.getStructure().getFields());
         if (potentialUidField.isPresent()) {
             Optional<String> potentialEntryReference = getMiner().getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty().getValue(), topic);
-            final List<ContentEntryDataItem> selectedItems = getEntriesStageController().initAndShowModalDialogForMultiSelect(potentialEntryReference, topic, profileName);
+            final List<ContentEntryDataItem> selectedItems = getEntriesStageController().initAndShowModalDialogForMultiSelect(potentialEntryReference, topic, getCurrentProfileObject().getName());
 
             return selectedItems.stream()
 
@@ -307,11 +318,9 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         return new ArrayList<>();
     }
 
-    List<String> selectFieldsFromTopic(DbDto.Topic topic) {
-        return getFieldsBrowserStageController().initAndShowModalDialog(topic).stream()
-
+    List<String> selectFieldsFromTopic() {
+        return getFieldsBrowserStageController().initAndShowModalDialog(currentTopicProperty().getValue()).stream()
                 .map(item -> Integer.valueOf(item.rankProperty().get()).toString())
-
                 .collect(toList());
     }
 
@@ -504,5 +513,9 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     public Map<String, VBox> getTabContentByName() {
         return tabContentByName;
+    }
+
+    public Map<Integer, SimpleStringProperty> getRawValuesByFieldRank() {
+        return rawValuesByFieldRank;
     }
 }
