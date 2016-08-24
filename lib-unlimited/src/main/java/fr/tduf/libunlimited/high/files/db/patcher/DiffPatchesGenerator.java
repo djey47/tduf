@@ -59,18 +59,13 @@ public class DiffPatchesGenerator {
      */
     public Set<DbPatchDto> makePatches() {
         return databaseObjects.parallelStream()
-
                 .map(this::seekForChanges)
-
                 .filter(Optional::isPresent)
-
                 .map(Optional::get)
-
                 .collect(toSet());
     }
 
     private Optional<DbPatchDto> seekForChanges(DbDto databaseObject) {
-
         DbDto.Topic currentTopic = databaseObject.getTopic();
         Optional<DbDto> referenceTopicObject = getReferenceDatabaseMiner().getDatabaseTopic(currentTopic);
         if (!referenceTopicObject.isPresent()) {
@@ -78,9 +73,7 @@ public class DiffPatchesGenerator {
         }
 
         return getDatabaseMiner().getDatabaseTopic(currentTopic)
-
-                .map((topicObject) -> {
-
+                .map(topicObject -> {
                     Set<DbPatchDto.DbChangeDto> resourceChanges = seekForResourcesChanges(databaseObject.getResource(), currentTopic);
                     Set<DbPatchDto.DbChangeDto> contentsChanges = seekForContentsChanges(databaseObject.getData(), databaseObject.getStructure().getFields(), currentTopic);
 
@@ -90,9 +83,7 @@ public class DiffPatchesGenerator {
 
     private Set<DbPatchDto.DbChangeDto> seekForResourcesChanges(DbResourceDto resourceObject, DbDto.Topic currentTopic) {
         return resourceObject.getEntries().stream()
-
-                .flatMap((resourceEntry) -> {
-
+                .flatMap(resourceEntry -> {
                     String ref = resourceEntry.getReference();
                     if (getReferenceDatabaseMiner().getResourceEntryFromTopicAndReference(currentTopic, ref).isPresent()) {
                         // Already exists => do nothing
@@ -105,23 +96,21 @@ public class DiffPatchesGenerator {
                             createLocalizedResourceUpdates(currentTopic, resourceEntry);
                 })
 
-                .filter((changeObject) -> changeObject != null)
+                .filter(changeObject -> changeObject != null)
 
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
+    // Ignore warning
     private Set<DbPatchDto.DbChangeDto> seekForContentsChanges(DbDataDto dataObjects, List<DbStructureDto.Field> structureFields, DbDto.Topic currentTopic) {
         final OptionalInt potentialRefFieldRank = DatabaseStructureQueryHelper.getUidFieldRank(structureFields);
 
         return dataObjects.getEntries().stream()
-
-                .map((entry) -> potentialRefFieldRank.isPresent() ?
+                .map(entry -> potentialRefFieldRank.isPresent() ?
                         handleTopicWithREF(currentTopic, entry, potentialRefFieldRank.getAsInt())
                         :
                         handleTopicWithoutREF(currentTopic, entry))
-
-                .filter((changeObject) -> changeObject != null)
-
+                .filter(changeObject -> changeObject != null)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
@@ -138,9 +127,7 @@ public class DiffPatchesGenerator {
 
     private DbPatchDto.DbChangeDto handleTopicWithoutREF(DbDto.Topic currentTopic, ContentEntryDto entry) {
         List<DbFieldValueDto> criteria = entry.getItems().stream()
-
-                .map((item) -> fromCouple(item.getFieldRank(), item.getRawValue()))
-
+                .map(item -> fromCouple(item.getFieldRank(), item.getRawValue()))
                 .collect(toList());
 
         List<ContentEntryDto> existingEntries = getReferenceDatabaseMiner().getContentEntriesMatchingCriteria(criteria, currentTopic);
@@ -153,20 +140,19 @@ public class DiffPatchesGenerator {
 
     private DbPatchDto.DbChangeDto createPartialContentsUpdate(DbDto.Topic currentTopic, String entryReference, ContentEntryDto entry, ContentEntryDto referenceEntry) {
         List<DbFieldValueDto> partialEntryValues = entry.getItems().stream()
-
-                .map((entryItem) -> {
+                .map(entryItem -> {
                     int fieldRank = entryItem.getFieldRank();
                     String currentValue = entryItem.getRawValue();
-                    String referenceValue = referenceEntry.getItemAtRank(fieldRank).get().getRawValue();
+                    String referenceValue = referenceEntry.getItemAtRank(fieldRank)
+                            .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No content item at rank: " + fieldRank + " in reference entry: " + entry.getId()))
+                            .getRawValue();
 
                     return currentValue.equals(referenceValue) ?
                             null
                             :
                             fromCouple(fieldRank, currentValue);
                 })
-
-                .filter((partialValue) -> partialValue != null)
-
+                .filter(partialValue -> partialValue != null)
                 .collect(toList());
 
         if (partialEntryValues.isEmpty()) {
@@ -197,7 +183,7 @@ public class DiffPatchesGenerator {
 
     private Stream<? extends DbPatchDto.DbChangeDto> createLocalizedResourceUpdates(DbDto.Topic currentTopic, ResourceEntryDto resourceEntry) {
         return Locale.valuesAsStream()
-                .map((locale) -> DbPatchDto.DbChangeDto.builder()
+                .map(locale -> DbPatchDto.DbChangeDto.builder()
                         .withType(UPDATE_RES)
                         .enableStrictMode(true)
                         .asReference(resourceEntry.getReference())
@@ -212,7 +198,8 @@ public class DiffPatchesGenerator {
                 .withType(UPDATE_RES)
                 .enableStrictMode(true)
                 .asReference(resourceEntry.getReference())
-                .withValue(resourceEntry.pickValue().get())
+                .withValue(resourceEntry.pickValue()
+                        .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resource value in entry for REF: " + resourceEntry.getReference() + " in topic: " + currentTopic)))
                 .forTopic(currentTopic)
                 .build());
     }
