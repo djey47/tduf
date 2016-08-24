@@ -1,5 +1,6 @@
 package fr.tduf.libtesting.common.helper.game;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
@@ -10,17 +11,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
+
 /**
- * Provides common features to load database for testing
+ * Provides common features for testing with database objects
  */
 public class DatabaseHelper {
     private static final Class<DatabaseHelper> thisClass = DatabaseHelper.class;
-
-    private static final String EXTENSION_JSON = "json";
+    private static final String THIS_CLASS_NAME = DatabaseHelper.class.getSimpleName();
 
     private DatabaseHelper() {}
 
     /**
+     * Copies JSON resource files to specified directory
+     * @return database objects from current JSON resources
      */
     public static List<DbDto> createDatabaseFromResources(String jsonDatabaseDirectory) throws IOException {
         Files.walk(getJsonDatabasePath(), 1)
@@ -29,8 +33,8 @@ public class DatabaseHelper {
                 .forEach(path -> {
                     try {
                         Files.copy(path, Paths.get(jsonDatabaseDirectory).resolve(path.getFileName()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    } catch (IOException ioe) {
+                        Log.error(THIS_CLASS_NAME, "Unable to copy JSON database from resources", ioe);
                     }
                 });
 
@@ -38,8 +42,8 @@ public class DatabaseHelper {
     }
 
     /**
-     *
-     * @return
+     * Uses JSON resource files to create a read-only database.
+     * @return database objects from current JSON resources
      */
     public static List<DbDto> createDatabaseForReadOnly() {
         return DatabaseReadWriteHelper.readFullDatabaseFromJson(getJsonDatabasePath().toString());
