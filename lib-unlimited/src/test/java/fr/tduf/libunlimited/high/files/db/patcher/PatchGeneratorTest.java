@@ -2,12 +2,10 @@ package fr.tduf.libunlimited.high.files.db.patcher;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libtesting.common.helper.game.DatabaseHelper;
-import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -241,121 +239,34 @@ public class PatchGeneratorTest {
     }
 
     private static List<DbDto> createDatabaseObjectsWithOneTopicFromRealFile() throws IOException, URISyntaxException {
-        return singletonList(readAchievements());
+        return singletonList(DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.ACHIEVEMENTS));
     }
 
     private static  List<DbDto> createDatabaseObjectsWithTwoLinkedTopicsFromRealFiles() throws IOException, URISyntaxException {
-        return asList(readCarPhysicsData(), readBrands());
+        return asList(
+                DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.CAR_PHYSICS_DATA),
+                DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.BRANDS));
     }
 
     private static  List<DbDto> createDatabaseObjectsWithCarPhysicsAssociatedTopicsFromRealFiles() throws IOException, URISyntaxException {
         return asList(
-                readCarPhysicsData(),
-                readBrands(),
-                readCarRims(),
-                readRims(),
-                readCarColors(),
-                readInterior(),
-                readCarPacks(),
-                readAfterMarketPacks(),
-                readCarShops());
+                DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.CAR_PHYSICS_DATA),
+                DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.BRANDS),
+                DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.CAR_RIMS),
+                DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.RIMS),
+                DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.CAR_COLORS),
+                DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.INTERIOR),
+                DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.CAR_PACKS),
+                DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.AFTER_MARKET_PACKS),
+                DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.CAR_SHOPS));
     }
 
     private static  List<DbDto> createDatabaseObjectsWithFourLinkedTopicsFromRealFiles() throws IOException, URISyntaxException {
         return asList(
-                readClothes(),
-                readHair(),
-                readPNJ(),
-                readBrands());
-    }
-
-    // TODO create method in database helper and use it (topic as arg)
-    private static DbDto readClothes() throws URISyntaxException, IOException {
-        return DatabaseHelper.createDatabaseForReadOnly().stream()
-                .filter(databaseObject -> CLOTHES == databaseObject.getStructure().getTopic())
-                .findAny().get();
-    }
-
-    private static DbDto readBrands() throws URISyntaxException, IOException {
-        return DatabaseHelper.createDatabaseForReadOnly().stream()
-                .filter(databaseObject -> BRANDS == databaseObject.getStructure().getTopic())
-                .findAny().get();
-    }
-
-    private static DbDto readHair() throws URISyntaxException, IOException {
-        return DatabaseHelper.createDatabaseForReadOnly().stream()
-                .filter(databaseObject -> HAIR == databaseObject.getStructure().getTopic())
-                .findAny().get();
-    }
-
-    private static DbDto readPNJ() throws URISyntaxException, IOException {
-        return DatabaseHelper.createDatabaseForReadOnly().stream()
-                .filter(databaseObject -> PNJ == databaseObject.getStructure().getTopic())
-                .findAny().get();
-
-    }
-
-    private static DbDto readCarPhysicsData() throws URISyntaxException, IOException {
-        return DatabaseHelper.createDatabaseForReadOnly().stream()
-                .filter(databaseObject -> CAR_PHYSICS_DATA == databaseObject.getStructure().getTopic())
-                .findAny().get();
-
-    }
-
-    private static DbDto readRims() throws URISyntaxException, IOException {
-        return DatabaseHelper.createDatabaseForReadOnly().stream()
-                .filter(databaseObject -> RIMS == databaseObject.getStructure().getTopic())
-                .findAny().get();
-
-    }
-
-    private static DbDto readCarRims() throws URISyntaxException, IOException {
-        return DatabaseHelper.createDatabaseForReadOnly().stream()
-                .filter(databaseObject -> CAR_RIMS == databaseObject.getStructure().getTopic())
-                .findAny().get();
-
-    }
-
-    private static DbDto readAchievements() throws URISyntaxException, IOException {
-        return DatabaseHelper.createDatabaseForReadOnly().stream()
-                .filter(databaseObject -> ACHIEVEMENTS == databaseObject.getStructure().getTopic())
-                .findAny().get();
-
-    }
-
-    private static DbDto readCarColors() throws URISyntaxException, IOException {
-        return DatabaseHelper.createDatabaseForReadOnly().stream()
-                .filter(databaseObject -> CAR_COLORS == databaseObject.getStructure().getTopic())
-                .findAny().get();
-
-    }
-
-    private static DbDto readInterior() throws URISyntaxException, IOException {
-        return DatabaseHelper.createDatabaseForReadOnly().stream()
-                .filter(databaseObject -> INTERIOR == databaseObject.getStructure().getTopic())
-                .findAny().get();
-
-    }
-
-    private static DbDto readCarPacks() throws URISyntaxException, IOException {
-        return DatabaseHelper.createDatabaseForReadOnly().stream()
-                .filter(databaseObject -> CAR_PACKS == databaseObject.getStructure().getTopic())
-                .findAny().get();
-
-    }
-
-    private static DbDto readAfterMarketPacks() throws URISyntaxException, IOException {
-        return DatabaseHelper.createDatabaseForReadOnly().stream()
-                .filter(databaseObject -> AFTER_MARKET_PACKS == databaseObject.getStructure().getTopic())
-                .findAny().get();
-
-    }
-
-    private static DbDto readCarShops() throws URISyntaxException, IOException {
-        return DatabaseHelper.createDatabaseForReadOnly().stream()
-                .filter(databaseObject -> CAR_SHOPS == databaseObject.getStructure().getTopic())
-                .findAny().get();
-
+                DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.CLOTHES),
+                DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.HAIR),
+                DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.PNJ),
+                DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.BRANDS));
     }
 
     private static void assertPatchGeneratedWithAllEntriesForOneTopic(DbPatchDto patchObject) {

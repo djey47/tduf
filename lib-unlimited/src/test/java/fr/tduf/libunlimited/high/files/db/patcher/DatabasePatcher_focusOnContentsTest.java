@@ -31,12 +31,10 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenUpdateContentsPatch_forAllFields_andIncorrectValueCount_shouldThrowException() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-badCount.mini.json");
-        DatabasePatcher patcher = createPatcher(singletonList(readBotsObject()));
-
+        DatabasePatcher patcher = createPatcher(singletonList(DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.BOTS)));
 
         // WHEN
         patcher.apply(updateContentsPatch);
-
 
         // THEN: IAE
     }
@@ -45,7 +43,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenUpdateContentsPatch_forAllFields_shouldAddNewEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-noRef.mini.json");
-        DbDto databaseObject = readBotsObject();
+        DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.BOTS);
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -76,7 +74,7 @@ public class DatabasePatcher_focusOnContentsTest {
         DbPatchDto updateContentsPatch1 = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-noRef.mini.json");
         DbPatchDto updateContentsPatch2 = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-noRef-2.mini.json");
         List<DbPatchDto> updateContentsPatches = asList(updateContentsPatch1, updateContentsPatch2);
-        DbDto databaseObject = readBotsObject();
+        DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.BOTS);
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -112,7 +110,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenUpdateContentsPatch_forAllFields_andSameEntryExists_shouldIgnoreIt() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-noRef-existing.mini.json");
-        DbDto databaseObject = readBotsObject();
+        DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.BOTS);
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -135,7 +133,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenUpdateContentsPatch_forAllFields_withRefSupport_shouldAddNewEntryAndUpdateExisting() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-ref.mini.json");
-        DbDto databaseObject = readCarPhysicsDataObject();
+        DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(CAR_PHYSICS_DATA);
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -170,7 +168,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenUpdateContentsPatch_forAllFields_withRefSupport_andStrictMode_shouldOnlyAddNewEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-ref-strict.mini.json");
-        DbDto databaseObject = readCarPhysicsDataObject();
+        DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(CAR_PHYSICS_DATA);
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -232,7 +230,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenUpdateContentsPatch_andBitfield_shouldUpdateBitfield() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-mixed-bitfield.mini.json");
-        DbDto databaseObject = readCarShopsObject();
+        DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.CAR_SHOPS);
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -259,7 +257,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenUpdateContentsPatch_forOneItem_andREFDoesNotExist_shouldIgnoreIt() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updatePartialContents-newRef.mini.json");
-        DbDto databaseObject = readCarPhysicsDataObject();
+        DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(CAR_PHYSICS_DATA);
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -281,7 +279,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenUpdateContentsPatch_forOneItem_andREFExists_butInvalidRank_shouldIgnoreIt() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updatePartialContents-badRank-existingRef.mini.json");
-        DbDto databaseObject = readCarPhysicsDataObject();
+        DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(CAR_PHYSICS_DATA);
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -307,7 +305,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenUpdateContentsPatch_forNoItem_andREFExists_shouldIgnoreIt() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updatePartialContents-noValues-existingRef.mini.json");
-        DbDto databaseObject = readCarPhysicsDataObject();
+        DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(CAR_PHYSICS_DATA);
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -334,7 +332,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenUpdateContentsPatch_forOneItem_andREFExists_shouldChangeIt() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updatePartialContents-existingRef.mini.json");
-        DbDto databaseObject = readCarPhysicsDataObject();
+        DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(CAR_PHYSICS_DATA);
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -368,7 +366,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenUpdateContentsPatch_forOneItem_andFilterWithOneCondition_shouldChangeThem() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updatePartialContents-filter.mini.json");
-        DbDto databaseObject = readAchievementsObject();
+        DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.ACHIEVEMENTS);
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -397,7 +395,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenUpdateContentsPatch_forOneItem_andFilterWithTwoConditions_shouldChangeIt() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updatePartialContents-filter2.mini.json");
-        DbDto databaseObject = readAchievementsObject();
+        DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.ACHIEVEMENTS);
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -426,7 +424,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenDeleteContentsPatch_shouldRemoveExistingEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto deleteContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteContents-ref.mini.json");
-        DbDto databaseObject = readCarPhysicsDataObject();
+        DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(CAR_PHYSICS_DATA);
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -444,7 +442,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenDeleteContentsPatch_andFilterWithOneCondition_shouldRemoveExistingEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto deleteContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteContents-filter.mini.json");
-        DbDto databaseObject = readAchievementsObject();
+        DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.ACHIEVEMENTS);
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -462,7 +460,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenDeleteContentsPatch_andFilterWithTwoConditions_shouldRemoveExistingEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto deleteContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/deleteContents-filter2.mini.json");
-        DbDto databaseObject = readAchievementsObject();
+        DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.ACHIEVEMENTS);
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -488,7 +486,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenMovePatch_andUpDirection_shouldMoveExistingEntryOnePosition() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto movePatch = readObjectFromResource(DbPatchDto.class, "/db/patch/moveContents-up-default.mini.json");
-        DbDto databaseObject = readCarColorsObject();
+        DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.CAR_COLORS);
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -515,7 +513,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenMovePatch_andUpDirection_andTwoSteps_shouldMoveExistingEntryTwoPositions() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto movePatch = readObjectFromResource(DbPatchDto.class, "/db/patch/moveContents-up-2steps.mini.json");
-        DbDto databaseObject = readCarColorsObject();
+        DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.CAR_COLORS);
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -542,7 +540,7 @@ public class DatabasePatcher_focusOnContentsTest {
     public void apply_whenMovePatch_andDownDirection_andOneStep_shouldMoveExistingEntryOnePosition() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto movePatch = readObjectFromResource(DbPatchDto.class, "/db/patch/moveContents-down-1step.mini.json");
-        DbDto databaseObject = readCarColorsObject();
+        DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.CAR_COLORS);
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 

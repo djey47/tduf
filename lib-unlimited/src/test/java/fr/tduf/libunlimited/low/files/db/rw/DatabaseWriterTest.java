@@ -54,6 +54,7 @@ public class DatabaseWriterTest {
     @Test
     public void writeAll_whenRealContents_shouldCreateFiles_andFillThem() throws IOException, URISyntaxException {
         //GIVEN
+        // TODO use FilesHelper
         InputStream resourceAsStream = getClass().getResourceAsStream("/db/json/parsing/TDU_Achievements.json");
         DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
 
@@ -146,10 +147,7 @@ public class DatabaseWriterTest {
     @Test
     public void writeAllAsJson_whenRealContents_shouldCreateFiles_andFillThem() throws IOException, URISyntaxException, JSONException {
         //GIVEN
-        // TODO create method in database helper and use it (topic as arg)
-        DbDto initialDbDto = DatabaseHelper.createDatabaseForReadOnly().stream()
-                .filter(databaseObject -> ACHIEVEMENTS == databaseObject.getStructure().getTopic())
-                .findAny().get();
+        DbDto initialDbDto = DatabaseHelper.createDatabaseTopicForReadOnly(ACHIEVEMENTS);
 
         //WHEN
         List<String> actualFileNames = DatabaseWriter.load(initialDbDto).writeAllAsJson(tempDirectory);
