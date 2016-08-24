@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.patcher;
 
+import fr.tduf.libtesting.common.helper.game.DatabaseHelper;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
@@ -18,6 +19,7 @@ import java.util.Set;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DiffPatchesGeneratorTest {
@@ -89,6 +91,7 @@ public class DiffPatchesGeneratorTest {
             assertThat(actualValues.get(i)).isEqualTo(addedEntry.getItems().get(i).getRawValue());
         }
     }
+
     @Test
     public void makePatches_whenExistingContentsEntry_andREF_andChangedItem_shouldAddPartialUpdate() throws Exception {
         // GIVEN
@@ -209,16 +212,14 @@ public class DiffPatchesGeneratorTest {
     }
 
     private static List<DbDto> readReferenceDatabase() {
-        try {
-            return readDatabase("/db/json/diff/TDU_CarPhysicsData.data.json");
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
+        return asList(
+                DatabaseHelper.createDatabaseTopicForReadOnly(CAR_PHYSICS_DATA),
+                DatabaseHelper.createDatabaseTopicForReadOnly(CAR_RIMS),
+                DatabaseHelper.createDatabaseTopicForReadOnly(HAIR));
     }
 
-    private static List<DbDto> readDatabase(String jsonFile) throws URISyntaxException {
-        String jsonDirectory = new File(thisClass.getResource(jsonFile).toURI()).getParent();
+    private static List<DbDto> readDatabase(String jsonFileResource) throws URISyntaxException {
+        String jsonDirectory = new File(thisClass.getResource(jsonFileResource).toURI()).getParent();
         return DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDirectory);
     }
 }
