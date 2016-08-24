@@ -58,8 +58,8 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     }
 
     private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForTopic(DbDto.Topic topic, ItemRange refRange, ItemRange fieldRange) {
-
-        topicObject = checkTopic(topic);
+        topicObject = databaseMiner.getDatabaseTopic(topic)
+                .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("Topic not found in provided database: " + topic));
 
         RequiredReferences requiredReferences = new RequiredReferences();
         Set<DbPatchDto.DbChangeDto> changesObjects = new LinkedHashSet<>();
@@ -122,8 +122,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
         Stream<DbPatchDto.DbChangeDto> changesObjectsForGlobalizedResources = makeChangesObjectsForResourcesWithLocale(topic, Optional.<fr.tduf.libunlimited.common.game.domain.Locale>empty(), globalizedResourceRefs);
         Stream<DbPatchDto.DbChangeDto> changesObjectsForLocalizedResources = Locale.valuesAsStream()
-
-                .flatMap((locale) -> makeChangesObjectsForResourcesWithLocale(topic, Optional.of(locale), localizedResourceRefs));
+                .flatMap(locale -> makeChangesObjectsForResourcesWithLocale(topic, Optional.of(locale), localizedResourceRefs));
 
         return Stream.concat(changesObjectsForGlobalizedResources, changesObjectsForLocalizedResources);
     }
@@ -131,17 +130,6 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     private Stream<DbPatchDto.DbChangeDto> makeChangesObjectsForResourcesWithLocale(DbDto.Topic topic, Optional<Locale> potentialLocale, Set<String> topicResources) {
         return topicResources.stream()
                 .map(resourceRef -> makeChangeObjectForResource(topic, potentialLocale, resourceRef));
-    }
-
-    private DbDto checkTopic(DbDto.Topic topic) {
-        Optional<DbDto> potentialTopicObject = databaseMiner.getDatabaseTopic(topic);
-
-        // TODO use orElseThrow()
-        if (!potentialTopicObject.isPresent()) {
-            throw new IllegalArgumentException("Topic not found in provided database: " + topic);
-        }
-
-        return potentialTopicObject.get();
     }
 
     private DbPatchDto.DbChangeDto makeChangeObjectForResource(DbDto.Topic topic, Optional<Locale> potentialLocale, String resourceRef) {
@@ -196,17 +184,13 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         requireNonNull(entryReference, "Entry reference is required for partial change object.");
 
         List<DbFieldValueDto> partialValues = entryItems.stream()
-
                 .filter(entryItem -> fieldRange.accepts(Integer.toString(entryItem.getFieldRank())))
-
                 .map(acceptedItem -> {
-
                     DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(acceptedItem, structureFields);
                     String itemValue = fetchItemValue(topic, structureField, acceptedItem, requiredReferences);
 
                     return DbFieldValueDto.fromCouple(acceptedItem.getFieldRank(), itemValue);
                 })
-
                 .collect(toList());
 
         return DbPatchDto.DbChangeDto.builder()
@@ -218,11 +202,10 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     }
 
     private void addCarPhysicsAssociatedEntriesToRequiredContents(String entryReference, RequiredReferences requiredReferences) {
-        CAR_PHYSICS_ASSOCIATION_TOPICS.stream()
+        CAR_PHYSICS_ASSOCIATION_TOPICS
                 .forEach(topic -> databaseMiner.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(1, entryReference), topic)
-
                         .forEach(associationEntry -> requiredReferences.updateRequiredContentsIds(topic, associationEntry.getId()))
-                );
+        );
     }
 
     private void addRelatedInteriorEntriesToRequiredContents(List<ContentItemDto> carColorsItems, DbStructureDto.Field structureField, RequiredReferences requiredReferences) {
@@ -277,9 +260,8 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     }
 
     private static void identifyGlobalizedAndLocalizedResourceReferences(Set<String> resourceReferences, DbResourceDto resourceObject, Set<String> globalizedResourceRefs, Set<String> localizedResourceRefs) {
-        resourceReferences.stream()
+        resourceReferences
                 .forEach(resourceReference -> {
-
                     Set<String> resourceValuesForCurrentRef = BulkDatabaseMiner.getAllResourceValuesForReference(resourceReference, resourceObject);
                     if (resourceValuesForCurrentRef.size() == 1) {
 
@@ -290,7 +272,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                         localizedResourceRefs.add(resourceReference);
 
                     }
-                });
+        });
     }
 
     DbDto getTopicObject() {
