@@ -2,12 +2,12 @@ package fr.tduf.gui.database.controllers;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libtesting.common.helper.game.DatabaseHelper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
-import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import javafx.beans.property.SimpleObjectProperty;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
@@ -34,8 +34,6 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class MainStageChangeDataControllerTest {
 
-    private static final Class<MainStageChangeDataControllerTest> thisClass = MainStageChangeDataControllerTest.class;
-
     @Mock
     private BulkDatabaseMiner minerMock;
 
@@ -55,8 +53,7 @@ public class MainStageChangeDataControllerTest {
 
         objectMapper = new ObjectMapper();
 
-        final String jsonFilePath = thisClass.getResource("/database/TDU_CarPhysicsData.data.json").toURI().getPath();
-        databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(Paths.get(jsonFilePath).getParent().toString());
+        databaseObjects = DatabaseHelper.createDatabaseForReadOnly();
     }
 
     @Test
