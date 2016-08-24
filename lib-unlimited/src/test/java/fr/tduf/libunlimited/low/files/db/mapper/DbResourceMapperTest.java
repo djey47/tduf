@@ -64,7 +64,7 @@ public class DbResourceMapperTest {
                 .containingEntries(asList(entry1, entry2))
                 .build();
 
-        String expectedJson = FilesHelper.readTextFromResourceFile("/db/json/mapper/resourceObject.json");
+        String expectedJson = FilesHelper.readTextFromResourceFile("/db/json/mapper/topicObject.resources.json");
 
 
         //WHEN

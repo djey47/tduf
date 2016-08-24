@@ -255,14 +255,14 @@ public class DatabaseReadWriteHelperTest {
         // THEN
         assertThat(writtenFiles).hasSize(9);
 
-        writtenFiles.stream()
+        writtenFiles
                 .forEach((fileName) -> assertThat(new File(fileName)).exists());
 
         assertFileDoesNotMatchReference(writtenFiles.get(0), "/db/encrypted/");
     }
 
     private String getJsonDirectoryFromResourceFile() throws URISyntaxException {
-        File jsonFile = new File(thisClass.getResource("/db/json/TDU_Achievements.data.json").toURI());
+        File jsonFile = new File(thisClass.getResource("/db-json/TDU_Achievements.data.json").toURI());
         return jsonFile.getParent();
     }
 

@@ -1,21 +1,16 @@
 package fr.tduf.libunlimited.high.files.db.interop.tdupe;
 
+import fr.tduf.libtesting.common.helper.game.DatabaseHelper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
-import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
 
@@ -24,8 +19,6 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TdupeGatewayTest {
-
-    private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final Class<TdupeGatewayTest> thisClass = TdupeGatewayTest.class;
 
     @Mock
@@ -114,15 +107,10 @@ public class TdupeGatewayTest {
         // THEN:no exception
     }
 
+    // TODO create method in database helper and use it (topic as arg)
     private static DbDto loadCarPhysicsTopicFromResources() throws URISyntaxException, IOException {
-
-        URI dataFileURI = thisClass.getResource("/db/json/TDU_CarPhysicsData.data.json").toURI();
-        URI resourceFileURI = thisClass.getResource("/db/json/TDU_CarPhysicsData.resources.json").toURI();
-        URI structureFileURI = thisClass.getResource("/db/json/TDU_CarPhysicsData.structure.json").toURI();
-        return DbDto.builder()
-                .withData(objectMapper.readValue(new File(dataFileURI), DbDataDto.class))
-                .withStructure(objectMapper.readValue(new File(structureFileURI), DbStructureDto.class))
-                .withResource(objectMapper.readValue(new File(resourceFileURI), DbResourceDto.class))
-                .build();
+        return DatabaseHelper.createDatabaseForReadOnly().stream()
+                .filter(databaseObject -> CAR_PHYSICS_DATA == databaseObject.getStructure().getTopic())
+                .findAny().get();
     }
 }

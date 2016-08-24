@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.patcher;
 
+import fr.tduf.libtesting.common.helper.game.DatabaseHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
@@ -205,14 +206,7 @@ public class DatabasePatcher_focusOnContentsTest {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromResource(DbPatchDto.class, "/db/patch/updateContents-addAll-assoc.mini.json");
 
-        List<DbDto> databaseObjects = asList(
-                readCarPhysicsDataObject(),
-                readCarRimsObject(),
-                readCarColorsObject(),
-                readCarPacksObject(),
-                readRimsObject(),
-                readBrandsObject(),
-                readCarShopsObject());
+        List<DbDto> databaseObjects = DatabaseHelper.createDatabaseForReadOnly();
         DatabasePatcher patcher = createPatcher(databaseObjects);
 
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(databaseObjects);

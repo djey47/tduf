@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.patcher;
 
+import fr.tduf.libtesting.common.helper.game.DatabaseHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -16,6 +17,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Collections.singletonList;
 
 public class DatabasePatcher_commonTest {
@@ -83,67 +85,35 @@ public class DatabasePatcher_commonTest {
                 .build();
     }
 
+    // TODO create method in database helper and use it (topic as arg)
     static DbDto readBotsObject() throws URISyntaxException, IOException {
-        return readTopicObjectFromResources(
-                "/db/json/TDU_Bots.data.json",
-                "/db/json/TDU_Bots.structure.json",
-                "/db/json/TDU_Bots.resources.json");
+        return DatabaseHelper.createDatabaseForReadOnly().stream()
+                .filter(databaseObject -> BOTS == databaseObject.getStructure().getTopic())
+                .findAny().get();
     }
 
     static DbDto readAchievementsObject() throws URISyntaxException, IOException {
-        return readTopicObjectFromResources(
-                "/db/json/TDU_Achievements.data.json",
-                "/db/json/TDU_Achievements.structure.json",
-                "/db/json/TDU_Achievements.resources.json");
+        return DatabaseHelper.createDatabaseForReadOnly().stream()
+                .filter(databaseObject -> ACHIEVEMENTS == databaseObject.getStructure().getTopic())
+                .findAny().get();
     }
 
     static DbDto readCarColorsObject() throws URISyntaxException, IOException {
-        return readTopicObjectFromResources(
-                "/db/json/TDU_CarColors.data.json",
-                "/db/json/TDU_CarColors.structure.json",
-                "/db/json/TDU_CarColors.resources.json");
-    }
-
-    static DbDto readCarPacksObject() throws URISyntaxException, IOException {
-        return readTopicObjectFromResources(
-                "/db/json/TDU_CarPacks.data.json",
-                "/db/json/TDU_CarPacks.structure.json",
-                "/db/json/TDU_CarPacks.resources.json");
-    }
-
-    static DbDto readRimsObject() throws URISyntaxException, IOException {
-        return readTopicObjectFromResources(
-                "/db/json/TDU_Rims.data.json",
-                "/db/json/TDU_Rims.structure.json",
-                "/db/json/TDU_Rims.resources.json");
-    }
-
-    static DbDto readCarRimsObject() throws URISyntaxException, IOException {
-        return readTopicObjectFromResources(
-                "/db/json/TDU_CarRims.data.json",
-                "/db/json/TDU_CarRims.structure.json",
-                "/db/json/TDU_CarRims.resources.json");
+        return DatabaseHelper.createDatabaseForReadOnly().stream()
+                .filter(databaseObject -> CAR_COLORS == databaseObject.getStructure().getTopic())
+                .findAny().get();
     }
 
     static DbDto readCarPhysicsDataObject() throws URISyntaxException, IOException {
-        return readTopicObjectFromResources(
-                "/db/json/TDU_CarPhysicsData.data.json",
-                "/db/json/TDU_CarPhysicsData.structure.json",
-                "/db/json/TDU_CarPhysicsData.resources.json");
+        return DatabaseHelper.createDatabaseForReadOnly().stream()
+                .filter(databaseObject -> CAR_PHYSICS_DATA == databaseObject.getStructure().getTopic())
+                .findAny().get();
     }
 
     static DbDto readCarShopsObject() throws URISyntaxException, IOException {
-        return readTopicObjectFromResources(
-                "/db/json/TDU_CarShops.data.json",
-                "/db/json/TDU_CarShops.structure.json",
-                "/db/json/TDU_CarShops.resources.json");
-    }
-
-    static DbDto readBrandsObject() throws URISyntaxException, IOException {
-        return readTopicObjectFromResources(
-                "/db/json/TDU_Brands.data.json",
-                "/db/json/TDU_Brands.structure.json",
-                "/db/json/TDU_Brands.resources.json");
+        return DatabaseHelper.createDatabaseForReadOnly().stream()
+                .filter(databaseObject -> CAR_SHOPS == databaseObject.getStructure().getTopic())
+                .findAny().get();
     }
 
     private static List<DbDto> createDatabaseObjects() {

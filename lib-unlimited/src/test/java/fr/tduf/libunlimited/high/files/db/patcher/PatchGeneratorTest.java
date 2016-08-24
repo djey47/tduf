@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.high.files.db.patcher;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.libtesting.common.helper.game.DatabaseHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
@@ -268,108 +269,93 @@ public class PatchGeneratorTest {
                 readBrands());
     }
 
+    // TODO create method in database helper and use it (topic as arg)
     private static DbDto readClothes() throws URISyntaxException, IOException {
-        return DbDto.builder()
-                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_Clothes.data.json"))
-                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_Clothes.resources.json"))
-                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_Clothes.structure.json"))
-                .build();
+        return DatabaseHelper.createDatabaseForReadOnly().stream()
+                .filter(databaseObject -> CLOTHES == databaseObject.getStructure().getTopic())
+                .findAny().get();
     }
 
     private static DbDto readBrands() throws URISyntaxException, IOException {
-        return DbDto.builder()
-                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_Brands.data.json"))
-                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_Brands.resources.json"))
-                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_Brands.structure.json"))
-                .build();
+        return DatabaseHelper.createDatabaseForReadOnly().stream()
+                .filter(databaseObject -> BRANDS == databaseObject.getStructure().getTopic())
+                .findAny().get();
     }
 
     private static DbDto readHair() throws URISyntaxException, IOException {
-        return DbDto.builder()
-                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_Hair.data.json"))
-                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_Hair.resources.json"))
-                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_Hair.structure.json"))
-                .build();
+        return DatabaseHelper.createDatabaseForReadOnly().stream()
+                .filter(databaseObject -> HAIR == databaseObject.getStructure().getTopic())
+                .findAny().get();
     }
 
     private static DbDto readPNJ() throws URISyntaxException, IOException {
-        return DbDto.builder()
-                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_PNJ.data.json"))
-                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_PNJ.resources.json"))
-                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_PNJ.structure.json"))
-                .build();
+        return DatabaseHelper.createDatabaseForReadOnly().stream()
+                .filter(databaseObject -> PNJ == databaseObject.getStructure().getTopic())
+                .findAny().get();
+
     }
 
     private static DbDto readCarPhysicsData() throws URISyntaxException, IOException {
-        return DbDto.builder()
-                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_CarPhysicsData.data.json"))
-                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_CarPhysicsData.resources.json"))
-                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_CarPhysicsData.structure.json"))
-                .build();
+        return DatabaseHelper.createDatabaseForReadOnly().stream()
+                .filter(databaseObject -> CAR_PHYSICS_DATA == databaseObject.getStructure().getTopic())
+                .findAny().get();
+
     }
 
     private static DbDto readRims() throws URISyntaxException, IOException {
-        return DbDto.builder()
-                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_Rims.data.json"))
-                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_Rims.resources.json"))
-                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_Rims.structure.json"))
-                .build();
+        return DatabaseHelper.createDatabaseForReadOnly().stream()
+                .filter(databaseObject -> RIMS == databaseObject.getStructure().getTopic())
+                .findAny().get();
+
     }
 
     private static DbDto readCarRims() throws URISyntaxException, IOException {
-        return DbDto.builder()
-                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_CarRims.data.json"))
-                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_CarRims.resources.json"))
-                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_CarRims.structure.json"))
-                .build();
+        return DatabaseHelper.createDatabaseForReadOnly().stream()
+                .filter(databaseObject -> CAR_RIMS == databaseObject.getStructure().getTopic())
+                .findAny().get();
+
     }
 
     private static DbDto readAchievements() throws URISyntaxException, IOException {
-        return DbDto.builder()
-                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_Achievements.data.json"))
-                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_Achievements.resources.json"))
-                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_Achievements.structure.json"))
-                .build();
+        return DatabaseHelper.createDatabaseForReadOnly().stream()
+                .filter(databaseObject -> ACHIEVEMENTS == databaseObject.getStructure().getTopic())
+                .findAny().get();
+
     }
 
     private static DbDto readCarColors() throws URISyntaxException, IOException {
-        return DbDto.builder()
-                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_CarColors.data.json"))
-                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_CarColors.resources.json"))
-                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_CarColors.structure.json"))
-                .build();
+        return DatabaseHelper.createDatabaseForReadOnly().stream()
+                .filter(databaseObject -> CAR_COLORS == databaseObject.getStructure().getTopic())
+                .findAny().get();
+
     }
 
     private static DbDto readInterior() throws URISyntaxException, IOException {
-        return DbDto.builder()
-                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_Interior.data.json"))
-                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_Interior.resources.json"))
-                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_Interior.structure.json"))
-                .build();
+        return DatabaseHelper.createDatabaseForReadOnly().stream()
+                .filter(databaseObject -> INTERIOR == databaseObject.getStructure().getTopic())
+                .findAny().get();
+
     }
 
     private static DbDto readCarPacks() throws URISyntaxException, IOException {
-        return DbDto.builder()
-                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_CarPacks.data.json"))
-                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_CarPacks.resources.json"))
-                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_CarPacks.structure.json"))
-                .build();
+        return DatabaseHelper.createDatabaseForReadOnly().stream()
+                .filter(databaseObject -> CAR_PACKS == databaseObject.getStructure().getTopic())
+                .findAny().get();
+
     }
 
     private static DbDto readAfterMarketPacks() throws URISyntaxException, IOException {
-        return DbDto.builder()
-                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_AfterMarketPacks.data.json"))
-                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_AfterMarketPacks.resources.json"))
-                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_AfterMarketPacks.structure.json"))
-                .build();
+        return DatabaseHelper.createDatabaseForReadOnly().stream()
+                .filter(databaseObject -> AFTER_MARKET_PACKS == databaseObject.getStructure().getTopic())
+                .findAny().get();
+
     }
 
     private static DbDto readCarShops() throws URISyntaxException, IOException {
-        return DbDto.builder()
-                .withData(FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_CarShops.data.json"))
-                .withResource(FilesHelper.readObjectFromJsonResourceFile(DbResourceDto.class, "/db/json/TDU_CarShops.resources.json"))
-                .withStructure(FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_CarShops.structure.json"))
-                .build();
+        return DatabaseHelper.createDatabaseForReadOnly().stream()
+                .filter(databaseObject -> CAR_SHOPS == databaseObject.getStructure().getTopic())
+                .findAny().get();
+
     }
 
     private static void assertPatchGeneratedWithAllEntriesForOneTopic(DbPatchDto patchObject) {

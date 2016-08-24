@@ -1,10 +1,8 @@
 package fr.tduf.libunlimited.high.files.db.interop.tdupe;
 
+import fr.tduf.libtesting.common.helper.game.DatabaseHelper;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
-import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 
@@ -17,6 +15,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TdupePerformancePackConverterTest {
@@ -26,7 +25,7 @@ public class TdupePerformancePackConverterTest {
     @Test(expected = NullPointerException.class)
     public void tdupkToJson_whenNullLine_shouldThrowException() {
         // GIVEN-WHEN
-        TdupePerformancePackConverter.tdupkToJson(null, Optional.<String>empty(), DbDto.builder().build());
+        TdupePerformancePackConverter.tdupkToJson(null, Optional.empty(), DbDto.builder().build());
 
         // THEN: NPE
     }
@@ -34,7 +33,7 @@ public class TdupePerformancePackConverterTest {
     @Test(expected = NullPointerException.class)
     public void tdupkToJson_whenNullTopicObject_shouldThrowException() {
         // GIVEN-WHEN
-        TdupePerformancePackConverter.tdupkToJson("", Optional.<String>empty(), null);
+        TdupePerformancePackConverter.tdupkToJson("", Optional.empty(), null);
 
         // THEN: NPE
     }
@@ -46,7 +45,7 @@ public class TdupePerformancePackConverterTest {
         DbDto carPhysicsTopicObject = loadCarPhysicsTopicFromResources();
 
         // WHEN
-        DbPatchDto actualPatchObject = TdupePerformancePackConverter.tdupkToJson(carPhysicsDataLine, Optional.<String>empty(), carPhysicsTopicObject);
+        DbPatchDto actualPatchObject = TdupePerformancePackConverter.tdupkToJson(carPhysicsDataLine, Optional.empty(), carPhysicsTopicObject);
 
         // THEN
         DbPatchDto expectedPatchObject = readPatchObjectFromResource("/db/patch/updateContents-f150PerformancePack-newRef.mini.json");
@@ -60,7 +59,7 @@ public class TdupePerformancePackConverterTest {
         DbDto carPhysicsTopicObject = loadCarPhysicsTopicFromResources();
 
         // WHEN
-        DbPatchDto actualPatchObject = TdupePerformancePackConverter.tdupkToJson(carPhysicsDataLine, Optional.<String>empty(), carPhysicsTopicObject);
+        DbPatchDto actualPatchObject = TdupePerformancePackConverter.tdupkToJson(carPhysicsDataLine, Optional.empty(), carPhysicsTopicObject);
 
         // THEN
         DbPatchDto expectedPatchObject = readPatchObjectFromResource("/db/patch/updateContents-f150PerformancePack-existingRef.mini.json");
@@ -101,17 +100,14 @@ public class TdupePerformancePackConverterTest {
         return lines.get(0);
     }
 
+    // TODO create method in database helper and use it (topic as arg)
     private static DbDto loadCarPhysicsTopicFromResources() throws URISyntaxException, IOException {
-        URI dataFileURI = thisClass.getResource("/db/json/TDU_CarPhysicsData.data.json").toURI();
-        URI resourceFileURI = thisClass.getResource("/db/json/TDU_CarPhysicsData.resources.json").toURI();
-        URI structureFileURI = thisClass.getResource("/db/json/TDU_CarPhysicsData.structure.json").toURI();
-        return DbDto.builder()
-                .withData(new ObjectMapper().readValue(new File(dataFileURI), DbDataDto.class))
-                .withStructure(new ObjectMapper().readValue(new File(structureFileURI), DbStructureDto.class))
-                .withResource(new ObjectMapper().readValue(new File(resourceFileURI), DbResourceDto.class))
-                .build();
+        return DatabaseHelper.createDatabaseForReadOnly().stream()
+                .filter(databaseObject -> CAR_PHYSICS_DATA == databaseObject.getStructure().getTopic())
+                .findAny().get();
     }
 
+    // TODO Use fr.tduf.libunlimited.common.helper.FilesHelper.readObjectFromJsonResourceFile() instead
     private static DbPatchDto readPatchObjectFromResource(String resource) throws URISyntaxException, IOException {
         URI resourceURI = thisClass.getResource(resource).toURI();
         return new ObjectMapper().readValue(new File(resourceURI), DbPatchDto.class);

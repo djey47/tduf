@@ -54,9 +54,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
     @Override
     protected void postPrepare() {
-        /**
-         * No processing necessary for now
-         */
+        // No processing necessary for now
     }
 
     private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForTopic(DbDto.Topic topic, ItemRange refRange, ItemRange fieldRange) {
@@ -138,6 +136,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     private DbDto checkTopic(DbDto.Topic topic) {
         Optional<DbDto> potentialTopicObject = databaseMiner.getDatabaseTopic(topic);
 
+        // TODO use orElseThrow()
         if (!potentialTopicObject.isPresent()) {
             throw new IllegalArgumentException("Topic not found in provided database: " + topic);
         }

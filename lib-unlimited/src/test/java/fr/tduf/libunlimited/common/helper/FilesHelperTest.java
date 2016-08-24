@@ -129,7 +129,7 @@ public class FilesHelperTest {
     @Test
     public void readObjectFromJsonResourceFile_whenResourceFound_shouldReturnObjectContents() throws IOException, URISyntaxException {
         // GIVEN-WHEN
-        DbStructureDto actualObject = FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/TDU_Achievements.structure.json");
+        DbStructureDto actualObject = FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/mapper/topicObject.structure.json");
 
         // THEN
         assertThat(actualObject).isNotNull();
@@ -147,17 +147,17 @@ public class FilesHelperTest {
     @Test
     public void getFileNameFromResourcePath_whenResourceFound_shouldReturnAbsoluteFilePath() throws URISyntaxException {
         // GIVEN-WHEN
-        String actualFileName = FilesHelper.getFileNameFromResourcePath("/db/json/TDU_Achievements.data.json");
+        String actualFileName = FilesHelper.getFileNameFromResourcePath("/files/file.txt");
 
         // THEN
-        assertThat(actualFileName.replace('\\', '/')).endsWith("/resources/test/db/json/TDU_Achievements.data.json");
+        assertThat(actualFileName.replace('\\', '/')).endsWith("/resources/test/files/file.txt");
     }
 
     @Test
     public void writeJsonObjectToFile_whenValidObject_shouldCreateFileWithSameContents() throws IOException, URISyntaxException {
         // GIVEN
         Path outputFilePath = Paths.get(tempDirectory, "writtenJson", "TDU_Achievements.json");
-        DbDataDto sourceObject = FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/TDU_Achievements.data.json");
+        DbDataDto sourceObject = FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/mapper/topicObject.data.json");
 
         // WHEN
         FilesHelper.writeJsonObjectToFile(sourceObject, outputFilePath.toString());

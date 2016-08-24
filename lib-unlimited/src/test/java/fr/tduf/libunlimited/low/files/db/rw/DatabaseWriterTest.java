@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.low.files.db.rw;
 
 import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libtesting.common.helper.game.DatabaseHelper;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.low.files.db.common.helper.DbHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import static fr.tduf.libtesting.common.helper.AssertionsHelper.*;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DatabaseWriterTest {
@@ -144,8 +146,10 @@ public class DatabaseWriterTest {
     @Test
     public void writeAllAsJson_whenRealContents_shouldCreateFiles_andFillThem() throws IOException, URISyntaxException, JSONException {
         //GIVEN
-        InputStream resourceAsStream = getClass().getResourceAsStream("/db/json/parsing/TDU_Achievements.json");
-        DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
+        // TODO create method in database helper and use it (topic as arg)
+        DbDto initialDbDto = DatabaseHelper.createDatabaseForReadOnly().stream()
+                .filter(databaseObject -> ACHIEVEMENTS == databaseObject.getStructure().getTopic())
+                .findAny().get();
 
         //WHEN
         List<String> actualFileNames = DatabaseWriter.load(initialDbDto).writeAllAsJson(tempDirectory);
@@ -162,9 +166,9 @@ public class DatabaseWriterTest {
                         expectedStructureFileName,
                         expectedResourceFileName);
 
-        assertJsonFileMatchesReference(expectedDataFileName, "/db/json/");
-        assertJsonFileMatchesReference(expectedStructureFileName, "/db/json/");
-        assertJsonFileMatchesReference(expectedResourceFileName, "/db/json/");
+        assertJsonFileMatchesReference(expectedDataFileName, "/db-json/");
+        assertJsonFileMatchesReference(expectedStructureFileName, "/db-json/");
+        assertJsonFileMatchesReference(expectedResourceFileName, "/db-json/");
     }
 
     private static void assertFilesMatchReferenceObject(DbDto referenceDto, String contentsFileName, String... resourceFileNames) throws FileNotFoundException {
