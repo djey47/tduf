@@ -49,6 +49,16 @@ public class DatabaseHelper {
         return DatabaseReadWriteHelper.readFullDatabaseFromJson(getJsonDatabasePath().toString());
     }
 
+    /**
+     * Uses JSON resource files to create a read-only database topic.
+     * @return database object from current JSON resources
+     */
+    public static DbDto createDatabaseTopicForReadOnly(DbDto.Topic topic) {
+        return DatabaseReadWriteHelper.readFullDatabaseFromJson(getJsonDatabasePath().toString()).stream()
+                .filter(databaseObject -> topic == databaseObject.getStructure().getTopic())
+                .findAny().get();
+    }
+
     private static Path getJsonDatabasePath() {
         return Paths.get(thisClass.getResource("/db-json").getFile());
     }
