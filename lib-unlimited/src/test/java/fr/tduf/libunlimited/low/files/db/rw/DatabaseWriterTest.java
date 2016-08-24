@@ -7,7 +7,6 @@ import fr.tduf.libunlimited.low.files.db.common.helper.DbHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,13 +14,13 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
 import static fr.tduf.libtesting.common.helper.AssertionsHelper.*;
+import static fr.tduf.libunlimited.common.helper.FilesHelper.readObjectFromJsonResourceFile;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -54,9 +53,7 @@ public class DatabaseWriterTest {
     @Test
     public void writeAll_whenRealContents_shouldCreateFiles_andFillThem() throws IOException, URISyntaxException {
         //GIVEN
-        // TODO use FilesHelper
-        InputStream resourceAsStream = getClass().getResourceAsStream("/db/json/parsing/TDU_Achievements.json");
-        DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
+        DbDto initialDbDto = readObjectFromJsonResourceFile(DbDto.class, "/db/json/parsing/TDU_Achievements.json");
 
 
         //WHEN
@@ -104,8 +101,7 @@ public class DatabaseWriterTest {
     @Test
     public void writeAll_whenRealContents_withReferenceField_shouldCreateFiles_andFillThem() throws IOException, URISyntaxException {
         //GIVEN
-        InputStream resourceAsStream = getClass().getResourceAsStream("/db/json/parsing/TDU_Bots.json");
-        DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
+        DbDto initialDbDto = readObjectFromJsonResourceFile(DbDto.class, "/db/json/parsing/TDU_Bots.json");
 
 
         //WHEN
@@ -131,8 +127,7 @@ public class DatabaseWriterTest {
     @Test
     public void writeAll_whenRealContents_shouldCreateContentsFile_withSizeMultipleOf8() throws IOException, URISyntaxException {
         //GIVEN
-        InputStream resourceAsStream = getClass().getResourceAsStream("/db/json/parsing/TDU_Achievements.json");
-        DbDto initialDbDto = new ObjectMapper().readValue(resourceAsStream, DbDto.class);
+        DbDto initialDbDto = readObjectFromJsonResourceFile(DbDto.class, "/db/json/parsing/TDU_Achievements.json");
 
         //WHEN
         List<String> actualFilenames = DatabaseWriter.load(initialDbDto).writeAll(tempDirectory);

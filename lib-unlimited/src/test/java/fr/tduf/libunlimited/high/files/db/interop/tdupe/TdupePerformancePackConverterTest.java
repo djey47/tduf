@@ -1,12 +1,11 @@
 package fr.tduf.libunlimited.high.files.db.interop.tdupe;
 
 import fr.tduf.libtesting.common.helper.game.DatabaseHelper;
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -100,9 +99,7 @@ public class TdupePerformancePackConverterTest {
         return lines.get(0);
     }
 
-    // TODO Use fr.tduf.libunlimited.common.helper.FilesHelper.readObjectFromJsonResourceFile() instead
     private static DbPatchDto readPatchObjectFromResource(String resource) throws URISyntaxException, IOException {
-        URI resourceURI = thisClass.getResource(resource).toURI();
-        return new ObjectMapper().readValue(new File(resourceURI), DbPatchDto.class);
+        return FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class, resource);
     }
 }
