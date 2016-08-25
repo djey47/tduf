@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.low.files.db.rw.helper;
 
 
 import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libtesting.common.helper.game.DatabaseHelper;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -20,6 +21,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import static fr.tduf.libtesting.common.helper.AssertionsHelper.assertFileDoesNotMatchReference;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -46,7 +48,7 @@ public class DatabaseReadWriteHelperTest {
 
 
         // WHEN
-        Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, integrityErrors);
+        Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(ACHIEVEMENTS, databaseDirectory, integrityErrors);
 
 
         // THEN
@@ -65,7 +67,7 @@ public class DatabaseReadWriteHelperTest {
 
 
         // WHEN
-        Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, integrityErrors);
+        Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(ACHIEVEMENTS, databaseDirectory, integrityErrors);
 
 
         // THEN
@@ -85,7 +87,7 @@ public class DatabaseReadWriteHelperTest {
 
 
         // WHEN
-        Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, integrityErrors);
+        Optional<DbDto> potentialDbDto = DatabaseReadWriteHelper.readDatabaseTopic(ACHIEVEMENTS, databaseDirectory, integrityErrors);
 
 
         // THEN
@@ -98,16 +100,13 @@ public class DatabaseReadWriteHelperTest {
     @Test
     public void readDatabaseFromJson_whenFileNotFound_shouldReturnEmpty() throws URISyntaxException, IOException {
         // GIVEN-WHEN-THEN
-        assertThat(DatabaseReadWriteHelper.readDatabaseTopicFromJson(DbDto.Topic.ACHIEVEMENTS, "")).isEmpty();
+        assertThat(DatabaseReadWriteHelper.readDatabaseTopicFromJson(ACHIEVEMENTS, "")).isEmpty();
     }
 
     @Test
     public void readDatabaseFromJson_whenRealFile_shouldReturnCorrespondingDto() throws URISyntaxException, IOException {
-        // GIVEN
-        String jsonDirectory = getJsonDirectoryFromResourceFile();
-
-        // WHEN
-        DbDto actualdbDto = DatabaseReadWriteHelper.readDatabaseTopicFromJson(DbDto.Topic.ACHIEVEMENTS, jsonDirectory).get();
+        // GIVEN-WHEN
+        DbDto actualdbDto = DatabaseHelper.createDatabaseTopicForReadOnly(ACHIEVEMENTS);
 
         // THEN
         assertTopicObject(actualdbDto);
@@ -127,12 +126,8 @@ public class DatabaseReadWriteHelperTest {
 
     @Test
     public void readFullDatabaseFromJson_whenRealFiles_shouldReturnCorrespondingDtos() throws URISyntaxException {
-        // GIVEN
-        String jsonDirectory = getJsonDirectoryFromResourceFile();
-
-
-        // WHEN
-        List<DbDto> actualTopicObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDirectory);
+        // GIVEN-WHEN
+        List<DbDto> actualTopicObjects = DatabaseHelper.createDatabaseForReadOnly();
 
 
         // THEN
@@ -177,7 +172,7 @@ public class DatabaseReadWriteHelperTest {
 
 
         // WHEN
-        Map<fr.tduf.libunlimited.common.game.domain.Locale, List<String>> allResources = DatabaseReadWriteHelper.parseTopicResourcesFromDirectoryAndCheck(DbDto.Topic.ACHIEVEMENTS, databaseDirectory, integrityErrors);
+        Map<fr.tduf.libunlimited.common.game.domain.Locale, List<String>> allResources = DatabaseReadWriteHelper.parseTopicResourcesFromDirectoryAndCheck(ACHIEVEMENTS, databaseDirectory, integrityErrors);
 
 
         // THEN
@@ -244,8 +239,7 @@ public class DatabaseReadWriteHelperTest {
     @Test
     public void writeDatabaseTopic_whenProvidedContents_shouldCreateEncryptedFiles() throws URISyntaxException, IOException {
         // GIVEN
-        String jsonDirectory = getJsonDirectoryFromResourceFile();
-        DbDto dbDto = DatabaseReadWriteHelper.readDatabaseTopicFromJson(DbDto.Topic.ACHIEVEMENTS, jsonDirectory).get();
+        DbDto dbDto = DatabaseHelper.createDatabaseTopicForReadOnly(ACHIEVEMENTS);
 
 
         // WHEN
@@ -268,7 +262,7 @@ public class DatabaseReadWriteHelperTest {
 
     private DbDto createDatabaseTopicObject() {
         DbStructureDto dbStructureDto = DbStructureDto.builder()
-                .forTopic(DbDto.Topic.ACHIEVEMENTS)
+                .forTopic(ACHIEVEMENTS)
                 .build();
         DbDataDto dbDataDto = DbDataDto.builder()
                 .build();

@@ -25,6 +25,8 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DatabaseWriterTest {
+    private  static final String RESOURCE_JSON_DATABASE_REF = "/db/json/ref/";
+    private static final String RESOURCE_DATABASE_CLEAN = "/db/res/clean/";
 
     private String tempDirectory;
 
@@ -83,8 +85,8 @@ public class DatabaseWriterTest {
                 actualResourceFileName8);
 
         assertFileMatchesReference(actualContentsFileName, "/db/");
-        assertFileMatchesReference(actualResourceFileName1, "/db/res/clean/");
-        assertFileMatchesReference(actualResourceFileName2, "/db/res/clean/");
+        assertFileMatchesReference(actualResourceFileName1, RESOURCE_DATABASE_CLEAN);
+        assertFileMatchesReference(actualResourceFileName2, RESOURCE_DATABASE_CLEAN);
 
         assertFilesMatchReferenceObject(initialDbDto,
                 actualContentsFileName,
@@ -119,7 +121,7 @@ public class DatabaseWriterTest {
                 actualResourceFileNameItalian);
 
         assertFileMatchesReference(actualContentsFileName, "/db/");
-        assertFileMatchesReference(actualResourceFileNameFrench, "/db/res/clean/");
+        assertFileMatchesReference(actualResourceFileNameFrench, RESOURCE_DATABASE_CLEAN);
 
         assertFilesMatchReferenceObject(initialDbDto, actualContentsFileName, actualResourceFileNameFrench, actualResourceFileNameItalian);
     }
@@ -159,9 +161,9 @@ public class DatabaseWriterTest {
                         expectedStructureFileName,
                         expectedResourceFileName);
 
-        assertJsonFileMatchesReference(expectedDataFileName, "/db-json/");
-        assertJsonFileMatchesReference(expectedStructureFileName, "/db-json/");
-        assertJsonFileMatchesReference(expectedResourceFileName, "/db-json/");
+        assertJsonFileMatchesReference(expectedDataFileName, RESOURCE_JSON_DATABASE_REF);
+        assertJsonFileMatchesReference(expectedStructureFileName, RESOURCE_JSON_DATABASE_REF);
+        assertJsonFileMatchesReference(expectedResourceFileName, RESOURCE_JSON_DATABASE_REF);
     }
 
     private static void assertFilesMatchReferenceObject(DbDto referenceDto, String contentsFileName, String... resourceFileNames) throws FileNotFoundException {

@@ -34,6 +34,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class MainStageChangeDataControllerTest {
 
+    private static final List<DbDto> databaseObjects = DatabaseHelper.createDatabaseForReadOnly();
+
     @Mock
     private BulkDatabaseMiner minerMock;
 
@@ -45,15 +47,11 @@ public class MainStageChangeDataControllerTest {
 
     private ObjectMapper objectMapper;
 
-    private List<DbDto> databaseObjects;
-
     @Before
     public void setUp() throws URISyntaxException {
         Log.set(Log.LEVEL_INFO);
 
         objectMapper = new ObjectMapper();
-
-        databaseObjects = DatabaseHelper.createDatabaseForReadOnly();
     }
 
     @Test
