@@ -183,6 +183,6 @@ public class MainStageViewDataControllerTest {
         // THEN
         verify(mainStageControllerMock).setLayoutObject(editorLayoutCaptor.capture());
         final EditorLayoutDto actualLayout = editorLayoutCaptor.getValue();
-        assertThat(actualLayout.getProfiles()).hasSize(18);
+        assertThat(actualLayout.getProfiles()).isNotEmpty();
     }
 }
