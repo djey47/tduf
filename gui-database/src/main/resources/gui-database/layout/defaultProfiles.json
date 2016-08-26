@@ -1261,6 +1261,7 @@
       "fieldSettings": [
         {
           "name": "FirstName_",
+          "label": "First name",
           "rank": 1
         },
         {
@@ -1269,6 +1270,7 @@
         },
         {
           "name": "PNJ",
+          "label": "Character",
           "rank": 3,
           "remoteReferenceProfile": "NPCs"
         },
@@ -1282,6 +1284,7 @@
         },
         {
           "name": "BotCar",
+          "label": "Vehicle",
           "rank": 6,
           "remoteReferenceProfile": "Vehicle slots"
         },
@@ -1647,7 +1650,6 @@
         }
       ]
     },
-
     {
       "name": "TDUCP-Rim options",
       "topic": "CAR_PHYSICS_DATA",
@@ -1701,6 +1703,24 @@
           "rank": 14,
           "priority": 9960,
           "label": "Version"
+        }
+      ]
+    },
+    {
+      "name": "TDUCP-Bot vehicle",
+      "topic": "BOTS",
+      "entryLabelFieldRanks": [1],
+      "fieldSettings": [
+        {
+          "name": "FirstName_",
+          "label": "First name",
+          "rank": 1
+        },
+        {
+          "name": "BotCar",
+          "label": "Vehicle",
+          "rank": 6,
+          "remoteReferenceProfile": "Vehicle slots"
         }
       ]
     }
