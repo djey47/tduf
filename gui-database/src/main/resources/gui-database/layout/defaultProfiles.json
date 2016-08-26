@@ -743,13 +743,36 @@
     {
       "name": "Brands",
       "topic": "BRANDS",
-      "entryLabelFieldRanks": [2,3],
+      "entryLabelFieldRanks": [3],
       "fieldSettings": [
         {
           "rank": 1,
           "name": "REF",
           "readOnly": "true",
           "label": "(REF) Brand #"
+        }, {
+          "name" : "Manufacturer_ID",
+          "label": "Manufacturer identifier",
+          "rank" : 2
+        }, {
+          "name" : "Manufacturer_Name",
+          "label": "Name",
+          "rank" : 3
+        }, {
+          "name" : "Logo_HUD_File",
+          "label": "HUD Logo file name",
+          "rank" : 4
+        }, {
+          "name" : "Logo_Global_Index",
+          "label": "Rank in logo textures",
+          "rank" : 5
+        }, {
+          "name" : "Brand_special_param",
+          "label" : "Special parameter",
+          "rank" : 6
+        }, {
+          "name" : "BitField",
+          "rank" : 7
         }
       ]
     },
