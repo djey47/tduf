@@ -39,30 +39,38 @@ public class DatabaseQueryHelper {
                 .map(DbStructureDto::getFields)
                 .orElseThrow(() -> new IllegalStateException("No structure found for topic: " + topic));
 
-        // TODO simplify
         List<String> contents = fieldRanks.stream()
-                .map(fieldRank -> {
-                    DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureFieldWithRank(fieldRank, structureFields);
-                    if (REFERENCE == structureField.getFieldType()) {
-                        DbDto remoteTopicObject = databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef());
-                        final DbDto.Topic remoteTopic = remoteTopicObject.getTopic();
-                        long remoteEntryId = databaseMiner.getRemoteContentEntryWithInternalIdentifier(topic, fieldRank, entryId, remoteTopic)
-                                .map(ContentEntryDto::getId)
-                                .orElseThrow(() -> new IllegalStateException("No remote entry in topic: " + remoteTopic));
-                        final List<Integer> labelFieldRanks = EditorLayoutHelper.getAvailableProfileByTopic(remoteTopic, editorLayoutDto).getEntryLabelFieldRanks();
-                        return fetchResourceValuesWithEntryId(remoteEntryId, remoteTopic, locale, labelFieldRanks, databaseMiner, editorLayoutDto);
-                    } else {
-                        return databaseMiner.getLocalizedResourceValueFromContentEntry(entryId, fieldRank, topic, locale)
-                                .orElseGet(() -> {
-                                    final String rawValue = databaseMiner.getContentItemWithEntryIdentifierAndFieldRank(topic, fieldRank, entryId)
-                                            .map(ContentItemDto::getRawValue)
-                                            .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No content item with identifier and field rank: (" + entryId + ":" + fieldRank + ")"));
-                                    return String.format(DisplayConstants.VALUE_UNKNOWN, rawValue);
-                                });
-                    }
-                })
+                .map(fieldRank -> resolveResourceValue(entryId, topic, locale, databaseMiner, editorLayoutDto, structureFields, fieldRank))
                 .collect(toList());
 
         return String.join(DisplayConstants.SEPARATOR_VALUES, contents);
+    }
+
+    private static String resolveResourceValue(long entryId, DbDto.Topic topic, Locale locale, BulkDatabaseMiner databaseMiner, EditorLayoutDto editorLayoutDto, List<DbStructureDto.Field> structureFields, Integer fieldRank) {
+        DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureFieldWithRank(fieldRank, structureFields);
+        if (REFERENCE == structureField.getFieldType()) {
+            return resolveValueForReferenceField(entryId, topic, locale, databaseMiner, editorLayoutDto, fieldRank, structureField);
+        }
+        return resolveValueForOtherField(entryId, topic, locale, databaseMiner, fieldRank);
+    }
+
+    private static String resolveValueForOtherField(long entryId, DbDto.Topic topic, Locale locale, BulkDatabaseMiner databaseMiner, Integer fieldRank) {
+        return databaseMiner.getLocalizedResourceValueFromContentEntry(entryId, fieldRank, topic, locale)
+                .orElseGet(() -> {
+                    final String rawValue = databaseMiner.getContentItemWithEntryIdentifierAndFieldRank(topic, fieldRank, entryId)
+                            .map(ContentItemDto::getRawValue)
+                            .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No content item with identifier and field rank: (" + entryId + ":" + fieldRank + ")"));
+                    return String.format(DisplayConstants.VALUE_UNKNOWN, rawValue);
+                });
+    }
+
+    private static String resolveValueForReferenceField(long entryId, DbDto.Topic topic, Locale locale, BulkDatabaseMiner databaseMiner, EditorLayoutDto editorLayoutDto, Integer fieldRank, DbStructureDto.Field structureField) {
+        DbDto remoteTopicObject = databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef());
+        final DbDto.Topic remoteTopic = remoteTopicObject.getTopic();
+        long remoteEntryId = databaseMiner.getRemoteContentEntryWithInternalIdentifier(topic, fieldRank, entryId, remoteTopic)
+                .map(ContentEntryDto::getId)
+                .orElseThrow(() -> new IllegalStateException("No remote entry in topic: " + remoteTopic));
+        final List<Integer> labelFieldRanks = EditorLayoutHelper.getAvailableProfileByTopic(remoteTopic, editorLayoutDto).getEntryLabelFieldRanks();
+        return fetchResourceValuesWithEntryId(remoteEntryId, remoteTopic, locale, labelFieldRanks, databaseMiner, editorLayoutDto);
     }
 }
