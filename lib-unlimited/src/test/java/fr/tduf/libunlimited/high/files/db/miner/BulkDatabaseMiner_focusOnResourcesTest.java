@@ -26,6 +26,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
 
     private static final DbDto.Topic TOPIC = CAR_PHYSICS_DATA;
     private static final Locale LOCALE = UNITED_STATES;
+    private static final String ENTRY_REF = "33333333";
     private static final String RESOURCE_REF = "00000000";
     private static final String RESOURCE_VALUE = "VALUE";
     private static final String TOPIC_REF = "11111111";
@@ -268,6 +269,19 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     }
 
     @Test
+    public void getLocalizedResourceValueFromContentEntry_whenContentEntryExists_fieldRankExistsAsRemoteEntry_shouldReturnEmpty() {
+        // GIVEN
+        final DbDto topicObject = createDefaultTopicObject(TOPIC);
+        List<DbDto> topicObjects = singletonList(topicObject);
+
+        // WHEN
+        final Optional<String> potentialValue = BulkDatabaseMiner.load(topicObjects).getLocalizedResourceValueFromContentEntry(0, 6, TOPIC, LOCALE);
+
+        // THEN
+        assertThat(potentialValue).isEmpty();
+    }
+
+    @Test
     public void getAllResourceValuesForReference_whenEntryDoesNotExist_shouldReturnEmptySet() {
         //GIVEN
         DbResourceDto resourceObject = createDefaultResourceObject();
@@ -339,6 +353,11 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
                         .fromType(RESOURCE_REMOTE)
                         .toTargetReference(TOPIC_REF)
                         .build())
+                .addItem(DbStructureDto.Field.builder()
+                        .ofRank(6)
+                        .fromType(DbStructureDto.FieldType.REFERENCE)
+                        .toTargetReference(TOPIC_REF)
+                        .build())
                 .build();
         DbDataDto dataObject = DbDataDto.builder().build();
         dataObject.addEntryWithItems(asList(
@@ -361,6 +380,10 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
                 ContentItemDto.builder()
                         .ofFieldRank(5)
                         .withRawValue(RESOURCE_REF)
+                        .build(),
+                ContentItemDto.builder()
+                        .ofFieldRank(6)
+                        .withRawValue(ENTRY_REF)
                         .build()));
 
         return DbDto.builder()
