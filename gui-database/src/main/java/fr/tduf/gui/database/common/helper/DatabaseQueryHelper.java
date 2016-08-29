@@ -16,6 +16,8 @@ import static java.util.stream.Collectors.toList;
  */
 public class DatabaseQueryHelper {
 
+    private DatabaseQueryHelper() {}
+
     /**
      * @return a string of all resource values from specified field ranks, using a particular locale.
      */
@@ -28,15 +30,13 @@ public class DatabaseQueryHelper {
         }
 
         List<String> contents = fieldRanks.stream()
-
-                .map((fieldRank) -> databaseMiner.getLocalizedResourceValueFromContentEntry(entryId, fieldRank, topic, locale)
+                .map(fieldRank -> databaseMiner.getLocalizedResourceValueFromContentEntry(entryId, fieldRank, topic, locale)
                         .orElseGet(() -> {
                             final String rawValue = databaseMiner.getContentItemWithEntryIdentifierAndFieldRank(topic, fieldRank, entryId)
                                     .map(ContentItemDto::getRawValue)
-                                    .get();
+                                    .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No content item with identifier and field rank: (" + entryId + ":" + fieldRank + ")"));
                             return String.format(DisplayConstants.VALUE_UNKNOWN, rawValue);
                         }))
-
                 .collect(toList());
 
         return String.join(DisplayConstants.SEPARATOR_VALUES, contents);

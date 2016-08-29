@@ -9,7 +9,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static fr.tduf.libunlimited.common.game.domain.Locale.FRANCE;
 import static fr.tduf.libunlimited.framework.primitives.Ints.asList;
@@ -77,7 +76,7 @@ public class DatabaseQueryHelperTest {
         assertThat(actualLabel).isEqualTo("RES1 - <85467580>");
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = IllegalStateException.class)
     public void fetchResourceValuesWithEntryId_whenLocalResourceUnavailable_andItemUnavailable_shouldThrowException() throws Exception {
         // GIVEN
         List<Integer> fieldRanks = singletonList(3);
@@ -90,6 +89,6 @@ public class DatabaseQueryHelperTest {
         DatabaseQueryHelper.fetchResourceValuesWithEntryId(1, CAR_PHYSICS_DATA, FRANCE, fieldRanks, minerMock);
 
 
-        // THEN: NSEE
+        // THEN: ISE
     }
 }
