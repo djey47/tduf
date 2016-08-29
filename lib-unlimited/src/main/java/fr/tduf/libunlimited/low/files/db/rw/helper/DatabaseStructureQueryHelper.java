@@ -53,10 +53,19 @@ public class DatabaseStructureQueryHelper {
     public static DbStructureDto.Field getStructureField(ContentItemDto item, List<DbStructureDto.Field> structureFields) {
         requireNonNull(item, "A content entry item is required.");
 
+        return getStructureFieldWithRank(item.getFieldRank(), structureFields);
+    }
+
+    /**
+     * @param fieldRank         : rank of field
+     * @param structureFields   : list of topic fields to search for such a field
+     * @return corresponding structure field.
+     */
+    public static DbStructureDto.Field getStructureFieldWithRank(int fieldRank, List<DbStructureDto.Field> structureFields) {
         return requireNonNull(structureFields, MESSAGE_ERR_FIELDS).stream()
-                .filter(field -> field.getRank() == item.getFieldRank())
+                .filter(field -> field.getRank() == fieldRank)
                 .findAny()
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No structure field for item at rank: " + item.getFieldRank()));
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No structure field for item at rank: " + fieldRank));
     }
 
     /**
