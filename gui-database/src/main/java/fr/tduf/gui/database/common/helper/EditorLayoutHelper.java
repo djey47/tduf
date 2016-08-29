@@ -12,26 +12,21 @@ import static java.util.Objects.requireNonNull;
 /**
  * Provides static methods to handle layout objects.
  */
-// TODO apply code rules
 public class EditorLayoutHelper {
+    private static final String MESSAGE_LAYOUT_OBJECT_REQUIRED = "Editor layout object is required.";
+
+    private EditorLayoutHelper() {}
 
     /**
      * @return the available layout profile if it exists in provided layout object.
      */
-    public static EditorLayoutDto.EditorProfileDto getAvailableProfileByName(String profileName, EditorLayoutDto layoutObject) throws IllegalArgumentException {
-        requireNonNull(layoutObject, "Editor layout object is required.");
+    public static EditorLayoutDto.EditorProfileDto getAvailableProfileByName(String profileName, EditorLayoutDto layoutObject) {
+        requireNonNull(layoutObject, MESSAGE_LAYOUT_OBJECT_REQUIRED);
 
-        Optional<EditorLayoutDto.EditorProfileDto> potentialProfileObject = layoutObject.getProfiles().stream()
-
-                .filter((profile) -> profile.getName().equals(profileName))
-
-                .findAny();
-
-        if (!potentialProfileObject.isPresent()) {
-            throw new IllegalArgumentException("Unknown profile name: " + profileName);
-        }
-
-        return potentialProfileObject.get();
+        return layoutObject.getProfiles().stream()
+                .filter(profile -> profile.getName().equals(profileName))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("Unknown profile name: " + profileName));
     }
 
     /**
@@ -39,7 +34,7 @@ public class EditorLayoutHelper {
      */
     public static EditorLayoutDto.EditorProfileDto getAvailableProfileByTopic(DbDto.Topic topic, EditorLayoutDto layoutObject) {
         requireNonNull(topic, "Topic is required.");
-        requireNonNull(layoutObject, "Editor layout object is required.");
+        requireNonNull(layoutObject, MESSAGE_LAYOUT_OBJECT_REQUIRED);
 
         return layoutObject.getProfiles().stream()
                 .filter(profile -> topic == profile.getTopic())
@@ -54,17 +49,15 @@ public class EditorLayoutHelper {
         requireNonNull(profileObject, "Editor profile object is required.");
 
         return profileObject.getFieldSettings().stream()
-
-                .filter((settings) -> settings.getRank() == fieldRank)
-
+                .filter(settings -> settings.getRank() == fieldRank)
                 .findAny();
     }
 
     /**
      * @return field settings if they exist for provided field rank and profile name, absent otherwise.
      */
-    public static Optional<FieldSettingsDto> getFieldSettingsByRankAndProfileName(int fieldRank, String profileName, EditorLayoutDto layoutObject) throws IllegalArgumentException {
-        requireNonNull(layoutObject, "Editor layout object is required.");
+    public static Optional<FieldSettingsDto> getFieldSettingsByRankAndProfileName(int fieldRank, String profileName, EditorLayoutDto layoutObject) {
+        requireNonNull(layoutObject, MESSAGE_LAYOUT_OBJECT_REQUIRED);
 
         EditorLayoutDto.EditorProfileDto currentProfile = getAvailableProfileByName(profileName, layoutObject);
         return getFieldSettingsByRank(fieldRank, currentProfile);
@@ -73,8 +66,8 @@ public class EditorLayoutHelper {
     /**
      * @return field priority setting if it exists, 0 otherwise.
      */
-    public static int getFieldPrioritySettingByRank(int fieldRank, String profileName, EditorLayoutDto layoutObject) throws IllegalArgumentException {
-        requireNonNull(layoutObject, "Editor layout object is required.");
+    public static int getFieldPrioritySettingByRank(int fieldRank, String profileName, EditorLayoutDto layoutObject) {
+        requireNonNull(layoutObject, MESSAGE_LAYOUT_OBJECT_REQUIRED);
 
         Optional<FieldSettingsDto> potentialFieldSettingsObject = getFieldSettingsByRankAndProfileName(fieldRank, profileName, layoutObject);
         int priority = 0;
@@ -87,9 +80,9 @@ public class EditorLayoutHelper {
     /**
      * @return entry label field ranks setting.
      */
-    public static List<Integer> getEntryLabelFieldRanksSettingByProfile(String profileName, EditorLayoutDto layoutObject) throws IllegalArgumentException {
+    public static List<Integer> getEntryLabelFieldRanksSettingByProfile(String profileName, EditorLayoutDto layoutObject) {
         requireNonNull(profileName, "Profile name is required.");
-        requireNonNull(layoutObject, "Editor layout object is required.");
+        requireNonNull(layoutObject, MESSAGE_LAYOUT_OBJECT_REQUIRED);
 
         return getAvailableProfileByName(profileName, layoutObject).getEntryLabelFieldRanks();
     }
