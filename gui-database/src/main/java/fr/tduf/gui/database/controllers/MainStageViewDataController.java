@@ -97,7 +97,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                             getLayoutObject());
 
                     final DbDto.Topic currentTopic = getCurrentTopicObject().getTopic();
-                    String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(internalEntryId, currentTopic, currentLocaleProperty().getValue(), labelFieldRanks, getMiner());
+                    String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(internalEntryId, currentTopic, currentLocaleProperty().getValue(), labelFieldRanks, getMiner(), getLayoutObject());
                     entry.setValue(entryValue);
                 });
     }
@@ -333,7 +333,8 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                 currentTopicProperty().getValue(),
                 currentLocaleProperty().getValue(),
                 labelFieldRanks,
-                getMiner());
+                getMiner(),
+                getLayoutObject());
         currentEntryLabelProperty().setValue(entryLabel);
     }
 
@@ -405,7 +406,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         long entryInternalIdentifier = topicEntry.getId();
         contentEntryDataItem.setInternalEntryId(entryInternalIdentifier);
 
-        String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, currentLocaleProperty().getValue(), labelFieldRanks, getMiner());
+        String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, currentLocaleProperty().getValue(), labelFieldRanks, getMiner(), getLayoutObject());
         contentEntryDataItem.setValue(entryValue);
 
         String entryReference = Long.toString(entryInternalIdentifier);
@@ -492,7 +493,8 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                     entryId, linkObject.getTopic(),
                     currentLocaleProperty().getValue(),
                     remoteFieldRanks,
-                    getMiner()));
+                    getMiner(),
+                    getLayoutObject()));
         }
         return databaseEntry;
     }
@@ -506,7 +508,8 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                     potentialEntryId.getAsLong(), remoteTopic,
                     currentLocaleProperty().getValue(),
                     remoteFieldRanks,
-                    getMiner());
+                    getMiner(),
+                    getLayoutObject());
         }
         return DisplayConstants.VALUE_ERROR_ENTRY_NOT_FOUND;
     }

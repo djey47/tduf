@@ -1,13 +1,18 @@
 package fr.tduf.gui.database.common.helper;
 
 import fr.tduf.gui.database.common.DisplayConstants;
+import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
+import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
 
+import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.REFERENCE;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -21,7 +26,7 @@ public class DatabaseQueryHelper {
     /**
      * @return a string of all resource values from specified field ranks, using a particular locale.
      */
-    public static String fetchResourceValuesWithEntryId(long entryId, DbDto.Topic topic, Locale locale, List<Integer> fieldRanks, BulkDatabaseMiner databaseMiner) {
+    public static String fetchResourceValuesWithEntryId(long entryId, DbDto.Topic topic, Locale locale, List<Integer> fieldRanks, BulkDatabaseMiner databaseMiner, EditorLayoutDto editorLayoutDto) {
         requireNonNull(databaseMiner, "A database miner must be provided.");
         requireNonNull(fieldRanks, "A list of field ranks (even empty) must be provided.");
 
@@ -29,14 +34,33 @@ public class DatabaseQueryHelper {
             return String.format(DisplayConstants.VALUE_UNKNOWN, "?");
         }
 
+        List<DbStructureDto.Field> structureFields = databaseMiner.getDatabaseTopic(topic)
+                .map(DbDto::getStructure)
+                .map(DbStructureDto::getFields)
+                .orElseThrow(() -> new IllegalStateException("No structure found for topic: " + topic));
+
+        // TODO simplify
         List<String> contents = fieldRanks.stream()
-                .map(fieldRank -> databaseMiner.getLocalizedResourceValueFromContentEntry(entryId, fieldRank, topic, locale)
-                        .orElseGet(() -> {
-                            final String rawValue = databaseMiner.getContentItemWithEntryIdentifierAndFieldRank(topic, fieldRank, entryId)
-                                    .map(ContentItemDto::getRawValue)
-                                    .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No content item with identifier and field rank: (" + entryId + ":" + fieldRank + ")"));
-                            return String.format(DisplayConstants.VALUE_UNKNOWN, rawValue);
-                        }))
+                .map(fieldRank -> {
+                    DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureFieldWithRank(fieldRank, structureFields);
+                    if (REFERENCE == structureField.getFieldType()) {
+                        DbDto remoteTopicObject = databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef());
+                        final DbDto.Topic remoteTopic = remoteTopicObject.getTopic();
+                        long remoteEntryId = databaseMiner.getRemoteContentEntryWithInternalIdentifier(topic, fieldRank, entryId, remoteTopic)
+                                .map(ContentEntryDto::getId)
+                                .orElseThrow(() -> new IllegalStateException("No remote entry in topic: " + remoteTopic));
+                        final List<Integer> labelFieldRanks = EditorLayoutHelper.getAvailableProfileByTopic(remoteTopic, editorLayoutDto).getEntryLabelFieldRanks();
+                        return fetchResourceValuesWithEntryId(remoteEntryId, remoteTopic, locale, labelFieldRanks, databaseMiner, editorLayoutDto);
+                    } else {
+                        return databaseMiner.getLocalizedResourceValueFromContentEntry(entryId, fieldRank, topic, locale)
+                                .orElseGet(() -> {
+                                    final String rawValue = databaseMiner.getContentItemWithEntryIdentifierAndFieldRank(topic, fieldRank, entryId)
+                                            .map(ContentItemDto::getRawValue)
+                                            .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No content item with identifier and field rank: (" + entryId + ":" + fieldRank + ")"));
+                                    return String.format(DisplayConstants.VALUE_UNKNOWN, rawValue);
+                                });
+                    }
+                })
                 .collect(toList());
 
         return String.join(DisplayConstants.SEPARATOR_VALUES, contents);

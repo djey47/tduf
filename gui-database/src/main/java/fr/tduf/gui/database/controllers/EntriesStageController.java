@@ -9,6 +9,7 @@ import fr.tduf.gui.database.common.helper.DatabaseQueryHelper;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
+import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.Property;
@@ -188,7 +189,7 @@ public class EntriesStageController extends AbstractGuiController {
                                     long entryInternalIdentifier = entry.getId();
                                     contentEntryDataItem.setInternalEntryId(entryInternalIdentifier);
 
-                                    String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner());
+                                    String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner(), getLayoutObject());
                                     contentEntryDataItem.setValue(entryValue);
 
                                     getMiner().getContentEntryReferenceWithInternalIdentifier(entryInternalIdentifier, topic)
@@ -230,5 +231,9 @@ public class EntriesStageController extends AbstractGuiController {
 
     private BulkDatabaseMiner getMiner() {
         return mainStageController.getMiner();
+    }
+
+    private EditorLayoutDto getLayoutObject() {
+        return mainStageController.getLayoutObject();
     }
 }

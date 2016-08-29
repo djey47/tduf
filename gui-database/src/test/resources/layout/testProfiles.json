@@ -1,0 +1,12 @@
+{
+  "profiles": [
+    {
+      "name": "test brands",
+      "topic": "BRANDS",
+      "entryLabelFieldRanks": [1],
+      "groups": [],
+      "topicLinks": [],
+      "fieldSettings": []
+    }
+  ]
+}

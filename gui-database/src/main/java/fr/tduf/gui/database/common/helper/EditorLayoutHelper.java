@@ -2,6 +2,7 @@ package fr.tduf.gui.database.common.helper;
 
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +12,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Provides static methods to handle layout objects.
  */
+// TODO apply code rules
 public class EditorLayoutHelper {
 
     /**
@@ -30,6 +32,19 @@ public class EditorLayoutHelper {
         }
 
         return potentialProfileObject.get();
+    }
+
+    /**
+     * @return first available layout profile if it exists in provided layout object.
+     */
+    public static EditorLayoutDto.EditorProfileDto getAvailableProfileByTopic(DbDto.Topic topic, EditorLayoutDto layoutObject) {
+        requireNonNull(topic, "Topic is required.");
+        requireNonNull(layoutObject, "Editor layout object is required.");
+
+        return layoutObject.getProfiles().stream()
+                .filter(profile -> topic == profile.getTopic())
+                .findFirst()
+                .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("Unknown profile for topic: " + topic));
     }
 
     /**
