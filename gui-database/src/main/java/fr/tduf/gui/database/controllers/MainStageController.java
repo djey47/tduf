@@ -33,7 +33,6 @@ import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
-import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -49,7 +48,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -159,6 +157,7 @@ public class MainStageController extends AbstractGuiController {
         changeDataController = new MainStageChangeDataController(this);
         resourcesStageController = ResourcesDesigner.init(this);
         entriesStageController = EntriesDesigner.init(this);
+        fieldsBrowserStageController = FieldsBrowserDesigner.init(this);
 
         dialogsHelper = new DialogsHelper();
 
@@ -179,8 +178,6 @@ public class MainStageController extends AbstractGuiController {
                 initialDatabaseDirectory.orElse(SettingsConstants.DATABASE_DIRECTORY_DEFAULT),
                 (observable, oldValue, newValue) -> handleLocaleChoiceChanged(newValue),
                 (observable, oldValue, newValue) -> handleProfileChoiceChanged(newValue));
-
-        initFieldsBrowserStageController();
 
         initTopicEntryHeaderPane();
 
@@ -599,14 +596,6 @@ public class MainStageController extends AbstractGuiController {
                 CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_KO, databaseFixer.getException().getMessage());
             }
         });
-    }
-
-    private void initFieldsBrowserStageController() throws IOException {
-        Stage entriesStage = new Stage();
-        Platform.runLater(() -> entriesStage.initOwner(getWindow()));
-
-        fieldsBrowserStageController = FieldsBrowserDesigner.init(entriesStage);
-        fieldsBrowserStageController.setMainStageController(this);
     }
 
     private void initStatusBar() {

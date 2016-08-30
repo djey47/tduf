@@ -3,6 +3,8 @@ package fr.tduf.gui.database.stages;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.controllers.FieldsBrowserStageController;
+import fr.tduf.gui.database.controllers.MainStageController;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -15,20 +17,26 @@ import java.io.IOException;
  * Loads graphical interface for content fields browsing.
  */
 public class FieldsBrowserDesigner {
-
     private static final Class<FieldsBrowserDesigner> thisClass = FieldsBrowserDesigner.class;
+
+    private FieldsBrowserDesigner() {}
 
     /**
      * Loads scene from FXML resource.
-     * @param fieldsBrowserStage  : reference to fields browser stage.
+     * @param mainStageController  : reference to fields browser stage.
      */
-    public static FieldsBrowserStageController init(Stage fieldsBrowserStage) throws IOException {
+    public static FieldsBrowserStageController init(MainStageController mainStageController) throws IOException {
+        Stage fieldsStage = new Stage();
+        Platform.runLater(() -> fieldsStage.initOwner(mainStageController.getWindow()));
+
         FXMLLoader loader = new FXMLLoader(thisClass.getResource(FxConstants.PATH_FIELDS_BROWSER_STAGE_DESIGNER));
         Parent root = loader.load();
 
-        initWindow(fieldsBrowserStage, root);
+        initWindow(fieldsStage, root);
 
-        return loader.getController();
+        final FieldsBrowserStageController fieldsBrowserStageController = loader.getController();
+        fieldsBrowserStageController.setMainStageController(mainStageController);
+        return fieldsBrowserStageController;
     }
 
     private static void initWindow(Stage entriesStage, Parent mainRoot) {
