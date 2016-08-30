@@ -41,7 +41,7 @@ public abstract class AbstractGuiController implements Initializable {
     /**
      * @return Window associated to current scene.
      */
-    protected Window getWindow() {
+    public Window getWindow() {
         return root.getScene().getWindow();
     }
 
