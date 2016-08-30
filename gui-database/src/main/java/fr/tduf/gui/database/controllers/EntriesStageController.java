@@ -225,7 +225,7 @@ public class EntriesStageController extends AbstractGuiController {
                         entriesTableView));
     }
 
-    void setMainStageController(MainStageController mainStageController) {
+    public void setMainStageController(MainStageController mainStageController) {
         this.mainStageController = mainStageController;
     }
 

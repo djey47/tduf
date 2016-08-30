@@ -3,6 +3,8 @@ package fr.tduf.gui.database.stages;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.controllers.EntriesStageController;
+import fr.tduf.gui.database.controllers.MainStageController;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -15,20 +17,26 @@ import java.io.IOException;
  * Loads graphical interface for content entries.
  */
 public class EntriesDesigner {
-
     private static final Class<EntriesDesigner> thisClass = EntriesDesigner.class;
+
+    private EntriesDesigner() {}
 
     /**
      * Loads scene from FXML resource.
-     * @param entriesStage  : reference to content entries stage.
+     * @param mainStageController  : reference to main stage controller.
      */
-    public static EntriesStageController init(Stage entriesStage) throws IOException {
+    public static EntriesStageController init(MainStageController mainStageController) throws IOException {
+        Stage entriesStage = new Stage();
+        Platform.runLater(() -> entriesStage.initOwner(mainStageController.getWindow()));
+
         FXMLLoader loader = new FXMLLoader(thisClass.getResource(FxConstants.PATH_ENTRIES_RES_STAGE_DESIGNER));
         Parent root = loader.load();
 
         initWindow(entriesStage, root);
 
-        return loader.getController();
+        final EntriesStageController entriesStageController = loader.getController();
+        entriesStageController.setMainStageController(mainStageController);
+        return entriesStageController;
     }
 
     private static void initWindow(Stage entriesStage, Parent mainRoot) {
