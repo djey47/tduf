@@ -32,6 +32,10 @@ import java.util.Optional;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
+/**
+ *
+ */
+// TODO apply code rules
 public class ResourcesStageController extends AbstractGuiController {
     private static final String THIS_CLASS_NAME = ResourcesStageController.class.getSimpleName();
 
@@ -303,7 +307,7 @@ public class ResourcesStageController extends AbstractGuiController {
                         resourcesTableView));
     }
 
-    void setMainStageController(MainStageController mainStageController) {
+    public void setMainStageController(MainStageController mainStageController) {
         this.mainStageController = mainStageController;
     }
 

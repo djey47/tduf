@@ -157,6 +157,8 @@ public class MainStageController extends AbstractGuiController {
 
         viewDataController = new MainStageViewDataController(this);
         changeDataController = new MainStageChangeDataController(this);
+        resourcesStageController = ResourcesDesigner.init(this);
+
 
         dialogsHelper = new DialogsHelper();
 
@@ -177,8 +179,6 @@ public class MainStageController extends AbstractGuiController {
                 initialDatabaseDirectory.orElse(SettingsConstants.DATABASE_DIRECTORY_DEFAULT),
                 (observable, oldValue, newValue) -> handleLocaleChoiceChanged(newValue),
                 (observable, oldValue, newValue) -> handleProfileChoiceChanged(newValue));
-
-        initResourcesStageController();
 
         initEntriesStageController();
 
@@ -601,14 +601,6 @@ public class MainStageController extends AbstractGuiController {
                 CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_KO, databaseFixer.getException().getMessage());
             }
         });
-    }
-
-    private void initResourcesStageController() throws IOException {
-        Stage resourcesStage = new Stage();
-        Platform.runLater(() -> resourcesStage.initOwner(getWindow())); // runLater() ensures main stage will be initialized first.
-
-        resourcesStageController = ResourcesDesigner.init(resourcesStage);
-        resourcesStageController.setMainStageController(this);
     }
 
     private void initEntriesStageController() throws IOException {
