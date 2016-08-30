@@ -10,13 +10,10 @@ import fr.tduf.gui.common.services.DatabaseFixer;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.SettingsConstants;
 import fr.tduf.gui.database.controllers.helper.DialogsHelper;
-import fr.tduf.gui.database.converter.CurrentEntryIndexToStringConverter;
-import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
-import fr.tduf.gui.database.factory.EntryCellFactory;
 import fr.tduf.gui.database.services.DatabaseLoader;
 import fr.tduf.gui.database.services.DatabaseSaver;
 import fr.tduf.gui.database.stages.EntriesDesigner;
@@ -35,7 +32,6 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -58,7 +54,6 @@ import java.util.*;
 import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
-import static javafx.beans.binding.Bindings.size;
 import static javafx.beans.binding.Bindings.when;
 import static javafx.concurrent.Worker.State.FAILED;
 import static javafx.concurrent.Worker.State.SUCCEEDED;
@@ -70,42 +65,38 @@ import static javafx.scene.control.Alert.AlertType.*;
 public class MainStageController extends AbstractGuiController {
     private static final String THIS_CLASS_NAME = MainStageController.class.getSimpleName();
 
-    Deque<EditorLocation> navigationHistory = new ArrayDeque<>();
+    final Deque<EditorLocation> navigationHistory = new ArrayDeque<>();
 
-    Property<fr.tduf.libunlimited.common.game.domain.Locale> currentLocaleProperty = new SimpleObjectProperty<>(UNITED_STATES);
-    Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRank = new HashMap<>();
-    ObservableList<ContentEntryDataItem> browsableEntries;
+    final Property<fr.tduf.libunlimited.common.game.domain.Locale> currentLocaleProperty = new SimpleObjectProperty<>(UNITED_STATES);
+    final Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRank = new HashMap<>();
 
     private final Property<Long> currentEntryIndexProperty = new SimpleObjectProperty<>(-1L);
-    private Property<DbDto.Topic> currentTopicProperty;
-    private StringProperty currentEntryLabelProperty;
-    private Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> resourceListByTopicLink = new HashMap<>();
+    private final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>();
+    private final StringProperty currentEntryLabelProperty = new SimpleStringProperty(DisplayConstants.LABEL_ITEM_ENTRY_DEFAULT);
+    private final Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> resourceListByTopicLink = new HashMap<>();
 
-    private DbDto currentTopicObject;
     private EditorLayoutDto layoutObject;
     private EditorLayoutDto.EditorProfileDto profileObject;
 
-    private final BankSupport bankSupport = new GenuineBnkGateway(new CommandLineHelper());
-
-    private ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
-
+    private BulkDatabaseMiner databaseMiner;
     private DialogsHelper dialogsHelper;
+    private final BankSupport bankSupport = new GenuineBnkGateway(new CommandLineHelper());
+    private final ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
 
     private MainStageViewDataController viewDataController;
     private MainStageChangeDataController changeDataController;
-
     private ResourcesStageController resourcesStageController;
     private EntriesStageController entriesStageController;
     private FieldsBrowserStageController fieldsBrowserStageController;
 
-    private BulkDatabaseMiner databaseMiner;
-    private List<DbDto> databaseObjects = new ArrayList<>(18);
+    private final List<DbDto> databaseObjects = new ArrayList<>(18);
+    private DbDto currentTopicObject;
 
-    private BooleanProperty runningServiceProperty = new SimpleBooleanProperty();
-    private DatabaseLoader databaseLoader = new DatabaseLoader();
-    private DatabaseSaver databaseSaver = new DatabaseSaver();
-    private DatabaseChecker databaseChecker = new DatabaseChecker();
-    private DatabaseFixer databaseFixer = new DatabaseFixer();
+    private final BooleanProperty runningServiceProperty = new SimpleBooleanProperty();
+    private final DatabaseLoader databaseLoader = new DatabaseLoader();
+    private final DatabaseSaver databaseSaver = new DatabaseSaver();
+    private final DatabaseChecker databaseChecker = new DatabaseChecker();
+    private final DatabaseFixer databaseFixer = new DatabaseFixer();
 
     @FXML
     ChoiceBox<Locale> localesChoiceBox;
@@ -129,22 +120,22 @@ public class MainStageController extends AbstractGuiController {
     TitledPane settingsPane;
 
     @FXML
-    private Label currentTopicLabel;
+    TextField entryNumberTextField;
 
     @FXML
-    private Label currentEntryLabel;
+    Label entryItemsCountLabel;
+
+    @FXML
+    Label currentTopicLabel;
+
+    @FXML
+    Label currentEntryLabel;
+
+    @FXML
+    ComboBox<ContentEntryDataItem> entryNumberComboBox;
 
     @FXML
     private VBox defaultTab;
-
-    @FXML
-    private TextField entryNumberTextField;
-
-    @FXML
-    private ComboBox<ContentEntryDataItem> entryNumberComboBox;
-
-    @FXML
-    private Label entryItemsCountLabel;
 
     @FXML
     private Label statusLabel;
@@ -179,9 +170,10 @@ public class MainStageController extends AbstractGuiController {
                 (observable, oldValue, newValue) -> handleLocaleChoiceChanged(newValue),
                 (observable, oldValue, newValue) -> handleProfileChoiceChanged(newValue));
 
-        initTopicEntryHeaderPane();
+        viewDataController.initTopicEntryHeaderPane(
+                (observable, oldValue, newValue) -> handleEntryChoiceChanged(newValue));
 
-        initStatusBar();
+        viewDataController.initStatusBar();
 
         initServiceListeners();
 
@@ -219,8 +211,7 @@ public class MainStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleSaveButtonMouseClick");
 
         String databaseLocation = this.databaseLocationTextField.getText();
-        if (databaseObjects == null
-                || databaseObjects.isEmpty()
+        if (databaseObjects.isEmpty()
                 || StringUtils.isEmpty(databaseLocation)) {
             return;
         }
@@ -553,7 +544,8 @@ public class MainStageController extends AbstractGuiController {
     private void initServiceListeners() {
         databaseLoader.stateProperty().addListener((observableValue, oldState, newState) -> {
             if (SUCCEEDED == newState) {
-                databaseObjects = databaseLoader.getValue();
+                databaseObjects.clear();
+                databaseObjects.addAll(databaseLoader.getValue());
                 viewDataController.updateDisplayWithLoadedObjects();
             } else if (FAILED == newState) {
                 CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_LOAD, DisplayConstants.MESSAGE_DATABASE_LOAD_KO, databaseLoader.getException().getMessage());
@@ -596,25 +588,6 @@ public class MainStageController extends AbstractGuiController {
                 CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_KO, databaseFixer.getException().getMessage());
             }
         });
-    }
-
-    private void initStatusBar() {
-        entryNumberTextField.textProperty().bindBidirectional(currentEntryIndexProperty, new CurrentEntryIndexToStringConverter());
-        entryItemsCountLabel.textProperty().bind(size(browsableEntries).asString(DisplayConstants.LABEL_ITEM_ENTRY_COUNT));
-    }
-
-    private void initTopicEntryHeaderPane() {
-        currentTopicProperty = new SimpleObjectProperty<>();
-        currentEntryLabelProperty = new SimpleStringProperty(DisplayConstants.LABEL_ITEM_ENTRY_DEFAULT);
-        browsableEntries = FXCollections.observableArrayList();
-
-        currentTopicLabel.textProperty().bindBidirectional(currentTopicProperty, new DatabaseTopicToStringConverter());
-        currentEntryLabel.textProperty().bindBidirectional(currentEntryLabelProperty);
-
-        entryNumberComboBox.setItems(browsableEntries);
-        entryNumberComboBox.setCellFactory(new EntryCellFactory());
-        entryNumberComboBox.getSelectionModel().selectedItemProperty()
-                .addListener((observable, oldValue, newValue) -> handleEntryChoiceChanged(newValue));
     }
 
     private void browseForDatabaseDirectory() {

@@ -9,11 +9,14 @@ import fr.tduf.gui.database.common.helper.DatabaseQueryHelper;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
 import fr.tduf.gui.database.controllers.helper.DynamicFieldControlsHelper;
 import fr.tduf.gui.database.controllers.helper.DynamicLinkControlsHelper;
+import fr.tduf.gui.database.converter.CurrentEntryIndexToStringConverter;
+import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
+import fr.tduf.gui.database.factory.EntryCellFactory;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -23,9 +26,9 @@ import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Tab;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -37,6 +40,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
+import static javafx.beans.binding.Bindings.size;
 
 /**
  * Specialized controller to display database contents.
@@ -45,12 +49,12 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     private static final String THIS_CLASS_NAME = MainStageViewDataController.class.getSimpleName();
     private static final Class<MainStageViewDataController> thisClass = MainStageViewDataController.class;
 
+    private final DynamicFieldControlsHelper dynamicFieldControlsHelper;
+    private final DynamicLinkControlsHelper dynamicLinkControlsHelper;
 
-    private DynamicFieldControlsHelper dynamicFieldControlsHelper;
-    private DynamicLinkControlsHelper dynamicLinkControlsHelper;
-
-    private Map<String, VBox> tabContentByName = new HashMap<>();
-    private Map<Integer, SimpleStringProperty> rawValuesByFieldRank = new HashMap<>();
+    private final ObservableList<ContentEntryDataItem> browsableEntries = FXCollections.observableArrayList();
+    private final Map<String, VBox> tabContentByName = new HashMap<>();
+    private final Map<Integer, SimpleStringProperty> rawValuesByFieldRank = new HashMap<>();
 
     MainStageViewDataController(MainStageController mainStageController) {
         super(mainStageController);
@@ -75,6 +79,21 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         getDatabaseLocationTextField().setText(databaseDirectory);
     }
 
+    void initTopicEntryHeaderPane(ChangeListener<ContentEntryDataItem> entryChangeListener) {
+        getCurrentTopicLabel().textProperty().bindBidirectional(currentTopicProperty(), new DatabaseTopicToStringConverter());
+        getCurrentEntryLabel().textProperty().bindBidirectional(currentEntryLabelProperty());
+
+        getEntryNumberComboBox().setItems(browsableEntries);
+        getEntryNumberComboBox().setCellFactory(new EntryCellFactory());
+        getEntryNumberComboBox().getSelectionModel().selectedItemProperty()
+                .addListener(entryChangeListener);
+    }
+
+    void initStatusBar() {
+        getEntryNumberTextField().textProperty().bindBidirectional(currentEntryIndexProperty(), new CurrentEntryIndexToStringConverter());
+        getEntryItemsCountLabel().textProperty().bind(size(browsableEntries).asString(DisplayConstants.LABEL_ITEM_ENTRY_COUNT));
+    }
+
     void updateDisplayWithLoadedObjects() {
         if (!getDatabaseObjects().isEmpty()) {
             setMiner(BulkDatabaseMiner.load(getDatabaseObjects()));
@@ -91,7 +110,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     }
 
     void updateBrowsableEntryLabel(long internalEntryId) {
-        getBrowsableEntries().stream()
+        browsableEntries.stream()
                 .filter(entry -> entry.internalEntryIdProperty().get() == internalEntryId)
                 .findAny()
                 .ifPresent(entry -> {
@@ -383,7 +402,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                 getLayoutObject());
 
         final DbDto.Topic currentTopic = getCurrentTopicObject().getTopic();
-        getBrowsableEntries().setAll(
+        browsableEntries.setAll(
                 getMiner().getDatabaseTopic(currentTopic)
                         .map(topicObject -> topicObject.getData().getEntries().stream()
                                 .map(topicEntry -> getDisplayableEntryForCurrentLocale(topicEntry, labelFieldRanks, currentTopic))

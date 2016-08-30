@@ -98,10 +98,6 @@ abstract class AbstractMainStageSubController {
         return mainStageController.getApplicationConfiguration();
     }
 
-    protected ObservableList<ContentEntryDataItem> getBrowsableEntries() {
-        return mainStageController.browsableEntries;
-    }
-
     protected long getCurrentEntryIndex() {
         // Getter kept for testing
         return mainStageController.getCurrentEntryIndex();
@@ -167,5 +163,25 @@ abstract class AbstractMainStageSubController {
 
     protected VBox getDefaultTab() {
         return mainStageController.getDefaultTab();
+    }
+
+    protected Label getEntryItemsCountLabel() {
+        return mainStageController.entryItemsCountLabel;
+    }
+
+    protected  Label getCurrentTopicLabel() {
+        return mainStageController.currentTopicLabel;
+    }
+
+    protected  Label getCurrentEntryLabel() {
+        return mainStageController.currentEntryLabel;
+    }
+
+    protected TextField getEntryNumberTextField() {
+        return mainStageController.entryNumberTextField;
+    }
+
+    protected ComboBox<ContentEntryDataItem> getEntryNumberComboBox() {
+        return mainStageController.entryNumberComboBox;
     }
 }
