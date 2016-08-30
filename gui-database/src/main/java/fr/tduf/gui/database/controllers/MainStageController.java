@@ -76,9 +76,9 @@ public class MainStageController extends AbstractGuiController {
     Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRank = new HashMap<>();
     ObservableList<ContentEntryDataItem> browsableEntries;
 
+    private final Property<Long> currentEntryIndexProperty = new SimpleObjectProperty<>(-1L);
     private Property<DbDto.Topic> currentTopicProperty;
-    private Property<Long> currentEntryIndexProperty;
-    private SimpleStringProperty currentEntryLabelProperty;
+    private StringProperty currentEntryLabelProperty;
     private Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> resourceListByTopicLink = new HashMap<>();
 
     private DbDto currentTopicObject;
@@ -599,8 +599,6 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void initStatusBar() {
-        currentEntryIndexProperty = new SimpleObjectProperty<>(-1L);
-
         entryNumberTextField.textProperty().bindBidirectional(currentEntryIndexProperty, new CurrentEntryIndexToStringConverter());
         entryItemsCountLabel.textProperty().bind(size(browsableEntries).asString(DisplayConstants.LABEL_ITEM_ENTRY_COUNT));
     }
@@ -884,7 +882,7 @@ public class MainStageController extends AbstractGuiController {
         return currentLocaleProperty;
     }
 
-    SimpleStringProperty getCurrentEntryLabelProperty() {
+    StringProperty getCurrentEntryLabelProperty() {
         return currentEntryLabelProperty;
     }
 

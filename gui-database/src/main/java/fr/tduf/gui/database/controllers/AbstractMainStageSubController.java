@@ -10,6 +10,7 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
@@ -121,7 +122,7 @@ abstract class AbstractMainStageSubController {
         return mainStageController.getCurrentLocaleProperty();
     }
 
-    protected SimpleStringProperty currentEntryLabelProperty() {
+    protected StringProperty currentEntryLabelProperty() {
         // Getter kept for testing
         return mainStageController.getCurrentEntryLabelProperty();
     }
