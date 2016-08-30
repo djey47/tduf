@@ -180,10 +180,11 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     void updateEntriesAndSwitchTo(long entryIndex) {
         fillBrowsableEntries();
-        if (entryIndex < 0) {
-            entryIndex = 0;
+        long effectiveIndex = entryIndex;
+        if (effectiveIndex < 0) {
+            effectiveIndex = 0;
         }
-        switchToContentEntry(entryIndex);
+        switchToContentEntry(effectiveIndex);
     }
 
     void switchToSelectedResourceForLinkedTopic(ContentEntryDataItem selectedResource, DbDto.Topic targetTopic, String targetProfileName) {
@@ -205,19 +206,6 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     void switchToProfileAndRemoteEntry(String profileName, long localEntryIndex, int fieldRank, DbDto.Topic localTopic, DbDto.Topic remoteTopic) {
         getMiner().getRemoteContentEntryWithInternalIdentifier(localTopic, fieldRank, localEntryIndex, remoteTopic)
                 .ifPresent(remoteContentEntry -> switchToProfileAndEntry(profileName, remoteContentEntry.getId(), true));
-    }
-
-    void switchToProfileAndEntry(String profileName, long entryIndex, boolean storeLocation) {
-        if (storeLocation) {
-            EditorLocation currentLocation = new EditorLocation(
-                    getTabPane().selectionModelProperty().get().getSelectedIndex(),
-                    getCurrentProfileObject().getName(),
-                    currentEntryIndexProperty().getValue());
-            getNavigationHistory().push(currentLocation);
-        }
-
-        getProfilesChoiceBox().setValue(profileName);
-        switchToContentEntry(entryIndex);
     }
 
     void switchToContentEntry(long entryIndex) {
@@ -417,6 +405,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         }
     }
 
+    // Ignore warning
     private ContentEntryDataItem getDisplayableEntryForCurrentLocale(ContentEntryDto topicEntry, List<Integer> labelFieldRanks, DbDto.Topic topic) {
         ContentEntryDataItem contentEntryDataItem = new ContentEntryDataItem();
 
@@ -529,6 +518,19 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                     getLayoutObject());
         }
         return DisplayConstants.VALUE_ERROR_ENTRY_NOT_FOUND;
+    }
+
+    private void switchToProfileAndEntry(String profileName, long entryIndex, boolean storeLocation) {
+        if (storeLocation) {
+            EditorLocation currentLocation = new EditorLocation(
+                    getTabPane().selectionModelProperty().get().getSelectedIndex(),
+                    getCurrentProfileObject().getName(),
+                    currentEntryIndexProperty().getValue());
+            getNavigationHistory().push(currentLocation);
+        }
+
+        getProfilesChoiceBox().setValue(profileName);
+        switchToContentEntry(entryIndex);
     }
 
     public Map<String, VBox> getTabContentByName() {
