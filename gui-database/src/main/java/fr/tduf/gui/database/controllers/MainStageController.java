@@ -125,10 +125,10 @@ public class MainStageController extends AbstractGuiController {
     TextField databaseLocationTextField;
 
     @FXML
-    private Label creditsLabel;
+    Label creditsLabel;
 
     @FXML
-    private TitledPane settingsPane;
+    TitledPane settingsPane;
 
     @FXML
     private Label currentTopicLabel;
@@ -171,9 +171,12 @@ public class MainStageController extends AbstractGuiController {
 
         Optional<String> initialDatabaseDirectory = viewDataController.resolveInitialDatabaseDirectory();
 
-        initTopToolbar();
+        viewDataController.initTopToolbar();
 
-        initSettingsPane(initialDatabaseDirectory.orElse(SettingsConstants.DATABASE_DIRECTORY_DEFAULT));
+        viewDataController.initSettingsPane(
+                initialDatabaseDirectory.orElse(SettingsConstants.DATABASE_DIRECTORY_DEFAULT),
+                (observable, oldValue, newValue) -> handleLocaleChoiceChanged(newValue),
+                (observable, oldValue, newValue) -> handleProfileChoiceChanged(newValue));
 
         initResourcesStageController();
 
@@ -624,24 +627,6 @@ public class MainStageController extends AbstractGuiController {
         fieldsBrowserStageController.setMainStageController(this);
     }
 
-    private void initTopToolbar() {
-        creditsLabel.setText(DisplayConstants.LABEL_STATUS_VERSION);
-    }
-
-    private void initSettingsPane(String databaseDirectory) throws IOException {
-        settingsPane.setExpanded(false);
-
-        viewDataController.fillLocales();
-        localesChoiceBox.getSelectionModel().selectedItemProperty()
-                .addListener((observable, oldValue, newValue) -> handleLocaleChoiceChanged(newValue));
-
-        viewDataController.loadAndFillProfiles();
-        profilesChoiceBox.getSelectionModel().selectedItemProperty()
-                .addListener((observable, oldValue, newValue) -> handleProfileChoiceChanged((String) newValue));
-
-        databaseLocationTextField.setText(databaseDirectory);
-    }
-
     private void initStatusBar() {
         currentEntryIndexProperty = new SimpleObjectProperty<>(-1L);
 
@@ -660,7 +645,7 @@ public class MainStageController extends AbstractGuiController {
         entryNumberComboBox.setItems(browsableEntries);
         entryNumberComboBox.setCellFactory(new EntryCellFactory());
         entryNumberComboBox.getSelectionModel().selectedItemProperty()
-                .addListener((observable, oldValue, newValue) -> handleEntryChoiceChanged((ContentEntryDataItem) newValue));
+                .addListener((observable, oldValue, newValue) -> handleEntryChoiceChanged(newValue));
     }
 
     private void browseForDatabaseDirectory() {

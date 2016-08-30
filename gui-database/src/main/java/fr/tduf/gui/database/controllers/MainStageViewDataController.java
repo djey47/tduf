@@ -22,6 +22,7 @@ import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
@@ -58,6 +59,22 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         dynamicLinkControlsHelper = new DynamicLinkControlsHelper(mainStageController);
     }
 
+    void initTopToolbar() {
+        getCreditsLabel().setText(DisplayConstants.LABEL_STATUS_VERSION);
+    }
+
+    void initSettingsPane(String databaseDirectory, ChangeListener<Locale> localeChangeListener, ChangeListener<String> profileChangeListener) throws IOException {
+        getSettingsPane().setExpanded(false);
+
+        fillLocales();
+        getLocalesChoiceBox().getSelectionModel().selectedItemProperty()
+                .addListener(localeChangeListener);
+        loadAndFillProfiles();
+        getProfilesChoiceBox().getSelectionModel().selectedItemProperty()
+                .addListener(profileChangeListener);
+        getDatabaseLocationTextField().setText(databaseDirectory);
+    }
+
     void updateDisplayWithLoadedObjects() {
         if (!getDatabaseObjects().isEmpty()) {
             setMiner(BulkDatabaseMiner.load(getDatabaseObjects()));
@@ -73,20 +90,6 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         }
     }
 
-    void fillBrowsableEntries() {
-        final List<Integer> labelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(
-                getCurrentProfileObject().getName(),
-                getLayoutObject());
-
-        final DbDto.Topic currentTopic = getCurrentTopicObject().getTopic();
-        getBrowsableEntries().setAll(
-                getMiner().getDatabaseTopic(currentTopic)
-                        .map(topicObject -> topicObject.getData().getEntries().stream()
-                                .map(topicEntry -> getDisplayableEntryForCurrentLocale(topicEntry, labelFieldRanks, currentTopic))
-                                .collect(toList()))
-                        .orElse(new ArrayList<>()));
-    }
-
     void updateBrowsableEntryLabel(long internalEntryId) {
         getBrowsableEntries().stream()
                 .filter(entry -> entry.internalEntryIdProperty().get() == internalEntryId)
@@ -100,13 +103,6 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                     String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(internalEntryId, currentTopic, currentLocaleProperty().getValue(), labelFieldRanks, getMiner(), getLayoutObject());
                     entry.setValue(entryValue);
                 });
-    }
-
-    void fillLocales() {
-        Locale.valuesAsStream()
-                .collect(toCollection(() -> getLocalesChoiceBox().getItems()));
-
-        getLocalesChoiceBox().valueProperty().bindBidirectional(currentLocaleProperty());
     }
 
     void loadAndFillProfiles() throws IOException {
@@ -384,6 +380,27 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                 getTabContentByName().put(groupName, vbox);
             });
         }
+    }
+
+    private void fillLocales() {
+        Locale.valuesAsStream()
+                .collect(toCollection(() -> getLocalesChoiceBox().getItems()));
+
+        getLocalesChoiceBox().valueProperty().bindBidirectional(currentLocaleProperty());
+    }
+
+    private void fillBrowsableEntries() {
+        final List<Integer> labelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(
+                getCurrentProfileObject().getName(),
+                getLayoutObject());
+
+        final DbDto.Topic currentTopic = getCurrentTopicObject().getTopic();
+        getBrowsableEntries().setAll(
+                getMiner().getDatabaseTopic(currentTopic)
+                        .map(topicObject -> topicObject.getData().getEntries().stream()
+                                .map(topicEntry -> getDisplayableEntryForCurrentLocale(topicEntry, labelFieldRanks, currentTopic))
+                                .collect(toList()))
+                        .orElse(new ArrayList<>()));
     }
 
     private void addDynamicControls() {

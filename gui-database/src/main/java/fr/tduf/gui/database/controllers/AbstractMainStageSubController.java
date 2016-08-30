@@ -144,6 +144,14 @@ abstract class AbstractMainStageSubController {
         return mainStageController.getProfilesChoiceBox();
     }
 
+    protected Label getCreditsLabel() {
+        return mainStageController.creditsLabel;
+    }
+
+    protected TitledPane getSettingsPane() {
+        return mainStageController.settingsPane;
+    }
+
     protected ChoiceBox<Locale> getLocalesChoiceBox() {
         return mainStageController.localesChoiceBox;
     }
