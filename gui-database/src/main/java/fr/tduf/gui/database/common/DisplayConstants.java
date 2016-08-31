@@ -94,4 +94,8 @@ public class DisplayConstants {
     public static final String QUESTION_AFFECTED_LOCALES = "Which locales should be affected?";
 
     public static final String WARNING_DELETED_RESOURCE = "This resource will be removed.";
+
+    public static final String TAB_NAME_DEFAULT = "Default";
+
+    private DisplayConstants() {}
 }
