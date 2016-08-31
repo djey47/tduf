@@ -46,6 +46,7 @@ import static javafx.beans.binding.Bindings.size;
 /**
  * Specialized controller to display database contents.
  */
+// TODO apply code rules
 public class MainStageViewDataController extends AbstractMainStageSubController {
     private static final String THIS_CLASS_NAME = MainStageViewDataController.class.getSimpleName();
     private static final Class<MainStageViewDataController> thisClass = MainStageViewDataController.class;
@@ -155,7 +156,6 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         initTabPane();
     }
 
-    // TODO tests
     void updateAllPropertiesWithItemValues() {
         updateCurrentEntryLabelProperty();
 

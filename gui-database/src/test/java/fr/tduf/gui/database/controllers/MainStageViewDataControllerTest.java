@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.INTEGER;
 import static java.util.Optional.empty;
@@ -42,6 +43,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class MainStageViewDataControllerTest {
     private static final DbDto.Topic TOPIC = CAR_PHYSICS_DATA;
+    private static final Locale LOCALE = UNITED_STATES;
 
     @Rule
     public JavaFXThreadingRule javaFXRule = new JavaFXThreadingRule();
@@ -75,7 +77,7 @@ public class MainStageViewDataControllerTest {
         when(mainStageControllerMock.getMiner()).thenReturn(minerMock);
         when(mainStageControllerMock.getLayoutObject()).thenReturn(layoutObject);
 
-        when(mainStageControllerMock.getCurrentLocaleProperty()).thenReturn(new SimpleObjectProperty<>(Locale.UNITED_STATES));
+        when(mainStageControllerMock.getCurrentLocaleProperty()).thenReturn(new SimpleObjectProperty<>(LOCALE));
         when(mainStageControllerMock.getCurrentEntryLabelProperty()).thenReturn(currentEntryLabelProperty);
 
         when(mainStageControllerMock.getProfilesChoiceBox()).thenReturn(new ChoiceBox<>());
@@ -230,6 +232,60 @@ public class MainStageViewDataControllerTest {
         assertThat(currentEntryIndexProperty.getValue()).isEqualTo(0L);
         assertThat(controller.getResolvedValuesByFieldRank()).isEmpty();
         assertThat(controller.getResourcesByTopicLink()).isEmpty();
+    }
+
+    @Test
+    public void updateAllPropertiesWithItemValues_whenEntryNotFound() {
+        // GIVEN
+        final EditorLayoutDto.EditorProfileDto profileObject = layoutObject.getProfiles().get(0);
+        when(mainStageControllerMock.getCurrentProfileObject()).thenReturn(profileObject);
+        final Property<Long> currentEntryIndexProperty = new SimpleObjectProperty<>(0L);
+        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(currentEntryIndexProperty);
+        final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>(TOPIC);
+        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
+        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(0L, TOPIC)).thenReturn(empty());
+
+        // WHEN
+        controller.updateAllPropertiesWithItemValues();
+
+        // THEN
+    }
+
+    @Test
+    public void updateCurrentEntryLabelProperty_whenNoFieldRank_shouldReturnDefaultLabel() {
+        // GIVEN
+        final EditorLayoutDto.EditorProfileDto profileObject = layoutObject.getProfiles().get(0);
+        when(mainStageControllerMock.getCurrentProfileObject()).thenReturn(profileObject);
+        final Property<Long> currentEntryIndexProperty = new SimpleObjectProperty<>(0L);
+        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(currentEntryIndexProperty);
+        final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>(TOPIC);
+        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
+        when(minerMock.getLocalizedResourceValueFromContentEntry(0, 1, TOPIC, LOCALE)).thenReturn(of("label"));
+
+        // WHEN
+        controller.updateCurrentEntryLabelProperty();
+
+        // THEN
+        assertThat(currentEntryLabelProperty.getValue()).isEqualTo("<?>");
+    }
+
+    @Test
+    public void updateCurrentEntryLabelProperty_whenSingleFieldRank_shouldRetrieveLabel() {
+        // GIVEN
+        final EditorLayoutDto.EditorProfileDto profileObject = layoutObject.getProfiles().get(0);
+        profileObject.addEntryLabelFieldRank(1);
+        when(mainStageControllerMock.getCurrentProfileObject()).thenReturn(profileObject);
+        final Property<Long> currentEntryIndexProperty = new SimpleObjectProperty<>(0L);
+        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(currentEntryIndexProperty);
+        final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>(TOPIC);
+        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
+        when(minerMock.getLocalizedResourceValueFromContentEntry(0, 1, TOPIC, LOCALE)).thenReturn(of("label"));
+
+        // WHEN
+        controller.updateCurrentEntryLabelProperty();
+
+        // THEN
+        assertThat(currentEntryLabelProperty.getValue()).isEqualTo("label");
     }
 
     private EditorLayoutDto createLayoutObject() {
