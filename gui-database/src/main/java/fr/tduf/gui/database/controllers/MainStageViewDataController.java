@@ -95,18 +95,14 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     }
 
     void updateDisplayWithLoadedObjects() {
-        if (!getDatabaseObjects().isEmpty()) {
-            setMiner(BulkDatabaseMiner.load(getDatabaseObjects()));
+        setMiner(BulkDatabaseMiner.load(getDatabaseObjects()));
 
-            getProfilesChoiceBox().getSelectionModel().clearSelection(); // ensures event will be fired even though 1st item is selected
-            getProfilesChoiceBox().getSelectionModel().selectFirst();
+        getNavigationHistory().clear();
 
-            getNavigationHistory().clear();
+        getProfilesChoiceBox().getSelectionModel().clearSelection(); // ensures event will be fired even though 1st item is selected
+        getProfilesChoiceBox().getSelectionModel().selectFirst();
 
-            getLoadDatabaseButton().disableProperty().setValue(true);
-
-            updateConfiguration();
-        }
+        updateConfiguration();
     }
 
     void updateBrowsableEntryLabel(long internalEntryId) {
@@ -146,10 +142,10 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     // TODO tests
     void refreshAll() {
-        currentEntryIndexProperty().setValue(0L);
         resolvedValuePropertyByFieldRank().clear();
-        getResourceListByTopicLink().clear();
+        resourceListByTopicLink().clear();
         rawValuesByFieldRank.clear();
+        currentEntryIndexProperty().setValue(0L);
 
         fillBrowsableEntries();
 
@@ -164,7 +160,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         getMiner().getContentEntryFromTopicWithInternalIdentifier(entryIndex, currentTopic)
                 .ifPresent(entry -> entry.getItems().forEach(this::updateItemProperties));
 
-        getResourceListByTopicLink().entrySet().forEach(this::updateLinkProperties);
+        resourceListByTopicLink().entrySet().forEach(this::updateLinkProperties);
     }
 
     void updateItemProperties(ContentItemDto item) {
@@ -188,7 +184,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     }
 
     void updateLinkProperties(TopicLinkDto topicLinkObject) {
-        getResourceListByTopicLink().entrySet().stream()
+        resourceListByTopicLink().entrySet().stream()
 
                 .filter(mapEntry -> mapEntry.getKey().equals(topicLinkObject))
 

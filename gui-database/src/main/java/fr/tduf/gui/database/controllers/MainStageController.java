@@ -543,7 +543,8 @@ public class MainStageController extends AbstractGuiController {
 
     private void initServiceListeners() {
         databaseLoader.stateProperty().addListener((observableValue, oldState, newState) -> {
-            if (SUCCEEDED == newState) {
+            if (SUCCEEDED == newState
+                    && !databaseLoader.getValue().isEmpty()) {
                 databaseObjects.clear();
                 databaseObjects.addAll(databaseLoader.getValue());
                 viewDataController.updateDisplayWithLoadedObjects();

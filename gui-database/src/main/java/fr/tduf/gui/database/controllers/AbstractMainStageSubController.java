@@ -123,7 +123,7 @@ abstract class AbstractMainStageSubController {
         return mainStageController.getCurrentEntryLabelProperty();
     }
 
-    protected Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> getResourceListByTopicLink() {
+    protected Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> resourceListByTopicLink() {
         // Getter kept for testing
         return mainStageController.getResourceListByTopicLink();
     }
