@@ -140,7 +140,7 @@ abstract class AbstractMainStageSubController {
     }
 
     protected TabPane getTabPane() {
-        return mainStageController.tabPane;
+        return mainStageController.getTabPane();
     }
 
     protected Label getEntryItemsCountLabel() {

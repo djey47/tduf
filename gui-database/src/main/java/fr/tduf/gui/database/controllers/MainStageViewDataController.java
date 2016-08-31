@@ -131,12 +131,13 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         setLayoutObject(editorLayoutDto);
     }
 
-    // TODO tests
     void applyProfile(String profileName) {
         final EditorLayoutDto.EditorProfileDto profileObject = EditorLayoutHelper.getAvailableProfileByName(profileName, getLayoutObject());
-        final DbDto currentTopicObject = getMiner().getDatabaseTopic(profileObject.getTopic()).get();
+        final DbDto.Topic topic = profileObject.getTopic();
+        final DbDto currentTopicObject = getMiner().getDatabaseTopic(topic)
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No database object for topic: " + topic));
 
-        currentTopicProperty().setValue(currentTopicObject.getTopic());
+        currentTopicProperty().setValue(topic);
 
         setCurrentProfileObject(profileObject);
         setCurrentTopicObject(currentTopicObject);
@@ -155,6 +156,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         initTabPane();
     }
 
+    // TODO tests
     void updateAllPropertiesWithItemValues() {
         updateCurrentEntryLabelProperty();
 

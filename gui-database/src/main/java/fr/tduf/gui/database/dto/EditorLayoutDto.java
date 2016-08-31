@@ -8,8 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents all availables profiles in Database Editor
+ * Represents all available profiles in Database Editor
  */
+// TODO apply code rules
 @JsonTypeName("editorLayout")
 public class EditorLayoutDto {
 
@@ -69,6 +70,10 @@ public class EditorLayoutDto {
 
         public List<Integer> getEntryLabelFieldRanks() {
             return entryLabelFieldRanks;
+        }
+
+        public void setTopic(DbDto.Topic topic) {
+            this.topic = topic;
         }
     }
 }

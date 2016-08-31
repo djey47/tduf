@@ -103,9 +103,6 @@ public class MainStageController extends AbstractGuiController {
     Button loadDatabaseButton;
 
     @FXML
-    TabPane tabPane;
-
-    @FXML
     TextField databaseLocationTextField;
 
     @FXML
@@ -128,6 +125,9 @@ public class MainStageController extends AbstractGuiController {
 
     @FXML
     ComboBox<ContentEntryDataItem> entryNumberComboBox;
+
+    @FXML
+    private TabPane tabPane;
 
     @FXML
     private Label statusLabel;
@@ -860,22 +860,23 @@ public class MainStageController extends AbstractGuiController {
         return fieldsBrowserStageController;
     }
 
-    // For tests
     List<DbDto> getDatabaseObjects() {
         return databaseObjects;
     }
 
-    // For tests
     long getCurrentEntryIndex() {
         return currentEntryIndexProperty.getValue();
     }
 
-    // For tests
     ApplicationConfiguration getApplicationConfiguration() {
         return applicationConfiguration;
     }
 
     ChoiceBox<String> getProfilesChoiceBox() {
         return profilesChoiceBox;
+    }
+
+    TabPane getTabPane() {
+        return tabPane;
     }
 }
