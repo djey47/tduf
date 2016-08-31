@@ -145,7 +145,6 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         refreshAll();
     }
 
-    // TODO tests
     void refreshAll() {
         resolvedValuesByFieldRank.clear();
         resourcesByTopicLink.clear();

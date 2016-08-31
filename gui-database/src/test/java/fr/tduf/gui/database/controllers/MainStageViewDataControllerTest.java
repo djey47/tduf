@@ -63,6 +63,9 @@ public class MainStageViewDataControllerTest {
 
     private final EditorLayoutDto layoutObject = createLayoutObject();
 
+    private final DbDto topicObject = createTopicObject();
+
+
     private final StringProperty currentEntryLabelProperty = new SimpleStringProperty("");
 
     @Before
@@ -77,6 +80,8 @@ public class MainStageViewDataControllerTest {
 
         when(mainStageControllerMock.getProfilesChoiceBox()).thenReturn(new ChoiceBox<>());
         when(mainStageControllerMock.getTabPane()).thenReturn(new TabPane());
+
+        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(of(topicObject));
     }
 
     @Test
@@ -93,7 +98,7 @@ public class MainStageViewDataControllerTest {
 
         when(mainStageControllerMock.getCurrentProfileObject()).thenReturn(layoutObject.getProfiles().get(0));
         when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0L));
-        when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(createTopicObject());
+        when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(topicObject);
         when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(TOPIC));
 
         when(minerMock.getContentEntryFromTopicWithInternalIdentifier(0L, TOPIC)).thenReturn(of(contentEntry));
@@ -191,11 +196,8 @@ public class MainStageViewDataControllerTest {
         // GIVEN
         Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>();
         when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
-        Property<Long> currentEntryIndexProperty = new SimpleObjectProperty<>();
-        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(currentEntryIndexProperty);
-        final DbDto currentTopicObject = createTopicObject();
-        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(of(currentTopicObject));
-        when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(currentTopicObject);
+        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>());
+        when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(topicObject);
         final EditorLayoutDto.EditorProfileDto profileObject = layoutObject.getProfiles().get(0);
         when(mainStageControllerMock.getCurrentProfileObject()).thenReturn(profileObject);
         when(minerMock.getContentEntryFromTopicWithInternalIdentifier(0L, TOPIC)).thenReturn(empty());
@@ -206,7 +208,28 @@ public class MainStageViewDataControllerTest {
         // THEN
         assertThat(currentTopicProperty.getValue()).isEqualTo(TOPIC);
         verify(mainStageControllerMock).setCurrentProfileObject(profileObject);
-        verify(mainStageControllerMock).setCurrentTopicObject(currentTopicObject);
+        verify(mainStageControllerMock).setCurrentTopicObject(topicObject);
+    }
+
+    @Test
+    public void refreshAll_shouldResetProperties() {
+        // GIVEN
+        final Property<Long> currentEntryIndexProperty = new SimpleObjectProperty<>();
+        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(currentEntryIndexProperty);
+        final EditorLayoutDto.EditorProfileDto profileObject = layoutObject.getProfiles().get(0);
+        when(mainStageControllerMock.getCurrentProfileObject()).thenReturn(profileObject);
+        when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(topicObject);
+        final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>(TOPIC);
+        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
+        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(0L, TOPIC)).thenReturn(empty());
+
+        // WHEN
+        controller.refreshAll();
+
+        // THEN
+        assertThat(currentEntryIndexProperty.getValue()).isEqualTo(0L);
+        assertThat(controller.getResolvedValuesByFieldRank()).isEmpty();
+        assertThat(controller.getResourcesByTopicLink()).isEmpty();
     }
 
     private EditorLayoutDto createLayoutObject() {
