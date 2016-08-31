@@ -52,13 +52,12 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
                         EditorLayoutHelper.getFieldPrioritySettingByRank(structureField1.getRank(), profileName, layoutObject)))
 
                 .forEach(structureField -> addFieldControls(
-                        controller.getDefaultTab(),
                         structureField,
                         topic
                 ));
     }
 
-    private void addFieldControls(VBox defaultTab, DbStructureDto.Field field, DbDto.Topic currentTopic) {
+    private void addFieldControls(DbStructureDto.Field field, DbDto.Topic currentTopic) {
         int fieldRank = field.getRank();
         Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(fieldRank, controller.getCurrentProfileObject().getName(), controller.getLayoutObject());
         if (!potentialFieldSettings.isPresent()) {
@@ -87,7 +86,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         String groupName = fieldSettings.getGroup();
 
-        HBox fieldBox = addFieldBox(Optional.ofNullable(groupName), 25.0, defaultTab);
+        HBox fieldBox = addFieldBox(Optional.ofNullable(groupName), 25.0);
 
         addFieldLabel(fieldBox, fieldReadOnly, fieldName, toolTipText);
 

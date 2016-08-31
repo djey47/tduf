@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.controllers.helper;
 
 import fr.tduf.gui.common.javafx.helper.ControlHelper;
+import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.controllers.MainStageController;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
@@ -28,21 +29,20 @@ abstract class AbstractDynamicControlsHelper {
         this.controller = controller;
     }
 
-    protected HBox addFieldBox(Optional<String> potentialGroupName, double boxHeight, VBox defaultTab) {
+    protected HBox addFieldBox(Optional<String> potentialGroupName, double boxHeight) {
         HBox fieldBox = new HBox();
         fieldBox.setPrefHeight(boxHeight);
         fieldBox.setPadding(new Insets(5.0));
 
+        final Map<String, VBox> tabContentByName = controller.getViewData().getTabContentByName();
+        String groupName = DisplayConstants.TAB_NAME_DEFAULT;
         if (potentialGroupName.isPresent()) {
-            String groupName = potentialGroupName.get();
-            final Map<String, VBox> tabContentByName = controller.getViewData().getTabContentByName();
             if (!tabContentByName.containsKey(groupName)) {
                 throw new IllegalArgumentException("Unknown group name: " + groupName);
             }
-            tabContentByName.get(groupName).getChildren().add(fieldBox);
-        } else {
-            defaultTab.getChildren().add(fieldBox);
+            groupName = potentialGroupName.get();
         }
+        tabContentByName.get(groupName).getChildren().add(fieldBox);
         return fieldBox;
     }
 

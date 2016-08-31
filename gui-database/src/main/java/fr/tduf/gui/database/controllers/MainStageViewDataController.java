@@ -28,7 +28,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.*;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
 import javafx.scene.layout.VBox;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -55,6 +56,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     private final ObservableList<ContentEntryDataItem> browsableEntries = FXCollections.observableArrayList();
     private final Map<String, VBox> tabContentByName = new HashMap<>();
     private final Map<Integer, SimpleStringProperty> rawValuesByFieldRank = new HashMap<>();
+    private final Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> resourcesByTopicLink = new HashMap<>();
 
     MainStageViewDataController(MainStageController mainStageController) {
         super(mainStageController);
@@ -143,8 +145,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     // TODO tests
     void refreshAll() {
         resolvedValuePropertyByFieldRank().clear();
-        resourceListByTopicLink().clear();
-        rawValuesByFieldRank.clear();
+        resourcesByTopicLink.clear();
         currentEntryIndexProperty().setValue(0L);
 
         fillBrowsableEntries();
@@ -160,7 +161,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         getMiner().getContentEntryFromTopicWithInternalIdentifier(entryIndex, currentTopic)
                 .ifPresent(entry -> entry.getItems().forEach(this::updateItemProperties));
 
-        resourceListByTopicLink().entrySet().forEach(this::updateLinkProperties);
+        resourcesByTopicLink.entrySet().forEach(this::updateLinkProperties);
     }
 
     void updateItemProperties(ContentItemDto item) {
@@ -184,12 +185,9 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     }
 
     void updateLinkProperties(TopicLinkDto topicLinkObject) {
-        resourceListByTopicLink().entrySet().stream()
-
+        resourcesByTopicLink.entrySet().stream()
                 .filter(mapEntry -> mapEntry.getKey().equals(topicLinkObject))
-
                 .findAny()
-
                 .ifPresent(this::updateLinkProperties);
     }
 
@@ -308,9 +306,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
             final List<ContentEntryDataItem> selectedItems = getEntriesStageController().initAndShowModalDialogForMultiSelect(potentialEntryReference, topic, getCurrentProfileObject().getName());
 
             return selectedItems.stream()
-
                     .map(item -> item.referenceProperty().get())
-
                     .collect(toList());
         }
 
@@ -362,26 +358,45 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     private void initTabPane() {
         initGroupTabs();
 
-        addDynamicControls();
+        initDynamicControls();
 
         updateAllPropertiesWithItemValues();
     }
 
     private void initGroupTabs() {
-        getDefaultTab().getChildren().clear();
+        final ObservableList<Tab> allTabs = getTabPane().getTabs();
+        allTabs.clear();
+        tabContentByName.clear();
 
-        getTabPane().getTabs().remove(1, getTabPane().getTabs().size());
-        getTabContentByName().clear();
+        createTabAndAppend(DisplayConstants.TAB_NAME_DEFAULT, allTabs);
 
-        if (getCurrentProfileObject().getGroups() != null) {
-            getCurrentProfileObject().getGroups().forEach(groupName -> {
-                VBox vbox = new VBox();
-                Tab groupTab = new Tab(groupName, new ScrollPane(vbox));
+        final List<String> registeredGroups = getCurrentProfileObject().getGroups();
+        if (registeredGroups == null) {
+            return;
+        }
+        registeredGroups.forEach(groupName -> createTabAndAppend(groupName, allTabs));
+    }
 
-                getTabPane().getTabs().add(getTabPane().getTabs().size(), groupTab);
+    private void createTabAndAppend(String tabName, ObservableList<Tab> allTabs) {
+        VBox tabContainer = new VBox();
+        Tab tab = new Tab(tabName, new ScrollPane(tabContainer));
+        allTabs.add(tab);
+        tabContentByName.put(tabName, tabContainer);
+    }
 
-                getTabContentByName().put(groupName, vbox);
-            });
+    private void initDynamicControls() {
+        rawValuesByFieldRank.clear();
+
+        if (getCurrentProfileObject().getFieldSettings() != null) {
+            dynamicFieldControlsHelper.addAllFieldsControls(
+                    getLayoutObject(),
+                    getProfilesChoiceBox().getValue(),
+                    getCurrentTopicObject().getTopic());
+        }
+
+        if (getCurrentProfileObject().getTopicLinks() != null) {
+            dynamicLinkControlsHelper.addAllLinksControls(
+                    getCurrentProfileObject());
         }
     }
 
@@ -404,20 +419,6 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                                 .map(topicEntry -> getDisplayableEntryForCurrentLocale(topicEntry, labelFieldRanks, currentTopic))
                                 .collect(toList()))
                         .orElse(new ArrayList<>()));
-    }
-
-    private void addDynamicControls() {
-        if (getCurrentProfileObject().getFieldSettings() != null) {
-            dynamicFieldControlsHelper.addAllFieldsControls(
-                    getLayoutObject(),
-                    getProfilesChoiceBox().getValue(),
-                    getCurrentTopicObject().getTopic());
-        }
-
-        if (getCurrentProfileObject().getTopicLinks() != null) {
-            dynamicLinkControlsHelper.addAllLinksControls(
-                    getCurrentProfileObject());
-        }
     }
 
     // Ignore warning
@@ -554,5 +555,9 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     public Map<Integer, SimpleStringProperty> getRawValuesByFieldRank() {
         return rawValuesByFieldRank;
+    }
+
+    public Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> getResourcesByTopicLink() {
+        return resourcesByTopicLink;
     }
 }

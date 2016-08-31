@@ -32,7 +32,6 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -42,7 +41,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import org.apache.commons.lang3.StringUtils;
 
@@ -73,7 +71,6 @@ public class MainStageController extends AbstractGuiController {
     private final Property<Long> currentEntryIndexProperty = new SimpleObjectProperty<>(-1L);
     private final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>();
     private final StringProperty currentEntryLabelProperty = new SimpleStringProperty(DisplayConstants.LABEL_ITEM_ENTRY_DEFAULT);
-    private final Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> resourceListByTopicLink = new HashMap<>();
 
     private EditorLayoutDto layoutObject;
     private EditorLayoutDto.EditorProfileDto profileObject;
@@ -133,9 +130,6 @@ public class MainStageController extends AbstractGuiController {
 
     @FXML
     ComboBox<ContentEntryDataItem> entryNumberComboBox;
-
-    @FXML
-    private VBox defaultTab;
 
     @FXML
     private Label statusLabel;
@@ -828,10 +822,6 @@ public class MainStageController extends AbstractGuiController {
         this.layoutObject = layoutObject;
     }
 
-    public Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> getResourceListByTopicLink() {
-        return resourceListByTopicLink;
-    }
-
     public BulkDatabaseMiner getMiner() {
         return databaseMiner;
     }
@@ -893,9 +883,5 @@ public class MainStageController extends AbstractGuiController {
 
     ChoiceBox<String> getProfilesChoiceBox() {
         return profilesChoiceBox;
-    }
-
-    public VBox getDefaultTab() {
-        return defaultTab;
     }
 }

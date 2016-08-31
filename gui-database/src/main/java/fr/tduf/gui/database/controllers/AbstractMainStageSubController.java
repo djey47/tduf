@@ -13,7 +13,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
 
 import java.util.Deque;
 import java.util.List;
@@ -123,11 +122,6 @@ abstract class AbstractMainStageSubController {
         return mainStageController.getCurrentEntryLabelProperty();
     }
 
-    protected Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> resourceListByTopicLink() {
-        // Getter kept for testing
-        return mainStageController.getResourceListByTopicLink();
-    }
-
     protected Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRank() {
         return mainStageController.resolvedValuePropertyByFieldRank;
     }
@@ -153,16 +147,8 @@ abstract class AbstractMainStageSubController {
         return mainStageController.localesChoiceBox;
     }
 
-    protected Button getLoadDatabaseButton() {
-        return mainStageController.loadDatabaseButton;
-    }
-
     protected TabPane getTabPane() {
         return mainStageController.tabPane;
-    }
-
-    protected VBox getDefaultTab() {
-        return mainStageController.getDefaultTab();
     }
 
     protected Label getEntryItemsCountLabel() {

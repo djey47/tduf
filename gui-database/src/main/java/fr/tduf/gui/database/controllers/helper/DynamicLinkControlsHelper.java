@@ -5,7 +5,6 @@ import fr.tduf.gui.database.controllers.MainStageController;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
-import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
@@ -44,14 +43,14 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
     public void addAllLinksControls(EditorLayoutDto.EditorProfileDto profileObject) {
         profileObject.getTopicLinks().stream()
                 .sorted((topicLinkObject1, topicLinkObject2) -> Integer.compare(topicLinkObject2.getPriority(), topicLinkObject1.getPriority()))
-                .forEach(topicLinkObject -> addLinkControls(controller.getDefaultTab(), topicLinkObject, controller.getResourceListByTopicLink()));
+                .forEach(topicLinkObject -> addLinkControls(topicLinkObject, controller.getViewData().getResourcesByTopicLink()));
     }
 
-    private void addLinkControls(VBox defaultTab, TopicLinkDto topicLinkObject, Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> resourceListByTopicLinkIndex) {
+    private void addLinkControls(TopicLinkDto topicLinkObject, Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> resourceListByTopicLinkIndex) {
         ObservableList<ContentEntryDataItem> resourceData = FXCollections.observableArrayList();
         resourceListByTopicLinkIndex.put(topicLinkObject, resourceData);
 
-        HBox fieldBox = addFieldBox(ofNullable(topicLinkObject.getGroup()), 250.0, defaultTab);
+        HBox fieldBox = addFieldBox(ofNullable(topicLinkObject.getGroup()), 250.0);
 
         addFieldLabelForLinkedTopic(fieldBox, topicLinkObject);
 
