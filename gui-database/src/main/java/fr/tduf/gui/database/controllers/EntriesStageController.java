@@ -183,22 +183,22 @@ public class EntriesStageController extends AbstractGuiController {
         DbDto.Topic topic = currentTopicProperty.getValue();
         getMiner().getDatabaseTopic(topic)
                 .ifPresent(topicObject -> entriesData.addAll(topicObject.getData().getEntries().stream()
-                                .map(entry -> {
-                                    ContentEntryDataItem contentEntryDataItem = new ContentEntryDataItem();
+                    .map(entry -> {
+                        ContentEntryDataItem contentEntryDataItem = new ContentEntryDataItem();
 
-                                    long entryInternalIdentifier = entry.getId();
-                                    contentEntryDataItem.setInternalEntryId(entryInternalIdentifier);
+                        long entryInternalIdentifier = entry.getId();
+                        contentEntryDataItem.setInternalEntryId(entryInternalIdentifier);
 
-                                    String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner(), getLayoutObject());
-                                    contentEntryDataItem.setValue(entryValue);
+                        String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner(), getLayoutObject());
+                        contentEntryDataItem.setValue(entryValue);
 
-                                    getMiner().getContentEntryReferenceWithInternalIdentifier(entryInternalIdentifier, topic)
-                                            .ifPresent(contentEntryDataItem::setReference);
+                        getMiner().getContentEntryReferenceWithInternalIdentifier(entryInternalIdentifier, topic)
+                                .ifPresent(contentEntryDataItem::setReference);
 
-                                    return contentEntryDataItem;
-                                })
+                        return contentEntryDataItem;
+                    })
 
-                                .collect(toList()))
+                    .collect(toList()))
                 );
     }
 
