@@ -155,7 +155,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     private void addReferenceValueControls(HBox fieldBox, boolean fieldReadOnly, DbStructureDto.Field field) {
         int fieldRank = field.getRank();
         SimpleStringProperty property = new SimpleStringProperty(DisplayConstants.LABEL_ITEM_REFERENCE);
-        controller.getResolvedValuePropertyByFieldRank().put(fieldRank, property);
+        controller.getViewData().getResolvedValuesByFieldRank().put(fieldRank, property);
 
         final String valueUnknown = String.format(DisplayConstants.VALUE_UNKNOWN, "?");
         Label remoteValueLabel = addCustomLabel(fieldBox, fieldReadOnly, valueUnknown);
@@ -198,7 +198,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         int fieldRank = field.getRank();
         SimpleStringProperty property = new SimpleStringProperty(DisplayConstants.VALUE_RESOURCE_DEFAULT);
-        controller.getResolvedValuePropertyByFieldRank().put(fieldRank, property);
+        controller.getViewData().getResolvedValuesByFieldRank().put(fieldRank, property);
 
         addResourceValueLabel(fieldBox, fieldReadOnly, property);
 

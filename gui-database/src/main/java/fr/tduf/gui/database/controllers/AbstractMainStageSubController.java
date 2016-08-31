@@ -3,20 +3,16 @@ package fr.tduf.gui.database.controllers;
 import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
-import fr.tduf.gui.database.dto.TopicLinkDto;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.Property;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 
 import java.util.Deque;
 import java.util.List;
-import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
@@ -120,10 +116,6 @@ abstract class AbstractMainStageSubController {
     protected StringProperty currentEntryLabelProperty() {
         // Getter kept for testing
         return mainStageController.getCurrentEntryLabelProperty();
-    }
-
-    protected Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRank() {
-        return mainStageController.resolvedValuePropertyByFieldRank;
     }
 
     protected TextField getDatabaseLocationTextField() {

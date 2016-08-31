@@ -57,6 +57,8 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     private final Map<String, VBox> tabContentByName = new HashMap<>();
     private final Map<Integer, SimpleStringProperty> rawValuesByFieldRank = new HashMap<>();
     private final Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> resourcesByTopicLink = new HashMap<>();
+    private final Map<Integer, SimpleStringProperty> resolvedValuesByFieldRank = new HashMap<>();
+
 
     MainStageViewDataController(MainStageController mainStageController) {
         super(mainStageController);
@@ -144,7 +146,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     // TODO tests
     void refreshAll() {
-        resolvedValuePropertyByFieldRank().clear();
+        resolvedValuesByFieldRank.clear();
         resourcesByTopicLink.clear();
         currentEntryIndexProperty().setValue(0L);
 
@@ -174,12 +176,12 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
         DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, getCurrentTopicObject().getStructure().getFields());
         if (structureField.isAResourceField()
-                && resolvedValuePropertyByFieldRank().get(fieldRank) != null ) {
+                && resolvedValuesByFieldRank.get(fieldRank) != null ) {
             updateResourceProperties(item, structureField);
         }
 
         if (DbStructureDto.FieldType.REFERENCE == structureField.getFieldType()
-                && resolvedValuePropertyByFieldRank().containsKey(fieldRank)) {
+                && resolvedValuesByFieldRank.containsKey(fieldRank)) {
             updateReferenceProperties(item, structureField);
         }
     }
@@ -451,7 +453,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         String resourceReference = resourceItem.getRawValue();
         String resourceValue = getMiner().getLocalizedResourceValueFromTopicAndReference(resourceReference, resourceTopic, locale)
                 .orElse(DisplayConstants.VALUE_ERROR_RESOURCE_NOT_FOUND);
-        final SimpleStringProperty valueProperty = resolvedValuePropertyByFieldRank().get(resourceItem.getFieldRank());
+        final SimpleStringProperty valueProperty = resolvedValuesByFieldRank.get(resourceItem.getFieldRank());
         valueProperty.set(resourceValue);
     }
 
@@ -491,7 +493,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         }
 
         String remoteContents = fetchRemoteContentsWithEntryRef(remoteTopic, referenceItem.getRawValue(), remoteFieldRanks);
-        resolvedValuePropertyByFieldRank().get(referenceItem.getFieldRank()).set(remoteContents);
+        resolvedValuesByFieldRank.get(referenceItem.getFieldRank()).set(remoteContents);
     }
 
     private ContentEntryDataItem fetchLinkResourceFromContentEntry(DbDto topicObject, ContentEntryDto contentEntry, TopicLinkDto linkObject) {
@@ -559,5 +561,9 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     public Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> getResourcesByTopicLink() {
         return resourcesByTopicLink;
+    }
+
+    public Map<Integer, SimpleStringProperty> getResolvedValuesByFieldRank() {
+        return resolvedValuesByFieldRank;
     }
 }

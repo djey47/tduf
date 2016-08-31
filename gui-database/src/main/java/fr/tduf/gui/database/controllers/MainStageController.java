@@ -65,11 +65,9 @@ public class MainStageController extends AbstractGuiController {
 
     final Deque<EditorLocation> navigationHistory = new ArrayDeque<>();
 
-    final Property<fr.tduf.libunlimited.common.game.domain.Locale> currentLocaleProperty = new SimpleObjectProperty<>(UNITED_STATES);
-    final Map<Integer, SimpleStringProperty> resolvedValuePropertyByFieldRank = new HashMap<>();
-
     private final Property<Long> currentEntryIndexProperty = new SimpleObjectProperty<>(-1L);
     private final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>();
+    final Property<Locale> currentLocaleProperty = new SimpleObjectProperty<>(UNITED_STATES);
     private final StringProperty currentEntryLabelProperty = new SimpleStringProperty(DisplayConstants.LABEL_ITEM_ENTRY_DEFAULT);
 
     private EditorLayoutDto layoutObject;
@@ -828,10 +826,6 @@ public class MainStageController extends AbstractGuiController {
 
     void setMiner(BulkDatabaseMiner databaseMiner) {
         this.databaseMiner = databaseMiner;
-    }
-
-    public Map<Integer, SimpleStringProperty> getResolvedValuePropertyByFieldRank() {
-        return resolvedValuePropertyByFieldRank;
     }
 
     Property<DbDto.Topic> getCurrentTopicProperty() {
