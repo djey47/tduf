@@ -1,7 +1,11 @@
 package fr.tduf.gui.common;
 
-// TODO apply code rules
+/**
+ * TDUF GUI's common constants.
+ */
 public class AppConstants {
     public static final String SWITCH_PREFIX = "-";
     public static final String SWITCH_VERBOSE = "-v";
+
+    private AppConstants() {}
 }
