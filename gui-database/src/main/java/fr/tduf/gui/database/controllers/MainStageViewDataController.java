@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 
+import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.REFERENCE;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toCollection;
@@ -175,15 +176,15 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         }
         rawValueProperty.set(item.getRawValue());
 
-        DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, getCurrentTopicObject().getStructure().getFields());
-        if (structureField.isAResourceField()
-                && resolvedValuesByFieldRank.get(fieldRank) != null ) {
-            updateResourceProperties(item, structureField);
+        if (!resolvedValuesByFieldRank.containsKey(fieldRank)) {
+            return;
         }
 
-        if (DbStructureDto.FieldType.REFERENCE == structureField.getFieldType()
-                && resolvedValuesByFieldRank.containsKey(fieldRank)) {
+        DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, getCurrentTopicObject().getStructure().getFields());
+        if (REFERENCE == structureField.getFieldType()) {
             updateReferenceProperties(item, structureField);
+        } else if (structureField.isAResourceField()) {
+            updateResourceProperties(item, structureField);
         }
     }
 
@@ -484,14 +485,14 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     private void updateReferenceProperties(ContentItemDto referenceItem, DbStructureDto.Field structureField) {
         DbDto.Topic remoteTopic = getMiner().getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
 
-        List<Integer> remoteFieldRanks = new ArrayList<>();
-        Optional<FieldSettingsDto> fieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(structureField.getRank(), getProfilesChoiceBox().getValue(), getLayoutObject());
-        if (fieldSettings.isPresent()) {
-            String remoteReferenceProfile = fieldSettings.get().getRemoteReferenceProfile();
-            if (remoteReferenceProfile != null) {
-                remoteFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(remoteReferenceProfile, getLayoutObject());
-            }
-        }
+        final List<Integer> remoteFieldRanks = new ArrayList<>();
+        Optional<FieldSettingsDto> fieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(structureField.getRank(), getProfilesChoiceBox().valueProperty().get(), getLayoutObject());
+        fieldSettings
+                .map(FieldSettingsDto::getRemoteReferenceProfile)
+                .ifPresent(remoteReferenceProfile -> {
+                    List<Integer> entryLabelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(remoteReferenceProfile, getLayoutObject());
+                    remoteFieldRanks.addAll(entryLabelFieldRanks);
+                });
 
         String remoteContents = fetchRemoteContentsWithEntryRef(remoteTopic, referenceItem.getRawValue(), remoteFieldRanks);
         resolvedValuesByFieldRank.get(referenceItem.getFieldRank()).set(remoteContents);

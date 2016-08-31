@@ -66,7 +66,14 @@ public class FieldSettingsDto {
         return remoteReferenceProfile;
     }
 
+    public void setRemoteReferenceProfile(String remoteReferenceProfile) {
+        this.remoteReferenceProfile = remoteReferenceProfile;
+    }
     public int getRank() {
         return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
     }
 }

@@ -97,9 +97,6 @@ public class MainStageController extends AbstractGuiController {
     ChoiceBox<Locale> localesChoiceBox;
 
     @FXML
-    ChoiceBox<String> profilesChoiceBox;
-
-    @FXML
     Button loadDatabaseButton;
 
     @FXML
@@ -125,6 +122,9 @@ public class MainStageController extends AbstractGuiController {
 
     @FXML
     ComboBox<ContentEntryDataItem> entryNumberComboBox;
+
+    @FXML
+    private ChoiceBox<String> profilesChoiceBox;
 
     @FXML
     private TabPane tabPane;
