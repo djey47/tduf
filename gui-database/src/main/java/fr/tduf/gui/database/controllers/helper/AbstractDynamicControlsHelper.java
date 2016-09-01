@@ -35,14 +35,15 @@ abstract class AbstractDynamicControlsHelper {
         fieldBox.setPadding(new Insets(5.0));
 
         final Map<String, VBox> tabContentByName = controller.getViewData().getTabContentByName();
-        String groupName = DisplayConstants.TAB_NAME_DEFAULT;
+        String effectiveGroupName = DisplayConstants.TAB_NAME_DEFAULT;
         if (potentialGroupName.isPresent()) {
+            String groupName = potentialGroupName.get();
             if (!tabContentByName.containsKey(groupName)) {
                 throw new IllegalArgumentException("Unknown group name: " + groupName);
             }
-            groupName = potentialGroupName.get();
+            effectiveGroupName = groupName;
         }
-        tabContentByName.get(groupName).getChildren().add(fieldBox);
+        tabContentByName.get(effectiveGroupName).getChildren().add(fieldBox);
         return fieldBox;
     }
 
