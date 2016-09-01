@@ -35,8 +35,9 @@ TDUF aims at making Test Drive Unlmited modding easier:
 
 * Provides additional launchers without administration privileges (-noadmin)
 
-* DatabaseEditor: remembers last database location (to make forget it, delete tduf.properties file in user home)
+* DatabaseEditor: remembers last database location (to make it forget, delete tduf.properties file in user home)
 * DatabaseEditor: changes some labels (car brands etc.)
+* DatabaseEditor: re-instantiates database reload feature.
 
 
 ### Fixed issues
