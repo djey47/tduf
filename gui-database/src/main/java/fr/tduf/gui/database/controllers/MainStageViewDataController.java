@@ -47,10 +47,11 @@ import static javafx.beans.binding.Bindings.size;
 /**
  * Specialized controller to display database contents.
  */
-// TODO apply code rules
 public class MainStageViewDataController extends AbstractMainStageSubController {
     private static final String THIS_CLASS_NAME = MainStageViewDataController.class.getSimpleName();
     private static final Class<MainStageViewDataController> thisClass = MainStageViewDataController.class;
+
+    private static final String MESSAGE_NO_DATABASE_OBJECT_FOR_TOPIC = "No database object for topic: ";
 
     private final DynamicFieldControlsHelper dynamicFieldControlsHelper;
     private final DynamicLinkControlsHelper dynamicLinkControlsHelper;
@@ -137,7 +138,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         final EditorLayoutDto.EditorProfileDto profileObject = EditorLayoutHelper.getAvailableProfileByName(profileName, getLayoutObject());
         final DbDto.Topic topic = profileObject.getTopic();
         final DbDto currentTopicObject = getMiner().getDatabaseTopic(topic)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No database object for topic: " + topic));
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException(MESSAGE_NO_DATABASE_OBJECT_FOR_TOPIC + topic));
 
         currentTopicProperty().setValue(topic);
 
@@ -302,7 +303,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     List<String> selectEntriesFromTopic() {
         DbDto.Topic topic = currentTopicProperty().getValue();
         DbDto databaseObject = getMiner().getDatabaseTopic(topic)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No database object for topic: " + topic));
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException(MESSAGE_NO_DATABASE_OBJECT_FOR_TOPIC + topic));
 
         final Optional<DbStructureDto.Field> potentialUidField = DatabaseStructureQueryHelper.getUidField(databaseObject.getStructure().getFields());
         if (potentialUidField.isPresent()) {
@@ -412,6 +413,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     }
 
     private void fillBrowsableEntries() {
+        // Ignore warning
         final List<Integer> labelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(
                 getCurrentProfileObject().getName(),
                 getLayoutObject());
@@ -459,7 +461,6 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         valueProperty.set(resourceValue);
     }
 
-    // Ignore this warning (usage as method reference)
     private void updateLinkProperties(Map.Entry<TopicLinkDto, ObservableList<ContentEntryDataItem>> remoteEntry) {
         TopicLinkDto linkObject = remoteEntry.getKey();
         ObservableList<ContentEntryDataItem> values = remoteEntry.getValue();
@@ -471,7 +472,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
         final DbDto.Topic linkTopic = linkObject.getTopic();
         DbDto linkedTopicObject = getMiner().getDatabaseTopic(linkTopic)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No database object for topic: " + linkTopic));
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException(MESSAGE_NO_DATABASE_OBJECT_FOR_TOPIC + linkTopic));
 
         linkedTopicObject.getData().getEntries().stream()
                 .filter(contentEntry -> currentEntryRef.equals(contentEntry.getItemAtRank(1)
@@ -489,10 +490,8 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         Optional<FieldSettingsDto> fieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(structureField.getRank(), getProfilesChoiceBox().valueProperty().get(), getLayoutObject());
         fieldSettings
                 .map(FieldSettingsDto::getRemoteReferenceProfile)
-                .ifPresent(remoteReferenceProfile -> {
-                    List<Integer> entryLabelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(remoteReferenceProfile, getLayoutObject());
-                    remoteFieldRanks.addAll(entryLabelFieldRanks);
-                });
+                .ifPresent(remoteReferenceProfile -> remoteFieldRanks.addAll(
+                        EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(remoteReferenceProfile, getLayoutObject())));
 
         String remoteContents = fetchRemoteContentsWithEntryRef(remoteTopic, referenceItem.getRawValue(), remoteFieldRanks);
         resolvedValuesByFieldRank.get(referenceItem.getFieldRank()).set(remoteContents);

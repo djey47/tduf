@@ -10,12 +10,11 @@ import java.util.List;
 /**
  * Represents all available profiles in Database Editor
  */
-// TODO apply code rules
 @JsonTypeName("editorLayout")
 public class EditorLayoutDto {
 
     @JsonProperty("profiles")
-    List<EditorProfileDto> profiles = new ArrayList<>();
+    private List<EditorProfileDto> profiles = new ArrayList<>();
 
     public List<EditorProfileDto> getProfiles() {
         return profiles;
@@ -42,7 +41,9 @@ public class EditorLayoutDto {
         @JsonProperty("topicLinks")
         private List<TopicLinkDto> topicLinks = new ArrayList<>();
 
-        public EditorProfileDto() {}
+        public EditorProfileDto() {
+            // Required by jackson
+        }
 
         public EditorProfileDto(String name) {
             this.name = name;
