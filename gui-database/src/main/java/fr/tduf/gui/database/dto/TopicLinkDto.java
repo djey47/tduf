@@ -33,10 +33,6 @@ public class TopicLinkDto {
     @JsonProperty("toolTip")
     private String toolTip;
 
-    public DbDto.Topic getTopic() {
-        return topic;
-    }
-
     @Override
     public boolean equals(Object o) {
         return reflectionEquals(this, o);
@@ -45,6 +41,14 @@ public class TopicLinkDto {
     @Override
     public int hashCode() {
         return reflectionHashCode(this);
+    }
+
+    public DbDto.Topic getTopic() {
+        return topic;
+    }
+
+    public void setTopic(DbDto.Topic topic) {
+        this.topic = topic;
     }
 
     public String getGroup() {
@@ -65,6 +69,10 @@ public class TopicLinkDto {
 
     public String getRemoteReferenceProfile() {
         return remoteReferenceProfile;
+    }
+
+    public void setRemoteReferenceProfile(String remoteReferenceProfile) {
+        this.remoteReferenceProfile = remoteReferenceProfile;
     }
 
     public String getToolTip() {

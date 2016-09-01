@@ -1,8 +1,10 @@
 package fr.tduf.gui.database.controllers;
 
 import fr.tduf.gui.database.DatabaseEditor;
+import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
+import fr.tduf.gui.database.dto.TopicLinkDto;
 import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.common.game.domain.Locale;
@@ -16,6 +18,8 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TabPane;
 import org.junit.Before;
@@ -34,10 +38,10 @@ import java.util.Optional;
 import java.util.OptionalLong;
 
 import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.INTEGER;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.REFERENCE;
+import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.UID;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,10 +52,14 @@ import static org.mockito.Mockito.*;
 public class MainStageViewDataControllerTest {
     private static final DbDto.Topic TOPIC1 = CAR_PHYSICS_DATA;
     private static final DbDto.Topic TOPIC2 = BRANDS;
+    private static final DbDto.Topic TOPIC3 = CAR_RIMS;
+    private static final DbDto.Topic TOPIC4 = RIMS;
     private static final Locale LOCALE = UNITED_STATES;
     private static final String TOPIC_REFERENCE = "TOPICREF";
+    private static final String TOPIC_REMOTE_REFERENCE = "TOPICREMOTEREF";
     private static final String TEST_PROFILE_NAME = "Test profile";
     private static final String TEST_REMOTE_PROFILE_NAME = "Test remote profile";
+    private static final String TEST_REMOTE_ASSO_PROFILE_NAME = "Test association remote profile";
 
     @Rule
     public JavaFXThreadingRule javaFXRule = new JavaFXThreadingRule();
@@ -320,8 +328,7 @@ public class MainStageViewDataControllerTest {
     public void updateItemProperties_withRawValueSet_andResolvedValueInIndex_forReferenceField_withUnknownRemoteReference_shouldUpdatePropertyWithErrorLabel() {
         // GIVEN
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(createTopicObjectForReference());
-        DbDto remoteTopic = createTopicObject();
-        when(minerMock.getDatabaseTopicFromReference(TOPIC_REFERENCE)).thenReturn(remoteTopic);
+        when(minerMock.getDatabaseTopicFromReference(TOPIC_REFERENCE)).thenReturn(createTopicObject());
         when(minerMock.getContentEntryInternalIdentifierWithReference("rawValue", TOPIC2)).thenReturn(OptionalLong.empty());
         ContentItemDto itemObject = createContentItem();
         controller.getRawValuesByFieldRank().put(1, new SimpleStringProperty("old reference rawValue"));
@@ -339,8 +346,7 @@ public class MainStageViewDataControllerTest {
     public void updateItemProperties_withRawValueSet_andResolvedValueInIndex_forReferenceField_withExistingRemoteReference_shouldUpdateProperty() {
         // GIVEN
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(createTopicObjectForReference());
-        DbDto remoteTopic = createTopicObject();
-        when(minerMock.getDatabaseTopicFromReference(TOPIC_REFERENCE)).thenReturn(remoteTopic);
+        when(minerMock.getDatabaseTopicFromReference(TOPIC_REFERENCE)).thenReturn(createTopicObject());
         when(minerMock.getContentEntryInternalIdentifierWithReference("rawValue", TOPIC2)).thenReturn(OptionalLong.of(0L));
         when(minerMock.getLocalizedResourceValueFromContentEntry(0, 1, TOPIC2, LOCALE)).thenReturn(of("resource value"));
         ContentItemDto itemObject = createContentItem();
@@ -353,6 +359,118 @@ public class MainStageViewDataControllerTest {
 
         // THEN
         assertThat(resolvedValueProperty.get()).isEqualTo("resource value");
+    }
+
+    @Test(expected=IllegalStateException.class)
+    public void updateLinkProperties_whenReferenceNotAvailable_shouldThrowException() {
+        // GIVEN
+        TopicLinkDto topicLinkObject = createTopicLinkObject();
+        ContentEntryDataItem item = new ContentEntryDataItem();
+        ObservableList<ContentEntryDataItem> resources = FXCollections.observableArrayList(item);
+        controller.getResourcesByTopicLink().put(topicLinkObject, resources);
+        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0L));
+        final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>(TOPIC1);
+        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
+        when(minerMock.getContentEntryReferenceWithInternalIdentifier(0, TOPIC1)).thenReturn(empty());
+
+        // WHEN
+        controller.updateLinkProperties(topicLinkObject);
+
+        // THEN:ISE
+    }
+
+    @Test(expected=IllegalStateException.class)
+    public void updateLinkProperties_whenLinkedTopicNotFound_shouldThrowException() {
+        // GIVEN
+        TopicLinkDto topicLinkObject = createTopicLinkObject();
+        ContentEntryDataItem item = new ContentEntryDataItem();
+        ObservableList<ContentEntryDataItem> resources = FXCollections.observableArrayList(item);
+        controller.getResourcesByTopicLink().put(topicLinkObject, resources);
+        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0L));
+        final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>(TOPIC1);
+        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
+        when(minerMock.getContentEntryReferenceWithInternalIdentifier(0, TOPIC1)).thenReturn(of("entryRef"));
+        when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(empty());
+
+        // WHEN
+        controller.updateLinkProperties(topicLinkObject);
+
+        // THEN:ISE
+    }
+
+    @Test(expected=IllegalStateException.class)
+    public void updateLinkProperties_whenEntryNotFoundInLinkedTopic_shouldThrowException() {
+        // GIVEN
+        TopicLinkDto topicLinkObject = createTopicLinkObject();
+        ContentEntryDataItem item = new ContentEntryDataItem();
+        ObservableList<ContentEntryDataItem> resources = FXCollections.observableArrayList(item);
+        controller.getResourcesByTopicLink().put(topicLinkObject, resources);
+        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0L));
+        final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>(TOPIC1);
+        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
+        when(minerMock.getContentEntryReferenceWithInternalIdentifier(0, TOPIC1)).thenReturn(of("entryRef"));
+        when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(createTopicObjectWithDataEntry()));
+
+        // WHEN
+        controller.updateLinkProperties(topicLinkObject);
+
+        // THEN:ISE
+    }
+
+    @Test
+    public void updateLinkProperties_whenEntryFoundInLinkedTopic_shouldUpdateProperties() {
+        // GIVEN
+        TopicLinkDto topicLinkObject = createTopicLinkObject();
+        ContentEntryDataItem item = new ContentEntryDataItem();
+        ObservableList<ContentEntryDataItem> resources = FXCollections.observableArrayList(item);
+        controller.getResourcesByTopicLink().put(topicLinkObject, resources);
+        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0L));
+        final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>(TOPIC1);
+        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
+        when(minerMock.getContentEntryReferenceWithInternalIdentifier(0, TOPIC1)).thenReturn(of("entryRef"));
+        when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(createTopicObjectWithDataEntryAndRef("entryRef")));
+        when(minerMock.getLocalizedResourceValueFromContentEntry(0, 1, TOPIC2, LOCALE)).thenReturn(of("remote value"));
+
+        // WHEN
+        controller.updateLinkProperties(topicLinkObject);
+
+        // THEN
+        assertThat(resources).hasSize(1);
+        final ContentEntryDataItem actualDataItem = resources.get(0);
+        assertThat(actualDataItem.internalEntryIdProperty().get()).isEqualTo(0);
+        assertThat(actualDataItem.referenceProperty().get()).isNull();
+        assertThat(actualDataItem.valueProperty().get()).isEqualTo("remote value");
+    }
+
+    @Test
+    public void updateLinkProperties_whenEntryFoundInLinkedTopic_andLinkedTopicAsAssociation_shouldUpdateProperties() {
+        // GIVEN
+        TopicLinkDto topicLinkObject = createTopicLinkObjectForAssociation();
+        ContentEntryDataItem item = new ContentEntryDataItem();
+        ObservableList<ContentEntryDataItem> resources = FXCollections.observableArrayList(item);
+        controller.getResourcesByTopicLink().put(topicLinkObject, resources);
+        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0L));
+        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(TOPIC1));
+        when(minerMock.getContentEntryReferenceWithInternalIdentifier(0, TOPIC1)).thenReturn(of("entryRef1"));
+        when(minerMock.getDatabaseTopic(TOPIC3)).thenReturn(of(createAssociationTopicObjectWithDataEntriesAndRefs("entryRef1", "entryRef2")));
+        when(minerMock.getDatabaseTopicFromReference(TOPIC_REFERENCE)).thenReturn(createSourceTopicObject());
+        final DbDto remoteTopicObject = createRemoteTopicObject();
+        when(minerMock.getDatabaseTopicFromReference(TOPIC_REMOTE_REFERENCE)).thenReturn(remoteTopicObject);
+        final ContentEntryDto contentEntryDto = ContentEntryDto.builder().build();
+        when(minerMock.getRemoteContentEntryWithInternalIdentifier(TOPIC1, 1, 0, TOPIC3)).thenReturn(of(contentEntryDto));
+        when(minerMock.getContentEntryInternalIdentifierWithReference("entryRef2", TOPIC4)).thenReturn(OptionalLong.of(0L));
+        when(minerMock.getDatabaseTopic(TOPIC4)).thenReturn(of(remoteTopicObject));
+        when(minerMock.getLocalizedResourceValueFromContentEntry(0, 1, TOPIC4, LOCALE)).thenReturn(of("remote value"));
+
+        // WHEN
+        controller.updateLinkProperties(topicLinkObject);
+
+        // THEN
+        assertThat(resources).hasSize(1);
+        final ContentEntryDataItem actualDataItem = resources.get(0);
+        assertThat(actualDataItem.internalEntryIdProperty().get()).isEqualTo(0);
+        assertThat(actualDataItem.referenceProperty().get()).isEqualTo("entryRef2");
+        assertThat(actualDataItem.valueProperty().get()).isEqualTo("remote value");
     }
 
     private EditorLayoutDto createLayoutObject() {
@@ -374,6 +492,11 @@ public class MainStageViewDataControllerTest {
         simpleProfileObject.setTopic(TOPIC2);
         layoutObject.getProfiles().add(simpleProfileObject);
 
+        EditorLayoutDto.EditorProfileDto remoteAssociationProfileObject = new EditorLayoutDto.EditorProfileDto(TEST_REMOTE_ASSO_PROFILE_NAME);
+        remoteAssociationProfileObject.setTopic(TOPIC3);
+        remoteAssociationProfileObject.addEntryLabelFieldRank(1);
+        layoutObject.getProfiles().add(remoteAssociationProfileObject);
+
         return layoutObject;
     }
 
@@ -388,6 +511,104 @@ public class MainStageViewDataControllerTest {
                         .build())
                 .withData(DbDataDto.builder().build())
                 .build();
+    }
+
+    private DbDto createSourceTopicObject() {
+        return DbDto.builder()
+                .withStructure(DbStructureDto.builder()
+                        .forTopic(TOPIC1)
+                        .addItem(DbStructureDto.Field.builder()
+                                .ofRank(1)
+                                .fromType(UID)
+                                .build())
+                        .build())
+                .withData(DbDataDto.builder().build())
+                .build();
+    }
+
+    private DbDto createRemoteTopicObject() {
+        return DbDto.builder()
+                .withStructure(DbStructureDto.builder()
+                        .forTopic(TOPIC4)
+                        .addItem(DbStructureDto.Field.builder()
+                                .ofRank(1)
+                                .fromType(UID)
+                                .build())
+                        .build())
+                .withData(DbDataDto.builder().build())
+                .build();
+    }
+
+    private DbDto createTopicObjectWithDataEntry() {
+        return DbDto.builder()
+                .withStructure(DbStructureDto.builder()
+                        .forTopic(TOPIC2)
+                        .addItem(DbStructureDto.Field.builder()
+                                .ofRank(1)
+                                .fromType(INTEGER)
+                                .build())
+                        .build())
+                .withData(DbDataDto.builder()
+                        .addEntry(ContentEntryDto.builder().build())
+                        .build())
+                .build();
+    }
+
+    private DbDto createTopicObjectWithDataEntryAndRef(String ref) {
+        return DbDto.builder()
+                .withStructure(DbStructureDto.builder()
+                        .forTopic(TOPIC2)
+                        .addItem(DbStructureDto.Field.builder()
+                                .ofRank(1)
+                                .fromType(INTEGER)
+                                .build())
+                        .build())
+                .withData(DbDataDto.builder()
+                        .addEntry(ContentEntryDto.builder()
+                                .forId(0)
+                                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(ref).build())
+                                .build())
+                        .build())
+                .build();
+    }
+
+    private DbDto createAssociationTopicObjectWithDataEntriesAndRefs(String sourceRef, String targetRef) {
+        return DbDto.builder()
+                .withStructure(DbStructureDto.builder()
+                        .forTopic(TOPIC3)
+                        .addItem(DbStructureDto.Field.builder()
+                                .ofRank(1)
+                                .fromType(REFERENCE)
+                                .toTargetReference(TOPIC_REFERENCE)
+                                .build())
+                        .addItem(DbStructureDto.Field.builder()
+                                .ofRank(2)
+                                .fromType(REFERENCE)
+                                .toTargetReference(TOPIC_REMOTE_REFERENCE)
+                                .build())
+                        .build())
+                .withData(DbDataDto.builder()
+                        .addEntry(ContentEntryDto.builder()
+                                .forId(0)
+                                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(sourceRef).build())
+                                .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(targetRef).build())
+                                .build())
+                        .build())
+                .build();
+    }
+
+    private TopicLinkDto createTopicLinkObject() {
+        TopicLinkDto topicLinkObject = new TopicLinkDto();
+        topicLinkObject.setTopic(TOPIC2);
+        topicLinkObject.setRemoteReferenceProfile(TEST_REMOTE_PROFILE_NAME);
+        return topicLinkObject;
+    }
+
+    private TopicLinkDto createTopicLinkObjectForAssociation() {
+        TopicLinkDto topicLinkObject = new TopicLinkDto();
+        topicLinkObject.setTopic(TOPIC3);
+        topicLinkObject.setRemoteReferenceProfile(TEST_REMOTE_ASSO_PROFILE_NAME);
+        return topicLinkObject;
     }
 
     private DbDto createTopicObjectWithoutStructureFields() {
