@@ -101,6 +101,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         getEntryItemsCountLabel().textProperty().bind(size(browsableEntries).asString(DisplayConstants.LABEL_ITEM_ENTRY_COUNT));
     }
 
+    // TODO tests
     void updateDisplayWithLoadedObjects() {
         setMiner(BulkDatabaseMiner.load(getDatabaseObjects()));
 
@@ -169,6 +170,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         resourcesByTopicLink.entrySet().forEach(this::updateLinkProperties);
     }
 
+    // TODO test with resource field
     void updateItemProperties(ContentItemDto item) {
         final int fieldRank = item.getFieldRank();
         final SimpleStringProperty rawValueProperty = rawValuesByFieldRank.get(fieldRank);
@@ -196,6 +198,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                 .ifPresent(this::updateLinkProperties);
     }
 
+    // TODO test
     void updateEntriesAndSwitchTo(long entryIndex) {
         fillBrowsableEntries();
         long effectiveIndex = entryIndex;
