@@ -179,6 +179,7 @@ public class MainStageViewDataControllerTest {
     @Test
     public void applyProfile_whenProfileExists_shouldSwitchProperties() {
         // GIVEN
+        when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(createTopicObjectWithoutStructureFields());
         Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>();
         when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
         when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>());
@@ -198,9 +199,10 @@ public class MainStageViewDataControllerTest {
     @Test
     public void refreshAll_shouldResetProperties() {
         // GIVEN
+        when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(createTopicObjectWithoutStructureFields());
         final Property<Long> currentEntryIndexProperty = new SimpleObjectProperty<>();
         when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(currentEntryIndexProperty);
-        final EditorLayoutDto.EditorProfileDto profileObject = layoutObject.getProfiles().get(1);
+        final EditorLayoutDto.EditorProfileDto profileObject = layoutObject.getProfiles().get(2);
         when(mainStageControllerMock.getCurrentProfileObject()).thenReturn(profileObject);
         final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>(TOPIC2);
         when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
@@ -367,6 +369,11 @@ public class MainStageViewDataControllerTest {
         remoteProfileObject.setTopic(TOPIC1);
         remoteProfileObject.addEntryLabelFieldRank(1);
         layoutObject.getProfiles().add(remoteProfileObject);
+
+        EditorLayoutDto.EditorProfileDto simpleProfileObject = new EditorLayoutDto.EditorProfileDto(TEST_PROFILE_NAME);
+        simpleProfileObject.setTopic(TOPIC2);
+        layoutObject.getProfiles().add(simpleProfileObject);
+
         return layoutObject;
     }
 
@@ -378,6 +385,15 @@ public class MainStageViewDataControllerTest {
                                 .ofRank(1)
                                 .fromType(INTEGER)
                                 .build())
+                        .build())
+                .withData(DbDataDto.builder().build())
+                .build();
+    }
+
+    private DbDto createTopicObjectWithoutStructureFields() {
+        return DbDto.builder()
+                .withStructure(DbStructureDto.builder()
+                        .forTopic(TOPIC2)
                         .build())
                 .withData(DbDataDto.builder().build())
                 .build();
