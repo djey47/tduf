@@ -1746,6 +1746,618 @@
           "remoteReferenceProfile": "Vehicle slots"
         }
       ]
+    },
+    {
+      "name": "TDUPE-Inspired",
+      "topic": "CAR_PHYSICS_DATA",
+      "entryLabelFieldRanks": [2,3,4],
+      "groups": [
+        "General Performance",
+        "Straight Line Performance",
+        "Cornering Performance",
+        "Aesthetic Values",
+        "Miscellaneous",
+        "Name Editor"
+      ],
+      "topicLinks": [],
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "priority": 10000,
+          "label": "Car ID",
+          "group": "Miscellaneous"
+        },
+        {
+          "name": "Car_Brand",
+          "rank": 2,
+          "group": "Name Editor",
+          "remoteReferenceProfile": "Brands",
+          "label": "Brand"
+        },
+        {
+          "name": "Car_Model",
+          "rank": 3,
+          "group": "Miscellaneous",
+          "label": "Car Model"
+        },
+        {
+          "name": "Car_Version",
+          "rank": 4,
+          "group": "Miscellaneous",
+          "label": "Car Version"
+        },
+        {
+          "name": "Group",
+          "rank": 5,
+          "group": "General Performance",
+          "label": "Car Class"
+        },
+        {
+          "name": "Rarety",
+          "rank": 6,
+          "group": "Miscellaneous",
+          "label": "Rarity"
+        },
+        {
+          "name": "Price_dollar",
+          "rank": 7,
+          "label": "Price ($)",
+          "group": "Miscellaneous"
+        },
+        {
+          "name": "TestDrive_Cat",
+          "rank": 8,
+          "label": "Car Category",
+          "group": "Miscellaneous"
+        },
+        {
+          "name": "Car_File_Name",
+          "rank": 9,
+          "label": "File Name",
+          "group": "Miscellaneous"
+        },
+        {
+          "name": "Default_Rims",
+          "label": "Default Rims",
+          "priority": 1000,
+          "rank": 10,
+          "group": "Miscellaneous",
+          "remoteReferenceProfile": "Rims"
+        },
+        {
+          "name": "HUD_File_Name",
+          "rank": 11,
+          "group": "Miscellaneous",
+          "label": "HUD"
+        },
+        {
+          "name": "Car_RealName",
+          "rank": 12,
+          "group": "Miscellaneous",
+          "label": "Model"
+        },
+        {
+          "name": "Model_Name",
+          "rank": 13,
+          "group": "Name Editor",
+          "label": "Model"
+        },
+        {
+          "name": "Version_Name",
+          "rank": 14,
+          "group": "Name Editor",
+          "label": "Sub Model"
+        },
+        {
+          "name": "Engine_Localisation",
+          "rank": 15,
+          "group": "General Performance",
+          "label": "Engine Position"
+        },
+        {
+          "name": "Engine_Type",
+          "rank": 16,
+          "group": "General Performance",
+          "label": "Engine Type"
+        },
+        {
+          "name": "Displacement",
+          "rank": 17,
+          "group": "Straight Line Performance",
+          "label": "Engine Displacement (cc)"
+        },
+        {
+          "name": "Power_bhp",
+          "rank": 18,
+          "group": "Straight Line Performance",
+          "label": "Brake Horsepower"
+        },
+        {
+          "name": "Power_RPM",
+          "rank": 19,
+          "group": "Straight Line Performance",
+          "label": "RPM"
+        },
+        {
+          "name": "Torque_Nm",
+          "rank": 20,
+          "group": "Straight Line Performance",
+          "label": "Torque (nm)"
+        },
+        {
+          "name": "Torque_RPM",
+          "rank": 21,
+          "group": "Straight Line Performance",
+          "label": "Torque RPM"
+        },
+        {
+          "name": "Red_Line",
+          "rank": 22,
+          "group": "Straight Line Performance",
+          "label": "Redline"
+        },
+        {
+          "name": "Drive",
+          "rank": 23,
+          "group": "General Performance",
+          "priority": 10000,
+          "label": "Drive Type"
+        },
+        {
+          "name": "GearBox",
+          "rank": 24,
+          "group": "General Performance",
+          "label": "Gearbox Type"
+        },
+        {
+          "name": "Nb_Gears",
+          "rank": 25,
+          "group": "Straight Line Performance",
+          "label": "Number of Gears"
+        },
+        {
+          "name": "Final_Drive_Ratio",
+          "rank": 26,
+          "group": "Straight Line Performance",
+          "label": "Final Drive Ratio"
+        },
+        {
+          "name": "Gear_ratio_1",
+          "rank": 27,
+          "group": "Straight Line Performance",
+          "label": "Gear Ratio 1"
+        },
+        {
+          "name": "Gear_ratio_2",
+          "rank": 28,
+          "group": "Straight Line Performance",
+          "label": "Gear Ratio 2"
+        },
+        {
+          "name": "Gear_ratio_3",
+          "rank": 29,
+          "group": "Straight Line Performance",
+          "label": "Gear Ratio 3"
+        },
+        {
+          "name": "Gear_ratio_4",
+          "rank": 30,
+          "group": "Straight Line Performance",
+          "label": "Gear Ratio 4"
+        },
+        {
+          "name": "Gear_ratio_5",
+          "rank": 31,
+          "group": "Straight Line Performance",
+          "label": "Gear Ratio 5"
+        },
+        {
+          "name": "Gear_ratio_6",
+          "rank": 32,
+          "group": "Straight Line Performance",
+          "label": "Gear Ratio 6"
+        },
+        {
+          "name": "Gear_ratio_7",
+          "rank": 33,
+          "group": "Straight Line Performance",
+          "label": "Gear Ratio 7"
+        },
+        {
+          "name": "Nb_Doors",
+          "rank": 34,
+          "group": "Miscellaneous",
+          "label": "Number of Doors"
+        },
+        {
+          "name": "Brakes_Characteristics_Front",
+          "rank": 35,
+          "priority": 10000,
+          "group": "General Performance",
+          "label": "Front Brake Type"
+        },
+        {
+          "name": "Brakes_Dim_Front",
+          "rank": 36,
+          "priority": 9000,
+          "group": "Aesthetic Values",
+          "label": "Front Brakes (mm)"
+        },
+        {
+          "name": "Brakes_Dim_Rear",
+          "rank": 37,
+          "priority": 7000,
+          "group": "Aesthetic Values",
+          "label": "Rear Brakes (mm)"
+        },
+        {
+          "name": "Brakes_Characteristics_Rear",
+          "rank": 38,
+          "priority": 8000,
+          "group": "General Performance",
+          "label": "Rear Brake Type"
+        },
+        {
+          "name": "Tires_Type",
+          "rank": 39
+        },
+        {
+          "name": "Nb_Turbos",
+          "rank": 40,
+          "group": "General Performance",
+          "label": "Turbocharged?"
+        },
+        {
+          "name": "Width",
+          "rank": 41,
+          "group": "Aesthetic Values"
+        },
+        {
+          "name": "Lenght",
+          "rank": 42,
+          "group": "Aesthetic Values",
+          "label": "Length"
+        },
+        {
+          "name": "Height",
+          "rank": 43,
+          "group": "Aesthetic Values"
+        },
+        {
+          "name": "Track_Front",
+          "rank": 44,
+          "group": "Aesthetic Values",
+          "label": "Track Front (mm)"
+        },
+        {
+          "name": "Track_Back",
+          "rank": 45,
+          "group": "Aesthetic Values",
+          "label": "Track Rear (mm)"
+        },
+        {
+          "name": "WheelBase",
+          "rank": 46,
+          "group": "Aesthetic Values",
+          "label": "WheelBase (mm)"
+        },
+        {
+          "name": "OverHang_Front",
+          "rank": 47,
+          "group": "Aesthetic Values",
+          "label": "Overhang Front (mm)"
+        },
+        {
+          "name": "OverHang_Rear",
+          "rank": 48,
+          "group": "Aesthetic Values",
+          "label": "Overhang Rear (mm)"
+        },
+        {
+          "name": "Weight_Kg",
+          "rank": 49,
+          "group": "General Performance",
+          "label": "Weight (kg)"
+        },
+        {
+          "name": "Ride_Height_Front",
+          "rank": 50,
+          "group": "Aesthetic Values",
+          "label": "Ride Height Front (mm)"
+        },
+        {
+          "name": "Ride_Height_Rear",
+          "rank": 51,
+          "group": "Aesthetic Values",
+          "label": "Ride Height Rear (mm)"
+        },
+        {
+          "name": "Ride_Height_Max_Front",
+          "rank": 52,
+          "group": "Aesthetic Values",
+          "label": "Max Ride Height Front (mm)"
+        },
+        {
+          "name": "Ride_Height_Max_Rear",
+          "rank": 53,
+          "group": "Aesthetic Values",
+          "label": "Max Ride Height Rear (mm)"
+        },
+        {
+          "name": "Suspension_Lenght_Front",
+          "rank": 54,
+          "group": "Cornering Performance",
+          "label": "Suspension Length Front"
+        },
+        {
+          "name": "Suspension_Lenght_Rear",
+          "rank": 55,
+          "group": "Cornering Performance",
+          "label": "Suspension Length Rear"
+        },
+        {
+          "name": "Suspension_Rate_Front",
+          "rank": 56,
+          "group": "Cornering Performance",
+          "label": "Front Suspension Rate"
+        },
+        {
+          "name": "Suspension_Rate_Rear",
+          "rank": 57,
+          "group": "Cornering Performance",
+          "label": "Rear Suspension Rate"
+        },
+        {
+          "name": "Damper_Rate_Front",
+          "rank": 58,
+          "group": "Cornering Performance",
+          "label": "Front Damper Rate"
+        },
+        {
+          "name": "Damper_Rate_Rear",
+          "rank": 59,
+          "group": "Cornering Performance",
+          "label": "Rear Damper Rate"
+        },
+        {
+          "name": "Engine_Inertia",
+          "rank": 60,
+          "group": "Straight Line Performance",
+          "label": "Engine Inertia"
+        },
+        {
+          "name": "Gearbox_Inertia",
+          "rank": 61,
+          "group": "Straight Line Performance",
+          "label": "Gearbox Inertia"
+        },
+        {
+          "name": "Gravity_Center_Length",
+          "rank": 62,
+          "group": "Cornering Performance",
+          "label": "Center of Gravity (x-axis)"
+        },
+        {
+          "name": "Gravity_Center_Height",
+          "rank": 63,
+          "group": "Cornering Performance",
+          "label": "Center of Gravity (y-axis)"
+        },
+        {
+          "name": "Cx_Length",
+          "rank": 64
+        },
+        {
+          "name": "Cx_Height",
+          "rank": 65
+        },
+        {
+          "name": "SteerLock",
+          "rank": 66,
+          "group": "Cornering Performance",
+          "label": "Steering Lock",
+          "priority": 2000
+        },
+        {
+          "name": "Transmission_Primacy",
+          "rank": 67,
+          "group": "Straight Line Performance",
+          "label": "Torque Balance",
+          "priority": 9990
+        },
+        {
+          "name": "Brake_Balance",
+          "rank": 68,
+          "group": "Cornering Performance",
+          "label": "Brake Balance",
+          "priority": 11000
+        },
+        {
+          "name": "Ignition_Time_Ignite",
+          "rank": 69,
+          "group": "Miscellaneous",
+          "label": "Ignition Time (Ignite) (s)"
+        },
+        {
+          "name": "Ignition_Time_RevUp",
+          "rank": 70,
+          "group": "Miscellaneous",
+          "label": "Ignition Time (Rev up) (s)"
+        },
+        {
+          "name": "Ignition_Time_RevDown",
+          "rank": 71,
+          "group": "Miscellaneous",
+          "label": "Ignition Time (Rev down) (s)"
+        },
+        {
+          "name": "Ignition_RPM",
+          "rank": 72,
+          "group": "Miscellaneous",
+          "label": "Ignition RPM"
+        },
+        {
+          "name": "DoorMaxAngle",
+          "rank": 73,
+          "group": "Miscellaneous",
+          "label": "Max Door Angle"
+        },
+        {
+          "name": "Windows_Type",
+          "rank": 74,
+          "group": "Miscellaneous",
+          "label": "Window Type"
+        },
+        {
+          "name": "Belt_Type",
+          "rank": 75,
+          "group": "Miscellaneous",
+          "label": "Belt Type"
+        },
+        {
+          "name": "Nb_Seats",
+          "rank": 76,
+          "group": "Miscellaneous",
+          "label": "Number of Seats"
+        },
+        {
+          "name": "Car_Body",
+          "rank": 77,
+          "group": "Miscellaneous",
+          "label": "Car Body"
+        },
+        {
+          "name": "Acceleration_0_100_kmh",
+          "rank": 78,
+          "group": "General Performance",
+          "label": "0-100 kph (s)"
+        },
+        {
+          "name": "Acceleration_0_100_mph",
+          "rank": 79,
+          "group": "General Performance",
+          "label": "0-100 mph (s)"
+        },
+        {
+          "name": "Top_Speed_kmh",
+          "rank": 80,
+          "group": "General Performance",
+          "label": "Top Speed (kph)"
+        },
+        {
+          "name": "Braking_100_0_kmh",
+          "rank": 81,
+          "group": "General Performance",
+          "label": "100-0 kph (ft)"
+        },
+        {
+          "name": "t0_to_1000m_sec",
+          "rank": 82,
+          "group": "General Performance",
+          "label": "Standing Kilometre (s)"
+        },
+        {
+          "name": "t0_to_1000m_kmh",
+          "rank": 83,
+          "group": "General Performance",
+          "label": "Standing Kilometre (kph)"
+        },
+        {
+          "name": "t0_to_1000m_mph",
+          "rank": 84,
+          "group": "General Performance",
+          "label": "Standing Kilometre (mph)"
+        },
+        {
+          "name": "Quarter_Mile_sec",
+          "rank": 85,
+          "group": "General Performance",
+          "label": "Quarter Mile (s)"
+        },
+        {
+          "name": "Quarter_Mile_kmh",
+          "rank": 86,
+          "group": "General Performance",
+          "label": "Quarter Mile (kph)"
+        },
+        {
+          "name": "Quarter_Mile_mph",
+          "rank": 87,
+          "group": "General Performance",
+          "label": "Quarter Mile (mph)"
+        },
+        {
+          "name": "coef_grip",
+          "rank": 88,
+          "group": "Cornering Performance",
+          "label": "Grip"
+        },
+        {
+          "name": "coef_overturning",
+          "rank": 89,
+          "group": "Cornering Performance",
+          "label": "Oversteer"
+        },
+        {
+          "name": "coef_accel",
+          "rank": 90,
+          "group": "Straight Line Performance",
+          "label": "Acceleration"
+        },
+        {
+          "name": "coef_brake",
+          "rank": 91,
+          "group": "Cornering Performance",
+          "label": "Braking"
+        },
+        {
+          "name": "BrakingDist_feet",
+          "rank": 92,
+          "group": "General Performance",
+          "label": "Braking Distance (ft)"
+        },
+        {
+          "name": "Handling",
+          "rank": 93,
+          "group": "Cornering Performance",
+          "label": "Handling"
+        },
+        {
+          "name": "coef_suspension",
+          "rank": 94,
+          "group": "Cornering Performance",
+          "label": "Suspension"
+        },
+        {
+          "name": "coef_sharpness",
+          "rank": 95,
+          "group": "Cornering Performance",
+          "label": "Steering Sharpness"
+        },
+        {
+          "name": "GraduationChange_Speed",
+          "rank": 96,
+          "group": "Straight Line Performance",
+          "label": "Graduation Speed"
+        },
+        {
+          "name": "GraduationChange_Ratio",
+          "rank": 97,
+          "group": "Straight Line Performance",
+          "label": "Graduation Ratio"
+        },
+        {
+          "name": "Camera",
+          "rank": 98,
+          "group": "Aesthetic Values"
+        },
+        {
+          "name": "Same_IK",
+          "rank": 99,
+          "group": "Aesthetic Values",
+          "label": "IK"
+        }
+      ]
     }
   ]
 }
