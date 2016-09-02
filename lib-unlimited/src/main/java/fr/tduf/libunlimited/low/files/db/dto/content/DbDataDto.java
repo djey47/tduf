@@ -84,39 +84,43 @@ public class DbDataDto implements Serializable {
         // Fix identifiers of next entries
         entries.stream()
                 .filter(e -> e.getId() > entry.getId())
-                .forEach(this::shiftEntryIdUp);
+                .forEach(ContentEntryDto::shiftIdUp);
     }
 
+    // TODO extract method
     public void moveEntryUp(ContentEntryDto entry) {
+        removeEntryFromIndex(entry);
+
         // Moves down previous entry
         getEntryWithInternalIdentifier(entry.getId() - 1)
-                .ifPresent(this::shiftEntryIdDown);
+                .ifPresent(e -> {
+                    removeEntryFromIndex(e);
+                    e.shiftIdDown();
+                    updateEntryIndexWithNewEntry(e);
+                });
 
-        shiftEntryIdUp(entry);
-
-        sortEntriesByIdentifier();
-    }
-
-    public void moveEntryDown(ContentEntryDto entry) {
-        // Moves up next entry
-        getEntryWithInternalIdentifier(entry.getId() + 1)
-                .ifPresent(this::shiftEntryIdUp);
-
-        shiftEntryIdDown(entry);
-
-        sortEntriesByIdentifier();
-    }
-
-    private void shiftEntryIdUp(ContentEntryDto entry) {
-        removeEntryFromIndex(entry);
         entry.shiftIdUp();
         updateEntryIndexWithNewEntry(entry);
+
+        sortEntriesByIdentifier();
     }
 
-    private void shiftEntryIdDown(ContentEntryDto entry) {
+    // TODO extract method
+    public void moveEntryDown(ContentEntryDto entry) {
         removeEntryFromIndex(entry);
+
+        // Moves up next entry
+        getEntryWithInternalIdentifier(entry.getId() + 1)
+                .ifPresent(e -> {
+                    removeEntryFromIndex(e);
+                    e.shiftIdUp();
+                    updateEntryIndexWithNewEntry(e);
+                });
+
         entry.shiftIdDown();
         updateEntryIndexWithNewEntry(entry);
+
+        sortEntriesByIdentifier();
     }
 
     @Override
