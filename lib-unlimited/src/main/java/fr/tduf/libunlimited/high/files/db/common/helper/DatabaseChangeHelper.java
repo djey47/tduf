@@ -20,6 +20,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Utility class to make changes on database contents and resources.
  */
+// TODO apply code rules
 public class DatabaseChangeHelper {
 
     private BulkDatabaseMiner databaseMiner;
@@ -120,7 +121,7 @@ public class DatabaseChangeHelper {
      *
      * @param entryId : internal identifier of entry to remove
      * @param topic   : database topic where entry should be removed
-     * @throws java.util.NoSuchElementException when entry to delete does not exist.
+     * @throws java.lang.IllegalStateException when entry to delete does not exist.
      */
     public void removeEntryWithIdentifier(long entryId, DbDto.Topic topic) {
         DbDataDto topicDataObject = databaseMiner.getDatabaseTopic(topic)
@@ -153,8 +154,11 @@ public class DatabaseChangeHelper {
      * @param topic    : database topic where entry should be removed
      */
     public void removeEntriesMatchingCriteria(List<DbFieldValueDto> criteria, DbDto.Topic topic) {
-        databaseMiner.getContentEntryStreamMatchingCriteria(criteria, topic)
-                .forEach((entry) -> removeEntryWithIdentifier(entry.getId(), topic));
+        removeEntriesWithIdentifier(
+                databaseMiner.getContentEntryStreamMatchingCriteria(criteria, topic)
+                        .map(ContentEntryDto::getId)
+                        .collect(toList()),
+                topic);
     }
 
     /**
@@ -283,6 +287,23 @@ public class DatabaseChangeHelper {
                 .ifPresent((entry) -> {
                     throw new IllegalArgumentException("Resource already exists with reference: " + resourceReference);
                 });
+    }
+
+    private void removeEntriesWithIdentifier(List<Long> entryIds, DbDto.Topic topic) {
+        if (entryIds.isEmpty()) {
+            return;
+        }
+
+        DbDataDto topicDataObject = databaseMiner.getDatabaseTopic(topic)
+                .map(DbDto::getData)
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No data for topic: " + topic));
+
+        List<ContentEntryDto> entriesToDelete = entryIds.stream()
+                .map(id -> topicDataObject.getEntryWithInternalIdentifier(id)
+                        .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No entry for topic: " + topic + " at id: " + id)))
+                .collect(toList());
+
+        topicDataObject.removeEntries(entriesToDelete);
     }
 
     private static List<ContentItemDto> cloneContentItems(ContentEntryDto entry, DbDto.Topic topic) {

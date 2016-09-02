@@ -33,6 +33,7 @@ public class DbDataDto implements Serializable {
     private List<ContentEntryDto> entries;
 
     @JsonIgnore
+    // TODO not necessary when new id mechanism
     private Map<Long, ContentEntryDto> entriesByInternalIdentifier;
 
     @JsonIgnore
@@ -77,26 +78,32 @@ public class DbDataDto implements Serializable {
     }
 
     public void removeEntry(ContentEntryDto entry) {
-        entries.remove(entry);
         removeEntryFromIndex(entry);
         removeEntryFromIndexByReference(entry);
+        entries.remove(entry);
 
-        // Fix identifiers of next entries
-        entries.stream()
-                .filter(e -> e.getId() > entry.getId())
-                .forEach(ContentEntryDto::shiftIdUp);
+        fixNextEntriesIdentifiers(entry.getId());
     }
 
-    // TODO extract method
+    public void removeEntries(List<ContentEntryDto> entriesToDelete) {
+        entriesToDelete.forEach(entry -> {
+            removeEntryFromIndex(entry);
+            removeEntryFromIndexByReference(entry);
+            entries.remove(entry);
+        });
+
+        fixNextEntriesIdentifiers(entriesToDelete.get(0).getId());
+    }
+
     public void moveEntryUp(ContentEntryDto entry) {
         moveEntry(entry, true);
     }
 
-    // TODO extract method
     public void moveEntryDown(ContentEntryDto entry) {
         moveEntry(entry, false);
     }
 
+    // TODO use swap algorithm when new id mechanism
     private void moveEntry(ContentEntryDto entry, boolean up) {
         removeEntryFromIndex(entry);
 
@@ -122,6 +129,16 @@ public class DbDataDto implements Serializable {
 
         sortEntriesByIdentifier();
     }
+
+    private void fixNextEntriesIdentifiers(long startIdentifierExclusive) {
+        entries.stream()
+                .filter(e -> e.getId() > startIdentifierExclusive)
+                .forEach(e ->  {
+                    e.setId(entries.indexOf(e));
+                    updateEntryIndexWithNewEntry(e);
+                });
+    }
+
 
     @Override
     public boolean equals(Object that) {

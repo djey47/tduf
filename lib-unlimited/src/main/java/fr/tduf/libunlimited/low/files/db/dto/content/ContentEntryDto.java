@@ -124,6 +124,10 @@ public class ContentEntryDto {
         id++;
     }
 
+    void setId(int id) {
+        this.id = id;
+    }
+
     String getFirstItemValue() {
         return getItemAtRank(1)
                 .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("Entry has no item at field rank 1"))

@@ -92,13 +92,13 @@ public class DatabaseChangeHelperTest {
     public void removeEntryWithIdentifier_whenEntryExists_shouldDeleteIt_andUpdateIds() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
-        ContentEntryDto entry1 = createDefaultContentEntry(1);
+        ContentEntryDto entry1 = createDefaultContentEntry(0);
         entry1.appendItem(createEntryItemAtRank(1));
         dataObject.addEntry(entry1);
-        ContentEntryDto entry2 = createDefaultContentEntry(2);
+        ContentEntryDto entry2 = createDefaultContentEntry(1);
         entry2.appendItem(createEntryItemAtRank(1));
         dataObject.addEntry(entry2);
-        ContentEntryDto entry3 = createDefaultContentEntry(3);
+        ContentEntryDto entry3 = createDefaultContentEntry(2);
         entry3.appendItem(createEntryItemAtRank(1));
         dataObject.addEntry(entry3);
 
@@ -113,7 +113,7 @@ public class DatabaseChangeHelperTest {
 
         // THEN
         assertThat(dataObject.getEntries()).hasSize(2);
-        assertThat(dataObject.getEntries()).extracting("id").containsExactly(1L, 2L);
+        assertThat(dataObject.getEntries()).extracting("id").containsExactly(0L, 1L);
     }
 
     @Test(expected = IllegalStateException.class)
