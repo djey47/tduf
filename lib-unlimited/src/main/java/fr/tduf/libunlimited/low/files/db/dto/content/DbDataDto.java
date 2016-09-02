@@ -89,35 +89,35 @@ public class DbDataDto implements Serializable {
 
     // TODO extract method
     public void moveEntryUp(ContentEntryDto entry) {
-        removeEntryFromIndex(entry);
-
-        // Moves down previous entry
-        getEntryWithInternalIdentifier(entry.getId() - 1)
-                .ifPresent(e -> {
-                    removeEntryFromIndex(e);
-                    e.shiftIdDown();
-                    updateEntryIndexWithNewEntry(e);
-                });
-
-        entry.shiftIdUp();
-        updateEntryIndexWithNewEntry(entry);
-
-        sortEntriesByIdentifier();
+        moveEntry(entry, true);
     }
 
     // TODO extract method
     public void moveEntryDown(ContentEntryDto entry) {
+        moveEntry(entry, false);
+    }
+
+    private void moveEntry(ContentEntryDto entry, boolean up) {
         removeEntryFromIndex(entry);
 
-        // Moves up next entry
-        getEntryWithInternalIdentifier(entry.getId() + 1)
+        // Moves previous entry down or next entry up
+        getEntryWithInternalIdentifier(up ? entry.getId() - 1 : entry.getId() + 1)
                 .ifPresent(e -> {
                     removeEntryFromIndex(e);
-                    e.shiftIdUp();
+                    if (up) {
+                        e.shiftIdDown();
+                    } else {
+                        e.shiftIdUp();
+                    }
                     updateEntryIndexWithNewEntry(e);
                 });
 
-        entry.shiftIdDown();
+        if (up) {
+            entry.shiftIdUp();
+        } else {
+            entry.shiftIdDown();
+        }
+
         updateEntryIndexWithNewEntry(entry);
 
         sortEntriesByIdentifier();
