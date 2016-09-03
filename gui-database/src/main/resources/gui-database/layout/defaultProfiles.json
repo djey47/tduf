@@ -2356,6 +2356,23 @@
           "rank": 99,
           "group": "Aesthetic Values",
           "label": "IK"
+        },
+        {
+          "name": "Secu1",
+          "rank": 100
+        },
+        {
+          "name": "Secu2",
+          "rank": 101
+        },
+        {
+          "name": "ID_Car",
+          "priority": 9900,
+          "rank": 102
+        },
+        {
+          "name": "BitField",
+          "rank": 103
         }
       ]
     }
