@@ -36,13 +36,13 @@ public class CamerasHelperTest {
     @Test
     public void duplicateCameraSet_whenSourceExists_shouldAddSet() throws Exception {
         // GIVEN-WHEN
-        CamerasHelper.duplicateCameraSet(1, 10001, parser);
+        CamerasHelper.duplicateCameraSet(1, 401, parser);
 
         // THEN
-        assertThat(parser.getDataStore().getInteger("indexSize").get()).isEqualTo(152);
-        assertThat(parser.getCameraIndex()).hasSize(152);
-        assertThat(parser.getCameraViews()).hasSize(150);
-        assertThat(parser.getTotalViewCount()).isEqualTo(599);
+        assertThat(parser.getDataStore().getInteger("indexSize").get()).isEqualTo(151);
+        assertThat(parser.getCameraIndex()).hasSize(151);   // 150 -> 151
+        assertThat(parser.getCameraViews()).hasSize(149);   // 148 -> 149 : 2 camera entries are genuinely missing (9997 and ?!)
+        assertThat(parser.getTotalViewCount()).isEqualTo(595); // 591 -> 595
     }
 
     @Test(expected = NullPointerException.class)

@@ -24,9 +24,9 @@ public class CamerasParserTest {
 
         // THEN
         assertThat(camerasParser).isNotNull();
-        assertThat(camerasParser.getCameraIndex()).hasSize(151);
-        assertThat(camerasParser.getCameraViews()).hasSize(149);
-        assertThat(camerasParser.getTotalViewCount()).isEqualTo(595);
+        assertThat(camerasParser.getCameraIndex()).hasSize(150);
+        assertThat(camerasParser.getCameraViews()).hasSize(148);
+        assertThat(camerasParser.getTotalViewCount()).isEqualTo(591);
 
         assertThat(camerasParser.getCachedCameraIndex()).isNotEmpty();
         assertThat(camerasParser.getCachedCameraViews()).isNotEmpty();

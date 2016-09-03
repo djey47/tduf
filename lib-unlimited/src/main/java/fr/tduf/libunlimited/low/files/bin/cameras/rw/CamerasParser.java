@@ -37,6 +37,7 @@ public class CamerasParser extends GenericParser<String> {
 
     @Override
     protected String generate() {
+        // No need to return a domain object, still
         return null;
     }
 
@@ -54,11 +55,12 @@ public class CamerasParser extends GenericParser<String> {
         }
 
         cachedCameraIndex = new LinkedHashMap<>();
-        this.getDataStore().getRepeatedValues("index").stream()
-
-                .forEach((store) -> {
-                    long cameraId = store.getInteger("cameraId").get();
-                    short viewCount = store.getInteger("viewCount").get().shortValue();
+        this.getDataStore().getRepeatedValues("index").forEach((store) -> {
+                    long cameraId = store.getInteger("cameraId")
+                            .<IllegalStateException>orElseThrow(() -> new IllegalStateException("cameraId attribute not found in store"));
+                    short viewCount = store.getInteger("viewCount")
+                            .<IllegalStateException>orElseThrow(() -> new IllegalStateException("viewCount attribute not found in store"))
+                            .shortValue();
                     cachedCameraIndex.put(cameraId, viewCount);
                 });
 
@@ -74,10 +76,9 @@ public class CamerasParser extends GenericParser<String> {
         }
 
         cachedCameraViews = new LinkedHashMap<>();
-        this.getDataStore().getRepeatedValues("views").stream()
-
-                .forEach((store) -> {
-                    long cameraId = store.getInteger("cameraId").get();
+        this.getDataStore().getRepeatedValues("views").forEach((store) -> {
+                    long cameraId = store.getInteger("cameraId")
+                            .<IllegalStateException>orElseThrow(() -> new IllegalStateException("cameraId attribute not found in store"));
 
                     List<DataStore> currentViews;
                     if (cachedCameraViews.containsKey(cameraId)) {
@@ -102,9 +103,7 @@ public class CamerasParser extends GenericParser<String> {
         }
 
         cachedTotalViewCount = this.getCameraViews().values().stream()
-
                 .mapToInt(List::size)
-
                 .reduce(0, (size1, size2) -> size1 + size2);
 
         return cachedTotalViewCount;
