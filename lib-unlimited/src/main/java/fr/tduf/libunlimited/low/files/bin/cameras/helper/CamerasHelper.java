@@ -39,24 +39,16 @@ public class CamerasHelper {
         requireNonNull(parser, "Parser with cameras contents is required.").getDataStore();
 
         parser.getCameraViews().keySet().stream()
-
                 .sorted(naturalOrder())
-
-                .forEach((cameraId) -> {
-
-                    if (cameraId >= MIN_CAMERA_SET_ID && cameraId <= MAX_GENUINE_CAMERA_SET_ID) {
-                        duplicateCameraSet(cameraId, cameraId + targetCameraId, parser);
-                    }
-
-                });
+                .filter(cameraId -> cameraId >= MIN_CAMERA_SET_ID
+                        && cameraId <= MAX_GENUINE_CAMERA_SET_ID)
+                .forEach((cameraId) -> duplicateCameraSet(cameraId, cameraId + targetCameraId, parser));
     }
 
     private static void updateViewsInDatastore(DataStore dataStore, long sourceCameraId, long targetCameraId, CamerasParser parser) {
         AtomicInteger viewIndex = new AtomicInteger(parser.getTotalViewCount());
         parser.getCameraViews().get(sourceCameraId).stream()
-
                 .map((originalViewStore) -> cloneViewStoreForNewCamera(originalViewStore, targetCameraId))
-
                 .forEach((clonedViewStore) -> dataStore.mergeRepeatedValues("views", viewIndex.getAndIncrement(), clonedViewStore));
     }
 
