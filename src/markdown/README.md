@@ -40,17 +40,21 @@ TDUF aims at making Test Drive Unlmited modding easier:
 * DatabaseEditor: re-instantiates database reload feature
 * DatabaseEditor: provides TDUPE-based profile.
 
+* CameraTool: copy-all-sets instruction has been removed.
+
 
 ### Fixed issues
 
 * DatabaseEditor: misc fixes
+
+* CameraTool: copy camera set now working (copy-set instruction)
 
 * Library: switch to mono executable on Linux
 
 
 ### Known bugs
 
-* Camera Tool use is at your own risks still, as it may corrupt cameras.bin file.
+* You tell me!
 
 
 
