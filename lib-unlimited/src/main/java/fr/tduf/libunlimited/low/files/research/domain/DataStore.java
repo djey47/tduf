@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.research.domain;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.low.files.research.common.helper.FormulaHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.StructureHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
@@ -23,6 +24,8 @@ import static java.util.Objects.requireNonNull;
  * and {@link fr.tduf.libunlimited.low.files.research.rw.GenericWriter}
  */
 public class DataStore {
+    private static final String THIS_CLASS_NAME = DataStore.class.getSimpleName();
+
     private static final String REPEATER_FIELD_SEPARATOR = ".";
 
     private static final Pattern FIELD_NAME_PATTERN = Pattern.compile("^(?:.*\\.)?(.+)$");              // e.g 'entry_list[1].my_field', 'my_field'
@@ -196,9 +199,7 @@ public class DataStore {
      * @param subStore          : sub data store to merge into existing one
      */
     public void mergeRepeatedValues(String repeaterFieldName, int index, DataStore subStore) {
-        requireNonNull(subStore, "A sub data store is required.").getStore().entrySet().stream()
-
-                .forEach((entry) -> {
+        requireNonNull(subStore, "A sub data store is required.").getStore().entrySet().forEach(entry -> {
                     String newKey = generateKeyForRepeatedField(repeaterFieldName, entry.getKey(), index);
                     Entry currentStoreEntry = entry.getValue();
                     this.putEntry(newKey, currentStoreEntry.getType(), currentStoreEntry.isSigned(), currentStoreEntry.getRawValue());
@@ -240,7 +241,7 @@ public class DataStore {
         }
 
         Entry entry = this.store.get(fieldName);
-        assert (entry.getType() == FileStructureDto.Type.TEXT);
+        assert TEXT == entry.getType();
 
         byte[] rawValue = entry.getRawValue();
         return Optional.of(
@@ -259,7 +260,7 @@ public class DataStore {
         }
 
         Entry entry = this.store.get(fieldName);
-        assert (entry.getType() == FileStructureDto.Type.INTEGER);
+        assert INTEGER == entry.getType();
 
         return Optional.of(
                 rawToInteger(entry.getRawValue(), entry.isSigned()));
@@ -277,7 +278,7 @@ public class DataStore {
         }
 
         Entry entry = this.store.get(fieldName);
-        assert (entry.getType() == FileStructureDto.Type.FPOINT);
+        assert FPOINT == entry.getType();
 
         return Optional.of(
                 rawToFloatingPoint(entry.getRawValue()));
@@ -292,16 +293,12 @@ public class DataStore {
     public List<Long> getIntegerListOf(String fieldName) {
 
         return store.keySet().stream()
-
                 .filter(key -> {
                     Matcher matcher = FIELD_NAME_PATTERN.matcher(key);
                     return matcher.matches() && matcher.group(1).equals(fieldName);
                 })
-
                 .map(this.store::get)
-
-                .map((storeEntry) -> TypeHelper.rawToInteger(storeEntry.getRawValue(), storeEntry.isSigned()))
-
+                .map(storeEntry -> TypeHelper.rawToInteger(storeEntry.getRawValue(), storeEntry.isSigned()))
                 .collect(Collectors.toList());
     }
 
@@ -313,16 +310,12 @@ public class DataStore {
      */
     public List<Float> getFloatingPointListOf(String fieldName) {
         return store.keySet().stream()
-
                 .filter(key -> {
                     Matcher matcher = FIELD_NAME_PATTERN.matcher(key);
                     return matcher.matches() && matcher.group(1).equals(fieldName);
                 })
-
                 .map(key -> this.store.get(key).getRawValue())
-
                 .map(TypeHelper::rawToFloatingPoint)
-
                 .collect(Collectors.toList());
     }
 
@@ -333,9 +326,7 @@ public class DataStore {
      */
     public List<DataStore> getRepeatedValues(String repeaterFieldName) {
         Map<Integer, List<String>> groupedKeysByIndex = store.keySet().stream()
-
                 .filter(key -> key.startsWith(repeaterFieldName))
-
                 .collect(Collectors.groupingBy(key -> {
                     Matcher matcher = SUB_FIELD_NAME_PATTERN.matcher(key);
                     return matcher.matches() ? Integer.valueOf(matcher.group(2)) : 0; // extracts index part
@@ -343,11 +334,10 @@ public class DataStore {
 
         List<DataStore> repeatedValues = createEmptyList(groupedKeysByIndex.size(), this.getFileStructure());
 
-        for (Integer index : groupedKeysByIndex.keySet()) {
+        for (Map.Entry<Integer, List<String>> entry: groupedKeysByIndex.entrySet()) {
+            DataStore subDataStore = repeatedValues.get(entry.getKey());
 
-            DataStore subDataStore = repeatedValues.get(index);
-
-            for (String key : groupedKeysByIndex.get(index)) {
+            for (String key : entry.getValue()) {
                 Matcher matcher = SUB_FIELD_NAME_PATTERN.matcher(key);
                 if (matcher.matches()) {
                     subDataStore.getStore().put(matcher.group(3), store.get(key)); // extracts field name part
@@ -418,15 +408,15 @@ public class DataStore {
 
         } else if (jsonNode instanceof DoubleNode) {
 
-            type = FileStructureDto.Type.FPOINT;
+            type = FPOINT;
             rawValue = TypeHelper.floatingPoint32ToRaw(((Double) jsonNode.getDoubleValue()).floatValue());
 
         } else {
-            FileStructureDto.Field fieldDefinition = StructureHelper.getFieldDefinitionFromFullName(parentKey, this.fileStructure).get();
-
+            FileStructureDto.Field fieldDefinition = StructureHelper.getFieldDefinitionFromFullName(parentKey, fileStructure)
+                    .<IllegalStateException>orElseThrow(() -> new IllegalStateException("Field definition not found for key: " + parentKey));
             if (jsonNode instanceof IntNode || jsonNode instanceof LongNode) {
 
-                type = FileStructureDto.Type.INTEGER;
+                type = INTEGER;
                 rawValue = TypeHelper.integerToRaw(jsonNode.getLongValue());
                 signed = fieldDefinition.isSigned();
 
@@ -434,12 +424,13 @@ public class DataStore {
 
                 String stringValue = jsonNode.getTextValue();
                 try {
-                    type = FileStructureDto.Type.UNKNOWN;
+                    type = UNKNOWN;
                     rawValue = TypeHelper.hexRepresentationToByteArray(stringValue);
-                } catch (IllegalArgumentException e) {
-                    type = FileStructureDto.Type.TEXT;
+                } catch (IllegalArgumentException iae) {
+                    type = TEXT;
                     int length = computeValueLength(fieldDefinition.getSizeFormula(), Optional.ofNullable(parentKey));
                     rawValue = TypeHelper.textToRaw(stringValue, length);
+                    Log.info(THIS_CLASS_NAME, "Unable to parse hexadecimal representation", iae);
                 }
             }
         }
