@@ -19,9 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static fr.tduf.cli.tools.CameraTool.Command.COPY_ALL_SETS;
 import static fr.tduf.cli.tools.CameraTool.Command.COPY_SET;
-import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 /**
  * Command line interface for handling TDU vehicle cameras.
@@ -34,7 +33,7 @@ public class CameraTool extends GenericTool {
     @Option(name="-o", aliases = "--outputCameraFile", usage = "Modified Cameras.bin file to create.")
     private String outputCameraFile;
 
-    @Option(name="-t", aliases = "--targetId", usage = "Base value of new camera identifier (required for copy-set/copy-all-sets operations).")
+    @Option(name="-t", aliases = "--targetId", usage = "Base value of new camera identifier (required for copy-set operation).")
     private Integer targetIdentifier;
 
     @Option(name="-s", aliases = "--sourceId", usage = "Identifier of camera set to copy (required for copy-set operation).")
@@ -46,8 +45,7 @@ public class CameraTool extends GenericTool {
      * All available commands
      */
     enum Command implements CommandHelper.CommandEnum {
-        COPY_SET("copy-set", "Duplicate given camera set to a new identifier. Will erase existing."),
-        COPY_ALL_SETS("copy-all-sets", "Duplicates all cameras having identifier between 1 and 10000.");
+        COPY_SET("copy-set", "Duplicate given camera set to a new identifier. Will erase existing.");
 
         final String label;
         final String description;
@@ -82,16 +80,12 @@ public class CameraTool extends GenericTool {
 
     @Override
     protected boolean commandDispatch() throws Exception {
-        switch (command) {
-            case COPY_SET:
-                commandResult = copySet(inputCameraFile, outputCameraFile);
-                return true;
-            case COPY_ALL_SETS:
-                commandResult = copyAllSets(inputCameraFile, outputCameraFile);
-                return true;
-            default:
-                commandResult = null;
-                return false;
+        if (COPY_SET == command) {
+            commandResult = copySet(inputCameraFile, outputCameraFile);
+            return true;
+        } else {
+            commandResult = null;
+            return false;
         }
     }
 
@@ -109,21 +103,20 @@ public class CameraTool extends GenericTool {
 
         // Target identifier: mandatory with copy-set/copy-all-sets
         if (targetIdentifier == null
-                && ( command == COPY_ALL_SETS || command == COPY_SET)) {
+                && command == COPY_SET) {
             throw new CmdLineException(parser, "Error: target identifier is required.", null);
         }
     }
 
     @Override
     protected CommandHelper.CommandEnum getCommand() {
-        return COPY_ALL_SETS;
+        return COPY_SET;
     }
 
     @Override
     protected List<String> getExamples() {
-        return asList(
-                COPY_SET.label + " -i \"C:\\Users\\Bill\\Desktop\\Cameras.bin\" -s 208 -t 209",
-                COPY_ALL_SETS.label + " -i \"C:\\Users\\Bill\\Desktop\\Cameras.bin\" -t 10000 -o \"C:\\Users\\Bill\\Desktop\\NewCameras.bin\"");
+        return singletonList(
+                COPY_SET.label + " -i \"C:\\Users\\Bill\\Desktop\\Cameras.bin\" -s 208 -t 209");
     }
 
     private Map<String, ?> copySet(String sourceCameraFile, String targetCameraFile) throws IOException {
@@ -134,22 +127,6 @@ public class CameraTool extends GenericTool {
         outLine("> Done reading cameras.");
 
         CamerasHelper.duplicateCameraSet(sourceIdentifier, targetIdentifier, parser);
-
-        outLine("> Done copying camera sets.");
-
-        writeModifiedCameras(parser, targetCameraFile);
-
-        return makeCommandResultForCopy(targetCameraFile);
-    }
-
-    private Map<String, ?> copyAllSets(String sourceCameraFile, String targetCameraFile) throws IOException {
-        outLine("> Will use Cameras file: " + sourceCameraFile);
-
-        CamerasParser parser = loadAndParseCameras(sourceCameraFile);
-
-        outLine("> Done reading cameras.");
-
-        CamerasHelper.duplicateAllCameraSets(targetIdentifier, parser);
 
         outLine("> Done copying camera sets.");
 

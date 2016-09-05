@@ -27,18 +27,6 @@ public class CameraToolIntegTest {
     }
 
     @Test
-    public void copyAllSets_shouldProduceCorrectFile() throws IOException {
-        String referenceCameraFile = camerasIntegTestPath.resolve("Cameras.allSetsCopied.bin").toString();
-
-        // WHEN: copy-all-sets
-        System.out.println("-> Copy All Sets!");
-        CameraTool.main(new String[]{"copy-all-sets", "-n", "-i", inputCameraFile, "-o", outputCameraFile, "-t", "10000"});
-
-        // THEN
-        assertThat(new File(outputCameraFile)).hasSameContentAs(new File(referenceCameraFile));
-    }
-
-    @Test
     public void copySet_shouldProduceCorrectFile() throws IOException {
         String referenceCameraFile = camerasIntegTestPath.resolve("Cameras.set108CopiedTo109.bin").toString();
 

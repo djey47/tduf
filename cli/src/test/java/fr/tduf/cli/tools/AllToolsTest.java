@@ -7,7 +7,6 @@ import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 
 import java.io.IOException;
 
-import static fr.tduf.cli.tools.CameraTool.Command.COPY_ALL_SETS;
 import static fr.tduf.cli.tools.CameraTool.Command.COPY_SET;
 import static fr.tduf.cli.tools.DatabaseTool.Command.*;
 import static fr.tduf.cli.tools.FileTool.Command.*;
@@ -171,14 +170,6 @@ public class AllToolsTest {
         exitRule.expectSystemExitWithStatus(1);
 
         testToolCommand(new MappingTool(), MAGIFY);
-    }
-
-    @Test
-    public void cameraTool_copyAllSets() throws NoSuchFieldException, IOException {
-        // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
-        testToolCommand(new CameraTool(), COPY_ALL_SETS);
     }
 
     @Test

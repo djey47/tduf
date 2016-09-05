@@ -6,16 +6,12 @@ import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static java.util.Comparator.naturalOrder;
 import static java.util.Objects.requireNonNull;
 
 /**
  * Static methods tho access or modify camera information in datastore.
  */
 public class CamerasHelper {
-
-    private static final int MIN_CAMERA_SET_ID = 1;
-    private static final int MAX_GENUINE_CAMERA_SET_ID = 10000;
 
     private CamerasHelper(){}
 
@@ -33,21 +29,6 @@ public class CamerasHelper {
         updateViewsInDatastore(dataStore, sourceCameraId, targetCameraId, parser);
 
         parser.flushCaches();
-    }
-
-    /**
-     * For each existing set at initialCameraId (MIN_CAMERA_SET_ID..MAX_GENUINE_CAMERA_SET_ID), creates a clone set at (targetCameraId+initialCameraId).
-     * @param targetCameraId    : delta of camera identifier to create views.
-     * @param parser            : parsed cameras contents
-     */
-    public static void duplicateAllCameraSets(long targetCameraId, CamerasParser parser) {
-        requireNonNull(parser, "Parser with cameras contents is required.").getDataStore();
-
-        parser.getCameraViews().keySet().stream()
-                .sorted(naturalOrder())
-                .filter(cameraId -> cameraId >= MIN_CAMERA_SET_ID
-                        && cameraId <= MAX_GENUINE_CAMERA_SET_ID)
-                .forEach(cameraId -> duplicateCameraSet(cameraId, cameraId + targetCameraId, parser));
     }
 
     private static void updateViewsInDatastore(DataStore dataStore, long sourceCameraId, long targetCameraId, CamerasParser parser) {
