@@ -29,6 +29,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.VBox;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -101,14 +102,14 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         getEntryItemsCountLabel().textProperty().bind(size(browsableEntries).asString(DisplayConstants.LABEL_ITEM_ENTRY_COUNT));
     }
 
-    // TODO tests
     void updateDisplayWithLoadedObjects() {
         setMiner(BulkDatabaseMiner.load(getDatabaseObjects()));
 
         getNavigationHistory().clear();
 
-        getProfilesChoiceBox().getSelectionModel().clearSelection(); // ensures event will be fired even though 1st item is selected
-        getProfilesChoiceBox().getSelectionModel().selectFirst();
+        final SingleSelectionModel<String> selectionModel = getProfilesChoiceBox().getSelectionModel();
+        selectionModel.clearSelection(); // ensures event will be fired even though 1st item is selected
+        selectionModel.selectFirst();
 
         updateConfiguration();
     }

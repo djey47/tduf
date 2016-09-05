@@ -63,7 +63,7 @@ import static javafx.scene.control.Alert.AlertType.*;
 public class MainStageController extends AbstractGuiController {
     private static final String THIS_CLASS_NAME = MainStageController.class.getSimpleName();
 
-    final Deque<EditorLocation> navigationHistory = new ArrayDeque<>();
+    private final Deque<EditorLocation> navigationHistory = new ArrayDeque<>();
 
     private final Property<Long> currentEntryIndexProperty = new SimpleObjectProperty<>(-1L);
     private final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>();
@@ -828,6 +828,10 @@ public class MainStageController extends AbstractGuiController {
         this.databaseMiner = databaseMiner;
     }
 
+    Deque<EditorLocation> getNavigationHistory() {
+        return navigationHistory;
+    }
+
     Property<DbDto.Topic> getCurrentTopicProperty() {
         return currentTopicProperty;
     }
@@ -878,5 +882,9 @@ public class MainStageController extends AbstractGuiController {
 
     TabPane getTabPane() {
         return tabPane;
+    }
+
+    TextField getDatabaseLocationTextField() {
+        return databaseLocationTextField;
     }
 }

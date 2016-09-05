@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.controllers;
 
 import fr.tduf.gui.database.DatabaseEditor;
+import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
@@ -22,6 +23,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -34,6 +36,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Optional;
 import java.util.OptionalLong;
 
@@ -42,6 +46,7 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.INTEGER;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.REFERENCE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.UID;
+import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -85,9 +90,13 @@ public class MainStageViewDataControllerTest {
 
     private final StringProperty currentEntryLabelProperty = new SimpleStringProperty("");
 
+    private ChoiceBox<String> profilesChoiceBox;
+
     @Before
     public void setUp() {
         DatabaseEditor.getCommandLineParameters().clear();
+
+        when(mainStageControllerMock.getApplicationConfiguration()).thenReturn(applicationConfigurationMock);
 
         when(mainStageControllerMock.getMiner()).thenReturn(minerMock);
         when(mainStageControllerMock.getLayoutObject()).thenReturn(layoutObject);
@@ -96,7 +105,7 @@ public class MainStageViewDataControllerTest {
         when(mainStageControllerMock.getCurrentLocaleProperty()).thenReturn(new SimpleObjectProperty<>(LOCALE));
         when(mainStageControllerMock.getCurrentEntryLabelProperty()).thenReturn(currentEntryLabelProperty);
 
-        final ChoiceBox<String> profilesChoiceBox = new ChoiceBox<>();
+        profilesChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(TEST_PROFILE_NAME, TEST_REMOTE_PROFILE_NAME, TEST_REMOTE_ASSO_PROFILE_NAME));
         profilesChoiceBox.valueProperty().setValue(TEST_PROFILE_NAME);
         when(mainStageControllerMock.getProfilesChoiceBox()).thenReturn(profilesChoiceBox);
         when(mainStageControllerMock.getTabPane()).thenReturn(new TabPane());
@@ -107,7 +116,6 @@ public class MainStageViewDataControllerTest {
     @Test
     public void resolveInitialDatabaseDirectory_whenNoCommandLineParameter_andNoConfiguration_shouldReturnEmpty() throws Exception {
         // GIVEN
-        when(mainStageControllerMock.getApplicationConfiguration()).thenReturn(applicationConfigurationMock);
         when(applicationConfigurationMock.getDatabasePath()).thenReturn(Optional.empty());
 
         // WHEN
@@ -121,8 +129,6 @@ public class MainStageViewDataControllerTest {
     public void resolveInitialDatabaseDirectory_whenWrongCommandLineParameter_andNoConfiguration_shouldReturnEmpty() throws Exception {
         // GIVEN
         DatabaseEditor.getCommandLineParameters().add("-p");
-
-        when(mainStageControllerMock.getApplicationConfiguration()).thenReturn(applicationConfigurationMock);
         when(applicationConfigurationMock.getDatabasePath()).thenReturn(Optional.empty());
 
 
@@ -153,13 +159,10 @@ public class MainStageViewDataControllerTest {
     @Test
     public void resolveInitialDatabaseDirectory_whenNoCommandLineParameter_andConfiguration_shouldReturnSavedLocation() throws Exception {
         // GIVEN
-        when(mainStageControllerMock.getApplicationConfiguration()).thenReturn(applicationConfigurationMock);
         when(applicationConfigurationMock.getDatabasePath()).thenReturn(of(Paths.get("/tdu/euro/bnk/database")));
-
 
         // WHEN
         final Optional<String> actualDirectory = controller.resolveInitialDatabaseDirectory();
-
 
         // THEN
         assertThat(actualDirectory).contains("/tdu/euro/bnk/database");
@@ -202,6 +205,28 @@ public class MainStageViewDataControllerTest {
         assertThat(currentTopicProperty.getValue()).isEqualTo(TOPIC2);
         verify(mainStageControllerMock).setCurrentProfileObject(profileObject);
         verify(mainStageControllerMock).setCurrentTopicObject(topicObject);
+    }
+
+    @Test
+    public void updateDisplayWithLoadedObjects_shouldUpdateConfiguration() throws IOException {
+        // GIVEN
+        when(mainStageControllerMock.getDatabaseObjects()).thenReturn(singletonList(createTopicObject()));
+        Deque<EditorLocation> navigationHistory = new ArrayDeque<>();
+        navigationHistory.add(new EditorLocation(1, "profile", 0));
+        when(mainStageControllerMock.getNavigationHistory()).thenReturn(navigationHistory);
+        when(mainStageControllerMock.getDatabaseLocationTextField()).thenReturn(new TextField("location"));
+
+
+        // WHEN
+        controller.updateDisplayWithLoadedObjects();
+
+        // THEN
+        assertThat(navigationHistory).isEmpty();
+        assertThat(profilesChoiceBox.getSelectionModel().isEmpty()).isFalse();
+
+        verify(applicationConfigurationMock).setDatabasePath("location");
+        verify(applicationConfigurationMock).store();
+        verifyNoMoreInteractions(applicationConfigurationMock);
     }
 
     @Test

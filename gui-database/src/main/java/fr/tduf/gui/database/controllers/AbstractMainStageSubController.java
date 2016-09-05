@@ -85,7 +85,7 @@ abstract class AbstractMainStageSubController {
     }
 
     protected Deque<EditorLocation> getNavigationHistory() {
-        return mainStageController.navigationHistory;
+        return mainStageController.getNavigationHistory();
     }
 
     protected ApplicationConfiguration getApplicationConfiguration() {
@@ -119,7 +119,7 @@ abstract class AbstractMainStageSubController {
     }
 
     protected TextField getDatabaseLocationTextField() {
-        return mainStageController.databaseLocationTextField;
+        return mainStageController.getDatabaseLocationTextField();
     }
 
     protected ChoiceBox<String> getProfilesChoiceBox() {
