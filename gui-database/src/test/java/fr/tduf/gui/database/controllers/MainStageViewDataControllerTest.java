@@ -220,6 +220,7 @@ public class MainStageViewDataControllerTest {
         // WHEN
         controller.updateDisplayWithLoadedObjects();
 
+
         // THEN
         assertThat(navigationHistory).isEmpty();
         assertThat(profilesChoiceBox.getSelectionModel().isEmpty()).isFalse();
@@ -227,6 +228,23 @@ public class MainStageViewDataControllerTest {
         verify(applicationConfigurationMock).setDatabasePath("location");
         verify(applicationConfigurationMock).store();
         verifyNoMoreInteractions(applicationConfigurationMock);
+    }
+
+    @Test
+    public void updateEntriesAndSwitchTo_whenNoEntry_shouldSetEmptyList() {
+        // GIVEN
+        final EditorLayoutDto.EditorProfileDto profileObject = layoutObject.getProfiles().get(0);
+        when(mainStageControllerMock.getCurrentProfileObject()).thenReturn(profileObject);
+
+        controller.getBrowsableEntries().add(new ContentEntryDataItem());
+
+
+        // WHEN
+        controller.updateEntriesAndSwitchTo(0);
+
+
+        // THEN
+        assertThat(controller.getBrowsableEntries()).isEmpty();
     }
 
     @Test

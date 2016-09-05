@@ -416,8 +416,8 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         getLocalesChoiceBox().valueProperty().bindBidirectional(currentLocaleProperty());
     }
 
+    // TODO add test with entries
     private void fillBrowsableEntries() {
-        // Ignore warning
         final List<Integer> labelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(
                 getCurrentProfileObject().getName(),
                 getLayoutObject());
@@ -570,5 +570,9 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     public Map<Integer, SimpleStringProperty> getResolvedValuesByFieldRank() {
         return resolvedValuesByFieldRank;
+    }
+
+    ObservableList<ContentEntryDataItem> getBrowsableEntries() {
+        return browsableEntries;
     }
 }
