@@ -32,6 +32,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
+import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -59,9 +60,10 @@ import static javafx.scene.control.Alert.AlertType.*;
 /**
  * Makes it a possible to intercept all GUI events.
  */
-// TODO apply code rules
 public class MainStageController extends AbstractGuiController {
     private static final String THIS_CLASS_NAME = MainStageController.class.getSimpleName();
+
+    private static final String LOG_TARGET_PROFILE_NAME = ", targetProfileName:";
 
     private final Deque<EditorLocation> navigationHistory = new ArrayDeque<>();
 
@@ -406,7 +408,7 @@ public class MainStageController extends AbstractGuiController {
 
     public EventHandler<ActionEvent> handleGotoReferenceButtonMouseClick(DbDto.Topic targetTopic, int fieldRank, String targetProfileName) {
         return actionEvent -> {
-            Log.trace(THIS_CLASS_NAME, "->gotoReferenceButton clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
+            Log.trace(THIS_CLASS_NAME, "->gotoReferenceButton clicked, targetTopic:" + targetTopic + LOG_TARGET_PROFILE_NAME + targetProfileName);
 
             viewDataController.switchToProfileAndRemoteEntry(targetProfileName, currentEntryIndexProperty.getValue(), fieldRank, currentTopicProperty.getValue(), targetTopic);
         };
@@ -414,7 +416,7 @@ public class MainStageController extends AbstractGuiController {
 
     public EventHandler<ActionEvent> handleGotoReferenceButtonMouseClick(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, String targetProfileName) {
         return actionEvent -> {
-            Log.trace(THIS_CLASS_NAME, "->gotoReferenceButtonForLinkedTopic clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
+            Log.trace(THIS_CLASS_NAME, "->gotoReferenceButtonForLinkedTopic clicked, targetTopic:" + targetTopic + LOG_TARGET_PROFILE_NAME + targetProfileName);
 
             viewDataController.switchToSelectedResourceForLinkedTopic(tableViewSelectionModel.getSelectedItem(), targetTopic, targetProfileName);
         };
@@ -422,9 +424,11 @@ public class MainStageController extends AbstractGuiController {
 
     public EventHandler<ActionEvent> handleAddLinkedEntryButtonMouseClick(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, String targetProfileName, TopicLinkDto topicLinkObject) {
         return actionEvent -> {
-            Log.trace(THIS_CLASS_NAME, "->handleAddLinkedEntryButton clicked, targetTopic:" + targetTopic + ", targetProfileName:" + targetProfileName);
+            Log.trace(THIS_CLASS_NAME, "->handleAddLinkedEntryButton clicked, targetTopic:" + targetTopic + LOG_TARGET_PROFILE_NAME + targetProfileName);
 
-            List<DbStructureDto.Field> structureFields = databaseMiner.getDatabaseTopic(targetTopic).get().getStructure().getFields();
+            List<DbStructureDto.Field> structureFields = databaseMiner.getDatabaseTopic(targetTopic)
+                    .<IllegalStateException>orElseThrow(() -> new IllegalStateException("Database object not found for topic: " + targetTopic))
+                    .getStructure().getFields();
             if (DatabaseStructureQueryHelper.getUidFieldRank(structureFields).isPresent()) {
                 // Association topic -> browse remote entries in target topic
                 entriesStageController.initAndShowModalDialog(empty(), targetTopic, targetProfileName)
@@ -532,26 +536,33 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void initServiceListeners() {
-        databaseLoader.stateProperty().addListener((observableValue, oldState, newState) -> {
-            if (SUCCEEDED == newState
-                    && !databaseLoader.getValue().isEmpty()) {
-                databaseObjects.clear();
-                databaseObjects.addAll(databaseLoader.getValue());
-                viewDataController.updateDisplayWithLoadedObjects();
-            } else if (FAILED == newState) {
-                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_LOAD, DisplayConstants.MESSAGE_DATABASE_LOAD_KO, databaseLoader.getException().getMessage());
-            }
-        });
+        databaseLoader.stateProperty().addListener(getLoaderStateChangeListener());
 
-        databaseSaver.stateProperty().addListener((observableValue, oldState, newState) -> {
+        databaseSaver.stateProperty().addListener(getSaverStateChangeListener());
+
+        databaseChecker.stateProperty().addListener(getCheckerStateChangeListener());
+
+        databaseFixer.stateProperty().addListener(getFixerStateChangeListener());
+    }
+
+    private ChangeListener<Worker.State> getFixerStateChangeListener() {
+        return (observableValue, oldState, newState) -> {
             if (SUCCEEDED == newState) {
-                CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SAVE, DisplayConstants.MESSAGE_DATABASE_SAVED, databaseSaver.getValue());
+                final Set<IntegrityError> remainingErrors = databaseFixer.integrityErrorsProperty().get();
+                if (remainingErrors.isEmpty()) {
+                    CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_OK, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_ZERO_ERROR_AFTER_FIX);
+                } else {
+                    CommonDialogsHelper.showDialog(WARNING, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_KO, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_REMAINING_ERRORS);
+                }
+                viewDataController.refreshAll();
             } else if (FAILED == newState) {
-                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SAVE, DisplayConstants.MESSAGE_DATABASE_SAVE_KO, databaseSaver.getException().getMessage());
+                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_KO, databaseFixer.getException().getMessage());
             }
-        });
+        };
+    }
 
-        databaseChecker.stateProperty().addListener((observableValue, oldState, newState) -> {
+    private ChangeListener<Worker.State> getCheckerStateChangeListener() {
+        return (observableValue, oldState, newState) -> {
             if (SUCCEEDED == newState) {
                 final Set<IntegrityError> integrityErrors = databaseChecker.integrityErrorsProperty().get();
                 if (integrityErrors.isEmpty()) {
@@ -564,21 +575,30 @@ public class MainStageController extends AbstractGuiController {
             } else if (FAILED == newState) {
                 CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_CHECK_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_CHECK_KO, databaseChecker.getException().getMessage());
             }
-        });
+        };
+    }
 
-        databaseFixer.stateProperty().addListener((observableValue, oldState, newState) -> {
+    private ChangeListener<Worker.State> getSaverStateChangeListener() {
+        return (observableValue, oldState, newState) -> {
             if (SUCCEEDED == newState) {
-                final Set<IntegrityError> remainingErrors = databaseFixer.integrityErrorsProperty().get();
-                if (remainingErrors.isEmpty()) {
-                    CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_OK, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_ZERO_ERROR_AFTER_FIX);
-                } else {
-                    CommonDialogsHelper.showDialog(WARNING, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_KO, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_REMAINING_ERRORS);
-                }
-                viewDataController.refreshAll();
+                CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SAVE, DisplayConstants.MESSAGE_DATABASE_SAVED, databaseSaver.getValue());
             } else if (FAILED == newState) {
-                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_KO, databaseFixer.getException().getMessage());
+                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SAVE, DisplayConstants.MESSAGE_DATABASE_SAVE_KO, databaseSaver.getException().getMessage());
             }
-        });
+        };
+    }
+
+    private ChangeListener<Worker.State> getLoaderStateChangeListener() {
+        return (observableValue, oldState, newState) -> {
+            if (SUCCEEDED == newState
+                    && !databaseLoader.getValue().isEmpty()) {
+                databaseObjects.clear();
+                databaseObjects.addAll(databaseLoader.getValue());
+                viewDataController.updateDisplayWithLoadedObjects();
+            } else if (FAILED == newState) {
+                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_LOAD, DisplayConstants.MESSAGE_DATABASE_LOAD_KO, databaseLoader.getException().getMessage());
+            }
+        };
     }
 
     private void browseForDatabaseDirectory() {
@@ -721,7 +741,8 @@ public class MainStageController extends AbstractGuiController {
 
         String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_IMPORT;
         try {
-            File patchFile = potentialFile.get();
+            File patchFile = potentialFile
+                    .<IllegalStateException>orElseThrow(() -> new IllegalStateException("Should not happen!"));
             final Optional<String> potentialPropertiesFile = changeDataController.importPatch(patchFile);
 
             viewDataController.updateEntriesAndSwitchTo(0);
@@ -747,7 +768,9 @@ public class MainStageController extends AbstractGuiController {
 
         String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_IMPORT_PERFORMANCE_PACK;
         try {
-            String packFilePath = potentialFile.get().getPath();
+            String packFilePath = potentialFile
+                    .map(File::getPath)
+                    .<IllegalStateException>orElseThrow(() -> new IllegalStateException("Should not happen!"));
             changeDataController.importPerformancePack(packFilePath);
             viewDataController.updateAllPropertiesWithItemValues();
 

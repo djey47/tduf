@@ -23,7 +23,6 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-// TODO apply code rules
 public class FieldsBrowserStageController extends AbstractGuiController {
 
     private static final String THIS_CLASS_NAME = FieldsBrowserStageController.class.getSimpleName();
@@ -32,7 +31,7 @@ public class FieldsBrowserStageController extends AbstractGuiController {
     private Label currentTopicLabel;
 
     @FXML
-    TableView<ContentFieldDataItem> fieldsTableView;
+    private TableView<ContentFieldDataItem> fieldsTableView;
 
     private MainStageController mainStageController;
 
@@ -90,13 +89,13 @@ public class FieldsBrowserStageController extends AbstractGuiController {
 
     private void initTablePane() {
         TableColumn<ContentFieldDataItem, ?> rankColumn = fieldsTableView.getColumns().get(0);
-        rankColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().rankProperty());
+        rankColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().rankProperty());
 
         TableColumn<ContentFieldDataItem, ?> nameColumn = fieldsTableView.getColumns().get(1);
-        nameColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().nameProperty());
+        nameColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().nameProperty());
 
         TableColumn<ContentFieldDataItem, ?> helpColumn = fieldsTableView.getColumns().get(2);
-        helpColumn.setCellValueFactory((cellData) -> (ObservableValue) cellData.getValue().helpProperty());
+        helpColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().helpProperty());
 
         fieldsTableView.setItems(fieldsData);
 
@@ -108,9 +107,8 @@ public class FieldsBrowserStageController extends AbstractGuiController {
 
         DbDto.Topic topic = currentTopicProperty.getValue();
         getMiner().getDatabaseTopic(topic)
-                .ifPresent((topicObject) -> fieldsData.addAll(topicObject.getStructure().getFields().stream()
-
-                                .map((structureField) -> {
+                .ifPresent(topicObject -> fieldsData.addAll(topicObject.getStructure().getFields().stream()
+                                .map(structureField -> {
                                     ContentFieldDataItem contentFieldDataItem = new ContentFieldDataItem();
 
                                     final int fieldRank = structureField.getRank();
@@ -121,8 +119,7 @@ public class FieldsBrowserStageController extends AbstractGuiController {
                                     EditorLayoutHelper.getFieldSettingsByRankAndProfileName(fieldRank,
                                             mainStageController.getViewData().currentProfileProperty.getValue().getName(),
                                             mainStageController.getLayoutObject())
-
-                                            .ifPresent((fieldSettings) -> contentFieldDataItem.setHelp(fieldSettings.getToolTip()));
+                                                .ifPresent(fieldSettings -> contentFieldDataItem.setHelp(fieldSettings.getToolTip()));
 
                                     return contentFieldDataItem;
                                 })
