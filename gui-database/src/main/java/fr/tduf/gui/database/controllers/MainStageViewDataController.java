@@ -366,7 +366,6 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                 .map(Path::toString);
     }
 
-    // TODO add parameter to define which item to update
     private void updateConfiguration() {
         try {
             final ApplicationConfiguration applicationConfiguration = getApplicationConfiguration();
