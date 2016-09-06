@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.common.configuration;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.libunlimited.common.game.domain.Locale;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -20,6 +21,7 @@ public class ApplicationConfiguration extends Properties {
 
     private static final String KEY_DATABASE_DIR = "tdu.database.directory";
     private static final String KEY_TDU_DIR = "tdu.root.directory";
+    private static final String KEY_EDITOR_LOCALE = "tduf.editor.locale";
 
     /**
      * @return full path to game database if it exists, else return default location from game directory, or empty otherwise
@@ -50,6 +52,14 @@ public class ApplicationConfiguration extends Properties {
     public Optional<Path> getGamePath() {
         return ofNullable(getProperty(KEY_TDU_DIR))
                 .map(Paths::get);
+    }
+
+
+    /**
+     * @param locale    : current locale to be saved for database Editor
+     */
+    public void setEditorLocale(Locale locale) {
+        setProperty(KEY_EDITOR_LOCALE, locale.getCode());
     }
 
     /**
