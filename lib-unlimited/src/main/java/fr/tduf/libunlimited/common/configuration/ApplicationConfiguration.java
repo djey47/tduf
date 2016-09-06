@@ -22,6 +22,7 @@ public class ApplicationConfiguration extends Properties {
     private static final String KEY_DATABASE_DIR = "tdu.database.directory";
     private static final String KEY_TDU_DIR = "tdu.root.directory";
     private static final String KEY_EDITOR_LOCALE = "tduf.editor.locale";
+    private static final String KEY_EDITOR_PROFILE = "tduf.editor.profile";
 
     /**
      * @return full path to game database if it exists, else return default location from game directory, or empty otherwise
@@ -66,6 +67,20 @@ public class ApplicationConfiguration extends Properties {
     public Optional<Locale> getEditorLocale() {
         return ofNullable(getProperty(KEY_EDITOR_LOCALE))
                 .map(Locale::fromCode);
+    }
+
+    /**
+     * @param profileName    : current profile to be saved for database Editor
+     */
+    public void setEditorProfile(String profileName) {
+        setProperty(KEY_EDITOR_PROFILE, profileName);
+    }
+
+    /**
+     * @return last used editor profile if any, or empty otherwise
+     */
+    public Optional<String> getEditorProfile() {
+        return ofNullable(getProperty(KEY_EDITOR_PROFILE));
     }
 
     /**
