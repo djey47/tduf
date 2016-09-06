@@ -70,6 +70,7 @@ public class DisplayConstants {
     public static final String TITLE_SUB_SEARCH_ENTRY = " : Search for entry";
     public static final String TITLE_SUB_SEARCH_RESOURCE_ENTRY = " : Search for resource entry";
     public static final String TITLE_SUB_RESET_DB_CACHE = " : Reset database cache";
+    public static final String TITLE_SUB_RESET_SETTINGS = " : Reset settings";
 
     public static final String MESSAGE_ADDED_RESOURCE = "Add resource in topic: ";
     public static final String MESSAGE_DATABASE_SAVED = "Current database was saved.";
@@ -88,6 +89,8 @@ public class DisplayConstants {
     public static final String MESSAGE_UNABLE_IMPORT_PATCH = "Unable to import TDUF patch.";
     public static final String MESSAGE_UNABLE_IMPORT_PERFORMANCE_PACK = "Unable to import TDUPE Performance Pack.";
     public static final String MESSAGE_DELETED_CACHE = "Database cache directory was deleted succesfully:";
+    public static final String MESSAGE_DELETED_SETTINGS = "Application settings were deleted succesfully.";
+    public static final String MESSAGE_RESTART_APP = "Please restart application.";
     public static final String MESSAGE_FILE_EXPORT_OK = "Contents were exported to file.";
     public static final String MESSAGE_FILE_EXPORT_KO = "Contents could not be exported to file.";
 

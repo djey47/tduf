@@ -20,7 +20,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.72" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.controllers.MainStageController">
+<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.101" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.controllers.MainStageController">
    <children>
       <VBox id="mainVbox" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
           <children>
@@ -69,6 +69,7 @@
                               <MenuButton mnemonicParsing="false" text="Advanced...">
                                 <items>
                                     <MenuItem mnemonicParsing="false" onAction="#handleResetDatabaseCacheMenuItemAction" text="Reset database cache" />
+                                    <MenuItem mnemonicParsing="false" onAction="#handleResetSettingsMenuItemAction" text="Reset settings" />
                                 </items>
                               </MenuButton>
                                   </items>

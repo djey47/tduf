@@ -224,6 +224,13 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
+    public void handleResetSettingsMenuItemAction() throws IOException {
+        Log.trace(THIS_CLASS_NAME, "->handleResetSettingsMenuItemAction");
+
+        resetSettings();
+    }
+
+    @FXML
     public void handleCheckButtonAction() {
         Log.trace(THIS_CLASS_NAME, "->handleCheckButtonAction");
 
@@ -792,6 +799,12 @@ public class MainStageController extends AbstractGuiController {
         DatabaseBanksCacheHelper.clearCache(Paths.get(databaseDirectory));
 
         CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_DB_CACHE, DisplayConstants.MESSAGE_DELETED_CACHE, databaseDirectory);
+    }
+
+    private void resetSettings() throws IOException {
+        applicationConfiguration.reset();
+
+        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_SETTINGS, DisplayConstants.MESSAGE_DELETED_SETTINGS, DisplayConstants.MESSAGE_RESTART_APP);
     }
 
     private void checkDatabase(String databaseLocation) {
