@@ -19,7 +19,6 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TabPane;
@@ -49,6 +48,7 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.*;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+import static javafx.collections.FXCollections.observableArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -65,6 +65,7 @@ public class MainStageViewDataControllerTest {
     private static final String TEST_PROFILE_NAME = "Test profile";
     private static final String TEST_REMOTE_PROFILE_NAME = "Test remote profile";
     private static final String TEST_REMOTE_ASSO_PROFILE_NAME = "Test association remote profile";
+    private static final String TEST_UNK_PROFILE_NAME = "profile?";
 
     @Rule
     public JavaFXThreadingRule javaFXRule = new JavaFXThreadingRule();
@@ -106,9 +107,20 @@ public class MainStageViewDataControllerTest {
 
         when(mainStageControllerMock.getCurrentEntryLabelProperty()).thenReturn(currentEntryLabelProperty);
 
-        profilesChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(TEST_PROFILE_NAME, TEST_REMOTE_PROFILE_NAME, TEST_REMOTE_ASSO_PROFILE_NAME));
+        profilesChoiceBox = new ChoiceBox<>(observableArrayList(TEST_PROFILE_NAME, TEST_REMOTE_PROFILE_NAME, TEST_REMOTE_ASSO_PROFILE_NAME));
         profilesChoiceBox.valueProperty().setValue(TEST_PROFILE_NAME);
+        profilesChoiceBox.getSelectionModel().selectedItemProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if (TEST_PROFILE_NAME.equals(newValue)) {
+                        controller.currentProfile().setValue(getFirstLayoutProfile());
+                    } else if (TEST_REMOTE_PROFILE_NAME.equals(newValue)) {
+                        controller.currentProfile().setValue(getSecondLayoutProfile());
+                    } else {
+                        throw new IllegalArgumentException("Unknwown profile name!");
+                    }
+                });
         when(mainStageControllerMock.getProfilesChoiceBox()).thenReturn(profilesChoiceBox);
+
         when(mainStageControllerMock.getTabPane()).thenReturn(new TabPane());
 
         settingsPane = new TitledPane();
@@ -121,7 +133,13 @@ public class MainStageViewDataControllerTest {
 
         when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(topicObject));
 
+        when(applicationConfigurationMock.getEditorProfile()).thenReturn(empty());
+
         controller.currentLocaleProperty.setValue(LOCALE);
+    }
+
+    private EditorLayoutDto.EditorProfileDto getSecondLayoutProfile() {
+        return layoutObject.getProfiles().get(1);
     }
 
     @Test
@@ -274,9 +292,8 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void updateDisplayWithLoadedObjects_shouldUpdateConfiguration() throws IOException {
+    public void updateDisplayWithLoadedObjects_whenNoProfileInProperties_shouldUseFirstProfile_andUpdateConfiguration() throws IOException {
         // GIVEN
-        controller.currentProfile().setValue(getFirstLayoutProfile());
         when(mainStageControllerMock.getDatabaseObjects()).thenReturn(singletonList(createTopicObject()));
         Deque<EditorLocation> navigationHistory = new ArrayDeque<>();
         navigationHistory.add(new EditorLocation(1, "profile", 0));
@@ -288,10 +305,49 @@ public class MainStageViewDataControllerTest {
 
 
         // THEN
+        final String profileName = getFirstLayoutProfile().getName();
         assertThat(navigationHistory).isEmpty();
-        assertThat(profilesChoiceBox.getSelectionModel().isEmpty()).isFalse();
+        assertThat(profilesChoiceBox.getSelectionModel().getSelectedItem()).isEqualTo(profileName);
+        assertThat(controller.currentProfile().getValue()).isEqualTo(getFirstLayoutProfile());
 
         verify(applicationConfigurationMock).setDatabasePath("location");
+        verify(applicationConfigurationMock).setEditorProfile(profileName);
+        verify(applicationConfigurationMock).store();
+    }
+
+    @Test
+    public void updateDisplayWithLoadedObjects_whenProfileInProperties_shouldUseRightProfile() throws IOException {
+        // GIVEN
+        final String profileName = getSecondLayoutProfile().getName();
+        when(applicationConfigurationMock.getEditorProfile()).thenReturn(of(profileName));
+        when(mainStageControllerMock.getDatabaseObjects()).thenReturn(singletonList(createTopicObject()));
+        when(mainStageControllerMock.getNavigationHistory()).thenReturn(new ArrayDeque<>());
+
+
+        // WHEN
+        controller.updateDisplayWithLoadedObjects();
+
+
+        // THEN
+        assertThat(profilesChoiceBox.getSelectionModel().getSelectedItem()).isEqualTo(profileName);
+        assertThat(controller.currentProfile().getValue()).isEqualTo(getSecondLayoutProfile());
+
+        verify(applicationConfigurationMock).setEditorProfile(profileName);
+        verify(applicationConfigurationMock).store();
+    }
+
+    @Test
+    public void updateDisplayWithLoadedObjects_whenUnknownProfileInProperties_shouldNotOverwriteProperty() throws IOException {
+        // GIVEN
+        when(applicationConfigurationMock.getEditorProfile()).thenReturn(of(TEST_UNK_PROFILE_NAME));
+        when(mainStageControllerMock.getDatabaseObjects()).thenReturn(singletonList(createTopicObject()));
+        when(mainStageControllerMock.getNavigationHistory()).thenReturn(new ArrayDeque<>());
+
+        // WHEN
+        controller.updateDisplayWithLoadedObjects();
+
+        // THEN
+        verify(applicationConfigurationMock, never()).setEditorProfile(anyString());
         verify(applicationConfigurationMock).store();
     }
 
@@ -531,7 +587,7 @@ public class MainStageViewDataControllerTest {
         // GIVEN
         TopicLinkDto topicLinkObject = createTopicLinkObject();
         ContentEntryDataItem item = new ContentEntryDataItem();
-        ObservableList<ContentEntryDataItem> resources = FXCollections.observableArrayList(item);
+        ObservableList<ContentEntryDataItem> resources = observableArrayList(item);
         controller.getResourcesByTopicLink().put(topicLinkObject, resources);
         when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0L));
         final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>(TOPIC1);
@@ -549,7 +605,7 @@ public class MainStageViewDataControllerTest {
         // GIVEN
         TopicLinkDto topicLinkObject = createTopicLinkObject();
         ContentEntryDataItem item = new ContentEntryDataItem();
-        ObservableList<ContentEntryDataItem> resources = FXCollections.observableArrayList(item);
+        ObservableList<ContentEntryDataItem> resources = observableArrayList(item);
         controller.getResourcesByTopicLink().put(topicLinkObject, resources);
         when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0L));
         final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>(TOPIC1);
@@ -568,7 +624,7 @@ public class MainStageViewDataControllerTest {
         // GIVEN
         TopicLinkDto topicLinkObject = createTopicLinkObject();
         ContentEntryDataItem item = new ContentEntryDataItem();
-        ObservableList<ContentEntryDataItem> resources = FXCollections.observableArrayList(item);
+        ObservableList<ContentEntryDataItem> resources = observableArrayList(item);
         controller.getResourcesByTopicLink().put(topicLinkObject, resources);
         when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0L));
         final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>(TOPIC1);
@@ -587,7 +643,7 @@ public class MainStageViewDataControllerTest {
         // GIVEN
         TopicLinkDto topicLinkObject = createTopicLinkObject();
         ContentEntryDataItem item = new ContentEntryDataItem();
-        ObservableList<ContentEntryDataItem> resources = FXCollections.observableArrayList(item);
+        ObservableList<ContentEntryDataItem> resources = observableArrayList(item);
         controller.getResourcesByTopicLink().put(topicLinkObject, resources);
         when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0L));
         final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>(TOPIC1);
@@ -612,7 +668,7 @@ public class MainStageViewDataControllerTest {
         // GIVEN
         TopicLinkDto topicLinkObject = createTopicLinkObjectForAssociation();
         ContentEntryDataItem item = new ContentEntryDataItem();
-        ObservableList<ContentEntryDataItem> resources = FXCollections.observableArrayList(item);
+        ObservableList<ContentEntryDataItem> resources = observableArrayList(item);
         controller.getResourcesByTopicLink().put(topicLinkObject, resources);
         when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0L));
         when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(TOPIC1));

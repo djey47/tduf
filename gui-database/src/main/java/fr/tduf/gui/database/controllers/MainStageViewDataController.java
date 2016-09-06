@@ -115,9 +115,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
         getNavigationHistory().clear();
 
-        final SingleSelectionModel<String> selectionModel = getProfilesChoiceBox().getSelectionModel();
-        selectionModel.clearSelection(); // ensures event will be fired even though 1st item is selected
-        selectionModel.selectFirst();
+        switchToInitialProfile();
 
         updateConfiguration();
     }
@@ -375,7 +373,10 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
             applicationConfiguration.setDatabasePath(getDatabaseLocationTextField().getText());
             applicationConfiguration.setEditorLocale(currentLocaleProperty.getValue());
-            applicationConfiguration.setEditorProfile(currentProfileProperty.getValue().getName());
+
+            if (currentProfileProperty.getValue() != null) {
+                applicationConfiguration.setEditorProfile(currentProfileProperty.getValue().getName());
+            }
 
             applicationConfiguration.store();
         } catch (IOException ioe) {
@@ -551,6 +552,18 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                     getLayoutObject());
         }
         return DisplayConstants.VALUE_ERROR_ENTRY_NOT_FOUND;
+    }
+
+    private void switchToInitialProfile() {
+        final SingleSelectionModel<String> selectionModel = getProfilesChoiceBox().getSelectionModel();
+        selectionModel.clearSelection(); // ensures event will be fired even though 1st item is selected
+
+        final Optional<String> potentialProfileName = getApplicationConfiguration().getEditorProfile();
+        if (potentialProfileName.isPresent()) {
+            selectionModel.select(potentialProfileName.get());
+        } else {
+            selectionModel.selectFirst();
+        }
     }
 
     private void switchToProfileAndEntry(String profileName, long entryIndex, boolean storeLocation) {
