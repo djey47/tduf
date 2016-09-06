@@ -429,12 +429,18 @@ public class MainStageViewDataControllerTest {
     @Test
     public void updateItemProperties_withRawValueSet_andResolvedValueInIndex_forLocalResourceField_shouldUpdateProperty() {
         // GIVEN
+        controller.getRawValuesByFieldRank().put(1, new SimpleStringProperty("old local resource rawValue"));
+        final SimpleStringProperty resolvedValueProperty = new SimpleStringProperty("old local resource value");
+        controller.getResolvedValuesByFieldRank().put(1, resolvedValueProperty);
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(createTopicObjectForLocalResource());
         ContentItemDto itemObject = createContentItem();
-        SimpleStringProperty resolvedValueProperty = new SimpleStringProperty("resolved value");
+
+        when(minerMock.getLocalizedResourceValueFromTopicAndReference("rawValue", TOPIC1, LOCALE)).thenReturn(of("resolved value"));
+
 
         // WHEN
         controller.updateItemProperties(itemObject);
+
 
         // THEN
         assertThat(resolvedValueProperty.get()).isEqualTo("resolved value");
@@ -443,15 +449,20 @@ public class MainStageViewDataControllerTest {
     @Test
     public void updateItemProperties_withRawValueSet_andResolvedValueInIndex_forRemoteResourceField_shouldUpdateProperty() {
         // GIVEN
+        controller.getRawValuesByFieldRank().put(1, new SimpleStringProperty("old remote resource rawValue"));
+        final SimpleStringProperty resolvedValueProperty = new SimpleStringProperty("old local resource value");
+        controller.getResolvedValuesByFieldRank().put(1, resolvedValueProperty);
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(createTopicObjectForRemoteResource());
         ContentItemDto itemObject = createContentItem();
-        SimpleStringProperty resolvedValueProperty = new SimpleStringProperty("resolved value");
+
+        when(minerMock.getDatabaseTopicFromReference(TOPIC_REMOTE_REFERENCE)).thenReturn(createTopicObject());
+        when(minerMock.getLocalizedResourceValueFromTopicAndReference("rawValue", TOPIC2, LOCALE)).thenReturn(of("resolved remote value"));
 
         // WHEN
         controller.updateItemProperties(itemObject);
 
         // THEN
-        assertThat(resolvedValueProperty.get()).isEqualTo("resolved value");
+        assertThat(resolvedValueProperty.get()).isEqualTo("resolved remote value");
     }
 
     @Test(expected=IllegalStateException.class)
@@ -747,6 +758,7 @@ public class MainStageViewDataControllerTest {
                         .addItem(DbStructureDto.Field.builder()
                                 .ofRank(1)
                                 .fromType(RESOURCE_REMOTE)
+                                .toTargetReference(TOPIC_REMOTE_REFERENCE)
                                 .build())
                         .build())
                 .withData(DbDataDto.builder().build())
