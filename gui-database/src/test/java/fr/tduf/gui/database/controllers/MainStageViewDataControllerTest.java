@@ -234,7 +234,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void applyProfile_whenProfileExists_shouldSwitchProperties() {
+    public void applyProfile_whenProfileExists_shouldSwitchProperties_andUpdateConfiguration() throws IOException {
         // GIVEN
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(createTopicObjectWithoutStructureFields());
         Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>();
@@ -244,13 +244,18 @@ public class MainStageViewDataControllerTest {
         when(mainStageControllerMock.getCurrentProfileObject()).thenReturn(profileObject);
         when(minerMock.getContentEntryFromTopicWithInternalIdentifier(0L, TOPIC2)).thenReturn(empty());
 
+
         // WHEN
         controller.applyProfile(TEST_PROFILE_NAME);
+
 
         // THEN
         assertThat(currentTopicProperty.getValue()).isEqualTo(TOPIC2);
         verify(mainStageControllerMock).setCurrentProfileObject(profileObject);
         verify(mainStageControllerMock).setCurrentTopicObject(topicObject);
+
+        verify(applicationConfigurationMock).setEditorProfile(TEST_PROFILE_NAME);
+        verify(applicationConfigurationMock).store();
     }
 
     @Test
@@ -272,6 +277,7 @@ public class MainStageViewDataControllerTest {
     @Test
     public void updateDisplayWithLoadedObjects_shouldUpdateConfiguration() throws IOException {
         // GIVEN
+        when(mainStageControllerMock.getCurrentProfileObject()).thenReturn(layoutObject.getProfiles().get(0));
         when(mainStageControllerMock.getDatabaseObjects()).thenReturn(singletonList(createTopicObject()));
         Deque<EditorLocation> navigationHistory = new ArrayDeque<>();
         navigationHistory.add(new EditorLocation(1, "profile", 0));

@@ -155,6 +155,8 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         setCurrentTopicObject(currentTopicObject);
 
         refreshAll();
+
+        updateConfiguration();
     }
 
     void applySelectedLocale() {
@@ -369,8 +371,11 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     private void updateConfiguration() {
         try {
             final ApplicationConfiguration applicationConfiguration = getApplicationConfiguration();
+
             applicationConfiguration.setDatabasePath(getDatabaseLocationTextField().getText());
             applicationConfiguration.setEditorLocale(currentLocaleProperty.getValue());
+            applicationConfiguration.setEditorProfile(getCurrentProfileObject().getName());
+
             applicationConfiguration.store();
         } catch (IOException ioe) {
             Log.warn(THIS_CLASS_NAME, "Unable to save application configuration", ioe);
