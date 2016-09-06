@@ -23,6 +23,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
+// TODO apply code rules
 public class FieldsBrowserStageController extends AbstractGuiController {
 
     private static final String THIS_CLASS_NAME = FieldsBrowserStageController.class.getSimpleName();
@@ -118,7 +119,7 @@ public class FieldsBrowserStageController extends AbstractGuiController {
                                     contentFieldDataItem.setName(structureField.getName());
 
                                     EditorLayoutHelper.getFieldSettingsByRankAndProfileName(fieldRank,
-                                            mainStageController.getCurrentProfileObject().getName(),
+                                            mainStageController.getViewData().currentProfileProperty.getValue().getName(),
                                             mainStageController.getLayoutObject())
 
                                             .ifPresent((fieldSettings) -> contentFieldDataItem.setHelp(fieldSettings.getToolTip()));

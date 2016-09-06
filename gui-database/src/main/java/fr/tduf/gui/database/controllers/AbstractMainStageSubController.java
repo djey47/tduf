@@ -60,16 +60,6 @@ abstract class AbstractMainStageSubController {
         return mainStageController.getLayoutObject();
     }
 
-    protected EditorLayoutDto.EditorProfileDto getCurrentProfileObject() {
-        // Getter kept for testing
-        return mainStageController.getCurrentProfileObject();
-    }
-
-    protected void setCurrentProfileObject(EditorLayoutDto.EditorProfileDto profileObject) {
-        // Setter kept for testing
-        mainStageController.setCurrentProfileObject(profileObject);
-    }
-
     protected List<DbDto> getDatabaseObjects() {
         // Getter kept for testing
         return mainStageController.getDatabaseObjects();

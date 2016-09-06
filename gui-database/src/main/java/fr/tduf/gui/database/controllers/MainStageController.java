@@ -70,7 +70,6 @@ public class MainStageController extends AbstractGuiController {
     private final StringProperty currentEntryLabelProperty = new SimpleStringProperty(DisplayConstants.LABEL_ITEM_ENTRY_DEFAULT);
 
     private EditorLayoutDto layoutObject;
-    private EditorLayoutDto.EditorProfileDto profileObject;
 
     private BulkDatabaseMiner databaseMiner;
     private DialogsHelper dialogsHelper;
@@ -801,14 +800,6 @@ public class MainStageController extends AbstractGuiController {
 
     void setCurrentTopicObject(DbDto currentTopicObject) {
         this.currentTopicObject = currentTopicObject;
-    }
-
-    public EditorLayoutDto.EditorProfileDto getCurrentProfileObject() {
-        return profileObject;
-    }
-
-    void setCurrentProfileObject(EditorLayoutDto.EditorProfileDto currentProfileObject) {
-        this.profileObject = currentProfileObject;
     }
 
     public EditorLayoutDto getLayoutObject() {

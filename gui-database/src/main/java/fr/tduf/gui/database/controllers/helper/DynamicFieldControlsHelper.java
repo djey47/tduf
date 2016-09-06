@@ -4,6 +4,7 @@ import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
 import fr.tduf.gui.database.controllers.MainStageController;
+import fr.tduf.gui.database.controllers.MainStageViewDataController;
 import fr.tduf.gui.database.converter.BitfieldToStringConverter;
 import fr.tduf.gui.database.converter.PercentNumberToStringConverter;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
@@ -59,7 +60,8 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
     private void addFieldControls(DbStructureDto.Field field, DbDto.Topic currentTopic) {
         int fieldRank = field.getRank();
-        Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(fieldRank, controller.getCurrentProfileObject().getName(), controller.getLayoutObject());
+        final MainStageViewDataController viewData = controller.getViewData();
+        Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(fieldRank, viewData.currentProfile().getValue().getName(), controller.getLayoutObject());
         if (!potentialFieldSettings.isPresent()) {
             return;
         }
@@ -70,7 +72,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
 
         SimpleStringProperty property = new SimpleStringProperty(DisplayConstants.VALUE_FIELD_DEFAULT);
-        controller.getViewData().getRawValuesByFieldRank().put(fieldRank, property);
+        viewData.getRawValuesByFieldRank().put(fieldRank, property);
 
         String fieldName = field.getName();
         if (fieldSettings.getLabel() != null) {
@@ -155,7 +157,8 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     private void addReferenceValueControls(HBox fieldBox, boolean fieldReadOnly, DbStructureDto.Field field) {
         int fieldRank = field.getRank();
         SimpleStringProperty property = new SimpleStringProperty(DisplayConstants.LABEL_ITEM_REFERENCE);
-        controller.getViewData().getResolvedValuesByFieldRank().put(fieldRank, property);
+        final MainStageViewDataController viewData = controller.getViewData();
+        viewData.getResolvedValuesByFieldRank().put(fieldRank, property);
 
         final String valueUnknown = String.format(DisplayConstants.VALUE_UNKNOWN, "?");
         Label remoteValueLabel = addCustomLabel(fieldBox, fieldReadOnly, valueUnknown);
@@ -169,11 +172,11 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
-        Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRank(fieldRank, controller.getCurrentProfileObject());
+        Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRank(fieldRank, viewData.currentProfile().getValue());
         if (potentialFieldSettings.isPresent() && potentialFieldSettings.get() != null) {
             String targetProfileName = potentialFieldSettings.get().getRemoteReferenceProfile();
             List<Integer> labelFieldRanks = EditorLayoutHelper.getAvailableProfileByName(targetProfileName, controller.getLayoutObject()).getEntryLabelFieldRanks();
-            SimpleStringProperty entryReferenceProperty = controller.getViewData().getRawValuesByFieldRank().get(fieldRank);
+            SimpleStringProperty entryReferenceProperty = viewData.getRawValuesByFieldRank().get(fieldRank);
 
             if (!fieldReadOnly) {
                 addContextualButton(

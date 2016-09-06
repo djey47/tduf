@@ -1,9 +1,11 @@
 package fr.tduf.gui.database.controllers.helper;
 
 import fr.tduf.gui.database.controllers.MainStageController;
+import fr.tduf.gui.database.controllers.MainStageViewDataController;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import javafx.beans.property.SimpleObjectProperty;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -18,8 +20,12 @@ public class DynamicFieldControlsHelperTest {
     @Mock
     private MainStageController controller;
 
+    @Mock
+    private MainStageViewDataController viewDataMock;
+
     @InjectMocks
     private DynamicFieldControlsHelper helper;
+
 
     @Test
     public void addAllFieldsControls_whenNoFieldSettings_shouldDoNothing() throws Exception {
@@ -40,7 +46,8 @@ public class DynamicFieldControlsHelperTest {
 
         when(controller.getCurrentTopicObject()).thenReturn(currentTopicObject);
         when(controller.getLayoutObject()).thenReturn(layout);
-        when(controller.getCurrentProfileObject()).thenReturn(profile);
+        when(controller.getViewData()).thenReturn(viewDataMock);
+        when(viewDataMock.currentProfile()).thenReturn(new SimpleObjectProperty<>(profile));
 
 
         // WHEN-THEN

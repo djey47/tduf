@@ -58,6 +58,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     private static final String MESSAGE_NO_DATABASE_OBJECT_FOR_TOPIC = "No database object for topic: ";
 
     final Property<Locale> currentLocaleProperty = new SimpleObjectProperty<>(SettingsConstants.DEFAULT_LOCALE);
+    final Property<EditorLayoutDto.EditorProfileDto> currentProfileProperty = new SimpleObjectProperty<>();
 
     private final DynamicFieldControlsHelper dynamicFieldControlsHelper;
     private final DynamicLinkControlsHelper dynamicLinkControlsHelper;
@@ -127,7 +128,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                 .findAny()
                 .ifPresent(entry -> {
                     final List<Integer> labelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(
-                            getCurrentProfileObject().getName(),
+                            currentProfileProperty.getValue().getName(),
                             getLayoutObject());
 
                     final DbDto.Topic currentTopic = getCurrentTopicObject().getTopic();
@@ -151,7 +152,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
         currentTopicProperty().setValue(topic);
 
-        setCurrentProfileObject(profileObject);
+        currentProfileProperty.setValue(profileObject);
         setCurrentTopicObject(currentTopicObject);
 
         refreshAll();
@@ -324,7 +325,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         final Optional<DbStructureDto.Field> potentialUidField = DatabaseStructureQueryHelper.getUidField(databaseObject.getStructure().getFields());
         if (potentialUidField.isPresent()) {
             Optional<String> potentialEntryReference = getMiner().getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty().getValue(), topic);
-            final List<ContentEntryDataItem> selectedItems = getEntriesStageController().initAndShowModalDialogForMultiSelect(potentialEntryReference, topic, getCurrentProfileObject().getName());
+            final List<ContentEntryDataItem> selectedItems = getEntriesStageController().initAndShowModalDialogForMultiSelect(potentialEntryReference, topic, currentProfileProperty.getValue().getName());
 
             return selectedItems.stream()
                     .map(item -> item.referenceProperty().get())
@@ -342,7 +343,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     void updateCurrentEntryLabelProperty() {
         final List<Integer> labelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(
-                getCurrentProfileObject().getName(),
+                currentProfileProperty.getValue().getName(),
                 getLayoutObject());
         String entryLabel = DatabaseQueryHelper.fetchResourceValuesWithEntryId(
                 currentEntryIndexProperty().getValue(),
@@ -374,7 +375,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
             applicationConfiguration.setDatabasePath(getDatabaseLocationTextField().getText());
             applicationConfiguration.setEditorLocale(currentLocaleProperty.getValue());
-            applicationConfiguration.setEditorProfile(getCurrentProfileObject().getName());
+            applicationConfiguration.setEditorProfile(currentProfileProperty.getValue().getName());
 
             applicationConfiguration.store();
         } catch (IOException ioe) {
@@ -397,7 +398,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
         createTabAndAppend(DisplayConstants.TAB_NAME_DEFAULT, allTabs);
 
-        final List<String> registeredGroups = getCurrentProfileObject().getGroups();
+        final List<String> registeredGroups = currentProfileProperty.getValue().getGroups();
         if (registeredGroups == null) {
             return;
         }
@@ -414,22 +415,22 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     private void initDynamicControls() {
         rawValuesByFieldRank.clear();
 
-        if (getCurrentProfileObject().getFieldSettings() != null) {
+        final EditorLayoutDto.EditorProfileDto currentProfile = currentProfileProperty.getValue();
+        if (currentProfile.getFieldSettings() != null) {
             dynamicFieldControlsHelper.addAllFieldsControls(
                     getLayoutObject(),
                     getProfilesChoiceBox().getValue(),
                     getCurrentTopicObject().getTopic());
         }
 
-        if (getCurrentProfileObject().getTopicLinks() != null) {
-            dynamicLinkControlsHelper.addAllLinksControls(
-                    getCurrentProfileObject());
+        if (currentProfile.getTopicLinks() != null) {
+            dynamicLinkControlsHelper.addAllLinksControls(currentProfile);
         }
     }
 
     private void fillBrowsableEntries() {
         final List<Integer> labelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(
-                getCurrentProfileObject().getName(),
+                currentProfileProperty.getValue().getName(),
                 getLayoutObject());
 
         final DbDto.Topic currentTopic = getCurrentTopicObject().getTopic();
@@ -556,7 +557,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         if (storeLocation) {
             EditorLocation currentLocation = new EditorLocation(
                     getTabPane().selectionModelProperty().get().getSelectedIndex(),
-                    getCurrentProfileObject().getName(),
+                    currentProfileProperty.getValue().getName(),
                     currentEntryIndexProperty().getValue());
             getNavigationHistory().push(currentLocation);
         }
@@ -588,6 +589,10 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     public Map<Integer, SimpleStringProperty> getResolvedValuesByFieldRank() {
         return resolvedValuesByFieldRank;
+    }
+
+    public Property<EditorLayoutDto.EditorProfileDto> currentProfile() {
+        return currentProfileProperty;
     }
 
     ObservableList<ContentEntryDataItem> getBrowsableEntries() {
