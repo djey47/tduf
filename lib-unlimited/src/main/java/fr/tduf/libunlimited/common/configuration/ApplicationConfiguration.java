@@ -106,6 +106,15 @@ public class ApplicationConfiguration extends Properties {
         }
     }
 
+
+    /**
+     * Deletes all settings and saves configuration file
+     */
+    public void reset() throws IOException {
+        clear();
+        store();
+    }
+
     private Optional<Path> getPathProperty(String propKey) {
         return ofNullable(getProperty(propKey))
                 .map(Paths::get);

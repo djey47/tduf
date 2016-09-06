@@ -38,4 +38,18 @@ public class ApplicationConfigurationTest {
         // THEN
         assertThat(new File(configFileName)).exists();
     }
+
+    @Test
+    public void reset_shouldClearSettings_andUpdateFile() throws IOException {
+        // GIVEN
+        applicationConfiguration.setProperty("key", "value");
+
+        // WHEN
+        applicationConfiguration.reset();
+
+        // THEN
+        assertThat(new File(configFileName)).exists();
+        applicationConfiguration.load();
+        assertThat(applicationConfiguration).isEmpty();
+    }
 }
