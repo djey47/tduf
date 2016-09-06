@@ -174,23 +174,6 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     }
 
     @Test
-    public void removeResourceWithReference_whenResourceEntryExists_shouldDeleteIt() {
-        // GIVEN
-        DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
-        resourceObject.addEntryByReference(RESOURCE_REFERENCE);
-
-        when(minerMock.getResourcesFromTopic(TOPIC)).thenReturn(of(resourceObject));
-
-
-        // WHEN
-        changeHelper.removeResourceWithReference(TOPIC, RESOURCE_REFERENCE);
-
-
-        // THEN
-        assertThat(resourceObject.getEntryByReference(RESOURCE_REFERENCE)).isEmpty();
-    }
-
-    @Test
     public void removeResourceValuesWithReference_whenResourceEntryExists_andSameLocaleAffected_shouldDeleteLocalizedValue() {
         // GIVEN
         ResourceEntryDto resourceEntry = createDefaultResourceEntryEnhanced(RESOURCE_REFERENCE);

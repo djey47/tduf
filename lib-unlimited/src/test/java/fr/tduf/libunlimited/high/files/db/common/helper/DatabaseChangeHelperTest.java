@@ -380,7 +380,7 @@ public class DatabaseChangeHelperTest {
         when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(empty());
 
         // WHEN
-        changeHelper.moveEntryWithIdentifier(0, 2, TOPIC);
+        changeHelper.moveEntryWithIdentifier(1, 2, TOPIC);
 
         // THEN
         verifyNoMoreInteractions(minerMock);
