@@ -38,7 +38,6 @@ public class ApplicationConfiguration extends Properties {
                         .resolve("Database"));
     }
 
-
     /**
      * @param databaseLocation  : path to game database
      */
@@ -54,12 +53,19 @@ public class ApplicationConfiguration extends Properties {
                 .map(Paths::get);
     }
 
-
     /**
      * @param locale    : current locale to be saved for database Editor
      */
     public void setEditorLocale(Locale locale) {
         setProperty(KEY_EDITOR_LOCALE, locale.getCode());
+    }
+
+    /**
+     * @return last used editor locale if any, or empty otherwise
+     */
+    public Optional<Locale> getEditorLocale() {
+        return ofNullable(getProperty(KEY_EDITOR_LOCALE))
+                .map(Locale::fromCode);
     }
 
     /**
