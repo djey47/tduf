@@ -108,11 +108,6 @@ abstract class AbstractMainStageSubController {
         return mainStageController.getCurrentTopicProperty();
     }
 
-    protected Property<Locale> currentLocaleProperty() {
-        // Getter kept for testing
-        return mainStageController.getCurrentLocaleProperty();
-    }
-
     protected StringProperty currentEntryLabelProperty() {
         // Getter kept for testing
         return mainStageController.getCurrentEntryLabelProperty();
@@ -132,11 +127,11 @@ abstract class AbstractMainStageSubController {
     }
 
     protected TitledPane getSettingsPane() {
-        return mainStageController.settingsPane;
+        return mainStageController.getSettingsPane();
     }
 
     protected ChoiceBox<Locale> getLocalesChoiceBox() {
-        return mainStageController.localesChoiceBox;
+        return mainStageController.getLocalesChoiceBox();
     }
 
     protected TabPane getTabPane() {

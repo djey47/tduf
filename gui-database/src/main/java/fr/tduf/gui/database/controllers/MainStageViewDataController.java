@@ -25,6 +25,8 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -55,6 +57,8 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     private static final String MESSAGE_NO_DATABASE_OBJECT_FOR_TOPIC = "No database object for topic: ";
 
+    final Property<Locale> currentLocaleProperty = new SimpleObjectProperty<>(SettingsConstants.DEFAULT_LOCALE);
+
     private final DynamicFieldControlsHelper dynamicFieldControlsHelper;
     private final DynamicLinkControlsHelper dynamicLinkControlsHelper;
 
@@ -79,12 +83,14 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     void initSettingsPane(String databaseDirectory, ChangeListener<Locale> localeChangeListener, ChangeListener<String> profileChangeListener) throws IOException {
         getSettingsPane().setExpanded(false);
 
-        fillLocales();
+        loadAndFillLocales();
         getLocalesChoiceBox().getSelectionModel().selectedItemProperty()
                 .addListener(localeChangeListener);
+
         loadAndFillProfiles();
         getProfilesChoiceBox().getSelectionModel().selectedItemProperty()
                 .addListener(profileChangeListener);
+
         getDatabaseLocationTextField().setText(databaseDirectory);
     }
 
@@ -125,7 +131,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                             getLayoutObject());
 
                     final DbDto.Topic currentTopic = getCurrentTopicObject().getTopic();
-                    String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(internalEntryId, currentTopic, currentLocaleProperty().getValue(), labelFieldRanks, getMiner(), getLayoutObject());
+                    String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(internalEntryId, currentTopic, currentLocaleProperty.getValue(), labelFieldRanks, getMiner(), getLayoutObject());
                     entry.setValue(entryValue);
                 });
     }
@@ -339,7 +345,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         String entryLabel = DatabaseQueryHelper.fetchResourceValuesWithEntryId(
                 currentEntryIndexProperty().getValue(),
                 currentTopicProperty().getValue(),
-                currentLocaleProperty().getValue(),
+                currentLocaleProperty.getValue(),
                 labelFieldRanks,
                 getMiner(),
                 getLayoutObject());
@@ -364,7 +370,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         try {
             final ApplicationConfiguration applicationConfiguration = getApplicationConfiguration();
             applicationConfiguration.setDatabasePath(getDatabaseLocationTextField().getText());
-            applicationConfiguration.setEditorLocale(currentLocaleProperty().getValue());
+            applicationConfiguration.setEditorLocale(currentLocaleProperty.getValue());
             applicationConfiguration.store();
         } catch (IOException ioe) {
             Log.warn(THIS_CLASS_NAME, "Unable to save application configuration", ioe);
@@ -416,13 +422,6 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         }
     }
 
-    private void fillLocales() {
-        Locale.valuesAsStream()
-                .collect(toCollection(() -> getLocalesChoiceBox().getItems()));
-
-        getLocalesChoiceBox().valueProperty().bindBidirectional(currentLocaleProperty());
-    }
-
     private void fillBrowsableEntries() {
         final List<Integer> labelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(
                 getCurrentProfileObject().getName(),
@@ -443,7 +442,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         long entryInternalIdentifier = topicEntry.getId();
         contentEntryDataItem.setInternalEntryId(entryInternalIdentifier);
 
-        String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, currentLocaleProperty().getValue(), labelFieldRanks, getMiner(), getLayoutObject());
+        String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, currentLocaleProperty.getValue(), labelFieldRanks, getMiner(), getLayoutObject());
         contentEntryDataItem.setValue(entryValue);
 
         String entryReference = Long.toString(entryInternalIdentifier);
@@ -457,7 +456,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     }
 
     private void updateResourceProperties(ContentItemDto resourceItem, DbStructureDto.Field structureField) {
-        Locale locale = currentLocaleProperty().getValue();
+        Locale locale = currentLocaleProperty.getValue();
         DbDto.Topic resourceTopic = getCurrentTopicObject().getTopic();
         if (structureField.getTargetRef() != null) {
             resourceTopic = getMiner().getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
@@ -525,7 +524,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
             databaseEntry.setInternalEntryId(entryId);
             databaseEntry.setValue(DatabaseQueryHelper.fetchResourceValuesWithEntryId(
                     entryId, linkObject.getTopic(),
-                    currentLocaleProperty().getValue(),
+                    currentLocaleProperty.getValue(),
                     remoteFieldRanks,
                     getMiner(),
                     getLayoutObject()));
@@ -540,7 +539,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         if (potentialEntryId.isPresent()) {
             return DatabaseQueryHelper.fetchResourceValuesWithEntryId(
                     potentialEntryId.getAsLong(), remoteTopic,
-                    currentLocaleProperty().getValue(),
+                    currentLocaleProperty.getValue(),
                     remoteFieldRanks,
                     getMiner(),
                     getLayoutObject());
@@ -559,6 +558,15 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
         getProfilesChoiceBox().setValue(profileName);
         switchToContentEntry(entryIndex);
+    }
+
+    private void loadAndFillLocales() {
+        getApplicationConfiguration().getEditorLocale().ifPresent(currentLocaleProperty::setValue);
+
+        Locale.valuesAsStream()
+                .collect(toCollection(() -> getLocalesChoiceBox().getItems()));
+
+        getLocalesChoiceBox().valueProperty().bindBidirectional(currentLocaleProperty);
     }
 
     public Map<String, VBox> getTabContentByName() {

@@ -182,24 +182,32 @@ public class EntriesStageController extends AbstractGuiController {
 
         DbDto.Topic topic = currentTopicProperty.getValue();
         getMiner().getDatabaseTopic(topic)
-                .ifPresent(topicObject -> entriesData.addAll(topicObject.getData().getEntries().stream()
-                    .map(entry -> {
-                        ContentEntryDataItem contentEntryDataItem = new ContentEntryDataItem();
+                .ifPresent(topicObject -> entriesData.addAll(fetchEntriesItems(labelFieldRanks, topic, topicObject)));
+    }
 
-                        long entryInternalIdentifier = entry.getId();
-                        contentEntryDataItem.setInternalEntryId(entryInternalIdentifier);
+    private List<ContentEntryDataItem> fetchEntriesItems(List<Integer> labelFieldRanks, DbDto.Topic topic, DbDto topicObject) {
+        return topicObject.getData().getEntries().stream()
+            .map(entry -> {
+                ContentEntryDataItem contentEntryDataItem = new ContentEntryDataItem();
 
-                        String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, mainStageController.currentLocaleProperty.getValue(), labelFieldRanks, getMiner(), getLayoutObject());
-                        contentEntryDataItem.setValue(entryValue);
+                long entryInternalIdentifier = entry.getId();
+                contentEntryDataItem.setInternalEntryId(entryInternalIdentifier);
 
-                        getMiner().getContentEntryReferenceWithInternalIdentifier(entryInternalIdentifier, topic)
-                                .ifPresent(contentEntryDataItem::setReference);
+                String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(
+                        entryInternalIdentifier,
+                        topic,
+                        mainStageController.getViewData().currentLocaleProperty.getValue(),
+                        labelFieldRanks,
+                        getMiner(),
+                        getLayoutObject());
+                contentEntryDataItem.setValue(entryValue);
 
-                        return contentEntryDataItem;
-                    })
+                getMiner().getContentEntryReferenceWithInternalIdentifier(entryInternalIdentifier, topic)
+                        .ifPresent(contentEntryDataItem::setReference);
 
-                    .collect(toList()))
-                );
+                return contentEntryDataItem;
+            })
+            .collect(toList());
     }
 
     // Ignore warning (method reference)

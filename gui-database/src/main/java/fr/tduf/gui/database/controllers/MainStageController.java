@@ -49,7 +49,6 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static javafx.beans.binding.Bindings.when;
@@ -60,6 +59,7 @@ import static javafx.scene.control.Alert.AlertType.*;
 /**
  * Makes it a possible to intercept all GUI events.
  */
+// TODO apply code rules
 public class MainStageController extends AbstractGuiController {
     private static final String THIS_CLASS_NAME = MainStageController.class.getSimpleName();
 
@@ -67,7 +67,6 @@ public class MainStageController extends AbstractGuiController {
 
     private final Property<Long> currentEntryIndexProperty = new SimpleObjectProperty<>(-1L);
     private final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>();
-    final Property<Locale> currentLocaleProperty = new SimpleObjectProperty<>(UNITED_STATES);
     private final StringProperty currentEntryLabelProperty = new SimpleStringProperty(DisplayConstants.LABEL_ITEM_ENTRY_DEFAULT);
 
     private EditorLayoutDto layoutObject;
@@ -840,10 +839,6 @@ public class MainStageController extends AbstractGuiController {
         return currentEntryIndexProperty;
     }
 
-    Property<Locale> getCurrentLocaleProperty() {
-        return currentLocaleProperty;
-    }
-
     StringProperty getCurrentEntryLabelProperty() {
         return currentEntryLabelProperty;
     }
@@ -880,8 +875,16 @@ public class MainStageController extends AbstractGuiController {
         return profilesChoiceBox;
     }
 
+    ChoiceBox<Locale> getLocalesChoiceBox() {
+        return localesChoiceBox;
+    }
+
     TabPane getTabPane() {
         return tabPane;
+    }
+
+    TitledPane getSettingsPane() {
+        return settingsPane;
     }
 
     TextField getDatabaseLocationTextField() {

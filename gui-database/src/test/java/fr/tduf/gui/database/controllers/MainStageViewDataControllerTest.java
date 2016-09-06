@@ -24,6 +24,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -41,6 +42,7 @@ import java.util.Deque;
 import java.util.Optional;
 import java.util.OptionalLong;
 
+import static fr.tduf.libunlimited.common.game.domain.Locale.FRANCE;
 import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.*;
@@ -89,6 +91,8 @@ public class MainStageViewDataControllerTest {
     private final StringProperty currentEntryLabelProperty = new SimpleStringProperty("");
 
     private ChoiceBox<String> profilesChoiceBox;
+    private ChoiceBox<Locale> localesChoiceBox;
+    private TitledPane settingsPane;
 
     @Before
     public void setUp() {
@@ -100,17 +104,59 @@ public class MainStageViewDataControllerTest {
         when(mainStageControllerMock.getLayoutObject()).thenReturn(layoutObject);
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(topicObject);
 
-        when(mainStageControllerMock.getCurrentLocaleProperty()).thenReturn(new SimpleObjectProperty<>(LOCALE));
         when(mainStageControllerMock.getCurrentEntryLabelProperty()).thenReturn(currentEntryLabelProperty);
 
         profilesChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(TEST_PROFILE_NAME, TEST_REMOTE_PROFILE_NAME, TEST_REMOTE_ASSO_PROFILE_NAME));
         profilesChoiceBox.valueProperty().setValue(TEST_PROFILE_NAME);
         when(mainStageControllerMock.getProfilesChoiceBox()).thenReturn(profilesChoiceBox);
         when(mainStageControllerMock.getTabPane()).thenReturn(new TabPane());
+
+        settingsPane = new TitledPane();
+        when(mainStageControllerMock.getSettingsPane()).thenReturn(settingsPane);
+
+        localesChoiceBox = new ChoiceBox<>();
+        when(mainStageControllerMock.getLocalesChoiceBox()).thenReturn(localesChoiceBox);
+
         when(mainStageControllerMock.getDatabaseLocationTextField()).thenReturn(new TextField("location"));
 
-
         when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(topicObject));
+
+        controller.currentLocaleProperty.setValue(LOCALE);
+    }
+
+    @Test
+    public void initSettingsPane_whenNoLocaleInProperties_shouldSetDefaultLocale() throws IOException {
+        // GIVEN
+        settingsPane.expandedProperty().set(true);
+
+        when(applicationConfigurationMock.getEditorLocale()).thenReturn(Optional.empty());
+
+
+        // WHEN
+        controller.initSettingsPane("directory",
+                (observable, oldValue, newValue) -> {},
+                (observable, oldValue, newValue) -> {});
+
+
+        // THEN
+        assertThat(settingsPane.expandedProperty().get()).isFalse();
+        assertThat(localesChoiceBox.getItems()).hasSize(8);
+        assertThat(controller.currentLocaleProperty.getValue()).isEqualTo(UNITED_STATES);
+        assertThat(controller.getDatabaseLocationTextField().getText()).isEqualTo("directory");
+    }
+
+    @Test
+    public void initSettingsPane_whenLocaleInProperties_shouldSetLocaleAccordingly() throws IOException {
+        // GIVEN
+        when(applicationConfigurationMock.getEditorLocale()).thenReturn(of(FRANCE));
+
+        // WHEN
+        controller.initSettingsPane("directory",
+                (observable, oldValue, newValue) -> {},
+                (observable, oldValue, newValue) -> {});
+
+        // THEN
+        assertThat(controller.currentLocaleProperty.getValue()).isEqualTo(FRANCE);
     }
 
     @Test
