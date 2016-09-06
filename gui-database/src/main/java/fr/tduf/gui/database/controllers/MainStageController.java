@@ -522,7 +522,7 @@ public class MainStageController extends AbstractGuiController {
             return;
         }
 
-        viewDataController.updateAllPropertiesWithItemValues();
+        viewDataController.applySelectedLocale();
     }
 
     private void handleEntryChoiceChanged(ContentEntryDataItem newEntry) {

@@ -107,6 +107,8 @@ public class MainStageViewDataControllerTest {
         profilesChoiceBox.valueProperty().setValue(TEST_PROFILE_NAME);
         when(mainStageControllerMock.getProfilesChoiceBox()).thenReturn(profilesChoiceBox);
         when(mainStageControllerMock.getTabPane()).thenReturn(new TabPane());
+        when(mainStageControllerMock.getDatabaseLocationTextField()).thenReturn(new TextField("location"));
+
 
         when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(topicObject));
     }
@@ -206,13 +208,28 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
+    public void applySelectedLocale_shouldUpdateConfiguration() throws IOException {
+        // GIVEN
+        when(mainStageControllerMock.getCurrentProfileObject()).thenReturn(layoutObject.getProfiles().get(0));
+        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0L));
+        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(TOPIC1));
+        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(anyLong(), any(DbDto.Topic.class))).thenReturn(empty());
+
+        // WHEN
+        controller.applySelectedLocale();
+
+        // THEN
+        verify(applicationConfigurationMock).setEditorLocale(LOCALE);
+        verify(applicationConfigurationMock).store();
+    }
+
+    @Test
     public void updateDisplayWithLoadedObjects_shouldUpdateConfiguration() throws IOException {
         // GIVEN
         when(mainStageControllerMock.getDatabaseObjects()).thenReturn(singletonList(createTopicObject()));
         Deque<EditorLocation> navigationHistory = new ArrayDeque<>();
         navigationHistory.add(new EditorLocation(1, "profile", 0));
         when(mainStageControllerMock.getNavigationHistory()).thenReturn(navigationHistory);
-        when(mainStageControllerMock.getDatabaseLocationTextField()).thenReturn(new TextField("location"));
 
 
         // WHEN
@@ -225,7 +242,6 @@ public class MainStageViewDataControllerTest {
 
         verify(applicationConfigurationMock).setDatabasePath("location");
         verify(applicationConfigurationMock).store();
-        verifyNoMoreInteractions(applicationConfigurationMock);
     }
 
     @Test

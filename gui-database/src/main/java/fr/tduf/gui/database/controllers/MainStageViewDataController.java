@@ -17,6 +17,7 @@ import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
 import fr.tduf.gui.database.factory.EntryCellFactory;
+import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -148,6 +149,11 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         setCurrentTopicObject(currentTopicObject);
 
         refreshAll();
+    }
+
+    void applySelectedLocale() {
+        updateAllPropertiesWithItemValues();
+        updateConfiguration();
     }
 
     void refreshAll() {
@@ -353,10 +359,13 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                 .map(Path::toString);
     }
 
+    // TODO add parameter to define which item to update
     private void updateConfiguration() {
         try {
-            getApplicationConfiguration().setDatabasePath(getDatabaseLocationTextField().getText());
-            getApplicationConfiguration().store();
+            final ApplicationConfiguration applicationConfiguration = getApplicationConfiguration();
+            applicationConfiguration.setDatabasePath(getDatabaseLocationTextField().getText());
+            applicationConfiguration.setEditorLocale(currentLocaleProperty().getValue());
+            applicationConfiguration.store();
         } catch (IOException ioe) {
             Log.warn(THIS_CLASS_NAME, "Unable to save application configuration", ioe);
         }
