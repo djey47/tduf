@@ -43,9 +43,7 @@ import java.util.OptionalLong;
 
 import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
-import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.INTEGER;
-import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.REFERENCE;
-import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.UID;
+import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.*;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -248,6 +246,30 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
+    public void updateEntriesAndSwitchTo_whenEntries_shouldPopulateEntryList() {
+        // GIVEN
+        final EditorLayoutDto.EditorProfileDto profileObject = layoutObject.getProfiles().get(0);
+        when(mainStageControllerMock.getCurrentProfileObject()).thenReturn(profileObject);
+
+        controller.getBrowsableEntries().add(new ContentEntryDataItem());
+
+        when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(createTopicObjectWithDataEntryAndRef("entryRef")));
+        when(minerMock.getContentEntryReferenceWithInternalIdentifier(0, TOPIC2)).thenReturn(empty());
+
+
+        // WHEN
+        controller.updateEntriesAndSwitchTo(0);
+
+
+        // THEN
+        assertThat(controller.getBrowsableEntries()).hasSize(1);
+        final ContentEntryDataItem actualEntry = controller.getBrowsableEntries().get(0);
+        assertThat(actualEntry.referenceProperty().get()).isEqualTo("0");
+        assertThat(actualEntry.internalEntryIdProperty().get()).isEqualTo(0L);
+        assertThat(actualEntry.valueProperty().get()).isEqualTo("<?>");
+    }
+
+    @Test
     public void refreshAll_shouldResetProperties() {
         // GIVEN
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(createTopicObjectWithoutStructureFields());
@@ -402,6 +424,34 @@ public class MainStageViewDataControllerTest {
 
         // THEN
         assertThat(resolvedValueProperty.get()).isEqualTo("resource value");
+    }
+
+    @Test
+    public void updateItemProperties_withRawValueSet_andResolvedValueInIndex_forLocalResourceField_shouldUpdateProperty() {
+        // GIVEN
+        when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(createTopicObjectForLocalResource());
+        ContentItemDto itemObject = createContentItem();
+        SimpleStringProperty resolvedValueProperty = new SimpleStringProperty("resolved value");
+
+        // WHEN
+        controller.updateItemProperties(itemObject);
+
+        // THEN
+        assertThat(resolvedValueProperty.get()).isEqualTo("resolved value");
+    }
+
+    @Test
+    public void updateItemProperties_withRawValueSet_andResolvedValueInIndex_forRemoteResourceField_shouldUpdateProperty() {
+        // GIVEN
+        when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(createTopicObjectForRemoteResource());
+        ContentItemDto itemObject = createContentItem();
+        SimpleStringProperty resolvedValueProperty = new SimpleStringProperty("resolved value");
+
+        // WHEN
+        controller.updateItemProperties(itemObject);
+
+        // THEN
+        assertThat(resolvedValueProperty.get()).isEqualTo("resolved value");
     }
 
     @Test(expected=IllegalStateException.class)
@@ -671,6 +721,32 @@ public class MainStageViewDataControllerTest {
                                 .ofRank(1)
                                 .fromType(REFERENCE)
                                 .toTargetReference(TOPIC_REFERENCE)
+                                .build())
+                        .build())
+                .withData(DbDataDto.builder().build())
+                .build();
+    }
+
+    private DbDto createTopicObjectForLocalResource() {
+        return DbDto.builder()
+                .withStructure(DbStructureDto.builder()
+                        .forTopic(TOPIC1)
+                        .addItem(DbStructureDto.Field.builder()
+                                .ofRank(1)
+                                .fromType(RESOURCE_CURRENT_LOCALIZED)
+                                .build())
+                        .build())
+                .withData(DbDataDto.builder().build())
+                .build();
+    }
+
+    private DbDto createTopicObjectForRemoteResource() {
+        return DbDto.builder()
+                .withStructure(DbStructureDto.builder()
+                        .forTopic(TOPIC1)
+                        .addItem(DbStructureDto.Field.builder()
+                                .ofRank(1)
+                                .fromType(RESOURCE_REMOTE)
                                 .build())
                         .build())
                 .withData(DbDataDto.builder().build())

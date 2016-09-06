@@ -171,7 +171,6 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         resourcesByTopicLink.entrySet().forEach(this::updateLinkProperties);
     }
 
-    // TODO test with resource field
     void updateItemProperties(ContentItemDto item) {
         final int fieldRank = item.getFieldRank();
         final SimpleStringProperty rawValueProperty = rawValuesByFieldRank.get(fieldRank);
@@ -199,7 +198,6 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                 .ifPresent(this::updateLinkProperties);
     }
 
-    // TODO test
     void updateEntriesAndSwitchTo(long entryIndex) {
         fillBrowsableEntries();
         long effectiveIndex = entryIndex;
@@ -416,7 +414,6 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         getLocalesChoiceBox().valueProperty().bindBidirectional(currentLocaleProperty());
     }
 
-    // TODO add test with entries
     private void fillBrowsableEntries() {
         final List<Integer> labelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(
                 getCurrentProfileObject().getName(),
@@ -431,7 +428,6 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                         .orElse(new ArrayList<>()));
     }
 
-    // Ignore warning
     private ContentEntryDataItem getDisplayableEntryForCurrentLocale(ContentEntryDto topicEntry, List<Integer> labelFieldRanks, DbDto.Topic topic) {
         ContentEntryDataItem contentEntryDataItem = new ContentEntryDataItem();
 
