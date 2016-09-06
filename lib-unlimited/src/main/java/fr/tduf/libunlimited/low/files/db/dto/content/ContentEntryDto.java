@@ -19,11 +19,11 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class ContentEntryDto {
 
-    @JsonProperty("id")
-    private long id;
-
     @JsonProperty("items")
     private List<ContentItemDto> items;
+
+    @JsonIgnore
+    private DbDataDto dataHost;
 
     @JsonIgnore
     private int valuesHash;
@@ -87,8 +87,10 @@ public class ContentEntryDto {
         return of(i);
     }
 
+    @JsonProperty("id")
+    // TODO convert to int data type
     public long getId() {
-        return id;
+        return dataHost == null ? -1L : dataHost.getEntries().indexOf(this);
     }
 
     @JsonIgnore
@@ -115,17 +117,16 @@ public class ContentEntryDto {
     }
 
     void shiftIdUp() {
-        if (id > 0) {
-            id--;
-        }
+        // TODO
     }
 
     void shiftIdDown() {
-        id++;
+        // TODO
     }
 
-    void setId(int id) {
-        this.id = id;
+    void setId(int id)
+    {
+        // TODO
     }
 
     String getFirstItemValue() {
@@ -141,12 +142,15 @@ public class ContentEntryDto {
         );
     }
 
+    void setDataHost(DbDataDto dataHost) {
+        this.dataHost = dataHost;
+    }
+
     public static class EntryBuilder {
         private final List<ContentItemDto> items = new ArrayList<>();
-        private long id;
 
         public EntryBuilder forId(long id) {
-            this.id = id;
+            // TODO delete
             return this;
         }
 
@@ -162,7 +166,6 @@ public class ContentEntryDto {
         public ContentEntryDto build() {
             ContentEntryDto entry = new ContentEntryDto();
 
-            entry.id = this.id;
             entry.items = this.items;
 
             entry.computeValuesHash();

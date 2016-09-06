@@ -14,6 +14,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.function.Function.identity;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
@@ -33,18 +35,19 @@ public class DbDataDto implements Serializable {
     private List<ContentEntryDto> entries;
 
     @JsonIgnore
-    // TODO not necessary when new id mechanism
-    private Map<Long, ContentEntryDto> entriesByInternalIdentifier;
-
-    @JsonIgnore
     private Map<String, ContentEntryDto> entriesByReference;
 
     public List<ContentEntryDto> getEntries() {
         return Collections.unmodifiableList(entries);
     }
 
+    // TODO pass to int
     public Optional<ContentEntryDto> getEntryWithInternalIdentifier(long internalId) {
-        return ofNullable(entriesByInternalIdentifier.get(internalId));
+        try {
+            return of(entries.get((int)internalId));
+        } catch (IndexOutOfBoundsException iobe) {
+            return empty();
+        }
     }
 
     public Optional<ContentEntryDto> getEntryWithReference(String ref) {
@@ -65,34 +68,25 @@ public class DbDataDto implements Serializable {
     }
 
     public void addEntry(ContentEntryDto entry) {
+        entry.setDataHost(this);
         entries.add(entry);
-        updateEntryIndexWithNewEntry(entry);
         updateEntryIndexByReferenceWithNewEntry(entry);
     }
 
     public void addEntryWithItems(List<ContentItemDto> items) {
         addEntry(ContentEntryDto.builder()
-                .forId(entries.size())
                 .addItems(items)
                 .build());
     }
 
     public void removeEntry(ContentEntryDto entry) {
-        removeEntryFromIndex(entry);
+        entry.setDataHost(null);
         removeEntryFromIndexByReference(entry);
         entries.remove(entry);
-
-        fixNextEntriesIdentifiers(entry.getId());
     }
 
     public void removeEntries(List<ContentEntryDto> entriesToDelete) {
-        entriesToDelete.forEach(entry -> {
-            removeEntryFromIndex(entry);
-            removeEntryFromIndexByReference(entry);
-            entries.remove(entry);
-        });
-
-        fixNextEntriesIdentifiers(entriesToDelete.get(0).getId());
+        entriesToDelete.forEach(this::removeEntry);
     }
 
     public void moveEntryUp(ContentEntryDto entry) {
@@ -130,16 +124,6 @@ public class DbDataDto implements Serializable {
         sortEntriesByIdentifier();
     }
 
-    private void fixNextEntriesIdentifiers(long startIdentifierExclusive) {
-        entries.stream()
-                .filter(e -> e.getId() > startIdentifierExclusive)
-                .forEach(e ->  {
-                    e.setId(entries.indexOf(e));
-                    updateEntryIndexWithNewEntry(e);
-                });
-    }
-
-
     @Override
     public boolean equals(Object that) {
         return that != null
@@ -160,7 +144,6 @@ public class DbDataDto implements Serializable {
     @JsonSetter("entries")
     private void setEntries(Collection<ContentEntryDto> entries) {
         this.entries = new ArrayList<>(entries);
-        entriesByInternalIdentifier = createEntryIndex(entries);
 
         if (topic == null || DatabaseStructureQueryHelper.isUidSupportForTopic(topic)) {
             entriesByReference = createEntryIndexByReference(entries);
@@ -174,7 +157,7 @@ public class DbDataDto implements Serializable {
     }
 
     private void updateEntryIndexWithNewEntry(ContentEntryDto entry) {
-        entriesByInternalIdentifier.put(entry.getId(), entry);
+        // TODO remove
     }
 
     private void updateEntryIndexByReferenceWithNewEntry(ContentEntryDto entry) {
@@ -184,19 +167,13 @@ public class DbDataDto implements Serializable {
     }
 
     private void removeEntryFromIndex(ContentEntryDto entry) {
-        entriesByInternalIdentifier.remove(entry.getId());
+        // TODO
     }
 
     private void removeEntryFromIndexByReference(ContentEntryDto entry) {
         if (entriesByReference != null) {
             entriesByReference.remove(entry.getFirstItemValue());
         }
-    }
-
-    private static Map<Long, ContentEntryDto> createEntryIndex(Collection<ContentEntryDto> entries) {
-        return new HashMap<>(entries.stream()
-                .parallel()
-                .collect(Collectors.toConcurrentMap(ContentEntryDto::getId, identity())));
     }
 
     private static Map<String, ContentEntryDto> createEntryIndexByReference(Collection<ContentEntryDto> entries) {
@@ -237,7 +214,6 @@ public class DbDataDto implements Serializable {
             DbDataDto dbDataDto = new DbDataDto();
 
             dbDataDto.entries = entries;
-            dbDataDto.entriesByInternalIdentifier = createEntryIndex(entries);
             dbDataDto.topic = topic;
 
             if (refIndexSupport) {
