@@ -11,6 +11,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -40,7 +41,14 @@ public class DbDataDto implements Serializable {
     }
 
     long getEntryId(ContentEntryDto contentEntry) {
-        return entries.indexOf(contentEntry);
+        int index = 0;
+        for (ContentEntryDto entry : entries) {
+            if (entry == contentEntry) {
+                return index;
+            }
+            index++;
+        }
+        return -1;
     }
 
     // TODO pass to int
@@ -82,9 +90,7 @@ public class DbDataDto implements Serializable {
     }
 
     public void removeEntry(ContentEntryDto entry) {
-        entry.setDataHost(null);
-        removeEntryFromIndexByReference(entry);
-        entries.remove(entry);
+        entries.remove((int)getEntryId(entry));
     }
 
     public void removeEntries(List<ContentEntryDto> entriesToDelete) {

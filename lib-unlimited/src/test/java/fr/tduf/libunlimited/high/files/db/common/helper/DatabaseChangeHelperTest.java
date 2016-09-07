@@ -92,13 +92,13 @@ public class DatabaseChangeHelperTest {
     public void removeEntryWithIdentifier_whenEntryExists_shouldDeleteIt_andUpdateIds() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
-        ContentEntryDto entry1 = createDefaultContentEntry(0);
+        ContentEntryDto entry1 = createDefaultContentEntry();
         entry1.appendItem(createEntryItemAtRank(1));
         dataObject.addEntry(entry1);
-        ContentEntryDto entry2 = createDefaultContentEntry(1);
+        ContentEntryDto entry2 = createDefaultContentEntry();
         entry2.appendItem(createEntryItemAtRank(1));
         dataObject.addEntry(entry2);
-        ContentEntryDto entry3 = createDefaultContentEntry(2);
+        ContentEntryDto entry3 = createDefaultContentEntry();
         entry3.appendItem(createEntryItemAtRank(1));
         dataObject.addEntry(entry3);
 
@@ -502,6 +502,10 @@ public class DatabaseChangeHelperTest {
         return ContentEntryDto.builder()
                 .forId(internalId)
                 .build();
+    }
+
+    private static ContentEntryDto createDefaultContentEntry() {
+        return ContentEntryDto.builder().build();
     }
 
     private static ContentEntryDto createContentEntryWithUidItem(long internalId) {
