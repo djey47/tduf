@@ -19,12 +19,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class BulkDatabaseMiner_focusOnContentsTest {
 
-    private List<DbDto> topicObjectsFromResources;
+    private static List<DbDto> topicObjectsFromResources;
+    static {
+        try {
+            topicObjectsFromResources = createTopicObjectsFromResources();
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Before
     public void setUp() throws IOException, URISyntaxException {
-        topicObjectsFromResources = createTopicObjectsFromResources();
-
         // Set level to TRACE to get performance information
 //        Log.set(LEVEL_DEBUG);
 //        Log.setLogger(new PerformanceLogger(Paths.get("perfs").toAbsolutePath()));
