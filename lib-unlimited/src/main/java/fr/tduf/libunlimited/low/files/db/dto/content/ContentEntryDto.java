@@ -11,7 +11,6 @@ import static java.util.Arrays.asList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
@@ -90,7 +89,7 @@ public class ContentEntryDto {
     @JsonProperty("id")
     // TODO convert to int data type
     public long getId() {
-        return dataHost == null ? -1L : dataHost.getEntries().indexOf(this);
+        return dataHost == null ? -1L : dataHost.getEntryId(this);
     }
 
     @JsonIgnore
@@ -102,13 +101,15 @@ public class ContentEntryDto {
     }
 
     @Override
-    public boolean equals(Object o) {
-        return reflectionEquals(this, o, false);
+    public boolean equals(Object that) {
+        return that != null
+                && that.getClass() == getClass()
+                && Objects.equals(items, ((ContentEntryDto) that).items);
     }
 
     @Override
     public int hashCode() {
-        return reflectionHashCode(this);
+        return Objects.hash(items);
     }
 
     @Override

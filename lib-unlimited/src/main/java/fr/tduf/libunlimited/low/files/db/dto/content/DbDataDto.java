@@ -14,9 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
+import static java.util.Optional.*;
 import static java.util.function.Function.identity;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
@@ -39,6 +37,10 @@ public class DbDataDto implements Serializable {
 
     public List<ContentEntryDto> getEntries() {
         return Collections.unmodifiableList(entries);
+    }
+
+    long getEntryId(ContentEntryDto contentEntry) {
+        return entries.indexOf(contentEntry);
     }
 
     // TODO pass to int
@@ -99,12 +101,9 @@ public class DbDataDto implements Serializable {
 
     // TODO use swap algorithm when new id mechanism
     private void moveEntry(ContentEntryDto entry, boolean up) {
-        removeEntryFromIndex(entry);
-
         // Moves previous entry down or next entry up
         getEntryWithInternalIdentifier(up ? entry.getId() - 1 : entry.getId() + 1)
                 .ifPresent(e -> {
-                    removeEntryFromIndex(e);
                     if (up) {
                         e.shiftIdDown();
                     } else {
@@ -149,7 +148,10 @@ public class DbDataDto implements Serializable {
             entriesByReference = createEntryIndexByReference(entries);
         }
 
-        entries.forEach(ContentEntryDto::computeValuesHash);
+        entries.forEach(entryDto -> {
+            entryDto.computeValuesHash();
+            entryDto.setDataHost(this);
+        });
     }
 
     private void sortEntriesByIdentifier() {
