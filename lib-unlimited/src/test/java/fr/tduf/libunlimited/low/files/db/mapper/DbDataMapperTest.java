@@ -57,13 +57,11 @@ public class DbDataMapperTest {
                 .withRawValue("0")
                 .build();
         ContentEntryDto entry1 = ContentEntryDto.builder()
-                .forId(1L)
                 .addItem(item11)
                 .addItem(item12)
                 .addItem(item13)
                 .build();
         ContentEntryDto entry2 = ContentEntryDto.builder()
-                .forId(2L)
                 .addItem(item21)
                 .addItem(item22)
                 .addItem(item23)

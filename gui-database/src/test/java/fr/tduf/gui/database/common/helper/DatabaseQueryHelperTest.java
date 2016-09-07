@@ -7,6 +7,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -112,7 +113,7 @@ public class DatabaseQueryHelperTest {
         String resValue1 = "RES1";
         String resValue2 = "REMOTE ENTRY";
 
-        ContentEntryDto remoteEntry = ContentEntryDto.builder().forId(0).build();
+        ContentEntryDto remoteEntry = createRemoteContentEntry();
         when(minerMock.getRemoteContentEntryWithInternalIdentifier(TOPIC, 5, 1, TOPIC_REMOTE)).thenReturn(of(remoteEntry));
         when(minerMock.getLocalizedResourceValueFromContentEntry(1, 4, TOPIC, FRANCE)).thenReturn(of(resValue1));
         when(minerMock.getLocalizedResourceValueFromContentEntry(0, 1, TOPIC_REMOTE, FRANCE)).thenReturn(of(resValue2));
@@ -147,7 +148,7 @@ public class DatabaseQueryHelperTest {
         List<Integer> fieldRanks = asList(4, 5);
         String resValue1 = "RES1";
 
-        ContentEntryDto remoteEntry = ContentEntryDto.builder().forId(0).build();
+        ContentEntryDto remoteEntry = createRemoteContentEntry();
         ContentItemDto remoteItem = ContentItemDto.builder().ofFieldRank(1).withRawValue("RAW").build();
         remoteEntry.appendItem(remoteItem);
 
@@ -165,13 +166,19 @@ public class DatabaseQueryHelperTest {
         assertThat(actualLabel).isEqualTo("RES1 - <RAW>");
     }
 
+    private ContentEntryDto createRemoteContentEntry() {
+        ContentEntryDto remoteEntry = ContentEntryDto.builder().build();
+        DbDataDto.builder().addEntry(remoteEntry).build();
+        return remoteEntry;
+    }
+
     @Test(expected = IllegalStateException.class)
     public void fetchResourceValuesWithEntryId_whenReferenceField_andRemoteResourceUnavailable_andItemUnavailable_shouldWriteRawValue() throws Exception {
         // GIVEN
         List<Integer> fieldRanks = asList(4, 5);
         String resValue1 = "RES1";
 
-        ContentEntryDto remoteEntry = ContentEntryDto.builder().forId(0).build();
+        ContentEntryDto remoteEntry = createRemoteContentEntry();
         ContentItemDto remoteItem = ContentItemDto.builder().ofFieldRank(1).withRawValue("RAW").build();
         remoteEntry.appendItem(remoteItem);
 
