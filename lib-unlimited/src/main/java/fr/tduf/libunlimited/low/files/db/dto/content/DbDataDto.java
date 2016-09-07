@@ -11,7 +11,6 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -24,6 +23,7 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
  */
 @JsonTypeName("db")
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+// TODO add tests
 public class DbDataDto implements Serializable {
     private static final String THIS_CLASS_NAME = DbDataDto.class.getSimpleName();
 
@@ -91,6 +91,7 @@ public class DbDataDto implements Serializable {
 
     public void removeEntry(ContentEntryDto entry) {
         entries.remove((int)getEntryId(entry));
+        removeEntryFromIndexByReference(entry);
     }
 
     public void removeEntries(List<ContentEntryDto> entriesToDelete) {
@@ -115,7 +116,6 @@ public class DbDataDto implements Serializable {
                     } else {
                         e.shiftIdUp();
                     }
-                    updateEntryIndexWithNewEntry(e);
                 });
 
         if (up) {
@@ -123,10 +123,6 @@ public class DbDataDto implements Serializable {
         } else {
             entry.shiftIdDown();
         }
-
-        updateEntryIndexWithNewEntry(entry);
-
-        sortEntriesByIdentifier();
     }
 
     @Override
@@ -160,22 +156,10 @@ public class DbDataDto implements Serializable {
         });
     }
 
-    private void sortEntriesByIdentifier() {
-        entries.sort((e1, e2) -> Long.compare(e1.getId(), e2.getId()));
-    }
-
-    private void updateEntryIndexWithNewEntry(ContentEntryDto entry) {
-        // TODO remove
-    }
-
     private void updateEntryIndexByReferenceWithNewEntry(ContentEntryDto entry) {
         if (entriesByReference != null) {
             entriesByReference.put(entry.getFirstItemValue(), entry);
         }
-    }
-
-    private void removeEntryFromIndex(ContentEntryDto entry) {
-        // TODO
     }
 
     private void removeEntryFromIndexByReference(ContentEntryDto entry) {
