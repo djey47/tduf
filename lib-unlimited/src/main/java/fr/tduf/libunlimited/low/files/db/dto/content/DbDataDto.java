@@ -148,9 +148,9 @@ public class DbDataDto implements Serializable {
             entriesByReference = createEntryIndexByReference(entries);
         }
 
-        entries.forEach(entryDto -> {
-            entryDto.computeValuesHash();
-            entryDto.setDataHost(this);
+        entries.forEach(entry -> {
+            entry.computeValuesHash();
+            entry.setDataHost(this);
         });
     }
 
@@ -221,6 +221,8 @@ public class DbDataDto implements Serializable {
             if (refIndexSupport) {
                 dbDataDto.entriesByReference = createEntryIndexByReference(entries);
             }
+
+            dbDataDto.entries.forEach(entry -> entry.setDataHost(dbDataDto));
 
             return dbDataDto;
         }
