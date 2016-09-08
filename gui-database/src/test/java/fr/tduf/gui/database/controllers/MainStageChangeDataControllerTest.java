@@ -146,7 +146,6 @@ public class MainStageChangeDataControllerTest {
     public void exportCurrentEntryAsLine_should_generate_line_with_trailing_semicolon() {
         // GIVEN
         ContentEntryDto entry = ContentEntryDto.builder()
-                .forId(1)
                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue("25").build())
                 .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue("36").build())
                 .build();

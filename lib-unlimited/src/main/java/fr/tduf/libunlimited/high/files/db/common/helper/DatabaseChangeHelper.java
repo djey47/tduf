@@ -75,7 +75,6 @@ public class DatabaseChangeHelper {
         DbDataDto dataDto = topicObject.getData();
 
         ContentEntryDto newEntry = ContentEntryDto.builder()
-                .forId(dataDto.getEntries().size())
                 .addItems(genHelper.buildDefaultContentItems(reference, topicObject))
                 .build();
 
@@ -181,7 +180,6 @@ public class DatabaseChangeHelper {
 
         List<ContentItemDto> clonedItems = cloneContentItems(sourceEntry, topic);
         ContentEntryDto newEntry = ContentEntryDto.builder()
-                .forId(newIdentifier)
                 .addItems(clonedItems)
                 .build();
 

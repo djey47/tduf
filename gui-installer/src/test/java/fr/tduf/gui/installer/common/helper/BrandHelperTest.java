@@ -49,13 +49,11 @@ public class BrandHelperTest {
     @Before
     public void setUp() {
         ContentEntryDto brandsEntry1 = ContentEntryDto.builder()
-                .forId(0)
                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(BRAND_REF_1).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(BRAND_ID_RESOURCE_1.getRef()).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(3).withRawValue(BRAND_NAME_RESOURCE_1.getRef()).build())
                 .build();
         ContentEntryDto brandsEntry2 = ContentEntryDto.builder()
-                .forId(1)
                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(BRAND_REF_2).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(BRAND_ID_RESOURCE_2.getRef()).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(3).withRawValue(BRAND_NAME_RESOURCE_2.getRef()).build())

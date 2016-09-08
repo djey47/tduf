@@ -181,7 +181,6 @@ public class DatabaseParser {
             }
 
             entries.add(ContentEntryDto.builder()
-                    .forId(id)
                     .addItems(parseContentItems(structure, line, id))
                     .build());
 

@@ -215,7 +215,6 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
         DbDataDto dataDto = topicObject.getData();
 
         ContentEntryDto newEntry = ContentEntryDto.builder()
-                .forId(dataDto.getEntries().size())
                 .addItems(genHelper.buildDefaultContentItems(reference, topicObject))
                 .build();
 

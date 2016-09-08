@@ -116,17 +116,14 @@ public class VehicleSlotsHelperTest {
         float secuOne = 100;
         int secuTwo = 101;
         ContentEntryDto carRimsEntry1 = ContentEntryDto.builder()
-                .forId(0)
                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(SLOTREF).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(rimSlotRef1).build())
                 .build();
         ContentEntryDto carRimsEntry2 = ContentEntryDto.builder()
-                .forId(1)
                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(SLOTREF).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(rimSlotRef2).build())
                 .build();
         ContentEntryDto physicsEntry = ContentEntryDto.builder()
-                .forId(0)
                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(SLOTREF).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(BRANDREF).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(9).withRawValue(fileNameRef).build())
@@ -140,21 +137,18 @@ public class VehicleSlotsHelperTest {
                 .addItem(ContentItemDto.builder().ofFieldRank(102).withRawValue(Integer.toString(idCar)).build())
                 .build();
         ContentEntryDto rimsEntry1 = ContentEntryDto.builder()
-                .forId(0)
                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(rimSlotRef1).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(13).withRawValue(directoryRef).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(14).withRawValue(frontRimFileNameRef1).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(15).withRawValue(rearRimFileNameRef1).build())
                 .build();
         ContentEntryDto rimsEntry2 = ContentEntryDto.builder()
-                .forId(0)
                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(rimSlotRef2).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(13).withRawValue(directoryRef).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(14).withRawValue(frontRimFileNameRef2).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(15).withRawValue(rearRimFileNameRef2).build())
                 .build();
         ContentEntryDto carColorsEntry = ContentEntryDto.builder()
-                .forId(0)
                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(SLOTREF).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(3).withRawValue(colorNameRef).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(8).withRawValue(interiorRef).build())
@@ -273,12 +267,10 @@ public class VehicleSlotsHelperTest {
         float secuOne = 100;
         int secuTwo = 101;
         ContentEntryDto carRimsEntry1 = ContentEntryDto.builder()
-                .forId(0)
                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(SLOTREF_TDUCP).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(rimSlotRef1).build())
                 .build();
         ContentEntryDto physicsEntry = ContentEntryDto.builder()
-                .forId(0)
                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(SLOTREF_TDUCP).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(BRANDREF).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(9).withRawValue(fileNameRef).build())
@@ -292,21 +284,18 @@ public class VehicleSlotsHelperTest {
                 .addItem(ContentItemDto.builder().ofFieldRank(102).withRawValue(Integer.toString(idCar)).build())
                 .build();
         ContentEntryDto rimsEntry1 = ContentEntryDto.builder()
-                .forId(0)
                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(rimSlotRef1).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(13).withRawValue(directoryRef).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(14).withRawValue(frontRimFileNameRef1).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(15).withRawValue(rearRimFileNameRef1).build())
                 .build();
         ContentEntryDto rimsEntry2 = ContentEntryDto.builder()
-                .forId(1)
                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(rimSlotRef2).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(13).withRawValue(directoryRef).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(14).withRawValue(frontRimFileNameRef2).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(15).withRawValue(rearRimFileNameRef2).build())
                 .build();
         ContentEntryDto carColorsEntry = ContentEntryDto.builder()
-                .forId(0)
                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(SLOTREF_TDUCP).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(3).withRawValue(colorNameRef).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(8).withRawValue(interiorRef).build())
@@ -434,8 +423,8 @@ public class VehicleSlotsHelperTest {
         ContentItemDto refItem2 = ContentItemDto.builder().ofFieldRank(1).withRawValue(SLOTREF).build();
         ContentItemDto brandItem2 = ContentItemDto.builder().ofFieldRank(2).withRawValue(BRANDREF).build();
         ContentItemDto groupItem2 = ContentItemDto.builder().ofFieldRank(5).withRawValue("77800264").build();
-        ContentEntryDto undrivableEntry = ContentEntryDto.builder().forId(0).addItem(refItem1, brandItem1, groupItem1).build();
-        ContentEntryDto drivableEntry = ContentEntryDto.builder().forId(1).addItem(refItem2, brandItem2, groupItem2).build();
+        ContentEntryDto undrivableEntry = ContentEntryDto.builder().addItem(refItem1, brandItem1, groupItem1).build();
+        ContentEntryDto drivableEntry = ContentEntryDto.builder().addItem(refItem2, brandItem2, groupItem2).build();
         DbDataDto dataObject = DbDataDto.builder().addEntry(undrivableEntry, drivableEntry).build();
         DbDto topicObject = DbDto.builder().withData(dataObject).build();
 
@@ -596,7 +585,6 @@ public class VehicleSlotsHelperTest {
 
     private void mockMinerForBrands() {
         ContentEntryDto brandsEntry = ContentEntryDto.builder()
-                .forId(0)
                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(BRANDREF).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(BRAND_ID_REF).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(3).withRawValue(BRAND_NAME_REF).build())
