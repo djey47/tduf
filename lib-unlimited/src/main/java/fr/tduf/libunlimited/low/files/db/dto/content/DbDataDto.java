@@ -106,25 +106,6 @@ public class DbDataDto implements Serializable {
         moveEntry(entry, false);
     }
 
-    // TODO use swap algorithm when new id mechanism
-    private void moveEntry(ContentEntryDto entry, boolean up) {
-        // Moves previous entry down or next entry up
-        getEntryWithInternalIdentifier(up ? entry.getId() - 1 : entry.getId() + 1)
-                .ifPresent(e -> {
-                    if (up) {
-                        e.shiftIdDown();
-                    } else {
-                        e.shiftIdUp();
-                    }
-                });
-
-        if (up) {
-            entry.shiftIdUp();
-        } else {
-            entry.shiftIdDown();
-        }
-    }
-
     @Override
     public boolean equals(Object that) {
         return that != null
@@ -176,6 +157,24 @@ public class DbDataDto implements Serializable {
                         identity(),
                         (e1, e2) -> e2)
                 ));
+    }
+
+    private void moveEntry(ContentEntryDto entry, boolean up) {
+        int entryId = (int) entry.getId();
+        if (entryId == -1) {
+            return;
+        }
+
+        int neighbourEntryId = up ? entryId - 1  : entryId + 1;
+        if (neighbourEntryId < 0 || neighbourEntryId >= entries.size()) {
+            return;
+        }
+
+        ContentEntryDto neighbourEntry = getEntryWithInternalIdentifier(neighbourEntryId)
+                .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("No neighbour entry with identifier: " + neighbourEntryId));
+
+        entries.set(entryId, neighbourEntry);
+        entries.set(neighbourEntryId, entry);
     }
 
     public static class DbDataDtoBuilder {
