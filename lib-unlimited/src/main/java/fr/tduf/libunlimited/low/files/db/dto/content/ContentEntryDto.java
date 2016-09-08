@@ -91,6 +91,9 @@ public class ContentEntryDto {
         return dataHost == null ? -1L : dataHost.getEntryId(this);
     }
 
+    // Kept for proper Jackson deserialization
+    public void setId(long id) {}
+
     @JsonIgnore
     public int getValuesHash() {
         if (valuesHash == 0) {
@@ -135,11 +138,6 @@ public class ContentEntryDto {
 
     public static class EntryBuilder {
         private final List<ContentItemDto> items = new ArrayList<>();
-
-        public EntryBuilder forId(long id) {
-            // TODO delete
-            return this;
-        }
 
         public EntryBuilder addItem(ContentItemDto... item) {
             return addItems(asList(item));
