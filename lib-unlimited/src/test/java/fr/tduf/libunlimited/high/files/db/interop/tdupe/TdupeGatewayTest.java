@@ -79,7 +79,7 @@ public class TdupeGatewayTest {
 
 
         // THEN
-        verify(minerMock, never()).getContentEntryReferenceWithInternalIdentifier(anyLong(), any());
+        verify(minerMock, never()).getContentEntryReferenceWithInternalIdentifier(anyInt(), any());
         verify(patcherMock).apply(any());
     }
 

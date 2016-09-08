@@ -6,11 +6,11 @@ package fr.tduf.gui.database.domain;
 public class EditorLocation {
     private String profileName;
 
-    private long entryId;
+    private int entryId;
 
     private int tabId;
 
-    public EditorLocation(int tabId, String profileName, long entryId) {
+    public EditorLocation(int tabId, String profileName, int entryId) {
         this.tabId = tabId;
         this.profileName = profileName;
         this.entryId = entryId;
@@ -20,7 +20,7 @@ public class EditorLocation {
         return profileName;
     }
 
-    public long getEntryId() {
+    public int getEntryId() {
         return entryId;
     }
 

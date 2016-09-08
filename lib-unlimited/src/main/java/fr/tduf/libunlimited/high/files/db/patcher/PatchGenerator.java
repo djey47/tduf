@@ -240,7 +240,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         if (RESOURCE_REMOTE == fieldType) {
             requiredReferences.updateRequiredResourceReferences(remoteTopic, reference);
         } else {
-            Long entryId = databaseMiner.getContentEntryInternalIdentifierWithReference(reference, remoteTopic)
+            int entryId = databaseMiner.getContentEntryInternalIdentifierWithReference(reference, remoteTopic)
                     .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No entry id at ref: " + reference));
             requiredReferences.updateRequiredContentsIds(remoteTopic, entryId);
         }
@@ -281,11 +281,11 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
     private static class RequiredReferences {
 
-        private Map<DbDto.Topic, Set<Long>> requiredContentsIds = new EnumMap<>(DbDto.Topic.class);
+        private Map<DbDto.Topic, Set<Integer>> requiredContentsIds = new EnumMap<>(DbDto.Topic.class);
 
         private Map<DbDto.Topic, Set<String>> requiredResourceReferences = new EnumMap<>(DbDto.Topic.class);
 
-        private void updateRequiredContentsIds(DbDto.Topic topic, Long id) {
+        private void updateRequiredContentsIds(DbDto.Topic topic, int id) {
             requiredContentsIds.putIfAbsent(topic, new HashSet<>());
             requiredContentsIds.get(topic).add(id);
         }

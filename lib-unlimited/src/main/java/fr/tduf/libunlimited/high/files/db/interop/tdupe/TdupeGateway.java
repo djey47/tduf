@@ -28,7 +28,7 @@ public class TdupeGateway extends AbstractDatabaseHolder {
      * @param entryId               : internal identifier of entry to update
      * @param performancePackFile   : location of performance pack file (.tdupk) to be applied.
      */
-    public void applyPerformancePackToEntryWithIdentifier(long entryId, String performancePackFile) {
+    public void applyPerformancePackToEntryWithIdentifier(int entryId, String performancePackFile) {
         Optional<String> potentialCarPhysicsRef = databaseMiner.getContentEntryReferenceWithInternalIdentifier(entryId, CAR_PHYSICS_DATA);
         applyPerformancePackToEntryWithReference(potentialCarPhysicsRef, performancePackFile);
     }

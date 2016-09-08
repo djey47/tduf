@@ -101,7 +101,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
             DbDto.Topic sourceTopic = (DbDto.Topic) information.get(SOURCE_TOPIC);
             Optional<DbDto.Topic> remoteTopic = Optional.ofNullable((DbDto.Topic) information.get(REMOTE_TOPIC));
             String reference = (String) information.get(REFERENCE);
-            Long entryIdentifier = (Long) information.get(ENTRY_ID);
+            int entryIdentifier = (Integer) information.get(ENTRY_ID);
             fr.tduf.libunlimited.common.game.domain.Locale locale = (Locale) information.get(ErrorInfoEnum.LOCALE);
             Optional<Set<Locale>> missingLocales = Optional.ofNullable ((Set<Locale>) information.get(MISSING_LOCALES));
             Map<String, Integer> perValueCount = (Map<String, Integer>) information.get(PER_VALUE_COUNT);
@@ -152,7 +152,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
                 });
     }
 
-    private void addMissingContentsFields(long entryInternalIdentifier, DbDto.Topic topic) {
+    private void addMissingContentsFields(int entryInternalIdentifier, DbDto.Topic topic) {
         DbDto topicObject = databaseMiner.getDatabaseTopic(topic)
                 .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No contents for topic: " + topic));
 

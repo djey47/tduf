@@ -293,7 +293,7 @@ public class BulkDatabaseMiner_focusOnContentsTest {
     @Test
     public void getContentEntryInternalIdentifierWithReference_whenEntryDoesNotExist_shouldReturnEmpty() throws IOException, URISyntaxException {
         // GIVEN-WHEN
-        OptionalLong potentialInternalId = BulkDatabaseMiner.load(topicObjectsFromResources).getContentEntryInternalIdentifierWithReference("REF", BOTS);
+        OptionalInt potentialInternalId = BulkDatabaseMiner.load(topicObjectsFromResources).getContentEntryInternalIdentifierWithReference("REF", BOTS);
 
         // THEN
         assertThat(potentialInternalId).isEmpty();
@@ -302,7 +302,7 @@ public class BulkDatabaseMiner_focusOnContentsTest {
     @Test
     public void getContentEntryInternalIdentifierWithReference_whenEntryExists_shouldReturnInternalId() throws IOException, URISyntaxException {
         // GIVEN-WHEN
-        OptionalLong potentialInternalId = BulkDatabaseMiner.load(topicObjectsFromResources).getContentEntryInternalIdentifierWithReference("606298799", BOTS);
+        OptionalInt potentialInternalId = BulkDatabaseMiner.load(topicObjectsFromResources).getContentEntryInternalIdentifierWithReference("606298799", BOTS);
 
         // THEN
         assertThat(potentialInternalId).hasValue(0);

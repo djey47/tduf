@@ -90,7 +90,7 @@ public class BulkDatabaseMiner {
      * @param topic           : topic in TDU Database to search
      * @return database entry having specified identifier.
      */
-    public Optional<ContentEntryDto> getContentEntryFromTopicWithInternalIdentifier(long entryIdentifier, DbDto.Topic topic) {
+    public Optional<ContentEntryDto> getContentEntryFromTopicWithInternalIdentifier(int entryIdentifier, DbDto.Topic topic) {
         Log.trace(THIS_CLASS_NAME, "getContentEntryFromTopicWithInternalIdentifier(" + entryIdentifier + ", " + topic + ")");
 
         return getDatabaseTopic(topic)
@@ -187,7 +187,7 @@ public class BulkDatabaseMiner {
      * @param targetTopic : topic targeted by current entry
      * @return full entry if it exists, empty otherwise.
      */
-    public Optional<ContentEntryDto> getRemoteContentEntryWithInternalIdentifier(DbDto.Topic sourceTopic, int fieldRank, long entryIndex, DbDto.Topic targetTopic) {
+    public Optional<ContentEntryDto> getRemoteContentEntryWithInternalIdentifier(DbDto.Topic sourceTopic, int fieldRank, int entryIndex, DbDto.Topic targetTopic) {
         Log.trace(THIS_CLASS_NAME, "getRemoteContentEntryWithInternalIdentifier(" + sourceTopic + ", " + fieldRank + ", " + entryIndex + ", " + targetTopic + ")");
 
         String remoteReference = getRawValueAtEntryIndexAndRank(sourceTopic, fieldRank, entryIndex);
@@ -199,7 +199,7 @@ public class BulkDatabaseMiner {
      * @param topic           : topic in TDU Database to search
      * @return identifier of database entry having specified reference as identifier, empty otherwise.
      */
-    public Optional<String> getContentEntryReferenceWithInternalIdentifier(long entryIdentifier, DbDto.Topic topic) {
+    public Optional<String> getContentEntryReferenceWithInternalIdentifier(int entryIdentifier, DbDto.Topic topic) {
         Log.trace(THIS_CLASS_NAME, "getContentEntryReferenceWithInternalIdentifier(" + entryIdentifier + ", " + topic + ")");
 
         List<DbStructureDto.Field> structureFields = getDatabaseTopic(topic)
@@ -221,13 +221,13 @@ public class BulkDatabaseMiner {
      * @param topic : topic in TDU Database to search
      * @return identifier of database entry having specified reference as identifier, empty otherwise.
      */
-    public OptionalLong getContentEntryInternalIdentifierWithReference(String ref, DbDto.Topic topic) {
+    public OptionalInt getContentEntryInternalIdentifierWithReference(String ref, DbDto.Topic topic) {
         Log.trace(THIS_CLASS_NAME, "getContentEntryInternalIdentifierWithReference(" + ref + ", " + topic + ")");
 
         return getContentEntryFromTopicWithReference(ref, topic)
                 .map(ContentEntryDto::getId)
-                .map(OptionalLong::of)
-                .orElse(OptionalLong.empty());
+                .map(OptionalInt::of)
+                .orElse(OptionalInt.empty());
     }
 
     /**
@@ -236,7 +236,7 @@ public class BulkDatabaseMiner {
      * @param entryIdentifier : index of entry in source topic
      * @return item if it exists, empty otherwise.
      */
-    public Optional<ContentItemDto> getContentItemWithEntryIdentifierAndFieldRank(DbDto.Topic topic, int fieldRank, long entryIdentifier) {
+    public Optional<ContentItemDto> getContentItemWithEntryIdentifierAndFieldRank(DbDto.Topic topic, int fieldRank, int entryIdentifier) {
         Log.trace(THIS_CLASS_NAME, "getContentItemWithEntryIdentifierAndFieldRank(" + fieldRank + ", " + entryIdentifier + ", " + topic + ")");
 
         return getContentEntryFromTopicWithInternalIdentifier(entryIdentifier, topic)
@@ -271,7 +271,7 @@ public class BulkDatabaseMiner {
      * @param locale           : language to be used when resolving resource
      * @return resource value targeted by specified entry field if it exists, empty otherwise
      */
-    public Optional<String> getLocalizedResourceValueFromContentEntry(long sourceEntryIndex, int sourceFieldRank, DbDto.Topic sourceTopic, Locale locale) {
+    public Optional<String> getLocalizedResourceValueFromContentEntry(int sourceEntryIndex, int sourceFieldRank, DbDto.Topic sourceTopic, Locale locale) {
         List<DbStructureDto.Field> sourceTopicStructureFields = getDatabaseTopic(sourceTopic)
                 .map(topicObject -> topicObject.getStructure().getFields())
                 .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No source topic object: " + sourceTopic));
@@ -330,7 +330,7 @@ public class BulkDatabaseMiner {
                 .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No REF item for entry at id: " + entry.getId()));
     }
 
-    private String getRawValueAtEntryIndexAndRank(DbDto.Topic topic, int fieldRank, long entryIndex) {
+    private String getRawValueAtEntryIndexAndRank(DbDto.Topic topic, int fieldRank, int entryIndex) {
         return getContentEntryFromTopicWithInternalIdentifier(entryIndex, topic)
                 .flatMap(contentEntry -> contentEntry.getItemAtRank(fieldRank))
                 .map(ContentItemDto::getRawValue)

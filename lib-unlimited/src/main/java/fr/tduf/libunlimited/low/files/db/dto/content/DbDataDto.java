@@ -40,7 +40,7 @@ public class DbDataDto implements Serializable {
         return Collections.unmodifiableList(entries);
     }
 
-    long getEntryId(ContentEntryDto contentEntry) {
+    int getEntryId(ContentEntryDto contentEntry) {
         int index = 0;
         for (ContentEntryDto entry : entries) {
             if (entry == contentEntry) {
@@ -51,10 +51,9 @@ public class DbDataDto implements Serializable {
         return -1;
     }
 
-    // TODO pass to int
-    public Optional<ContentEntryDto> getEntryWithInternalIdentifier(long internalId) {
+    public Optional<ContentEntryDto> getEntryWithInternalIdentifier(int internalId) {
         try {
-            return of(entries.get((int)internalId));
+            return of(entries.get(internalId));
         } catch (IndexOutOfBoundsException iobe) {
             return empty();
         }

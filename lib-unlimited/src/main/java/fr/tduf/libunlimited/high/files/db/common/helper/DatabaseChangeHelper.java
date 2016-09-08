@@ -91,7 +91,7 @@ public class DatabaseChangeHelper {
      * @param newRawValue   : value to apply
      * @return updated item if value has changed, empty otherwise.
      */
-    public Optional<ContentItemDto> updateItemRawValueAtIndexAndFieldRank(DbDto.Topic topic, long entryIndex, int fieldRank, String newRawValue) {
+    public Optional<ContentItemDto> updateItemRawValueAtIndexAndFieldRank(DbDto.Topic topic, int entryIndex, int fieldRank, String newRawValue) {
         return databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryIndex, topic)
                 .flatMap(entry -> entry.updateItemValueAtRank(newRawValue, fieldRank));
     }
@@ -125,7 +125,7 @@ public class DatabaseChangeHelper {
      * @param topic   : database topic where entry should be removed
      * @throws java.lang.IllegalStateException when entry to delete does not exist.
      */
-    public void removeEntryWithIdentifier(long entryId, DbDto.Topic topic) {
+    public void removeEntryWithIdentifier(int entryId, DbDto.Topic topic) {
         DbDataDto topicDataObject = databaseMiner.getDatabaseTopic(topic)
                 .map(DbDto::getData)
                 .<IllegalStateException>orElseThrow(() -> new IllegalStateException(MESSAGE_NO_DATA_FOR_TOPIC + topic));
@@ -169,7 +169,7 @@ public class DatabaseChangeHelper {
      * @return a clone of entry with given identifier in specified topic and added to this topic.
      * If a REF field is present, a random, unique identifier will be generated.
      */
-    public ContentEntryDto duplicateEntryWithIdentifier(long entryId, DbDto.Topic topic) {
+    public ContentEntryDto duplicateEntryWithIdentifier(int entryId, DbDto.Topic topic) {
         DbDto topicObject = databaseMiner.getDatabaseTopic(topic)
                 .<IllegalStateException>orElseThrow(() -> new IllegalStateException(MESSAGE_NO_OBJECT_FOR_TOPIC + topic));
 
@@ -202,7 +202,7 @@ public class DatabaseChangeHelper {
      * @param entryId : internal identifier of entry to be moved
      * @param topic   : database topic where entry should be moved
      */
-    public void moveEntryWithIdentifier(int step, long entryId, DbDto.Topic topic) {
+    public void moveEntryWithIdentifier(int step, int entryId, DbDto.Topic topic) {
         final int absoluteSteps = Math.abs(step);
         if (step == 0
                 || step < 0 && entryId - absoluteSteps < 0) {
@@ -282,7 +282,7 @@ public class DatabaseChangeHelper {
                 });
     }
 
-    private void removeEntriesWithIdentifier(List<Long> entryIds, DbDto.Topic topic) {
+    private void removeEntriesWithIdentifier(List<Integer> entryIds, DbDto.Topic topic) {
         if (entryIds.isEmpty()) {
             return;
         }

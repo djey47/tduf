@@ -86,9 +86,8 @@ public class ContentEntryDto {
     }
 
     @JsonProperty("id")
-    // TODO convert to int data type
-    public long getId() {
-        return dataHost == null ? -1L : dataHost.getEntryId(this);
+    public int getId() {
+        return dataHost == null ? -1 : dataHost.getEntryId(this);
     }
 
     // Kept for proper Jackson deserialization

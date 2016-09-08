@@ -149,10 +149,10 @@ public class MainStageChangeDataControllerTest {
                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue("25").build())
                 .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue("36").build())
                 .build();
-        when(mainStageController.getCurrentEntryIndex()).thenReturn(1L);
+        when(mainStageController.getCurrentEntryIndex()).thenReturn(1);
         when(mainStageController.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(CAR_PHYSICS_DATA));
         when(mainStageController.getMiner()).thenReturn(minerMock);
-        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(1L, CAR_PHYSICS_DATA)).thenReturn(Optional.of(entry));
+        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(1, CAR_PHYSICS_DATA)).thenReturn(Optional.of(entry));
 
         // WHEN
         final String actualEntry = controller.exportCurrentEntryAsLine();

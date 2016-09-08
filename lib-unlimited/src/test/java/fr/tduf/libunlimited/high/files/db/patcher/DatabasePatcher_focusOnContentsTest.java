@@ -1,7 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.patcher;
 
 import fr.tduf.libtesting.common.helper.game.DatabaseHelper;
-import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
@@ -16,7 +15,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import static fr.tduf.libunlimited.common.helper.FilesHelper.readObjectFromJsonResourceFile;
-import static fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher_commonTest.*;
+import static fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher_commonTest.createPatcher;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -582,23 +581,16 @@ public class DatabasePatcher_focusOnContentsTest {
 
     private static void assertAllEntriesHaveFirstItem(List<ContentEntryDto> actualEntries, String firstItemValue) {
         assertThat(actualEntries.stream()
-
                 .map ( (entry) -> entry.getItems().get(0).getRawValue() )
-
                 .collect(toList()))
-
                 .containsOnly(firstItemValue);
     }
 
     private static void assertEntriesHaveSecondItems(List<ContentEntryDto> actualEntries, String... secondItemValues) {
         assertThat(actualEntries.stream()
-
-                .sorted( (entry1, entry2) -> Long.valueOf(entry1.getId()).compareTo(entry2.getId()))
-
+                .sorted( (entry1, entry2) -> Integer.valueOf(entry1.getId()).compareTo(entry2.getId()))
                 .map ( (entry) -> entry.getItems().get(1).getRawValue() )
-
                 .collect(toList()))
-
                 .containsExactly(secondItemValues);
     }
 }

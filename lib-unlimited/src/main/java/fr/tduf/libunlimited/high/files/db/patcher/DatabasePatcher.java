@@ -114,7 +114,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         final DbDto.Topic changedTopic = changeObject.getTopic();
         final List<DbFieldValueDto> filterCompounds = changeObject.getFilterCompounds();
 
-        final Optional<Long> potentialIdentifier = databaseMiner.getContentEntryStreamMatchingCriteria(filterCompounds, changedTopic)
+        final Optional<Integer> potentialIdentifier = databaseMiner.getContentEntryStreamMatchingCriteria(filterCompounds, changedTopic)
 
                 .findFirst()
 

@@ -67,7 +67,7 @@ public class MainStageController extends AbstractGuiController {
 
     private final Deque<EditorLocation> navigationHistory = new ArrayDeque<>();
 
-    private final Property<Long> currentEntryIndexProperty = new SimpleObjectProperty<>(-1L);
+    private final Property<Integer> currentEntryIndexProperty = new SimpleObjectProperty<>(-1);
     private final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>();
     private final StringProperty currentEntryLabelProperty = new SimpleStringProperty(DisplayConstants.LABEL_ITEM_ENTRY_DEFAULT);
 
@@ -652,12 +652,12 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void addEntryAndUpdateStage() {
-        long newEntryIndex = changeDataController.addEntryForCurrentTopic();
+        int newEntryIndex = changeDataController.addEntryForCurrentTopic();
         viewDataController.updateEntriesAndSwitchTo(newEntryIndex);
     }
 
     private void duplicateEntryAndUpdateStage() {
-        long newEntryIndex = changeDataController.duplicateCurrentEntry();
+        int newEntryIndex = changeDataController.duplicateCurrentEntry();
         viewDataController.updateEntriesAndSwitchTo(newEntryIndex);
     }
 
@@ -672,7 +672,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void removeCurrentEntryAndUpdateStage() {
-        long currentEntryIndex = currentEntryIndexProperty.getValue();
+        int currentEntryIndex = currentEntryIndexProperty.getValue();
         changeDataController.removeEntryWithIdentifier(currentEntryIndex, currentTopicProperty.getValue());
         viewDataController.updateEntriesAndSwitchTo(currentEntryIndex - 1);
     }
@@ -862,7 +862,7 @@ public class MainStageController extends AbstractGuiController {
         return currentTopicProperty;
     }
 
-    Property<Long> getCurrentEntryIndexProperty() {
+    Property<Integer> getCurrentEntryIndexProperty() {
         return currentEntryIndexProperty;
     }
 
@@ -890,7 +890,7 @@ public class MainStageController extends AbstractGuiController {
         return databaseObjects;
     }
 
-    long getCurrentEntryIndex() {
+    int getCurrentEntryIndex() {
         return currentEntryIndexProperty.getValue();
     }
 

@@ -3,21 +3,21 @@ package fr.tduf.gui.database.converter;
 import fr.tduf.gui.database.common.DisplayConstants;
 import javafx.util.StringConverter;
 
-public class CurrentEntryIndexToStringConverter extends StringConverter<Long> {
+public class CurrentEntryIndexToStringConverter extends StringConverter<Integer> {
     @Override
-    public String toString(Long entryIndex) {
+    public String toString(Integer entryIndex) {
         if (entryIndex == -1) {
             return DisplayConstants.LABEL_ITEM_ENTRY_INDEX_DEFAULT;
         }
-        return "" + (entryIndex + 1);
+        return Integer.toString(entryIndex + 1);
     }
 
     @Override
-    public Long fromString(String displayedIndex) {
+    public Integer fromString(String displayedIndex) {
 
         if (displayedIndex.matches("\\d+")) {
-            return Long.valueOf(displayedIndex) - 1;
+            return Integer.valueOf(displayedIndex) - 1;
         }
-        return 0L;
+        return 0;
     }
 }

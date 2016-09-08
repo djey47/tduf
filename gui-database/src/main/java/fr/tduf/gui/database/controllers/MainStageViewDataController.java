@@ -120,7 +120,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         updateConfiguration();
     }
 
-    void updateBrowsableEntryLabel(long internalEntryId) {
+    void updateBrowsableEntryLabel(int internalEntryId) {
         browsableEntries.stream()
                 .filter(entry -> entry.internalEntryIdProperty().get() == internalEntryId)
                 .findAny()
@@ -166,7 +166,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     void refreshAll() {
         resolvedValuesByFieldRank.clear();
         resourcesByTopicLink.clear();
-        currentEntryIndexProperty().setValue(0L);
+        currentEntryIndexProperty().setValue(0);
 
         fillBrowsableEntries();
 
@@ -176,7 +176,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     void updateAllPropertiesWithItemValues() {
         updateCurrentEntryLabelProperty();
 
-        long entryIndex = currentEntryIndexProperty().getValue();
+        int entryIndex = currentEntryIndexProperty().getValue();
         DbDto.Topic currentTopic = currentTopicProperty().getValue();
         getMiner().getContentEntryFromTopicWithInternalIdentifier(entryIndex, currentTopic)
                 .ifPresent(entry -> entry.getItems().forEach(this::updateItemProperties));
@@ -211,9 +211,9 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                 .ifPresent(this::updateLinkProperties);
     }
 
-    void updateEntriesAndSwitchTo(long entryIndex) {
+    void updateEntriesAndSwitchTo(int entryIndex) {
         fillBrowsableEntries();
-        long effectiveIndex = entryIndex;
+        int effectiveIndex = entryIndex;
         if (effectiveIndex < 0) {
             effectiveIndex = 0;
         }
@@ -223,7 +223,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     void switchToSelectedResourceForLinkedTopic(ContentEntryDataItem selectedResource, DbDto.Topic targetTopic, String targetProfileName) {
         ofNullable(selectedResource)
                 .ifPresent(resource -> {
-                    long remoteContentEntryId;
+                    int remoteContentEntryId;
                     String entryReference = selectedResource.referenceProperty().get();
                     if (entryReference == null) {
                         remoteContentEntryId = selectedResource.internalEntryIdProperty().get();
@@ -236,12 +236,12 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                 });
     }
 
-    void switchToProfileAndRemoteEntry(String profileName, long localEntryIndex, int fieldRank, DbDto.Topic localTopic, DbDto.Topic remoteTopic) {
+    void switchToProfileAndRemoteEntry(String profileName, int localEntryIndex, int fieldRank, DbDto.Topic localTopic, DbDto.Topic remoteTopic) {
         getMiner().getRemoteContentEntryWithInternalIdentifier(localTopic, fieldRank, localEntryIndex, remoteTopic)
                 .ifPresent(remoteContentEntry -> switchToProfileAndEntry(profileName, remoteContentEntry.getId(), true));
     }
 
-    void switchToContentEntry(long entryIndex) {
+    void switchToContentEntry(int entryIndex) {
         if (entryIndex < 0 || entryIndex >= getCurrentTopicObject().getData().getEntries().size()) {
             return;
         }
@@ -251,7 +251,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     }
 
     void switchToNextEntry() {
-        long currentEntryIndex = currentEntryIndexProperty().getValue();
+        int currentEntryIndex = currentEntryIndexProperty().getValue();
         if (currentEntryIndex >= getCurrentTopicObject().getData().getEntries().size() - 1) {
             return;
         }
@@ -260,8 +260,8 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     }
 
     void switchToNext10Entry() {
-        long currentEntryIndex = currentEntryIndexProperty().getValue();
-        long lastEntryIndex = getCurrentTopicObject().getData().getEntries().size() - 1L;
+        int currentEntryIndex = currentEntryIndexProperty().getValue();
+        int lastEntryIndex = getCurrentTopicObject().getData().getEntries().size() - 1;
         if (currentEntryIndex + 10 >= lastEntryIndex) {
             currentEntryIndex = lastEntryIndex;
         } else {
@@ -272,7 +272,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     }
 
     void switchToPreviousEntry() {
-        long currentEntryIndex = currentEntryIndexProperty().getValue();
+        int currentEntryIndex = currentEntryIndexProperty().getValue();
         if (currentEntryIndex <= 0) {
             return;
         }
@@ -281,7 +281,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     }
 
     void switchToPrevious10Entry() {
-        long currentEntryIndex = currentEntryIndexProperty().getValue();
+        int currentEntryIndex = currentEntryIndexProperty().getValue();
         if (currentEntryIndex - 10 < 0) {
             currentEntryIndex = 0;
         } else {
@@ -296,7 +296,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     }
 
     void switchToLastEntry() {
-        switchToContentEntry(getCurrentTopicObject().getData().getEntries().size() - 1L);
+        switchToContentEntry(getCurrentTopicObject().getData().getEntries().size() - 1);
     }
 
     void switchToEntryWithReference(String entryReference, DbDto.Topic topic) {
@@ -445,7 +445,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     private ContentEntryDataItem getDisplayableEntryForCurrentLocale(ContentEntryDto topicEntry, List<Integer> labelFieldRanks, DbDto.Topic topic) {
         ContentEntryDataItem contentEntryDataItem = new ContentEntryDataItem();
 
-        long entryInternalIdentifier = topicEntry.getId();
+        int entryInternalIdentifier = topicEntry.getId();
         contentEntryDataItem.setInternalEntryId(entryInternalIdentifier);
 
         String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(entryInternalIdentifier, topic, currentLocaleProperty.getValue(), labelFieldRanks, getMiner(), getLayoutObject());
@@ -480,7 +480,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         ObservableList<ContentEntryDataItem> values = remoteEntry.getValue();
         values.clear();
 
-        final Long currentEntryIndex = currentEntryIndexProperty().getValue();
+        final int currentEntryIndex = currentEntryIndexProperty().getValue();
         String currentEntryRef = getMiner().getContentEntryReferenceWithInternalIdentifier(currentEntryIndex, currentTopicProperty().getValue())
                 .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No REF available for entry at id: " + currentEntryIndex));
 
@@ -514,7 +514,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     private ContentEntryDataItem fetchLinkResourceFromContentEntry(DbDto topicObject, ContentEntryDto contentEntry, TopicLinkDto linkObject) {
         List<Integer> remoteFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(linkObject.getRemoteReferenceProfile(), getLayoutObject());
         ContentEntryDataItem databaseEntry = new ContentEntryDataItem();
-        long entryId = contentEntry.getId();
+        int entryId = contentEntry.getId();
         databaseEntry.setInternalEntryId(entryId);
         if (topicObject.getStructure().getFields().size() == 2) {
             // Association topic (e.g. Car_Rims)
@@ -541,10 +541,10 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     private String fetchRemoteContentsWithEntryRef(DbDto.Topic remoteTopic, String remoteEntryReference, List<Integer> remoteFieldRanks) {
         requireNonNull(remoteFieldRanks, "A list of field ranks (even empty) must be provided.");
 
-        OptionalLong potentialEntryId = getMiner().getContentEntryInternalIdentifierWithReference(remoteEntryReference, remoteTopic);
+        OptionalInt potentialEntryId = getMiner().getContentEntryInternalIdentifierWithReference(remoteEntryReference, remoteTopic);
         if (potentialEntryId.isPresent()) {
             return DatabaseQueryHelper.fetchResourceValuesWithEntryId(
-                    potentialEntryId.getAsLong(), remoteTopic,
+                    potentialEntryId.getAsInt(), remoteTopic,
                     currentLocaleProperty.getValue(),
                     remoteFieldRanks,
                     getMiner(),
@@ -565,7 +565,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         }
     }
 
-    private void switchToProfileAndEntry(String profileName, long entryIndex, boolean storeLocation) {
+    private void switchToProfileAndEntry(String profileName, int entryIndex, boolean storeLocation) {
         if (storeLocation) {
             EditorLocation currentLocation = new EditorLocation(
                     getTabPane().selectionModelProperty().get().getSelectedIndex(),

@@ -26,7 +26,7 @@ public class DatabaseQueryHelper {
     /**
      * @return a string of all resource values from specified field ranks, using a particular locale.
      */
-    public static String fetchResourceValuesWithEntryId(long entryId, DbDto.Topic topic, Locale locale, List<Integer> fieldRanks, BulkDatabaseMiner databaseMiner, EditorLayoutDto editorLayoutDto) {
+    public static String fetchResourceValuesWithEntryId(int entryId, DbDto.Topic topic, Locale locale, List<Integer> fieldRanks, BulkDatabaseMiner databaseMiner, EditorLayoutDto editorLayoutDto) {
         requireNonNull(databaseMiner, "A database miner must be provided.");
         requireNonNull(fieldRanks, "A list of field ranks (even empty) must be provided.");
 
@@ -46,7 +46,7 @@ public class DatabaseQueryHelper {
         return String.join(DisplayConstants.SEPARATOR_VALUES, contents);
     }
 
-    private static String resolveResourceValue(long entryId, DbDto.Topic topic, Locale locale, BulkDatabaseMiner databaseMiner, EditorLayoutDto editorLayoutDto, List<DbStructureDto.Field> structureFields, Integer fieldRank) {
+    private static String resolveResourceValue(int entryId, DbDto.Topic topic, Locale locale, BulkDatabaseMiner databaseMiner, EditorLayoutDto editorLayoutDto, List<DbStructureDto.Field> structureFields, Integer fieldRank) {
         DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureFieldWithRank(fieldRank, structureFields);
         if (REFERENCE == structureField.getFieldType()) {
             return resolveValueForReferenceField(entryId, topic, locale, databaseMiner, editorLayoutDto, fieldRank, structureField);
@@ -54,7 +54,7 @@ public class DatabaseQueryHelper {
         return resolveValueForOtherField(entryId, topic, locale, databaseMiner, fieldRank);
     }
 
-    private static String resolveValueForOtherField(long entryId, DbDto.Topic topic, Locale locale, BulkDatabaseMiner databaseMiner, Integer fieldRank) {
+    private static String resolveValueForOtherField(int entryId, DbDto.Topic topic, Locale locale, BulkDatabaseMiner databaseMiner, Integer fieldRank) {
         return databaseMiner.getLocalizedResourceValueFromContentEntry(entryId, fieldRank, topic, locale)
                 .orElseGet(() -> {
                     final String rawValue = databaseMiner.getContentItemWithEntryIdentifierAndFieldRank(topic, fieldRank, entryId)
@@ -64,10 +64,10 @@ public class DatabaseQueryHelper {
                 });
     }
 
-    private static String resolveValueForReferenceField(long entryId, DbDto.Topic topic, Locale locale, BulkDatabaseMiner databaseMiner, EditorLayoutDto editorLayoutDto, Integer fieldRank, DbStructureDto.Field structureField) {
+    private static String resolveValueForReferenceField(int entryId, DbDto.Topic topic, Locale locale, BulkDatabaseMiner databaseMiner, EditorLayoutDto editorLayoutDto, Integer fieldRank, DbStructureDto.Field structureField) {
         DbDto remoteTopicObject = databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef());
         final DbDto.Topic remoteTopic = remoteTopicObject.getTopic();
-        long remoteEntryId = databaseMiner.getRemoteContentEntryWithInternalIdentifier(topic, fieldRank, entryId, remoteTopic)
+        int remoteEntryId = databaseMiner.getRemoteContentEntryWithInternalIdentifier(topic, fieldRank, entryId, remoteTopic)
                 .map(ContentEntryDto::getId)
                 .orElseThrow(() -> new IllegalStateException("No remote entry in topic: " + remoteTopic));
         final List<Integer> labelFieldRanks = EditorLayoutHelper.getAvailableProfileByTopic(remoteTopic, editorLayoutDto).getEntryLabelFieldRanks();

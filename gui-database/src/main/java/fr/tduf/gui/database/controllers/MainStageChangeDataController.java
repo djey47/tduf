@@ -48,7 +48,7 @@ class MainStageChangeDataController extends AbstractMainStageSubController {
     void updateContentItem(DbDto.Topic topic, int fieldRank, String newRawValue) {
         requireNonNull(getChangeHelper());
 
-        final long currentEntryIndex = currentEntryIndexProperty().getValue();
+        final int currentEntryIndex = currentEntryIndexProperty().getValue();
         getChangeHelper().updateItemRawValueAtIndexAndFieldRank(topic, currentEntryIndex, fieldRank, newRawValue)
                 .ifPresent(updatedItem -> {
                     getViewDataController().updateItemProperties(updatedItem);
@@ -62,12 +62,12 @@ class MainStageChangeDataController extends AbstractMainStageSubController {
         getChangeHelper().updateResourceItemWithReference(topic, locale, oldResourceReference, newResourceReference, newResourceValue);
     }
 
-    void removeEntryWithIdentifier(long internalEntryId, DbDto.Topic topic) {
+    void removeEntryWithIdentifier(int internalEntryId, DbDto.Topic topic) {
         requireNonNull(getChangeHelper());
         getChangeHelper().removeEntryWithIdentifier(internalEntryId, topic);
     }
 
-    void moveEntryWithIdentifier(int step, long internalEntryId, DbDto.Topic topic) {
+    void moveEntryWithIdentifier(int step, int internalEntryId, DbDto.Topic topic) {
         requireNonNull(getChangeHelper());
         getChangeHelper().moveEntryWithIdentifier(step, internalEntryId, topic);
     }
@@ -81,14 +81,14 @@ class MainStageChangeDataController extends AbstractMainStageSubController {
         getChangeHelper().removeResourceValuesWithReference(topic, resourceReference, affectedLocales);
     }
 
-    long addEntryForCurrentTopic() {
+    int addEntryForCurrentTopic() {
         requireNonNull(getChangeHelper());
         ContentEntryDto newEntry = getChangeHelper().addContentsEntryWithDefaultItems(empty(), currentTopicProperty().getValue());
 
         return newEntry.getId();
     }
 
-    long duplicateCurrentEntry() {
+    int duplicateCurrentEntry() {
         requireNonNull(getChangeHelper());
         ContentEntryDto newEntry = getChangeHelper().duplicateEntryWithIdentifier(
                 currentEntryIndexProperty().getValue(),
@@ -152,17 +152,18 @@ class MainStageChangeDataController extends AbstractMainStageSubController {
     }
 
     void importPerformancePack(String packFile) throws ReflectiveOperationException {
-        long currentEntryIndex = currentEntryIndexProperty().getValue();
+        int currentEntryIndex = currentEntryIndexProperty().getValue();
         TdupeGateway gateway = AbstractDatabaseHolder.prepare(TdupeGateway.class, getDatabaseObjects());
         gateway.applyPerformancePackToEntryWithIdentifier(currentEntryIndex, packFile);
     }
 
     private List<String> getRawValuesFromCurrentEntry() {
         final DbDto.Topic currentTopic = currentTopicProperty().getValue();
+        final int currentEntryIndex = getCurrentEntryIndex();
         ContentEntryDto currentEntry = getMiner().getContentEntryFromTopicWithInternalIdentifier(
-                getCurrentEntryIndex(),
+                currentEntryIndex,
                 currentTopic)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No content entry for topic: " + currentTopic + " at id: " + getCurrentEntryIndex()));
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No content entry for topic: " + currentTopic + " at id: " + currentEntryIndex));
         return currentEntry.getItems().stream()
 
                 .map(ContentItemDto::getRawValue)

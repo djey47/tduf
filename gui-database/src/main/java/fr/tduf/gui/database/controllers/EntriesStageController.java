@@ -190,7 +190,7 @@ public class EntriesStageController extends AbstractGuiController {
             .map(entry -> {
                 ContentEntryDataItem contentEntryDataItem = new ContentEntryDataItem();
 
-                long entryInternalIdentifier = entry.getId();
+                int entryInternalIdentifier = entry.getId();
                 contentEntryDataItem.setInternalEntryId(entryInternalIdentifier);
 
                 String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(

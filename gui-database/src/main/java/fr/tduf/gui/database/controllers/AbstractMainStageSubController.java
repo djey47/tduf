@@ -83,12 +83,13 @@ abstract class AbstractMainStageSubController {
         return mainStageController.getApplicationConfiguration();
     }
 
-    protected long getCurrentEntryIndex() {
+    protected int getCurrentEntryIndex() {
         // Getter kept for testing
         return mainStageController.getCurrentEntryIndex();
     }
 
-    protected Property<Long> currentEntryIndexProperty() {
+    // TODO convert to IntegerProp
+    protected Property<Integer> currentEntryIndexProperty() {
         // Getter kept for testing
         return mainStageController.getCurrentEntryIndexProperty();
     }
