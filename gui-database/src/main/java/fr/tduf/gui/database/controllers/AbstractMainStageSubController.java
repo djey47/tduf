@@ -88,7 +88,6 @@ abstract class AbstractMainStageSubController {
         return mainStageController.getCurrentEntryIndex();
     }
 
-    // TODO convert to IntegerProp
     protected Property<Integer> currentEntryIndexProperty() {
         // Getter kept for testing
         return mainStageController.getCurrentEntryIndexProperty();
