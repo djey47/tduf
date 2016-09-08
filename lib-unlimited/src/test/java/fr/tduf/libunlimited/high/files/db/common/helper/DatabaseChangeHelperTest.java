@@ -113,7 +113,7 @@ public class DatabaseChangeHelperTest {
 
         // THEN
         assertThat(dataObject.getEntries()).hasSize(2);
-        assertThat(dataObject.getEntries()).extracting("id").containsExactly(0L, 1L);
+        assertThat(dataObject.getEntries()).extracting("id").containsExactly(0, 1);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -232,7 +232,7 @@ public class DatabaseChangeHelperTest {
 
         //THEN
         assertThat(dataObject.getEntries()).hasSize(4);
-        assertThat(dataObject.getEntries()).extracting("id").containsExactly(0L, 1L, 2L, 3L);
+        assertThat(dataObject.getEntries()).extracting("id").containsExactly(0, 1, 2, 3);
         assertThat(dataObject.getEntries().get(3).getItems()).extracting("fieldRank").containsExactly(1);
     }
 
@@ -259,7 +259,7 @@ public class DatabaseChangeHelperTest {
 
         //THEN
         assertThat(dataObject.getEntries()).hasSize(2);
-        assertThat(dataObject.getEntries()).extracting("id").containsExactly(0L, 1L);
+        assertThat(dataObject.getEntries()).extracting("id").containsExactly(0, 1);
         assertThat(dataObject.getEntries().get(1).getItems()).extracting("fieldRank").containsExactly(1);
     }
 
@@ -289,7 +289,7 @@ public class DatabaseChangeHelperTest {
 
         //THEN
         assertThat(dataObject.getEntries()).hasSize(2);
-        assertThat(dataObject.getEntries()).extracting("id").containsExactly(0L, 1L);
+        assertThat(dataObject.getEntries()).extracting("id").containsExactly(0, 1);
 
         String cloneEntryReference = actualCloneEntry.getItemAtRank(1).get().getRawValue();
         Condition<String> betweenMinAndMaxRefValues = new Condition<>(o -> {
@@ -343,7 +343,7 @@ public class DatabaseChangeHelperTest {
 
         // THEN
         assertThat(movedEntry.getId()).isEqualTo(2);
-        assertThat(dataObject.getEntries()).extracting("id").containsExactly(0L,1L,2L);
+        assertThat(dataObject.getEntries()).extracting("id").containsExactly(0,1,2);
     }
 
     @Test
@@ -371,7 +371,7 @@ public class DatabaseChangeHelperTest {
 
         // THEN
         assertThat(movedEntry.getId()).isEqualTo(0);
-        assertThat(dataObject.getEntries()).extracting("id").containsExactly(0L, 1L, 2L);
+        assertThat(dataObject.getEntries()).extracting("id").containsExactly(0, 1, 2);
     }
 
     @Test(expected = IllegalStateException.class)

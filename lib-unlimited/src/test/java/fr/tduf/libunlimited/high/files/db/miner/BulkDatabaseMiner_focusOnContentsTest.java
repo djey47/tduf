@@ -72,7 +72,7 @@ public class BulkDatabaseMiner_focusOnContentsTest {
         // THEN
         assertThat(actualEntries)
                 .hasSize(1)
-                .extracting("id").containsExactly(0L);
+                .extracting("id").containsExactly(0);
     }
 
     @Test

@@ -135,6 +135,10 @@ public class ContentEntryDto {
         this.dataHost = dataHost;
     }
 
+    DbDataDto getDataHost() {
+        return dataHost;
+    }
+
     public static class EntryBuilder {
         private final List<ContentItemDto> items = new ArrayList<>();
 

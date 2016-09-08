@@ -23,7 +23,6 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
  */
 @JsonTypeName("db")
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-// TODO add tests
 public class DbDataDto implements Serializable {
     private static final String THIS_CLASS_NAME = DbDataDto.class.getSimpleName();
 
@@ -36,19 +35,15 @@ public class DbDataDto implements Serializable {
     @JsonIgnore
     private Map<String, ContentEntryDto> entriesByReference;
 
-    public List<ContentEntryDto> getEntries() {
-        return Collections.unmodifiableList(entries);
+    /**
+     * @return builder, used to generate custom values.
+     */
+    public static DbDataDtoBuilder builder() {
+        return new DbDataDtoBuilder();
     }
 
-    int getEntryId(ContentEntryDto contentEntry) {
-        int index = 0;
-        for (ContentEntryDto entry : entries) {
-            if (entry == contentEntry) {
-                return index;
-            }
-            index++;
-        }
-        return -1;
+    public List<ContentEntryDto> getEntries() {
+        return Collections.unmodifiableList(entries);
     }
 
     public Optional<ContentEntryDto> getEntryWithInternalIdentifier(int internalId) {
@@ -69,13 +64,6 @@ public class DbDataDto implements Serializable {
         return ofNullable(entriesByReference.get(ref));
     }
 
-    /**
-     * @return builder, used to generate custom values.
-     */
-    public static DbDataDtoBuilder builder() {
-        return new DbDataDtoBuilder();
-    }
-
     public void addEntry(ContentEntryDto entry) {
         entry.setDataHost(this);
         entries.add(entry);
@@ -89,7 +77,7 @@ public class DbDataDto implements Serializable {
     }
 
     public void removeEntry(ContentEntryDto entry) {
-        entries.remove((int)getEntryId(entry));
+        entries.remove(getEntryId(entry));
         removeEntryFromIndexByReference(entry);
     }
 
@@ -120,6 +108,21 @@ public class DbDataDto implements Serializable {
     @Override
     public String toString() {
         return reflectionToString(this);
+    }
+
+    int getEntryId(ContentEntryDto contentEntry) {
+        int index = 0;
+        for (ContentEntryDto entry : entries) {
+            if (entry == contentEntry) {
+                return index;
+            }
+            index++;
+        }
+        return -1;
+    }
+
+    Map<String, ContentEntryDto> getEntriesByReference() {
+        return entriesByReference;
     }
 
     @JsonSetter("entries")
@@ -159,7 +162,7 @@ public class DbDataDto implements Serializable {
     }
 
     private void moveEntry(ContentEntryDto entry, boolean up) {
-        int entryId = (int) entry.getId();
+        int entryId = entry.getId();
         if (entryId == -1) {
             return;
         }

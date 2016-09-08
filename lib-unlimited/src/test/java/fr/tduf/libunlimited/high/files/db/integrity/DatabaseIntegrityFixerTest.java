@@ -218,7 +218,7 @@ public class DatabaseIntegrityFixerTest {
         info.put(EXPECTED_COUNT, 3);
         info.put(ACTUAL_COUNT, 1);
         info.put(SOURCE_TOPIC, AFTER_MARKET_PACKS);
-        info.put(ENTRY_ID, 0L);
+        info.put(ENTRY_ID, 0);
         Set<IntegrityError> integrityErrors = new HashSet<>(singletonList(IntegrityError.builder().ofType(CONTENTS_FIELDS_COUNT_MISMATCH).addInformations(info).build()));
 
         DbDto topicObject = dbDtos.get(1);

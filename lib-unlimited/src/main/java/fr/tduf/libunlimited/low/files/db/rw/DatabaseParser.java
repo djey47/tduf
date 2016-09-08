@@ -61,6 +61,7 @@ public class DatabaseParser {
      * @param resources    list of contentLines from per-language resource files
      * @return a {@link DatabaseParser} instance.
      */
+    // TODO apply code rules
     public static DatabaseParser load(List<String> contentLines, Map<Locale, List<String>> resources) {
         checkPrerequisites(contentLines, resources);
 
@@ -161,7 +162,7 @@ public class DatabaseParser {
     private DbDataDto parseContents(DbStructureDto structure) {
 
         List<ContentEntryDto> entries = new ArrayList<>();
-        long id = 0;
+        int id = 0;
         long itemCount = 0;
 
         for (String line : contentLines) {
@@ -198,7 +199,7 @@ public class DatabaseParser {
                 .build();
     }
 
-    private List<ContentItemDto> parseContentItems(DbStructureDto structure, String line, long entryIdentifier) {
+    private List<ContentItemDto> parseContentItems(DbStructureDto structure, String line, int entryIdentifier) {
 
         List<ContentItemDto> items = new ArrayList<>();
         int fieldIndex = 0;
@@ -314,7 +315,7 @@ public class DatabaseParser {
         }
     }
 
-    private void checkFieldCountInContents(DbStructureDto structureObject, long entryIdentifier, List<ContentItemDto> items) {
+    private void checkFieldCountInContents(DbStructureDto structureObject, int entryIdentifier, List<ContentItemDto> items) {
         int expectedFieldCount = structureObject.getFields().size();
 
         if (expectedFieldCount != items.size()) {
