@@ -11,7 +11,6 @@ import static java.util.Arrays.asList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 @JsonTypeName("dbEntry")
@@ -104,30 +103,17 @@ public class ContentEntryDto {
     public boolean equals(Object that) {
         return that != null
                 && that.getClass() == getClass()
-                && Objects.equals(items, ((ContentEntryDto) that).items);
+                && getValuesHash() == ((ContentEntryDto) that).getValuesHash();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(items);
+        return getValuesHash();
     }
 
     @Override
     public String toString() {
         return reflectionToString(this);
-    }
-
-    void shiftIdUp() {
-        // TODO
-    }
-
-    void shiftIdDown() {
-        // TODO
-    }
-
-    void setId(int id)
-    {
-        // TODO
     }
 
     String getFirstItemValue() {
