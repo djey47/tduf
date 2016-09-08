@@ -1,6 +1,5 @@
 package fr.tduf.libunlimited.low.files.db.dto.content;
 
-import com.sun.javafx.UnmodifiableArrayList;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,6 +8,7 @@ import java.util.Optional;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_RIMS;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DbDataDtoTest {
@@ -207,6 +207,51 @@ public class DbDataDtoTest {
         assertThat(dataObjectWithRefSupport.getEntriesByReference())
                 .containsOnlyKeys("REF")
                 .containsValues(contentEntry);
+    }
+
+    @Test
+    public void addEntryWithItems() {
+        // GIVEN
+        List<ContentItemDto> items = singletonList(ContentItemDto.builder().ofFieldRank(1).withRawValue("1").build());
+        DbDataDto dataObjectWithRefSupport = createDataWithRefSupport();
+
+        // WHEN
+        dataObjectWithRefSupport.addEntryWithItems(items);
+
+        // THEN
+        List<ContentEntryDto> actualEntries = dataObjectWithRefSupport.getEntries();
+        assertThat(actualEntries).hasSize(1);
+        List<ContentItemDto> actualItems = actualEntries.get(0).getItems();
+        assertThat(actualItems).isEqualTo(items);
+    }
+
+    @Test
+    public void removeEntry() {
+        // GIVEN
+        ContentEntryDto contentEntry = ContentEntryDto.builder().build();
+        dataObject.addEntry(contentEntry);
+
+        // WHEN
+        dataObject.removeEntry(contentEntry);
+
+        // THEN
+        assertThat(dataObject.getEntries()).isEmpty();
+    }
+
+    @Test
+    public void removeEntry_withRefSupport_shouldAlsoRemoveFromIndex() {
+        // GIVEN
+        DbDataDto dataWithRefSupport = createDataWithRefSupport();
+        ContentEntryDto contentEntry = ContentEntryDto.builder()
+                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue("REF").build())
+                .build();
+        dataWithRefSupport.addEntry(contentEntry);
+
+        // WHEN
+        dataWithRefSupport.removeEntry(contentEntry);
+
+        // THEN
+        assertThat(dataWithRefSupport.getEntriesByReference()).doesNotContainKey("REF");
     }
 
     private DbDataDto createDataWithRefSupport() {
