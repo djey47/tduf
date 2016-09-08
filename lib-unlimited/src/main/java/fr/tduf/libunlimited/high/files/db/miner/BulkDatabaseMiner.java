@@ -166,15 +166,17 @@ public class BulkDatabaseMiner {
      * @return a stream of all database entries satisfying all conditions.
      */
     public Stream<ContentEntryDto> getContentEntryStreamMatchingCriteria(List<DbFieldValueDto> criteria, DbDto.Topic topic) {
-        return criteria.stream()
+        final LinkedHashMap<ContentEntryDto, Long> collect = criteria.stream()
                 .flatMap(filter -> getAllContentEntriesFromTopicWithItemValueAtFieldRank(filter.getRank(), filter.getValue(), topic).stream())
                 .collect(groupingBy(
                         topicEntry -> topicEntry,
                         LinkedHashMap::new,
                         counting())
-                )
+                );
+
+        return collect
                 .entrySet().stream()
-                .filter(entry -> entry.getValue() == criteria.size())
+                .filter(entry -> entry.getValue() >= criteria.size())
                 .map(Map.Entry::getKey);
     }
 
