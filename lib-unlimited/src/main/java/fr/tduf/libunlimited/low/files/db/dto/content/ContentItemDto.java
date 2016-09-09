@@ -145,12 +145,10 @@ public class ContentItemDto {
             Optional<List<DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto>> bitfieldReference = bitfieldHelper.getBitfieldReferenceForTopic(topicForBitField);
 
             List<SwitchValueDto> switchValues = new ArrayList<>();
-            bitfieldReference.ifPresent((refs) -> {
-
-                List<Boolean> values = bitfieldHelper.resolve(topicForBitField, raw).get();
-                refs.stream()
-
-                        .forEach((ref) -> {
+            bitfieldReference.ifPresent(refs -> {
+                List<Boolean> values = bitfieldHelper.resolve(topicForBitField, raw)
+                        .<IllegalStateException>orElseThrow(() -> new IllegalStateException("Bitfield information unavailable for topic: " + topicForBitField));
+                refs.forEach(ref -> {
                             boolean switchState = values.get(ref.getIndex() - 1);
                             switchValues.add(new SwitchValueDto(ref.getIndex(), ref.getLabel(), switchState));
                         });
@@ -159,5 +157,4 @@ public class ContentItemDto {
             return switchValues;
         }
     }
-
 }

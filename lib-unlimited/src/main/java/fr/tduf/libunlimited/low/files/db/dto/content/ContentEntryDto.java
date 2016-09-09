@@ -15,6 +15,7 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 
 @JsonTypeName("dbEntry")
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+// TODO unit tests
 public class ContentEntryDto {
 
     @JsonProperty("items")
