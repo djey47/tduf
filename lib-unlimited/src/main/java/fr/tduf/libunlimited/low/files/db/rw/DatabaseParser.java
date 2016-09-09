@@ -3,11 +3,11 @@ package fr.tduf.libunlimited.low.files.db.rw;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceItemDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
@@ -36,7 +36,7 @@ public class DatabaseParser {
     private static final Pattern ITEM_REF_PATTERN = compile("^\\{(.*)\\} (\\d*)$");                     //e.g {TDU_Achievements} 2442784645
     private static final Pattern ITEM_PATTERN = compile("^\\{(.*)\\} (.)( (\\d+))?$");                  //e.g {Nb_Achievement_Points_} i OR {Car_Brand} r 1209165514
     private static final Pattern ITEM_COUNT_PATTERN = compile("^// items: (\\d+)$");                    //e.g // items: 74
-    private static final Pattern CONTENT_PATTERN = compile("^([0-9\\-\\.,]*;)+$");                      //e.g 55736935;5;20;54400734;54359455;54410835;561129540;5337472;211;
+    private static final Pattern CONTENT_PATTERN = compile("^([0-9\\-.,]*;)+$");                        //e.g 55736935;5;20;54400734;54359455;54410835;561129540;5337472;211;
 
     private static final Pattern META_NAME_PATTERN = compile("^// (TDU_.+)\\.(.+)$");                   //e.g // TDU_Achievements.fr
     private static final Pattern META_VERSION_PATTERN = compile("^// (?:v|V)ersion: (.+)$");            //e.g // version: 1,2 OR // Version: 1,2
@@ -61,7 +61,6 @@ public class DatabaseParser {
      * @param resources    list of contentLines from per-language resource files
      * @return a {@link DatabaseParser} instance.
      */
-    // TODO apply code rules
     public static DatabaseParser load(List<String> contentLines, Map<Locale, List<String>> resources) {
         checkPrerequisites(contentLines, resources);
 
@@ -306,6 +305,7 @@ public class DatabaseParser {
 
     private void checkCount(IntegrityError.ErrorTypeEnum errorType, DbDto.Topic topic, long expectedCount, long actualCount) {
         if (expectedCount != actualCount) {
+            // TODO switch to EnumMap
             Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
             info.put(SOURCE_TOPIC, topic);
             info.put(EXPECTED_COUNT, expectedCount);
@@ -319,6 +319,7 @@ public class DatabaseParser {
         int expectedFieldCount = structureObject.getFields().size();
 
         if (expectedFieldCount != items.size()) {
+            // TODO switch to EnumMap
             Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
             info.put(SOURCE_TOPIC, structureObject.getTopic());
             info.put(EXPECTED_COUNT, expectedFieldCount);
@@ -330,11 +331,10 @@ public class DatabaseParser {
     }
 
     private void checkItemCountBetweenResources(DbDto.Topic topic, Collection<ResourceEntryDto> entries) {
-        entries.stream()
-
-                .forEach((entry) -> {
+        entries.forEach(entry -> {
 
                     if (entry.getItemCount() < Locale.values().length) {
+                        // TODO switch to EnumMap
                         Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
                         info.put(SOURCE_TOPIC, topic);
                         info.put(REFERENCE, entry.getReference());
