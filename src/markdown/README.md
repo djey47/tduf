@@ -29,7 +29,7 @@ TDUF aims at making Test Drive Unlmited modding easier:
 * ...
 
 
-### What's in this version ? (1.7.0)
+### What's in this version ? (1.8.0)
 
 * Provides additional launchers without administration privileges (-noadmin).
 
