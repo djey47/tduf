@@ -84,13 +84,9 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     void initSettingsPane(String databaseDirectory, ChangeListener<Locale> localeChangeListener, ChangeListener<String> profileChangeListener) throws IOException {
         getSettingsPane().setExpanded(false);
 
-        loadAndFillLocales();
-        getLocalesChoiceBox().getSelectionModel().selectedItemProperty()
-                .addListener(localeChangeListener);
+        loadAndFillLocales(localeChangeListener);
 
-        loadAndFillProfiles();
-        getProfilesChoiceBox().getSelectionModel().selectedItemProperty()
-                .addListener(profileChangeListener);
+        loadAndFillProfiles(profileChangeListener);
 
         getDatabaseLocationTextField().setText(databaseDirectory);
     }
@@ -133,13 +129,6 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                     String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(internalEntryId, currentTopic, currentLocaleProperty.getValue(), labelFieldRanks, getMiner(), getLayoutObject());
                     entry.setValue(entryValue);
                 });
-    }
-
-    void loadAndFillProfiles() throws IOException {
-        final EditorLayoutDto editorLayoutDto = new ObjectMapper().readValue(thisClass.getResource(SettingsConstants.PATH_RESOURCE_PROFILES), EditorLayoutDto.class);
-        editorLayoutDto.getProfiles()
-                .forEach(profileObject -> getProfilesChoiceBox().getItems().add(profileObject.getName()));
-        setLayoutObject(editorLayoutDto);
     }
 
     void applyProfile(String profileName) {
@@ -578,13 +567,27 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         switchToContentEntry(entryIndex);
     }
 
-    private void loadAndFillLocales() {
+    private void loadAndFillLocales(ChangeListener<Locale> localeChangeListener) {
         getApplicationConfiguration().getEditorLocale().ifPresent(currentLocaleProperty::setValue);
 
         Locale.valuesAsStream()
                 .collect(toCollection(() -> getLocalesChoiceBox().getItems()));
 
         getLocalesChoiceBox().valueProperty().bindBidirectional(currentLocaleProperty);
+
+        getLocalesChoiceBox().getSelectionModel().selectedItemProperty()
+                .addListener(localeChangeListener);
+
+    }
+
+    private void loadAndFillProfiles(ChangeListener<String> profileChangeListener) throws IOException {
+        final EditorLayoutDto editorLayoutDto = new ObjectMapper().readValue(thisClass.getResource(SettingsConstants.PATH_RESOURCE_PROFILES), EditorLayoutDto.class);
+        editorLayoutDto.getProfiles()
+                .forEach(profileObject -> getProfilesChoiceBox().getItems().add(profileObject.getName()));
+        setLayoutObject(editorLayoutDto);
+
+        getProfilesChoiceBox().getSelectionModel().selectedItemProperty()
+                .addListener(profileChangeListener);
     }
 
     public Map<String, VBox> getTabContentByName() {

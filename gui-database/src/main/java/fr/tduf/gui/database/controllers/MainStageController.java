@@ -144,19 +144,9 @@ public class MainStageController extends AbstractGuiController {
 
         dialogsHelper = new DialogsHelper();
 
-        runningServiceProperty.bind(databaseLoader.runningProperty()
-                        .or(databaseSaver.runningProperty()
-                        .or(databaseChecker.runningProperty())));
-        mouseCursorProperty().bind(
-                when(runningServiceProperty)
-                        .then(Cursor.WAIT)
-                        .otherwise(Cursor.DEFAULT)
-        );
-
-        Optional<String> initialDatabaseDirectory = viewDataController.resolveInitialDatabaseDirectory();
-
         viewDataController.initTopToolbar();
 
+        Optional<String> initialDatabaseDirectory = viewDataController.resolveInitialDatabaseDirectory();
         viewDataController.initSettingsPane(
                 initialDatabaseDirectory.orElse(SettingsConstants.DATABASE_DIRECTORY_DEFAULT),
                 (observable, oldValue, newValue) -> handleLocaleChoiceChanged(newValue),
@@ -167,7 +157,9 @@ public class MainStageController extends AbstractGuiController {
 
         viewDataController.initStatusBar();
 
-        initServiceListeners();
+        initServicePropertiesAndListeners();
+
+        initGUIComponentsProperties();
 
         initialDatabaseDirectory.ifPresent(databaseLocation -> {
             Log.trace(THIS_CLASS_NAME, "->init: database auto load");
@@ -542,7 +534,20 @@ public class MainStageController extends AbstractGuiController {
                 .ifPresent(viewDataController::switchToContentEntry);
     }
 
-    private void initServiceListeners() {
+    private void initGUIComponentsProperties() {
+        mouseCursorProperty().bind(
+                when(runningServiceProperty)
+                        .then(Cursor.WAIT)
+                        .otherwise(Cursor.DEFAULT)
+        );
+    }
+
+    private void initServicePropertiesAndListeners() {
+        runningServiceProperty.bind(databaseLoader.runningProperty()
+                        .or(databaseSaver.runningProperty())
+                        .or(databaseChecker.runningProperty())
+                        .or(databaseFixer.runningProperty()));
+
         databaseLoader.stateProperty().addListener(getLoaderStateChangeListener());
 
         databaseSaver.stateProperty().addListener(getSaverStateChangeListener());
@@ -631,6 +636,7 @@ public class MainStageController extends AbstractGuiController {
             return;
         }
 
+        statusLabel.textProperty().unbind();
         statusLabel.textProperty().bind(databaseLoader.messageProperty());
 
         databaseLoader.bankSupportProperty().setValue(bankSupport);
@@ -643,6 +649,7 @@ public class MainStageController extends AbstractGuiController {
             return;
         }
 
+        statusLabel.textProperty().unbind();
         statusLabel.textProperty().bind(databaseSaver.messageProperty());
 
         databaseSaver.bankSupportProperty().setValue(bankSupport);
@@ -812,6 +819,7 @@ public class MainStageController extends AbstractGuiController {
             return;
         }
 
+        statusLabel.textProperty().unbind();
         statusLabel.textProperty().bind(databaseChecker.messageProperty());
 
         if (!databaseObjects.isEmpty()) {
@@ -824,6 +832,8 @@ public class MainStageController extends AbstractGuiController {
 
     private void fixDatabase() {
         // Do not check for service here, as checker may still be in running state.
+
+        statusLabel.textProperty().unbind();
         statusLabel.textProperty().bind(databaseFixer.messageProperty());
 
         databaseFixer.fromService(databaseChecker);

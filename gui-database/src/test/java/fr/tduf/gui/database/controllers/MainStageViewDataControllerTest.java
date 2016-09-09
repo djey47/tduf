@@ -36,7 +36,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Optional;
+import java.util.OptionalInt;
 
 import static fr.tduf.libunlimited.common.game.domain.Locale.FRANCE;
 import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
@@ -175,6 +178,22 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
+    public void initSettingsPane_shouldSetProfileProperties() throws IOException {
+        // GIVEN
+        when(applicationConfigurationMock.getEditorLocale()).thenReturn(empty());
+
+        // WHEN
+        controller.initSettingsPane("directory",
+                (observable, oldValue, newValue) -> {},
+                (observable, oldValue, newValue) -> {});
+
+        // THEN
+        verify(mainStageControllerMock).setLayoutObject(editorLayoutCaptor.capture());
+        final EditorLayoutDto actualLayout = editorLayoutCaptor.getValue();
+        assertThat(actualLayout.getProfiles()).isNotEmpty();
+    }
+
+    @Test
     public void resolveInitialDatabaseDirectory_whenNoCommandLineParameter_andNoConfiguration_shouldReturnEmpty() throws Exception {
         // GIVEN
         when(applicationConfigurationMock.getDatabasePath()).thenReturn(empty());
@@ -227,17 +246,6 @@ public class MainStageViewDataControllerTest {
 
         // THEN
         assertThat(actualDirectory).contains("/tdu/euro/bnk/database");
-    }
-
-    @Test
-    public void loadAndFillProfiles_shouldSetInMainController() throws IOException {
-        // GIVEN-WHEN
-        controller.loadAndFillProfiles();
-
-        // THEN
-        verify(mainStageControllerMock).setLayoutObject(editorLayoutCaptor.capture());
-        final EditorLayoutDto actualLayout = editorLayoutCaptor.getValue();
-        assertThat(actualLayout.getProfiles()).isNotEmpty();
     }
 
     @Test(expected = IllegalArgumentException.class)
