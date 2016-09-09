@@ -49,9 +49,7 @@ public class ContentEntryDto {
     }
 
     public void appendItem(ContentItemDto item) {
-        items.add(item);
-
-        computeValuesHash();
+        addItemAtRank(items.size() + 1, item);
     }
 
     public void replaceItems(List<ContentItemDto> newItems) {
