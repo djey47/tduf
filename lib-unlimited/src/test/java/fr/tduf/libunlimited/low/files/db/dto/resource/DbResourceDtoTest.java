@@ -1,4 +1,4 @@
-package fr.tduf.libunlimited.low.files.db.dto;
+package fr.tduf.libunlimited.low.files.db.dto.resource;
 
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import org.junit.Test;
