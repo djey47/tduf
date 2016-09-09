@@ -100,7 +100,7 @@ public class DatabaseIntegrityFixerTest {
         // GIVEN
         List<DbDto> dbDtos = createDefaultDatabaseObjects();
 
-        Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+        Map<IntegrityError.ErrorInfoEnum, Object> info = new EnumMap<>(IntegrityError.ErrorInfoEnum.class);
         info.put(SOURCE_TOPIC, ACHIEVEMENTS);
         info.put(REMOTE_TOPIC, ACHIEVEMENTS);
         info.put(LOCALE, FRANCE);
@@ -127,7 +127,7 @@ public class DatabaseIntegrityFixerTest {
         // GIVEN
         List<DbDto> dbDtos = createDefaultDatabaseObjects();
 
-        Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+        Map<IntegrityError.ErrorInfoEnum, Object> info = new EnumMap<>(IntegrityError.ErrorInfoEnum.class);
         info.put(SOURCE_TOPIC, ACHIEVEMENTS);
         info.put(REMOTE_TOPIC, AFTER_MARKET_PACKS);
         info.put(LOCALE, FRANCE);
@@ -154,7 +154,7 @@ public class DatabaseIntegrityFixerTest {
         // GIVEN
         List<DbDto> dbDtos = createDefaultDatabaseObjects();
 
-        HashMap<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+        Map<IntegrityError.ErrorInfoEnum, Object> info = new EnumMap<>(IntegrityError.ErrorInfoEnum.class);
         info.put(SOURCE_TOPIC, ACHIEVEMENTS);
         info.put(REMOTE_TOPIC, AFTER_MARKET_PACKS);
         info.put(REFERENCE, "11111111");
@@ -214,7 +214,7 @@ public class DatabaseIntegrityFixerTest {
         // GIVEN
         List<DbDto> dbDtos = createDatabaseObjectsWithDataEntryTwoFieldsMissing();
 
-        HashMap<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+        Map<IntegrityError.ErrorInfoEnum, Object> info = new EnumMap<>(IntegrityError.ErrorInfoEnum.class);
         info.put(EXPECTED_COUNT, 3);
         info.put(ACTUAL_COUNT, 1);
         info.put(SOURCE_TOPIC, AFTER_MARKET_PACKS);
@@ -274,7 +274,7 @@ public class DatabaseIntegrityFixerTest {
         // GIVEN
         List<DbDto> dbDtos = createDefaultDatabaseObjects();
 
-        Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+        Map<IntegrityError.ErrorInfoEnum, Object> info = new EnumMap<>(IntegrityError.ErrorInfoEnum.class);
         info.put(SOURCE_TOPIC, ACHIEVEMENTS);
         info.put(FILE, "./TDU_Achievements.fr");
         info.put(LOCALE, ITALY);
@@ -545,7 +545,7 @@ public class DatabaseIntegrityFixerTest {
     }
 
     private IntegrityError createIntegrityError_ResourceReferenceMissingForOneLocale() {
-        Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+        Map<IntegrityError.ErrorInfoEnum, Object> info = new EnumMap<>(IntegrityError.ErrorInfoEnum.class);
         info.put(SOURCE_TOPIC, AFTER_MARKET_PACKS);
         info.put(REFERENCE, "000");
         info.put(MISSING_LOCALES, new HashSet<>(singletonList(CHINA)));
@@ -558,7 +558,7 @@ public class DatabaseIntegrityFixerTest {
         valueCounter.put("TDUF TEST", 7);
         valueCounter.put("TDUF TEST ALTERED", 1);
 
-        Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+        Map<IntegrityError.ErrorInfoEnum, Object> info = new EnumMap<>(IntegrityError.ErrorInfoEnum.class);
         info.put(SOURCE_TOPIC, AFTER_MARKET_PACKS);
         info.put(REFERENCE, "000");
         info.put(PER_VALUE_COUNT, valueCounter);

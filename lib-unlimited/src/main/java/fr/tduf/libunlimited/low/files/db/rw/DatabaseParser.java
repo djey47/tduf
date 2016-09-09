@@ -305,8 +305,7 @@ public class DatabaseParser {
 
     private void checkCount(IntegrityError.ErrorTypeEnum errorType, DbDto.Topic topic, long expectedCount, long actualCount) {
         if (expectedCount != actualCount) {
-            // TODO switch to EnumMap
-            Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+            Map<IntegrityError.ErrorInfoEnum, Object> info = new EnumMap<>(IntegrityError.ErrorInfoEnum.class);
             info.put(SOURCE_TOPIC, topic);
             info.put(EXPECTED_COUNT, expectedCount);
             info.put(ACTUAL_COUNT, actualCount);
@@ -319,8 +318,7 @@ public class DatabaseParser {
         int expectedFieldCount = structureObject.getFields().size();
 
         if (expectedFieldCount != items.size()) {
-            // TODO switch to EnumMap
-            Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+            Map<IntegrityError.ErrorInfoEnum, Object> info = new EnumMap<>(IntegrityError.ErrorInfoEnum.class);
             info.put(SOURCE_TOPIC, structureObject.getTopic());
             info.put(EXPECTED_COUNT, expectedFieldCount);
             info.put(ACTUAL_COUNT, items.size());
@@ -334,8 +332,7 @@ public class DatabaseParser {
         entries.forEach(entry -> {
 
                     if (entry.getItemCount() < Locale.values().length) {
-                        // TODO switch to EnumMap
-                        Map<IntegrityError.ErrorInfoEnum, Object> info = new HashMap<>();
+                        EnumMap<IntegrityError.ErrorInfoEnum, Object> info = new EnumMap<>(IntegrityError.ErrorInfoEnum.class);
                         info.put(SOURCE_TOPIC, topic);
                         info.put(REFERENCE, entry.getReference());
                         info.put(MISSING_LOCALES, entry.getMissingLocales());
