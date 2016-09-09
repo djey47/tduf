@@ -9,7 +9,6 @@ TDUF aims at making Test Drive Unlmited modding easier:
 * ...
 
 
-
 ### Database Editor Main features
 
 * Opens and saves a database from/to regular BNK form
@@ -30,26 +29,29 @@ TDUF aims at making Test Drive Unlmited modding easier:
 * ...
 
 
-
 ### What's in this version ? (1.7.0)
 
-* Provides additional launchers without administration privileges (-noadmin)
+* Provides additional launchers without administration privileges (-noadmin).
 
-* DatabaseEditor: remembers last database location (to make it forget, delete tduf.properties file in user home)
-* DatabaseEditor: changes some labels (car brands etc.)
+* DatabaseEditor: remembers last database location
+* DatabaseEditor: remembers last used language and profile
+* DatabaseEditor: gives advanced feature to reset saved settings above
+* DatabaseEditor: changes some labels to be more explicit (car brands etc.)
 * DatabaseEditor: re-instantiates database reload feature
-* DatabaseEditor: provides TDUPE-based profile.
+* DatabaseEditor: provides 2 profiles for TDUCP operations (rim options, bot-driven vehicles).
+* DatabaseEditor: provides a TDUPE-based profile.
 
 * CameraTool: copy-all-sets instruction has been removed.
 
 
 ### Fixed issues
 
-* DatabaseEditor: misc fixes
+* DatabaseEditor: misc fixes and performance enhancements
 
 * CameraTool: copy camera set now working (copy-set instruction)
 
 * Library: switch to mono executable on Linux
+* Library: changes way of managing entry identifiers
 
 
 ### Known bugs
@@ -57,15 +59,13 @@ TDUF aims at making Test Drive Unlmited modding easier:
 * You tell me!
 
 
-
 ### What you will need to run TDUF
 
 * Please uninstall any Java Runtime < 8
 * [Update / Install Java 8 Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)
 * Make sure .net apps can be run
-    - Windows users: check if .net Framework 2.0 is installed
+    - Windows users: check if .net Framework 2.0 is installed (if TDUMT/TDUPE actually run, you're ok)
     - Linux users: check if Mono 2.0 is installed.
-
 
 
 ### Running Database Editor!
@@ -76,12 +76,10 @@ TDUF aims at making Test Drive Unlmited modding easier:
     - Database is repacked automatically.
 
 
-
 ### Running Advanced tools!
 
     - Launch TDUF-cli.cmd from Windows explorer
     - Follow instructions.
-
 
 
 ### Troubleshooting
@@ -89,11 +87,9 @@ TDUF aims at making Test Drive Unlmited modding easier:
 If you encounter some issues to run tools, launch -noadmin.cmd files instead.
 
 
-
 ### Using JAR library and/or CLI Tools in your projects
 
 It's for free, but you ought to put a mention (kinda 'Powered By TDUF project') and give a link to thread @ [TurboDuck](http://forum.turboduck.net/threads/32570-Djey-Discussion-about-new-modding-possibilities)
-
 
 
 ### And especially...
@@ -101,7 +97,6 @@ It's for free, but you ought to put a mention (kinda 'Powered By TDUF project') 
 Have fun! As much as I had with developing those tools !
 
 If you wish to donate, please head to [this](http://bit.ly/13YI3bP)
-
 
 
 ### Contact & useful links
