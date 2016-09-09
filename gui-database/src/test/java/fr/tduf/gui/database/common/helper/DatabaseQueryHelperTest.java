@@ -166,12 +166,6 @@ public class DatabaseQueryHelperTest {
         assertThat(actualLabel).isEqualTo("RES1 - <RAW>");
     }
 
-    private ContentEntryDto createRemoteContentEntry() {
-        ContentEntryDto remoteEntry = ContentEntryDto.builder().build();
-        DbDataDto.builder().addEntry(remoteEntry).build();
-        return remoteEntry;
-    }
-
     @Test(expected = IllegalStateException.class)
     public void fetchResourceValuesWithEntryId_whenReferenceField_andRemoteResourceUnavailable_andItemUnavailable_shouldWriteRawValue() throws Exception {
         // GIVEN
@@ -217,6 +211,12 @@ public class DatabaseQueryHelperTest {
         return DbDto.builder()
                 .withStructure(structureObject)
                 .build();
+    }
+
+    private ContentEntryDto createRemoteContentEntry() {
+        ContentEntryDto remoteEntry = ContentEntryDto.builder().build();
+        DbDataDto.builder().addEntry(remoteEntry).build();
+        return remoteEntry;
     }
 
     private EditorLayoutDto loadProfiles() throws IOException, URISyntaxException {
