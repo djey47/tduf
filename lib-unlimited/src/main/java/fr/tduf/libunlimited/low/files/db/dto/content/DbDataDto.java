@@ -77,7 +77,12 @@ public class DbDataDto implements Serializable {
     }
 
     public void removeEntry(ContentEntryDto entry) {
-        entries.remove(getEntryId(entry));
+        final int entryId = getEntryId(entry);
+        if (entryId == -1) {
+            return;
+        }
+
+        entries.remove(entryId);
         removeEntryFromIndexByReference(entry);
     }
 
@@ -126,7 +131,7 @@ public class DbDataDto implements Serializable {
     }
 
     @JsonSetter("entries")
-    private void setEntries(Collection<ContentEntryDto> entries) {
+    void setEntries(Collection<ContentEntryDto> entries) {
         this.entries = new ArrayList<>(entries);
 
         if (topic == null || DatabaseStructureQueryHelper.isUidSupportForTopic(topic)) {
