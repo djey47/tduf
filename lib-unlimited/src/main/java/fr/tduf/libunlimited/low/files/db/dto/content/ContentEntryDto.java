@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.low.files.db.dto.content;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -15,7 +16,7 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 
 @JsonTypeName("dbEntry")
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-// TODO unit tests
+@JsonPropertyOrder({ "id", "items"})
 public class ContentEntryDto {
 
     @JsonProperty("items")
