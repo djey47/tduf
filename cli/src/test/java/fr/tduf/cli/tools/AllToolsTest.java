@@ -100,6 +100,7 @@ public class AllToolsTest {
         testToolCommand(new FileTool(), ENCRYPT);
     }
 
+    // TODO enable tests
 //    @Test
 //    public void fileTool_bankinfo() throws NoSuchFieldException, IOException {
 //        // GIVEN-WHEN-THEN

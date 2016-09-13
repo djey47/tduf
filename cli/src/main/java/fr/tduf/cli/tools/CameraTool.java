@@ -39,6 +39,9 @@ public class CameraTool extends GenericTool {
     @Option(name="-s", aliases = "--sourceId", usage = "Identifier of camera set to copy (required for copy-set operation).")
     private Integer sourceIdentifier;
 
+    @Option(name="-f", aliases = "--force", usage = "Replaces target camera if already existing at targetId. Not mandatory.")
+    private boolean force = false;
+
     private Command command;
 
     /**
@@ -116,7 +119,7 @@ public class CameraTool extends GenericTool {
     @Override
     protected List<String> getExamples() {
         return singletonList(
-                COPY_SET.label + " -i \"C:\\Users\\Bill\\Desktop\\Cameras.bin\" -s 208 -t 209");
+                COPY_SET.label + " -i \"C:\\Users\\Bill\\Desktop\\Cameras.bin\" -s 208 -t 209 --force");
     }
 
     private Map<String, ?> copySet(String sourceCameraFile, String targetCameraFile) throws IOException {
