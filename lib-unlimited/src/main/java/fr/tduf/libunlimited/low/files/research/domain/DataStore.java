@@ -36,6 +36,7 @@ public class DataStore {
     private final Map<String, Entry> store = new HashMap<>();
 
     private final FileStructureDto fileStructure;
+    private final int repeatIndex;
 
     /**
      * Creates a datastore.
@@ -43,9 +44,20 @@ public class DataStore {
      * @param fileStructure : structure of stored file contents.
      */
     public DataStore(FileStructureDto fileStructure) {
+        this(fileStructure, -1);
+    }
+
+    /**
+     * Creates a sub datastore for repeated values.
+     *
+     * @param fileStructure : structure of stored file contents
+     * @param repeatIndex : 0-based index for repeated values in it.
+     */
+    public DataStore(FileStructureDto fileStructure, int repeatIndex) {
         requireNonNull(fileStructure, "File structure must be provided.");
 
         this.fileStructure = fileStructure;
+        this.repeatIndex = repeatIndex;
     }
 
     /**
@@ -537,7 +549,7 @@ public class DataStore {
         List<DataStore> list = new ArrayList<>(size);
 
         for (int i = 0; i < size; i++) {
-            list.add(new DataStore(fileStructure));
+            list.add(new DataStore(fileStructure, i));
         }
 
         return list;
@@ -558,5 +570,9 @@ public class DataStore {
 
     public FileStructureDto getFileStructure() {
         return fileStructure;
+    }
+
+    public int getRepeatIndex() {
+        return repeatIndex;
     }
 }

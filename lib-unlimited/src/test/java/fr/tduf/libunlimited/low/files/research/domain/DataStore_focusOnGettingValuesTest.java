@@ -172,11 +172,17 @@ public class DataStore_focusOnGettingValuesTest {
         assertThat(actualValues)
                 .isNotNull()
                 .hasSize(3);
-        assertThat(actualValues.get(0).getStore()).hasSize(4);
-        assertThat(actualValues.get(1).getStore()).hasSize(4);
-        assertThat(actualValues.get(2).getStore()).hasSize(4);
+        final DataStore subStore0 = actualValues.get(0);
+        assertThat(subStore0.getStore()).hasSize(4);
+        assertThat(subStore0.getRepeatIndex()).isZero();
+        final DataStore subStore1 = actualValues.get(1);
+        assertThat(subStore1.getStore()).hasSize(4);
+        assertThat(subStore1.getRepeatIndex()).isEqualTo(1);
+        final DataStore subStore2 = actualValues.get(2);
+        assertThat(subStore2.getStore()).hasSize(4);
+        assertThat(subStore2.getRepeatIndex()).isEqualTo(2);
 
-        Map<String, Entry> subStore = actualValues.get(0).getStore();
+        Map<String, Entry> subStore = subStore0.getStore();
         assertThat(subStore.get("my_field")).isEqualTo(new Entry(FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(10L)));
         assertThat(subStore.get("my_fp_field")).isEqualTo(new Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint32ToRaw(235.666667f)));
         assertThat(subStore.get("a_field")).isEqualTo(new Entry(FileStructureDto.Type.TEXT, TypeHelper.textToRaw("az", 2)));
