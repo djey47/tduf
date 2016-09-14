@@ -219,6 +219,25 @@ public class DataStore {
     }
 
     /**
+     * Deletes all keys from a sub data store at a given index.
+     *
+     * @param repeaterFieldName : identifier of repeater field
+     * @param index             : rank in repeater.
+     * @param subStore          : sub data store to replace existing one
+     */
+    public void replaceRepeatedValues(String repeaterFieldName, int index, DataStore subStore) {
+        final DataStore existingSubStore = getRepeatedValues(repeaterFieldName).get(index);
+        if (subStore == null) {
+            return;
+        }
+
+        existingSubStore.getStore().keySet().stream()
+                .map(key -> generateKeyForRepeatedField(repeaterFieldName, key, index))
+                .forEach(getStore()::remove);
+        mergeRepeatedValues(repeaterFieldName, index, subStore);
+    }
+
+    /**
      * @return entry count in store.
      */
     public int size() {
