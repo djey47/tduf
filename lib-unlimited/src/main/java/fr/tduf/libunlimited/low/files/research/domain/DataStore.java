@@ -388,8 +388,8 @@ public class DataStore {
      * @return a full copy of data store instance.
      */
     public DataStore copy() {
-        DataStore clone = new DataStore(this.fileStructure);
-        clone.getStore().putAll(copyAllEntries(this.store));
+        DataStore clone = new DataStore(fileStructure, repeatIndex);
+        clone.getStore().putAll(copyAllEntries(store));
         return clone;
     }
 

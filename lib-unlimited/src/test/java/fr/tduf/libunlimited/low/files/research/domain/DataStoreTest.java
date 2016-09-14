@@ -155,6 +155,7 @@ public class DataStoreTest {
         assertThat(actualCopy.size()).isEqualTo(dataStore.size());
 
         assertThat(actualCopy.getFileStructure()).isEqualTo(dataStore.getFileStructure());
+        assertThat(actualCopy.getRepeatIndex()).isEqualTo(dataStore.getRepeatIndex());
 
         assertThat(actualCopy.getStore()).isNotSameAs(dataStore.getStore());
 
