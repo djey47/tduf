@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.research.rw;
 
+import fr.tduf.libunlimited.common.helper.AssertorHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.FormulaHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.StructureHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.common.helper.AssertorHelper.assertSimpleCondition;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -120,14 +122,14 @@ public abstract class GenericWriter<T> implements StructureBasedProcessor {
         return valueBytes;
     }
 
-    private void writeFloatingPointValue(byte[] valueBytes, Integer length, ByteArrayOutputStream outputStream) {
-        assert valueBytes != null;
+    private void writeFloatingPointValue(final byte[] valueBytes, Integer length, ByteArrayOutputStream outputStream) {
+        assertSimpleCondition(() -> valueBytes != null);
 
-        if (this.getFileStructure().isLittleEndian()) {
-            valueBytes = TypeHelper.changeEndianType(valueBytes);
+        if (getFileStructure().isLittleEndian()) {
+            outputStream.write(TypeHelper.changeEndianType(valueBytes), 0, length);
+        } else {
+            outputStream.write(valueBytes, 0, length);
         }
-
-        outputStream.write(valueBytes, 0, length);
     }
 
     private void writeGapField(Integer length, ByteArrayOutputStream outputStream) throws IOException {
@@ -135,22 +137,19 @@ public abstract class GenericWriter<T> implements StructureBasedProcessor {
     }
 
     private void writeRawValue(byte[] valueBytes, Integer length, ByteArrayOutputStream outputStream) throws IOException {
-        assert valueBytes != null;
+        assertSimpleCondition(() -> valueBytes != null);
 
         outputStream.write(TypeHelper.fitToSize(valueBytes, length));
     }
 
-    private void writeIntegerValue(byte[] valueBytes, Integer length, ByteArrayOutputStream outputStream) {
-        assert valueBytes != null;
+    private void writeIntegerValue(final byte[] valueBytes, Integer length, ByteArrayOutputStream outputStream) {
+        AssertorHelper.assertSimpleCondition(() -> valueBytes != null);
 
-        int startIndex = 0;
-        if (this.getFileStructure().isLittleEndian()) {
-            valueBytes = TypeHelper.changeEndianType(valueBytes);
+        if (getFileStructure().isLittleEndian()) {
+            outputStream.write(TypeHelper.changeEndianType(valueBytes), 0, length);
         } else {
-            startIndex = 8-length;
+            outputStream.write(valueBytes, 8 - length, length);
         }
-
-        outputStream.write(valueBytes, startIndex, length);
     }
 
     FileStructureDto getFileStructure() {

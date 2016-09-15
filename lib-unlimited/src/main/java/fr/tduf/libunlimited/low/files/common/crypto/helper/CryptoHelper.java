@@ -9,6 +9,8 @@ import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
 import java.util.stream.Stream;
 
+import static fr.tduf.libunlimited.common.helper.AssertorHelper.assertSimpleCondition;
+
 /**
  * Utility class to handle TDU files encryption/decryption.
  */
@@ -105,6 +107,13 @@ public class CryptoHelper {
         return outputStream;
     }
 
+    private static int getTimestamp() {
+        if (timestampOverride == null) {
+            return (int) (System.currentTimeMillis() / 1000L);
+        }
+        return timestampOverride;
+    }
+
     static byte[] introduceTimeStamp(byte[] inputBytes) {
 
         byte[] currentTimeBytes = ByteBuffer
@@ -131,13 +140,6 @@ public class CryptoHelper {
         CryptoHelper.timestampOverride = timestamp;
     }
 
-    static int getTimestamp() {
-        if (timestampOverride == null) {
-            return (int) (System.currentTimeMillis() / 1000L);
-        }
-        return timestampOverride;
-    }
-
     static void restoreTimestamp() {
         CryptoHelper.timestampOverride = null;
     }
@@ -146,7 +148,8 @@ public class CryptoHelper {
         byte[] inputBytes = new byte[contentsSize];
 
         int readBytes = inputStream.read(inputBytes);
-        assert readBytes == contentsSize : "Unable to read till the end of the buffer.";
+
+        assertSimpleCondition(() -> readBytes == contentsSize, "Unable to read till the end of the buffer.");
 
         return inputBytes;
     }
@@ -214,12 +217,9 @@ public class CryptoHelper {
          */
         public static EncryptionModeEnum fromIdentifier(int cryptoMode) {
             return Stream.of(EncryptionModeEnum.values())
-
-                    .filter((encryptionModeEnum) -> encryptionModeEnum.id == cryptoMode)
-
-                    .findFirst()
-
-                    .get();
+                    .filter(encryptionModeEnum -> encryptionModeEnum.id == cryptoMode)
+                    .findAny()
+                    .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("Unhandled encryption mode: " + cryptoMode));
         }
     }
 }

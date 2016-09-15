@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.common.helper.AssertorHelper.assertSimpleCondition;
 import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.*;
 import static java.util.Objects.requireNonNull;
 
@@ -76,8 +77,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
             Integer length = FormulaHelper.resolveToInteger(field.getSizeFormula(), Optional.of(repeaterKey), dataStore);
             ReadResult readResult = readAndDumpValue(key, field, length);
 
-            // Check
-            assert length == null || readResult.parsedCount == length;
+            assertSimpleCondition(() -> length == null || readResult.parsedCount == length);
 
             this.dataStore.addValue(key, field.getType(), field.isSigned(), readResult.readValueAsBytes);
         }
