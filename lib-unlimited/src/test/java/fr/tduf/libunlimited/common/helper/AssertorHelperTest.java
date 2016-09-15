@@ -16,4 +16,12 @@ public class AssertorHelperTest {
 
         // THEN: ISE
     }
+
+    @Test(expected = IllegalStateException.class)
+    public void assertSimpleCondition_withMessage_when_ko_shouldThrowException() throws Exception {
+        // GIVEN-WHEN
+        AssertorHelper.assertSimpleCondition(() -> 1 + 1 == 3, "^^ You dumbass!");
+
+        // THEN: ISE
+    }
 }

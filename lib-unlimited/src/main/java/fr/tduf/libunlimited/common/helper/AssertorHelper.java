@@ -13,10 +13,19 @@ public class AssertorHelper {
      * @throws IllegalStateException if above condition is not satisfied.
      */
     public static void assertSimpleCondition(BooleanSupplier condition) {
+        assertSimpleCondition(condition, "Unsatisfied condition. Please review code.");
+    }
+
+    /**
+     * @param condition : simple condition to evaluate
+     * @param message   : message to be brought by the exception
+     * @throws IllegalStateException if above condition is not satisfied.
+     */
+    public static void assertSimpleCondition(BooleanSupplier condition, String message) {
         if (condition.getAsBoolean()) {
             return;
         }
 
-        throw new IllegalStateException("Unsatisfied condition. Please review code.");
+        throw new IllegalStateException(message);
     }
 }
