@@ -15,7 +15,6 @@ import static java.util.Objects.requireNonNull;
 /**
  * Allow to read data from cameras.bin file.
  */
-// TODO apply code rules
 public class CamerasParser extends GenericParser<String> {
 
     private Map<Long, Short> cachedCameraIndex;
@@ -56,7 +55,7 @@ public class CamerasParser extends GenericParser<String> {
         }
 
         cachedCameraIndex = new LinkedHashMap<>();
-        this.getDataStore().getRepeatedValues("index").forEach((store) -> {
+        getDataStore().getRepeatedValues("index").forEach((store) -> {
                     long cameraId = store.getInteger("cameraId")
                             .<IllegalStateException>orElseThrow(() -> new IllegalStateException("cameraId attribute not found in store"));
                     short viewCount = store.getInteger("viewCount")
@@ -77,7 +76,7 @@ public class CamerasParser extends GenericParser<String> {
         }
 
         cachedCameraViews = new LinkedHashMap<>();
-        this.getDataStore().getRepeatedValues("views").forEach((store) -> {
+        getDataStore().getRepeatedValues("views").forEach(store -> {
                     long cameraId = store.getInteger("cameraId")
                             .<IllegalStateException>orElseThrow(() -> new IllegalStateException("cameraId attribute not found in store"));
 
@@ -103,7 +102,7 @@ public class CamerasParser extends GenericParser<String> {
             return cachedTotalViewCount;
         }
 
-        cachedTotalViewCount = this.getCameraViews().values().stream()
+        cachedTotalViewCount = getCameraViews().values().stream()
                 .mapToInt(List::size)
                 .reduce(0, (size1, size2) -> size1 + size2);
 

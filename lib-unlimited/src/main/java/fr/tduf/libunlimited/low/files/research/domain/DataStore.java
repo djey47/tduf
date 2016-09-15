@@ -15,15 +15,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static fr.tduf.libunlimited.common.helper.AssertorHelper.assertSimpleCondition;
 import static fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper.*;
 import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.*;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 
 /**
  * Place to store and extract data with {@link fr.tduf.libunlimited.low.files.research.rw.GenericParser}
  * and {@link fr.tduf.libunlimited.low.files.research.rw.GenericWriter}
  */
-// TODO apply code rules
 public class DataStore {
     private static final String THIS_CLASS_NAME = DataStore.class.getSimpleName();
 
@@ -254,10 +257,10 @@ public class DataStore {
         }
 
         Entry entry = this.store.get(fieldName);
-        assert TEXT == entry.getType();
+        assertSimpleCondition(() -> TEXT == entry.getType());
 
         byte[] rawValue = entry.getRawValue();
-        return Optional.of(
+        return of(
                 rawToText(rawValue, rawValue.length));
     }
 
@@ -273,9 +276,9 @@ public class DataStore {
         }
 
         Entry entry = this.store.get(fieldName);
-        assert INTEGER == entry.getType();
+        assertSimpleCondition(() -> INTEGER == entry.getType());
 
-        return Optional.of(
+        return of(
                 rawToInteger(entry.getRawValue(), entry.isSigned()));
     }
 
@@ -291,9 +294,9 @@ public class DataStore {
         }
 
         Entry entry = this.store.get(fieldName);
-        assert FPOINT == entry.getType();
+        assertSimpleCondition(() -> FPOINT == entry.getType());
 
-        return Optional.of(
+        return of(
                 rawToFloatingPoint(entry.getRawValue()));
     }
 
@@ -425,6 +428,7 @@ public class DataStore {
             rawValue = TypeHelper.floatingPoint32ToRaw(((Double) jsonNode.getDoubleValue()).floatValue());
 
         } else {
+
             FileStructureDto.Field fieldDefinition = StructureHelper.getFieldDefinitionFromFullName(parentKey, fileStructure)
                     .<IllegalStateException>orElseThrow(() -> new IllegalStateException("Field definition not found for key: " + parentKey));
             if (jsonNode instanceof IntNode || jsonNode instanceof LongNode) {
@@ -441,7 +445,10 @@ public class DataStore {
                     rawValue = TypeHelper.hexRepresentationToByteArray(stringValue);
                 } catch (IllegalArgumentException iae) {
                     type = TEXT;
-                    int length = computeValueLength(fieldDefinition.getSizeFormula(), Optional.ofNullable(parentKey));
+                    Optional<String> potentialParentKey = ofNullable(parentKey);
+                    int length = potentialParentKey.isPresent() ?
+                            computeValueLengthWithParentKey(fieldDefinition.getSizeFormula(), potentialParentKey.get()) :
+                            computeValueLengthWithoutParentKey(fieldDefinition.getSizeFormula());
                     rawValue = TypeHelper.textToRaw(stringValue, length);
                     Log.info(THIS_CLASS_NAME, "Unable to parse hexadecimal representation", iae);
                 }
@@ -453,8 +460,12 @@ public class DataStore {
         }
     }
 
-    private int computeValueLength(String sizeFormula, Optional<String> potentialParentKey) {
-        return FormulaHelper.resolveToInteger(sizeFormula, potentialParentKey, this);
+    private int computeValueLengthWithoutParentKey(String sizeFormula) {
+        return FormulaHelper.resolveToInteger(sizeFormula, empty(), this);
+    }
+
+    private int computeValueLengthWithParentKey(String sizeFormula, String parentKey) {
+        return FormulaHelper.resolveToInteger(sizeFormula, of(parentKey), this);
     }
 
     private void readJsonArrayNode(JsonNode jsonNode, String parentKey) {
