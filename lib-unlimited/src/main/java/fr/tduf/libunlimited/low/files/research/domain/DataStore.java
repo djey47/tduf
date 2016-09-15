@@ -23,6 +23,7 @@ import static java.util.Objects.requireNonNull;
  * Place to store and extract data with {@link fr.tduf.libunlimited.low.files.research.rw.GenericParser}
  * and {@link fr.tduf.libunlimited.low.files.research.rw.GenericWriter}
  */
+// TODO apply code rules
 public class DataStore {
     private static final String THIS_CLASS_NAME = DataStore.class.getSimpleName();
 
@@ -216,25 +217,6 @@ public class DataStore {
                     Entry currentStoreEntry = entry.getValue();
                     this.putEntry(newKey, currentStoreEntry.getType(), currentStoreEntry.isSigned(), currentStoreEntry.getRawValue());
                 });
-    }
-
-    /**
-     * Deletes all keys from a sub data store at a given index.
-     *
-     * @param repeaterFieldName : identifier of repeater field
-     * @param index             : rank in repeater.
-     * @param subStore          : sub data store to replace existing one
-     */
-    public void replaceRepeatedValues(String repeaterFieldName, int index, DataStore subStore) {
-        final DataStore existingSubStore = getRepeatedValues(repeaterFieldName).get(index);
-        if (subStore == null) {
-            return;
-        }
-
-        existingSubStore.getStore().keySet().stream()
-                .map(key -> generateKeyForRepeatedField(repeaterFieldName, key, index))
-                .forEach(getStore()::remove);
-        mergeRepeatedValues(repeaterFieldName, index, subStore);
     }
 
     /**

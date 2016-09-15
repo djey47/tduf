@@ -194,17 +194,4 @@ public class DataStore_focusOnAddingValuesTest {
         assertThat(actualSubDataStore.getText("a_field").get()).isEqualTo("az");
         assertThat(actualSubDataStore.getRawValue("another_field").get()).isEqualTo(new byte[]{0x1, 0x2, 0x3, 0x4});
     }
-
-    @Test
-    public void replaceRepeatedValues_shouldChangeAllKeysAtRightIndex() {
-        // GIVEN
-        DataStoreFixture.createStoreEntries(dataStore);
-        DataStore subStore = dataStore.getRepeatedValues("entry_list").get(0);
-
-        // WHEN
-        dataStore.replaceRepeatedValues("entry_list", 2, subStore);
-
-        // THEN
-        assertThat(dataStore.getRepeatedValues("entry_list").get(2).getStore()).isEqualTo(subStore.getStore());
-    }
 }
