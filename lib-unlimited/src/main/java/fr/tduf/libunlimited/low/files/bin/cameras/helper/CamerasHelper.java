@@ -1,56 +1,81 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.helper;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Static methods tho access or modify camera information in datastore.
  */
 public class CamerasHelper {
+    private static final String THIS_CLASS_NAME = CamerasHelper.class.getSimpleName();
+
+    private static final String KEY_INDEX = "index";
+    private static final String KEY_VIEWS = "views";
+    private static final String KEY_CAMERA_ID = "cameraId";
+    private static final String KEY_VIEW_COUNT = "viewCount";
+    private static final String KEY_INDEX_SIZE = "indexSize";
 
     private CamerasHelper(){}
 
     /**
-     * Creates or replace a camera set at targetCameraId with all views from set at sourceCameraId.
+     * Creates or replace a camera set at targetCameraId with all views from set at sourceCameraId
      * @param sourceCameraId    : identifier of camera to get views from
-     * @param targetCameraId    : identifier of camera to create views. May not exist already, in that case will add a new set.
-     * @param parser            : parsed cameras contents
+     * @param targetCameraId    : identifier of camera to create views. May not exist already, in that case will add a new set
+     * @param parser            : parsed cameras contents.
      */
     public static void duplicateCameraSet(long sourceCameraId, long targetCameraId, CamerasParser parser) {
         DataStore dataStore = requireNonNull(parser, "Parser with cameras contents is required.").getDataStore();
 
-        updateIndexInDatastore(dataStore, sourceCameraId, targetCameraId, parser.getCameraIndex());
+        final Map<Long, Short> cameraIndex = parser.getCameraIndex();
+        if (!cameraIndex.containsKey(sourceCameraId)
+                || !parser.getCameraViews().containsKey(sourceCameraId)) {
+            throw new IllegalArgumentException("Unknown source camera identifier: " + sourceCameraId);
+        }
+
+        if (cameraIndex.containsKey(targetCameraId)
+                || parser.getCameraViews().containsKey(targetCameraId)) {
+            Log.warn(THIS_CLASS_NAME, "Unable to overwrite existing camera set: " + targetCameraId);
+            return;
+        }
+
+        updateIndexInDatastore(dataStore, sourceCameraId, targetCameraId, cameraIndex);
 
         updateViewsInDatastore(dataStore, sourceCameraId, targetCameraId, parser);
 
         parser.flushCaches();
     }
 
-    private static void updateViewsInDatastore(DataStore dataStore, long sourceCameraId, long targetCameraId, CamerasParser parser) {
-        AtomicInteger viewIndex = new AtomicInteger(parser.getTotalViewCount());
-        parser.getCameraViews().get(sourceCameraId).stream()
-                .map(originalViewStore -> cloneViewStoreForNewCamera(originalViewStore, targetCameraId))
-                .forEach(clonedViewStore -> dataStore.mergeRepeatedValues("views", viewIndex.getAndIncrement(), clonedViewStore));
+    private static void updateIndexInDatastore(DataStore dataStore, long sourceCameraId, long targetCameraId, Map<Long, Short> cameraIndex) {
+        short viewCount = cameraIndex.get(sourceCameraId);
+            int currentIndexEntryCount = cameraIndex.size();
+            dataStore.addRepeatedIntegerValue(KEY_INDEX, KEY_CAMERA_ID, currentIndexEntryCount, targetCameraId);
+            dataStore.addRepeatedIntegerValue(KEY_INDEX, KEY_VIEW_COUNT, currentIndexEntryCount, viewCount);
+            dataStore.addInteger(KEY_INDEX_SIZE, currentIndexEntryCount + 1L);
     }
 
-    private static void updateIndexInDatastore(DataStore dataStore, long sourceCameraId, long targetCameraId, Map<Long, Short> cameraIndex) {
-        int currentIndexEntryCount = cameraIndex.size();
-        short viewCount = cameraIndex.get(sourceCameraId);
-        dataStore.addRepeatedIntegerValue("index", "cameraId", currentIndexEntryCount, targetCameraId);
-        dataStore.addRepeatedIntegerValue("index", "viewCount", currentIndexEntryCount, viewCount);
+    private static void updateViewsInDatastore(DataStore dataStore, long sourceCameraId, long targetCameraId, CamerasParser parser) {
+        final Map<Long, List<DataStore>> cameraViews = parser.getCameraViews();
+        final List<DataStore> clonedViewStores = cameraViews.get(sourceCameraId).stream()
+                .map(originalViewStore -> cloneViewStoreForNewCamera(originalViewStore, targetCameraId))
+                .collect(toList());
 
-        dataStore.addInteger("indexSize", currentIndexEntryCount + 1L);
+            AtomicInteger viewIndex = new AtomicInteger(parser.getTotalViewCount());
+            clonedViewStores
+                    .forEach(clonedViewStore -> dataStore.mergeRepeatedValues(KEY_VIEWS, viewIndex.getAndIncrement(), clonedViewStore));
     }
 
     private static DataStore cloneViewStoreForNewCamera(DataStore viewStore, long targetCameraId) {
         DataStore newStore = viewStore.copy();
 
-        newStore.addInteger("cameraId", targetCameraId);
+        newStore.addInteger(KEY_CAMERA_ID, targetCameraId);
 
         return newStore;
     }

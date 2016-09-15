@@ -15,6 +15,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Allow to read data from cameras.bin file.
  */
+// TODO apply code rules
 public class CamerasParser extends GenericParser<String> {
 
     private Map<Long, Short> cachedCameraIndex;
