@@ -3,7 +3,7 @@ package fr.tduf.libunlimited.common.helper;
 import java.util.function.BooleanSupplier;
 
 /**
- * Hosts methods to replace good old assert keywork, throwing appropriate runtime exception
+ * Hosts methods to replace good old assert keyword, throwing appropriate runtime exception
  */
 public class AssertorHelper {
     private AssertorHelper() {}
