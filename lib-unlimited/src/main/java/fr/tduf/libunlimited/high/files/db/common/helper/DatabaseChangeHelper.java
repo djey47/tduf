@@ -235,15 +235,7 @@ public class DatabaseChangeHelper {
      */
     public void removeResourceValuesWithReference(DbDto.Topic topic, String resourceReference, List<Locale> affectedLocales) {
         databaseMiner.getResourceEntryFromTopicAndReference(topic, resourceReference)
-                .ifPresent(entry -> {
-                    affectedLocales.forEach(entry::removeValueForLocale);
-
-                    if (entry.getItemCount() == 0) {
-                        databaseMiner.getResourcesFromTopic(topic)
-                                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resource for topic: " + topic))
-                                .removeEntryByReference(resourceReference);
-                    }
-                });
+                .ifPresent(entry -> removeResourceValueForLocales(topic, entry, affectedLocales));
     }
 
     /**
@@ -272,6 +264,7 @@ public class DatabaseChangeHelper {
                 .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("Resource does not exist with reference: " + resourceReference));
     }
 
+    // TODO remove if no usage
     private void checkResourceEntryDoesNotExistWithReference(DbDto.Topic topic, String resourceReference) {
         databaseMiner.getResourceEntryFromTopicAndReference(topic, resourceReference)
                 .ifPresent(entry -> {
@@ -294,6 +287,16 @@ public class DatabaseChangeHelper {
                 .collect(toList());
 
         topicDataObject.removeEntries(entriesToDelete);
+    }
+
+    private void removeResourceValueForLocales(DbDto.Topic topic, ResourceEntryDto entry, List<Locale> affectedLocales) {
+        affectedLocales.forEach(entry::removeValueForLocale);
+
+        if (entry.getItemCount() == 0) {
+            databaseMiner.getResourcesFromTopic(topic)
+                    .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resource for topic: " + topic))
+                    .removeEntryByReference(entry.getReference());
+        }
     }
 
     private static List<ContentItemDto> cloneContentItems(ContentEntryDto entry, DbDto.Topic topic) {
