@@ -152,7 +152,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     }
 
     @Test(expected=IllegalArgumentException.class)
-    public void updateResourceItemWithReference_whenEntryExistsWithNewReference_shouldThrowException() {
+    public void updateResourceItemWithReference_whenEntryExistsWithNewReference_shouldThrowException_andKeepOriginalResource() {
         // GIVEN
         String initialReference = "0";
         String existingValue = "e";
@@ -165,12 +165,13 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(of(existingValue));
 
 
-        // WHEN
-        changeHelper.updateResourceItemWithReference(TOPIC, LOCALE, initialReference, RESOURCE_REFERENCE, RESOURCE_VALUE);
-
-
-        // THEN: IAE
-        verifyNoMoreInteractions(minerMock);
+        // WHEN-THEN
+        try {
+            changeHelper.updateResourceItemWithReference(TOPIC, LOCALE, initialReference, RESOURCE_REFERENCE, RESOURCE_VALUE);
+        } catch (IllegalArgumentException iae) {
+            assertThat(existingEntry.pickValue()).isPresent();
+            throw iae;
+        }
     }
 
     @Test

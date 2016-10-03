@@ -109,12 +109,8 @@ public class DatabaseChangeHelper {
     public void updateResourceItemWithReference(DbDto.Topic topic, Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
         ResourceEntryDto existingEntry = checkResourceEntryExistsWithReference(topic, oldResourceReference);
 
-        if (!oldResourceReference.equals(newResourceReference)) {
-            checkResourceEntryDoesNotExistWithReference(topic, newResourceReference);
-        }
-
-        existingEntry.removeValueForLocale(locale);
         addResourceValueWithReference(topic, locale, newResourceReference, newResourceValue);
+        existingEntry.removeValueForLocale(locale);
     }
 
     /**
@@ -176,6 +172,7 @@ public class DatabaseChangeHelper {
         DbDataDto topicDataObject = topicObject.getData();
         ContentEntryDto sourceEntry = topicDataObject.getEntryWithInternalIdentifier(entryId)
                 .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No source entry found " + MESSAGE_AT_ID + entryId));
+        // TODO clean
         long newIdentifier = topicDataObject.getEntries().size();
 
         List<ContentItemDto> clonedItems = cloneContentItems(sourceEntry, topic);
