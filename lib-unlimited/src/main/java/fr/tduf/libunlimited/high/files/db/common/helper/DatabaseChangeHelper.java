@@ -14,6 +14,7 @@ import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -109,8 +110,9 @@ public class DatabaseChangeHelper {
     public void updateResourceItemWithReference(DbDto.Topic topic, Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
         ResourceEntryDto existingEntry = checkResourceEntryExistsWithReference(topic, oldResourceReference);
 
+        // FIXME replace with direct update methods instead of add/remove
         addResourceValueWithReference(topic, locale, newResourceReference, newResourceValue);
-        existingEntry.removeValueForLocale(locale);
+        removeResourceValueForLocales(topic, existingEntry, singletonList(locale));
     }
 
     /**
