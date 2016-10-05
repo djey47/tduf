@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
@@ -97,7 +98,7 @@ public class ResourcesStageController extends AbstractGuiController {
                     String currentResourceReference = selectedResource.referenceProperty().get();
                     DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("Topic not found: " + getCurrentTopic()));
                     dialogsHelper.showEditResourceDialog(currentTopicObject, selectedResource, currentLocale)
-                            .ifPresent(localizedResource -> editResourceAndUpdateMainStage(getCurrentTopic(), Optional.of(currentResourceReference), localizedResource));
+                            .ifPresent(localizedResource -> editResourceAndUpdateMainStage(getCurrentTopic(), of(currentResourceReference), localizedResource));
                 });
     }
 
@@ -224,16 +225,15 @@ public class ResourcesStageController extends AbstractGuiController {
         Optional<Locale> potentialAffectedLocale = newLocalizedResource.getLocale();
 
         try {
-            if (potentialAffectedLocale.isPresent()) {
-                Locale affectedLocale = potentialAffectedLocale.get();
-                if (currentResourceReference.isPresent()) {
-                    updateResourceForLocale(topic, affectedLocale, currentResourceReference.get(), newResourceReference, newResourceValue);
+            if (currentResourceReference.isPresent()) {
+                if (potentialAffectedLocale.isPresent()) {
+                    updateResourceForLocale(topic, potentialAffectedLocale.get(), currentResourceReference.get(), newResourceReference, newResourceValue);
                 } else {
-                    createResourceForLocale(topic, affectedLocale, newResourceReference, newResourceValue);
+                    updateResourceForAllLocales(topic, currentResourceReference.get(), newResourceReference, newResourceValue);
                 }
             } else {
-                if (currentResourceReference.isPresent()) {
-                    updateResourceForAllLocales(topic, currentResourceReference.get(), newResourceReference, newResourceValue);
+                if (potentialAffectedLocale.isPresent()) {
+                    createResourceForLocale(topic, potentialAffectedLocale.get(), newResourceReference, newResourceValue);
                 } else {
                     createResourceForAllLocales(topic, newResourceReference, newResourceValue);
                 }
@@ -242,7 +242,7 @@ public class ResourcesStageController extends AbstractGuiController {
             Log.error(THIS_CLASS_NAME, "Unable to edit resource", iae);
             CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES, iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE);
         } finally {
-            updateAllStages(Optional.of(newResourceReference));
+            updateAllStages(of(newResourceReference));
         }
     }
 
