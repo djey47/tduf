@@ -215,6 +215,7 @@ public class ResourcesStageController extends AbstractGuiController {
         TableViewHelper.selectRowAndScroll(selectedRowIndex, resourcesTableView);
     }
 
+    // TODO tests
     private void editResourceAndUpdateMainStage(DbDto.Topic topic, Optional<String> currentResourceReference, LocalizedResource newLocalizedResource) {
         if (newLocalizedResource == null) {
             return;
@@ -226,10 +227,12 @@ public class ResourcesStageController extends AbstractGuiController {
 
         try {
             if (currentResourceReference.isPresent()) {
-                if (potentialAffectedLocale.isPresent()) {
-                    updateResourceForLocale(topic, potentialAffectedLocale.get(), currentResourceReference.get(), newResourceReference, newResourceValue);
+                final String currentRef = currentResourceReference.get();
+                if (potentialAffectedLocale.isPresent()
+                        && currentRef.equals(newResourceReference)) {
+                            updateResourceForLocale(topic, potentialAffectedLocale.get(), currentRef, newResourceReference, newResourceValue);
                 } else {
-                    updateResourceForAllLocales(topic, currentResourceReference.get(), newResourceReference, newResourceValue);
+                    updateResourceForAllLocales(topic, currentRef, newResourceValue);
                 }
             } else {
                 if (potentialAffectedLocale.isPresent()) {
@@ -251,9 +254,9 @@ public class ResourcesStageController extends AbstractGuiController {
                 .forEach(affectedLocale -> mainStageController.getChangeData().addResourceWithReference(topic, affectedLocale, newResourceReference, newResourceValue));
     }
 
-    private void updateResourceForAllLocales(DbDto.Topic topic, String currentResourceReference, String newResourceReference, String newResourceValue) {
+    private void updateResourceForAllLocales(DbDto.Topic topic, String currentResourceReference, String newResourceValue) {
         Locale.valuesAsStream()
-                .forEach(affectedLocale -> mainStageController.getChangeData().updateResourceWithReference(topic, affectedLocale, currentResourceReference, newResourceReference, newResourceValue));
+                .forEach(affectedLocale -> mainStageController.getChangeData().updateResourceWithReference(topic, affectedLocale, currentResourceReference, currentResourceReference, newResourceValue));
     }
 
     private void updateResourceForLocale(DbDto.Topic topic, Locale affectedLocale, String currentResourceReference, String newResourceReference, String newResourceValue) {
