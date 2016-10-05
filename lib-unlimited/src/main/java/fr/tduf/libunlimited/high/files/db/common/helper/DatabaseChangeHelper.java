@@ -4,17 +4,16 @@ import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -98,21 +97,41 @@ public class DatabaseChangeHelper {
     }
 
     /**
-     * Modifies existing resource item having given reference, with new reference and new value.
+     * Modifies existing resource item having given reference, with new value.
      *
      * @param topic                : database topic where resource entry should be changed
      * @param locale               : database language for which resource entry should be changed
+     * @param resourceReference : reference of resource to be updated. Must exist
+     * @param newResourceValue     : new value of resource
+     * @throws IllegalArgumentException when source entry does not exist.
+     */
+    public void updateResourceItemWithReference(DbDto.Topic topic, Locale locale, String resourceReference, String newResourceValue) {
+        ResourceEntryDto existingEntry = checkResourceEntryExistsWithReference(topic, resourceReference);
+
+        existingEntry.setValueForLocale(newResourceValue, locale);
+    }
+
+    /**
+     * Modifies existing resource item having given reference, with new reference and new value.
+     * Affects all locales.
+     *
+     * @param topic                : database topic where resource entry should be changed
      * @param oldResourceReference : reference of resource to be updated. Must exist
      * @param newResourceReference : new reference of resource if needed. Must not exist already
      * @param newResourceValue     : new value of resource
      * @throws IllegalArgumentException when source entry does not exist or target reference belongs to an already existing entry.
      */
-    public void updateResourceItemWithReference(DbDto.Topic topic, Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
-        ResourceEntryDto existingEntry = checkResourceEntryExistsWithReference(topic, oldResourceReference);
+    // TODO rename to updateResourceEntryWithReference
+    public void updateResourceItemWithReference(DbDto.Topic topic, String oldResourceReference, String newResourceReference, String newResourceValue) {
+        checkResourceEntryExistsWithReference(topic, oldResourceReference);
 
-        // FIXME replace with direct update methods instead of add/remove
-        addResourceValueWithReference(topic, locale, newResourceReference, newResourceValue);
-        removeResourceValueForLocales(topic, existingEntry, singletonList(locale));
+        final DbResourceDto resourceObject = databaseMiner.getResourcesFromTopic(topic)
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resource object available for topic: " + topic));
+
+        resourceObject
+                .addEntryByReference(newResourceReference)
+                .setValue(newResourceValue);
+        resourceObject.removeEntryByReference(oldResourceReference);
     }
 
     /**

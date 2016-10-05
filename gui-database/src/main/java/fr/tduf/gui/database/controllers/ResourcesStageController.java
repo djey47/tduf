@@ -256,12 +256,12 @@ public class ResourcesStageController extends AbstractGuiController {
                 .forEach(affectedLocale -> mainStageController.getChangeData().updateResourceWithReference(topic, affectedLocale, currentResourceReference, newResourceReference, newResourceValue));
     }
 
-    private void createResourceForLocale(DbDto.Topic topic, Locale affectedLocale, String newResourceReference, String newResourceValue) {
-        mainStageController.getChangeData().addResourceWithReference(topic, affectedLocale, newResourceReference, newResourceValue);
-    }
-
     private void updateResourceForLocale(DbDto.Topic topic, Locale affectedLocale, String currentResourceReference, String newResourceReference, String newResourceValue) {
         mainStageController.getChangeData().updateResourceWithReference(topic, affectedLocale, currentResourceReference, newResourceReference, newResourceValue);
+    }
+
+    private void createResourceForLocale(DbDto.Topic topic, Locale affectedLocale, String newResourceReference, String newResourceValue) {
+        mainStageController.getChangeData().addResourceWithReference(topic, affectedLocale, newResourceReference, newResourceValue);
     }
 
     private void updateAllStages(Optional<String> resourceReference) {

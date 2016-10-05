@@ -57,15 +57,14 @@ class MainStageChangeDataController extends AbstractMainStageSubController {
                 });
     }
 
+    // TODO tests
     void updateResourceWithReference(DbDto.Topic topic, Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
         requireNonNull(getChangeHelper());
 
         if (newResourceReference.equals(oldResourceReference)) {
-            // TODO create separate methods
-            getChangeHelper().updateResourceItemWithReference(topic, locale, oldResourceReference, newResourceReference, newResourceValue);
+            getChangeHelper().updateResourceItemWithReference(topic, locale, newResourceReference, newResourceValue);
         } else {
-            // TODO create separate methods
-            getChangeHelper().updateResourceItemWithReference(topic, locale, oldResourceReference, newResourceReference, newResourceValue);
+            getChangeHelper().updateResourceItemWithReference(topic, oldResourceReference, newResourceReference, newResourceValue);
         }
     }
 

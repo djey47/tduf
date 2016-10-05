@@ -113,6 +113,31 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
         // THEN: NSEE
     }
 
+    @Test(expected=IllegalArgumentException.class)
+    public void updateResourceItemWithReference_whenNonexistingEntry_shouldThrowException() {
+        // GIVEN
+        when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(empty());
+
+        // WHEN
+        changeHelper.updateResourceItemWithReference(TOPIC, LOCALE, RESOURCE_REFERENCE, RESOURCE_VALUE);
+
+        // THEN: IAE
+        verifyNoMoreInteractions(minerMock);
+    }
+
+    @Test
+    public void updateResourceItemWithReference_whenExistingEntry_shouldChangeValue() {
+        // GIVEN
+        ResourceEntryDto resourceEntry = createDefaultResourceEntryEnhanced(RESOURCE_REFERENCE);
+        when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(of(resourceEntry));
+
+        // WHEN
+        changeHelper.updateResourceItemWithReference(TOPIC, LOCALE, RESOURCE_REFERENCE, RESOURCE_VALUE);
+
+        // THEN
+        assertThat(resourceEntry.getValueForLocale(LOCALE)).contains(RESOURCE_VALUE);
+    }
+
     @Test
     public void updateResourceItemWithReference_whenExistingEntry_shouldReplaceReferenceAndValue() {
         // GIVEN
@@ -129,45 +154,38 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
 
 
         // WHEN
-        changeHelper.updateResourceItemWithReference(TOPIC, LOCALE, initialReference, RESOURCE_REFERENCE, RESOURCE_VALUE);
+        changeHelper.updateResourceItemWithReference(TOPIC, initialReference, RESOURCE_REFERENCE, RESOURCE_VALUE);
 
 
         // THEN
         assertThat(resourceObject.getEntryByReference(initialReference)).isEmpty();
         final Optional<ResourceEntryDto> potentialEntry = resourceObject.getEntryByReference(RESOURCE_REFERENCE);
-        assertThat(potentialEntry).isPresent();
-        assertThat(potentialEntry.get().getValueForLocale(LOCALE)).contains(RESOURCE_VALUE);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void updateResourceItemWithReference_whenNonexistingEntry_shouldThrowException() {
-        // GIVEN
-        when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(empty());
-
-        // WHEN
-        changeHelper.updateResourceItemWithReference(TOPIC, LOCALE, RESOURCE_REFERENCE, RESOURCE_REFERENCE, RESOURCE_VALUE);
-
-        // THEN: IAE
-        verifyNoMoreInteractions(minerMock);
+        assertThat(potentialEntry
+                .flatMap(e -> e.getValueForLocale(LOCALE)))
+                .contains(RESOURCE_VALUE);
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void updateResourceItemWithReference_whenEntryExistsWithNewReference_shouldThrowException_andKeepOriginalResource() {
         // GIVEN
-        String initialReference = "0";
+        String initialReference = "1";
         String existingValue = "e";
 
-        ResourceEntryDto existingEntry = createDefaultResourceEntryEnhanced(initialReference);
+        ResourceEntryDto existingEntry = createDefaultResourceEntryEnhanced(RESOURCE_REFERENCE);
         ResourceEntryDto existingEntry2 = createDefaultResourceEntryEnhanced(initialReference);
+        DbResourceDto resourceObject = DbResourceDto.builder()
+                .atVersion("1.0")
+                .containingEntries(asList(existingEntry, existingEntry2)).build();
 
         when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, initialReference)).thenReturn(of(existingEntry));
         when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(of(existingEntry2));
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(of(existingValue));
+        when(minerMock.getResourcesFromTopic(TOPIC)).thenReturn(of(resourceObject));
 
 
         // WHEN-THEN
         try {
-            changeHelper.updateResourceItemWithReference(TOPIC, LOCALE, initialReference, RESOURCE_REFERENCE, RESOURCE_VALUE);
+            changeHelper.updateResourceItemWithReference(TOPIC, initialReference, RESOURCE_REFERENCE, RESOURCE_VALUE);
         } catch (IllegalArgumentException iae) {
             assertThat(existingEntry.pickValue()).isPresent();
             throw iae;
