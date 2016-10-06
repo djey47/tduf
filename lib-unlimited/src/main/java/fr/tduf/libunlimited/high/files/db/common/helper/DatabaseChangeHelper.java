@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -64,10 +66,10 @@ public class DatabaseChangeHelper {
     /**
      * @param reference : reference of entry to create
      * @param topic     : database topic where content entry should be added
-     * @return created content entry with items having default values
+     * @return created content entry with REF support, items having default values
      * @throws java.util.NoSuchElementException when specified topic has no loaded content.
      */
-    public ContentEntryDto addContentsEntryWithDefaultItems(Optional<String> reference, DbDto.Topic topic) {
+    public ContentEntryDto addContentsEntryWithDefaultItems(String reference, DbDto.Topic topic) {
 
         DbDto topicObject = databaseMiner.getDatabaseTopic(topic)
                 .<IllegalStateException>orElseThrow(() -> new IllegalStateException(MESSAGE_NO_OBJECT_FOR_TOPIC + topic));
@@ -75,7 +77,28 @@ public class DatabaseChangeHelper {
         DbDataDto dataDto = topicObject.getData();
 
         ContentEntryDto newEntry = ContentEntryDto.builder()
-                .addItems(genHelper.buildDefaultContentItems(reference, topicObject))
+                .addItems(genHelper.buildDefaultContentItems(of(reference), topicObject))
+                .build();
+
+        dataDto.addEntry(newEntry);
+
+        return newEntry;
+    }
+
+    /**
+     * @param topic     : database topic where content entry should be added
+     * @return created content entry without REF support, items having default values
+     * @throws java.util.NoSuchElementException when specified topic has no loaded content.
+     */
+    public ContentEntryDto addContentsEntryWithDefaultItems(DbDto.Topic topic) {
+
+        DbDto topicObject = databaseMiner.getDatabaseTopic(topic)
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException(MESSAGE_NO_OBJECT_FOR_TOPIC + topic));
+
+        DbDataDto dataDto = topicObject.getData();
+
+        ContentEntryDto newEntry = ContentEntryDto.builder()
+                .addItems(genHelper.buildDefaultContentItems(empty(), topicObject))
                 .build();
 
         dataDto.addEntry(newEntry);
@@ -192,8 +215,6 @@ public class DatabaseChangeHelper {
         DbDataDto topicDataObject = topicObject.getData();
         ContentEntryDto sourceEntry = topicDataObject.getEntryWithInternalIdentifier(entryId)
                 .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No source entry found " + MESSAGE_AT_ID + entryId));
-        // TODO clean
-        long newIdentifier = topicDataObject.getEntries().size();
 
         List<ContentItemDto> clonedItems = cloneContentItems(sourceEntry, topic);
         ContentEntryDto newEntry = ContentEntryDto.builder()
@@ -205,7 +226,6 @@ public class DatabaseChangeHelper {
                     String newReference = DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject);
                     newEntry.updateItemValueAtRank(newReference, uidFieldRank);
                 });
-
 
         topicDataObject.addEntry(newEntry);
 
@@ -282,14 +302,6 @@ public class DatabaseChangeHelper {
     private ResourceEntryDto checkResourceEntryExistsWithReference(DbDto.Topic topic, String resourceReference) {
         return databaseMiner.getResourceEntryFromTopicAndReference(topic, resourceReference)
                 .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("Resource does not exist with reference: " + resourceReference));
-    }
-
-    // TODO remove if no usage
-    private void checkResourceEntryDoesNotExistWithReference(DbDto.Topic topic, String resourceReference) {
-        databaseMiner.getResourceEntryFromTopicAndReference(topic, resourceReference)
-                .ifPresent(entry -> {
-                    throw new IllegalArgumentException("Resource already exists with reference: " + resourceReference);
-                });
     }
 
     private void removeEntriesWithIdentifier(List<Integer> entryIds, DbDto.Topic topic) {

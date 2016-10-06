@@ -208,7 +208,7 @@ public class DatabaseGenHelperTest {
         assertThat(actualItem.getFieldRank()).isEqualTo(1);
         String newContentEntryRef = actualItem.getRawValue();
 
-        verify(changeHelperMock).addContentsEntryWithDefaultItems(Optional.of(newContentEntryRef), BRANDS);
+        verify(changeHelperMock).addContentsEntryWithDefaultItems(newContentEntryRef, BRANDS);
     }
 
     @Test

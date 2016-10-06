@@ -98,7 +98,7 @@ class MainStageChangeDataController extends AbstractMainStageSubController {
 
     int addEntryForCurrentTopic() {
         requireNonNull(getChangeHelper());
-        ContentEntryDto newEntry = getChangeHelper().addContentsEntryWithDefaultItems(empty(), currentTopicProperty().getValue());
+        ContentEntryDto newEntry = getChangeHelper().addContentsEntryWithDefaultItems(currentTopicProperty().getValue());
 
         return newEntry.getId();
     }
@@ -188,7 +188,7 @@ class MainStageChangeDataController extends AbstractMainStageSubController {
 
     private void addLinkedEntry(String sourceEntryRef, Optional<String> targetEntryRef, DbDto.Topic targetTopic) {
         requireNonNull(getChangeHelper());
-        ContentEntryDto newEntry = getChangeHelper().addContentsEntryWithDefaultItems(empty(), targetTopic);
+        ContentEntryDto newEntry = getChangeHelper().addContentsEntryWithDefaultItems(targetTopic);
         DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(newEntry, sourceEntryRef, targetEntryRef);
     }
 

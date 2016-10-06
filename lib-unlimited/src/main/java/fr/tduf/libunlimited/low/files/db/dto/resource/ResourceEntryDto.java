@@ -111,11 +111,8 @@ public class ResourceEntryDto implements Serializable {
 
     @JsonIgnore
     public Set<Locale> getPresentLocales() {
-        // TODO code rules
         return items.stream()
-
-                .map(item -> item.getLocale())
-
+                .map(ResourceItemDto::getLocale)
                 .collect(toSet());
     }
 

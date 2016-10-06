@@ -66,7 +66,7 @@ public class DatabaseChangeHelperTest {
 
 
         // WHEN
-        ContentEntryDto actualEntry = changeHelper.addContentsEntryWithDefaultItems(of(ENTRY_REFERENCE), TOPIC);
+        ContentEntryDto actualEntry = changeHelper.addContentsEntryWithDefaultItems(ENTRY_REFERENCE, TOPIC);
 
 
         // THEN
@@ -82,7 +82,7 @@ public class DatabaseChangeHelperTest {
         when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(empty());
 
         // WHEN
-        changeHelper.addContentsEntryWithDefaultItems(of(ENTRY_REFERENCE), TOPIC);
+        changeHelper.addContentsEntryWithDefaultItems(ENTRY_REFERENCE, TOPIC);
 
         // THEN: NSEE
         verifyZeroInteractions(genHelperMock);

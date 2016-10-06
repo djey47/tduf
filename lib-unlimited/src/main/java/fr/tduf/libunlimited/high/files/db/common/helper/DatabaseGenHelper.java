@@ -181,7 +181,7 @@ public class DatabaseGenHelper {
 
     private String generateDefaultContentsReference(DbDto topicObject) {
         String newContentsReference = generateUniqueContentsEntryIdentifier(topicObject);
-        changeHelper.addContentsEntryWithDefaultItems(Optional.of(newContentsReference), topicObject.getTopic());
+        changeHelper.addContentsEntryWithDefaultItems(newContentsReference, topicObject.getTopic());
         return newContentsReference;
     }
 
