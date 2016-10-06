@@ -227,19 +227,9 @@ public class ResourcesStageController extends AbstractGuiController {
 
         try {
             if (currentResourceReference.isPresent()) {
-                final String currentRef = currentResourceReference.get();
-                if (potentialAffectedLocale.isPresent()
-                        && currentRef.equals(newResourceReference)) {
-                            updateResourceForLocale(topic, potentialAffectedLocale.get(), currentRef, newResourceReference, newResourceValue);
-                } else {
-                    updateResourceForAllLocales(topic, currentRef, newResourceValue);
-                }
+                updateResource(topic, newResourceReference, newResourceValue, potentialAffectedLocale, currentResourceReference.get());
             } else {
-                if (potentialAffectedLocale.isPresent()) {
-                    createResourceForLocale(topic, potentialAffectedLocale.get(), newResourceReference, newResourceValue);
-                } else {
-                    createResourceForAllLocales(topic, newResourceReference, newResourceValue);
-                }
+                createResource(topic, newResourceReference, newResourceValue, potentialAffectedLocale);
             }
         } catch (IllegalArgumentException iae) {
             Log.error(THIS_CLASS_NAME, "Unable to edit resource", iae);
@@ -249,22 +239,27 @@ public class ResourcesStageController extends AbstractGuiController {
         }
     }
 
-    private void createResourceForAllLocales(DbDto.Topic topic, String newResourceReference, String newResourceValue) {
-        Locale.valuesAsStream()
-                .forEach(affectedLocale -> mainStageController.getChangeData().addResourceWithReference(topic, affectedLocale, newResourceReference, newResourceValue));
+    private void updateResource(DbDto.Topic topic, String newResourceReference, String newResourceValue, Optional<Locale> potentialAffectedLocale, String currentRef) {
+        if (!currentRef.equals(newResourceReference)) {
+            // TODO create proper method
+            mainStageController.getChangeData().updateResourceWithReference(topic, null, currentRef, newResourceReference, newResourceValue);
+        } else if (potentialAffectedLocale.isPresent()) {
+            // TODO create proper method
+            mainStageController.getChangeData().updateResourceWithReference(topic, potentialAffectedLocale.get(), currentRef, currentRef, newResourceValue);
+        } else {
+            // TODO create proper method
+            Locale.valuesAsStream()
+                    .forEach(affectedLocale -> mainStageController.getChangeData().updateResourceWithReference(topic, affectedLocale, currentRef, currentRef, newResourceValue));
+        }
     }
 
-    private void updateResourceForAllLocales(DbDto.Topic topic, String currentResourceReference, String newResourceValue) {
-        Locale.valuesAsStream()
-                .forEach(affectedLocale -> mainStageController.getChangeData().updateResourceWithReference(topic, affectedLocale, currentResourceReference, currentResourceReference, newResourceValue));
-    }
-
-    private void updateResourceForLocale(DbDto.Topic topic, Locale affectedLocale, String currentResourceReference, String newResourceReference, String newResourceValue) {
-        mainStageController.getChangeData().updateResourceWithReference(topic, affectedLocale, currentResourceReference, newResourceReference, newResourceValue);
-    }
-
-    private void createResourceForLocale(DbDto.Topic topic, Locale affectedLocale, String newResourceReference, String newResourceValue) {
-        mainStageController.getChangeData().addResourceWithReference(topic, affectedLocale, newResourceReference, newResourceValue);
+    private void createResource(DbDto.Topic topic, String newResourceReference, String newResourceValue, Optional<Locale> potentialAffectedLocale) {
+        if (potentialAffectedLocale.isPresent()) {
+            mainStageController.getChangeData().addResourceWithReference(topic, potentialAffectedLocale.get(), newResourceReference, newResourceValue);
+        } else {
+            Locale.valuesAsStream()
+                    .forEach(affectedLocale -> mainStageController.getChangeData().addResourceWithReference(topic, affectedLocale, newResourceReference, newResourceValue));
+        }
     }
 
     private void updateAllStages(Optional<String> resourceReference) {
