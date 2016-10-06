@@ -3,6 +3,9 @@ package fr.tduf.gui.database.controllers;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libtesting.common.helper.FilesHelper;
 import fr.tduf.libtesting.common.helper.game.DatabaseHelper;
+import fr.tduf.libunlimited.common.game.domain.Locale;
+import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseChangeHelper;
+import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -25,10 +28,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.common.game.domain.Locale.FRANCE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -42,6 +50,12 @@ public class MainStageChangeDataControllerTest {
     @Mock
     private MainStageController mainStageController;
 
+    @Mock
+    private DatabaseGenHelper genHelperMock;
+
+    @Mock
+    private DatabaseChangeHelper changeHelperMock;
+
     @InjectMocks
     private MainStageChangeDataController controller;
 
@@ -52,6 +66,10 @@ public class MainStageChangeDataControllerTest {
         Log.set(Log.LEVEL_INFO);
 
         objectMapper = new ObjectMapper();
+
+        controller.setGenHelper(genHelperMock);
+
+        when(genHelperMock.getChangeHelper()).thenReturn(changeHelperMock);
     }
 
     @Test
@@ -159,6 +177,33 @@ public class MainStageChangeDataControllerTest {
 
         // THEN
         assertThat(actualEntry).isEqualTo("25;36;");
+    }
+
+    @Test
+    public void updateResourceWithReferenceForLocale_shouldCallUpdateComponent() {
+        // GIVEN-WHEN
+        controller.updateResourceWithReferenceForLocale(CAR_PHYSICS_DATA, FRANCE, "0", "1");
+
+        // THEN
+        verify(changeHelperMock).updateResourceItemWithReference(CAR_PHYSICS_DATA, FRANCE, "0", "1");
+    }
+
+    @Test
+    public void updateResourceWithReferenceForAllLocales_withReferenceChange_shouldCallUpdateComponent() {
+        // GIVEN-WHEN
+        controller.updateResourceWithReferenceForAllLocales(CAR_PHYSICS_DATA, "0", "1", "V");
+
+        // THEN
+        verify(changeHelperMock).updateResourceEntryWithReference(CAR_PHYSICS_DATA, "0", "1", "V");
+    }
+
+    @Test
+    public void updateResourceWithReferenceForAllLocales_shouldCallUpdateComponent() {
+        // GIVEN-WHEN
+        controller.updateResourceWithReferenceForAllLocales(CAR_PHYSICS_DATA, "0", "V");
+
+        // THEN
+        verify(changeHelperMock, times(8)).updateResourceItemWithReference(eq(CAR_PHYSICS_DATA), any(Locale.class), eq("0"), eq("V"));
     }
 
     private static String createTempDirectory() throws IOException {

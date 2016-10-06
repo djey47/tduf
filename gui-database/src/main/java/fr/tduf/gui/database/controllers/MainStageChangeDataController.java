@@ -57,22 +57,19 @@ class MainStageChangeDataController extends AbstractMainStageSubController {
                 });
     }
 
-    // TODO tests
     void updateResourceWithReferenceForLocale(DbDto.Topic topic, Locale locale, String resourceReference, String newResourceValue) {
         requireNonNull(getChangeHelper());
 
         getChangeHelper().updateResourceItemWithReference(topic, locale, resourceReference, newResourceValue);
     }
 
-    // TODO tests
     void updateResourceWithReferenceForAllLocales(DbDto.Topic topic, String oldResourceReference, String newResourceReference, String newResourceValue) {
         requireNonNull(getChangeHelper());
 
         getChangeHelper().updateResourceEntryWithReference(topic, oldResourceReference, newResourceReference, newResourceValue);
     }
 
-    // TODO tests
-    public void updateResourceWithReferenceForAllLocales(DbDto.Topic topic, String resourceReference, String newResourceValue) {
+    void updateResourceWithReferenceForAllLocales(DbDto.Topic topic, String resourceReference, String newResourceValue) {
         Locale.valuesAsStream()
                 .forEach(affectedLocale -> updateResourceWithReferenceForLocale(topic, affectedLocale, resourceReference, newResourceValue));
     }
@@ -208,6 +205,10 @@ class MainStageChangeDataController extends AbstractMainStageSubController {
             Log.warn(THIS_CLASS_NAME, "Unable to generate patch object", e);
             return empty();
         }
+    }
+
+    void setGenHelper(DatabaseGenHelper genHelper) {
+        databaseGenHelper = genHelper;
     }
 
     private DatabaseGenHelper getGenHelper() {
