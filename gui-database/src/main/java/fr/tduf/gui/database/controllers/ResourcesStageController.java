@@ -164,6 +164,30 @@ public class ResourcesStageController extends AbstractGuiController {
         showWindow();
     }
 
+    // TODO tests
+    void editResourceAndUpdateMainStage(DbDto.Topic topic, Optional<String> currentResourceReference, LocalizedResource newLocalizedResource) {
+        if (newLocalizedResource == null) {
+            return;
+        }
+
+        String newResourceReference = newLocalizedResource.getReferenceValuePair().getKey();
+        String newResourceValue = newLocalizedResource.getReferenceValuePair().getValue();
+        Optional<Locale> potentialAffectedLocale = newLocalizedResource.getLocale();
+
+        try {
+            if (currentResourceReference.isPresent()) {
+                updateResource(topic, newResourceReference, newResourceValue, potentialAffectedLocale, currentResourceReference.get());
+            } else {
+                createResource(topic, newResourceReference, newResourceValue, potentialAffectedLocale);
+            }
+        } catch (IllegalArgumentException iae) {
+            Log.error(THIS_CLASS_NAME, "Unable to edit resource", iae);
+            CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES, iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE);
+        } finally {
+            updateAllStages(of(newResourceReference));
+        }
+    }
+
     private void initTopicPane() {
         fillTopics();
         topicsChoiceBox.getSelectionModel().selectedItemProperty()
@@ -215,41 +239,15 @@ public class ResourcesStageController extends AbstractGuiController {
         TableViewHelper.selectRowAndScroll(selectedRowIndex, resourcesTableView);
     }
 
-    // TODO tests
-    private void editResourceAndUpdateMainStage(DbDto.Topic topic, Optional<String> currentResourceReference, LocalizedResource newLocalizedResource) {
-        if (newLocalizedResource == null) {
-            return;
-        }
-
-        String newResourceReference = newLocalizedResource.getReferenceValuePair().getKey();
-        String newResourceValue = newLocalizedResource.getReferenceValuePair().getValue();
-        Optional<Locale> potentialAffectedLocale = newLocalizedResource.getLocale();
-
-        try {
-            if (currentResourceReference.isPresent()) {
-                updateResource(topic, newResourceReference, newResourceValue, potentialAffectedLocale, currentResourceReference.get());
-            } else {
-                createResource(topic, newResourceReference, newResourceValue, potentialAffectedLocale);
-            }
-        } catch (IllegalArgumentException iae) {
-            Log.error(THIS_CLASS_NAME, "Unable to edit resource", iae);
-            CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES, iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE);
-        } finally {
-            updateAllStages(of(newResourceReference));
-        }
-    }
-
     private void updateResource(DbDto.Topic topic, String newResourceReference, String newResourceValue, Optional<Locale> potentialAffectedLocale, String currentRef) {
-        if (!currentRef.equals(newResourceReference)) {
-            // TODO create proper method
-            mainStageController.getChangeData().updateResourceWithReference(topic, null, currentRef, newResourceReference, newResourceValue);
-        } else if (potentialAffectedLocale.isPresent()) {
-            // TODO create proper method
-            mainStageController.getChangeData().updateResourceWithReference(topic, potentialAffectedLocale.get(), currentRef, currentRef, newResourceValue);
+        if (currentRef.equals(newResourceReference)) {
+            if (potentialAffectedLocale.isPresent()) {
+                mainStageController.getChangeData().updateResourceWithReferenceForLocale(topic, potentialAffectedLocale.get(), currentRef, newResourceValue);
+            } else {
+                mainStageController.getChangeData().updateResourceWithReferenceForAllLocales(topic, currentRef, newResourceValue);
+            }
         } else {
-            // TODO create proper method
-            Locale.valuesAsStream()
-                    .forEach(affectedLocale -> mainStageController.getChangeData().updateResourceWithReference(topic, affectedLocale, currentRef, currentRef, newResourceValue));
+            mainStageController.getChangeData().updateResourceWithReferenceForAllLocales(topic, currentRef, newResourceReference, newResourceValue);
         }
     }
 

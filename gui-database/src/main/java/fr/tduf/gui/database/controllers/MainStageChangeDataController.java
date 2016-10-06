@@ -58,14 +58,23 @@ class MainStageChangeDataController extends AbstractMainStageSubController {
     }
 
     // TODO tests
-    void updateResourceWithReference(DbDto.Topic topic, Locale locale, String oldResourceReference, String newResourceReference, String newResourceValue) {
+    void updateResourceWithReferenceForLocale(DbDto.Topic topic, Locale locale, String resourceReference, String newResourceValue) {
         requireNonNull(getChangeHelper());
 
-        if (locale == null) {
-            getChangeHelper().updateResourceItemWithReference(topic, oldResourceReference, newResourceReference, newResourceValue);
-        } else {
-            getChangeHelper().updateResourceItemWithReference(topic, locale, newResourceReference, newResourceValue);
-        }
+        getChangeHelper().updateResourceItemWithReference(topic, locale, resourceReference, newResourceValue);
+    }
+
+    // TODO tests
+    void updateResourceWithReferenceForAllLocales(DbDto.Topic topic, String oldResourceReference, String newResourceReference, String newResourceValue) {
+        requireNonNull(getChangeHelper());
+
+        getChangeHelper().updateResourceItemWithReference(topic, oldResourceReference, newResourceReference, newResourceValue);
+    }
+
+    // TODO tests
+    public void updateResourceWithReferenceForAllLocales(DbDto.Topic topic, String resourceReference, String newResourceValue) {
+        Locale.valuesAsStream()
+                .forEach(affectedLocale -> updateResourceWithReferenceForLocale(topic, affectedLocale, resourceReference, newResourceValue));
     }
 
     void removeEntryWithIdentifier(int internalEntryId, DbDto.Topic topic) {
