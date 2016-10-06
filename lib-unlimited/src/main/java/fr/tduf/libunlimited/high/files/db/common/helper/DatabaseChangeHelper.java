@@ -121,8 +121,7 @@ public class DatabaseChangeHelper {
      * @param newResourceValue     : new value of resource
      * @throws IllegalArgumentException when source entry does not exist or target reference belongs to an already existing entry.
      */
-    // TODO rename to updateResourceEntryWithReference
-    public void updateResourceItemWithReference(DbDto.Topic topic, String oldResourceReference, String newResourceReference, String newResourceValue) {
+    public void updateResourceEntryWithReference(DbDto.Topic topic, String oldResourceReference, String newResourceReference, String newResourceValue) {
         checkResourceEntryExistsWithReference(topic, oldResourceReference);
 
         final DbResourceDto resourceObject = databaseMiner.getResourcesFromTopic(topic)

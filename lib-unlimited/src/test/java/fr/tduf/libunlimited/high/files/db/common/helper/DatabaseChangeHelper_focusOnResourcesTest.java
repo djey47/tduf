@@ -139,7 +139,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     }
 
     @Test
-    public void updateResourceItemWithReference_whenExistingEntry_shouldReplaceReferenceAndValue() {
+    public void updateResourceEntryWithReference_whenExistingEntry_shouldReplaceReferenceAndValue() {
         // GIVEN
         String initialReference = "0";
         String initialValue = "";
@@ -154,7 +154,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
 
 
         // WHEN
-        changeHelper.updateResourceItemWithReference(TOPIC, initialReference, RESOURCE_REFERENCE, RESOURCE_VALUE);
+        changeHelper.updateResourceEntryWithReference(TOPIC, initialReference, RESOURCE_REFERENCE, RESOURCE_VALUE);
 
 
         // THEN
@@ -166,7 +166,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     }
 
     @Test(expected=IllegalArgumentException.class)
-    public void updateResourceItemWithReference_whenEntryExistsWithNewReference_shouldThrowException_andKeepOriginalResource() {
+    public void updateResourceEntryWithReference_whenEntryExistsWithNewReference_shouldThrowException_andKeepOriginalResource() {
         // GIVEN
         String initialReference = "1";
         String existingValue = "e";
@@ -185,7 +185,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
 
         // WHEN-THEN
         try {
-            changeHelper.updateResourceItemWithReference(TOPIC, initialReference, RESOURCE_REFERENCE, RESOURCE_VALUE);
+            changeHelper.updateResourceEntryWithReference(TOPIC, initialReference, RESOURCE_REFERENCE, RESOURCE_VALUE);
         } catch (IllegalArgumentException iae) {
             assertThat(existingEntry.pickValue()).isPresent();
             throw iae;
