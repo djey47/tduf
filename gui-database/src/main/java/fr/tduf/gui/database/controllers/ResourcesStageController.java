@@ -332,4 +332,8 @@ public class ResourcesStageController extends AbstractGuiController {
     private BulkDatabaseMiner getMiner() {
         return mainStageController.getMiner();
     }
+
+    void setTopicsChoiceBox(ChoiceBox<DbDto.Topic> topicsChoiceBox) {
+        this.topicsChoiceBox = topicsChoiceBox;
+    }
 }
