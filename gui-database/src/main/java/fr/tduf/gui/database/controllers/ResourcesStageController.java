@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
@@ -98,7 +97,7 @@ public class ResourcesStageController extends AbstractGuiController {
                     String currentResourceReference = selectedResource.referenceProperty().get();
                     DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("Topic not found: " + getCurrentTopic()));
                     dialogsHelper.showEditResourceDialog(currentTopicObject, selectedResource, currentLocale)
-                            .ifPresent(localizedResource -> editResourceAndUpdateMainStage(getCurrentTopic(), of(currentResourceReference), localizedResource));
+                            .ifPresent(localizedResource -> editResourceAndUpdateMainStage(getCurrentTopic(), currentResourceReference, localizedResource));
                 });
     }
 
@@ -108,7 +107,7 @@ public class ResourcesStageController extends AbstractGuiController {
 
         DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("Topic not found: " + getCurrentTopic()));
         dialogsHelper.showAddResourceDialog(currentTopicObject, currentLocale)
-                .ifPresent(newLocalizedResource -> editResourceAndUpdateMainStage(getCurrentTopic(), Optional.empty(), newLocalizedResource));
+                .ifPresent(newLocalizedResource -> editNewResourceAndUpdateMainStage(getCurrentTopic(), newLocalizedResource));
     }
 
     @FXML
@@ -165,7 +164,7 @@ public class ResourcesStageController extends AbstractGuiController {
     }
 
     // TODO tests
-    void editResourceAndUpdateMainStage(DbDto.Topic topic, Optional<String> currentResourceReference, LocalizedResource newLocalizedResource) {
+    void editResourceAndUpdateMainStage(DbDto.Topic topic, String currentResourceReference, LocalizedResource newLocalizedResource) {
         if (newLocalizedResource == null) {
             return;
         }
@@ -175,16 +174,32 @@ public class ResourcesStageController extends AbstractGuiController {
         Optional<Locale> potentialAffectedLocale = newLocalizedResource.getLocale();
 
         try {
-            if (currentResourceReference.isPresent()) {
-                updateResource(topic, newResourceReference, newResourceValue, potentialAffectedLocale, currentResourceReference.get());
-            } else {
-                createResource(topic, newResourceReference, newResourceValue, potentialAffectedLocale);
-            }
+            updateResource(topic, newResourceReference, newResourceValue, potentialAffectedLocale, currentResourceReference);
         } catch (IllegalArgumentException iae) {
             Log.error(THIS_CLASS_NAME, "Unable to edit resource", iae);
             CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES, iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE);
         } finally {
-            updateAllStages(of(newResourceReference));
+            updateAllStagesWithResourceReference(newResourceReference);
+        }
+    }
+
+    // TODO tests
+    void editNewResourceAndUpdateMainStage(DbDto.Topic topic, LocalizedResource newLocalizedResource) {
+        if (newLocalizedResource == null) {
+            return;
+        }
+
+        String newResourceReference = newLocalizedResource.getReferenceValuePair().getKey();
+        String newResourceValue = newLocalizedResource.getReferenceValuePair().getValue();
+        Optional<Locale> potentialAffectedLocale = newLocalizedResource.getLocale();
+
+        try {
+            createResource(topic, newResourceReference, newResourceValue, potentialAffectedLocale);
+        } catch (IllegalArgumentException iae) {
+            Log.error(THIS_CLASS_NAME, "Unable to edit resource", iae);
+            CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES, iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE);
+        } finally {
+            updateAllStagesWithResourceReference(newResourceReference);
         }
     }
 
@@ -234,7 +249,7 @@ public class ResourcesStageController extends AbstractGuiController {
     private void removeResourceAndUpdateMainStage(DbDto.Topic topic, ResourceEntryDataItem selectedResource, Locale locale, boolean forAllLocales, int selectedRowIndex) {
         mainStageController.getChangeData().removeResourceWithReference(topic, locale, selectedResource.referenceProperty().getValue(), forAllLocales);
 
-        updateAllStages(Optional.empty());
+        updateAllStages();
 
         TableViewHelper.selectRowAndScroll(selectedRowIndex, resourcesTableView);
     }
@@ -260,9 +275,15 @@ public class ResourcesStageController extends AbstractGuiController {
         }
     }
 
-    private void updateAllStages(Optional<String> resourceReference) {
+    private void updateAllStagesWithResourceReference(String resourceReference) {
         updateResourcesStageData();
-        resourceReference.ifPresent(this::selectResourceInTableAndScroll);
+        selectResourceInTableAndScroll(resourceReference);
+
+        mainStageController.getViewData().updateAllPropertiesWithItemValues();
+    }
+
+    private void updateAllStages() {
+        updateResourcesStageData();
 
         mainStageController.getViewData().updateAllPropertiesWithItemValues();
     }
