@@ -155,12 +155,11 @@ public class DialogsHelper {
         TextField valueTextField = new TextField(defaultValue);
         Platform.runLater(referenceTextField::requestFocus);
 
-        grid.add(new Label(DisplayConstants.LABEL_CHOICEBOX_LOCALE), 0, 0);
-        grid.add(localeChoiceBox, 1, 0);
-        grid.add(new Label(DisplayConstants.LABEL_TEXTFIELD_REFERENCE), 0, 1);
-        grid.add(referenceTextField, 1, 1);
-        grid.add(new Label(DisplayConstants.LABEL_TEXTFIELD_VALUE), 0, 2);
-        grid.add(valueTextField, 1, 2);
+        grid.add(new Label(DisplayConstants.LABEL_TEXTFIELD_REFERENCE), 0, 0);
+        grid.add(referenceTextField, 1, 0);
+        grid.add(new Label(DisplayConstants.LABEL_TEXTFIELD_VALUE), 0, 1);
+        grid.add(valueTextField, 1, 1);
+        grid.add(localeChoiceBox, 2, 1);
         editResourceDialog.getDialogPane().setContent(grid);
 
         ButtonType okButtonType = new ButtonType(DisplayConstants.LABEL_BUTTON_OK, ButtonBar.ButtonData.OK_DONE);

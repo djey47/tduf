@@ -24,7 +24,6 @@ public class DisplayConstants {
     public static final String LABEL_BUTTON_PLUS = "+";
     public static final String LABEL_BUTTON_CLOSE = "Close";
     public static final String LABEL_BUTTON_SAVE = "Save...";
-    public static final String LABEL_CHOICEBOX_LOCALE = "Locale:";
     public static final String LABEL_ITEM_DATABASE_ENTRY = "%s : %s";
     public static final String LABEL_ITEM_ENTRY_COUNT = "/ %d";
     public static final String LABEL_ITEM_ENTRY_COUNT_DEFAULT = "";
@@ -38,7 +37,7 @@ public class DisplayConstants {
     public static final String LABEL_SEARCH_ENTRY = "With REF?";
     public static final String LABEL_STATUS_VERSION = "TDUF Database Editor by Djey.";
     public static final String LABEL_TEXTFIELD_REFERENCE = "Reference:";
-    public static final String LABEL_TEXTFIELD_VALUE = "Value:";
+    public static final String LABEL_TEXTFIELD_VALUE = "Value@Locale:";
     public static final String LABEL_ENTRY_SELECT_SINGLE = "Click an entry below to use it.";
     public static final String LABEL_ENTRY_SELECT_MANY = "CTRL-Pick one or many entries below.";
 
@@ -51,7 +50,6 @@ public class DisplayConstants {
     public static final String TOOLTIP_BUTTON_MOVE_LINKED_ENTRY_UP = "Moves current linked entry one rank up.";
     public static final String TOOLTIP_BUTTON_MOVE_LINKED_ENTRY_DOWN = "Moves current linked entry one rank down.";
     public static final String TOOLTIP_FIELD_TEMPLATE = "#%d:%s";
-
 
     public static final String COLUMN_HEADER_DATA = "Linked data";
     public static final String COLUMN_HEADER_ID = "#";
