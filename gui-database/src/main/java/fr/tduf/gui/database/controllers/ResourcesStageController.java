@@ -165,11 +165,6 @@ public class ResourcesStageController extends AbstractGuiController {
     }
 
     void editResourceAndUpdateMainStage(DbDto.Topic topic, String currentResourceReference, LocalizedResource newLocalizedResource) {
-        // TODO necessary condition?
-        if (newLocalizedResource == null) {
-            return;
-        }
-
         try {
             updateResource(topic, currentResourceReference, newLocalizedResource.getReferenceValuePair(), newLocalizedResource.getLocale());
         } catch (IllegalArgumentException iae) {
@@ -181,11 +176,6 @@ public class ResourcesStageController extends AbstractGuiController {
     }
 
     void editNewResourceAndUpdateMainStage(DbDto.Topic topic, LocalizedResource newLocalizedResource) {
-        // TODO necessary condition?
-        if (newLocalizedResource == null) {
-            return;
-        }
-
         try {
             createResource(topic, newLocalizedResource.getReferenceValuePair(), newLocalizedResource.getLocale());
         } catch (IllegalArgumentException iae) {
