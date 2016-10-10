@@ -164,7 +164,6 @@ public class ResourcesStageController extends AbstractGuiController {
         showWindow();
     }
 
-    // TODO tests
     void editResourceAndUpdateMainStage(DbDto.Topic topic, String currentResourceReference, LocalizedResource newLocalizedResource) {
         // TODO necessary condition?
         if (newLocalizedResource == null) {
@@ -181,7 +180,6 @@ public class ResourcesStageController extends AbstractGuiController {
         }
     }
 
-    // TODO tests
     void editNewResourceAndUpdateMainStage(DbDto.Topic topic, LocalizedResource newLocalizedResource) {
         // TODO necessary condition?
         if (newLocalizedResource == null) {
