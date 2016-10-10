@@ -24,6 +24,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -165,41 +166,35 @@ public class ResourcesStageController extends AbstractGuiController {
 
     // TODO tests
     void editResourceAndUpdateMainStage(DbDto.Topic topic, String currentResourceReference, LocalizedResource newLocalizedResource) {
+        // TODO necessary condition?
         if (newLocalizedResource == null) {
             return;
         }
 
-        String newResourceReference = newLocalizedResource.getReferenceValuePair().getKey();
-        String newResourceValue = newLocalizedResource.getReferenceValuePair().getValue();
-        Optional<Locale> potentialAffectedLocale = newLocalizedResource.getLocale();
-
         try {
-            updateResource(topic, newResourceReference, newResourceValue, potentialAffectedLocale, currentResourceReference);
+            updateResource(topic, currentResourceReference, newLocalizedResource.getReferenceValuePair(), newLocalizedResource.getLocale());
         } catch (IllegalArgumentException iae) {
-            Log.error(THIS_CLASS_NAME, "Unable to edit resource", iae);
+            Log.error(THIS_CLASS_NAME, "Unable to update resource", iae);
             CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES, iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE);
         } finally {
-            updateAllStagesWithResourceReference(newResourceReference);
+            updateAllStagesWithResourceReference(newLocalizedResource.getReferenceValuePair().getKey());
         }
     }
 
     // TODO tests
     void editNewResourceAndUpdateMainStage(DbDto.Topic topic, LocalizedResource newLocalizedResource) {
+        // TODO necessary condition?
         if (newLocalizedResource == null) {
             return;
         }
 
-        String newResourceReference = newLocalizedResource.getReferenceValuePair().getKey();
-        String newResourceValue = newLocalizedResource.getReferenceValuePair().getValue();
-        Optional<Locale> potentialAffectedLocale = newLocalizedResource.getLocale();
-
         try {
-            createResource(topic, newResourceReference, newResourceValue, potentialAffectedLocale);
+            createResource(topic, newLocalizedResource.getReferenceValuePair(), newLocalizedResource.getLocale());
         } catch (IllegalArgumentException iae) {
-            Log.error(THIS_CLASS_NAME, "Unable to edit resource", iae);
+            Log.error(THIS_CLASS_NAME, "Unable to create resource", iae);
             CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES, iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE);
         } finally {
-            updateAllStagesWithResourceReference(newResourceReference);
+            updateAllStagesWithResourceReference(newLocalizedResource.getReferenceValuePair().getKey());
         }
     }
 
@@ -254,7 +249,10 @@ public class ResourcesStageController extends AbstractGuiController {
         TableViewHelper.selectRowAndScroll(selectedRowIndex, resourcesTableView);
     }
 
-    private void updateResource(DbDto.Topic topic, String newResourceReference, String newResourceValue, Optional<Locale> potentialAffectedLocale, String currentRef) {
+    private void updateResource(DbDto.Topic topic, String currentRef, Pair<String, String> referenceValuePair, Optional<Locale> potentialAffectedLocale) {
+        String newResourceReference = referenceValuePair.getKey();
+        String newResourceValue = referenceValuePair.getValue();
+
         if (currentRef.equals(newResourceReference)) {
             if (potentialAffectedLocale.isPresent()) {
                 mainStageController.getChangeData().updateResourceWithReferenceForLocale(topic, potentialAffectedLocale.get(), currentRef, newResourceValue);
@@ -266,7 +264,10 @@ public class ResourcesStageController extends AbstractGuiController {
         }
     }
 
-    private void createResource(DbDto.Topic topic, String newResourceReference, String newResourceValue, Optional<Locale> potentialAffectedLocale) {
+    private void createResource(DbDto.Topic topic, Pair<String, String> referenceValuePair, Optional<Locale> potentialAffectedLocale) {
+        String newResourceReference = referenceValuePair.getKey();
+        String newResourceValue = referenceValuePair.getValue();
+
         if (potentialAffectedLocale.isPresent()) {
             mainStageController.getChangeData().addResourceWithReference(topic, potentialAffectedLocale.get(), newResourceReference, newResourceValue);
         } else {
