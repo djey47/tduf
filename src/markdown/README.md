@@ -47,6 +47,7 @@ TDUF aims at making Test Drive Unlmited modding easier:
 ### Fixed issues
 
 * DatabaseEditor: misc fixes and performance enhancements
+* DatabaseEditor: fixes an error when editing resource reference
 
 * CameraTool: copy camera set now working (copy-set instruction)
 
