@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import static com.esotericsoftware.minlog.Log.LEVEL_INFO;
 import static fr.tduf.libunlimited.common.game.domain.Locale.*;
+import static fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange.ALL;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
@@ -193,6 +194,22 @@ public class PatchGeneratorTest {
         assertPatchGeneratedWithinRangeForOneTopicAndPartialValues(actualPatchObject);
     }
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void makePatch_whenUsingRealDatabase_andSingleFieldRank_andNoREFSupport_shouldThrowException() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        ItemRange fieldRange = ItemRange.fromCliOption(Optional.of("1"));
+
+        List<DbDto> databaseObjects = createDatabaseObjectsWithOneTopicFromRealFile();
+        PatchGenerator generator = createPatchGenerator(databaseObjects);
+
+
+        // WHEN
+        generator.makePatch(ACHIEVEMENTS, ALL, fieldRange);
+
+
+        // THEN: UOE
+    }
+
     @Test
     public void makePatch_whenUsingRealDatabase_andAllRefs_andSameResourceValuesForLocales_shouldReturnCorrectPatchObjectWithExistingRefs() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
@@ -220,7 +237,7 @@ public class PatchGeneratorTest {
     }
 
     private static ItemRange createDefaultRange() {
-        return ItemRange.ALL;
+        return ALL;
     }
 
     private static PatchGenerator createPatchGenerator(List<DbDto> databaseObjects) throws ReflectiveOperationException {

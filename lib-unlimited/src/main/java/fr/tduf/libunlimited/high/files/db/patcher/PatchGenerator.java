@@ -151,10 +151,13 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                 null;
 
         List<ContentItemDto> items = entry.getItems();
-        return fieldRange.isGlobal() ?
-                makeGlobalChangeObject(entryReference, topic, items, structureFields, requiredReferences) :
-                makePartialChangeObject(entryReference, topic, items, structureFields, fieldRange, requiredReferences);
-
+        if (fieldRange.isGlobal()) {
+            return makeGlobalChangeObject(entryReference, topic, items, structureFields, requiredReferences);
+        } else if (entryReference == null) {
+            throw new UnsupportedOperationException("Partial field export from this topic is not possible, yet.");
+        } else {
+            return makePartialChangeObject(entryReference, topic, items, structureFields, fieldRange, requiredReferences);
+        }
     }
 
     private DbPatchDto.DbChangeDto makeGlobalChangeObject(String entryReference, DbDto.Topic topic, List<ContentItemDto> entryItems, List<DbStructureDto.Field> structureFields, RequiredReferences requiredReferences) {
