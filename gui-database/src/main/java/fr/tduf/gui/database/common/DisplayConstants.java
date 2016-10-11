@@ -65,6 +65,7 @@ public class DisplayConstants {
     public static final String TITLE_SUB_EXPORT_FILE = " : Export contents to file";
     public static final String TITLE_SUB_IMPORT = " : Import entry";
     public static final String TITLE_SUB_IMPORT_PERFORMANCE_PACK = " : Import TDUPE Performance Pack";
+    public static final String TITLE_SUB_IMPORT_TDUMT_PATCH = " : Import TDUMT Patch";
     public static final String TITLE_SUB_SEARCH_ENTRY = " : Search for entry";
     public static final String TITLE_SUB_SEARCH_RESOURCE_ENTRY = " : Search for resource entry";
     public static final String TITLE_SUB_RESET_DB_CACHE = " : Reset database cache";
@@ -81,11 +82,13 @@ public class DisplayConstants {
     public static final String MESSAGE_ALL_ENTRIES_EXPORTED = "All topic entries were exported to TDUF patch.";
     public static final String MESSAGE_DATA_IMPORTED = "Current patch file data was imported to database.";
     public static final String MESSAGE_DATA_IMPORTED_PERFORMANCE_PACK = "Current pack file data was imported to database.";
+    public static final String MESSAGE_DATA_IMPORTED_TDUMT_PATCH = "Current patch file data was imported to database.";
     public static final String MESSAGE_SEE_LOGS = "See logs for details.";
     public static final String MESSAGE_UNABLE_EXPORT_ENTRIES = "Unable to export selected entries.";
     public static final String MESSAGE_UNABLE_EXPORT_ALL_ENTRIES = "Unable to export all entries from current topic.";
     public static final String MESSAGE_UNABLE_IMPORT_PATCH = "Unable to import TDUF patch.";
     public static final String MESSAGE_UNABLE_IMPORT_PERFORMANCE_PACK = "Unable to import TDUPE Performance Pack.";
+    public static final String MESSAGE_UNABLE_IMPORT_TDUMT_PATCH = "Unable to import TDUMT Patch.";
     public static final String MESSAGE_DELETED_CACHE = "Database cache directory was deleted succesfully:";
     public static final String MESSAGE_DELETED_SETTINGS = "Application settings were deleted succesfully.";
     public static final String MESSAGE_RESTART_APP = "Please restart application.";

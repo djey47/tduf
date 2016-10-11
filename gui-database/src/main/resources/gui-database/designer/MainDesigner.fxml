@@ -106,6 +106,7 @@
                         <MenuItem mnemonicParsing="false" onAction="#handleImportEntryTdufPatchMenuAction" text="TDUF patch..." />
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#handleImportPerformancePackMenuAction" text="TDUPE Performance Pack..." />
+                        <MenuItem mnemonicParsing="false" onAction="#handleImportPchMenuAction" text="TDUMT patch..." />
                      </items>
                      <tooltip>
                         <Tooltip text="Imports to current database." />

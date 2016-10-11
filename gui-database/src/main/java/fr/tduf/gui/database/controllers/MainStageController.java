@@ -373,7 +373,6 @@ public class MainStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleImportEntryTdufPatchMenuAction");
 
         ofNullable(currentTopicObject)
-
                 .ifPresent(topicObject -> askForPatchLocationAndImportDataFromFile());
     }
 
@@ -387,6 +386,14 @@ public class MainStageController extends AbstractGuiController {
         }
 
         askForPerformancePackLocationAndImportData();
+    }
+
+    @FXML
+    public void handleImportPchMenuAction() {
+        Log.trace(THIS_CLASS_NAME, "->handleImportPchMenuAction");
+
+        ofNullable(currentTopicObject)
+                .ifPresent(topicObject -> askForTDUMTPatchLocationAndImportDataFromFile());
     }
 
     public EventHandler<ActionEvent> handleBrowseResourcesButtonMouseClick(DbDto.Topic targetTopic, SimpleStringProperty targetReferenceProperty, int fieldRank) {
@@ -792,6 +799,27 @@ public class MainStageController extends AbstractGuiController {
         } catch (Exception e) {
             Log.error(THIS_CLASS_NAME, e);
             CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_PERFORMANCE_PACK, DisplayConstants.MESSAGE_SEE_LOGS);
+        }
+    }
+
+    private void askForTDUMTPatchLocationAndImportDataFromFile() {
+        Optional<File> potentialFile = CommonDialogsHelper.browseForFilename(true, getWindow());
+        if (!potentialFile.isPresent()) {
+            return;
+        }
+
+        String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_IMPORT_TDUMT_PATCH;
+        try {
+            String packFilePath = potentialFile
+                    .map(File::getPath)
+                    .<IllegalStateException>orElseThrow(() -> new IllegalStateException("Should not happen!"));
+            // TODO change data controller
+            viewDataController.updateAllPropertiesWithItemValues();
+
+            CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED_TDUMT_PATCH, packFilePath);
+        } catch (Exception e) {
+            Log.error(THIS_CLASS_NAME, e);
+            CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_TDUMT_PATCH, DisplayConstants.MESSAGE_SEE_LOGS);
         }
     }
 
