@@ -36,10 +36,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.Optional;
-import java.util.OptionalInt;
+import java.util.*;
 
 import static fr.tduf.libunlimited.common.game.domain.Locale.FRANCE;
 import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
@@ -697,6 +694,18 @@ public class MainStageViewDataControllerTest {
         assertThat(actualDataItem.internalEntryIdProperty().get()).isEqualTo(0);
         assertThat(actualDataItem.referenceProperty().get()).isEqualTo("entryRef2");
         assertThat(actualDataItem.valueProperty().get()).isEqualTo("remote value");
+    }
+
+    @Test
+    public void selectFieldsFromTopic_whenTopicWithoutREFSupport_shouldReturnEmptyList() {
+        // GIVEN
+        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(ACHIEVEMENTS));
+
+        // WHEN
+        final List<String> actualFields = controller.selectFieldsFromTopic();
+
+        // THEN
+        assertThat(actualFields).isEmpty();
     }
 
     private EditorLayoutDto createLayoutObject() {

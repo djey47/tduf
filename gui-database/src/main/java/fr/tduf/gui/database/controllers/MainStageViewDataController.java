@@ -319,13 +319,19 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                     .collect(toList());
         }
 
-        return new ArrayList<>();
+        return new ArrayList<>(0);
     }
 
     List<String> selectFieldsFromTopic() {
-        return getFieldsBrowserStageController().initAndShowModalDialog(currentTopicProperty().getValue()).stream()
-                .map(item -> Integer.valueOf(item.rankProperty().get()).toString())
-                .collect(toList());
+        final DbDto.Topic currentTopic = currentTopicProperty().getValue();
+
+        if (DatabaseStructureQueryHelper.isUidSupportForTopic(currentTopic)) {
+            return getFieldsBrowserStageController().initAndShowModalDialog(currentTopic).stream()
+                    .map(item -> Integer.valueOf(item.rankProperty().get()).toString())
+                    .collect(toList());
+        }
+
+        return new ArrayList<>(0);
     }
 
     void updateCurrentEntryLabelProperty() {
