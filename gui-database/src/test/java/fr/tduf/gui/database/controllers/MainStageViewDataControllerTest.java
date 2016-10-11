@@ -87,6 +87,7 @@ public class MainStageViewDataControllerTest {
     private final DbDto topicObject = createTopicObject();
 
     private final StringProperty currentEntryLabelProperty = new SimpleStringProperty("");
+    private final Property<Integer> currentEntryIndexProperty = new SimpleObjectProperty<>(-1);
 
     private ChoiceBox<String> profilesChoiceBox;
     private ChoiceBox<Locale> localesChoiceBox;
@@ -102,6 +103,7 @@ public class MainStageViewDataControllerTest {
         when(mainStageControllerMock.getLayoutObject()).thenReturn(layoutObject);
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(topicObject);
 
+        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(currentEntryIndexProperty);
         when(mainStageControllerMock.getCurrentEntryLabelProperty()).thenReturn(currentEntryLabelProperty);
 
         profilesChoiceBox = new ChoiceBox<>(observableArrayList(TEST_PROFILE_NAME, TEST_REMOTE_PROFILE_NAME, TEST_REMOTE_ASSO_PROFILE_NAME));
@@ -386,6 +388,30 @@ public class MainStageViewDataControllerTest {
         assertThat(actualEntry.referenceProperty().get()).isEqualTo("0");
         assertThat(actualEntry.internalEntryIdProperty().get()).isEqualTo(0);
         assertThat(actualEntry.valueProperty().get()).isEqualTo("<?>");
+    }
+
+    @Test
+    public void updateEntriesAndSwitchTo_whenNegativeIndex_shouldSelectFirstItem() {
+        // GIVEN
+        final DbDto topicObjectWithDataEntry = createTopicObjectWithDataEntry();
+
+        controller.currentProfile().setValue(getFirstLayoutProfile());
+        controller.getBrowsableEntries().add(new ContentEntryDataItem());
+
+        when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(topicObjectWithDataEntry);
+        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(TOPIC2));
+
+        when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(createTopicObjectWithDataEntryAndRef("entryRef")));
+        when(minerMock.getContentEntryReferenceWithInternalIdentifier(0, TOPIC2)).thenReturn(empty());
+        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(0, TOPIC2)).thenReturn(of(topicObjectWithDataEntry.getData().getEntries().get(0)));
+
+
+        // WHEN
+        controller.updateEntriesAndSwitchTo(-1);
+
+
+        // THEN
+        assertThat(controller.currentEntryIndexProperty().getValue()).isEqualTo(0);
     }
 
     @Test
