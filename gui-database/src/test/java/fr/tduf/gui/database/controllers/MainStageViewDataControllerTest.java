@@ -708,6 +708,18 @@ public class MainStageViewDataControllerTest {
         assertThat(actualFields).isEmpty();
     }
 
+    @Test
+    public void selectEntriesFromTopic_whenTopicWithoutREFSupport_shouldReturnEmptyList() {
+        // GIVEN
+        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(ACHIEVEMENTS));
+
+        // WHEN
+        final List<String> actualEntries = controller.selectEntriesFromTopic();
+
+        // THEN
+        assertThat(actualEntries).isEmpty();
+    }
+
     private EditorLayoutDto createLayoutObject() {
         EditorLayoutDto.EditorProfileDto profileObject = new EditorLayoutDto.EditorProfileDto(TEST_PROFILE_NAME);
         profileObject.setTopic(TOPIC2);

@@ -305,14 +305,11 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     }
 
     List<String> selectEntriesFromTopic() {
-        DbDto.Topic topic = currentTopicProperty().getValue();
-        DbDto databaseObject = getMiner().getDatabaseTopic(topic)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException(MESSAGE_NO_DATABASE_OBJECT_FOR_TOPIC + topic));
+        DbDto.Topic currentTopic = currentTopicProperty().getValue();
 
-        final Optional<DbStructureDto.Field> potentialUidField = DatabaseStructureQueryHelper.getUidField(databaseObject.getStructure().getFields());
-        if (potentialUidField.isPresent()) {
-            Optional<String> potentialEntryReference = getMiner().getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty().getValue(), topic);
-            final List<ContentEntryDataItem> selectedItems = getEntriesStageController().initAndShowModalDialogForMultiSelect(potentialEntryReference, topic, currentProfileProperty.getValue().getName());
+        if (DatabaseStructureQueryHelper.isUidSupportForTopic(currentTopic)) {
+            Optional<String> potentialEntryReference = getMiner().getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty().getValue(), currentTopic);
+            final List<ContentEntryDataItem> selectedItems = getEntriesStageController().initAndShowModalDialogForMultiSelect(potentialEntryReference, currentTopic, currentProfileProperty.getValue().getName());
 
             return selectedItems.stream()
                     .map(item -> item.referenceProperty().get())
