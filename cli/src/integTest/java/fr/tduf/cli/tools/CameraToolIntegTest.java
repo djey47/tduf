@@ -19,6 +19,7 @@ public class CameraToolIntegTest {
     private final String outputDirectory = outputPath.toString();
     private final String inputCameraFile = camerasIntegTestPath.resolve("Cameras.bin").toString();
     private final String outputCameraFile = outputPath.resolve("Cameras.bin.extended").toString();
+    private final String batchFile = camerasIntegTestPath.resolve("instructions.csv").toString();
 
     @Before
     public void setUp() throws IOException {
@@ -33,6 +34,18 @@ public class CameraToolIntegTest {
         // WHEN: copy-set
         System.out.println("-> Copy Set!");
         CameraTool.main(new String[]{"copy-set", "-n", "-i", inputCameraFile, "-o", outputCameraFile, "-s", "108", "-t", "109"});
+
+        // THEN
+        assertThat(new File(outputCameraFile)).hasSameContentAs(new File(referenceCameraFile));
+    }
+
+    @Test
+    public void copySets_shouldProduceCorrectFile() throws IOException {
+        String referenceCameraFile = camerasIntegTestPath.resolve("Cameras.set108CopiedTo109.bin").toString();
+
+        // WHEN: copy-sets
+        System.out.println("-> Copy Sets!");
+        CameraTool.main(new String[]{"copy-sets", "-n", "-i", inputCameraFile, "-o", outputCameraFile, "-b", batchFile});
 
         // THEN
         assertThat(new File(outputCameraFile)).hasSameContentAs(new File(referenceCameraFile));
