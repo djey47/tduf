@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import static fr.tduf.cli.tools.CameraTool.Command.COPY_SET;
+import static fr.tduf.cli.tools.CameraTool.Command.COPY_SETS;
 import static java.util.Collections.singletonList;
 
 /**
@@ -39,13 +40,18 @@ public class CameraTool extends GenericTool {
     @Option(name="-s", aliases = "--sourceId", usage = "Identifier of camera set to copy (required for copy-set operation).")
     private Integer sourceIdentifier;
 
+    @Option(name="-b", aliases = "--batchFile", usage = "CSV File containing all identifiers of camera sets to copy (required for copy-sets operation).")
+    private String batchIdentifiersFile;
+
+
     private Command command;
 
     /**
      * All available commands
      */
     enum Command implements CommandHelper.CommandEnum {
-        COPY_SET("copy-set", "Duplicate given camera set to a new identifier. Will erase existing.");
+        COPY_SET("copy-set", "Duplicate given camera set to a new identifier. Will not erase existing."),
+        COPY_SETS("copy-sets", "Duplicate given camera sets to new identifiers. Will not erase existing.");
 
         final String label;
         final String description;
@@ -80,12 +86,16 @@ public class CameraTool extends GenericTool {
 
     @Override
     protected boolean commandDispatch() throws Exception {
-        if (COPY_SET == command) {
-            commandResult = copySet(inputCameraFile, outputCameraFile);
-            return true;
-        } else {
-            commandResult = null;
-            return false;
+        switch (command) {
+            case COPY_SET:
+                commandResult = copySet(inputCameraFile, outputCameraFile);
+                return true;
+            case COPY_SETS:
+                commandResult = copySets(inputCameraFile, outputCameraFile);
+                return true;
+            default:
+                commandResult = null;
+                return false;
         }
     }
 
@@ -101,10 +111,16 @@ public class CameraTool extends GenericTool {
             outputCameraFile = inputCameraFile + ".extended";
         }
 
-        // Target identifier: mandatory with copy-set/copy-all-sets
-        if (targetIdentifier == null
+        // Identifiers: mandatory with copy-set
+        if ((targetIdentifier == null || sourceIdentifier == null)
                 && command == COPY_SET) {
-            throw new CmdLineException(parser, "Error: target identifier is required.", null);
+            throw new CmdLineException(parser, "Error: target and source identifiers are required.", null);
+        }
+
+        // Batch file: mandatory with copy-sets
+        if (batchIdentifiersFile == null
+                && command == COPY_SETS) {
+            throw new CmdLineException(parser, "Error: batch file is required.", null);
         }
     }
 
@@ -120,13 +136,22 @@ public class CameraTool extends GenericTool {
     }
 
     private Map<String, ?> copySet(String sourceCameraFile, String targetCameraFile) throws IOException {
-        outLine("> Will use Cameras file: " + sourceCameraFile);
-
         CamerasParser parser = loadAndParseCameras(sourceCameraFile);
 
-        outLine("> Done reading cameras.");
-
         CamerasHelper.duplicateCameraSet(sourceIdentifier, targetIdentifier, parser);
+
+        outLine("> Done copying camera set.");
+
+        writeModifiedCameras(parser, targetCameraFile);
+
+        return makeCommandResultForCopy(targetCameraFile);
+    }
+
+    private Map<String, ?> copySets(String sourceCameraFile, String targetCameraFile) throws IOException {
+        CamerasParser parser = loadAndParseCameras(sourceCameraFile);
+
+        List<String> instructions = readInstructions(batchIdentifiersFile);
+        CamerasHelper.batchDuplicateCameraSets(instructions, parser);
 
         outLine("> Done copying camera sets.");
 
@@ -135,9 +160,18 @@ public class CameraTool extends GenericTool {
         return makeCommandResultForCopy(targetCameraFile);
     }
 
+    private List<String> readInstructions(String batchIdentifiersFile) throws IOException {
+        return Files.readAllLines(Paths.get(batchIdentifiersFile));
+    }
+
     private CamerasParser loadAndParseCameras(String cameraFile) throws IOException {
+        outLine("> Will use Cameras file: " + cameraFile);
+
         CamerasParser parser = CamerasParser.load(getCamerasInputStream(cameraFile));
         parser.parse();
+
+        outLine("> Done reading cameras.");
+
         return parser;
     }
 
