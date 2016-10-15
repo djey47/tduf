@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.lang.Long.valueOf;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -26,7 +27,7 @@ public class CamerasHelper {
     private CamerasHelper(){}
 
     /**
-     * Creates or replace a camera set at targetCameraId with all views from set at sourceCameraId
+     * Creates a camera set at targetCameraId with all views from set at sourceCameraId
      * @param sourceCameraId    : identifier of camera to get views from
      * @param targetCameraId    : identifier of camera to create views. May not exist already, in that case will add a new set
      * @param parser            : parsed cameras contents.
@@ -51,6 +52,20 @@ public class CamerasHelper {
         updateViewsInDatastore(dataStore, sourceCameraId, targetCameraId, parser);
 
         parser.flushCaches();
+    }
+
+    /**
+     * Creates all camera sets at targetId with all views from sourceId
+     * @param instructions      : list of <sourceCameraId>;<targetCameraId>
+     * @param parser            : parsed cameras contents.
+     */
+    public static void batchDuplicateCameraSets(List<String> instructions, CamerasParser parser) {
+        requireNonNull(instructions, "A list of instructions is required.");
+
+        instructions.forEach(instruction -> {
+            String[] compounds = instruction.split(";");
+            duplicateCameraSet(valueOf(compounds[0]), valueOf(compounds[1]), parser);
+        });
     }
 
     private static void updateIndexInDatastore(DataStore dataStore, long sourceCameraId, long targetCameraId, Map<Long, Short> cameraIndex) {

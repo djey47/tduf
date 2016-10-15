@@ -8,7 +8,9 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CamerasHelperTest {
@@ -62,5 +64,23 @@ public class CamerasHelperTest {
         assertThat(parser.getCameraIndex()).hasSize(150);
         assertThat(parser.getCameraViews()).hasSize(148);
         assertThat(parser.getTotalViewCount()).isEqualTo(591);
+    }
+
+    @Test
+    public void batchDuplicateCameraSets_whenSourceExist_shouldAddSets() throws Exception {
+        // GIVEN-WHEN
+        List<String> instructions = asList ("1;401", "1;402", "1;403");
+        CamerasHelper.batchDuplicateCameraSets(instructions, parser);
+
+        // THEN
+        assertThat(parser.getCameraIndex()).hasSize(153);
+        assertThat(parser.getCameraIndex()).containsKey(401L);
+        assertThat(parser.getCameraIndex()).containsKey(402L);
+        assertThat(parser.getCameraIndex()).containsKey(403L);
+        assertThat(parser.getCameraViews()).hasSize(151);
+        assertThat(parser.getCameraViews().get(401L)).hasSize(4);
+        assertThat(parser.getCameraViews().get(402L)).hasSize(4);
+        assertThat(parser.getCameraViews().get(403L)).hasSize(4);
+        assertThat(parser.getTotalViewCount()).isEqualTo(603);
     }
 }
