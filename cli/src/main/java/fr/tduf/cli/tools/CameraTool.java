@@ -161,7 +161,13 @@ public class CameraTool extends GenericTool {
     }
 
     private List<String> readInstructions(String batchIdentifiersFile) throws IOException {
-        return Files.readAllLines(Paths.get(batchIdentifiersFile));
+        outLine("> Will use batch identifiers file: " + batchIdentifiersFile);
+
+        List<String> lines = Files.readAllLines(Paths.get(batchIdentifiersFile));
+
+        outLine("> Done reading identifiers.");
+
+        return lines;
     }
 
     private CamerasParser loadAndParseCameras(String cameraFile) throws IOException {
