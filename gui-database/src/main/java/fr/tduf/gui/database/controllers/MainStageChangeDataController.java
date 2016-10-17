@@ -20,7 +20,12 @@ import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.rw.DatabaseParser;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -153,6 +158,7 @@ class MainStageChangeDataController extends AbstractMainStageSubController {
                 .orElse(false);
     }
 
+    // TODO test
     Optional<String> importPatch(File patchFile) throws IOException, ReflectiveOperationException {
         DbPatchDto patchObject = new ObjectMapper().readValue(patchFile, DbPatchDto.class);
         DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, getDatabaseObjects());
@@ -163,10 +169,23 @@ class MainStageChangeDataController extends AbstractMainStageSubController {
         return PatchPropertiesReadWriteHelper.writeEffectivePatchProperties(effectiveProperties, patchFile.getAbsolutePath());
     }
 
+    // TODO test
     void importPerformancePack(String packFile) throws ReflectiveOperationException {
         int currentEntryIndex = currentEntryIndexProperty().getValue();
         TdupeGateway gateway = AbstractDatabaseHolder.prepare(TdupeGateway.class, getDatabaseObjects());
         gateway.applyPerformancePackToEntryWithIdentifier(currentEntryIndex, packFile);
+    }
+
+    // TODO exception handling
+    void importLegacyPatch(String patchFile) throws ParserConfigurationException, IOException, SAXException, ReflectiveOperationException {
+        // TODO extract to FileHelper
+        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+        Document patchDocument = docBuilder.parse(new File(patchFile));
+
+        final DbPatchDto patchObject = TdumtPatchConverter.pchToJson(patchDocument);
+        DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, getDatabaseObjects());
+        patcher.apply(patchObject);
     }
 
     private List<String> getRawValuesFromCurrentEntry() {

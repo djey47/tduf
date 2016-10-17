@@ -810,13 +810,13 @@ public class MainStageController extends AbstractGuiController {
 
         String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_IMPORT_TDUMT_PATCH;
         try {
-            String packFilePath = potentialFile
+            String patchFilePath = potentialFile
                     .map(File::getPath)
                     .<IllegalStateException>orElseThrow(() -> new IllegalStateException("Should not happen!"));
-            // TODO change data controller
+            changeDataController.importLegacyPatch(patchFilePath);
             viewDataController.updateAllPropertiesWithItemValues();
 
-            CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED_TDUMT_PATCH, packFilePath);
+            CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED_TDUMT_PATCH, patchFilePath);
         } catch (Exception e) {
             Log.error(THIS_CLASS_NAME, e);
             CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_TDUMT_PATCH, DisplayConstants.MESSAGE_SEE_LOGS);

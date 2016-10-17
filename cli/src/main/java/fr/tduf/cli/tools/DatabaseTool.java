@@ -590,6 +590,7 @@ public class DatabaseTool extends GenericTool {
     }
 
     private String convertPatchFileToJSON(File patch) throws ParserConfigurationException, SAXException, IOException {
+        // TODO extract to FileHelper
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
         Document patchDocument = docBuilder.parse(patch);

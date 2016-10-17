@@ -19,7 +19,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -204,6 +206,18 @@ public class MainStageChangeDataControllerTest {
 
         // THEN
         verify(changeHelperMock, times(8)).updateResourceItemWithReference(eq(CAR_PHYSICS_DATA), any(Locale.class), eq("0"), eq("V"));
+    }
+
+    @Test
+    public void importLegacyPatch() throws URISyntaxException, ReflectiveOperationException, ParserConfigurationException, SAXException, IOException {
+        // GIVEN
+        // TODO use real patch
+        String patchFile = fr.tduf.libunlimited.common.helper.FilesHelper.getFileNameFromResourcePath("/patches/legacy.pch");
+
+        // WHEN
+        controller.importLegacyPatch(patchFile);
+
+        // THEN
     }
 
     private static String createTempDirectory() throws IOException {
