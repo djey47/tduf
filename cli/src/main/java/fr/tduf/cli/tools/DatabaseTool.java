@@ -29,8 +29,6 @@ import org.kohsuke.args4j.Option;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -589,11 +587,8 @@ public class DatabaseTool extends GenericTool {
         return JsonGateway.dump(databaseDirectory, targetJsonDirectory, missingTopicContents, integrityErrors);
     }
 
-    private String convertPatchFileToJSON(File patch) throws ParserConfigurationException, SAXException, IOException {
-        // TODO extract to FileHelper
-        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-        Document patchDocument = docBuilder.parse(patch);
+    private String convertPatchFileToJSON(File patchFile) throws ParserConfigurationException, SAXException, IOException {
+        Document patchDocument = FilesHelper.readXMLDocumentFromFile(patchFile.getPath());
 
         DbPatchDto patchObject = TdumtPatchConverter.pchToJson(patchDocument);
 

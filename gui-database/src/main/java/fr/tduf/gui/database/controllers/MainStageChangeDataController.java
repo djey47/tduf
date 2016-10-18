@@ -23,8 +23,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
@@ -176,12 +174,8 @@ class MainStageChangeDataController extends AbstractMainStageSubController {
         gateway.applyPerformancePackToEntryWithIdentifier(currentEntryIndex, packFile);
     }
 
-    // TODO exception handling
-    void importLegacyPatch(String patchFile) throws ParserConfigurationException, IOException, SAXException, ReflectiveOperationException {
-        // TODO extract to FileHelper
-        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-        Document patchDocument = docBuilder.parse(new File(patchFile));
+    void importLegacyPatch(String patchFile) throws IOException, ReflectiveOperationException {
+        Document patchDocument = FilesHelper.readXMLDocumentFromFile(patchFile);
 
         final DbPatchDto patchObject = TdumtPatchConverter.pchToJson(patchDocument);
         DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, getDatabaseObjects());
