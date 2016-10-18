@@ -2,7 +2,13 @@ package fr.tduf.libunlimited.common.helper;
 
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +34,7 @@ public class FilesHelper {
     private static final Class<FilesHelper> thisClass = FilesHelper.class;
 
     private static final ObjectMapper jsonMapper = new ObjectMapper();
+    private static final DocumentBuilderFactory xmlDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
 
     private FilesHelper() {}
 
@@ -73,6 +80,20 @@ public class FilesHelper {
     public static <T> T readObjectFromJsonResourceFile(Class<T> objectClass, String resourcePath) throws URISyntaxException, IOException {
         InputStream resourceAsStream = thisClass.getResourceAsStream(resourcePath);
         return jsonMapper.readValue(resourceAsStream, objectClass);
+    }
+
+    /**
+     * @return XML Document at specified location
+     */
+    public static Document readXMLDocumentFromFile(String fileName) throws IOException {
+        try {
+            DocumentBuilder docBuilder = xmlDocumentBuilderFactory.newDocumentBuilder();
+            return docBuilder.parse(fileName);
+        } catch (ParserConfigurationException pce) {
+            throw new IllegalStateException("Invalid XML parser configuration!", pce);
+        } catch (SAXException se) {
+            throw new IOException("Invalid XML document!", se);
+        }
     }
 
     /**

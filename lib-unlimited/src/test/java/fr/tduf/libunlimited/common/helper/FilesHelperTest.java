@@ -6,6 +6,7 @@ import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
+import org.w3c.dom.Document;
 
 import java.io.EOFException;
 import java.io.File;
@@ -226,5 +227,29 @@ public class FilesHelperTest {
         FilesHelper.getNameWithoutExtension(null);
 
         // THEN: NPE
+    }
+
+    @Test
+    public void readXMLDocumentFromFile_whenCorrectFile_shouldParseIt() throws URISyntaxException, IOException {
+        // GIVEN
+        final String sampleFile = FilesHelper.getFileNameFromResourcePath("/common/samples/sample.xml");
+
+        // WHEN
+        final Document actualDocument = FilesHelper.readXMLDocumentFromFile(sampleFile);
+
+        // THEN
+        assertThat(actualDocument).isNotNull();
+        assertThat(actualDocument.getDocumentElement().getTagName()).isEqualTo("note");
+    }
+
+    @Test(expected = IOException.class)
+    public void readXMLDocumentFromFile_whenIncorrectFile_shouldThrowException() throws URISyntaxException, IOException {
+        // GIVEN
+        final String sampleFile = FilesHelper.getFileNameFromResourcePath("/common/samples/sample_malformed.xml");
+
+        // WHEN
+        FilesHelper.readXMLDocumentFromFile(sampleFile);
+
+        // THEN: IOE
     }
 }
