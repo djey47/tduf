@@ -22,6 +22,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -45,6 +46,7 @@ import static org.mockito.Mockito.when;
 public class MainStageChangeDataControllerTest {
 
     private static final List<DbDto> databaseObjects = DatabaseHelper.createDatabaseForReadOnly();
+    private static final BulkDatabaseMiner verifyMiner = BulkDatabaseMiner.load(databaseObjects);
 
     @Mock
     private BulkDatabaseMiner minerMock;
@@ -206,6 +208,43 @@ public class MainStageChangeDataControllerTest {
 
         // THEN
         verify(changeHelperMock, times(8)).updateResourceItemWithReference(eq(CAR_PHYSICS_DATA), any(Locale.class), eq("0"), eq("V"));
+    }
+
+    @Test
+    public void importPatch_whenPatchWithoutProperties_shouldApplyIt() throws IOException, ReflectiveOperationException, URISyntaxException {
+        // GIVEN
+        File patchFile = new File(fr.tduf.libunlimited.common.helper.FilesHelper.getFileNameFromResourcePath("/patches/tduf.mini.json"));
+
+        when(mainStageController.getDatabaseObjects()).thenReturn(databaseObjects);
+
+
+        // WHEN
+        final Optional<String> actualPropertyFile = controller.importPatch(patchFile);
+
+
+        // THEN
+        assertThat(actualPropertyFile).isEmpty();
+        assertThat(verifyMiner.getContentEntryFromTopicWithReference("606298799", CAR_PHYSICS_DATA)).isEmpty();
+    }
+
+    @Test
+    public void importPerformancePack_shouldApplyIt() throws URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        String packFileName = fr.tduf.libunlimited.common.helper.FilesHelper.getFileNameFromResourcePath("/patches/pp.tdupk");
+
+        when(mainStageController.getDatabaseObjects()).thenReturn(databaseObjects);
+        when(mainStageController.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0));
+
+
+        // WHEN
+        controller.importPerformancePack(packFileName);
+
+
+        // THEN
+        assertThat(verifyMiner.getContentEntryFromTopicWithReference("606298799", CAR_PHYSICS_DATA)
+                .flatMap(entry -> entry.getItemAtRank(17))
+                .map(ContentItemDto::getRawValue))
+                .contains("6210");
     }
 
     @Test

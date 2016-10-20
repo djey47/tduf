@@ -154,7 +154,6 @@ class MainStageChangeDataController extends AbstractMainStageSubController {
                 .orElse(false);
     }
 
-    // TODO test
     Optional<String> importPatch(File patchFile) throws IOException, ReflectiveOperationException {
         DbPatchDto patchObject = new ObjectMapper().readValue(patchFile, DbPatchDto.class);
         DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, getDatabaseObjects());
@@ -165,7 +164,6 @@ class MainStageChangeDataController extends AbstractMainStageSubController {
         return PatchPropertiesReadWriteHelper.writeEffectivePatchProperties(effectiveProperties, patchFile.getAbsolutePath());
     }
 
-    // TODO test
     void importPerformancePack(String packFile) throws ReflectiveOperationException {
         int currentEntryIndex = currentEntryIndexProperty().getValue();
         TdupeGateway gateway = AbstractDatabaseHolder.prepare(TdupeGateway.class, getDatabaseObjects());
