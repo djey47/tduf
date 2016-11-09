@@ -341,6 +341,7 @@ public class DatabaseTool extends GenericTool {
 
         Path patchPath = Paths.get(sourcePatchFile);
 
+        // Extract pch to lib constant
         String outputExtension = tdufSource ? "pch" : EXTENSION_JSON;
         String outputPatchFile = Paths.get(patchPath.getParent().toString(), FilesHelper.getNameWithoutExtension(sourcePatchFile) + "." + outputExtension).toString();
 
