@@ -6,5 +6,10 @@
         </roles>
         <groups/>
     </properties>
-    <instructions/>
+    <instructions>
+            <instruction type="removeAllLinesFromDatabase" failOnError="True" enabled="True" comment="" group="Required">
+                <parameter name="resourceFileName" value="CarPhysicsData" />
+                <parameter name="databaseId" value="606298799" />
+            </instruction>
+    </instructions>
 </patcher>

@@ -248,15 +248,19 @@ public class MainStageChangeDataControllerTest {
     }
 
     @Test
-    public void importLegacyPatch() throws URISyntaxException, ReflectiveOperationException, ParserConfigurationException, SAXException, IOException {
+    public void importLegacyPatch_shouldApplyIt() throws URISyntaxException, ReflectiveOperationException, ParserConfigurationException, SAXException, IOException {
         // GIVEN
-        // TODO use real patch
         String patchFile = fr.tduf.libunlimited.common.helper.FilesHelper.getFileNameFromResourcePath("/patches/legacy.pch");
+
+        when(mainStageController.getDatabaseObjects()).thenReturn(databaseObjects);
+
 
         // WHEN
         controller.importLegacyPatch(patchFile);
 
+
         // THEN
+        assertThat(verifyMiner.getContentEntryFromTopicWithReference("606298799", CAR_PHYSICS_DATA)).isEmpty();
     }
 
     private static String createTempDirectory() throws IOException {
