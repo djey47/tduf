@@ -40,6 +40,8 @@ public class DisplayConstants {
     public static final String LABEL_TEXTFIELD_VALUE = "Value@Locale:";
     public static final String LABEL_ENTRY_SELECT_SINGLE = "Click an entry below to use it.";
     public static final String LABEL_ENTRY_SELECT_MANY = "CTRL-Pick one or many entries below.";
+    public static final String LABEL_EXTENSION_PCH = "TDUMT patch files (.PCH)";
+    public static final String LABEL_EXTENSION_ALL = "All files";
 
     public static final String TOOLTIP_BUTTON_ADD_LINKED_ENTRY = "Adds a new linked entry.";
     public static final String TOOLTIP_BUTTON_BROWSE_ENTRIES = "Browses available entries in topic.";
@@ -100,6 +102,7 @@ public class DisplayConstants {
     public static final String WARNING_DELETED_RESOURCE = "This resource will be removed.";
 
     public static final String TAB_NAME_DEFAULT = "Default";
+
 
     private DisplayConstants() {}
 }

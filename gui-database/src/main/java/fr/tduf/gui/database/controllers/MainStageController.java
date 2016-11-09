@@ -8,6 +8,7 @@ import fr.tduf.gui.common.javafx.helper.TableViewHelper;
 import fr.tduf.gui.common.services.DatabaseChecker;
 import fr.tduf.gui.common.services.DatabaseFixer;
 import fr.tduf.gui.database.common.DisplayConstants;
+import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.common.SettingsConstants;
 import fr.tduf.gui.database.controllers.helper.DialogsHelper;
 import fr.tduf.gui.database.domain.EditorLocation;
@@ -43,6 +44,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -50,6 +52,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static java.util.Arrays.asList;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static javafx.beans.binding.Bindings.when;
@@ -803,7 +806,8 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void askForTDUMTPatchLocationAndImportDataFromFile() {
-        Optional<File> potentialFile = CommonDialogsHelper.browseForFilename(true, getWindow());
+        Collection<FileChooser.ExtensionFilter> extensionFilters = asList(FxConstants.EXTENSION_FILTER_TDUMT_PATCH, FxConstants.EXTENSION_FILTER_ALL);
+        Optional<File> potentialFile = CommonDialogsHelper.browseForFilenameWithExtensionFilters(true, extensionFilters, getWindow());
         if (!potentialFile.isPresent()) {
             return;
         }

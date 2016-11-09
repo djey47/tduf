@@ -1,5 +1,11 @@
 package fr.tduf.gui.database.common;
 
+import javafx.stage.FileChooser;
+
+import java.util.Collections;
+
+import static java.util.Arrays.asList;
+
 /**
  * Gives all constants needed to link to Java FX resources.
  */
@@ -16,6 +22,9 @@ public class FxConstants {
     public static final String CSS_CLASS_FIELD_LABEL = "fieldLabel";
     public static final String CSS_CLASS_FIELD_NAME = "fieldName";
     public static final String CSS_CLASS_READONLY_FIELD = "readonlyField";
+
+    public static final FileChooser.ExtensionFilter EXTENSION_FILTER_TDUMT_PATCH = new FileChooser.ExtensionFilter(DisplayConstants.LABEL_EXTENSION_PCH, asList("*.pch", "*.PCH"));
+    public static final FileChooser.ExtensionFilter EXTENSION_FILTER_ALL = new FileChooser.ExtensionFilter(DisplayConstants.LABEL_EXTENSION_ALL, Collections.singletonList("*"));
 
     private FxConstants() {}
 }
