@@ -9,6 +9,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Optional;
 
 import static javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE;
@@ -22,13 +24,25 @@ public class CommonDialogsHelper {
     private static final String LABEL_BUTTON_OK = "OK";
     private static final String LABEL_BUTTON_CANCEL = "Cancel";
 
+    private static FileChooser fileChooser = new FileChooser();
+
     /**
-     * Displays a system dialog to browse for file name or existing file
+     * Displays a system dialog to browse for file name or existing file, without selection filters.
      * @param loadFile  : true to use as file chooser, else to use as target selector
      * @return chosen file, or empty if no selection has been made (dismissed).
      */
     public static Optional<File> browseForFilename(boolean loadFile, Window ownerWindow) {
-        FileChooser fileChooser = new FileChooser();
+        return browseForFilenameWithExtensionFilters(loadFile, new ArrayList<>(0), ownerWindow);
+    }
+
+    /**
+     * Displays a system dialog to browse for file name or existing file
+     * @param loadFile          : true to use as file chooser, else to use as target selector
+     * @return chosen file, or empty if no selection has been made (dismissed).
+     */
+    public static Optional<File> browseForFilenameWithExtensionFilters(boolean loadFile, Collection<FileChooser.ExtensionFilter> extensionFilters, Window ownerWindow) {
+        fileChooser.getExtensionFilters().clear();
+        fileChooser.getExtensionFilters().addAll(extensionFilters);
 
         File selectedFile;
         if (loadFile) {

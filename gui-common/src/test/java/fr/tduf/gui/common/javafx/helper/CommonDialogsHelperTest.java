@@ -2,14 +2,21 @@ package fr.tduf.gui.common.javafx.helper;
 
 import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
 import javafx.scene.control.Alert;
+import javafx.stage.FileChooser;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.io.File;
+import java.util.List;
 import java.util.Optional;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Interactive testing - can't be asserted automatically
+ */
 @Ignore
 public class CommonDialogsHelperTest {
     @Rule
@@ -38,19 +45,27 @@ public class CommonDialogsHelperTest {
 
     @Test
     public void browseForFilename_loadMode() {
-        // GIVEN
+        // GIVEN-WHEN
+        Optional<File> actualResult = CommonDialogsHelper.browseForFilename(true, null);
 
+        // THEN
+        assertThat(actualResult).isPresent();
+    }
+
+    @Test
+    public void browseForFilenameWithExtensionFilters_loadMode() {
+        // GIVEN
+        List<FileChooser.ExtensionFilter> filters = asList(
+                new FileChooser.ExtensionFilter("Filter 1", "*"),
+                new FileChooser.ExtensionFilter("Filter 2", "*.txt"));
 
         // WHEN
-        CommonDialogsHelper.browseForFilename(true, null);
+        CommonDialogsHelper.browseForFilenameWithExtensionFilters(true, filters, null);
     }
 
     @Test
     public void browseForFilename_saveMode() {
-        // GIVEN
-
-
-        // WHEN
+        // GIVEN-WHEN
         CommonDialogsHelper.browseForFilename(false, null);
     }
 }
