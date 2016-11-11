@@ -734,6 +734,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void askForExportOptionsThenExportToFile() throws IOException {
+        // TODO use extension filters
         final List<String> selectedEntryRefs = viewDataController.selectEntriesFromTopic();
         final List<String> selectedEntryFields = viewDataController.selectFieldsFromTopic();
 
@@ -758,6 +759,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void askForPatchLocationAndImportDataFromFile() {
+        // TODO use extension filters
         Optional<File> potentialFile = CommonDialogsHelper.browseForFilename(true, getWindow());
         if (!potentialFile.isPresent()) {
             return;
@@ -785,6 +787,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void askForPerformancePackLocationAndImportData() {
+        // TODO use extension filters
         Optional<File> potentialFile = CommonDialogsHelper.browseForFilename(true, getWindow());
         if (!potentialFile.isPresent()) {
             return;
