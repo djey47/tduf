@@ -810,7 +810,7 @@ public class MainStageController extends AbstractGuiController {
 
     private void askForTDUMTPatchLocationAndImportDataFromFile() {
         Collection<FileChooser.ExtensionFilter> extensionFilters = asList(FxConstants.EXTENSION_FILTER_TDUMT_PATCH, FxConstants.EXTENSION_FILTER_ALL);
-        Optional<File> potentialFile = CommonDialogsHelper.browseForFilenameWithExtensionFilters(true, extensionFilters, getWindow());
+        Optional<File> potentialFile = CommonDialogsHelper.browseForFilenameWithExtensionFilters(new File("."), true, extensionFilters, getWindow());
         if (!potentialFile.isPresent()) {
             return;
         }

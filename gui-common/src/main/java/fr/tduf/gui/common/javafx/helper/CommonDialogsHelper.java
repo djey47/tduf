@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
+import static fr.tduf.gui.common.DisplayConstants.LABEL_BUTTON_CANCEL;
+import static fr.tduf.gui.common.DisplayConstants.LABEL_BUTTON_OK;
+import static java.util.Optional.ofNullable;
 import static javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE;
 import static javafx.scene.control.ButtonBar.ButtonData.OK_DONE;
 
@@ -21,28 +24,30 @@ import static javafx.scene.control.ButtonBar.ButtonData.OK_DONE;
  */
 public class CommonDialogsHelper {
 
-    private static final String LABEL_BUTTON_OK = "OK";
-    private static final String LABEL_BUTTON_CANCEL = "Cancel";
-
     private static FileChooser fileChooser = new FileChooser();
 
     /**
      * Displays a system dialog to browse for file name or existing file, without selection filters.
+     *
      * @param loadFile  : true to use as file chooser, else to use as target selector
      * @return chosen file, or empty if no selection has been made (dismissed).
      */
     public static Optional<File> browseForFilename(boolean loadFile, Window ownerWindow) {
-        return browseForFilenameWithExtensionFilters(loadFile, new ArrayList<>(0), ownerWindow);
+        return browseForFilenameWithExtensionFilters(null, loadFile, new ArrayList<>(0), ownerWindow);
     }
 
     /**
      * Displays a system dialog to browse for file name or existing file
+     *
+     * @param initialDirectory  : null to use default directory
      * @param loadFile          : true to use as file chooser, else to use as target selector
      * @return chosen file, or empty if no selection has been made (dismissed).
      */
-    public static Optional<File> browseForFilenameWithExtensionFilters(boolean loadFile, Collection<FileChooser.ExtensionFilter> extensionFilters, Window ownerWindow) {
+    public static Optional<File> browseForFilenameWithExtensionFilters(File initialDirectory, boolean loadFile, Collection<FileChooser.ExtensionFilter> extensionFilters, Window ownerWindow) {
         fileChooser.getExtensionFilters().clear();
         fileChooser.getExtensionFilters().addAll(extensionFilters);
+
+        fileChooser.setInitialDirectory(initialDirectory);
 
         File selectedFile;
         if (loadFile) {
@@ -51,7 +56,7 @@ public class CommonDialogsHelper {
             selectedFile = fileChooser.showSaveDialog(ownerWindow);
         }
 
-        return Optional.ofNullable(selectedFile);
+        return ofNullable(selectedFile);
     }
 
     /**

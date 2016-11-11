@@ -58,9 +58,10 @@ public class CommonDialogsHelperTest {
         List<FileChooser.ExtensionFilter> filters = asList(
                 new FileChooser.ExtensionFilter("Filter 1", "*"),
                 new FileChooser.ExtensionFilter("Filter 2", "*.txt"));
+        File initialDirectory = new File(".");
 
         // WHEN
-        CommonDialogsHelper.browseForFilenameWithExtensionFilters(true, filters, null);
+        CommonDialogsHelper.browseForFilenameWithExtensionFilters(initialDirectory, true, filters, null);
     }
 
     @Test
