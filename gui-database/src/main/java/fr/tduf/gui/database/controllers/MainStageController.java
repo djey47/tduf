@@ -8,7 +8,6 @@ import fr.tduf.gui.common.javafx.helper.TableViewHelper;
 import fr.tduf.gui.common.services.DatabaseChecker;
 import fr.tduf.gui.common.services.DatabaseFixer;
 import fr.tduf.gui.database.common.DisplayConstants;
-import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.common.SettingsConstants;
 import fr.tduf.gui.database.controllers.helper.DialogsHelper;
 import fr.tduf.gui.database.domain.EditorLocation;
@@ -44,7 +43,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -52,7 +50,6 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static java.util.Arrays.asList;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static javafx.beans.binding.Bindings.when;
@@ -396,7 +393,7 @@ public class MainStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleImportPchMenuAction");
 
         ofNullable(currentTopicObject)
-                .ifPresent(topicObject -> askForTDUMTPatchLocationAndImportDataFromFile());
+                .ifPresent(topicObject -> askForGenuinePatchLocationAndImportDataFromFile());
     }
 
     public EventHandler<ActionEvent> handleBrowseResourcesButtonMouseClick(DbDto.Topic targetTopic, SimpleStringProperty targetReferenceProperty, int fieldRank) {
@@ -734,100 +731,85 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void askForExportOptionsThenExportToFile() throws IOException {
-        // TODO use extension filters
         final List<String> selectedEntryRefs = viewDataController.selectEntriesFromTopic();
         final List<String> selectedEntryFields = viewDataController.selectFieldsFromTopic();
 
-        Optional<File> potentialFile = CommonDialogsHelper.browseForFilename(false, getWindow());
-        if (!potentialFile.isPresent()) {
-            return;
-        }
+        dialogsHelper.askForPatchSaveLocation(getWindow())
+                .ifPresent(location -> {
+                    String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_EXPORT;
+                    try {
+                        if (!changeDataController.exportEntriesToPatchFile(currentTopicProperty.getValue(), selectedEntryRefs, selectedEntryFields, location)) {
+                            throw new IOException();
+                        }
 
-        String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_EXPORT;
-        String fileLocation = potentialFile.get().getPath();
-        if (changeDataController.exportEntriesToPatchFile(currentTopicProperty.getValue(), selectedEntryRefs, selectedEntryFields, fileLocation)) {
-            String message = selectedEntryRefs.isEmpty() ?
-                    DisplayConstants.MESSAGE_ALL_ENTRIES_EXPORTED :
-                    DisplayConstants.MESSAGE_ENTRIES_EXPORTED;
-            CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, message, fileLocation);
-        } else {
-            String message = selectedEntryRefs.isEmpty() ?
-                    DisplayConstants.MESSAGE_UNABLE_EXPORT_ALL_ENTRIES :
-                    DisplayConstants.MESSAGE_UNABLE_EXPORT_ENTRIES;
-            CommonDialogsHelper.showDialog(ERROR, dialogTitle, message, DisplayConstants.MESSAGE_SEE_LOGS);
-        }
+                        String message = selectedEntryRefs.isEmpty() ?
+                                DisplayConstants.MESSAGE_ALL_ENTRIES_EXPORTED :
+                                DisplayConstants.MESSAGE_ENTRIES_EXPORTED;
+                        CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, message, location);
+                    } catch (IOException ioe) {
+                        String message = selectedEntryRefs.isEmpty() ?
+                                DisplayConstants.MESSAGE_UNABLE_EXPORT_ALL_ENTRIES :
+                                DisplayConstants.MESSAGE_UNABLE_EXPORT_ENTRIES;
+                        CommonDialogsHelper.showDialog(ERROR, dialogTitle, message, DisplayConstants.MESSAGE_SEE_LOGS);
+                    }
+        });
     }
 
     private void askForPatchLocationAndImportDataFromFile() {
         // TODO use extension filters
-        Optional<File> potentialFile = CommonDialogsHelper.browseForFilename(true, getWindow());
-        if (!potentialFile.isPresent()) {
-            return;
-        }
+        dialogsHelper.askForPatchLocation(getWindow())
+                .map(File::new)
+                .ifPresent(location -> {
+                    String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_IMPORT;
+                    try {
+                        final Optional<String> potentialPropertiesFile = changeDataController.importPatch(location);
 
-        String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_IMPORT;
-        try {
-            File patchFile = potentialFile
-                    .<IllegalStateException>orElseThrow(() -> new IllegalStateException("Should not happen!"));
-            final Optional<String> potentialPropertiesFile = changeDataController.importPatch(patchFile);
+                        viewDataController.updateEntriesAndSwitchTo(0);
+                        viewDataController.updateAllPropertiesWithItemValues();
 
-            viewDataController.updateEntriesAndSwitchTo(0);
-            viewDataController.updateAllPropertiesWithItemValues();
+                        String writtenPropertiesPath = "";
+                        if (potentialPropertiesFile.isPresent()) {
+                            writtenPropertiesPath += ("Written properties file: " + System.lineSeparator() + potentialPropertiesFile.get());
+                        }
 
-            String writtenPropertiesPath = "";
-            if (potentialPropertiesFile.isPresent()) {
-                writtenPropertiesPath += ("Written properties file: " + System.lineSeparator() + potentialPropertiesFile.get());
-            }
-
-            CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED, writtenPropertiesPath);
-        } catch (Exception e) {
-            Log.error(THIS_CLASS_NAME, e);
-            CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_PATCH, DisplayConstants.MESSAGE_SEE_LOGS);
-        }
+                        CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED, writtenPropertiesPath);
+                    } catch (Exception e) {
+                        Log.error(THIS_CLASS_NAME, e);
+                        CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_PATCH, DisplayConstants.MESSAGE_SEE_LOGS);
+                    }
+                });
     }
 
     private void askForPerformancePackLocationAndImportData() {
-        // TODO use extension filters
-        Optional<File> potentialFile = CommonDialogsHelper.browseForFilename(true, getWindow());
-        if (!potentialFile.isPresent()) {
-            return;
-        }
+        dialogsHelper.askForPerformancePackLocation(getWindow())
+                .ifPresent(location -> {
+                    String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_IMPORT_PERFORMANCE_PACK;
+                    try {
+                        changeDataController.importPerformancePack(location);
+                        viewDataController.updateAllPropertiesWithItemValues();
 
-        String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_IMPORT_PERFORMANCE_PACK;
-        try {
-            String packFilePath = potentialFile
-                    .map(File::getPath)
-                    .<IllegalStateException>orElseThrow(() -> new IllegalStateException("Should not happen!"));
-            changeDataController.importPerformancePack(packFilePath);
-            viewDataController.updateAllPropertiesWithItemValues();
-
-            CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED_PERFORMANCE_PACK, packFilePath);
-        } catch (Exception e) {
-            Log.error(THIS_CLASS_NAME, e);
-            CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_PERFORMANCE_PACK, DisplayConstants.MESSAGE_SEE_LOGS);
-        }
+                        CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED_PERFORMANCE_PACK, location);
+                    } catch (Exception e) {
+                        Log.error(THIS_CLASS_NAME, e);
+                        CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_PERFORMANCE_PACK, DisplayConstants.MESSAGE_SEE_LOGS);
+                    }
+                });
     }
 
-    private void askForTDUMTPatchLocationAndImportDataFromFile() {
-        Collection<FileChooser.ExtensionFilter> extensionFilters = asList(FxConstants.EXTENSION_FILTER_TDUMT_PATCH, FxConstants.EXTENSION_FILTER_ALL);
-        Optional<File> potentialFile = CommonDialogsHelper.browseForFilenameWithExtensionFilters(new File("."), true, extensionFilters, getWindow());
-        if (!potentialFile.isPresent()) {
-            return;
-        }
+    private void askForGenuinePatchLocationAndImportDataFromFile() {
+        dialogsHelper.askForGenuinePatchLocation(getWindow())
+                .ifPresent(location -> {
+                    String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_IMPORT_TDUMT_PATCH;
+                    try {
+                        changeDataController.importLegacyPatch(location);
+                        viewDataController.updateAllPropertiesWithItemValues();
 
-        String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_IMPORT_TDUMT_PATCH;
-        try {
-            String patchFilePath = potentialFile
-                    .map(File::getPath)
-                    .<IllegalStateException>orElseThrow(() -> new IllegalStateException("Should not happen!"));
-            changeDataController.importLegacyPatch(patchFilePath);
-            viewDataController.updateAllPropertiesWithItemValues();
-
-            CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED_TDUMT_PATCH, patchFilePath);
-        } catch (Exception e) {
-            Log.error(THIS_CLASS_NAME, e);
-            CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_TDUMT_PATCH, DisplayConstants.MESSAGE_SEE_LOGS);
-        }
+                        CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED_TDUMT_PATCH, location);
+                    } catch (Exception e) {
+                        Log.error(THIS_CLASS_NAME, e);
+                        CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_TDUMT_PATCH, DisplayConstants.MESSAGE_SEE_LOGS);
+                    }
+                });
     }
 
     private void askForReferenceAndSwitchToEntry() {

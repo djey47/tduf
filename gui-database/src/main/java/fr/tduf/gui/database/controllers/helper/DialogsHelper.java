@@ -3,6 +3,7 @@ package fr.tduf.gui.database.controllers.helper;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.database.common.DisplayConstants;
+import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.domain.LocalizedResource;
 import fr.tduf.gui.database.domain.javafx.ResourceEntryDataItem;
 import fr.tduf.libunlimited.common.game.domain.Locale;
@@ -15,15 +16,21 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
 import javafx.util.Pair;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.util.Arrays.asList;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static javafx.scene.control.Alert.AlertType.CONFIRMATION;
 import static javafx.scene.control.Alert.AlertType.ERROR;
 import static javafx.scene.control.Alert.AlertType.INFORMATION;
@@ -60,10 +67,10 @@ public class DialogsHelper {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (!result.isPresent() || result.get() == cancelButtonType) {
-            return Optional.empty();
+            return empty();
         }
 
-        return Optional.of(result.get() == allLocalesButtonType);
+        return of(result.get() == allLocalesButtonType);
     }
 
     /**
@@ -143,6 +150,58 @@ public class DialogsHelper {
         }
     }
 
+    /**
+     * Displays file load dialog for TDUPE Performance Pack
+     * @return empty if no selection was made (dismissed)
+     */
+    // TODO remember and set last location
+    public Optional<String> askForPerformancePackLocation(Window parent) {
+        // TODO use extension filters
+        Optional<File> potentialFile = CommonDialogsHelper.browseForFilename(true, parent);
+
+        return potentialFile
+                .map(File::getPath);
+    }
+
+    /**
+     * Displays file load dialog for TDUMT patch
+     * @return empty if no selection was made (dismissed)
+     */
+    // TODO remember and set last location
+    public Optional<String> askForGenuinePatchLocation(Window parent) {
+        Collection<FileChooser.ExtensionFilter> extensionFilters = asList(FxConstants.EXTENSION_FILTER_TDUMT_PATCH, FxConstants.EXTENSION_FILTER_ALL);
+        Optional<File> potentialFile = CommonDialogsHelper.browseForFilenameWithExtensionFilters(new File("."), true, extensionFilters, parent);
+
+        return potentialFile
+                .map(File::getPath);
+    }
+
+    /**
+     * Displays file load dialog for TDUF patch
+     * @return empty if no selection was made (dismissed)
+     */
+    // TODO remember and set last location
+    public Optional<String> askForPatchLocation(Window parent) {
+        // TODO use extension filters
+        Optional<File> potentialFile = CommonDialogsHelper.browseForFilename(true, parent);
+
+        return potentialFile
+                .map(File::getPath);
+    }
+
+    /**
+     * Displays file save dialog for TDUF patch
+     * @return empty if no selection was made (dismissed)
+     */
+    // TODO remember and set last location
+    public Optional<String> askForPatchSaveLocation(Window parent) throws IOException {
+        // TODO use extension filters
+        Optional<File> potentialFile = CommonDialogsHelper.browseForFilename(false, parent);
+
+        return potentialFile
+                .map(File::getPath);
+    }
+
     private static Dialog<LocalizedResource> createLocalizedResourceDialog(Locale currentLocale, String defaultReference, String defaultValue) {
         Dialog<LocalizedResource> editResourceDialog = new Dialog<>();
         GridPane grid = new GridPane();
@@ -168,10 +227,10 @@ public class DialogsHelper {
 
         editResourceDialog.setResultConverter(dialogButton -> {
             if (dialogButton == okButtonType) {
-                Optional<Locale> affectedLocale = Optional.empty();
+                Optional<Locale> affectedLocale = empty();
                 int selectedLocaleIndex = localeChoiceBox.getSelectionModel().getSelectedIndex();
                 if (selectedLocaleIndex != 0) {
-                    affectedLocale = Optional.of(Locale.values()[selectedLocaleIndex - 1]);
+                    affectedLocale = of(Locale.values()[selectedLocaleIndex - 1]);
                 }
                 return new LocalizedResource(new Pair<>(referenceTextField.getText(), valueTextField.getText()), affectedLocale);
             }
