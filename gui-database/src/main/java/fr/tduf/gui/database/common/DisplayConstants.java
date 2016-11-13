@@ -40,8 +40,11 @@ public class DisplayConstants {
     public static final String LABEL_TEXTFIELD_VALUE = "Value@Locale:";
     public static final String LABEL_ENTRY_SELECT_SINGLE = "Click an entry below to use it.";
     public static final String LABEL_ENTRY_SELECT_MANY = "CTRL-Pick one or many entries below.";
-    public static final String LABEL_EXTENSION_PCH = "TDUMT patch files (.PCH)";
-    public static final String LABEL_EXTENSION_ALL = "All files";
+    static final String LABEL_EXTENSION_MINI_JSON = "TDUF patch files (.mini.json)";
+    static final String LABEL_EXTENSION_PCH = "TDUMT patch files (.PCH)";
+    static final String LABEL_EXTENSION_TDUPK = "TDUPE Performance Packs (.tdupk)";
+    static final String LABEL_EXTENSION_TXT = "Text files (.txt)";
+    static final String LABEL_EXTENSION_ALL = "All files";
 
     public static final String TOOLTIP_BUTTON_ADD_LINKED_ENTRY = "Adds a new linked entry.";
     public static final String TOOLTIP_BUTTON_BROWSE_ENTRIES = "Browses available entries in topic.";

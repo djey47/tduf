@@ -723,11 +723,11 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void exportCurrentEntryAsLineAndShowResult() {
-        dialogsHelper.showExportResultDialog(changeDataController.exportCurrentEntryAsLine());
+        dialogsHelper.showExportResultDialog(changeDataController.exportCurrentEntryAsLine(), getWindow());
     }
 
     private void exportCurrentEntryAsPchValueAndShowResult() {
-        dialogsHelper.showExportResultDialog(changeDataController.exportCurrentEntryToPchValue());
+        dialogsHelper.showExportResultDialog(changeDataController.exportCurrentEntryToPchValue(), getWindow());
     }
 
     private void askForExportOptionsThenExportToFile() throws IOException {
@@ -756,7 +756,6 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void askForPatchLocationAndImportDataFromFile() {
-        // TODO use extension filters
         dialogsHelper.askForPatchLocation(getWindow())
                 .map(File::new)
                 .ifPresent(location -> {
