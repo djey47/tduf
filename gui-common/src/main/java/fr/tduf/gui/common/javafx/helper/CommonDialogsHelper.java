@@ -27,22 +27,13 @@ public class CommonDialogsHelper {
     private static FileChooser fileChooser = new FileChooser();
 
     /**
-     * Displays a system dialog to browse for file name or existing file, without selection filters.
-     *
-     * @param loadFile  : true to use as file chooser, else to use as target selector
-     * @return chosen file, or empty if no selection has been made (dismissed).
-     */
-    public static Optional<File> browseForFilename(boolean loadFile, Window ownerWindow) {
-        return browseForFilenameWithExtensionFilters(null, loadFile, new ArrayList<>(0), ownerWindow);
-    }
-
-    /**
      * Displays a system dialog to browse for file name or existing file
      *
      * @param initialDirectory  : null to use default directory
      * @param loadFile          : true to use as file chooser, else to use as target selector
      * @return chosen file, or empty if no selection has been made (dismissed).
      */
+    // TODO Add title parameter
     public static Optional<File> browseForFilenameWithExtensionFilters(File initialDirectory, boolean loadFile, Collection<FileChooser.ExtensionFilter> extensionFilters, Window ownerWindow) {
         fileChooser.getExtensionFilters().clear();
         fileChooser.getExtensionFilters().addAll(extensionFilters);
@@ -116,5 +107,15 @@ public class CommonDialogsHelper {
         });
 
         return inputValueDialog.showAndWait();
+    }
+
+    /**
+     * Displays a system dialog to browse for file name or existing file, without selection filters.
+     *
+     * @param loadFile  : true to use as file chooser, else to use as target selector
+     * @return chosen file, or empty if no selection has been made (dismissed).
+     */
+    static Optional<File> browseForFilename(boolean loadFile, Window ownerWindow) {
+        return browseForFilenameWithExtensionFilters(null, loadFile, new ArrayList<>(0), ownerWindow);
     }
 }
