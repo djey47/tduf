@@ -25,15 +25,15 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static javafx.scene.control.Alert.AlertType.CONFIRMATION;
-import static javafx.scene.control.Alert.AlertType.ERROR;
-import static javafx.scene.control.Alert.AlertType.INFORMATION;
+import static javafx.scene.control.Alert.AlertType.*;
 import static javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE;
 import static javafx.scene.control.ButtonBar.ButtonData.OTHER;
 
@@ -42,6 +42,10 @@ import static javafx.scene.control.ButtonBar.ButtonData.OTHER;
  */
 public class DialogsHelper {
     private static final String THIS_CLASS_NAME = DialogsHelper.class.getSimpleName();
+
+    private enum FileLocation { TDUF, TDUPK, PCH, TXT }
+
+    private Map<FileLocation, String> fileLocations = new HashMap<>();
 
     /**
      * Display a dialog box to delete a resource.
@@ -152,48 +156,58 @@ public class DialogsHelper {
      * Displays file load dialog for TDUPE Performance Pack
      * @return empty if no selection was made (dismissed)
      */
-    // TODO remember and set last location
+    // TODO mutualize code
     public Optional<String> askForPerformancePackLocation(Window parent) {
         Collection<FileChooser.ExtensionFilter> extensionFilters = asList(FxConstants.EXTENSION_FILTER_TDUPE_PP, FxConstants.EXTENSION_FILTER_ALL);
 
-        return CommonDialogsHelper.browseForFilenameWithExtensionFilters(new File("."), true, extensionFilters, parent)
-                .map(File::getPath);
+        return CommonDialogsHelper.browseForFilenameWithExtensionFilters(new File(fileLocations.getOrDefault(FileLocation.TDUPK, ".")), true, extensionFilters, parent)
+                .map((file) -> {
+                    fileLocations.put(FileLocation.TDUPK, file.getParent());
+                    return file.getPath();
+                });
     }
 
     /**
      * Displays file load dialog for TDUMT patch
      * @return empty if no selection was made (dismissed)
      */
-    // TODO remember and set last location
     public Optional<String> askForGenuinePatchLocation(Window parent) {
         Collection<FileChooser.ExtensionFilter> extensionFilters = asList(FxConstants.EXTENSION_FILTER_TDUMT_PATCH, FxConstants.EXTENSION_FILTER_ALL);
 
-        return CommonDialogsHelper.browseForFilenameWithExtensionFilters(new File("."), true, extensionFilters, parent)
-                .map(File::getPath);
+        return CommonDialogsHelper.browseForFilenameWithExtensionFilters(new File(fileLocations.getOrDefault(FileLocation.PCH, ".")), true, extensionFilters, parent)
+                .map((file) -> {
+                    fileLocations.put(FileLocation.PCH, file.getParent());
+                    return file.getPath();
+                });
     }
 
     /**
      * Displays file load dialog for TDUF patch
      * @return empty if no selection was made (dismissed)
      */
-    // TODO remember and set last location
     public Optional<String> askForPatchLocation(Window parent) {
         Collection<FileChooser.ExtensionFilter> extensionFilters = asList(FxConstants.EXTENSION_FILTER_TDUF_PATCH, FxConstants.EXTENSION_FILTER_ALL);
 
-        return CommonDialogsHelper.browseForFilenameWithExtensionFilters(new File("."), true, extensionFilters, parent)
-                .map(File::getPath);
+        return CommonDialogsHelper.browseForFilenameWithExtensionFilters(new File(fileLocations.getOrDefault(FileLocation.TDUF, ".")), true, extensionFilters, parent)
+                .map((file) -> {
+                    fileLocations.put(FileLocation.TDUF, file.getParent());
+                    return file.getPath();
+                });
     }
 
     /**
      * Displays file save dialog for TDUF patch
      * @return empty if no selection was made (dismissed)
      */
-    // TODO remember and set last location
+    // TODO append selected extension if unspecified
     public Optional<String> askForPatchSaveLocation(Window parent) throws IOException {
         Collection<FileChooser.ExtensionFilter> extensionFilters = asList(FxConstants.EXTENSION_FILTER_TDUF_PATCH, FxConstants.EXTENSION_FILTER_ALL);
 
         return CommonDialogsHelper.browseForFilenameWithExtensionFilters(new File("."), false, extensionFilters, parent)
-                .map(File::getPath);
+                .map((file) -> {
+                    fileLocations.put(FileLocation.TDUF, file.getParent());
+                    return file.getPath();
+                });
     }
 
     private static Dialog<LocalizedResource> createLocalizedResourceDialog(Locale currentLocale, String defaultReference, String defaultValue) {
@@ -233,12 +247,14 @@ public class DialogsHelper {
         return editResourceDialog;
     }
 
-    // TODO remember and set last location
-    private static void askForLocationThenExportToFile(String contents, Window parent) {
+    private void askForLocationThenExportToFile(String contents, Window parent) {
         Collection<FileChooser.ExtensionFilter> extensionFilters = asList(FxConstants.EXTENSION_FILTER_TEXT, FxConstants.EXTENSION_FILTER_ALL);
 
-        CommonDialogsHelper.browseForFilenameWithExtensionFilters(new File("."), false, extensionFilters, parent)
-                .map(File::getPath)
+        CommonDialogsHelper.browseForFilenameWithExtensionFilters(new File(fileLocations.getOrDefault(FileLocation.TXT, ".")), false, extensionFilters, parent)
+                .map((file) -> {
+                    fileLocations.put(FileLocation.TXT, file.getParent());
+                    return file.getPath();
+                })
                 .ifPresent(location -> {
             String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_EXPORT_FILE;
             try (FileWriter fileWriter = new FileWriter(location)) {
