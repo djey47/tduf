@@ -34,7 +34,6 @@ public class CommonDialogsHelper {
      * @param loadFile          : true to use as file chooser, else to use as target selector
      * @return chosen file, or empty if no selection has been made (dismissed).
      */
-    // TODO Add title parameter
     public static Optional<File> browseForFilenameWithExtensionFilters(File initialDirectory, boolean loadFile, Collection<FileChooser.ExtensionFilter> extensionFilters, Window ownerWindow) {
         fileChooser.getExtensionFilters().clear();
         fileChooser.getExtensionFilters().addAll(extensionFilters);
@@ -44,6 +43,29 @@ public class CommonDialogsHelper {
 
         File selectedFile;
         if (loadFile) {
+            selectedFile = fileChooser.showOpenDialog(ownerWindow);
+        } else {
+            selectedFile = fileChooser.showSaveDialog(ownerWindow);
+        }
+
+        return ofNullable(selectedFile);
+    }
+
+    /**
+     * Displays a system dialog to browse for file name or existing file
+     *
+     * @param fileBrowsingOptions   : specifies appearance and behaviour of component
+     * @return chosen file, or empty if no selection has been made (dismissed).
+     */
+    public static Optional<File> browseForFilename(FileBrowsingOptions fileBrowsingOptions, Window ownerWindow) {
+        fileChooser.getExtensionFilters().clear();
+        fileChooser.getExtensionFilters().addAll(fileBrowsingOptions.extensionFilters);
+
+        fileChooser.setInitialDirectory(new File(fileBrowsingOptions.initialDirectory));
+        fileChooser.setTitle(fileBrowsingOptions.dialogTitle);
+
+        File selectedFile;
+        if (FileBrowsingOptions.FileBrowsingContext.LOAD == fileBrowsingOptions.context) {
             selectedFile = fileChooser.showOpenDialog(ownerWindow);
         } else {
             selectedFile = fileChooser.showSaveDialog(ownerWindow);
