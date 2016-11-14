@@ -40,6 +40,7 @@ public class CommonDialogsHelper {
         fileChooser.getExtensionFilters().addAll(extensionFilters);
 
         fileChooser.setInitialDirectory(initialDirectory);
+        fileChooser.setTitle("");
 
         File selectedFile;
         if (loadFile) {
@@ -111,19 +112,11 @@ public class CommonDialogsHelper {
     }
 
     /**
-     * Displays a system dialog to browse for file name or existing file, without selection filters.
-     *
-     * @param loadFile  : true to use as file chooser, else to use as target selector
-     * @return chosen file, or empty if no selection has been made (dismissed).
-     */
-    static Optional<File> browseForFilename(boolean loadFile, Window ownerWindow) {
-        return browseForFilenameWithExtensionFilters(null, loadFile, new ArrayList<>(0), ownerWindow);
-    }
-
-    /**
      * Specifies file selector appearance and behaviour.
      */
     public static class FileBrowsingOptions {
+
+        public static final FileBrowsingOptions defaultSettings = new FileBrowsingOptions();
 
         private FileBrowsingOptions() {}
 
@@ -132,6 +125,7 @@ public class CommonDialogsHelper {
         final List<FileChooser.ExtensionFilter> extensionFilters = new ArrayList<>();
         String dialogTitle = "";
         FileBrowsingContext context = FileBrowsingContext.LOAD;
+        String initialDirectory = ".";
 
         /**
          * @return instance creator
@@ -140,8 +134,8 @@ public class CommonDialogsHelper {
             return new FileBrowsingOptionsBuilder();
         }
 
-        public static class FileBrowsingOptionsBuilder extends FileBrowsingOptions {
 
+        public static class FileBrowsingOptionsBuilder extends FileBrowsingOptions {
             public FileBrowsingOptionsBuilder forLoading() {
                 context = FileBrowsingContext.LOAD;
                 return this;
@@ -163,12 +157,18 @@ public class CommonDialogsHelper {
                 return this;
             }
 
+            public FileBrowsingOptionsBuilder withInitialDirectory(String initialDirectory) {
+                this.initialDirectory = initialDirectory;
+                return this;
+            }
+
             public FileBrowsingOptions build() {
                 FileBrowsingOptions fileBrowsingOptions = new FileBrowsingOptions();
 
                 fileBrowsingOptions.context = context;
                 fileBrowsingOptions.extensionFilters.addAll(extensionFilters);
                 fileBrowsingOptions.dialogTitle = dialogTitle;
+                fileBrowsingOptions.initialDirectory = initialDirectory;
 
                 return fileBrowsingOptions;
             }

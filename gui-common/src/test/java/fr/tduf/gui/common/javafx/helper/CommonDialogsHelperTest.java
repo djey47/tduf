@@ -8,6 +8,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +47,7 @@ public class CommonDialogsHelperTest {
     @Test
     public void browseForFilename_loadMode() {
         // GIVEN-WHEN
-        Optional<File> actualResult = CommonDialogsHelper.browseForFilename(true, null);
+        Optional<File> actualResult = CommonDialogsHelper.browseForFilenameWithExtensionFilters(new File("."), true, new ArrayList<>(0), null);
 
         // THEN
         assertThat(actualResult).isPresent();
@@ -67,6 +68,6 @@ public class CommonDialogsHelperTest {
     @Test
     public void browseForFilename_saveMode() {
         // GIVEN-WHEN
-        CommonDialogsHelper.browseForFilename(false, null);
+        CommonDialogsHelper.browseForFilenameWithExtensionFilters(new File("."), false, new ArrayList<>(0), null);
     }
 }
