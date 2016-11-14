@@ -11,6 +11,7 @@ import javafx.stage.Window;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import static fr.tduf.gui.common.DisplayConstants.LABEL_BUTTON_CANCEL;
@@ -117,5 +118,60 @@ public class CommonDialogsHelper {
      */
     static Optional<File> browseForFilename(boolean loadFile, Window ownerWindow) {
         return browseForFilenameWithExtensionFilters(null, loadFile, new ArrayList<>(0), ownerWindow);
+    }
+
+    /**
+     * Specifies file selector appearance and behaviour.
+     */
+    public static class FileBrowsingOptions {
+
+        private FileBrowsingOptions() {}
+
+        enum FileBrowsingContext { LOAD, SAVE }
+
+        final List<FileChooser.ExtensionFilter> extensionFilters = new ArrayList<>();
+        String dialogTitle = "";
+        FileBrowsingContext context = FileBrowsingContext.LOAD;
+
+        /**
+         * @return instance creator
+         */
+        public static FileBrowsingOptionsBuilder builder() {
+            return new FileBrowsingOptionsBuilder();
+        }
+
+        public static class FileBrowsingOptionsBuilder extends FileBrowsingOptions {
+
+            public FileBrowsingOptionsBuilder forLoading() {
+                context = FileBrowsingContext.LOAD;
+                return this;
+            }
+
+            public FileBrowsingOptionsBuilder forSaving() {
+                context = FileBrowsingContext.SAVE;
+                return this;
+            }
+
+            public FileBrowsingOptionsBuilder withDialogTitle(String title) {
+                dialogTitle = title;
+                return this;
+            }
+
+            public FileBrowsingOptionsBuilder withExtensionFilters(List<FileChooser.ExtensionFilter> extensionFilters) {
+                this.extensionFilters.clear();
+                this.extensionFilters.addAll(extensionFilters);
+                return this;
+            }
+
+            public FileBrowsingOptions build() {
+                FileBrowsingOptions fileBrowsingOptions = new FileBrowsingOptions();
+
+                fileBrowsingOptions.context = context;
+                fileBrowsingOptions.extensionFilters.addAll(extensionFilters);
+                fileBrowsingOptions.dialogTitle = dialogTitle;
+
+                return fileBrowsingOptions;
+            }
+        }
     }
 }
