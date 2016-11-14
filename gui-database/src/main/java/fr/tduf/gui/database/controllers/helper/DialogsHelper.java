@@ -43,6 +43,11 @@ import static javafx.scene.control.ButtonBar.ButtonData.OTHER;
 public class DialogsHelper {
     private static final String THIS_CLASS_NAME = DialogsHelper.class.getSimpleName();
 
+    private static final String DEFAULT_PATH = ".";
+
+    /**
+     * All file location kind to be stored
+     */
     private enum FileLocation { TDUF, TDUPK, PCH, TXT }
 
     private Map<FileLocation, String> fileLocations = new HashMap<>();
@@ -156,15 +161,10 @@ public class DialogsHelper {
      * Displays file load dialog for TDUPE Performance Pack
      * @return empty if no selection was made (dismissed)
      */
-    // TODO mutualize code
     public Optional<String> askForPerformancePackLocation(Window parent) {
         Collection<FileChooser.ExtensionFilter> extensionFilters = asList(FxConstants.EXTENSION_FILTER_TDUPE_PP, FxConstants.EXTENSION_FILTER_ALL);
 
-        return CommonDialogsHelper.browseForFilenameWithExtensionFilters(new File(fileLocations.getOrDefault(FileLocation.TDUPK, ".")), true, extensionFilters, parent)
-                .map((file) -> {
-                    fileLocations.put(FileLocation.TDUPK, file.getParent());
-                    return file.getPath();
-                });
+        return askForLoadLocation(FileLocation.TDUPK, extensionFilters, parent);
     }
 
     /**
@@ -174,11 +174,7 @@ public class DialogsHelper {
     public Optional<String> askForGenuinePatchLocation(Window parent) {
         Collection<FileChooser.ExtensionFilter> extensionFilters = asList(FxConstants.EXTENSION_FILTER_TDUMT_PATCH, FxConstants.EXTENSION_FILTER_ALL);
 
-        return CommonDialogsHelper.browseForFilenameWithExtensionFilters(new File(fileLocations.getOrDefault(FileLocation.PCH, ".")), true, extensionFilters, parent)
-                .map((file) -> {
-                    fileLocations.put(FileLocation.PCH, file.getParent());
-                    return file.getPath();
-                });
+        return askForLoadLocation(FileLocation.PCH, extensionFilters, parent);
     }
 
     /**
@@ -188,11 +184,7 @@ public class DialogsHelper {
     public Optional<String> askForPatchLocation(Window parent) {
         Collection<FileChooser.ExtensionFilter> extensionFilters = asList(FxConstants.EXTENSION_FILTER_TDUF_PATCH, FxConstants.EXTENSION_FILTER_ALL);
 
-        return CommonDialogsHelper.browseForFilenameWithExtensionFilters(new File(fileLocations.getOrDefault(FileLocation.TDUF, ".")), true, extensionFilters, parent)
-                .map((file) -> {
-                    fileLocations.put(FileLocation.TDUF, file.getParent());
-                    return file.getPath();
-                });
+        return askForLoadLocation(FileLocation.TDUF, extensionFilters, parent);
     }
 
     /**
@@ -203,11 +195,39 @@ public class DialogsHelper {
     public Optional<String> askForPatchSaveLocation(Window parent) throws IOException {
         Collection<FileChooser.ExtensionFilter> extensionFilters = asList(FxConstants.EXTENSION_FILTER_TDUF_PATCH, FxConstants.EXTENSION_FILTER_ALL);
 
-        return CommonDialogsHelper.browseForFilenameWithExtensionFilters(new File("."), false, extensionFilters, parent)
+        return askForSaveLocation(FileLocation.TDUF, extensionFilters, parent);
+    }
+
+    private Optional<String> askForLoadLocation(FileLocation tdupk, Collection<FileChooser.ExtensionFilter> extensionFilters, Window parent) {
+        return CommonDialogsHelper.browseForFilenameWithExtensionFilters(new File(fileLocations.getOrDefault(tdupk, DEFAULT_PATH)), true, extensionFilters, parent)
                 .map((file) -> {
-                    fileLocations.put(FileLocation.TDUF, file.getParent());
+                    fileLocations.put(tdupk, file.getParent());
                     return file.getPath();
                 });
+    }
+
+    private Optional<String> askForSaveLocation(FileLocation tdupk, Collection<FileChooser.ExtensionFilter> extensionFilters, Window parent) {
+        return CommonDialogsHelper.browseForFilenameWithExtensionFilters(new File(fileLocations.getOrDefault(tdupk, DEFAULT_PATH)), false, extensionFilters, parent)
+                .map((file) -> {
+                    fileLocations.put(tdupk, file.getParent());
+                    return file.getPath();
+                });
+    }
+
+    private void askForLocationThenExportToFile(String contents, Window parent) {
+        Collection<FileChooser.ExtensionFilter> extensionFilters = asList(FxConstants.EXTENSION_FILTER_TEXT, FxConstants.EXTENSION_FILTER_ALL);
+
+        askForLoadLocation(FileLocation.TXT, extensionFilters, parent)
+                .ifPresent(location -> {
+            String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_EXPORT_FILE;
+            try (FileWriter fileWriter = new FileWriter(location)) {
+                fileWriter.write(contents);
+                CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_FILE_EXPORT_OK, location);
+            } catch (IOException ioe) {
+                Log.error(THIS_CLASS_NAME, ExceptionUtils.getStackTrace(ioe));
+                CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_FILE_EXPORT_KO, DisplayConstants.MESSAGE_SEE_LOGS);
+            }
+        });
     }
 
     private static Dialog<LocalizedResource> createLocalizedResourceDialog(Locale currentLocale, String defaultReference, String defaultValue) {
@@ -245,26 +265,6 @@ public class DialogsHelper {
             return null;
         });
         return editResourceDialog;
-    }
-
-    private void askForLocationThenExportToFile(String contents, Window parent) {
-        Collection<FileChooser.ExtensionFilter> extensionFilters = asList(FxConstants.EXTENSION_FILTER_TEXT, FxConstants.EXTENSION_FILTER_ALL);
-
-        CommonDialogsHelper.browseForFilenameWithExtensionFilters(new File(fileLocations.getOrDefault(FileLocation.TXT, ".")), false, extensionFilters, parent)
-                .map((file) -> {
-                    fileLocations.put(FileLocation.TXT, file.getParent());
-                    return file.getPath();
-                })
-                .ifPresent(location -> {
-            String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_EXPORT_FILE;
-            try (FileWriter fileWriter = new FileWriter(location)) {
-                fileWriter.write(contents);
-                CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_FILE_EXPORT_OK, location);
-            } catch (IOException ioe) {
-                Log.error(THIS_CLASS_NAME, ExceptionUtils.getStackTrace(ioe));
-                CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_FILE_EXPORT_KO, DisplayConstants.MESSAGE_SEE_LOGS);
-            }
-        });
     }
 
     private static ChoiceBox<String> createLocaleChoiceBox(Locale currentLocale) {
