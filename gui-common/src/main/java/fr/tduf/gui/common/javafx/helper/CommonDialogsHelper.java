@@ -61,14 +61,20 @@ public class CommonDialogsHelper {
         fileChooser.getExtensionFilters().clear();
         fileChooser.getExtensionFilters().addAll(fileBrowsingOptions.extensionFilters);
 
+        fileChooser.setInitialFileName("");
         fileChooser.setInitialDirectory(new File(fileBrowsingOptions.initialDirectory));
         fileChooser.setTitle(fileBrowsingOptions.dialogTitle);
 
-        File selectedFile;
+        final File selectedFile;
         if (FileBrowsingOptions.FileBrowsingContext.LOAD == fileBrowsingOptions.context) {
             selectedFile = fileChooser.showOpenDialog(ownerWindow);
         } else {
-            selectedFile = fileChooser.showSaveDialog(ownerWindow);
+            fileBrowsingOptions.extensionFilters.stream()
+                    .findFirst()
+                    .flatMap(extensionFilter -> extensionFilter.getExtensions().stream().findFirst())
+                    .ifPresent(fileChooser::setInitialFileName);
+
+             selectedFile = fileChooser.showSaveDialog(ownerWindow);
         }
 
         return ofNullable(selectedFile);
