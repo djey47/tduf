@@ -190,7 +190,6 @@ public class DialogsHelper {
      * Displays file save dialog for TDUF patch
      * @return empty if no selection was made (dismissed)
      */
-    // TODO append selected extension if unspecified
     public Optional<String> askForPatchSaveLocation(Window parent) throws IOException {
         List<FileChooser.ExtensionFilter> extensionFilters = asList(FxConstants.EXTENSION_FILTER_TDUF_PATCH, FxConstants.EXTENSION_FILTER_ALL);
 
@@ -228,7 +227,7 @@ public class DialogsHelper {
     private void askForLocationThenExportToFile(String contents, Window parent) {
         List<FileChooser.ExtensionFilter> extensionFilters = asList(FxConstants.EXTENSION_FILTER_TEXT, FxConstants.EXTENSION_FILTER_ALL);
 
-        askForLoadLocation(FileLocation.TXT, extensionFilters, parent)
+        askForSaveLocation(FileLocation.TXT, extensionFilters, parent)
                 .ifPresent(location -> {
             String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_EXPORT_FILE;
             try (FileWriter fileWriter = new FileWriter(location)) {
