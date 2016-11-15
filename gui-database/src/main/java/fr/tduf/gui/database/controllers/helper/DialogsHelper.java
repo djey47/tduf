@@ -225,7 +225,7 @@ public class DialogsHelper {
     }
 
     private void askForLocationThenExportToFile(String contents, Window parent) {
-        List<FileChooser.ExtensionFilter> extensionFilters = asList(FxConstants.EXTENSION_FILTER_TEXT, FxConstants.EXTENSION_FILTER_ALL);
+        List<FileChooser.ExtensionFilter> extensionFilters = asList(FxConstants.EXTENSION_FILTER_TDUPE_PP, FxConstants.EXTENSION_FILTER_TEXT, FxConstants.EXTENSION_FILTER_ALL);
 
         askForSaveLocation(FileLocation.TXT, extensionFilters, parent)
                 .ifPresent(location -> {
