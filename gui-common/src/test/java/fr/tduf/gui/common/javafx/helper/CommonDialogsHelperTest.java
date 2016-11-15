@@ -8,7 +8,6 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,29 +44,34 @@ public class CommonDialogsHelperTest {
     }
 
     @Test
-    public void browseForFilename_loadMode() {
-        // GIVEN-WHEN
-        Optional<File> actualResult = CommonDialogsHelper.browseForFilenameWithExtensionFilters(new File("."), true, new ArrayList<>(0), null);
-
-        // THEN
-        assertThat(actualResult).isPresent();
-    }
-
-    @Test
-    public void browseForFilenameWithExtensionFilters_loadMode() {
+    public void browseForFilename_whenSaveMode_andExtensionFilters() {
         // GIVEN
         List<FileChooser.ExtensionFilter> filters = asList(
-                new FileChooser.ExtensionFilter("Filter 1", "*"),
-                new FileChooser.ExtensionFilter("Filter 2", "*.txt"));
-        File initialDirectory = new File(".");
+                new FileChooser.ExtensionFilter("Filter 1", "*.txt"),
+                new FileChooser.ExtensionFilter("Filter 2", "*"));
+        CommonDialogsHelper.FileBrowsingOptions options = CommonDialogsHelper.FileBrowsingOptions.builder()
+                .forSaving()
+                .withExtensionFilters(filters)
+                .withInitialDirectory(".")
+                .withDialogTitle("Enter toto.txt")
+                .build();
 
         // WHEN
-        CommonDialogsHelper.browseForFilenameWithExtensionFilters(initialDirectory, true, filters, null);
+        Optional<File> actualFile = CommonDialogsHelper.browseForFilename(options, null);
+
+        // THEN
+        assertThat(actualFile).isPresent();
+        assertThat(actualFile.get()).hasName("toto.txt");
     }
 
     @Test
-    public void browseForFilename_saveMode() {
-        // GIVEN-WHEN
-        CommonDialogsHelper.browseForFilenameWithExtensionFilters(new File("."), false, new ArrayList<>(0), null);
+    public void browseForFilename_whenLoadMode() {
+        // GIVEN
+        CommonDialogsHelper.FileBrowsingOptions options = CommonDialogsHelper.FileBrowsingOptions.builder()
+                .forLoading()
+                .build();
+
+        // WHEN-THEN
+        CommonDialogsHelper.browseForFilename(options, null);
     }
 }

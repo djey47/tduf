@@ -10,7 +10,6 @@ import javafx.stage.Window;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +22,8 @@ import static javafx.scene.control.ButtonBar.ButtonData.OK_DONE;
 /**
  * Helper class to factorize handling of common dialog boxes.
  */
+// TODO add parent support for every dialog
+// TODO add options for alert dialog
 public class CommonDialogsHelper {
 
     private static FileChooser fileChooser = new FileChooser();
@@ -30,34 +31,10 @@ public class CommonDialogsHelper {
     /**
      * Displays a system dialog to browse for file name or existing file
      *
-     * @param initialDirectory  : null to use default directory
-     * @param loadFile          : true to use as file chooser, else to use as target selector
-     * @return chosen file, or empty if no selection has been made (dismissed).
-     */
-    public static Optional<File> browseForFilenameWithExtensionFilters(File initialDirectory, boolean loadFile, Collection<FileChooser.ExtensionFilter> extensionFilters, Window ownerWindow) {
-        fileChooser.getExtensionFilters().clear();
-        fileChooser.getExtensionFilters().addAll(extensionFilters);
-
-        fileChooser.setInitialDirectory(initialDirectory);
-        fileChooser.setTitle("");
-
-        File selectedFile;
-        if (loadFile) {
-            selectedFile = fileChooser.showOpenDialog(ownerWindow);
-        } else {
-            selectedFile = fileChooser.showSaveDialog(ownerWindow);
-        }
-
-        return ofNullable(selectedFile);
-    }
-
-    /**
-     * Displays a system dialog to browse for file name or existing file
-     *
      * @param fileBrowsingOptions   : specifies appearance and behaviour of component
      * @return chosen file, or empty if no selection has been made (dismissed).
      */
-    public static Optional<File> browseForFilename(FileBrowsingOptions fileBrowsingOptions, Window ownerWindow) {
+    public static Optional<File> browseForFilename(FileBrowsingOptions fileBrowsingOptions, Window parent) {
         fileChooser.getExtensionFilters().clear();
         fileChooser.getExtensionFilters().addAll(fileBrowsingOptions.extensionFilters);
 
@@ -67,21 +44,21 @@ public class CommonDialogsHelper {
 
         final File selectedFile;
         if (FileBrowsingOptions.FileBrowsingContext.LOAD == fileBrowsingOptions.context) {
-            selectedFile = fileChooser.showOpenDialog(ownerWindow);
+            selectedFile = fileChooser.showOpenDialog(parent);
         } else {
             fileBrowsingOptions.extensionFilters.stream()
                     .findFirst()
                     .flatMap(extensionFilter -> extensionFilter.getExtensions().stream().findFirst())
                     .ifPresent(fileChooser::setInitialFileName);
 
-             selectedFile = fileChooser.showSaveDialog(ownerWindow);
+             selectedFile = fileChooser.showSaveDialog(parent);
         }
 
         return ofNullable(selectedFile);
     }
 
     /**
-     * Displays a single dialog box for different purposes.
+     * Displays a single alert dialog box for different purposes.
      * @param alertType    : type of dialog box to be created
      * @param title        : text in upper dialog bar
      * @param message      : short text
