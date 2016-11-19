@@ -4,6 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.controllers.helper.DatabaseOpsHelper;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
+import fr.tduf.gui.common.javafx.helper.options.SimpleDialogOptions;
 import fr.tduf.gui.common.services.DatabaseChecker;
 import fr.tduf.gui.common.services.DatabaseFixer;
 import fr.tduf.gui.installer.common.DisplayConstants;
@@ -27,10 +28,7 @@ import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import javafx.beans.property.*;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.DirectoryChooser;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -52,7 +50,9 @@ import static java.util.Objects.requireNonNull;
 import static javafx.beans.binding.Bindings.when;
 import static javafx.concurrent.Worker.State.FAILED;
 import static javafx.concurrent.Worker.State.SUCCEEDED;
-import static javafx.scene.control.Alert.AlertType.*;
+import static javafx.scene.control.Alert.AlertType.ERROR;
+import static javafx.scene.control.Alert.AlertType.INFORMATION;
+import static javafx.scene.control.Alert.AlertType.WARNING;
 
 /**
  * Makes it a possible to intercept all GUI events.
@@ -203,7 +203,13 @@ public class MainStageController extends AbstractGuiController {
             if (SUCCEEDED == newState) {
                 final Set<IntegrityError> integrityErrors = databaseChecker.integrityErrorsProperty().get();
                 if (integrityErrors.isEmpty()) {
-                    CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_CHECK_DB, DisplayConstants.MESSAGE_DB_CHECK_OK, DisplayConstants.MESSAGE_DB_ZERO_ERROR, getWindow());
+                    SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                            .withContext(INFORMATION)
+                            .withTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_CHECK_DB)
+                            .withMessage(DisplayConstants.MESSAGE_DB_CHECK_OK)
+                            .withDescription(DisplayConstants.MESSAGE_DB_ZERO_ERROR)
+                            .build();
+                    CommonDialogsHelper.showDialog(dialogOptions, getWindow());
                     return;
                 }
                 if (DatabaseOpsHelper.displayCheckResultDialog(integrityErrors, getWindow(), DisplayConstants.TITLE_APPLICATION)) {
@@ -218,9 +224,21 @@ public class MainStageController extends AbstractGuiController {
             if (SUCCEEDED == newState) {
                 final Set<IntegrityError> remainingErrors = databaseFixer.integrityErrorsProperty().get();
                 if (remainingErrors.isEmpty()) {
-                    CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_FIX_DB, DisplayConstants.MESSAGE_DB_FIX_OK, DisplayConstants.MESSAGE_DB_ZERO_ERROR, getWindow());
+                    SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                            .withContext(INFORMATION)
+                            .withTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_FIX_DB)
+                            .withMessage(DisplayConstants.MESSAGE_DB_FIX_OK)
+                            .withDescription(DisplayConstants.MESSAGE_DB_ZERO_ERROR)
+                            .build();
+                    CommonDialogsHelper.showDialog(dialogOptions, getWindow());
                 } else {
-                    CommonDialogsHelper.showDialog(WARNING, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_FIX_DB, DisplayConstants.MESSAGE_DB_FIX_KO, DisplayConstants.MESSAGE_DB_REMAINING_ERRORS, getWindow());
+                    SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                            .withContext(WARNING)
+                            .withTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_FIX_DB)
+                            .withMessage(DisplayConstants.MESSAGE_DB_FIX_KO)
+                            .withDescription(DisplayConstants.MESSAGE_DB_REMAINING_ERRORS)
+                            .build();
+                    CommonDialogsHelper.showDialog(dialogOptions, getWindow());
                 }
             } else if (FAILED == newState) {
                 handleServiceFailure(databaseFixer.exceptionProperty().get(), DisplayConstants.TITLE_SUB_FIX_DB, DisplayConstants.MESSAGE_DB_FIX_KO);
@@ -303,8 +321,13 @@ public class MainStageController extends AbstractGuiController {
         GenericStep.starterStep(configuration, null)
                 .nextStep(GenericStep.StepType.UPDATE_MAGIC_MAP).start();
 
-        String magicMapFile = configuration.resolveMagicMapFile();
-        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_MAP_UPDATE, DisplayConstants.MESSAGE_UPDATED_MAP, magicMapFile, getWindow());
+        SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                .withContext(INFORMATION)
+                .withTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_MAP_UPDATE)
+                .withMessage(DisplayConstants.MESSAGE_UPDATED_MAP)
+                .withDescription(configuration.resolveMagicMapFile())
+                .build();
+        CommonDialogsHelper.showDialog(dialogOptions, getWindow());
     }
 
     private void resetDatabaseCache() throws IOException, ReflectiveOperationException {
@@ -319,7 +342,13 @@ public class MainStageController extends AbstractGuiController {
         Path databasePath = Paths.get(configuration.resolveDatabaseDirectory());
         DatabaseBanksCacheHelper.clearCache(databasePath);
 
-        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_DB_CACHE, DisplayConstants.MESSAGE_DELETED_CACHE, databasePath.toString(), getWindow());
+        SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                .withContext(INFORMATION)
+                .withTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_DB_CACHE)
+                .withMessage(DisplayConstants.MESSAGE_DELETED_CACHE)
+                .withDescription(databasePath.toString())
+                .build();
+        CommonDialogsHelper.showDialog(dialogOptions, getWindow());
     }
 
     private void checkDatabase() {
@@ -485,18 +514,38 @@ public class MainStageController extends AbstractGuiController {
             causeMessage = throwable.getCause().getMessage();
         }
 
-        final String errorMessage = String.format(DisplayConstants.MESSAGE_FMT_ERROR, throwable.getMessage(), causeMessage, stepName);
-        CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + subTitle, mainMessage, errorMessage, getWindow());
+        SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                .withContext(ERROR)
+                .withTitle(DisplayConstants.TITLE_APPLICATION + subTitle)
+                .withMessage(mainMessage)
+                .withDescription(String.format(DisplayConstants.MESSAGE_FMT_ERROR, throwable.getMessage(), causeMessage, stepName))
+                .build();
+        CommonDialogsHelper.showDialog(dialogOptions, getWindow());
     }
 
     private void handleCoordinatorSuccess() {
         TaskType currentTask = stepsCoordinator.taskTypeProperty().getValue();
         if (TaskType.UNINSTALL == currentTask) {
-            CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_UNINSTALL, DisplayConstants.MESSAGE_UNINSTALLED, "", getWindow());
+            SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                    .withContext(INFORMATION)
+                    .withTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_UNINSTALL)
+                    .withMessage(DisplayConstants.MESSAGE_UNINSTALLED)
+                    .build();
+            CommonDialogsHelper.showDialog(dialogOptions, getWindow());
         } else if (TaskType.INSTALL == currentTask) {
-            CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_INSTALLED, "", getWindow());
+            SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                    .withContext(INFORMATION)
+                    .withTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL)
+                    .withMessage(DisplayConstants.MESSAGE_INSTALLED)
+                    .build();
+            CommonDialogsHelper.showDialog(dialogOptions, getWindow());
         } else if(TaskType.RESET_SLOT == currentTask) {
-            CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_RESET_SLOT, "", getWindow());
+            SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                    .withContext(INFORMATION)
+                    .withTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT)
+                    .withMessage(DisplayConstants.MESSAGE_RESET_SLOT)
+                    .build();
+            CommonDialogsHelper.showDialog(dialogOptions, getWindow());
         }
     }
 

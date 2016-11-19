@@ -1,6 +1,7 @@
 package fr.tduf.gui.common.javafx.helper;
 
 import fr.tduf.gui.common.javafx.helper.options.FileBrowsingOptions;
+import fr.tduf.gui.common.javafx.helper.options.SimpleDialogOptions;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -21,7 +22,6 @@ import static javafx.scene.control.ButtonBar.ButtonData.OK_DONE;
 /**
  * Helper class to factorize handling of common dialog boxes.
  */
-// TODO add options for alert dialog
 public class CommonDialogsHelper {
 
     private static FileChooser fileChooser = new FileChooser();
@@ -30,7 +30,7 @@ public class CommonDialogsHelper {
      * Displays a system dialog to browse for file name or existing file
      *
      * @param fileBrowsingOptions   : specifies appearance and behaviour of component
-     * @param parent       : owner dialog, or null to be a top-level one
+     * @param parent                : owner dialog, or null to be a top-level one
      * @return chosen file, or empty if no selection has been made (dismissed).
      */
     public static Optional<File> browseForFilename(FileBrowsingOptions fileBrowsingOptions, Window parent) {
@@ -58,18 +58,15 @@ public class CommonDialogsHelper {
 
     /**
      * Displays a single alert dialog box for different purposes.
-     * @param alertType    : type of dialog box to be created
-     * @param title        : text in upper dialog bar
-     * @param message      : short text
-     * @param description  : details
-     * @param parent       : owner dialog, or null to be a top-level one
+     * @param dialogOptions : specifies appearance and behaviour of component
+     * @param parent        : owner dialog, or null to be a top-level one
      */
-    public static void showDialog(Alert.AlertType alertType, String title, String message, String description, Window parent) {
-        Alert alert = new Alert(alertType);
+    public static void showDialog(SimpleDialogOptions dialogOptions, Window parent) {
+        Alert alert = new Alert(dialogOptions.getAlertContext());
         alert.initOwner(parent);
-        alert.setTitle(title);
-        alert.setHeaderText(message);
-        alert.setContentText(description);
+        alert.setTitle(dialogOptions.getTitle());
+        alert.setHeaderText(dialogOptions.getMessage());
+        alert.setContentText(dialogOptions.getDescription());
         alert.setResizable(true);
 
         alert.getDialogPane().getChildren().stream()

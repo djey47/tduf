@@ -4,6 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.javafx.helper.TableViewHelper;
+import fr.tduf.gui.common.javafx.helper.options.SimpleDialogOptions;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.controllers.converter.VehicleKindToStringConverter;
@@ -90,7 +91,13 @@ public class VehicleSlotsStageController extends AbstractGuiController {
         final VehicleSlotDataItem slotDataItem = selectedSlotProperty.getValue();
 
         if (slotDataItem.moddedProperty().get()) {
-            CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, "A mod is already installed onto this slot.", "Please uninstall it first.", getWindow());
+            SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                    .withContext(Alert.AlertType.ERROR)
+                    .withTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL)
+                    .withMessage("A mod is already installed onto this slot.")
+                    .withDescription("Please uninstall it first.")
+                    .build();
+            CommonDialogsHelper.showDialog(dialogOptions, getWindow());
             return;
         }
 

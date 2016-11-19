@@ -4,6 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.javafx.helper.TableViewHelper;
+import fr.tduf.gui.common.javafx.helper.options.SimpleDialogOptions;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.controllers.helper.DialogsHelper;
 import fr.tduf.gui.database.domain.LocalizedResource;
@@ -18,7 +19,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -32,6 +32,7 @@ import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static javafx.scene.control.Alert.AlertType.ERROR;
 
 /**
  * Controller to display and modify database resources via dedicated dialog.
@@ -169,7 +170,7 @@ public class ResourcesStageController extends AbstractGuiController {
             updateResource(topic, currentResourceReference, newLocalizedResource.getReferenceValuePair(), newLocalizedResource.getLocale());
         } catch (IllegalArgumentException iae) {
             Log.error(THIS_CLASS_NAME, "Unable to update resource", iae);
-            CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES, iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE, getWindow());
+            showResourceErrorDialog(iae);
         } finally {
             updateAllStagesWithResourceReference(newLocalizedResource.getReferenceValuePair().getKey());
         }
@@ -180,7 +181,7 @@ public class ResourcesStageController extends AbstractGuiController {
             createResource(topic, newLocalizedResource.getReferenceValuePair(), newLocalizedResource.getLocale());
         } catch (IllegalArgumentException iae) {
             Log.error(THIS_CLASS_NAME, "Unable to create resource", iae);
-            CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES, iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE, getWindow());
+            showResourceErrorDialog(iae);
         } finally {
             updateAllStagesWithResourceReference(newLocalizedResource.getReferenceValuePair().getKey());
         }
@@ -308,6 +309,16 @@ public class ResourcesStageController extends AbstractGuiController {
                 .ifPresent(entryReference -> TableViewHelper.selectItemAndScroll(
                         oneItem -> oneItem.referenceProperty().getValue().equals(entryReference),
                         resourcesTableView));
+    }
+
+    private void showResourceErrorDialog(IllegalArgumentException iae) {
+        SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                .withContext(ERROR)
+                .withTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES)
+                .withMessage(iae.getMessage())
+                .withDescription(DisplayConstants.MESSAGE_DIFFERENT_RESOURCE)
+                .build();
+        CommonDialogsHelper.showDialog(dialogOptions, getWindow());
     }
 
     public void setMainStageController(MainStageController mainStageController) {

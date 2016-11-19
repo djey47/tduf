@@ -5,6 +5,7 @@ import fr.tduf.gui.common.controllers.helper.DatabaseOpsHelper;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.javafx.helper.TableViewHelper;
+import fr.tduf.gui.common.javafx.helper.options.SimpleDialogOptions;
 import fr.tduf.gui.common.services.DatabaseChecker;
 import fr.tduf.gui.common.services.DatabaseFixer;
 import fr.tduf.gui.database.common.DisplayConstants;
@@ -55,7 +56,9 @@ import static java.util.Optional.ofNullable;
 import static javafx.beans.binding.Bindings.when;
 import static javafx.concurrent.Worker.State.FAILED;
 import static javafx.concurrent.Worker.State.SUCCEEDED;
-import static javafx.scene.control.Alert.AlertType.*;
+import static javafx.scene.control.Alert.AlertType.ERROR;
+import static javafx.scene.control.Alert.AlertType.INFORMATION;
+import static javafx.scene.control.Alert.AlertType.WARNING;
 
 /**
  * Makes it a possible to intercept all GUI events.
@@ -569,13 +572,31 @@ public class MainStageController extends AbstractGuiController {
             if (SUCCEEDED == newState) {
                 final Set<IntegrityError> remainingErrors = databaseFixer.integrityErrorsProperty().get();
                 if (remainingErrors.isEmpty()) {
-                    CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_OK, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_ZERO_ERROR_AFTER_FIX, getWindow());
+                    SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                            .withContext(INFORMATION)
+                            .withTitle(DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB)
+                            .withMessage(fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_OK)
+                            .withDescription(fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_ZERO_ERROR_AFTER_FIX)
+                            .build();
+                    CommonDialogsHelper.showDialog(dialogOptions, getWindow());
                 } else {
-                    CommonDialogsHelper.showDialog(WARNING, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_KO, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_REMAINING_ERRORS, getWindow());
+                    SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                            .withContext(WARNING)
+                            .withTitle(DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB)
+                            .withMessage(fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_KO)
+                            .withDescription(fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_REMAINING_ERRORS)
+                            .build();
+                    CommonDialogsHelper.showDialog(dialogOptions, getWindow());
                 }
                 viewDataController.refreshAll();
             } else if (FAILED == newState) {
-                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_KO, databaseFixer.getException().getMessage(), getWindow());
+                SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                        .withContext(ERROR)
+                        .withTitle(DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB)
+                        .withMessage(fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_KO)
+                        .withDescription(databaseFixer.getException().getMessage())
+                        .build();
+                CommonDialogsHelper.showDialog(dialogOptions, getWindow());
             }
         };
     }
@@ -585,14 +606,26 @@ public class MainStageController extends AbstractGuiController {
             if (SUCCEEDED == newState) {
                 final Set<IntegrityError> integrityErrors = databaseChecker.integrityErrorsProperty().get();
                 if (integrityErrors.isEmpty()) {
-                    CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_CHECK_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_CHECK_OK, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_ZERO_ERROR, getWindow());
+                    final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                            .withContext(INFORMATION)
+                            .withTitle(DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_CHECK_DB)
+                            .withMessage(fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_CHECK_OK)
+                            .withDescription(fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_ZERO_ERROR)
+                            .build();
+                    CommonDialogsHelper.showDialog(dialogOptions, getWindow());
                     return;
                 }
                 if (DatabaseOpsHelper.displayCheckResultDialog(integrityErrors, getWindow(), DisplayConstants.TITLE_APPLICATION)) {
                     fixDatabase();
                 }
             } else if (FAILED == newState) {
-                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_CHECK_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_CHECK_KO, databaseChecker.getException().getMessage(), getWindow());
+                final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                        .withContext(ERROR)
+                        .withTitle(DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_CHECK_DB)
+                        .withMessage(fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_CHECK_KO)
+                        .withDescription(databaseChecker.getException().getMessage())
+                        .build();
+                CommonDialogsHelper.showDialog(dialogOptions, getWindow());
             }
         };
     }
@@ -600,9 +633,21 @@ public class MainStageController extends AbstractGuiController {
     private ChangeListener<Worker.State> getSaverStateChangeListener() {
         return (observableValue, oldState, newState) -> {
             if (SUCCEEDED == newState) {
-                CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SAVE, DisplayConstants.MESSAGE_DATABASE_SAVED, databaseSaver.getValue(), getWindow());
+                final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                        .withContext(INFORMATION)
+                        .withTitle(DisplayConstants.TITLE_APPLICATION)
+                        .withMessage(DisplayConstants.MESSAGE_DATABASE_SAVED)
+                        .withDescription(databaseSaver.getValue())
+                        .build();
+                CommonDialogsHelper.showDialog(dialogOptions, getWindow());
             } else if (FAILED == newState) {
-                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SAVE, DisplayConstants.MESSAGE_DATABASE_SAVE_KO, databaseSaver.getException().getMessage(), getWindow());
+                final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                        .withContext(ERROR)
+                        .withTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SAVE)
+                        .withMessage(DisplayConstants.MESSAGE_DATABASE_SAVE_KO)
+                        .withDescription(databaseSaver.getException().getMessage())
+                        .build();
+                CommonDialogsHelper.showDialog(dialogOptions, getWindow());
             }
         };
     }
@@ -615,7 +660,13 @@ public class MainStageController extends AbstractGuiController {
                 databaseObjects.addAll(databaseLoader.getValue());
                 viewDataController.updateDisplayWithLoadedObjects();
             } else if (FAILED == newState) {
-                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_LOAD, DisplayConstants.MESSAGE_DATABASE_LOAD_KO, databaseLoader.getException().getMessage(), getWindow());
+                final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                        .withContext(ERROR)
+                        .withTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_LOAD)
+                        .withMessage(DisplayConstants.MESSAGE_DATABASE_LOAD_KO)
+                        .withDescription(databaseLoader.getException().getMessage())
+                        .build();
+                CommonDialogsHelper.showDialog(dialogOptions, getWindow());
             }
         };
     }
@@ -745,12 +796,24 @@ public class MainStageController extends AbstractGuiController {
                         String message = selectedEntryRefs.isEmpty() ?
                                 DisplayConstants.MESSAGE_ALL_ENTRIES_EXPORTED :
                                 DisplayConstants.MESSAGE_ENTRIES_EXPORTED;
-                        CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, message, location, getWindow());
+                        final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                                .withContext(INFORMATION)
+                                .withTitle(dialogTitle)
+                                .withMessage(message)
+                                .withDescription(location)
+                                .build();
+                        CommonDialogsHelper.showDialog(dialogOptions, getWindow());
                     } catch (IOException ioe) {
                         String message = selectedEntryRefs.isEmpty() ?
                                 DisplayConstants.MESSAGE_UNABLE_EXPORT_ALL_ENTRIES :
                                 DisplayConstants.MESSAGE_UNABLE_EXPORT_ENTRIES;
-                        CommonDialogsHelper.showDialog(ERROR, dialogTitle, message, DisplayConstants.MESSAGE_SEE_LOGS, getWindow());
+                        final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                                .withContext(ERROR)
+                                .withTitle(dialogTitle)
+                                .withMessage(message)
+                                .withDescription(DisplayConstants.MESSAGE_SEE_LOGS)
+                                .build();
+                        CommonDialogsHelper.showDialog(dialogOptions, getWindow());
                     }
         });
     }
@@ -771,10 +834,23 @@ public class MainStageController extends AbstractGuiController {
                             writtenPropertiesPath += ("Written properties file: " + System.lineSeparator() + potentialPropertiesFile.get());
                         }
 
-                        CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED, writtenPropertiesPath, getWindow());
+                        final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                                .withContext(INFORMATION)
+                                .withTitle(dialogTitle)
+                                .withMessage(DisplayConstants.MESSAGE_DATA_IMPORTED)
+                                .withDescription(writtenPropertiesPath)
+                                .build();
+                        CommonDialogsHelper.showDialog(dialogOptions, getWindow());
                     } catch (Exception e) {
                         Log.error(THIS_CLASS_NAME, e);
-                        CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_PATCH, DisplayConstants.MESSAGE_SEE_LOGS, getWindow());
+
+                        final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                                .withContext(ERROR)
+                                .withTitle(dialogTitle)
+                                .withMessage(DisplayConstants.MESSAGE_UNABLE_IMPORT_PATCH)
+                                .withDescription(DisplayConstants.MESSAGE_SEE_LOGS)
+                                .build();
+                        CommonDialogsHelper.showDialog(dialogOptions, getWindow());
                     }
                 });
     }
@@ -787,10 +863,23 @@ public class MainStageController extends AbstractGuiController {
                         changeDataController.importPerformancePack(location);
                         viewDataController.updateAllPropertiesWithItemValues();
 
-                        CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED_PERFORMANCE_PACK, location, getWindow());
+                        final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                                .withContext(INFORMATION)
+                                .withTitle(dialogTitle)
+                                .withMessage(DisplayConstants.MESSAGE_DATA_IMPORTED_PERFORMANCE_PACK)
+                                .withDescription(location)
+                                .build();
+                        CommonDialogsHelper.showDialog(dialogOptions, getWindow());
                     } catch (Exception e) {
                         Log.error(THIS_CLASS_NAME, e);
-                        CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_PERFORMANCE_PACK, DisplayConstants.MESSAGE_SEE_LOGS, getWindow());
+
+                        final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                                .withContext(ERROR)
+                                .withTitle(dialogTitle)
+                                .withMessage(DisplayConstants.MESSAGE_UNABLE_IMPORT_PERFORMANCE_PACK)
+                                .withDescription(DisplayConstants.MESSAGE_SEE_LOGS)
+                                .build();
+                        CommonDialogsHelper.showDialog(dialogOptions, getWindow());
                     }
                 });
     }
@@ -803,10 +892,23 @@ public class MainStageController extends AbstractGuiController {
                         changeDataController.importLegacyPatch(location);
                         viewDataController.updateAllPropertiesWithItemValues();
 
-                        CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED_TDUMT_PATCH, location, getWindow());
+                        final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                                .withContext(INFORMATION)
+                                .withTitle(dialogTitle)
+                                .withMessage(DisplayConstants.MESSAGE_DATA_IMPORTED_TDUMT_PATCH)
+                                .withDescription(location)
+                                .build();
+                        CommonDialogsHelper.showDialog(dialogOptions, getWindow());
                     } catch (Exception e) {
                         Log.error(THIS_CLASS_NAME, e);
-                        CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_TDUMT_PATCH, DisplayConstants.MESSAGE_SEE_LOGS, getWindow());
+
+                        final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                                .withContext(ERROR)
+                                .withTitle(dialogTitle)
+                                .withMessage(DisplayConstants.MESSAGE_UNABLE_IMPORT_TDUMT_PATCH)
+                                .withDescription(DisplayConstants.MESSAGE_SEE_LOGS)
+                                .build();
+                        CommonDialogsHelper.showDialog(dialogOptions, getWindow());
                     }
                 });
     }
@@ -821,13 +923,25 @@ public class MainStageController extends AbstractGuiController {
     private void resetDatabaseCache(String databaseDirectory) throws IOException {
         DatabaseBanksCacheHelper.clearCache(Paths.get(databaseDirectory));
 
-        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_DB_CACHE, DisplayConstants.MESSAGE_DELETED_CACHE, databaseDirectory, getWindow());
+        final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                .withContext(INFORMATION)
+                .withTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_DB_CACHE)
+                .withMessage(DisplayConstants.MESSAGE_DELETED_CACHE)
+                .withDescription(databaseDirectory)
+                .build();
+        CommonDialogsHelper.showDialog(dialogOptions, getWindow());
     }
 
     private void resetSettings() throws IOException {
         applicationConfiguration.reset();
 
-        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_SETTINGS, DisplayConstants.MESSAGE_DELETED_SETTINGS, DisplayConstants.MESSAGE_RESTART_APP, getWindow());
+        final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                .withContext(INFORMATION)
+                .withTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_SETTINGS)
+                .withMessage(DisplayConstants.MESSAGE_DELETED_SETTINGS)
+                .withDescription(DisplayConstants.MESSAGE_RESTART_APP)
+                .build();
+        CommonDialogsHelper.showDialog(dialogOptions, getWindow());
     }
 
     private void checkDatabase(String databaseLocation) {

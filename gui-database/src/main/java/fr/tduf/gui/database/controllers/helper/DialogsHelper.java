@@ -3,6 +3,7 @@ package fr.tduf.gui.database.controllers.helper;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.javafx.helper.options.FileBrowsingOptions;
+import fr.tduf.gui.common.javafx.helper.options.SimpleDialogOptions;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.domain.LocalizedResource;
@@ -233,10 +234,24 @@ public class DialogsHelper {
             String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_EXPORT_FILE;
             try (FileWriter fileWriter = new FileWriter(location)) {
                 fileWriter.write(contents);
-                CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_FILE_EXPORT_OK, location, parent);
+
+                final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                        .withContext(INFORMATION)
+                        .withTitle(dialogTitle)
+                        .withMessage(DisplayConstants.MESSAGE_FILE_EXPORT_OK)
+                        .withDescription(location)
+                        .build();
+                CommonDialogsHelper.showDialog(dialogOptions, parent);
             } catch (IOException ioe) {
                 Log.error(THIS_CLASS_NAME, ExceptionUtils.getStackTrace(ioe));
-                CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_FILE_EXPORT_KO, DisplayConstants.MESSAGE_SEE_LOGS, parent);
+
+                final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                        .withContext(ERROR)
+                        .withTitle(dialogTitle)
+                        .withMessage(DisplayConstants.MESSAGE_FILE_EXPORT_KO)
+                        .withDescription(DisplayConstants.MESSAGE_SEE_LOGS)
+                        .build();
+                CommonDialogsHelper.showDialog(dialogOptions, parent);
             }
         });
     }
