@@ -1,5 +1,6 @@
 package fr.tduf.gui.common.javafx.helper;
 
+import fr.tduf.gui.common.javafx.helper.options.FileBrowsingOptions;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -9,8 +10,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static fr.tduf.gui.common.DisplayConstants.LABEL_BUTTON_CANCEL;
@@ -36,17 +35,17 @@ public class CommonDialogsHelper {
      */
     public static Optional<File> browseForFilename(FileBrowsingOptions fileBrowsingOptions, Window parent) {
         fileChooser.getExtensionFilters().clear();
-        fileChooser.getExtensionFilters().addAll(fileBrowsingOptions.extensionFilters);
+        fileChooser.getExtensionFilters().addAll(fileBrowsingOptions.getExtensionFilters());
 
         fileChooser.setInitialFileName("");
-        fileChooser.setInitialDirectory(new File(fileBrowsingOptions.initialDirectory));
-        fileChooser.setTitle(fileBrowsingOptions.dialogTitle);
+        fileChooser.setInitialDirectory(new File(fileBrowsingOptions.getInitialDirectory()));
+        fileChooser.setTitle(fileBrowsingOptions.getDialogTitle());
 
         final File selectedFile;
-        if (FileBrowsingOptions.FileBrowsingContext.LOAD == fileBrowsingOptions.context) {
+        if (FileBrowsingOptions.FileBrowsingContext.LOAD == fileBrowsingOptions.getContext()) {
             selectedFile = fileChooser.showOpenDialog(parent);
         } else {
-            fileBrowsingOptions.extensionFilters.stream()
+            fileBrowsingOptions.getExtensionFilters().stream()
                     .findFirst()
                     .flatMap(extensionFilter -> extensionFilter.getExtensions().stream().findFirst())
                     .ifPresent(fileChooser::setInitialFileName);
@@ -118,69 +117,5 @@ public class CommonDialogsHelper {
         });
 
         return inputValueDialog.showAndWait();
-    }
-
-    /**
-     * Specifies file selector appearance and behaviour.
-     */
-    public static class FileBrowsingOptions {
-
-        public static final FileBrowsingOptions defaultSettings = new FileBrowsingOptions();
-
-        private FileBrowsingOptions() {}
-
-        enum FileBrowsingContext { LOAD, SAVE }
-
-        final List<FileChooser.ExtensionFilter> extensionFilters = new ArrayList<>();
-        String dialogTitle = "";
-        FileBrowsingContext context = FileBrowsingContext.LOAD;
-        String initialDirectory = ".";
-
-        /**
-         * @return instance creator
-         */
-        public static FileBrowsingOptionsBuilder builder() {
-            return new FileBrowsingOptionsBuilder();
-        }
-
-
-        public static class FileBrowsingOptionsBuilder extends FileBrowsingOptions {
-            public FileBrowsingOptionsBuilder forLoading() {
-                context = FileBrowsingContext.LOAD;
-                return this;
-            }
-
-            public FileBrowsingOptionsBuilder forSaving() {
-                context = FileBrowsingContext.SAVE;
-                return this;
-            }
-
-            public FileBrowsingOptionsBuilder withDialogTitle(String title) {
-                dialogTitle = title;
-                return this;
-            }
-
-            public FileBrowsingOptionsBuilder withExtensionFilters(List<FileChooser.ExtensionFilter> extensionFilters) {
-                this.extensionFilters.clear();
-                this.extensionFilters.addAll(extensionFilters);
-                return this;
-            }
-
-            public FileBrowsingOptionsBuilder withInitialDirectory(String initialDirectory) {
-                this.initialDirectory = initialDirectory;
-                return this;
-            }
-
-            public FileBrowsingOptions build() {
-                FileBrowsingOptions fileBrowsingOptions = new FileBrowsingOptions();
-
-                fileBrowsingOptions.context = context;
-                fileBrowsingOptions.extensionFilters.addAll(extensionFilters);
-                fileBrowsingOptions.dialogTitle = dialogTitle;
-                fileBrowsingOptions.initialDirectory = initialDirectory;
-
-                return fileBrowsingOptions;
-            }
-        }
     }
 }

@@ -2,6 +2,7 @@ package fr.tduf.gui.database.controllers.helper;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
+import fr.tduf.gui.common.javafx.helper.options.FileBrowsingOptions;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.domain.LocalizedResource;
@@ -197,7 +198,7 @@ public class DialogsHelper {
     }
 
     private Optional<String> askForLoadLocation(FileLocation fileLocation, List<FileChooser.ExtensionFilter> extensionFilters, Window parent) {
-        CommonDialogsHelper.FileBrowsingOptions options = CommonDialogsHelper.FileBrowsingOptions.builder()
+        FileBrowsingOptions options = FileBrowsingOptions.builder()
                 .forLoading()
                 .withDialogTitle(String.format(DisplayConstants.TITLE_FORMAT_LOAD, fileLocation))
                 .withExtensionFilters(extensionFilters)
@@ -211,7 +212,7 @@ public class DialogsHelper {
     }
 
     private Optional<String> askForSaveLocation(FileLocation fileLocation, List<FileChooser.ExtensionFilter> extensionFilters, Window parent) {
-        CommonDialogsHelper.FileBrowsingOptions options = CommonDialogsHelper.FileBrowsingOptions.builder()
+        FileBrowsingOptions options = FileBrowsingOptions.builder()
                 .forSaving()
                 .withDialogTitle(String.format(DisplayConstants.TITLE_FORMAT_SAVE, fileLocation))
                 .withExtensionFilters(extensionFilters)

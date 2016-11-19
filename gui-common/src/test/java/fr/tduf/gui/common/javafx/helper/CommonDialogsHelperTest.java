@@ -1,5 +1,6 @@
 package fr.tduf.gui.common.javafx.helper;
 
+import fr.tduf.gui.common.javafx.helper.options.FileBrowsingOptions;
 import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
 import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
@@ -49,7 +50,7 @@ public class CommonDialogsHelperTest {
         List<FileChooser.ExtensionFilter> filters = asList(
                 new FileChooser.ExtensionFilter("Filter 1", "*.txt"),
                 new FileChooser.ExtensionFilter("Filter 2", "*"));
-        CommonDialogsHelper.FileBrowsingOptions options = CommonDialogsHelper.FileBrowsingOptions.builder()
+        FileBrowsingOptions options = FileBrowsingOptions.builder()
                 .forSaving()
                 .withExtensionFilters(filters)
                 .withInitialDirectory(".")
@@ -67,7 +68,7 @@ public class CommonDialogsHelperTest {
     @Test
     public void browseForFilename_whenLoadMode() {
         // GIVEN
-        CommonDialogsHelper.FileBrowsingOptions options = CommonDialogsHelper.FileBrowsingOptions.builder()
+        FileBrowsingOptions options = FileBrowsingOptions.builder()
                 .forLoading()
                 .build();
 
