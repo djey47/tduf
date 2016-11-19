@@ -226,7 +226,7 @@ public class EntriesStageController extends AbstractGuiController {
     private void askForReferenceAndSelectItem() {
         CommonDialogsHelper.showInputValueDialog(
                 DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SEARCH_ENTRY,
-                DisplayConstants.LABEL_SEARCH_ENTRY)
+                DisplayConstants.LABEL_SEARCH_ENTRY, getWindow())
 
                 .ifPresent(entryReference -> TableViewHelper.selectItemAndScroll(
                         oneItem -> oneItem.referenceProperty().getValue().equals(entryReference),

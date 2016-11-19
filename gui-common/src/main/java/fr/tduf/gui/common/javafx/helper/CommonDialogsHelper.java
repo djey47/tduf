@@ -22,7 +22,6 @@ import static javafx.scene.control.ButtonBar.ButtonData.OK_DONE;
 /**
  * Helper class to factorize handling of common dialog boxes.
  */
-// TODO add parent support for every dialog
 // TODO add options for alert dialog
 public class CommonDialogsHelper {
 
@@ -32,6 +31,7 @@ public class CommonDialogsHelper {
      * Displays a system dialog to browse for file name or existing file
      *
      * @param fileBrowsingOptions   : specifies appearance and behaviour of component
+     * @param parent       : owner dialog, or null to be a top-level one
      * @return chosen file, or empty if no selection has been made (dismissed).
      */
     public static Optional<File> browseForFilename(FileBrowsingOptions fileBrowsingOptions, Window parent) {
@@ -62,10 +62,12 @@ public class CommonDialogsHelper {
      * @param alertType    : type of dialog box to be created
      * @param title        : text in upper dialog bar
      * @param message      : short text
-     * @param description  : details.
+     * @param description  : details
+     * @param parent       : owner dialog, or null to be a top-level one
      */
-    public static void showDialog(Alert.AlertType alertType, String title, String message, String description) {
+    public static void showDialog(Alert.AlertType alertType, String title, String message, String description, Window parent) {
         Alert alert = new Alert(alertType);
+        alert.initOwner(parent);
         alert.setTitle(title);
         alert.setHeaderText(message);
         alert.setContentText(description);
@@ -81,12 +83,14 @@ public class CommonDialogsHelper {
 
     /**
      * Display a dialog box requesting user for a value.
-     * @param title : text in upper dialog bar
-     * @param label : label for value text field
+     * @param title     : text in upper dialog bar
+     * @param label     : label for value text field
+     * @param parent    : owner dialog, or null to be a top-level one
      * @return resulting value, or absent if dialog was dismissed.
      */
-    public static Optional<String> showInputValueDialog(String title, String label) {
+    public static Optional<String> showInputValueDialog(String title, String label, Window parent) {
         Dialog<String> inputValueDialog = new Dialog<>();
+        inputValueDialog.initOwner(parent);
         inputValueDialog.setTitle(title);
         inputValueDialog.setResizable(true);
 

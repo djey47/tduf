@@ -232,10 +232,10 @@ public class DialogsHelper {
             String dialogTitle = DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_EXPORT_FILE;
             try (FileWriter fileWriter = new FileWriter(location)) {
                 fileWriter.write(contents);
-                CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_FILE_EXPORT_OK, location);
+                CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_FILE_EXPORT_OK, location, parent);
             } catch (IOException ioe) {
                 Log.error(THIS_CLASS_NAME, ExceptionUtils.getStackTrace(ioe));
-                CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_FILE_EXPORT_KO, DisplayConstants.MESSAGE_SEE_LOGS);
+                CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_FILE_EXPORT_KO, DisplayConstants.MESSAGE_SEE_LOGS, parent);
             }
         });
     }

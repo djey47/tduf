@@ -169,7 +169,7 @@ public class ResourcesStageController extends AbstractGuiController {
             updateResource(topic, currentResourceReference, newLocalizedResource.getReferenceValuePair(), newLocalizedResource.getLocale());
         } catch (IllegalArgumentException iae) {
             Log.error(THIS_CLASS_NAME, "Unable to update resource", iae);
-            CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES, iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE);
+            CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES, iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE, getWindow());
         } finally {
             updateAllStagesWithResourceReference(newLocalizedResource.getReferenceValuePair().getKey());
         }
@@ -180,7 +180,7 @@ public class ResourcesStageController extends AbstractGuiController {
             createResource(topic, newLocalizedResource.getReferenceValuePair(), newLocalizedResource.getLocale());
         } catch (IllegalArgumentException iae) {
             Log.error(THIS_CLASS_NAME, "Unable to create resource", iae);
-            CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES, iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE);
+            CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES, iae.getMessage(), DisplayConstants.MESSAGE_DIFFERENT_RESOURCE, getWindow());
         } finally {
             updateAllStagesWithResourceReference(newLocalizedResource.getReferenceValuePair().getKey());
         }
@@ -304,7 +304,7 @@ public class ResourcesStageController extends AbstractGuiController {
     private void askForReferenceAndSelectItem() {
         CommonDialogsHelper.showInputValueDialog(
                 DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SEARCH_RESOURCE_ENTRY,
-                DisplayConstants.LABEL_SEARCH_ENTRY)
+                DisplayConstants.LABEL_SEARCH_ENTRY, getWindow())
                 .ifPresent(entryReference -> TableViewHelper.selectItemAndScroll(
                         oneItem -> oneItem.referenceProperty().getValue().equals(entryReference),
                         resourcesTableView));

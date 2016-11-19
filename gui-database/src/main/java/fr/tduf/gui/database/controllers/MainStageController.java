@@ -569,13 +569,13 @@ public class MainStageController extends AbstractGuiController {
             if (SUCCEEDED == newState) {
                 final Set<IntegrityError> remainingErrors = databaseFixer.integrityErrorsProperty().get();
                 if (remainingErrors.isEmpty()) {
-                    CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_OK, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_ZERO_ERROR_AFTER_FIX);
+                    CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_OK, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_ZERO_ERROR_AFTER_FIX, getWindow());
                 } else {
-                    CommonDialogsHelper.showDialog(WARNING, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_KO, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_REMAINING_ERRORS);
+                    CommonDialogsHelper.showDialog(WARNING, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_KO, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_REMAINING_ERRORS, getWindow());
                 }
                 viewDataController.refreshAll();
             } else if (FAILED == newState) {
-                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_KO, databaseFixer.getException().getMessage());
+                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_KO, databaseFixer.getException().getMessage(), getWindow());
             }
         };
     }
@@ -585,14 +585,14 @@ public class MainStageController extends AbstractGuiController {
             if (SUCCEEDED == newState) {
                 final Set<IntegrityError> integrityErrors = databaseChecker.integrityErrorsProperty().get();
                 if (integrityErrors.isEmpty()) {
-                    CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_CHECK_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_CHECK_OK, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_ZERO_ERROR);
+                    CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_CHECK_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_CHECK_OK, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_ZERO_ERROR, getWindow());
                     return;
                 }
                 if (DatabaseOpsHelper.displayCheckResultDialog(integrityErrors, getWindow(), DisplayConstants.TITLE_APPLICATION)) {
                     fixDatabase();
                 }
             } else if (FAILED == newState) {
-                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_CHECK_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_CHECK_KO, databaseChecker.getException().getMessage());
+                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_CHECK_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_CHECK_KO, databaseChecker.getException().getMessage(), getWindow());
             }
         };
     }
@@ -600,9 +600,9 @@ public class MainStageController extends AbstractGuiController {
     private ChangeListener<Worker.State> getSaverStateChangeListener() {
         return (observableValue, oldState, newState) -> {
             if (SUCCEEDED == newState) {
-                CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SAVE, DisplayConstants.MESSAGE_DATABASE_SAVED, databaseSaver.getValue());
+                CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SAVE, DisplayConstants.MESSAGE_DATABASE_SAVED, databaseSaver.getValue(), getWindow());
             } else if (FAILED == newState) {
-                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SAVE, DisplayConstants.MESSAGE_DATABASE_SAVE_KO, databaseSaver.getException().getMessage());
+                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SAVE, DisplayConstants.MESSAGE_DATABASE_SAVE_KO, databaseSaver.getException().getMessage(), getWindow());
             }
         };
     }
@@ -615,7 +615,7 @@ public class MainStageController extends AbstractGuiController {
                 databaseObjects.addAll(databaseLoader.getValue());
                 viewDataController.updateDisplayWithLoadedObjects();
             } else if (FAILED == newState) {
-                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_LOAD, DisplayConstants.MESSAGE_DATABASE_LOAD_KO, databaseLoader.getException().getMessage());
+                CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_LOAD, DisplayConstants.MESSAGE_DATABASE_LOAD_KO, databaseLoader.getException().getMessage(), getWindow());
             }
         };
     }
@@ -745,12 +745,12 @@ public class MainStageController extends AbstractGuiController {
                         String message = selectedEntryRefs.isEmpty() ?
                                 DisplayConstants.MESSAGE_ALL_ENTRIES_EXPORTED :
                                 DisplayConstants.MESSAGE_ENTRIES_EXPORTED;
-                        CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, message, location);
+                        CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, message, location, getWindow());
                     } catch (IOException ioe) {
                         String message = selectedEntryRefs.isEmpty() ?
                                 DisplayConstants.MESSAGE_UNABLE_EXPORT_ALL_ENTRIES :
                                 DisplayConstants.MESSAGE_UNABLE_EXPORT_ENTRIES;
-                        CommonDialogsHelper.showDialog(ERROR, dialogTitle, message, DisplayConstants.MESSAGE_SEE_LOGS);
+                        CommonDialogsHelper.showDialog(ERROR, dialogTitle, message, DisplayConstants.MESSAGE_SEE_LOGS, getWindow());
                     }
         });
     }
@@ -771,10 +771,10 @@ public class MainStageController extends AbstractGuiController {
                             writtenPropertiesPath += ("Written properties file: " + System.lineSeparator() + potentialPropertiesFile.get());
                         }
 
-                        CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED, writtenPropertiesPath);
+                        CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED, writtenPropertiesPath, getWindow());
                     } catch (Exception e) {
                         Log.error(THIS_CLASS_NAME, e);
-                        CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_PATCH, DisplayConstants.MESSAGE_SEE_LOGS);
+                        CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_PATCH, DisplayConstants.MESSAGE_SEE_LOGS, getWindow());
                     }
                 });
     }
@@ -787,10 +787,10 @@ public class MainStageController extends AbstractGuiController {
                         changeDataController.importPerformancePack(location);
                         viewDataController.updateAllPropertiesWithItemValues();
 
-                        CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED_PERFORMANCE_PACK, location);
+                        CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED_PERFORMANCE_PACK, location, getWindow());
                     } catch (Exception e) {
                         Log.error(THIS_CLASS_NAME, e);
-                        CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_PERFORMANCE_PACK, DisplayConstants.MESSAGE_SEE_LOGS);
+                        CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_PERFORMANCE_PACK, DisplayConstants.MESSAGE_SEE_LOGS, getWindow());
                     }
                 });
     }
@@ -803,10 +803,10 @@ public class MainStageController extends AbstractGuiController {
                         changeDataController.importLegacyPatch(location);
                         viewDataController.updateAllPropertiesWithItemValues();
 
-                        CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED_TDUMT_PATCH, location);
+                        CommonDialogsHelper.showDialog(INFORMATION, dialogTitle, DisplayConstants.MESSAGE_DATA_IMPORTED_TDUMT_PATCH, location, getWindow());
                     } catch (Exception e) {
                         Log.error(THIS_CLASS_NAME, e);
-                        CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_TDUMT_PATCH, DisplayConstants.MESSAGE_SEE_LOGS);
+                        CommonDialogsHelper.showDialog(ERROR, dialogTitle, DisplayConstants.MESSAGE_UNABLE_IMPORT_TDUMT_PATCH, DisplayConstants.MESSAGE_SEE_LOGS, getWindow());
                     }
                 });
     }
@@ -814,20 +814,20 @@ public class MainStageController extends AbstractGuiController {
     private void askForReferenceAndSwitchToEntry() {
         CommonDialogsHelper.showInputValueDialog(
                 DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SEARCH_ENTRY,
-                DisplayConstants.LABEL_SEARCH_ENTRY)
+                DisplayConstants.LABEL_SEARCH_ENTRY, getWindow())
                 .ifPresent(entryReference -> viewDataController.switchToEntryWithReference(entryReference, currentTopicProperty.getValue()));
     }
 
     private void resetDatabaseCache(String databaseDirectory) throws IOException {
         DatabaseBanksCacheHelper.clearCache(Paths.get(databaseDirectory));
 
-        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_DB_CACHE, DisplayConstants.MESSAGE_DELETED_CACHE, databaseDirectory);
+        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_DB_CACHE, DisplayConstants.MESSAGE_DELETED_CACHE, databaseDirectory, getWindow());
     }
 
     private void resetSettings() throws IOException {
         applicationConfiguration.reset();
 
-        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_SETTINGS, DisplayConstants.MESSAGE_DELETED_SETTINGS, DisplayConstants.MESSAGE_RESTART_APP);
+        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_SETTINGS, DisplayConstants.MESSAGE_DELETED_SETTINGS, DisplayConstants.MESSAGE_RESTART_APP, getWindow());
     }
 
     private void checkDatabase(String databaseLocation) {

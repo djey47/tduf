@@ -28,7 +28,7 @@ public class CommonDialogsHelperTest {
         final String description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 
         // WHEN
-        CommonDialogsHelper.showDialog(Alert.AlertType.WARNING, "title", "message", description);
+        CommonDialogsHelper.showDialog(Alert.AlertType.WARNING, "title", "message", description, null);
     }
 
     @Test
@@ -37,7 +37,7 @@ public class CommonDialogsHelperTest {
         final String prompt = "Lorem ipsum dolor sit amet, consectetur adipiscing elit,";
 
         // WHEN
-        final Optional<String> actualInput = CommonDialogsHelper.showInputValueDialog("Enter sed then click OK", prompt);
+        final Optional<String> actualInput = CommonDialogsHelper.showInputValueDialog("Enter sed then click OK", prompt, null);
 
         // THEN
         assertThat(actualInput).contains("sed");

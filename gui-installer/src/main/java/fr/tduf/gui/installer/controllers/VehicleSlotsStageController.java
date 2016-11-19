@@ -90,7 +90,7 @@ public class VehicleSlotsStageController extends AbstractGuiController {
         final VehicleSlotDataItem slotDataItem = selectedSlotProperty.getValue();
 
         if (slotDataItem.moddedProperty().get()) {
-            CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, "A mod is already installed onto this slot.", "Please uninstall it first.");
+            CommonDialogsHelper.showDialog(Alert.AlertType.ERROR, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, "A mod is already installed onto this slot.", "Please uninstall it first.", getWindow());
             return;
         }
 
@@ -186,14 +186,10 @@ public class VehicleSlotsStageController extends AbstractGuiController {
     private void askForReferenceAndSelectItem() {
         CommonDialogsHelper.showInputValueDialog(
                 DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SEARCH_SLOT,
-                DisplayConstants.LABEL_SEARCH_SLOT)
+                DisplayConstants.LABEL_SEARCH_SLOT, getWindow())
 
                 .ifPresent(entryReference -> TableViewHelper.selectItemAndScroll(
                         oneItem -> oneItem.referenceProperty().getValue().equals(entryReference),
                         slotsTableView));
-    }
-
-    public Property<VehicleSlotDataItem> selectedSlotProperty() {
-        return selectedSlotProperty;
     }
 }

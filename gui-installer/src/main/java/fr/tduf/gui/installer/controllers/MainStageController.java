@@ -203,7 +203,7 @@ public class MainStageController extends AbstractGuiController {
             if (SUCCEEDED == newState) {
                 final Set<IntegrityError> integrityErrors = databaseChecker.integrityErrorsProperty().get();
                 if (integrityErrors.isEmpty()) {
-                    CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_CHECK_DB, DisplayConstants.MESSAGE_DB_CHECK_OK, DisplayConstants.MESSAGE_DB_ZERO_ERROR);
+                    CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_CHECK_DB, DisplayConstants.MESSAGE_DB_CHECK_OK, DisplayConstants.MESSAGE_DB_ZERO_ERROR, getWindow());
                     return;
                 }
                 if (DatabaseOpsHelper.displayCheckResultDialog(integrityErrors, getWindow(), DisplayConstants.TITLE_APPLICATION)) {
@@ -218,9 +218,9 @@ public class MainStageController extends AbstractGuiController {
             if (SUCCEEDED == newState) {
                 final Set<IntegrityError> remainingErrors = databaseFixer.integrityErrorsProperty().get();
                 if (remainingErrors.isEmpty()) {
-                    CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_FIX_DB, DisplayConstants.MESSAGE_DB_FIX_OK, DisplayConstants.MESSAGE_DB_ZERO_ERROR);
+                    CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_FIX_DB, DisplayConstants.MESSAGE_DB_FIX_OK, DisplayConstants.MESSAGE_DB_ZERO_ERROR, getWindow());
                 } else {
-                    CommonDialogsHelper.showDialog(WARNING, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_FIX_DB, DisplayConstants.MESSAGE_DB_FIX_KO, DisplayConstants.MESSAGE_DB_REMAINING_ERRORS);
+                    CommonDialogsHelper.showDialog(WARNING, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_FIX_DB, DisplayConstants.MESSAGE_DB_FIX_KO, DisplayConstants.MESSAGE_DB_REMAINING_ERRORS, getWindow());
                 }
             } else if (FAILED == newState) {
                 handleServiceFailure(databaseFixer.exceptionProperty().get(), DisplayConstants.TITLE_SUB_FIX_DB, DisplayConstants.MESSAGE_DB_FIX_KO);
@@ -304,7 +304,7 @@ public class MainStageController extends AbstractGuiController {
                 .nextStep(GenericStep.StepType.UPDATE_MAGIC_MAP).start();
 
         String magicMapFile = configuration.resolveMagicMapFile();
-        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_MAP_UPDATE, DisplayConstants.MESSAGE_UPDATED_MAP, magicMapFile);
+        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_MAP_UPDATE, DisplayConstants.MESSAGE_UPDATED_MAP, magicMapFile, getWindow());
     }
 
     private void resetDatabaseCache() throws IOException, ReflectiveOperationException {
@@ -319,7 +319,7 @@ public class MainStageController extends AbstractGuiController {
         Path databasePath = Paths.get(configuration.resolveDatabaseDirectory());
         DatabaseBanksCacheHelper.clearCache(databasePath);
 
-        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_DB_CACHE, DisplayConstants.MESSAGE_DELETED_CACHE, databasePath.toString());
+        CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_DB_CACHE, DisplayConstants.MESSAGE_DELETED_CACHE, databasePath.toString(), getWindow());
     }
 
     private void checkDatabase() {
@@ -471,14 +471,32 @@ public class MainStageController extends AbstractGuiController {
         }
     }
 
+    private void handleServiceFailure(Throwable throwable, String subTitle, String mainMessage) {
+        Log.error(THIS_CLASS_NAME, ExceptionUtils.getStackTrace(throwable));
+
+        String stepName = DisplayConstants.LABEL_STEP_UNKNOWN;
+        if (throwable instanceof StepException) {
+            stepName = ((StepException) throwable).getStepName();
+        }
+
+        String causeMessage = "";
+        if (throwable.getCause() != null
+                && throwable.getCause() != throwable) {
+            causeMessage = throwable.getCause().getMessage();
+        }
+
+        final String errorMessage = String.format(DisplayConstants.MESSAGE_FMT_ERROR, throwable.getMessage(), causeMessage, stepName);
+        CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + subTitle, mainMessage, errorMessage, getWindow());
+    }
+
     private void handleCoordinatorSuccess() {
         TaskType currentTask = stepsCoordinator.taskTypeProperty().getValue();
         if (TaskType.UNINSTALL == currentTask) {
-            CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_UNINSTALL, DisplayConstants.MESSAGE_UNINSTALLED, "");
+            CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_UNINSTALL, DisplayConstants.MESSAGE_UNINSTALLED, "", getWindow());
         } else if (TaskType.INSTALL == currentTask) {
-            CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_INSTALLED, "");
+            CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_INSTALLED, "", getWindow());
         } else if(TaskType.RESET_SLOT == currentTask) {
-            CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_RESET_SLOT, "");
+            CommonDialogsHelper.showDialog(INFORMATION, DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_RESET_SLOT, "", getWindow());
         }
     }
 
@@ -503,23 +521,5 @@ public class MainStageController extends AbstractGuiController {
         }
 
         context.setPatch(patchObject, patchProperties);
-    }
-
-    private static void handleServiceFailure(Throwable throwable, String subTitle, String mainMessage) {
-        Log.error(THIS_CLASS_NAME, ExceptionUtils.getStackTrace(throwable));
-
-        String stepName = DisplayConstants.LABEL_STEP_UNKNOWN;
-        if (throwable instanceof StepException) {
-            stepName = ((StepException) throwable).getStepName();
-        }
-
-        String causeMessage = "";
-        if (throwable.getCause() != null
-                && throwable.getCause() != throwable) {
-            causeMessage = throwable.getCause().getMessage();
-        }
-
-        final String errorMessage = String.format(DisplayConstants.MESSAGE_FMT_ERROR, throwable.getMessage(), causeMessage, stepName);
-        CommonDialogsHelper.showDialog(ERROR, DisplayConstants.TITLE_APPLICATION + subTitle, mainMessage, errorMessage);
     }
 }
