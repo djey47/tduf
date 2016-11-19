@@ -2,7 +2,7 @@
 
 TDUF aims at making Test Drive Unlmited modding easier:
 
-* Providing base modding features to save time
+* Providing base modding features to save time in a command line interface (CLI)
 * Making database editing less harmful with a new Database Editor (GUI)
 * Capitalizing about reverse-engineering
 * Bringing new desktop applications for end-users
@@ -11,8 +11,7 @@ TDUF aims at making Test Drive Unlmited modding easier:
 
 ### Database Editor Main features
 
-* Opens and saves a database from/to regular BNK form
-* Opens and saves a database from/to JSON form
+* Opens and saves a database from/to either regular BNK or JSON form
 * Provides profiles to address different modding use cases (car editing, tuning kits, rims ...)
 * Displays all fields within a topic, in an ordered manner
 * Makes changes easier for special values (percent, bitfields, links etc.)
@@ -23,36 +22,29 @@ TDUF aims at making Test Drive Unlmited modding easier:
 * Searches particular entry given its REF
 * Imports data from TDUF (.json mini-patch file) with additional properties file
 * Imports data from TDUPE (.tdupk Performance Pack)
+* Imports data from TDUMT (.pch patches)
 * Exports current entry to following forms: EDEN-classic/TDUPE, TDUMT, TDUF mini-patch
-* Exports all entries for topics not supporting REF, to same forms as above
 * Checks database and proposes to fix errors (advanced feature)
 * ...
 
 
 ### What's in this version ? (1.8.0)
 
-* Provides additional launchers without administration privileges (-noadmin).
+* DatabaseEditor: allows to import TDUMT's .pch files.
 
-* DatabaseEditor: remembers last database location
-* DatabaseEditor: remembers last used language and profile
-* DatabaseEditor: gives advanced feature to reset saved settings above
-* DatabaseEditor: changes some labels to be more explicit (car brands etc.)
-* DatabaseEditor: re-instantiates database reload feature
-* DatabaseEditor: provides 2 profiles for TDUCP operations (rim options, bot-driven vehicles).
-* DatabaseEditor: provides a TDUPE-based profile.
+* CameraTool: copy-all-sets instruction has been removed
+* CameraTool: copy-sets instruction was added instead.
+* CameraTool: copy-set instruction won't overwrite existing camera for safety reasons. 
 
-* CameraTool: copy-all-sets instruction has been removed.
+* Library: uses newest tdumt-cli library
+* Library: enhances features of common dialogs.
 
 
 ### Fixed issues
 
-* DatabaseEditor: misc fixes and performance enhancements
 * DatabaseEditor: fixes an error when editing resource reference
-
-* CameraTool: copy camera set now working (copy-set instruction)
-
-* Library: switch to mono executable on Linux
-* Library: changes way of managing entry identifiers
+* DatabaseEditor: fixes an error when exporting partial data to TDUF patch (when lack of REF support)
+* DatabaseEditor: misc fixes and performance enhancements.
 
 
 ### Known bugs
