@@ -44,6 +44,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 import static fr.tduf.cli.tools.DatabaseTool.Command.*;
+import static fr.tduf.libunlimited.high.files.db.interop.TdumtPatchConverter.EXTENSION_PCH;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
 import static java.util.Arrays.asList;
@@ -342,7 +343,7 @@ public class DatabaseTool extends GenericTool {
         Path patchPath = Paths.get(sourcePatchFile);
 
         // Extract pch to lib constant
-        String outputExtension = tdufSource ? "pch" : EXTENSION_JSON;
+        String outputExtension = tdufSource ? EXTENSION_PCH : EXTENSION_JSON;
         String outputPatchFile = Paths.get(patchPath.getParent().toString(), FilesHelper.getNameWithoutExtension(sourcePatchFile) + "." + outputExtension).toString();
 
         outLine("-> Source patch file: " + sourcePatchFile);

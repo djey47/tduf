@@ -33,6 +33,7 @@ import static java.util.stream.Collectors.toSet;
  * Utility class allowing to convert database patches between TDUMT and TDUF systems.
  */
 public class TdumtPatchConverter {
+    public static final String EXTENSION_PCH = "pch";
 
     private static Class<TdumtPatchConverter> thisClass = TdumtPatchConverter.class;
 
