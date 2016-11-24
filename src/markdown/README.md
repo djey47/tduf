@@ -28,23 +28,14 @@ TDUF aims at making Test Drive Unlmited modding easier:
 * ...
 
 
-### What's in this version ? (1.8.0)
+### What's in this version ? (1.9.0)
 
-* DatabaseEditor: allows to import TDUMT's .pch files.
-
-* CameraTool: copy-all-sets instruction has been removed
-* CameraTool: copy-sets instruction was added instead.
-* CameraTool: copy-set instruction won't overwrite existing camera for safety reasons. 
-
-* Library: uses newest tdumt-cli library
-* Library: enhances features of common dialogs.
+* 
 
 
 ### Fixed issues
 
-* DatabaseEditor: fixes an error when editing resource reference
-* DatabaseEditor: fixes an error when exporting partial data to TDUF patch (when lack of REF support)
-* DatabaseEditor: misc fixes and performance enhancements.
+* Library: fixes corruption when saving cameras with added sets.
 
 
 ### Known bugs
