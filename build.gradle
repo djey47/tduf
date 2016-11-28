@@ -114,7 +114,7 @@ project(':cli') {
     }
 
     task integTest(type: Test) {
-        mustRunAfter test
+        mustRunAfter tasks.test
         description 'Runs integration tests.'
 
         testClassesDir = sourceSets.integTest.output.classesDir
@@ -125,13 +125,13 @@ project(':cli') {
             logger.lifecycle(' -> Running test: ' + descriptor.toString())
         }
     }
-
-    task integTestReport << {
-        def reportFileAbsolutePath = file('./build/reports/tests/index.html').toString().replaceAll('\\\\', '/')
-        Desktop.desktop.browse (('file://' + reportFileAbsolutePath).toURI())
+    task integTestReport() {
+        doLast {
+            def reportFileAbsolutePath = file('./build/reports/tests/index.html').toString().replaceAll('\\\\', '/')
+            Desktop.desktop.browse(('file://' + reportFileAbsolutePath).toURI())
+        }
     }
-
-    integTest.finalizedBy integTestReport
+    tasks.integTest.finalizedBy tasks.integTestReport
 }
 
 project('lib-testing') {
@@ -219,7 +219,6 @@ project(':gui-installer') {
         from "$buildDir/gen-html"
         include '*.html'
         into '../pack/'
-
     }
 
     task copyAssets(type: Copy) {
@@ -376,5 +375,5 @@ task copyVersionInfo(type: Copy) {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.11'
+    gradleVersion = '3.2.1'
 }
