@@ -53,6 +53,10 @@ public enum CacheManager {
          * @return value from cache in store if existing, otherwise value returned by call to supplier.
          */
         public <R> R getValueFromKey(String storeName, String key, Supplier<R> supplier) {
+            if (supplier == null) {
+                throw new IllegalArgumentException("Supplier instance must not be null");
+            }
+
             if (enabled) {
                 if (storeName == null || key == null) {
                     return supplier.get();

@@ -1,28 +1,29 @@
 package fr.tduf.libunlimited.common.cache;
 
 import com.esotericsoftware.minlog.Log;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
 import static com.esotericsoftware.minlog.Log.LEVEL_INFO;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 public class CacheManagerTest {
 
     private CacheManager.CacheManagerInstance cacheManagerInstance;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         Log.set(LEVEL_INFO);
 
         cacheManagerInstance = CacheManager.it.self();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         cacheManagerInstance.clearAllStores();
     }
@@ -45,12 +46,11 @@ public class CacheManagerTest {
         assertThat(actualValue).contains("result");
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void getValueFromKey_whenNullCallback_shouldThrowException(){
-        // GIVEN-WHEN
-        cacheManagerInstance.getValueFromKey(null, null, null);
-
-        // THEN: NPE
+        // GIVEN-WHEN-THEN
+        assertThrows(IllegalArgumentException.class,
+                cacheManagerInstance.getValueFromKey(null, null, null));
     }
 
     @Test
