@@ -32,6 +32,8 @@ allprojects {
     // Version for common dependencies
     ext.assertjVersion = '3.1.0'
     ext.jsonassertVersion = '1.2.3'
+    ext.junitVersion = '4.12'
+    ext.junitJupiterVersion = '5.0.0-M2'
     ext.mockitoVersion = '2.0.31-beta'
     ext.minlogVersion = '1.2'
 }
@@ -53,10 +55,11 @@ subprojects {
         compile group: 'com.esotericsoftware.minlog', name: 'minlog', version: "$minlogVersion"
 
         testCompile project(':lib-testing')
-        testCompile group: 'junit', name: 'junit', version: '4.11'
+        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: "$junitJupiterVersion"
         testCompile group: 'org.mockito', name: 'mockito-core', version: "$mockitoVersion"
         testCompile group: 'org.assertj', name: 'assertj-core', version: "$assertjVersion"
         testCompile group: 'org.skyscreamer', name: 'jsonassert', version: "$jsonassertVersion"
+        testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: "$junitJupiterVersion"
     }
 
     compileJava {
@@ -127,7 +130,7 @@ project(':cli') {
     }
     task integTestReport() {
         doLast {
-            def reportFileAbsolutePath = file('./build/reports/tests/index.html').toString().replaceAll('\\\\', '/')
+            def reportFileAbsolutePath = file('./build/reports/tests/integTest/index.html').toString().replaceAll('\\\\', '/')
             Desktop.desktop.browse(('file://' + reportFileAbsolutePath).toURI())
         }
     }
@@ -135,17 +138,19 @@ project(':cli') {
 }
 
 project('lib-testing') {
+    // Should use 4.x Junit because of rules
     dependencies {
         compile project(':lib-unlimited')
-
-        compile group: 'junit', name: 'junit', version: '4.11'
         compile group: 'org.assertj', name: 'assertj-core', version: "$assertjVersion"
+        compile group: 'junit', name: 'junit', version: "$junitVersion"
         compile group: 'org.skyscreamer', name: 'jsonassert', version: "$jsonassertVersion"
     }
 }
 
 project('lib-unlimited') {
     dependencies {
+        testCompile group: 'junit', name: 'junit', version: "$junitVersion"
+
         compile group: 'net.objecthunter', name: 'exp4j', version: '0.4.4'
         compile group: 'commons-io', name: 'commons-io', version: '2.4'
     }
