@@ -34,7 +34,7 @@ allprojects {
     ext.jsonassertVersion = '1.2.3'
     ext.junitVersion = '4.12'
     ext.junitJupiterVersion = '5.0.0-M2'
-    ext.mockitoVersion = '2.0.31-beta'
+    ext.mockitoVersion = '2.2.26'
     ext.minlogVersion = '1.2'
 }
 
