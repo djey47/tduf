@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,13 +39,13 @@ public class DatabaseChangeHelperTest {
     private static final String CONTENT_ENTRY_BIFIELD_NAME = "BITFIELD";
 
     @Mock
-    DatabaseGenHelper genHelperMock;
+    private DatabaseGenHelper genHelperMock;
 
     @Mock
-    BulkDatabaseMiner minerMock;
+    private BulkDatabaseMiner minerMock;
 
     @InjectMocks
-    DatabaseChangeHelper changeHelper;
+    private DatabaseChangeHelper changeHelper;
 
     @After
     public void tearDown() {}
@@ -222,7 +222,6 @@ public class DatabaseChangeHelperTest {
 
         DbDto topicObject = createDatabaseObject(dataObject, stuctureObject);
 
-        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(2, TOPIC)).thenReturn(of(entryToBeCloned));
         when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(of(topicObject));
 
 
@@ -249,7 +248,6 @@ public class DatabaseChangeHelperTest {
 
         DbDto topicObject = createDatabaseObject(dataObject, stuctureObject);
 
-        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(0, TOPIC)).thenReturn(of(defaultContentEntry));
         when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(of(topicObject));
 
 
@@ -278,8 +276,6 @@ public class DatabaseChangeHelperTest {
 
         DbDto topicObject = createDatabaseObject(dataObject, stuctureObject);
 
-        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(0, TOPIC)).thenReturn(of(defaultContentEntry));
-        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(1, TOPIC)).thenReturn(of(cloneContentEntry));
         when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(of(topicObject));
 
 
@@ -310,7 +306,6 @@ public class DatabaseChangeHelperTest {
     public void duplicateEntryWithIdentifier_whenEntryDoesNotExist_shouldThrowException() {
         // GIVEN
         when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(of(createDatabaseObject(createDefaultDataObject(), createDefaultStructureObject())));
-        when(minerMock.getContentEntryFromTopicWithInternalIdentifier(2, TOPIC)).thenReturn(empty());
 
         // WHEN
         changeHelper.duplicateEntryWithIdentifier(2, TOPIC);
@@ -332,9 +327,6 @@ public class DatabaseChangeHelperTest {
         final ContentEntryDto movedEntry = createDefaultContentEntry();
         movedEntry.appendItem(createEntryItemAtRank(1));
         dataObject.addEntry(movedEntry);
-        DbDto topicObject = DbDto.builder().withData(dataObject).build();
-
-        when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(of(topicObject));
 
 
         // WHEN

@@ -15,7 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 import java.util.Map;
@@ -80,7 +80,6 @@ public class DealerHelperTest {
                 .build();
         when(minerMock.getDatabaseTopic(CAR_SHOPS)).thenReturn(Optional.of(carShopsTopicObject));
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(nameResourceReference, CAR_SHOPS, UNITED_STATES)).thenReturn(Optional.of(nameResourceValue));
-        when(minerMock.getLocalizedResourceValueFromTopicAndReference(fileNameResourceReference, CAR_SHOPS, UNITED_STATES)).thenReturn(Optional.of(fileNameResourceValue));
 
 
         // WHEN
@@ -135,7 +134,6 @@ public class DealerHelperTest {
     public void searchForVehicleSlot_whenSameVehicleLocatedThreeTimesInSingleDealer_shouldReturnOneEntryWithThreeSlots() {
         // GIVEN
         final String nameResourceReference = "0000";
-        final String nameResourceValue = "DEALER";
 
         ResourceEntryDto dealerNameResourceEntry = ResourceEntryDto.builder().forReference(nameResourceReference).build();
         DbDto carShopsTopicObject = DbDto.builder()
@@ -156,7 +154,6 @@ public class DealerHelperTest {
                 .build();
 
         when(minerMock.getDatabaseTopic(CAR_SHOPS)).thenReturn(Optional.of(carShopsTopicObject));
-        when(minerMock.getLocalizedResourceValueFromTopicAndReference(nameResourceReference, CAR_SHOPS, UNITED_STATES)).thenReturn(Optional.of(nameResourceValue));
 
 
         // WHEN
@@ -176,7 +173,6 @@ public class DealerHelperTest {
     public void searchForVehicleSlot_whenUnlocatedVehicle_shouldReturnEmptyMap() {
         // GIVEN
         final String nameResourceReference = "0000";
-        final String nameResourceValue = "DEALER";
 
         ResourceEntryDto dealerNameResourceEntry = ResourceEntryDto.builder().forReference(nameResourceReference).build();
         DbDto carShopsTopicObject = DbDto.builder()
@@ -194,7 +190,6 @@ public class DealerHelperTest {
                 .build();
 
         when(minerMock.getDatabaseTopic(CAR_SHOPS)).thenReturn(Optional.of(carShopsTopicObject));
-        when(minerMock.getLocalizedResourceValueFromTopicAndReference(nameResourceReference, CAR_SHOPS, UNITED_STATES)).thenReturn(Optional.of(nameResourceValue));
 
 
         // WHEN

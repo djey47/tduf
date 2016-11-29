@@ -14,7 +14,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.IOException;
@@ -238,11 +238,10 @@ public class GenuineBnkGatewayTest {
     }
 
     private void assertBatchInputFileExists() throws IOException {
-        String batchInputFileName = commandArgumentsCaptor.getAllValues().get(3);
-        final Path batchInputPath = Paths.get(batchInputFileName);
+        final Path batchInputPath = Paths.get(commandArgumentsCaptor.getValue());
         assertThat(batchInputPath).exists();
 
-        Log.info("Batch input file name: " + batchInputFileName);
+        Log.info("Batch input file name: " + batchInputPath);
 
         final GenuineBatchInputDto actualBatchInput = new ObjectMapper().readValue(batchInputPath.toFile(), GenuineBatchInputDto.class);
         assertThat(actualBatchInput.getItems()).hasSize(28);

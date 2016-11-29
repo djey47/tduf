@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Optional;
 
@@ -34,14 +34,15 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     private static final DbDto.Topic TOPIC = CAR_PHYSICS_DATA;
     private static final Locale LOCALE = Locale.CHINA;
 
+    // Kept for automatic injection in changeHelper
     @Mock
-    DatabaseGenHelper genHelperMock;
+    private DatabaseGenHelper genHelperMock;
 
     @Mock
-    BulkDatabaseMiner minerMock;
+    private BulkDatabaseMiner minerMock;
 
     @InjectMocks
-    DatabaseChangeHelper changeHelper;
+    private DatabaseChangeHelper changeHelper;
 
     @After
     public void tearDown() {}
@@ -142,14 +143,10 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     public void updateResourceEntryWithReference_whenExistingEntry_shouldReplaceReferenceAndValue() {
         // GIVEN
         String initialReference = "0";
-        String initialValue = "";
         DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
         ResourceEntryDto resourceEntry = createDefaultResourceEntryEnhanced(initialReference);
 
         when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, initialReference)).thenReturn(of(resourceEntry));
-        when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(empty());
-        when(minerMock.getLocalizedResourceValueFromTopicAndReference(initialReference, TOPIC, LOCALE)).thenReturn(of(initialValue));
-        when(minerMock.getLocalizedResourceValueFromTopicAndReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(empty());
         when(minerMock.getResourcesFromTopic(TOPIC)).thenReturn(of(resourceObject));
 
 
@@ -169,7 +166,6 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     public void updateResourceEntryWithReference_whenEntryExistsWithNewReference_shouldThrowException_andKeepOriginalResource() {
         // GIVEN
         String initialReference = "1";
-        String existingValue = "e";
 
         ResourceEntryDto existingEntry = createDefaultResourceEntryEnhanced(RESOURCE_REFERENCE);
         ResourceEntryDto existingEntry2 = createDefaultResourceEntryEnhanced(initialReference);
@@ -178,8 +174,6 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
                 .containingEntries(asList(existingEntry, existingEntry2)).build();
 
         when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, initialReference)).thenReturn(of(existingEntry));
-        when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(of(existingEntry2));
-        when(minerMock.getLocalizedResourceValueFromTopicAndReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(of(existingValue));
         when(minerMock.getResourcesFromTopic(TOPIC)).thenReturn(of(resourceObject));
 
 

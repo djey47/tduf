@@ -15,7 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 import java.util.Optional;
@@ -102,7 +102,6 @@ public class BrandHelperTest {
                 .build();
 
         when(miner.getContentEntryFromTopicWithReference(BRAND_REF_1, BRANDS)).thenReturn(of(brandsEntry1));
-        when(miner.getContentEntryFromTopicWithReference(BRAND_REF_2, BRANDS)).thenReturn(of(brandsEntry2));
         when(miner.getContentEntryFromTopicWithReference(BRAND_NOREF, BRANDS)).thenReturn(empty());
         when(miner.getDatabaseTopic(BRANDS)).thenReturn(of(brandsTopicObject));
         when(miner.getLocalizedResourceValueFromTopicAndReference(BRAND_ID_RESOURCE_1.getRef(), BRANDS, UNITED_STATES)).thenReturn(of(BRAND_ID_RESOURCE_1.getValue()));

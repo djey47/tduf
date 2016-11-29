@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 import java.util.Optional;
@@ -403,7 +403,6 @@ public class VehicleSlotsHelperTest {
         DbDto topicObject = DbDto.builder().withData(dataObject).build();
 
         when(bulkDatabaseMinerMock.getDatabaseTopic(CAR_PHYSICS_DATA)).thenReturn(of(topicObject));
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(SLOTREF_UNDRIVABLE, CAR_PHYSICS_DATA)).thenReturn(of(undrivableEntry));
 
 
         // WHEN
@@ -429,7 +428,6 @@ public class VehicleSlotsHelperTest {
         DbDto topicObject = DbDto.builder().withData(dataObject).build();
 
         when(bulkDatabaseMinerMock.getDatabaseTopic(CAR_PHYSICS_DATA)).thenReturn(of(topicObject));
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(SLOTREF_UNDRIVABLE, CAR_PHYSICS_DATA)).thenReturn(of(undrivableEntry));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(SLOTREF, CAR_PHYSICS_DATA)).thenReturn(of(drivableEntry));
         when(bulkDatabaseMinerMock.getContentEntryStreamMatchingSimpleCondition(any(DbFieldValueDto.class), any(DbDto.Topic.class))).thenReturn(Stream.empty(), Stream.empty());
 
@@ -589,8 +587,6 @@ public class VehicleSlotsHelperTest {
                 .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(BRAND_ID_REF).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(3).withRawValue(BRAND_NAME_REF).build())
                 .build();
-        when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(BRANDREF, BRANDS)).thenReturn(of(brandsEntry));
-        when(bulkDatabaseMinerMock.getLocalizedResourceValueFromContentEntry(0, 3, BRANDS, UNITED_STATES)).thenReturn(of(BRAND_NAME));
     }
 
     private void mockBrandHelper() {

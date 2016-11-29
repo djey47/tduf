@@ -32,7 +32,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -483,7 +483,7 @@ public class MainStageViewDataControllerTest {
         when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(currentEntryIndexProperty);
         final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>(TOPIC1);
         when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
-        when(minerMock.getLocalizedResourceValueFromContentEntry(0, 1, TOPIC1, LOCALE)).thenReturn(of("label"));
+//        when(minerMock.getLocalizedResourceValueFromContentEntry(0, 1, TOPIC1, LOCALE)).thenReturn(of("label"));
 
         // WHEN
         controller.updateCurrentEntryLabelProperty();
@@ -702,11 +702,8 @@ public class MainStageViewDataControllerTest {
         when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(TOPIC1));
         when(minerMock.getContentEntryReferenceWithInternalIdentifier(0, TOPIC1)).thenReturn(of("entryRef1"));
         when(minerMock.getDatabaseTopic(TOPIC3)).thenReturn(of(createAssociationTopicObjectWithDataEntriesAndRefs("entryRef1", "entryRef2")));
-        when(minerMock.getDatabaseTopicFromReference(TOPIC_REFERENCE)).thenReturn(createSourceTopicObject());
         final DbDto remoteTopicObject = createRemoteTopicObject();
         when(minerMock.getDatabaseTopicFromReference(TOPIC_REMOTE_REFERENCE)).thenReturn(remoteTopicObject);
-        final ContentEntryDto contentEntryDto = ContentEntryDto.builder().build();
-        when(minerMock.getRemoteContentEntryWithInternalIdentifier(TOPIC1, 1, 0, TOPIC3)).thenReturn(of(contentEntryDto));
         when(minerMock.getContentEntryInternalIdentifierWithReference("entryRef2", TOPIC4)).thenReturn(OptionalInt.of(0));
         when(minerMock.getDatabaseTopic(TOPIC4)).thenReturn(of(remoteTopicObject));
         when(minerMock.getLocalizedResourceValueFromContentEntry(0, 1, TOPIC4, LOCALE)).thenReturn(of("remote value"));
@@ -780,19 +777,6 @@ public class MainStageViewDataControllerTest {
                         .addItem(DbStructureDto.Field.builder()
                                 .ofRank(1)
                                 .fromType(INTEGER)
-                                .build())
-                        .build())
-                .withData(DbDataDto.builder().build())
-                .build();
-    }
-
-    private DbDto createSourceTopicObject() {
-        return DbDto.builder()
-                .withStructure(DbStructureDto.builder()
-                        .forTopic(TOPIC1)
-                        .addItem(DbStructureDto.Field.builder()
-                                .ofRank(1)
-                                .fromType(UID)
                                 .build())
                         .build())
                 .withData(DbDataDto.builder().build())
