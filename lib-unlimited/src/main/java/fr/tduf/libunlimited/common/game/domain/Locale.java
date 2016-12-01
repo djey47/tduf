@@ -5,6 +5,7 @@ import java.util.stream.Stream;
 /**
  * All culture variants for i18n
  */
+// TODO introduce any locale but do not return it in stream
 public enum Locale {
     FRANCE("fr"),
     GERMANY("ge"),
@@ -38,6 +39,7 @@ public enum Locale {
     }
 
     public static Stream<Locale> valuesAsStream() {
+        // TODO do not include 'any'
         return Stream.of(values());
     }
 }

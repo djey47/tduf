@@ -70,7 +70,9 @@ public class ResourceItemDto implements Serializable {
         private fr.tduf.libunlimited.common.game.domain.Locale locale;
         private String value;
 
+        // TODO add method for global item (internal use)
         public ItemBuilder withLocale(fr.tduf.libunlimited.common.game.domain.Locale locale) {
+            // TODO forbid 'any' locale
             this.locale = locale;
             return this;
         }

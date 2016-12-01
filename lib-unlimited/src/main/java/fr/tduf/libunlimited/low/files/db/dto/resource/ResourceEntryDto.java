@@ -143,6 +143,7 @@ public class ResourceEntryDto implements Serializable {
         return reference;
     }
 
+    // TODO add method for adding global resource item
     public static class EntryBuilder {
         private String reference;
 
