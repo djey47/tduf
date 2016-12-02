@@ -5,8 +5,8 @@ import java.util.stream.Stream;
 /**
  * All culture variants for i18n
  */
-// TODO introduce any locale but do not return it in stream
 public enum Locale {
+    ANY("*"),
     FRANCE("fr"),
     GERMANY("ge"),
     UNITED_STATES("us"),
@@ -38,8 +38,11 @@ public enum Locale {
         return code;
     }
 
+    /**
+     * @return all locale values as a stream, except special 'any'
+     */
     public static Stream<Locale> valuesAsStream() {
-        // TODO do not include 'any'
-        return Stream.of(values());
+        return Stream.of(values())
+                .filter(v -> v != ANY);
     }
 }
