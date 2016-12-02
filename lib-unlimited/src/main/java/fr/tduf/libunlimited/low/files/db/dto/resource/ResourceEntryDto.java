@@ -9,7 +9,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import java.io.Serializable;
 import java.util.*;
 
-import static java.util.Arrays.asList;
+import static fr.tduf.libunlimited.common.game.domain.Locale.ANY;
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toSet;
@@ -110,6 +110,7 @@ public class ResourceEntryDto implements Serializable {
     }
 
     @JsonIgnore
+    // TODO Check callers properly handle ANY locale
     public Set<Locale> getPresentLocales() {
         return items.stream()
                 .map(ResourceItemDto::getLocale)
@@ -118,8 +119,12 @@ public class ResourceEntryDto implements Serializable {
 
     @JsonIgnore
     public Set<fr.tduf.libunlimited.common.game.domain.Locale> getMissingLocales() {
-        Set<fr.tduf.libunlimited.common.game.domain.Locale> missingLocales = new HashSet<>(asList(Locale.values()));
-        missingLocales.removeAll(getPresentLocales());
+        Set<Locale> presentLocales = getPresentLocales();
+        if (presentLocales.contains(ANY)) {
+            return new HashSet<>(0);
+        }
+        Set<fr.tduf.libunlimited.common.game.domain.Locale> missingLocales = Locale.valuesAsStream().collect(toSet());
+        missingLocales.removeAll(presentLocales);
         return missingLocales;
     }
 

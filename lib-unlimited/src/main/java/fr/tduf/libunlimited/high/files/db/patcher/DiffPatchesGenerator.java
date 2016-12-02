@@ -216,6 +216,7 @@ public class DiffPatchesGenerator {
                 .build();
     }
 
+    // TODO move to ResourceEntryDto and simplify
     private static boolean isGlobalizedResource(ResourceEntryDto resourceEntry) {
         return 1 == resourceEntry.getPresentLocales().stream()
 
