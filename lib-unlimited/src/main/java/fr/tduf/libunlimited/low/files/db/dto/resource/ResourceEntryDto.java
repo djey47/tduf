@@ -143,7 +143,6 @@ public class ResourceEntryDto implements Serializable {
         return reference;
     }
 
-    // TODO add method for adding global resource item
     public static class EntryBuilder {
         private String reference;
 
@@ -157,6 +156,15 @@ public class ResourceEntryDto implements Serializable {
         public EntryBuilder withItems(Collection<ResourceItemDto> items) {
             this.items.clear();
             this.items.addAll(items);
+            return this;
+        }
+
+        public EntryBuilder withGlobalItem(String value) {
+            final ResourceItemDto globalItem = ResourceItemDto.builder()
+                    .withGlobalValue(value)
+                    .build();
+            this.items.clear();
+            this.items.add(globalItem);
             return this;
         }
 
