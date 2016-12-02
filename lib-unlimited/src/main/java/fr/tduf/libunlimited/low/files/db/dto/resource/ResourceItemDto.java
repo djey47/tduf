@@ -84,7 +84,7 @@ public class ResourceItemDto implements Serializable {
             return this;
         }
 
-        ItemBuilder withGlobalValue(String value) {
+        public ItemBuilder withGlobalValue(String value) {
             this.value = value;
             this.locale = ANY;
             return this;
