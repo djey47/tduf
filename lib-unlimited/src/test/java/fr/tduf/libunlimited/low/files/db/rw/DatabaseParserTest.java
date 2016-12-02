@@ -280,7 +280,7 @@ public class DatabaseParserTest {
     }
 
     @Test
-    public void parseAll_whenProvidedContents_shouldReturnProperDto() throws Exception {
+    public void parseAll_whenProvidedContentsAsGlobalResources_shouldReturnProperDto() throws Exception {
         //GIVEN
         List<String> dbLines = createValidContentsWithOneItem();
         Map<Locale, List<String>> resourceLines = createValidResourcesForAllLocales();
@@ -301,25 +301,11 @@ public class DatabaseParserTest {
         final Collection<ResourceEntryDto> actualEntries = actualDbResource.getEntries();
         assertThat(actualEntries).hasSize(2);
         assertThat(actualEntries).extracting("reference").containsOnly("53410835", "70410835");
-        Set<ResourceItemDto> item1 = new HashSet<>(asList(
-                ResourceItemDto.builder().withLocale(FRANCE).withValue("??").build(),
-                ResourceItemDto.builder().withLocale(GERMANY).withValue("??").build(),
-                ResourceItemDto.builder().withLocale(UNITED_STATES).withValue("??").build(),
-                ResourceItemDto.builder().withLocale(KOREA).withValue("??").build(),
-                ResourceItemDto.builder().withLocale(CHINA).withValue("??").build(),
-                ResourceItemDto.builder().withLocale(JAPAN).withValue("??").build(),
-                ResourceItemDto.builder().withLocale(SPAIN).withValue("??").build(),
-                ResourceItemDto.builder().withLocale(ITALY).withValue("??").build()));
-        Set<ResourceItemDto> item2 = new HashSet<>(asList(
-                ResourceItemDto.builder().withLocale(FRANCE).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
-                ResourceItemDto.builder().withLocale(GERMANY).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
-                ResourceItemDto.builder().withLocale(UNITED_STATES).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
-                ResourceItemDto.builder().withLocale(KOREA).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
-                ResourceItemDto.builder().withLocale(CHINA).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
-                ResourceItemDto.builder().withLocale(JAPAN).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
-                ResourceItemDto.builder().withLocale(SPAIN).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build(),
-                ResourceItemDto.builder().withLocale(ITALY).withValue("Bravo ! Vous recevez §NB_PTS§ points.").build()));
-        assertThat(actualEntries).extracting("items").contains(item1, item2);
+        Set<ResourceItemDto> globalItem1 = new HashSet<>(singletonList(
+                ResourceItemDto.builder().withGlobalValue("??").build()));
+        Set<ResourceItemDto> globalItem2 = new HashSet<>(singletonList(
+                ResourceItemDto.builder().withGlobalValue("Bravo ! Vous recevez §NB_PTS§ points.").build()));
+        assertThat(actualEntries).extracting("items").contains(globalItem1, globalItem2);
     }
 
     @Test

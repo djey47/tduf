@@ -22,7 +22,6 @@ import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoE
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.BITFIELD;
 import static java.lang.Integer.valueOf;
-import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
@@ -110,22 +109,20 @@ public class DatabaseParser {
         final List<ResourceEntryDto> readEntries = createResourceEntriesFromReadItems(readItems);
         checkItemCountBetweenResources(topic, readEntries);
 
+        // TODO extract method
         List<ResourceEntryDto> reducedResources = readEntries.stream()
                 .map(readEntry -> {
 
                     Set<String> values = Locale.valuesAsStream()
                             .map(locale -> readEntry.getItemForLocale(locale)
-                                    .orElseThrow(() -> new IllegalStateException("Should not happen"))
-                                    .getValue())
+                                    .map(ResourceItemDto::getValue)
+                                    .orElse("")) // TODO default value?
                             .collect(toSet());
 
                     if (values.size() == 1) {
-                        // TODO add ResourceEntryDto builder method
-                        ResourceItemDto globalItemObject = ResourceItemDto.builder()
-                                .withValue(values.stream().findAny().get())
-                                .build();
                         return ResourceEntryDto.builder()
-                                .withItems(singletonList(globalItemObject))
+                                .forReference(readEntry.getReference())
+                                .withGlobalItem(values.stream().findAny().get())
                                 .build();
                     } else {
                         return readEntry;
@@ -355,16 +352,16 @@ public class DatabaseParser {
 
     private void checkItemCountBetweenResources(DbDto.Topic topic, Collection<ResourceEntryDto> entries) {
         entries.forEach(entry -> {
+            Set<Locale> missingLocales = entry.getMissingLocales();
+            if (!missingLocales.isEmpty()) {
+                EnumMap<IntegrityError.ErrorInfoEnum, Object> info = new EnumMap<>(IntegrityError.ErrorInfoEnum.class);
+                info.put(SOURCE_TOPIC, topic);
+                info.put(REFERENCE, entry.getReference());
+                info.put(MISSING_LOCALES, missingLocales);
 
-                    if (entry.getItemCount() < Locale.values().length) {
-                        EnumMap<IntegrityError.ErrorInfoEnum, Object> info = new EnumMap<>(IntegrityError.ErrorInfoEnum.class);
-                        info.put(SOURCE_TOPIC, topic);
-                        info.put(REFERENCE, entry.getReference());
-                        info.put(MISSING_LOCALES, entry.getMissingLocales());
-
-                        addIntegrityError(RESOURCE_REFERENCE_NOT_FOUND, info);
-                    }
-                });
+                addIntegrityError(RESOURCE_REFERENCE_NOT_FOUND, info);
+            }
+        });
     }
 
     private void addIntegrityError(IntegrityError.ErrorTypeEnum errorTypeEnum, Map<IntegrityError.ErrorInfoEnum, Object> info) {
