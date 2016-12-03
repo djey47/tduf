@@ -90,7 +90,7 @@ public class DiffPatchesGenerator {
                         return null;
                     }
 
-                    return isGlobalizedResource(resourceEntry) ?
+                    return resourceEntry.isGlobalized() ?
                             createGlobalizedResourceUpdate(currentTopic, resourceEntry)
                             :
                             createLocalizedResourceUpdates(currentTopic, resourceEntry);
@@ -201,6 +201,7 @@ public class DiffPatchesGenerator {
                 .withValue(resourceEntry.pickValue()
                         .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resource value in entry for REF: " + resourceEntry.getReference() + " in topic: " + currentTopic)))
                 .forTopic(currentTopic)
+                .forLocale(Locale.ANY)
                 .build());
     }
 
@@ -214,17 +215,6 @@ public class DiffPatchesGenerator {
                 .addChanges(contentsChanges)
                 .withComment(currentTopic.name())
                 .build();
-    }
-
-    // TODO move to ResourceEntryDto and simplify
-    private static boolean isGlobalizedResource(ResourceEntryDto resourceEntry) {
-        return 1 == resourceEntry.getPresentLocales().stream()
-
-                .map(resourceEntry::getValueForLocale)
-
-                .map(Optional::get)
-
-                .collect(toSet()).size();
     }
 
     List<DbDto> getDatabaseObjects() {

@@ -176,12 +176,13 @@ public class DiffPatchesGeneratorTest {
 
         List<DbPatchDto.DbChangeDto> actualChanges = actualPatchObject.getChanges();
         assertThat(actualChanges)
-                .hasSize(2)
+                .hasSize(9)
                 .extracting("type").containsOnly(UPDATE_RES);
         assertThat(actualChanges).extracting("strictMode").containsOnly(true);
         assertThat(actualChanges).extracting("ref").containsOnly("54713528", "54713529");
         assertThat(actualChanges).extracting("topic").containsOnly(HAIR);
         assertThat(actualChanges).extracting("value").containsOnly("StringPanthere01", "CulottePetitBateau01");
+        assertThat(actualChanges).extracting("locale").containsExactly(ANY, CHINA, FRANCE, GERMANY, ITALY, JAPAN, KOREA, SPAIN, UNITED_STATES);
     }
 
     @Test
@@ -219,6 +220,7 @@ public class DiffPatchesGeneratorTest {
                 DatabaseHelper.createDatabaseTopicForReadOnly(HAIR));
     }
 
+    // TODO change argument to directory and use it. Then, delete json placeholder
     private static List<DbDto> readDatabase(String jsonFileResource) throws URISyntaxException {
         String jsonDirectory = new File(thisClass.getResource(jsonFileResource).toURI()).getParent();
         return DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDirectory);
