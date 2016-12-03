@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static fr.tduf.libunlimited.common.game.domain.Locale.*;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
@@ -207,7 +208,7 @@ public class DiffPatchesGeneratorTest {
         assertThat(actualChanges).extracting("strictMode").containsOnly(true);
         assertThat(actualChanges).extracting("ref").containsOnly("54713528");
         assertThat(actualChanges).extracting("topic").containsOnly(HAIR);
-        assertThat(actualChanges).extracting("locale").containsOnly((Object[]) Locale.values());
+        assertThat(actualChanges).extracting("locale").containsOnly(new Locale[] { ITALY, FRANCE, UNITED_STATES, KOREA, JAPAN, GERMANY, CHINA, SPAIN });
         assertThat(actualChanges).extracting("value").contains("StringPanthere01-FR", "StringPanthere01-CH", "StringPanthere01-US");
     }
 
