@@ -87,8 +87,7 @@ public class ResourceEntryDto implements Serializable {
      * defines given value for specified locale
      * @return current entry
      */
-    // TODO handle global resource item : ANY locale should replace all items ...
-    public ResourceEntryDto setValueForLocale(String value, fr.tduf.libunlimited.common.game.domain.Locale locale) {
+    public ResourceEntryDto setValueForLocale(String value, Locale locale) {
         Optional<ResourceItemDto> potentialItem = getItemForLocale(locale);
 
         if (potentialItem.isPresent()) {
