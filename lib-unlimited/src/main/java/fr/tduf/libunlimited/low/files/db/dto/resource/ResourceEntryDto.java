@@ -66,7 +66,7 @@ public class ResourceEntryDto implements Serializable {
      * @return current entry
      */
     public ResourceEntryDto setValue(String value) {
-        fr.tduf.libunlimited.common.game.domain.Locale.valuesAsStream()
+        Locale.valuesAsStream()
                 .forEach(locale -> setValueForLocale(value, locale));
 
         return this;
@@ -76,6 +76,7 @@ public class ResourceEntryDto implements Serializable {
      * defines given value for specified locale
      * @return current entry
      */
+    // TODO handle global resource item
     public ResourceEntryDto setValueForLocale(String value, fr.tduf.libunlimited.common.game.domain.Locale locale) {
         Optional<ResourceItemDto> potentialItem = getItemForLocale(locale);
 
