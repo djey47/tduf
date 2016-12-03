@@ -21,6 +21,7 @@ import java.util.Map;
 
 import static fr.tduf.cli.tools.CameraTool.Command.COPY_SET;
 import static fr.tduf.cli.tools.CameraTool.Command.COPY_SETS;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
 /**
@@ -51,7 +52,7 @@ public class CameraTool extends GenericTool {
      */
     enum Command implements CommandHelper.CommandEnum {
         COPY_SET("copy-set", "Duplicate given camera set to a new identifier. Will not erase existing."),
-        COPY_SETS("copy-sets", "Duplicate given camera sets to new identifiers. Will not erase existing.");
+        COPY_SETS("copy-sets", "Duplicate given camera sets (in a CSV file) to new identifiers. Will not erase existing.");
 
         final String label;
         final String description;
@@ -131,8 +132,9 @@ public class CameraTool extends GenericTool {
 
     @Override
     protected List<String> getExamples() {
-        return singletonList(
-                COPY_SET.label + " -i \"C:\\Users\\Bill\\Desktop\\Cameras.bin\" -s 208 -t 209");
+        return asList(
+                COPY_SET.label + " -i \"C:\\Users\\Bill\\Desktop\\Cameras.bin\" -s 208 -t 209",
+                COPY_SETS.label + " -i \"C:\\Users\\Bill\\Desktop\\Cameras.bin\" -b \"instructions.csv\"");
     }
 
     private Map<String, ?> copySet(String sourceCameraFile, String targetCameraFile) throws IOException {
