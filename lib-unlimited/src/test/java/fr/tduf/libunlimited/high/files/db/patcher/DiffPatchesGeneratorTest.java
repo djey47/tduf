@@ -62,7 +62,7 @@ public class DiffPatchesGeneratorTest {
     @Test
     public void makePatches_whenNewContentsEntry_andREF_shouldAddFullUpdate_andStrictMode() throws Exception {
         // GIVEN
-        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/ref-newEntry/TDU_CarPhysicsData.json");
+        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/ref-newEntry/TDU_CarPhysicsData.data.json");
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
 
 
@@ -96,7 +96,7 @@ public class DiffPatchesGeneratorTest {
     @Test
     public void makePatches_whenExistingContentsEntry_andREF_andChangedItem_shouldAddPartialUpdate() throws Exception {
         // GIVEN
-        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/ref-existingEntry/TDU_CarPhysicsData.json");
+        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/ref-existingEntry/TDU_CarPhysicsData.data.json");
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
 
 
@@ -129,7 +129,7 @@ public class DiffPatchesGeneratorTest {
     @Test
     public void makePatches_whenNewContentsEntry_andNoREF_shouldAddFullUpdate() throws Exception {
         // GIVEN
-        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/noref-newEntry/TDU_CarRims.json");
+        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/noref-newEntry/TDU_CarRims.data.json");
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
 
 
@@ -160,7 +160,7 @@ public class DiffPatchesGeneratorTest {
     @Test
     public void makePatches_whenNewResourceEntries_shouldAddFullResourceUpdates_andStrictMode() throws Exception {
         // GIVEN
-        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/newResource/TDU_Hair.json");
+        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/newResource/TDU_Hair.data.json");
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
 
 
@@ -188,7 +188,7 @@ public class DiffPatchesGeneratorTest {
     @Test
     public void makePatches_whenNewResourceEntry_withLocalizedValues_shouldAddFullResourceUpdates_andStrictMode() throws Exception {
         // GIVEN
-        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/newResource-localized/TDU_Hair.json");
+        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/newResource-localized/TDU_Hair.data.json");
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
 
 
@@ -220,7 +220,6 @@ public class DiffPatchesGeneratorTest {
                 DatabaseHelper.createDatabaseTopicForReadOnly(HAIR));
     }
 
-    // TODO change argument to directory and use it. Then, delete json placeholder
     private static List<DbDto> readDatabase(String jsonFileResource) throws URISyntaxException {
         String jsonDirectory = new File(thisClass.getResource(jsonFileResource).toURI()).getParent();
         return DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDirectory);
