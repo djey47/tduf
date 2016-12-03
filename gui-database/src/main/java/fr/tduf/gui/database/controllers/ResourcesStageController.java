@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.common.game.domain.Locale.fromOrder;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static javafx.scene.control.Alert.AlertType.ERROR;
@@ -199,7 +200,7 @@ public class ResourcesStageController extends AbstractGuiController {
 
         for (int columnIndex = 1; columnIndex < resourcesTableView.getColumns().size(); columnIndex++) {
             TableColumn<ResourceEntryDataItem, ?> valueColumn = resourcesTableView.getColumns().get(columnIndex);
-            Locale locale = Locale.values()[columnIndex - 1];
+            Locale locale = fromOrder(columnIndex);
             valueColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().valuePropertyForLocale(locale));
         }
 
