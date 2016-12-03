@@ -325,7 +325,7 @@ public class PatchGeneratorTest {
         assertThat(changeObject2.getTopic()).isEqualTo(BRANDS);
 
         assertThat(actualChanges).extracting("ref").containsAll(asList("735", "55338337"));
-        assertThat(actualChanges).extracting("locale").containsOnly(new Object[]{null});
+        assertThat(actualChanges).extracting("locale").containsExactly(null, ANY);
         assertThat(actualChanges).extracting("value").contains(null, "AC");
     }
 
@@ -363,9 +363,9 @@ public class PatchGeneratorTest {
                 .hasSize(2) //1 UPDATE(1 partial value) + 1 UPDATE_RES
                 .extracting("ref").containsExactly("72825", "56338337");
         assertThat(actualChanges).extracting("topic").containsOnly(BRANDS);
-        assertThat(actualChanges).extracting("locale").containsNull();
-        assertThat(actualChanges).extracting("values").containsNull();
-        assertThat(actualChanges).extracting("value").contains(null, "ALFA");
+        assertThat(actualChanges).extracting("locale").containsExactly(null, ANY);
+        assertThat(actualChanges).extracting("values").containsOnly((Object)null);
+        assertThat(actualChanges).extracting("value").containsExactly(null, "ALFA");
 
         DbPatchDto.DbChangeDto changeObject1 = actualChanges.get(0);
         assertThat(changeObject1.getType()).isEqualTo(UPDATE);
@@ -395,7 +395,7 @@ public class PatchGeneratorTest {
 
         assertThat(actualChanges).extracting("type").contains(UPDATE, UPDATE_RES);
         assertThat(actualChanges).extracting("topic").contains(CLOTHES, HAIR);
-        assertThat(actualChanges).extracting("locale").containsOnly(new Object[]{null});
+        assertThat(actualChanges).extracting("locale").containsExactly(ANY, null, ANY, ANY, ANY, ANY, ANY);
         assertThat(actualChanges).extracting("value").contains("Mixte", null, "Rasta", "HA01", "DEFAULT_BOTTOMS", "DEFAULT_TOPS_SHIRT", "ChemiseAFleurs01");
     }
 
