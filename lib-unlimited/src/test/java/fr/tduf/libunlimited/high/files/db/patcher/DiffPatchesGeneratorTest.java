@@ -176,13 +176,13 @@ public class DiffPatchesGeneratorTest {
 
         List<DbPatchDto.DbChangeDto> actualChanges = actualPatchObject.getChanges();
         assertThat(actualChanges)
-                .hasSize(9)
+                .hasSize(2) // 1 global, 1 local (same value for all)
                 .extracting("type").containsOnly(UPDATE_RES);
         assertThat(actualChanges).extracting("strictMode").containsOnly(true);
         assertThat(actualChanges).extracting("ref").containsOnly("54713528", "54713529");
         assertThat(actualChanges).extracting("topic").containsOnly(HAIR);
-        assertThat(actualChanges).extracting("value").containsOnly("StringPanthere01", "CulottePetitBateau01");
-        assertThat(actualChanges).extracting("locale").containsExactly(ANY, CHINA, FRANCE, GERMANY, ITALY, JAPAN, KOREA, SPAIN, UNITED_STATES);
+        assertThat(actualChanges).extracting("value").contains("StringPanthere01", "Moulteub01");
+        assertThat(actualChanges).extracting("locale").containsOnly(ANY);
     }
 
     @Test

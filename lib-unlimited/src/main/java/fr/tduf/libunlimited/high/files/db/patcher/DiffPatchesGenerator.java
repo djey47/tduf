@@ -28,6 +28,7 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Used to generate patches for difference between database against reference one.
  */
+// TODO apply code rules
 public class DiffPatchesGenerator {
     private List<DbDto> databaseObjects;
     private List<DbDto> referenceDatabaseObjects;
@@ -83,21 +84,8 @@ public class DiffPatchesGenerator {
 
     private Set<DbPatchDto.DbChangeDto> seekForResourcesChanges(DbResourceDto resourceObject, DbDto.Topic currentTopic) {
         return resourceObject.getEntries().stream()
-                .flatMap(resourceEntry -> {
-                    String ref = resourceEntry.getReference();
-                    if (getReferenceDatabaseMiner().getResourceEntryFromTopicAndReference(currentTopic, ref).isPresent()) {
-                        // Already exists => do nothing
-                        return null;
-                    }
-
-                    return resourceEntry.isGlobalized() ?
-                            createGlobalizedResourceUpdate(currentTopic, resourceEntry)
-                            :
-                            createLocalizedResourceUpdates(currentTopic, resourceEntry);
-                })
-
+                .flatMap(resourceEntry -> createResourceUpdates(currentTopic, resourceEntry))
                 .filter(changeObject -> changeObject != null)
-
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
@@ -181,6 +169,21 @@ public class DiffPatchesGenerator {
                 .build();
     }
 
+    private Stream<? extends DbPatchDto.DbChangeDto> createResourceUpdates(DbDto.Topic currentTopic, ResourceEntryDto resourceEntry) {
+        Optional<ResourceEntryDto> potentialResourceEntry = getReferenceDatabaseMiner().getResourceEntryFromTopicAndReference(currentTopic, resourceEntry.getReference());
+        if (potentialResourceEntry.isPresent()) {
+            // Already exists => do nothing
+            return null;
+        }
+
+        if (resourceEntry.isGlobalized()
+                || isLocalizedResourceWithUniqueValue(resourceEntry)) {
+            return createGlobalizedResourceUpdate(currentTopic, resourceEntry);
+        }
+
+        return createLocalizedResourceUpdates(currentTopic, resourceEntry);
+    }
+
     private Stream<? extends DbPatchDto.DbChangeDto> createLocalizedResourceUpdates(DbDto.Topic currentTopic, ResourceEntryDto resourceEntry) {
         return Locale.valuesAsStream()
                 .map(locale -> DbPatchDto.DbChangeDto.builder()
@@ -215,6 +218,13 @@ public class DiffPatchesGenerator {
                 .addChanges(contentsChanges)
                 .withComment(currentTopic.name())
                 .build();
+    }
+
+    private static boolean isLocalizedResourceWithUniqueValue(ResourceEntryDto resourceEntry) {
+        return 1 == resourceEntry.getPresentLocales().stream()
+                .map(resourceEntry::getValueForLocale)
+                .map(Optional::get)
+                .collect(toSet()).size();
     }
 
     List<DbDto> getDatabaseObjects() {
