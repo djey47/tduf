@@ -65,7 +65,7 @@ public class ResourceEntryDto implements Serializable {
      * defines given value for every locale.
      * @return current entry
      */
-    // TODO replace by setGlobalValue calls
+    // TODO rename ?
     public ResourceEntryDto setValue(String value) {
         Locale.valuesAsStream()
                 .forEach(locale -> setValueForLocale(value, locale));
@@ -74,9 +74,10 @@ public class ResourceEntryDto implements Serializable {
     }
 
     /**
-     * defines global value (same value for every locale).
+     * defines global value.
      * @return current entry
      */
+    // TODO remove if unused
     public ResourceEntryDto setGlobalValue(String globalValue) {
         setValueForLocale(globalValue, ANY);
 
