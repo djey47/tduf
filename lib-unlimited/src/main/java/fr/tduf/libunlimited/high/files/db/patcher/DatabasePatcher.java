@@ -237,18 +237,14 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         final DbDto.Topic topic = changeObject.getTopic();
         databaseMiner.getResourceEntryFromTopicAndReference(topic, ref)
                 .ifPresent(entry -> {
-                    Optional<Locale> potentialLocale = ofNullable(changeObject.getLocale());
-
-                    if (potentialLocale.isPresent()) {
-
-                        entry.removeValueForLocale(potentialLocale.get());
-
-                    } else {
-
+                    Locale selectedLocale = changeObject.getLocale();
+                    if (selectedLocale == null
+                            || Locale.ANY == selectedLocale) {
                         databaseMiner.getResourcesFromTopic(topic)
                                 .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resource object for topic: " + topic))
                                 .removeEntryByReference(ref);
-
+                    } else {
+                        entry.removeValueForLocale(selectedLocale);
                     }
                 });
     }

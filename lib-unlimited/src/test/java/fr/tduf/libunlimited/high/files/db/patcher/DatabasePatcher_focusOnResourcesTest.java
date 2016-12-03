@@ -123,4 +123,25 @@ public class DatabasePatcher_focusOnResourcesTest {
         assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("60367256", BOTS, Locale.ITALY)).isEmpty();
         assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", BOTS, Locale.ITALY)).isEmpty();
     }
+
+    @Test
+    public void apply_whenDeleteResourcesPatch_forAllLocales_withSpecialAny_shouldRemoveExistingEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        DbPatchDto deleteResourcesPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/deleteResources-all-any.mini.json");
+        DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(BOTS);
+
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
+
+
+        // WHEN
+        patcher.apply(deleteResourcesPatch);
+
+
+        // THEN
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("60367256", BOTS, Locale.FRANCE)).isEmpty();
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", BOTS, Locale.FRANCE)).isEmpty();
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("60367256", BOTS, Locale.ITALY)).isEmpty();
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", BOTS, Locale.ITALY)).isEmpty();
+    }
 }
