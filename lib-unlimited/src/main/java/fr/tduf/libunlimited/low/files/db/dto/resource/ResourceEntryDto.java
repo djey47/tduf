@@ -37,9 +37,10 @@ public class ResourceEntryDto implements Serializable {
      */
     public Optional<ResourceItemDto> getItemForLocale(Locale locale) {
         return items.stream()
-
-                .filter(item -> item.getLocale() == locale)
-
+                .filter(item -> {
+                    Locale currentLocale = item.getLocale();
+                    return ANY == currentLocale || locale == currentLocale;
+                })
                 .findAny();
     }
 
