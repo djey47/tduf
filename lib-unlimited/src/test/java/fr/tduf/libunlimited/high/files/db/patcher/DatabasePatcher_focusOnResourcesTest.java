@@ -64,6 +64,27 @@ public class DatabasePatcher_focusOnResourcesTest {
     }
 
     @Test
+    public void apply_whenUpdateResourcesPatch_forAllLocales_withSpecialAny_shouldAddAndUpdateEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        DbPatchDto updateResourcesPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateResources-all-any.mini.json");
+        DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(BOTS);
+
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
+
+
+        // WHEN
+        patcher.apply(updateResourcesPatch);
+
+
+        // THEN
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("54367256", BOTS, Locale.FRANCE)).contains("Brian Molko");
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", BOTS, Locale.FRANCE)).contains("Cindy");
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("54367256", BOTS, Locale.ITALY)).contains("Brian Molko");
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", BOTS, Locale.ITALY)).contains("Cindy");
+    }
+
+    @Test
     public void apply_whenUpdateResourcesPatch_forAllLocales_andStrictMode_shouldOnlyAddEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateResourcesPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateResources-all-strict.mini.json");

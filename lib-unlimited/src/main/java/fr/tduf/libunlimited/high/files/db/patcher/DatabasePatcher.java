@@ -263,16 +263,13 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                         .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resource object for topic: " + topic))
                         .addEntryByReference(ref));
         String value = changeObject.getValue();
-        Optional<Locale> potentialLocale = ofNullable(changeObject.getLocale());
-        if (potentialLocale.isPresent()) {
 
-            resourceEntry.setValueForLocale(value, potentialLocale.get());
-
+        Locale selectedLocale = changeObject.getLocale();
+        if (selectedLocale == null
+                || Locale.ANY == selectedLocale) {
+            resourceEntry.setValue(value);
         } else {
-
-            Locale.valuesAsStream()
-                    .forEach(currentLocale -> resourceEntry.setValueForLocale(value, currentLocale));
-
+            resourceEntry.setValueForLocale(value, selectedLocale);
         }
     }
 
