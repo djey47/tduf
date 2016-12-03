@@ -56,7 +56,7 @@ public class ResourceEntryDto implements Serializable {
     /**
      * @return available value for specified locale, empty otherwise.
      */
-    public Optional<String> getValueForLocale(fr.tduf.libunlimited.common.game.domain.Locale locale) {
+    public Optional<String> getValueForLocale(Locale locale) {
         return getItemForLocale(locale)
                 .map(ResourceItemDto::getValue);
     }
@@ -65,6 +65,7 @@ public class ResourceEntryDto implements Serializable {
      * defines given value for every locale.
      * @return current entry
      */
+    // TODO replace by setGlobalValue calls
     public ResourceEntryDto setValue(String value) {
         Locale.valuesAsStream()
                 .forEach(locale -> setValueForLocale(value, locale));
@@ -73,10 +74,20 @@ public class ResourceEntryDto implements Serializable {
     }
 
     /**
+     * defines global value (same value for every locale).
+     * @return current entry
+     */
+    public ResourceEntryDto setGlobalValue(String globalValue) {
+        setValueForLocale(globalValue, ANY);
+
+        return this;
+    }
+
+    /**
      * defines given value for specified locale
      * @return current entry
      */
-    // TODO handle global resource item
+    // TODO handle global resource item : ANY locale should replace all items ...
     public ResourceEntryDto setValueForLocale(String value, fr.tduf.libunlimited.common.game.domain.Locale locale) {
         Optional<ResourceItemDto> potentialItem = getItemForLocale(locale);
 
