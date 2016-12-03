@@ -309,6 +309,21 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     }
 
     @Test
+    public void getAllResourceValuesForReference_whenEntryExists_withGlobalizedValue_shouldReturnIt() {
+        //GIVEN
+        DbResourceDto resourceObject = createDefaultResourceObject();
+        resourceObject.addGlobalEntryByReference(RESOURCE_REF, RESOURCE_VALUE);
+
+        //WHEN
+        final Set<String> actualValues = BulkDatabaseMiner.getAllResourceValuesForReference(RESOURCE_REF, resourceObject);
+
+        //THEN
+        assertThat(actualValues)
+                .hasSize(1)
+                .containsOnly(RESOURCE_VALUE);
+    }
+
+    @Test
     public void getAllResourceValuesForReference_whenEntryExists_withDifferentValuesForItems_shouldReturnValues() {
         //GIVEN
         DbResourceDto resourceObject = createDefaultResourceObject();
