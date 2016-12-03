@@ -141,6 +141,14 @@ public class ResourceEntryDto implements Serializable {
         return missingLocales;
     }
 
+    /**
+     * @return true if entry contains global item
+     */
+    @JsonIgnore
+    public boolean isGlobalized() {
+        return getValueForLocale(ANY).isPresent();
+    }
+
     @Override
     public boolean equals(Object o) {
         return reflectionEquals(this, o);
