@@ -52,7 +52,7 @@ public class DatabaseGenHelperTest {
                         .atVersion("1,0")
                         .build())
                 .build();
-        topicObject.getResource().addEntryByReference(RESOURCE_REFERENCE).setValue("VAL");
+        topicObject.getResource().addEntryByReference(RESOURCE_REFERENCE).setDefaultValue("VAL");
 
         // WHEN
         String actualResourceIdentifier = DatabaseGenHelper.generateUniqueResourceEntryIdentifier(topicObject);
@@ -278,7 +278,7 @@ public class DatabaseGenHelperTest {
     public void generateDefaultResourceReference_whenDefaultResourceEntryExists_shouldReturnIt() {
         // GIVEN
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.RESOURCE_CURRENT_LOCALIZED);
-        topicObject.getResource().addEntryByReference("12345").setValue("??");
+        topicObject.getResource().addEntryByReference("12345").setDefaultValue("??");
 
 
         // WHEN

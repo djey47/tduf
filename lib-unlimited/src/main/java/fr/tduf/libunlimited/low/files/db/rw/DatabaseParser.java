@@ -123,7 +123,7 @@ public class DatabaseParser {
                     if (values.size() == 1) {
                         return ResourceEntryDto.builder()
                                 .forReference(readEntry.getReference())
-                                .withGlobalItem(values.stream().findAny().get())
+                                .withDefaultItem(values.stream().findAny().get())
                                 .build();
                     } else {
                         return readEntry;

@@ -73,8 +73,7 @@ public class ResourceEntryDto implements Serializable {
      * defines given default value for every locale.
      * @return current entry
      */
-    // TODO rename to setDefaultValue
-    public ResourceEntryDto setValue(String defaultValue) {
+    public ResourceEntryDto setDefaultValue(String defaultValue) {
         setValueForLocale(defaultValue, DEFAULT);
 
         return this;
@@ -188,8 +187,7 @@ public class ResourceEntryDto implements Serializable {
             return this;
         }
 
-        // TODO rename to withDefaultItem
-        public EntryBuilder withGlobalItem(String value) {
+        public EntryBuilder withDefaultItem(String value) {
             final ResourceItemDto globalItem = ResourceItemDto.builder()
                     .withGlobalValue(value)
                     .build();

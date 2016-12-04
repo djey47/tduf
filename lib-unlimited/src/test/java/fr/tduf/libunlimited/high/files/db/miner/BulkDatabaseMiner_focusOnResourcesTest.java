@@ -144,7 +144,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
         final DbDto topicObject = createDefaultTopicObject(TOPIC);
         topicObject.getResource()
                 .addEntryByReference(RESOURCE_REF)
-                .setValue("")
+                .setDefaultValue("")
                 .setValueForLocale(RESOURCE_VALUE, LOCALE);
         List<DbDto> topicObjects = singletonList(topicObject);
 
@@ -213,7 +213,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
         final DbDto topicObject = createDefaultTopicObject(TOPIC);
         topicObject.getResource()
                 .addEntryByReference(RESOURCE_REF)
-                .setValue("")
+                .setDefaultValue("")
                 .setValueForLocale(RESOURCE_VALUE, LOCALE);
         List<DbDto> topicObjects = singletonList(topicObject);
 
@@ -255,7 +255,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
         final DbDto topicObject = createDefaultTopicObject(TOPIC);
         topicObject.getResource()
                 .addEntryByReference(RESOURCE_REF)
-                .setValue("")
+                .setDefaultValue("")
                 .setValueForLocale(RESOURCE_VALUE, LOCALE);
         List<DbDto> topicObjects = singletonList(topicObject);
 
@@ -297,7 +297,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     public void getAllResourceValuesForReference_whenEntryExists_withSameValueForItems_shouldReturnValueOnce() {
         //GIVEN
         DbResourceDto resourceObject = createDefaultResourceObject();
-        resourceObject.addEntryByReference(RESOURCE_REF).setValue(RESOURCE_VALUE);
+        resourceObject.addEntryByReference(RESOURCE_REF).setDefaultValue(RESOURCE_VALUE);
 
         //WHEN
         final Set<String> actualValues = BulkDatabaseMiner.getAllResourceValuesForReference(RESOURCE_REF, resourceObject);

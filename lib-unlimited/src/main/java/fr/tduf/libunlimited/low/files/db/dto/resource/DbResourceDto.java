@@ -72,7 +72,7 @@ public class DbResourceDto implements Serializable {
 
         ResourceEntryDto newResourceEntryDto = ResourceEntryDto.builder()
                 .forReference(reference)
-                .withGlobalItem(value)
+                .withDefaultItem(value)
                 .build();
 
         entriesByReference.put(reference, newResourceEntryDto);

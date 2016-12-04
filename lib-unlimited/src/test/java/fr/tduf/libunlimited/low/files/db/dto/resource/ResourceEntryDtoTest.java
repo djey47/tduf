@@ -14,7 +14,7 @@ class ResourceEntryDtoTest {
         // GIVEN
         ResourceEntryDto resourceEntryDto = ResourceEntryDto.builder()
                 .forReference("REF")
-                .withGlobalItem("VAL")
+                .withDefaultItem("VAL")
                 .build();
 
         // WHEN-THEN
@@ -39,7 +39,7 @@ class ResourceEntryDtoTest {
         // GIVEN
         ResourceEntryDto resourceEntryDto = ResourceEntryDto.builder()
                 .forReference("REF")
-                .withGlobalItem("GLOBAL")
+                .withDefaultItem("GLOBAL")
                 .build();
 
         // WHEN-THEN
@@ -75,7 +75,7 @@ class ResourceEntryDtoTest {
         // GIVEN
         ResourceEntryDto resourceEntryDto = ResourceEntryDto.builder()
                 .forReference("REF")
-                .withGlobalItem("VAL")
+                .withDefaultItem("VAL")
                 .build();
 
         // WHEN-THEN
@@ -136,7 +136,7 @@ class ResourceEntryDtoTest {
         // GIVEN
         ResourceEntryDto resourceEntryDto = ResourceEntryDto.builder()
                 .forReference("REF")
-                .withGlobalItem("DEF")
+                .withDefaultItem("DEF")
                 .build();
 
         // WHEN-THEN
@@ -163,7 +163,7 @@ class ResourceEntryDtoTest {
         // GIVEN
         ResourceEntryDto resourceEntryDto = ResourceEntryDto.builder()
                 .forReference("REF")
-                .withGlobalItem("GLOBAL")
+                .withDefaultItem("GLOBAL")
                 .build();
 
         // WHEN
@@ -216,7 +216,7 @@ class ResourceEntryDtoTest {
     }
 
     @Test
-    void setValue_shouldSetDefaultItem() {
+    void setDefaultValue_shouldSetDefaultItem() {
         // GIVEN
         ResourceItemDto initialItem = ResourceItemDto.builder()
                 .withLocale(FRANCE)
@@ -228,7 +228,7 @@ class ResourceEntryDtoTest {
                 .build();
 
         // WHEN
-        resourceEntryDto.setValue("NEWVAL");
+        resourceEntryDto.setDefaultValue("NEWVAL");
 
         // THEN
         ResourceItemDto expectedItem = ResourceItemDto.builder().withGlobalValue("NEWVAL").build();
@@ -240,7 +240,7 @@ class ResourceEntryDtoTest {
     void isGlobalized_whenOnlyDefaultItem_shouldReturnTrue() {
         ResourceEntryDto resourceEntryDto = ResourceEntryDto.builder()
                 .forReference("REF")
-                .withGlobalItem("VAL")
+                .withDefaultItem("VAL")
                 .build();
 
         // WHEN-THEN
@@ -265,7 +265,7 @@ class ResourceEntryDtoTest {
         ResourceEntryDto resourceEntryDto = ResourceEntryDto.builder()
                 .forReference("REF")
                 .withItems(singletonList(localizedItem))
-                .withGlobalItem("VALDEF")
+                .withDefaultItem("VALDEF")
                 .build();
 
         // WHEN-THEN

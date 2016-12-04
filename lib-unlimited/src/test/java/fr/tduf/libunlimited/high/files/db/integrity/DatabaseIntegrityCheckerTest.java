@@ -250,35 +250,35 @@ public class DatabaseIntegrityCheckerTest {
 
     private DbResourceDto createResourceEnhancedOneLocalEntryMissing() {
         final DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
-        resourceObject.addEntryByReference("100").setValue("CENT");            //Local 1
-        resourceObject.addEntryByReference("400").setValue("QUATRE CENTS");    //Local 2
-        resourceObject.addEntryByReference("300").setValue("TROIS CENTS");     //Remote
+        resourceObject.addEntryByReference("100").setDefaultValue("CENT");            //Local 1
+        resourceObject.addEntryByReference("400").setDefaultValue("QUATRE CENTS");    //Local 2
+        resourceObject.addEntryByReference("300").setDefaultValue("TROIS CENTS");     //Remote
 
         return resourceObject;
     }
 
     private DbResourceDto createResourceEnhancedOneLocalAndOneForeignEntryMissing() {
         final DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
-        resourceObject.addEntryByReference("100").setValue("CENT");            //Local 1
-        resourceObject.addEntryByReference("400").setValue("QUATRE CENTS");    //Local 2
+        resourceObject.addEntryByReference("100").setDefaultValue("CENT");            //Local 1
+        resourceObject.addEntryByReference("400").setDefaultValue("QUATRE CENTS");    //Local 2
 
         return resourceObject;
     }
 
     private DbResourceDto createResourceOneForeignEntryMissing() {
         final DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
-        resourceObject.addEntryByReference("100").setValue("CENT");            //Local 1
-        resourceObject.addEntryByReference("200").setValue("DEUX CENTS");      //Local 2
-        resourceObject.addEntryByReference("400").setValue("QUATRE CENTS");    //Local 3
+        resourceObject.addEntryByReference("100").setDefaultValue("CENT");            //Local 1
+        resourceObject.addEntryByReference("200").setDefaultValue("DEUX CENTS");      //Local 2
+        resourceObject.addEntryByReference("400").setDefaultValue("QUATRE CENTS");    //Local 3
 
         return resourceObject;
     }
 
     private DbResourceDto createResourceAnotherLocalEntryMissing() {
         final DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
-        resourceObject.addEntryByReference("100").setValue("CENT");            //Local 1
-        resourceObject.addEntryByReference("200").setValue("DEUX CENTS");      //Local 2
-        resourceObject.addEntryByReference("300").setValue("TROIS CENTS");      //Remote
+        resourceObject.addEntryByReference("100").setDefaultValue("CENT");            //Local 1
+        resourceObject.addEntryByReference("200").setDefaultValue("DEUX CENTS");      //Local 2
+        resourceObject.addEntryByReference("300").setDefaultValue("TROIS CENTS");      //Remote
 
         return resourceObject;
     }

@@ -210,7 +210,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
         // GIVEN
         DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
         ResourceEntryDto resourceEntry = resourceObject.addEntryByReference(RESOURCE_REFERENCE)
-                .setValue(RESOURCE_VALUE);
+                .setDefaultValue(RESOURCE_VALUE);
 
         when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(of(resourceEntry));
         when(minerMock.getResourcesFromTopic(TOPIC)).thenReturn(of(resourceObject));

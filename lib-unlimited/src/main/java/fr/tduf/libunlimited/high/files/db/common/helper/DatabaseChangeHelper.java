@@ -153,7 +153,7 @@ public class DatabaseChangeHelper {
 
         resourceObject
                 .addEntryByReference(newResourceReference)
-                .setValue(newResourceValue);
+                .setDefaultValue(newResourceValue);
         resourceObject.removeEntryByReference(oldResourceReference);
     }
 
