@@ -65,10 +65,9 @@ public class DbResourceDto implements Serializable {
     }
 
     /**
-     * @return globalized resource entry which has been added
+     * @return default resource entry which has been added
      */
-    // TODO rename to addDefaultEntryByReference
-    public ResourceEntryDto addGlobalEntryByReference(String reference, String value) {
+    public ResourceEntryDto addDefaultEntryByReference(String reference, String value) {
         checkEntryDoesNotExistWithReference(reference);
 
         ResourceEntryDto newResourceEntryDto = ResourceEntryDto.builder()

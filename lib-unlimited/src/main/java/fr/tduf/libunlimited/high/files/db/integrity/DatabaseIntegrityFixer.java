@@ -177,7 +177,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
         databaseMiner.getResourcesFromTopic(topic)
                 .ifPresent(resources -> {
                     resources.removeEntryByReference(resourceReference);
-                    resources.addGlobalEntryByReference(resourceReference, mostFrequentValue);
+                    resources.addDefaultEntryByReference(resourceReference, mostFrequentValue);
                 });
     }
 

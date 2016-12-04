@@ -271,7 +271,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         if (selectedLocale == null
                 || DEFAULT == selectedLocale) {
             resources.removeEntryByReference(ref);
-            resources.addGlobalEntryByReference(ref, value);
+            resources.addDefaultEntryByReference(ref, value);
         } else {
             resourceEntry.setValueForLocale(value, selectedLocale);
         }
