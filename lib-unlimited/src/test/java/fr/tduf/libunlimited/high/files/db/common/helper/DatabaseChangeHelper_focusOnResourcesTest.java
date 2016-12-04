@@ -14,7 +14,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Optional;
 
-import static fr.tduf.libunlimited.common.game.domain.Locale.FRANCE;
+import static fr.tduf.libunlimited.common.game.domain.Locale.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -129,7 +129,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     @Test
     public void updateResourceItemWithReference_whenExistingEntry_shouldChangeValue() {
         // GIVEN
-        ResourceEntryDto resourceEntry = createDefaultResourceEntryEnhanced(RESOURCE_REFERENCE);
+        ResourceEntryDto resourceEntry = createDefaultResourceEntry(RESOURCE_REFERENCE);
         when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(of(resourceEntry));
 
         // WHEN
@@ -144,7 +144,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
         // GIVEN
         String initialReference = "0";
         DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
-        ResourceEntryDto resourceEntry = createDefaultResourceEntryEnhanced(initialReference);
+        ResourceEntryDto resourceEntry = createDefaultResourceEntry(initialReference);
 
         when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, initialReference)).thenReturn(of(resourceEntry));
         when(minerMock.getResourcesFromTopic(TOPIC)).thenReturn(of(resourceObject));
@@ -167,8 +167,8 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
         // GIVEN
         String initialReference = "1";
 
-        ResourceEntryDto existingEntry = createDefaultResourceEntryEnhanced(RESOURCE_REFERENCE);
-        ResourceEntryDto existingEntry2 = createDefaultResourceEntryEnhanced(initialReference);
+        ResourceEntryDto existingEntry = createDefaultResourceEntry(RESOURCE_REFERENCE);
+        ResourceEntryDto existingEntry2 = createDefaultResourceEntry(initialReference);
         DbResourceDto resourceObject = DbResourceDto.builder()
                 .atVersion("1.0")
                 .containingEntries(asList(existingEntry, existingEntry2)).build();
@@ -187,28 +187,10 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     }
 
     @Test
-    public void removeResourceValuesWithReference_whenResourceEntryExists_andSameLocaleAffected_shouldDeleteLocalizedValue() {
-        // GIVEN
-        ResourceEntryDto resourceEntry = createDefaultResourceEntryEnhanced(RESOURCE_REFERENCE);
-        resourceEntry.setValue(RESOURCE_VALUE);
-
-        when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(of(resourceEntry));
-
-
-        // WHEN
-        changeHelper.removeResourceValuesWithReference(TOPIC, RESOURCE_REFERENCE, singletonList(LOCALE));
-
-
-        // THEN
-        assertThat(resourceEntry.getItemCount()).isEqualTo(7);
-        assertThat(resourceEntry.getItemForLocale(LOCALE)).isEmpty();
-    }
-
-    @Test
     public void removeResourceValuesWithReference_whenResourceEntryExists_andTwoLocalesAffected_shouldDeleteThem() {
         // GIVEN
-        ResourceEntryDto resourceEntry = createDefaultResourceEntryEnhanced(RESOURCE_REFERENCE);
-        resourceEntry.setValue(RESOURCE_VALUE);
+        ResourceEntryDto resourceEntry = createDefaultResourceEntry(RESOURCE_REFERENCE);
+        setValuesForAllLocales(resourceEntry);
 
         when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(of(resourceEntry));
 
@@ -260,10 +242,21 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
                 .build();
     }
 
-    private static ResourceEntryDto createDefaultResourceEntryEnhanced(String reference) {
+    private static ResourceEntryDto createDefaultResourceEntry(String reference) {
         return ResourceEntryDto.builder()
                 .forReference(reference)
                 .build()
                 .setValueForLocale("", LOCALE);
+    }
+
+    private static void setValuesForAllLocales(ResourceEntryDto resourceEntry) {
+        resourceEntry.setValueForLocale("VAL1", LOCALE);
+        resourceEntry.setValueForLocale("VAL2", FRANCE);
+        resourceEntry.setValueForLocale("VAL3", GERMANY);
+        resourceEntry.setValueForLocale("VAL4", ITALY);
+        resourceEntry.setValueForLocale("VAL5", JAPAN);
+        resourceEntry.setValueForLocale("VAL6", KOREA);
+        resourceEntry.setValueForLocale("VAL7", SPAIN);
+        resourceEntry.setValueForLocale("VAL8", UNITED_STATES);
     }
 }

@@ -14,6 +14,7 @@ import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.common.game.domain.Locale.DEFAULT;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -324,7 +325,7 @@ public class DatabaseChangeHelper {
     private void removeResourceValueForLocales(DbDto.Topic topic, ResourceEntryDto entry, List<Locale> affectedLocales) {
         affectedLocales.forEach(entry::removeValueForLocale);
 
-        if (entry.getItemCount() == 0) {
+        if (1 == entry.getItemCount() && entry.getValueForLocale(DEFAULT).isPresent()) {
             databaseMiner.getResourcesFromTopic(topic)
                     .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resource for topic: " + topic))
                     .removeEntryByReference(entry.getReference());
