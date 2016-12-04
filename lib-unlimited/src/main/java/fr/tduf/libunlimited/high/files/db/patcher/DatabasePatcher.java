@@ -12,6 +12,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
@@ -20,6 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static fr.tduf.libunlimited.common.game.domain.Locale.DEFAULT;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.DirectionEnum.UP;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
@@ -239,7 +241,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                 .ifPresent(entry -> {
                     Locale selectedLocale = changeObject.getLocale();
                     if (selectedLocale == null
-                            || Locale.DEFAULT == selectedLocale) {
+                            || DEFAULT == selectedLocale) {
                         databaseMiner.getResourcesFromTopic(topic)
                                 .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resource object for topic: " + topic))
                                 .removeEntryByReference(ref);
@@ -258,16 +260,18 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
             return;
         }
 
-        ResourceEntryDto resourceEntry = potentialResourceEntry
-                .orElseGet(() -> databaseMiner.getResourcesFromTopic(topic)
-                        .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resource object for topic: " + topic))
-                        .addEntryByReference(ref));
-        String value = changeObject.getValue();
+        DbResourceDto resources = databaseMiner.getResourcesFromTopic(topic)
+                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resource object for topic: " + topic));
 
+        ResourceEntryDto resourceEntry = potentialResourceEntry
+                .orElseGet(() -> resources.addEntryByReference(ref));
+
+        String value = changeObject.getValue();
         Locale selectedLocale = changeObject.getLocale();
         if (selectedLocale == null
-                || Locale.DEFAULT == selectedLocale) {
-            resourceEntry.setValue(value);
+                || DEFAULT == selectedLocale) {
+            resources.removeEntryByReference(ref);
+            resources.addGlobalEntryByReference(ref, value);
         } else {
             resourceEntry.setValueForLocale(value, selectedLocale);
         }

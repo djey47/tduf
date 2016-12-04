@@ -6,15 +6,14 @@
       "topic" : "BOTS",
       "ref": "54367256",
       "value": "Brian Molko",
-      "locale": "ANY"
+      "locale": "DEFAULT"
     },
     {
       "comment": "Adds Cindy for ref 33333333",
       "type" : "UPDATE_RES",
       "topic" : "BOTS",
       "ref": "33333333",
-      "value": "Cindy",
-      "locale": "ANY"
+      "value": "Cindy"
     }
   ]
 }

@@ -5,14 +5,13 @@
       "type" : "DELETE_RES",
       "topic" : "BOTS",
       "ref": "60367256",
-      "locale": "ANY"
+      "locale": "DEFAULT"
     },
     {
       "comment": "Missing resource: 33333333",
       "type" : "DELETE_RES",
       "topic" : "BOTS",
-      "ref": "33333333",
-      "locale": "ANY"
+      "ref": "33333333"
     }
   ]
 }

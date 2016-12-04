@@ -64,7 +64,7 @@ public class DatabasePatcher_focusOnResourcesTest {
     }
 
     @Test
-    public void apply_whenUpdateResourcesPatch_forAllLocales_withSpecialAny_shouldAddAndUpdateEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
+    public void apply_whenUpdateResourcesPatch_forAllLocales_withDefaultLocale_shouldAddAndUpdateEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateResourcesPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateResources-all-any.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(BOTS);
