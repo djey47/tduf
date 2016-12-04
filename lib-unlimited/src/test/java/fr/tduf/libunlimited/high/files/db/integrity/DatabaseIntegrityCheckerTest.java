@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.integrity;
 
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -8,6 +9,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import org.assertj.core.data.MapEntry;
 import org.junit.Before;
 import org.junit.Test;
@@ -238,10 +240,10 @@ public class DatabaseIntegrityCheckerTest {
 
     private DbResourceDto createResourceEnhancedNoEntryMissing() {
         final DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
-        resourceObject.addEntryByReference("100").setValue("CENT");            //Local 1
-        resourceObject.addEntryByReference("200").setValue("DEUX CENTS");      //Local 2
-        resourceObject.addEntryByReference("400").setValue("QUATRE CENTS");    //Local 3
-        resourceObject.addEntryByReference("300").setValue("TROIS CENTS");     //Remote
+        setAllResourceValues(resourceObject.addEntryByReference("100"), "CENT");            //Local 1
+        setAllResourceValues(resourceObject.addEntryByReference("200"), "DEUX CENTS");      //Local 2
+        setAllResourceValues(resourceObject.addEntryByReference("400"), "QUATRE CENTS");    //Local 3
+        setAllResourceValues(resourceObject.addEntryByReference("300"), "TROIS CENTS");     //Remote
 
         return resourceObject;
     }
@@ -390,6 +392,11 @@ public class DatabaseIntegrityCheckerTest {
         for (IntegrityError integrityError : integrityErrors) {
             assertThat(integrityError.getInformation()).containsEntry(infoKey, infoValue);
         }
+    }
+
+    private static void setAllResourceValues(ResourceEntryDto resourceEntryDto, String value) {
+        Locale.valuesAsStream()
+                .forEach(locale -> resourceEntryDto.setValueForLocale(value, locale));
     }
 
     private static DatabaseIntegrityChecker createChecker(List<DbDto> databaseObjects) throws ReflectiveOperationException {
