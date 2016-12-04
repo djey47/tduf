@@ -17,37 +17,37 @@
   }, {
     "type" : "UPDATE_RES",
     "topic" : "AFTER_MARKET_PACKS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "55461230",
     "value" : "AC Pack 1"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "AFTER_MARKET_PACKS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "55662430",
     "value" : "Power Pack 1"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "AFTER_MARKET_PACKS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "56461230",
     "value" : "AC Pack 2"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "AFTER_MARKET_PACKS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "56662430",
     "value" : "Power Pack 2"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "AFTER_MARKET_PACKS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "57461230",
     "value" : "AC Pack 3"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "AFTER_MARKET_PACKS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "57662430",
     "value" : "Power Pack 3"
   }, {
@@ -63,25 +63,25 @@
   }, {
     "type" : "UPDATE_RES",
     "topic" : "BRANDS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "5638357",
     "value" : "Alfa Romeo"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "BRANDS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "55338337",
     "value" : "AC"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "BRANDS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "56338337",
     "value" : "ALFA"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "BRANDS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "62438337",
     "value" : "JAG"
   }, {
@@ -123,121 +123,121 @@
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_COLORS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "53356127",
     "value" : "??"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_COLORS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "53616457",
     "value" : "Rouge Irise"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_COLORS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "54361317",
     "value" : "Cal_A_B"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_COLORS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "54576457",
     "value" : "Bright Blue"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_COLORS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "54776127",
     "value" : "V_05"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_COLORS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "54966127",
     "value" : "N_01"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_COLORS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "55466127",
     "value" : "GM_06"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_COLORS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "55556127",
     "value" : "BM_08"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_COLORS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "56816457",
     "value" : "Silver"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_COLORS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "56926457",
     "value" : "White"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_COLORS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "57106457",
     "value" : "Princess Blue"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_COLORS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "57376127",
     "value" : "RM_07"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_COLORS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "58456127",
     "value" : "BM_01"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_COLORS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "59266127",
     "value" : "R_F01"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_COLORS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "59726457",
     "value" : "Vineyard Green"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_COLORS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "61076127",
     "value" : "W_02"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_COLORS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "61206457",
     "value" : "Red"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_COLORS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "61416457",
     "value" : "Rosso Alfa"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_COLORS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "61966457",
     "value" : "Black"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_COLORS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "63166127",
     "value" : "R_01"
   }, {
@@ -593,37 +593,37 @@
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_PHYSICS_DATA",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "5686567",
     "value" : "Alfa_8C"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_PHYSICS_DATA",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "6296567",
     "value" : "AC_427"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_PHYSICS_DATA",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "6306567",
     "value" : "AC_289"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_PHYSICS_DATA",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "53338427",
     "value" : "??"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_PHYSICS_DATA",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "54368917",
     "value" : "Classic"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_PHYSICS_DATA",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "54638407",
     "value" : "GT"
   }, {
@@ -677,97 +677,97 @@
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_PHYSICS_DATA",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "55533427",
     "value" : "2"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_PHYSICS_DATA",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "55638407",
     "value" : "8C"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_PHYSICS_DATA",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "56338424",
     "value" : "Pirelli "
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_PHYSICS_DATA",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "56683667",
     "value" : "8c"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_PHYSICS_DATA",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "57356917",
     "value" : "??"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_PHYSICS_DATA",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "58538427",
     "value" : "289"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_PHYSICS_DATA",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "58982366",
     "value" : "Competizione"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_PHYSICS_DATA",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "59338424",
     "value" : "Dunlop"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_PHYSICS_DATA",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "59938407",
     "value" : "Cobra"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_PHYSICS_DATA",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "74739427",
     "value" : "Electric"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_PHYSICS_DATA",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "75900264",
     "value" : "C"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_PHYSICS_DATA",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "77678427",
     "value" : "No Window"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_PHYSICS_DATA",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "79900264",
     "value" : "G"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_PHYSICS_DATA",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "92260406",
     "value" : "2 Points"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_PHYSICS_DATA",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "92261406",
     "value" : "3 Points"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_PHYSICS_DATA",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "92900264",
     "value" : "Z"
   }, {
@@ -781,7 +781,7 @@
   }, {
     "type" : "UPDATE_RES",
     "topic" : "CAR_SHOPS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "5893697",
     "value" : "BRITISH PARTS"
   }, {
@@ -807,67 +807,67 @@
   }, {
     "type" : "UPDATE_RES",
     "topic" : "INTERIOR",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "53364643",
     "value" : "NoColor"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "INTERIOR",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "53365512",
     "value" : "None"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "INTERIOR",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "53664643",
     "value" : "C_R_01"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "INTERIOR",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "54064643",
     "value" : "M_R_01"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "INTERIOR",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "54764643",
     "value" : "C_W_02"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "INTERIOR",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "54765512",
     "value" : "Black"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "INTERIOR",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "54795512",
     "value" : "Red"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "INTERIOR",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "54964643",
     "value" : "M_N_01"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "INTERIOR",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "57665512",
     "value" : "Beige"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "INTERIOR",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "58564643",
     "value" : "C_N_02"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "INTERIOR",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "60764643",
     "value" : "M_G_01"
   }, {
@@ -883,55 +883,55 @@
   }, {
     "type" : "UPDATE_RES",
     "topic" : "RIMS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "5616562",
     "value" : "Standard AC 289 Wheels"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "RIMS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "5696562",
     "value" : "Standard Alfa Romeo 8c Competizione Wheels"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "RIMS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "54158512",
     "value" : "Alfa_8C_F_01"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "RIMS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "54365512",
     "value" : "Alfa-Romeo"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "RIMS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "55665512",
     "value" : "AC"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "RIMS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "56890512",
     "value" : "Alfa"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "RIMS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "57966512",
     "value" : "Standard Alfa Romeo 8c Competizione Wheel"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "RIMS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "60266512",
     "value" : "Standard AC 289 Wheel"
   }, {
     "type" : "UPDATE_RES",
     "topic" : "RIMS",
-    "locale" : "ANY",
+    "locale" : "DEFAULT",
     "ref" : "63458512",
     "value" : "AC_289_F_01"
   } ]
