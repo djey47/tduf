@@ -109,32 +109,10 @@ public class DatabaseParser {
         final List<ResourceEntryDto> readEntries = createResourceEntriesFromReadItems(readItems);
         checkItemCountBetweenResources(topic, readEntries);
 
-        // TODO extract method
-        List<ResourceEntryDto> reducedResources = readEntries.stream()
-                .map(readEntry -> {
-
-                    Set<String> values = Locale.valuesAsStream()
-                            // TODO replace by get ItemValueForLocale
-                            .map(locale -> readEntry.getItemForLocale(locale)
-                                    .map(ResourceItemDto::getValue)
-                                    .orElse("")) // TODO default value?
-                            .collect(toSet());
-
-                    if (values.size() == 1) {
-                        return ResourceEntryDto.builder()
-                                .forReference(readEntry.getReference())
-                                .withDefaultItem(values.stream().findAny().get())
-                                .build();
-                    } else {
-                        return readEntry;
-                    }
-                })
-                .collect(toList());
-
         return DbResourceDto.builder()
                 .atVersion(version.get())
                 .withCategoryCount(categoryCount.get())
-                .containingEntries(reducedResources)
+                .containingEntries(reduceGlobalResources(readEntries))
                 .build();
     }
 
@@ -161,6 +139,25 @@ public class DatabaseParser {
                 categoryCount.set(valueOf(matcher.group(1)));
             }
         }
+    }
+
+    private List<ResourceEntryDto> reduceGlobalResources(List<ResourceEntryDto> readEntries) {
+        return readEntries.stream()
+                .map(readEntry -> {
+                    Set<String> values = Locale.valuesAsStream()
+                            .map(locale -> readEntry.getValueForLocale(locale).orElse(""))
+                            .collect(toSet());
+
+                    if (1 == values.size()) {
+                        return ResourceEntryDto.builder()
+                                .forReference(readEntry.getReference())
+                                .withDefaultItem(values.stream().findAny().get())
+                                .build();
+                    } else {
+                        return readEntry;
+                    }
+                })
+                .collect(toList());
     }
 
     private void addResourceItemForLocale(Locale locale, String ref, String value, Map<String, Set<ResourceItemDto>> readItemsByRef) {
