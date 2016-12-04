@@ -114,6 +114,7 @@ public class DatabaseParser {
                 .map(readEntry -> {
 
                     Set<String> values = Locale.valuesAsStream()
+                            // TODO replace by get ItemValueForLocale
                             .map(locale -> readEntry.getItemForLocale(locale)
                                     .map(ResourceItemDto::getValue)
                                     .orElse("")) // TODO default value?

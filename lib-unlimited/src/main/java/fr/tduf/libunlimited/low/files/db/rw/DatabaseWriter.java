@@ -218,6 +218,7 @@ public class DatabaseWriter {
 
     private static void writeResourceLines(Locale locale, DbResourceDto resourceObject, BufferedWriter bufferedWriter) {
         resourceObject.getEntries()
+                // TODO replace by getItemValueForLocale
                 .forEach((entry) -> entry.getItemForLocale(locale)
                         .ifPresent((item) -> {
                             try {
