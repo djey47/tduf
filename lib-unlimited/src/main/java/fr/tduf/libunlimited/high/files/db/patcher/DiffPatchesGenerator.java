@@ -28,7 +28,6 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Used to generate patches for difference between database against reference one.
  */
-// TODO apply code rules
 public class DiffPatchesGenerator {
     private List<DbDto> databaseObjects;
     private List<DbDto> referenceDatabaseObjects;
@@ -85,7 +84,7 @@ public class DiffPatchesGenerator {
     private Set<DbPatchDto.DbChangeDto> seekForResourcesChanges(DbResourceDto resourceObject, DbDto.Topic currentTopic) {
         return resourceObject.getEntries().stream()
                 .flatMap(resourceEntry -> createResourceUpdates(currentTopic, resourceEntry))
-                .filter(changeObject -> changeObject != null)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
@@ -98,7 +97,7 @@ public class DiffPatchesGenerator {
                         handleTopicWithREF(currentTopic, entry, potentialRefFieldRank.getAsInt())
                         :
                         handleTopicWithoutREF(currentTopic, entry))
-                .filter(changeObject -> changeObject != null)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
@@ -140,7 +139,7 @@ public class DiffPatchesGenerator {
                             :
                             fromCouple(fieldRank, currentValue);
                 })
-                .filter(partialValue -> partialValue != null)
+                .filter(Objects::nonNull)
                 .collect(toList());
 
         if (partialEntryValues.isEmpty()) {
