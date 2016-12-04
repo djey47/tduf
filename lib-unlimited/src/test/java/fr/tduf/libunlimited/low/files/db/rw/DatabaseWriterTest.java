@@ -8,8 +8,8 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import org.json.JSONException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,14 +24,14 @@ import static fr.tduf.libunlimited.common.helper.FilesHelper.readObjectFromJsonR
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DatabaseWriterTest {
+class DatabaseWriterTest {
     private  static final String RESOURCE_JSON_DATABASE_REF = "/db/json/ref/";
     private static final String RESOURCE_DATABASE_CLEAN = "/db/res/clean/";
 
-    private String tempDirectory;
+    private static String tempDirectory;
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeAll
+    static void setUp() throws IOException {
         tempDirectory = FilesHelper.createTempDirectoryForLibrary();
     }
 

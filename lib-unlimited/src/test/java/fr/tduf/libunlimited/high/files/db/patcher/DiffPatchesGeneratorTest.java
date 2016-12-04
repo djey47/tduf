@@ -23,7 +23,7 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DiffPatchesGeneratorTest {
+class DiffPatchesGeneratorTest {
 
     private final static Class<DiffPatchesGeneratorTest> thisClass = DiffPatchesGeneratorTest.class;
 

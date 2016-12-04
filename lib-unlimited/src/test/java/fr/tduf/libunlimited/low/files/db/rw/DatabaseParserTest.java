@@ -16,8 +16,8 @@ import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceItemDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.IOException;
@@ -33,18 +33,18 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
-public class DatabaseParserTest {
+class DatabaseParserTest {
 
     private static final Class<DatabaseParserTest> thisClass = DatabaseParserTest.class;
     private final ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
 
-    @Before
-    public void setUp() {
+    @BeforeAll
+    static void setUp() {
         Log.set(Log.LEVEL_INFO);
     }
 
     @Test
-    public void load_whenProvidedContents_shouldReturnParserInstanceWithoutErrors() throws Exception {
+    void load_whenProvidedContents_shouldReturnParserInstanceWithoutErrors() throws Exception {
         //GIVEN
         List<String> dbLines = createValidContentsWithOneItem();
         Map<fr.tduf.libunlimited.common.game.domain.Locale, List<String>> resourceLines = new HashMap<>();
@@ -61,7 +61,7 @@ public class DatabaseParserTest {
     }
 
     @Test
-    public void parseAll_whenProvidedContents_andIntegrityErrorsOnItemAndFieldCount_shouldReturnErrors() throws Exception {
+    void parseAll_whenProvidedContents_andIntegrityErrorsOnItemAndFieldCount_shouldReturnErrors() throws Exception {
         //GIVEN : item count != actual item count
         // field count != actual field count
         List<String> dbLines = asList(
@@ -88,7 +88,7 @@ public class DatabaseParserTest {
     }
 
     @Test
-    public void parseAll_whenProvidedContents_andIntegrityErrorOnResourceCount_shouldReturnError() throws Exception {
+    void parseAll_whenProvidedContents_andIntegrityErrorOnResourceCount_shouldReturnError() throws Exception {
         //GIVEN : fr resource count  != it resource
         List<String> dbLines = createValidContentsWithOneItem();
         Map<Locale, List<String>> resourceLines = new HashMap<>();
@@ -122,7 +122,7 @@ public class DatabaseParserTest {
     }
 
     @Test
-    public void parseAll_whenProvidedContents_andDuplicateResourceReference_shouldNotReturnError() throws Exception {
+    void parseAll_whenProvidedContents_andDuplicateResourceReference_shouldNotReturnError() throws Exception {
         //GIVEN : duplicate ref
         List<String> dbLines = createValidContentsWithOneItem();
         Map<Locale, List<String>> resourceLines = new HashMap<>();
@@ -139,7 +139,7 @@ public class DatabaseParserTest {
     }
 
     @Test
-    public void parseAll_whenProvidedContents_andIntegrityErrorOnFieldCount_shouldReturnError() throws Exception {
+    void parseAll_whenProvidedContents_andIntegrityErrorOnFieldCount_shouldReturnError() throws Exception {
         //GIVEN
         List<String> dbLines = createInvalidContentsWithOneItemAndUnconsistentFieldCount();
         Map<Locale, List<String>> resourceLines = createValidResourcesForAllLocales();
@@ -157,7 +157,7 @@ public class DatabaseParserTest {
     }
 
     @Test
-    public void parseAll_whenProvidedContents_andRemoteReference_shouldReadAccordingly() throws Exception {
+    void parseAll_whenProvidedContents_andRemoteReference_shouldReadAccordingly() throws Exception {
         //GIVEN
         List<String> dbLines = asList(
                 "// TDU_CarPhysicsData.db",
@@ -199,7 +199,7 @@ public class DatabaseParserTest {
     }
 
     @Test
-    public void parseAll_whenProvidedContents_andFloatNegativeValue_shouldReadAccordingly() throws Exception {
+    void parseAll_whenProvidedContents_andFloatNegativeValue_shouldReadAccordingly() throws Exception {
         //GIVEN
         List<String> dbLines = asList(
                 "// TDU_CarPhysicsData.db",
@@ -237,7 +237,7 @@ public class DatabaseParserTest {
     }
 
     @Test
-    public void parseAll_whenProvidedContents_andEmptyValue_shouldReadAccordingly() throws Exception {
+    void parseAll_whenProvidedContents_andEmptyValue_shouldReadAccordingly() throws Exception {
         //GIVEN
         List<String> dbLines = asList(
                 "// TDU_CarPhysicsData.db",
@@ -280,7 +280,7 @@ public class DatabaseParserTest {
     }
 
     @Test
-    public void parseAll_whenProvidedContentsAsGlobalResources_shouldReturnProperDto() throws Exception {
+    void parseAll_whenProvidedContentsAsGlobalResources_shouldReturnProperDto() throws Exception {
         //GIVEN
         List<String> dbLines = createValidContentsWithOneItem();
         Map<Locale, List<String>> resourceLines = createValidResourcesForAllLocales();
@@ -309,7 +309,7 @@ public class DatabaseParserTest {
     }
 
     @Test
-    public void parseAll_whenProvidedContents_andBitfield_shouldReturnProperDto() throws Exception {
+    void parseAll_whenProvidedContents_andBitfield_shouldReturnProperDto() throws Exception {
         //GIVEN
         List<String> dbLines = createValidContentsBitfieldOnlyWithOneItem();
         Map<Locale, List<String>> resourceLines = createResourceLinesForLocale(
@@ -336,7 +336,7 @@ public class DatabaseParserTest {
     }
 
     @Test
-    public void parseAll_whenProvidedContents_andMissingLocale_shouldReturnProperDto_withValidLocales() throws Exception {
+    void parseAll_whenProvidedContents_andMissingLocale_shouldReturnProperDto_withValidLocales() throws Exception {
         //GIVEN
         List<String> dbLines = createValidContentsWithOneItem();
         Map<Locale, List<String>> resourceLines = createResourceLinesForLocale(
@@ -373,7 +373,7 @@ public class DatabaseParserTest {
     }
 
     @Test
-    public void parseAll_whenRealFiles_shouldReturnProperDto_andParserWithoutError() throws Exception {
+    void parseAll_whenRealFiles_shouldReturnProperDto_andParserWithoutError() throws Exception {
         //GIVEN
         List<String> dbLines = DbHelper.readContentsFromSample("/db/TDU_Achievements.db", "UTF-8");
         Map<Locale, List<String>> resourceLines = createResourceLinesForAllLocalesFromResourceFiles();
@@ -401,7 +401,7 @@ public class DatabaseParserTest {
     }
 
     @Test
-    public void parseAll_whenRealFiles_andResourceMetaMismatch_shouldReturnProperDto_andParserWithoutError() throws Exception {
+    void parseAll_whenRealFiles_andResourceMetaMismatch_shouldReturnProperDto_andParserWithoutError() throws Exception {
         //GIVEN
         List<String> dbLines = DbHelper.readContentsFromSample("/db/TDU_Achievements.db", "UTF-8");
         Map<Locale, List<String>> resourceLines = createResourceLinesForAllLocalesFromResourceFiles();

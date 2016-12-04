@@ -9,9 +9,8 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -28,41 +27,38 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.expectThrows;
 
-public class PatchGeneratorTest {
+class PatchGeneratorTest {
 
-    @Before
-    public void setUp() {
+    @BeforeAll
+    static void setUp() {
         Log.set(LEVEL_INFO);
     }
 
-    @After
-    public void tearDown() {}
-
-    @Test(expected = NullPointerException.class)
-    public void makePatch_whenNullArguments_shouldThrowException() throws ReflectiveOperationException {
+    @Test
+     void makePatch_whenNullArguments_shouldThrowException() throws ReflectiveOperationException {
         // GIVEN
         PatchGenerator generator = createPatchGenerator(new ArrayList<>());
 
-        // WHEN
-        generator.makePatch(null, null, null);
-
-        // THEN: NPE
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void makePatch_whenTopicNotFound_shouldThrowException() throws ReflectiveOperationException {
-        // GIVEN
-        PatchGenerator generator = createPatchGenerator(new ArrayList<>());
-
-        // WHEN
-        generator.makePatch(ACHIEVEMENTS, createDefaultRange(), createDefaultRange());
-
-        // THEN: IAE
+        // WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> generator.makePatch(null, null, null));
     }
 
     @Test
-    public void makePatch_whenTopicFound_shouldSetTopicObject_andReturnPatchObject() throws ReflectiveOperationException {
+     void makePatch_whenTopicNotFound_shouldThrowException() throws ReflectiveOperationException {
+        // GIVEN
+        PatchGenerator generator = createPatchGenerator(new ArrayList<>());
+
+        // WHEN-THEN
+        assertThrows(IllegalArgumentException.class,
+                () -> generator.makePatch(ACHIEVEMENTS, createDefaultRange(), createDefaultRange()));
+    }
+
+    @Test
+     void makePatch_whenTopicFound_shouldSetTopicObject_andReturnPatchObject() throws ReflectiveOperationException {
         // GIVEN
         List<DbDto> databaseObjects = createDatabaseObjectsWithOneTopic();
         PatchGenerator generator = createPatchGenerator(databaseObjects);
@@ -76,7 +72,7 @@ public class PatchGeneratorTest {
     }
 
     @Test
-    public void makePatch_whenUsingRealDatabase_andRefsAsEnumeration_shouldReturnCorrectPatchObjectWithExistingRefs() throws IOException, URISyntaxException, ReflectiveOperationException {
+     void makePatch_whenUsingRealDatabase_andRefsAsEnumeration_shouldReturnCorrectPatchObjectWithExistingRefs() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         List<DbDto> databaseObjects = createDatabaseObjectsWithTwoLinkedTopicsFromRealFiles();
         PatchGenerator generator = createPatchGenerator(databaseObjects);
@@ -89,7 +85,7 @@ public class PatchGeneratorTest {
     }
 
     @Test
-    public void makePatch_whenUsingRealDatabase_andUniqueRef_andRemoteResources_shouldReturnCorrectPatchObjectWithExistingRefs() throws IOException, URISyntaxException, ReflectiveOperationException {
+     void makePatch_whenUsingRealDatabase_andUniqueRef_andRemoteResources_shouldReturnCorrectPatchObjectWithExistingRefs() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         List<DbDto> databaseObjects = createDatabaseObjectsWithFourLinkedTopicsFromRealFiles();
         PatchGenerator generator = createPatchGenerator(databaseObjects);
@@ -102,7 +98,7 @@ public class PatchGeneratorTest {
     }
 
     @Test
-    public void makePatch_whenUsingRealDatabase_andUniqueRef_andAssociatedTopics_shouldReturnCorrectPatchObjectWithExistingRefs() throws IOException, URISyntaxException, ReflectiveOperationException {
+     void makePatch_whenUsingRealDatabase_andUniqueRef_andAssociatedTopics_shouldReturnCorrectPatchObjectWithExistingRefs() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         List<DbDto> databaseObjects = createDatabaseObjectsWithCarPhysicsAssociatedTopicsFromRealFiles();
         PatchGenerator generator = createPatchGenerator(databaseObjects);
@@ -115,7 +111,7 @@ public class PatchGeneratorTest {
     }
 
     @Test
-    public void makePatch_whenUsingRealDatabase_andUniqueRef_andRemoteContentsReference_shouldReturnCorrectPatchObjectWithExistingRefs_andOtherTopic() throws IOException, URISyntaxException, ReflectiveOperationException {
+     void makePatch_whenUsingRealDatabase_andUniqueRef_andRemoteContentsReference_shouldReturnCorrectPatchObjectWithExistingRefs_andOtherTopic() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         List<DbDto> databaseObjects = createDatabaseObjectsWithFourLinkedTopicsFromRealFiles();
         PatchGenerator generator = createPatchGenerator(databaseObjects);
@@ -128,7 +124,7 @@ public class PatchGeneratorTest {
     }
 
     @Test
-    public void makePatch_whenUsingRealDatabase_andRefsAsBounds_shouldReturnCorrectPatchObjectWithExistingRefs() throws IOException, URISyntaxException, ReflectiveOperationException {
+     void makePatch_whenUsingRealDatabase_andRefsAsBounds_shouldReturnCorrectPatchObjectWithExistingRefs() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         List<DbDto> databaseObjects = createDatabaseObjectsWithTwoLinkedTopicsFromRealFiles();
         PatchGenerator generator = createPatchGenerator(databaseObjects);
@@ -141,7 +137,7 @@ public class PatchGeneratorTest {
     }
 
     @Test
-    public void makePatch_whenUsingRealDatabase_andUniqueFieldRank_shouldReturnCorrectPatchObjectWithPartialChanges() throws IOException, URISyntaxException, ReflectiveOperationException {
+     void makePatch_whenUsingRealDatabase_andUniqueFieldRank_shouldReturnCorrectPatchObjectWithPartialChanges() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         ItemRange refRange = ItemRange.fromCliOption(Optional.of("72825"));
         ItemRange fieldRange = ItemRange.fromCliOption(Optional.of("2"));
@@ -159,7 +155,7 @@ public class PatchGeneratorTest {
     }
 
     @Test
-    public void makePatch_whenUsingRealDatabase_andFieldRanksAsBounds_shouldReturnCorrectPatchObjectWithPartialChanges() throws IOException, URISyntaxException, ReflectiveOperationException {
+     void makePatch_whenUsingRealDatabase_andFieldRanksAsBounds_shouldReturnCorrectPatchObjectWithPartialChanges() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         ItemRange refRange = ItemRange.fromCliOption(Optional.of("735"));
         ItemRange fieldRange = ItemRange.fromCliOption(Optional.of("2..4"));
@@ -177,7 +173,7 @@ public class PatchGeneratorTest {
     }
 
     @Test
-    public void makePatch_whenUsingRealDatabase_andFieldRanksAsEnumeration_shouldReturnCorrectPatchObjectWithPartialChanges() throws IOException, URISyntaxException, ReflectiveOperationException {
+     void makePatch_whenUsingRealDatabase_andFieldRanksAsEnumeration_shouldReturnCorrectPatchObjectWithPartialChanges() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         ItemRange refRange = ItemRange.fromCliOption(Optional.of("735"));
         ItemRange fieldRange = ItemRange.fromCliOption(Optional.of("2,3,4"));
@@ -194,8 +190,8 @@ public class PatchGeneratorTest {
         assertPatchGeneratedWithinRangeForOneTopicAndPartialValues(actualPatchObject);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void makePatch_whenUsingRealDatabase_andSingleFieldRank_andNoREFSupport_shouldThrowException() throws IOException, URISyntaxException, ReflectiveOperationException {
+    @Test
+     void makePatch_whenUsingRealDatabase_andSingleFieldRank_andNoREFSupport_shouldThrowException() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         ItemRange fieldRange = ItemRange.fromCliOption(Optional.of("1"));
 
@@ -203,15 +199,13 @@ public class PatchGeneratorTest {
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
 
-        // WHEN
-        generator.makePatch(ACHIEVEMENTS, ALL, fieldRange);
-
-
-        // THEN: UOE
+        // WHEN-THEN
+        expectThrows(UnsupportedOperationException.class,
+                () -> generator.makePatch(ACHIEVEMENTS, ALL, fieldRange));
     }
 
     @Test
-    public void makePatch_whenUsingRealDatabase_andAllRefs_andSameResourceValuesForLocales_shouldReturnCorrectPatchObjectWithExistingRefs() throws IOException, URISyntaxException, ReflectiveOperationException {
+     void makePatch_whenUsingRealDatabase_andAllRefs_andSameResourceValuesForLocales_shouldReturnCorrectPatchObjectWithExistingRefs() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         List<DbDto> databaseObjects = createDatabaseObjectsWithOneTopicFromRealFile();
         PatchGenerator generator = createPatchGenerator(databaseObjects);
@@ -224,7 +218,7 @@ public class PatchGeneratorTest {
     }
 
     @Test
-    public void makePatch_whenUsingRealDatabase_andHugeTopic_andAllRefs_shouldNotGenerateSameInstructionTwice() throws IOException, URISyntaxException, ReflectiveOperationException {
+     void makePatch_whenUsingRealDatabase_andHugeTopic_andAllRefs_shouldNotGenerateSameInstructionTwice() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         List<DbDto> databaseObjects = createDatabaseObjectsWithFourLinkedTopicsFromRealFiles();
         PatchGenerator generator = createPatchGenerator(databaseObjects);

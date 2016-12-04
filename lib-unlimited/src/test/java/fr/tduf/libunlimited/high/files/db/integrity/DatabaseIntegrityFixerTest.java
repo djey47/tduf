@@ -32,8 +32,6 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import fr.tduf.libunlimited.common.game.domain.Locale;
-
 @RunWith(MockitoJUnitRunner.class)
 public class DatabaseIntegrityFixerTest {
 

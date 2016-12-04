@@ -5,8 +5,7 @@ import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -17,13 +16,9 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BOTS;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.StrictAssertions.assertThat;
 
-public class DatabasePatcher_focusOnResourcesTest {
-
-    @Before
-    public void setUp() {}
-
+class DatabasePatcher_focusOnResourcesTest {
     @Test
-    public void apply_whenUpdateResourcesPatch_shouldAddAndUpdateEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
+     void apply_whenUpdateResourcesPatch_shouldAddAndUpdateEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateResourcesPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateResources.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(BOTS);
@@ -43,7 +38,7 @@ public class DatabasePatcher_focusOnResourcesTest {
     }
 
     @Test
-    public void apply_whenUpdateResourcesPatch_forAllLocales_shouldAddAndUpdateEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
+     void apply_whenUpdateResourcesPatch_forAllLocales_shouldAddAndUpdateEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateResourcesPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateResources-all.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(BOTS);
@@ -64,7 +59,7 @@ public class DatabasePatcher_focusOnResourcesTest {
     }
 
     @Test
-    public void apply_whenUpdateResourcesPatch_forAllLocales_withDefaultLocale_shouldAddAndUpdateEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
+     void apply_whenUpdateResourcesPatch_forAllLocales_withDefaultLocale_shouldAddAndUpdateEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateResourcesPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateResources-all-any.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(BOTS);
@@ -85,7 +80,7 @@ public class DatabasePatcher_focusOnResourcesTest {
     }
 
     @Test
-    public void apply_whenUpdateResourcesPatch_forAllLocales_andStrictMode_shouldOnlyAddEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
+     void apply_whenUpdateResourcesPatch_forAllLocales_andStrictMode_shouldOnlyAddEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateResourcesPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateResources-all-strict.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(BOTS);
@@ -106,7 +101,7 @@ public class DatabasePatcher_focusOnResourcesTest {
     }
 
     @Test
-    public void apply_whenDeleteResourcesPatch_shouldRemoveExistingEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
+     void apply_whenDeleteResourcesPatch_shouldRemoveExistingEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto deleteResourcesPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/deleteResources.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(BOTS);
@@ -125,7 +120,7 @@ public class DatabasePatcher_focusOnResourcesTest {
     }
 
     @Test
-    public void apply_whenDeleteResourcesPatch_forAllLocales_shouldRemoveExistingEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
+     void apply_whenDeleteResourcesPatch_forAllLocales_shouldRemoveExistingEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto deleteResourcesPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/deleteResources-all.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(BOTS);
@@ -146,7 +141,7 @@ public class DatabasePatcher_focusOnResourcesTest {
     }
 
     @Test
-    public void apply_whenDeleteResourcesPatch_forAllLocales_withSpecialAny_shouldRemoveExistingEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
+     void apply_whenDeleteResourcesPatch_forAllLocales_withSpecialAny_shouldRemoveExistingEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto deleteResourcesPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/deleteResources-all-any.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(BOTS);

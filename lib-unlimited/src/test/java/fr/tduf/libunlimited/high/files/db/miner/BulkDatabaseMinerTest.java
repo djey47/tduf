@@ -3,8 +3,8 @@ package fr.tduf.libunlimited.high.files.db.miner;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import org.assertj.core.api.StrictAssertions;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -16,24 +16,25 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BOTS;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.expectThrows;
 
-public class BulkDatabaseMinerTest {
+class BulkDatabaseMinerTest {
 
-    private List<DbDto> topicObjectsFromResources;
+    private static List<DbDto> topicObjectsFromResources;
 
-    @Before
-    public void setUp() throws IOException, URISyntaxException {
+    @BeforeAll
+    static void setUp() throws IOException, URISyntaxException {
         topicObjectsFromResources = createTopicObjectsFromResources();
     }
 
-    @Test(expected = NullPointerException.class)
-    public void load_whenNullDatabaseObjects_shouldThrowNullPointerException() {
+    @Test
+    void load_whenNullDatabaseObjects_shouldThrowNullPointerException() {
         // GIVEN-WHEN-THEN
-        BulkDatabaseMiner.load(null);
+        expectThrows(NullPointerException.class, () -> BulkDatabaseMiner.load(null));
     }
 
     @Test
-    public void load_whenProvidedDatabaseObjects_shouldAssignObjectsAndReturnInstance() {
+    void load_whenProvidedDatabaseObjects_shouldAssignObjectsAndReturnInstance() {
         // GIVEN
         ArrayList<DbDto> topicObjects = new ArrayList<>();
 
@@ -46,7 +47,7 @@ public class BulkDatabaseMinerTest {
     }
 
     @Test
-    public void load_whenProvidedDatabaseObjects_shouldGenerateUniqueMinerIdentifiers() {
+    void load_whenProvidedDatabaseObjects_shouldGenerateUniqueMinerIdentifiers() {
         // GIVEN
         ArrayList<DbDto> topicObjects = new ArrayList<>();
 
@@ -59,7 +60,7 @@ public class BulkDatabaseMinerTest {
     }
 
     @Test
-    public void getDatabaseTopic_whenNotFound_shouldReturnEmpty() throws IOException, URISyntaxException {
+    void getDatabaseTopic_whenNotFound_shouldReturnEmpty() throws IOException, URISyntaxException {
         // GIVEN-WHEN
         Optional<DbDto> actualResult = BulkDatabaseMiner.load(topicObjectsFromResources).getDatabaseTopic(ACHIEVEMENTS);
 
@@ -68,7 +69,7 @@ public class BulkDatabaseMinerTest {
     }
 
     @Test
-    public void getDatabaseTopic_whenExists_shouldReturnIt() throws IOException, URISyntaxException {
+    void getDatabaseTopic_whenExists_shouldReturnIt() throws IOException, URISyntaxException {
         // GIVEN-WHEN
         DbDto actualTopicObject = BulkDatabaseMiner.load(topicObjectsFromResources).getDatabaseTopic(BOTS).get();
 
@@ -76,16 +77,15 @@ public class BulkDatabaseMinerTest {
         assertThat(actualTopicObject).isNotNull();
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void getDatabaseTopicFromReference_whenNotFound_shouldThrowException() throws IOException, URISyntaxException {
-        // GIVEN-WHEN
-        BulkDatabaseMiner.load(topicObjectsFromResources).getDatabaseTopicFromReference("000");
-
-        // THEN: exception
+    @Test
+    void getDatabaseTopicFromReference_whenNotFound_shouldThrowException() throws IOException, URISyntaxException {
+        // GIVEN-WHEN-THEN
+        expectThrows(IllegalStateException.class,
+                () -> BulkDatabaseMiner.load(topicObjectsFromResources).getDatabaseTopicFromReference("000"));
     }
 
     @Test
-    public void getDatabaseTopicFromReference_whenExists_shouldReturnIt() throws IOException, URISyntaxException {
+    void getDatabaseTopicFromReference_whenExists_shouldReturnIt() throws IOException, URISyntaxException {
         // GIVEN-WHEN
         DbDto actualTopicObject = BulkDatabaseMiner.load(topicObjectsFromResources).getDatabaseTopicFromReference("111");
 

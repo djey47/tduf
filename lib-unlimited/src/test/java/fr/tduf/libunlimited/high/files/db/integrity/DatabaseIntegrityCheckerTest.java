@@ -4,15 +4,14 @@ import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import org.assertj.core.data.MapEntry;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,16 +26,13 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.*;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DatabaseIntegrityCheckerTest {
+class DatabaseIntegrityCheckerTest {
 
     private static final String UID_NON_EXISTING = "000";
     private static final String UID_EXISTING = "001";
 
-    @Before
-    public void setUp() {}
-
     @Test
-    public void checkAll_whenEmptyDatabaseObjects_shouldReturnSingleIntegrityError() throws ReflectiveOperationException {
+    void checkAll_whenEmptyDatabaseObjects_shouldReturnSingleIntegrityError() throws ReflectiveOperationException {
         //GIVEN
         DatabaseIntegrityChecker checker = createChecker(new ArrayList<>());
 
@@ -57,7 +53,7 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     @Test
-    public void checkAll_whenNoError_shouldBuildIndexes_andReturnEmptyList() throws ReflectiveOperationException {
+    void checkAll_whenNoError_shouldBuildIndexes_andReturnEmptyList() throws ReflectiveOperationException {
         //GIVEN
         List<DbDto> dbDtos = createAllDtosWithoutErrors();
 
@@ -72,7 +68,7 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     @Test
-    public void checkAll_whenMissingResourceInTopics_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
+    void checkAll_whenMissingResourceInTopics_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
         //GIVEN
         List<DbDto> dbDtos = createAllDtosWithMissingLocalResource();
 
@@ -86,7 +82,7 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     @Test
-    public void checkAll_whenMissingResourceInTopics_andTypeH_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
+    void checkAll_whenMissingResourceInTopics_andTypeH_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
         //GIVEN
         List<DbDto> dbDtos = createAllDtosWithMissingLocalResourceTypeH();
 
@@ -100,7 +96,7 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     @Test
-    public void checkAll_whenMissingResourceInRemoteTopic_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
+    void checkAll_whenMissingResourceInRemoteTopic_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
         //GIVEN
         List<DbDto> dbDtos = createAllDtosWithMissingForeignResource();
 
@@ -114,7 +110,7 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     @Test
-    public void checkAll_whenMissingResourceInLocalAndRemoteTopic_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
+    void checkAll_whenMissingResourceInLocalAndRemoteTopic_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
         //GIVEN
         List<DbDto> dbDtos = createAllDtosWithMissingLocalAndForeignResource();
 
@@ -127,7 +123,7 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     @Test
-    public void checkAll_whenMissingContentsEntryInRemoteTopic_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
+    void checkAll_whenMissingContentsEntryInRemoteTopic_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
         //GIVEN
         List<DbDto> dbDtos = createAllDtosWithMissingForeignEntry();
 
@@ -140,7 +136,7 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     @Test
-    public void checkAll_whenGlobalResourceValuesNotIdentical_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
+    void checkAll_whenGlobalResourceValuesNotIdentical_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
         //GIVEN
         List<DbDto> dbDtos = createAllDtosWithDifferentGlobalResourceValueForLocaleCH();
 
