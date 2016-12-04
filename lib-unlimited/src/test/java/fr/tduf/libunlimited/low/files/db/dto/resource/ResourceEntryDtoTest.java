@@ -71,16 +71,37 @@ class ResourceEntryDtoTest {
     }
 
     @Test
-    void getItemForLocale_whenExistingGlobalItem_shouldReturnIt() {
+    void getValueForLocale_whenExistingItem_shouldReturnLocalizedValue() {
         // GIVEN
-        ResourceItemDto expectedItem = ResourceItemDto.builder().withGlobalValue("GLOBAL").build();
+        ResourceItemDto expectedItem = ResourceItemDto.builder().withLocale(FRANCE).withValue("FR").build();
         ResourceEntryDto resourceEntryDto = ResourceEntryDto.builder()
                 .forReference("REF")
-                .withGlobalItem("GLOBAL")
+                .withItems(singletonList(expectedItem))
                 .build();
 
         // WHEN-THEN
-        assertThat(resourceEntryDto.getItemForLocale(FRANCE)).contains(expectedItem);
+        assertThat(resourceEntryDto.getValueForLocale(FRANCE)).contains("FR");
+    }
+
+    @Test
+    void getValueForLocale_whenNoItem_shouldReturnEmpty() {
+        // GIVEN
+        ResourceEntryDto resourceEntryDto = ResourceEntryDto.builder().forReference("REF").build();
+
+        // WHEN-THEN
+        assertThat(resourceEntryDto.getValueForLocale(FRANCE)).isEmpty();
+    }
+
+    @Test
+    void getValueForLocale_whenNoLocalizedItem_butDefaultItem_shouldReturnDefaultValue() {
+        // GIVEN
+        ResourceEntryDto resourceEntryDto = ResourceEntryDto.builder()
+                .forReference("REF")
+                .withGlobalItem("DEF")
+                .build();
+
+        // WHEN-THEN
+        assertThat(resourceEntryDto.getValueForLocale(FRANCE)).contains("DEF");
     }
 
     @Test

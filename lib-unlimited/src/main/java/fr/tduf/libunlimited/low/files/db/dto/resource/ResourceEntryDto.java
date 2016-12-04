@@ -35,13 +35,9 @@ public class ResourceEntryDto implements Serializable {
     /**
      * @return available item for specified locale, empty otherwise.
      */
-    // TODO return default item as fallback
     public Optional<ResourceItemDto> getItemForLocale(Locale locale) {
         return items.stream()
-                .filter(item -> {
-                    Locale currentLocale = item.getLocale();
-                    return DEFAULT == currentLocale || locale == currentLocale;
-                })
+                .filter(item -> locale == item.getLocale())
                 .findAny();
     }
 
@@ -55,11 +51,15 @@ public class ResourceEntryDto implements Serializable {
     }
 
     /**
-     * @return available value for specified locale, empty otherwise.
+     * @return available value for specified locale, default value as fallback, empty otherwise.
      */
     public Optional<String> getValueForLocale(Locale locale) {
-        return getItemForLocale(locale)
-                .map(ResourceItemDto::getValue);
+        Optional<ResourceItemDto> itemForLocale = getItemForLocale(locale);
+        if (itemForLocale.isPresent()) {
+            return itemForLocale.map(ResourceItemDto::getValue);
+        } else {
+            return getItemForLocale(DEFAULT).map(ResourceItemDto::getValue);
+        }
     }
 
     /**
