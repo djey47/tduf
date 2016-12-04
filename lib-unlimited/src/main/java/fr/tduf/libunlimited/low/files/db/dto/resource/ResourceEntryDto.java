@@ -33,9 +33,8 @@ public class ResourceEntryDto implements Serializable {
     }
 
     /**
-     * @return available item for specified locale, empty otherwise.
+     * @return available item for specified locale, empty otherwise. Does not rely on default item.
      */
-    // TODO set to private and replace external usages
     public Optional<ResourceItemDto> getItemForLocale(Locale locale) {
         return items.stream()
                 .filter(item -> locale == item.getLocale())
