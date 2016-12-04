@@ -18,7 +18,7 @@ import java.util.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static fr.tduf.libunlimited.common.game.domain.Locale.ANY;
+import static fr.tduf.libunlimited.common.game.domain.Locale.DEFAULT;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.*;
@@ -139,7 +139,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
         return DbPatchDto.DbChangeDto.builder()
                 .forTopic(topic)
-                .forLocale(potentialLocale.orElse(ANY))
+                .forLocale(potentialLocale.orElse(DEFAULT))
                 .withType(DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES)
                 .asReference(resourceRef)
                 .withValue(resourceValue)

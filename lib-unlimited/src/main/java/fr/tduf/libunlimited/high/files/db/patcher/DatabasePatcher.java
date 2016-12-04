@@ -239,7 +239,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                 .ifPresent(entry -> {
                     Locale selectedLocale = changeObject.getLocale();
                     if (selectedLocale == null
-                            || Locale.ANY == selectedLocale) {
+                            || Locale.DEFAULT == selectedLocale) {
                         databaseMiner.getResourcesFromTopic(topic)
                                 .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resource object for topic: " + topic))
                                 .removeEntryByReference(ref);
@@ -266,7 +266,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
 
         Locale selectedLocale = changeObject.getLocale();
         if (selectedLocale == null
-                || Locale.ANY == selectedLocale) {
+                || Locale.DEFAULT == selectedLocale) {
             resourceEntry.setValue(value);
         } else {
             resourceEntry.setValueForLocale(value, selectedLocale);

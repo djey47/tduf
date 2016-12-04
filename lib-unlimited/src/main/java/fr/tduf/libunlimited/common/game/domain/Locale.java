@@ -6,7 +6,7 @@ import java.util.stream.Stream;
  * All culture variants for i18n
  */
 public enum Locale {
-    ANY("*", -1),
+    DEFAULT("*", -1),
     FRANCE("fr", 1),
     GERMANY("ge", 2),
     UNITED_STATES("us", 3),
@@ -55,6 +55,6 @@ public enum Locale {
      */
     public static Stream<Locale> valuesAsStream() {
         return Stream.of(values())
-                .filter(v -> v != ANY);
+                .filter(v -> v != DEFAULT);
     }
 }

@@ -6,7 +6,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
 
-import static fr.tduf.libunlimited.common.game.domain.Locale.ANY;
+import static fr.tduf.libunlimited.common.game.domain.Locale.DEFAULT;
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
@@ -72,8 +72,8 @@ public class ResourceItemDto implements Serializable {
         private String value;
 
         public ItemBuilder withLocale(fr.tduf.libunlimited.common.game.domain.Locale locale) {
-            if (locale == ANY) {
-                throw new IllegalArgumentException("'ANY' locale is not supported for localized item");
+            if (locale == DEFAULT) {
+                throw new IllegalArgumentException("'DEFAULT' locale is not supported for localized item");
             }
             this.locale = locale;
             return this;
@@ -86,7 +86,7 @@ public class ResourceItemDto implements Serializable {
 
         public ItemBuilder withGlobalValue(String value) {
             this.value = value;
-            this.locale = ANY;
+            this.locale = DEFAULT;
             return this;
         }
 

@@ -204,7 +204,7 @@ public class DiffPatchesGenerator {
                 .withValue(resourceEntry.pickValue()
                         .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resource value in entry for REF: " + resourceEntry.getReference() + " in topic: " + currentTopic)))
                 .forTopic(currentTopic)
-                .forLocale(Locale.ANY)
+                .forLocale(Locale.DEFAULT)
                 .build());
     }
 

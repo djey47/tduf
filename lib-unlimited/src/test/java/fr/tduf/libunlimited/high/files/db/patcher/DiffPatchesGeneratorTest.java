@@ -182,7 +182,7 @@ public class DiffPatchesGeneratorTest {
         assertThat(actualChanges).extracting("ref").containsOnly("54713528", "54713529");
         assertThat(actualChanges).extracting("topic").containsOnly(HAIR);
         assertThat(actualChanges).extracting("value").contains("StringPanthere01", "Moulteub01");
-        assertThat(actualChanges).extracting("locale").containsOnly(ANY);
+        assertThat(actualChanges).extracting("locale").containsOnly(DEFAULT);
     }
 
     @Test

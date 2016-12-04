@@ -9,7 +9,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import java.io.Serializable;
 import java.util.*;
 
-import static fr.tduf.libunlimited.common.game.domain.Locale.ANY;
+import static fr.tduf.libunlimited.common.game.domain.Locale.DEFAULT;
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toSet;
@@ -39,7 +39,7 @@ public class ResourceEntryDto implements Serializable {
         return items.stream()
                 .filter(item -> {
                     Locale currentLocale = item.getLocale();
-                    return ANY == currentLocale || locale == currentLocale;
+                    return DEFAULT == currentLocale || locale == currentLocale;
                 })
                 .findAny();
     }
@@ -79,7 +79,7 @@ public class ResourceEntryDto implements Serializable {
      */
     // TODO remove if unused
     public ResourceEntryDto setGlobalValue(String globalValue) {
-        setValueForLocale(globalValue, ANY);
+        setValueForLocale(globalValue, DEFAULT);
 
         return this;
     }
@@ -123,7 +123,7 @@ public class ResourceEntryDto implements Serializable {
     }
 
     @JsonIgnore
-    // TODO Check callers properly handle ANY locale
+    // TODO Check callers properly handle DEFAULT locale
     public Set<Locale> getPresentLocales() {
         return items.stream()
                 .map(ResourceItemDto::getLocale)
@@ -133,7 +133,7 @@ public class ResourceEntryDto implements Serializable {
     @JsonIgnore
     public Set<fr.tduf.libunlimited.common.game.domain.Locale> getMissingLocales() {
         Set<Locale> presentLocales = getPresentLocales();
-        if (presentLocales.contains(ANY)) {
+        if (presentLocales.contains(DEFAULT)) {
             return new HashSet<>(0);
         }
         Set<fr.tduf.libunlimited.common.game.domain.Locale> missingLocales = Locale.valuesAsStream().collect(toSet());
@@ -146,7 +146,7 @@ public class ResourceEntryDto implements Serializable {
      */
     @JsonIgnore
     public boolean isGlobalized() {
-        return getValueForLocale(ANY).isPresent();
+        return getValueForLocale(DEFAULT).isPresent();
     }
 
     @Override

@@ -3,7 +3,7 @@ package fr.tduf.libunlimited.low.files.db.dto.resource;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import org.junit.jupiter.api.Test;
 
-import static fr.tduf.libunlimited.common.game.domain.Locale.ANY;
+import static fr.tduf.libunlimited.common.game.domain.Locale.DEFAULT;
 import static fr.tduf.libunlimited.common.game.domain.Locale.FRANCE;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,7 +20,7 @@ class ResourceEntryDtoTest {
         // WHEN-THEN
         assertThat(resourceEntryDto.getMissingLocales())
                 .hasSize(8)
-                .doesNotContain(Locale.ANY);
+                .doesNotContain(Locale.DEFAULT);
     }
 
     @Test
@@ -43,7 +43,7 @@ class ResourceEntryDtoTest {
                 .build();
 
         // WHEN-THEN
-        assertThat(resourceEntryDto.getItemForLocale(Locale.ANY)).isEmpty();
+        assertThat(resourceEntryDto.getItemForLocale(Locale.DEFAULT)).isEmpty();
     }
 
     @Test
@@ -80,7 +80,7 @@ class ResourceEntryDtoTest {
                 .build();
 
         // WHEN-THEN
-        expectThrows(IllegalArgumentException.class, () -> resourceEntryDto.setValueForLocale("VAL", ANY));
+        expectThrows(IllegalArgumentException.class, () -> resourceEntryDto.setValueForLocale("VAL", DEFAULT));
     }
 
     @Test
@@ -92,11 +92,11 @@ class ResourceEntryDtoTest {
                 .build();
 
         // WHEN
-        resourceEntryDto.setValueForLocale("NEW GLOBAL", ANY);
+        resourceEntryDto.setValueForLocale("NEW GLOBAL", DEFAULT);
 
         // THEN
         ResourceItemDto expectedItem = ResourceItemDto.builder().withGlobalValue("NEW GLOBAL").build();
-        assertThat(resourceEntryDto.getItemForLocale(ANY)).contains(expectedItem);
+        assertThat(resourceEntryDto.getItemForLocale(DEFAULT)).contains(expectedItem);
     }
 
     @Test
