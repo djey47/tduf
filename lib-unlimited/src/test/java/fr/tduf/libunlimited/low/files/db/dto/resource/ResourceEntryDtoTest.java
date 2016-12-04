@@ -7,9 +7,20 @@ import static fr.tduf.libunlimited.common.game.domain.Locale.DEFAULT;
 import static fr.tduf.libunlimited.common.game.domain.Locale.FRANCE;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.expectThrows;
 
 class ResourceEntryDtoTest {
+    @Test
+    void getPresentLocales_shouldNotReturnDefaultLocale() {
+        // GIVEN
+        ResourceEntryDto resourceEntryDto = ResourceEntryDto.builder()
+                .forReference("REF")
+                .withGlobalItem("VAL")
+                .build();
+
+        // WHEN-THEN
+        assertThat(resourceEntryDto.getPresentLocales()).isEmpty();
+    }
+
     @Test
     void getMissingLocales_whenNoItem_shouldNotReturnSpecialAnyLocale() {
         // GIVEN
@@ -24,7 +35,7 @@ class ResourceEntryDtoTest {
     }
 
     @Test
-    void getMissingLocales_whenGlobalItem_shouldReturnEmptySet() {
+    void getMissingLocales_whenDefaultItem_shouldReturnEmptySet() {
         // GIVEN
         ResourceEntryDto resourceEntryDto = ResourceEntryDto.builder()
                 .forReference("REF")
@@ -73,14 +84,18 @@ class ResourceEntryDtoTest {
     }
 
     @Test
-    void setValueForLocale_whenSpecialAnyLocale_andNonExistingGlobalItem_shouldThrowException() {
+    void setValueForLocale_whenSpecialAnyLocale_andNonExistingGlobalItem_shouldCreateIt() {
         // GIVEN
         ResourceEntryDto resourceEntryDto = ResourceEntryDto.builder()
                 .forReference("REF")
                 .build();
 
-        // WHEN-THEN
-        expectThrows(IllegalArgumentException.class, () -> resourceEntryDto.setValueForLocale("VAL", DEFAULT));
+        // WHEN
+        resourceEntryDto.setValueForLocale("VAL", DEFAULT);
+
+        // THEN
+        ResourceItemDto expectedItem = ResourceItemDto.builder().withGlobalValue("VAL").build();
+        assertThat(resourceEntryDto.getItemForLocale(DEFAULT)).contains(expectedItem);
     }
 
     @Test
@@ -138,5 +153,62 @@ class ResourceEntryDtoTest {
 
         // THEN
         assertThat(resourceEntryDto.getItemForLocale(FRANCE)).contains(expectedItem);
+    }
+
+    @Test
+    void setValue_shouldSetDefaultItem() {
+        // GIVEN
+        ResourceItemDto initialItem = ResourceItemDto.builder()
+                .withLocale(FRANCE)
+                .withValue("VAL")
+                .build();
+        ResourceEntryDto resourceEntryDto = ResourceEntryDto.builder()
+                .forReference("REF")
+                .withItems(singletonList(initialItem))
+                .build();
+
+        // WHEN
+        resourceEntryDto.setValue("NEWVAL");
+
+        // THEN
+        ResourceItemDto expectedItem = ResourceItemDto.builder().withGlobalValue("NEWVAL").build();
+        assertThat(resourceEntryDto.getItemForLocale(DEFAULT)).contains(expectedItem);
+        assertThat(resourceEntryDto.getItemForLocale(FRANCE)).contains(initialItem);
+    }
+
+    @Test
+    void isGlobalized_whenOnlyDefaultItem_shouldReturnTrue() {
+        ResourceEntryDto resourceEntryDto = ResourceEntryDto.builder()
+                .forReference("REF")
+                .withGlobalItem("VAL")
+                .build();
+
+        // WHEN-THEN
+        assertThat(resourceEntryDto.isGlobalized()).isTrue();
+    }
+    @Test
+    void isGlobalized_whenNoDefaultItem_shouldReturnFalse() {
+        ResourceEntryDto resourceEntryDto = ResourceEntryDto.builder()
+                .forReference("REF")
+                .build();
+
+        // WHEN-THEN
+        assertThat(resourceEntryDto.isGlobalized()).isFalse();
+    }
+
+    @Test
+    void isGlobalized_whenDefaultItem_andLocalizedItem_shouldReturnFalse() {
+        ResourceItemDto localizedItem = ResourceItemDto.builder()
+                .withLocale(FRANCE)
+                .withValue("VALFR")
+                .build();
+        ResourceEntryDto resourceEntryDto = ResourceEntryDto.builder()
+                .forReference("REF")
+                .withItems(singletonList(localizedItem))
+                .withGlobalItem("VALDEF")
+                .build();
+
+        // WHEN-THEN
+        assertThat(resourceEntryDto.isGlobalized()).isFalse();
     }
 }

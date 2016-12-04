@@ -35,6 +35,7 @@ public class ResourceEntryDto implements Serializable {
     /**
      * @return available item for specified locale, empty otherwise.
      */
+    // TODO return default item as fallback
     public Optional<ResourceItemDto> getItemForLocale(Locale locale) {
         return items.stream()
                 .filter(item -> {
@@ -62,24 +63,12 @@ public class ResourceEntryDto implements Serializable {
     }
 
     /**
-     * defines given value for every locale.
+     * defines given default value for every locale.
      * @return current entry
      */
-    // TODO rename ?
-    public ResourceEntryDto setValue(String value) {
-        Locale.valuesAsStream()
-                .forEach(locale -> setValueForLocale(value, locale));
-
-        return this;
-    }
-
-    /**
-     * defines global value.
-     * @return current entry
-     */
-    // TODO remove if unused
-    public ResourceEntryDto setGlobalValue(String globalValue) {
-        setValueForLocale(globalValue, DEFAULT);
+    // TODO rename to setDefaultValue
+    public ResourceEntryDto setValue(String defaultValue) {
+        setValueForLocale(defaultValue, DEFAULT);
 
         return this;
     }
@@ -92,16 +81,20 @@ public class ResourceEntryDto implements Serializable {
         Optional<ResourceItemDto> potentialItem = getItemForLocale(locale);
 
         if (potentialItem.isPresent()) {
-
             potentialItem.get().setValue(value);
-
         } else {
-
-            items.add(ResourceItemDto.builder()
-                    .withLocale(locale)
-                    .withValue(value)
-                    .build());
-
+            ResourceItemDto resourceItemDto;
+            if (DEFAULT == locale) {
+                resourceItemDto = ResourceItemDto.builder()
+                        .withGlobalValue(value)
+                        .build();
+            } else {
+                resourceItemDto = ResourceItemDto.builder()
+                        .withLocale(locale)
+                        .withValue(value)
+                        .build();
+            }
+            items.add(resourceItemDto);
         }
 
         return this;
@@ -123,30 +116,30 @@ public class ResourceEntryDto implements Serializable {
     }
 
     @JsonIgnore
-    // TODO Check callers properly handle DEFAULT locale
     public Set<Locale> getPresentLocales() {
         return items.stream()
                 .map(ResourceItemDto::getLocale)
+                .filter(locale -> DEFAULT != locale)
                 .collect(toSet());
     }
 
     @JsonIgnore
-    public Set<fr.tduf.libunlimited.common.game.domain.Locale> getMissingLocales() {
-        Set<Locale> presentLocales = getPresentLocales();
-        if (presentLocales.contains(DEFAULT)) {
+    public Set<Locale> getMissingLocales() {
+        if (getValueForLocale(DEFAULT).isPresent()) {
             return new HashSet<>(0);
         }
-        Set<fr.tduf.libunlimited.common.game.domain.Locale> missingLocales = Locale.valuesAsStream().collect(toSet());
-        missingLocales.removeAll(presentLocales);
+        Set<Locale> missingLocales = Locale.valuesAsStream().collect(toSet());
+        missingLocales.removeAll(getPresentLocales());
         return missingLocales;
     }
 
     /**
-     * @return true if entry contains global item
+     * @return true if entry only default item
      */
     @JsonIgnore
     public boolean isGlobalized() {
-        return getValueForLocale(DEFAULT).isPresent();
+        return 1 == getItemCount()
+                && getValueForLocale(DEFAULT).isPresent();
     }
 
     @Override
@@ -179,17 +172,20 @@ public class ResourceEntryDto implements Serializable {
             return this;
         }
 
+        /**
+         * Replace all existing items
+         */
         public EntryBuilder withItems(Collection<ResourceItemDto> items) {
             this.items.clear();
             this.items.addAll(items);
             return this;
         }
 
+        // TODO rename to withDefaultItem
         public EntryBuilder withGlobalItem(String value) {
             final ResourceItemDto globalItem = ResourceItemDto.builder()
                     .withGlobalValue(value)
                     .build();
-            this.items.clear();
             this.items.add(globalItem);
             return this;
         }
