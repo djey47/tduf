@@ -7,8 +7,8 @@ import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -29,13 +29,13 @@ public class DiffPatchesGeneratorTest {
 
     private final static List<DbDto> referenceDatabaseObjects = readReferenceDatabase();
 
-    @Before
-    public void setUp() {
+    @BeforeAll
+    static void setUp() {
 //        Log.set(Log.LEVEL_DEBUG);
     }
 
     @Test
-    public void prepare_shouldReturnInstance() throws Exception {
+    void prepare_shouldReturnInstance() throws Exception {
         // GIVEN-WHEN
         DiffPatchesGenerator actualGenerator = DiffPatchesGenerator.prepare(new ArrayList<>(), new ArrayList<>());
 
@@ -48,7 +48,7 @@ public class DiffPatchesGeneratorTest {
     }
 
     @Test
-    public void makePatches_whenNoDifference_shouldReturnEmptySet() throws Exception {
+    void makePatches_whenNoDifference_shouldReturnEmptySet() throws Exception {
         // GIVEN
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(referenceDatabaseObjects, referenceDatabaseObjects);
 
@@ -60,7 +60,7 @@ public class DiffPatchesGeneratorTest {
     }
 
     @Test
-    public void makePatches_whenNewContentsEntry_andREF_shouldAddFullUpdate_andStrictMode() throws Exception {
+    void makePatches_whenNewContentsEntry_andREF_shouldAddFullUpdate_andStrictMode() throws Exception {
         // GIVEN
         List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/ref-newEntry/TDU_CarPhysicsData.data.json");
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
@@ -94,7 +94,7 @@ public class DiffPatchesGeneratorTest {
     }
 
     @Test
-    public void makePatches_whenExistingContentsEntry_andREF_andChangedItem_shouldAddPartialUpdate() throws Exception {
+    void makePatches_whenExistingContentsEntry_andREF_andChangedItem_shouldAddPartialUpdate() throws Exception {
         // GIVEN
         List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/ref-existingEntry/TDU_CarPhysicsData.data.json");
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
@@ -127,7 +127,7 @@ public class DiffPatchesGeneratorTest {
     }
 
     @Test
-    public void makePatches_whenNewContentsEntry_andNoREF_shouldAddFullUpdate() throws Exception {
+    void makePatches_whenNewContentsEntry_andNoREF_shouldAddFullUpdate() throws Exception {
         // GIVEN
         List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/noref-newEntry/TDU_CarRims.data.json");
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
@@ -158,7 +158,7 @@ public class DiffPatchesGeneratorTest {
     }
 
     @Test
-    public void makePatches_whenNewResourceEntries_shouldAddFullResourceUpdates_andStrictMode() throws Exception {
+    void makePatches_whenNewResourceEntries_shouldAddFullResourceUpdates_andStrictMode() throws Exception {
         // GIVEN
         List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/newResource/TDU_Hair.data.json");
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
@@ -186,7 +186,7 @@ public class DiffPatchesGeneratorTest {
     }
 
     @Test
-    public void makePatches_whenNewResourceEntry_withLocalizedValues_shouldAddFullResourceUpdates_andStrictMode() throws Exception {
+    void makePatches_whenNewResourceEntry_withLocalizedValues_shouldAddFullResourceUpdates_andStrictMode() throws Exception {
         // GIVEN
         List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/newResource-localized/TDU_Hair.data.json");
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
