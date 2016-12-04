@@ -267,10 +267,22 @@ public class DatabaseChangeHelper {
     }
 
     /**
-     * Deletes values from specified topic, having given reference.
+     * Deletes entry and all localized values from specified topic, having given reference.
      *
-     * @param topic             : database topic where entry should be duplicated
+     * @param topic             : database topic where resource entry should be deleted
      * @param resourceReference : reference of resource to be deleted
+     * @throws java.util.NoSuchElementException when such a resource entry does not exist in any of affected locales.
+     */
+    public void removeResourceEntryWithReference(DbDto.Topic topic, String resourceReference) {
+        databaseMiner.getResourcesFromTopic(topic)
+                .ifPresent(entry -> entry.removeEntryByReference(resourceReference));
+    }
+
+    /**
+     * Deletes localized resource values from specified topic, having given reference.
+     *
+     * @param topic             : database topic where value should be deleted
+     * @param resourceReference : reference of resource to be affected
      * @param affectedLocales   : list of locales to be affected by deletion
      * @throws java.util.NoSuchElementException when such a resource entry does not exist in any of affected locales.
      */
