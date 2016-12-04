@@ -71,6 +71,45 @@ class ResourceEntryDtoTest {
     }
 
     @Test
+    void pickValue_whenDefaultValue_shouldReturnIt() {
+        // GIVEN
+        ResourceEntryDto resourceEntryDto = ResourceEntryDto.builder()
+                .forReference("REF")
+                .withGlobalItem("VAL")
+                .build();
+
+        // WHEN-THEN
+        assertThat(resourceEntryDto.pickValue()).contains("VAL");
+    }
+
+    @Test
+    void pickValue_whenNoValue_shouldReturnEmpty() {
+        // GIVEN
+        ResourceEntryDto resourceEntryDto = ResourceEntryDto.builder()
+                .forReference("REF")
+                .build();
+
+        // WHEN-THEN
+        assertThat(resourceEntryDto.pickValue()).isEmpty();
+    }
+
+    @Test
+    void pickValue_whenNoDefaultValue_shouldReturnAnyLocalizedValue() {
+        // GIVEN
+        ResourceItemDto localizedItem = ResourceItemDto.builder()
+                .withLocale(FRANCE)
+                .withValue("VALFR")
+                .build();
+        ResourceEntryDto resourceEntryDto = ResourceEntryDto.builder()
+                .forReference("REF")
+                .withItems(singletonList(localizedItem))
+                .build();
+
+        // WHEN-THEN
+        assertThat(resourceEntryDto.pickValue()).contains("VALFR");
+    }
+
+    @Test
     void getValueForLocale_whenExistingItem_shouldReturnLocalizedValue() {
         // GIVEN
         ResourceItemDto expectedItem = ResourceItemDto.builder().withLocale(FRANCE).withValue("FR").build();

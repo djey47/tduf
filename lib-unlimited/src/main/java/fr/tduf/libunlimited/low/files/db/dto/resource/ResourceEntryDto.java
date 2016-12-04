@@ -42,9 +42,15 @@ public class ResourceEntryDto implements Serializable {
     }
 
     /**
-     * @return available value for any locale, empty otherwise.
+     * @return available default value, or for any locale, empty otherwise.
      */
     public Optional<String> pickValue() {
+        Optional<String> defaultValue = getValueForLocale(DEFAULT);
+
+        if (defaultValue.isPresent()) {
+            return defaultValue;
+        }
+
         return getPresentLocales().stream()
                 .findAny()
                 .flatMap(this::getValueForLocale);
@@ -104,7 +110,7 @@ public class ResourceEntryDto implements Serializable {
      * does nothing if value does not exist for given locale
      * @return current entry
      */
-    public ResourceEntryDto removeValueForLocale(fr.tduf.libunlimited.common.game.domain.Locale locale) {
+    public ResourceEntryDto removeValueForLocale(Locale locale) {
         items.removeIf(item -> item.getLocale() == locale);
 
         return this;
