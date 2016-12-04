@@ -7,16 +7,17 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic;
-import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -30,6 +31,8 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
+
+import fr.tduf.libunlimited.common.game.domain.Locale;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DatabaseIntegrityFixerTest {
@@ -318,7 +321,7 @@ public class DatabaseIntegrityFixerTest {
     }
 
     @Test
-    public void fixAllContentsObjects_whenOneError_asValuesDiffentForGlobalizedResource_shouldApplyProperValue() throws ReflectiveOperationException {
+    public void fixAllContentsObjects_whenOneError_asDifferentValuesForGlobalizedResource_shouldApplyProperValue() throws ReflectiveOperationException {
         // GIVEN
         List<DbDto> dbDtos = createDatabaseObjectsWithDifferentResourceValuesGlobalized();
         Set<IntegrityError> integrityErrors = new HashSet<>(singletonList(createIntegrityError_ResourceValuesDifferentGlobalized()));
@@ -455,9 +458,9 @@ public class DatabaseIntegrityFixerTest {
     private static DbResourceDto createResourceObjectEnhancedWithOneEntry() {
         DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
 
-        resourceObject
-                .addEntryByReference("000")
-                .setValue("TDUF TEST");
+        ResourceEntryDto resourceEntryDto = resourceObject
+                .addEntryByReference("000");
+        setAllResourceValues(resourceEntryDto, "TDUF TEST");
 
         return resourceObject;
     }
@@ -465,10 +468,10 @@ public class DatabaseIntegrityFixerTest {
     private static DbResourceDto createResourceObjectEnhancedWithOneEntryOneMissingValueForLocale() {
         DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
 
-        resourceObject
-                .addEntryByReference("000")
-                .setValue("TDUF TEST")
-                .removeValueForLocale(CHINA);
+        ResourceEntryDto resourceEntryDto = resourceObject
+                .addEntryByReference("000");
+        setAllResourceValues(resourceEntryDto, "TDUF TEST");
+        resourceEntryDto.removeValueForLocale(CHINA);
 
         return resourceObject;
     }
@@ -476,10 +479,9 @@ public class DatabaseIntegrityFixerTest {
     private static DbResourceDto createResourceObjectEnhancedWithOneEntryOneDifferentValueForLocale() {
         DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
 
-        resourceObject
-                .addEntryByReference("000")
-                .setValue("TDUF TEST")
-                .setValueForLocale("TDUF TEST ALTERED", UNITED_STATES);
+        ResourceEntryDto resourceEntryDto = resourceObject.addEntryByReference("000");
+        setAllResourceValues(resourceEntryDto, "TDUF TEST");
+        resourceEntryDto.setValueForLocale("TDUF TEST ALTERED", UNITED_STATES);
 
         return resourceObject;
     }
@@ -579,5 +581,10 @@ public class DatabaseIntegrityFixerTest {
                 .getDatabaseTopic(topic)
                 .get()
                 .getData().getEntries();
+    }
+
+    private static void setAllResourceValues(ResourceEntryDto resourceEntryDto, String value) {
+        Locale.valuesAsStream()
+                .forEach(locale -> resourceEntryDto.setValueForLocale(value, locale));
     }
 }

@@ -175,9 +175,10 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
                 .getKey();
 
         databaseMiner.getResourcesFromTopic(topic)
-                .flatMap(resources -> resources.getEntryByReference(resourceReference))
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resource from topic: " + topic + " at ref: " + resourceReference))
-                .setValue(mostFrequentValue);
+                .ifPresent(resources -> {
+                    resources.removeEntryByReference(resourceReference);
+                    resources.addGlobalEntryByReference(resourceReference, mostFrequentValue);
+                });
     }
 
     private void addContentItem(DbStructureDto.Field missingField, ContentEntryDto invalidEntry, DbDto topicObject) {
