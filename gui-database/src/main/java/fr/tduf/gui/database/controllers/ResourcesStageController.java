@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.common.game.domain.Locale.DEFAULT;
 import static fr.tduf.libunlimited.common.game.domain.Locale.fromOrder;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -258,11 +259,11 @@ public class ResourcesStageController extends AbstractGuiController {
         String newResourceReference = referenceValuePair.getKey();
         String newResourceValue = referenceValuePair.getValue();
 
+        MainStageChangeDataController changeDataController = mainStageController.getChangeData();
         if (potentialAffectedLocale.isPresent()) {
-            mainStageController.getChangeData().addResourceWithReference(topic, potentialAffectedLocale.get(), newResourceReference, newResourceValue);
+            changeDataController.addResourceWithReference(topic, potentialAffectedLocale.get(), newResourceReference, newResourceValue);
         } else {
-            Locale.valuesAsStream()
-                    .forEach(affectedLocale -> mainStageController.getChangeData().addResourceWithReference(topic, affectedLocale, newResourceReference, newResourceValue));
+            changeDataController.addResourceWithReference(topic, DEFAULT, newResourceReference, newResourceValue);
         }
     }
 

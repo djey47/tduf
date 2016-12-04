@@ -3,7 +3,6 @@ package fr.tduf.gui.database.controllers;
 
 import fr.tduf.gui.database.domain.LocalizedResource;
 import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
-import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.scene.control.ChoiceBox;
@@ -15,14 +14,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import static fr.tduf.libunlimited.common.game.domain.Locale.FRANCE;
-import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
+import static fr.tduf.libunlimited.common.game.domain.Locale.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -143,7 +140,7 @@ public class ResourcesStageControllerTest {
         controller.editNewResourceAndUpdateMainStage(CAR_PHYSICS_DATA, newLocalizedResource);
 
         // THEN
-        verify(changeDataControllerMock, times(8)).addResourceWithReference(eq(CAR_PHYSICS_DATA), any(Locale.class), eq("1"), eq("V"));
+        verify(changeDataControllerMock).addResourceWithReference(eq(CAR_PHYSICS_DATA), eq(DEFAULT), eq("1"), eq("V"));
         verify(viewDataControllerMock).updateAllPropertiesWithItemValues();
     }
 
