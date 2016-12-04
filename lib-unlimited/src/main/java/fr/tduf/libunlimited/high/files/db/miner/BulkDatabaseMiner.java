@@ -310,11 +310,19 @@ public class BulkDatabaseMiner {
      */
     public static Set<String> getAllResourceValuesForReference(String reference, DbResourceDto resourceObject) {
         return resourceObject.getEntryByReference(reference)
-                .map(entry -> entry.getPresentLocales().stream()
-                        .map(presentLocale -> entry.getValueForLocale(presentLocale).orElse(null))
-                        .filter(value -> value != null)
-                        .collect(toSet()))
-                .orElse(new HashSet<>());
+                .map(entry -> {
+                    Set<Locale> presentLocales = entry.getPresentLocales();
+                    if (presentLocales.isEmpty()) {
+                        return entry.pickValue()
+                                .map(value -> new HashSet<>(singletonList(value)))
+                                .orElse(null);
+                    }
+                    return presentLocales.stream()
+                            .map(presentLocale -> entry.getValueForLocale(presentLocale).orElse(null))
+                            .filter(Objects::nonNull)
+                            .collect(toSet());
+                })
+                .orElse(new HashSet<>(0));
     }
 
     /**

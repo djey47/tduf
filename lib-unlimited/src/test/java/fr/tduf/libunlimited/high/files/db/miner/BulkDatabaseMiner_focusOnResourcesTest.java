@@ -327,8 +327,9 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     public void getAllResourceValuesForReference_whenEntryExists_withDifferentValuesForItems_shouldReturnValues() {
         //GIVEN
         DbResourceDto resourceObject = createDefaultResourceObject();
-        resourceObject.addEntryByReference(RESOURCE_REF)
-                .setValue(RESOURCE_VALUE)
+        ResourceEntryDto resourceEntryDto = resourceObject.addEntryByReference(RESOURCE_REF);
+        setAllResourceValues(resourceEntryDto, RESOURCE_VALUE);
+        resourceEntryDto
                 .setValueForLocale("VALUE2", FRANCE)
                 .setValueForLocale("VALUE3", UNITED_STATES);
 
@@ -413,5 +414,10 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
                     .withCategoryCount(1)
                     .atVersion("1,0")
                     .build();
+    }
+
+    private static void setAllResourceValues(ResourceEntryDto resourceEntryDto, String resourceValue) {
+        Locale.valuesAsStream()
+                .forEach(locale -> resourceEntryDto.setValueForLocale(resourceValue, locale));
     }
 }
