@@ -218,12 +218,11 @@ public class DatabaseWriter {
 
     private static void writeResourceLines(Locale locale, DbResourceDto resourceObject, BufferedWriter bufferedWriter) {
         resourceObject.getEntries()
-                // TODO replace by getItemValueForLocale
-                .forEach((entry) -> entry.getItemForLocale(locale)
-                        .ifPresent((item) -> {
+                .forEach(entry -> entry.getValueForLocale(locale)
+                        .ifPresent(value -> {
                             try {
                                 writeAndEndWithCRLF(
-                                        format(RESOURCE_ENTRY_PATTERN, item.getValue(), entry.getReference()), bufferedWriter);
+                                        format(RESOURCE_ENTRY_PATTERN, value, entry.getReference()), bufferedWriter);
                             } catch (IOException ioe) {
                                 throw new RuntimeException("Error occured while writing resource entry", ioe);
                             }
