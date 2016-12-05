@@ -12,10 +12,8 @@ public class DisplayConstants {
     public static final String VALUE_FIELD_DEFAULT = "";
     public static final String VALUE_RESOURCE_DEFAULT = "";
 
-    public static final String LABEL_BUTTON_ALL = "All";
     public static final String LABEL_BUTTON_BROWSE = "...";
     public static final String LABEL_BUTTON_CANCEL = "Cancel";
-    public static final String LABEL_BUTTON_CURRENT_LOCALE = "Current (%s)";
     public static final String LABEL_BUTTON_GOTO = "\u25B6";
     public static final String LABEL_BUTTON_MINUS = "-";
     public static final String LABEL_BUTTON_UP = "\u25B2";
@@ -82,7 +80,6 @@ public class DisplayConstants {
     public static final String MESSAGE_DATABASE_SAVED = "Current database was saved.";
     public static final String MESSAGE_DATABASE_LOAD_KO = "Database could not be loaded.";
     public static final String MESSAGE_DATABASE_SAVE_KO = "Current database could not be saved.";
-    public static final String MESSAGE_DELETED_RESOURCE = "Delete: %s - %s";
     public static final String MESSAGE_DIFFERENT_RESOURCE = "Please try again with a different resource reference.";
     public static final String MESSAGE_EDITED_RESOURCE = "Edit: %s - %s";
     public static final String MESSAGE_ENTRIES_EXPORTED = "Selected entries were exported to TDUF patch.";
@@ -101,10 +98,6 @@ public class DisplayConstants {
     public static final String MESSAGE_RESTART_APP = "Please restart application.";
     public static final String MESSAGE_FILE_EXPORT_OK = "Contents were exported to file.";
     public static final String MESSAGE_FILE_EXPORT_KO = "Contents could not be exported to file.";
-
-    public static final String QUESTION_AFFECTED_LOCALES = "Which locales should be affected?";
-
-    public static final String WARNING_DELETED_RESOURCE = "This resource will be removed.";
 
     public static final String TAB_NAME_DEFAULT = "Default";
 

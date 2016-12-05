@@ -55,36 +55,6 @@ public class DialogsHelper {
     private Map<FileLocation, String> fileLocations = new HashMap<>();
 
     /**
-     * Display a dialog box to delete a resource.
-     * It enables locale selection.
-     *
-     * @param topic             : topic to be affected
-     * @param deletedResource   : resource to apply, or absent to create a new one
-     * @param currentLocale     : selected locale  in GUI settings
-     * @return true if all locales should be affected, false otherwise - or absent if dialog was dismissed.
-     */
-    public Optional<Boolean> showResourceDeletionDialog(DbDto.Topic topic, ResourceEntryDataItem deletedResource, Locale currentLocale) {
-        Alert alert = new Alert(CONFIRMATION);
-        alert.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);
-        alert.setHeaderText(String.format(DisplayConstants.MESSAGE_DELETED_RESOURCE,
-                topic.getLabel(),
-                deletedResource.toDisplayableValueForLocale(Locale.UNITED_STATES))); // Use current locale
-        alert.setContentText(String.join(System.lineSeparator(), DisplayConstants.WARNING_DELETED_RESOURCE, DisplayConstants.QUESTION_AFFECTED_LOCALES));
-
-        ButtonType allLocalesButtonType = new ButtonType(DisplayConstants.LABEL_BUTTON_ALL);
-        ButtonType currentLocaleButtonType = new ButtonType(String.format(DisplayConstants.LABEL_BUTTON_CURRENT_LOCALE, currentLocale.getCode()));
-        ButtonType cancelButtonType = new ButtonType(DisplayConstants.LABEL_BUTTON_CANCEL, CANCEL_CLOSE);
-        alert.getButtonTypes().setAll(allLocalesButtonType, currentLocaleButtonType, cancelButtonType);
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (!result.isPresent() || result.get() == cancelButtonType) {
-            return empty();
-        }
-
-        return of(result.get() == allLocalesButtonType);
-    }
-
-    /**
      * Display a dialog box to modify a resource.
      * It enables locale selection.
      *

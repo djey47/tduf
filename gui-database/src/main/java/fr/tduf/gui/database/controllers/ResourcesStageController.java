@@ -120,12 +120,8 @@ public class ResourcesStageController extends AbstractGuiController {
 
         ofNullable(resourcesTableView.getSelectionModel().selectedItemProperty().getValue())
                 .ifPresent(selectedResource -> {
-                    DbDto.Topic currentTopic = getCurrentTopic();
-                    dialogsHelper.showResourceDeletionDialog(currentTopic, selectedResource, currentLocale)
-                            .ifPresent(forAllLocales -> {
-                                int selectedRow = resourcesTableView.getSelectionModel().getSelectedIndex();
-                                removeResourceAndUpdateMainStage(currentTopic, selectedResource, currentLocale, forAllLocales, selectedRow);
-                            });
+                    int selectedRow = resourcesTableView.getSelectionModel().getSelectedIndex();
+                    removeResourceAndUpdateMainStage(getCurrentTopic(), selectedResource, selectedRow);
                 });
     }
 
@@ -232,8 +228,8 @@ public class ResourcesStageController extends AbstractGuiController {
         closeWindow();
     }
 
-    private void removeResourceAndUpdateMainStage(DbDto.Topic topic, ResourceEntryDataItem selectedResource, Locale locale, boolean forAllLocales, int selectedRowIndex) {
-        mainStageController.getChangeData().removeResourceWithReference(topic, locale, selectedResource.referenceProperty().getValue(), forAllLocales);
+    private void removeResourceAndUpdateMainStage(DbDto.Topic topic, ResourceEntryDataItem selectedResource, int selectedRowIndex) {
+        mainStageController.getChangeData().removeResourceWithReference(topic, selectedResource.referenceProperty().getValue());
 
         updateAllStages();
 

@@ -20,7 +20,6 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -50,7 +49,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     @Test
     public void addResourceWithReference_andNonExistingEntry_shouldCreateNewResourceEntry() throws Exception {
         // GIVEN
-        DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
+        DbResourceDto resourceObject = createDefaultResourceObject();
 
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(empty());
         when(minerMock.getResourcesFromTopic(TOPIC)).thenReturn(of(resourceObject));
@@ -68,7 +67,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     @Test
     public void addResourceWithReference_andExistingEntry_shouldCreateNewResourceItem() throws Exception {
         // GIVEN
-        DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
+        DbResourceDto resourceObject = createDefaultResourceObject();
         resourceObject.addEntryByReference(RESOURCE_REFERENCE)
                 .setValueForLocale("", FRANCE);
 
@@ -143,7 +142,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     public void updateResourceEntryWithReference_whenExistingEntry_shouldReplaceReferenceAndValue() {
         // GIVEN
         String initialReference = "0";
-        DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
+        DbResourceDto resourceObject = createDefaultResourceObject();
         ResourceEntryDto resourceEntry = createDefaultResourceEntry(initialReference);
 
         when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, initialReference)).thenReturn(of(resourceEntry));
@@ -187,55 +186,38 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     }
 
     @Test
-    public void removeResourceValuesWithReference_whenResourceEntryExists_andTwoLocalesAffected_shouldDeleteThem() {
+    public void removeResourceEntryWithReference_whenResourceEntryExists_shouldDeleteIt() {
         // GIVEN
         ResourceEntryDto resourceEntry = createDefaultResourceEntry(RESOURCE_REFERENCE);
         setValuesForAllLocales(resourceEntry);
 
-        when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(of(resourceEntry));
-
-
-        // WHEN
-        changeHelper.removeResourceValuesWithReference(TOPIC, RESOURCE_REFERENCE, asList(LOCALE, FRANCE));
-
-
-        // THEN
-        assertThat(resourceEntry.getItemCount()).isEqualTo(6);
-        assertThat(resourceEntry.getItemForLocale(LOCALE)).isEmpty();
-        assertThat(resourceEntry.getItemForLocale(FRANCE)).isEmpty();
-    }
-
-    @Test
-    public void removeResourceValuesWithReference_whenResourceEntryExists_andAllLocalesAffected_shouldDeleteEntry() {
-        // GIVEN
-        DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
-        ResourceEntryDto resourceEntry = resourceObject.addEntryByReference(RESOURCE_REFERENCE)
-                .setDefaultValue(RESOURCE_VALUE);
-
-        when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(of(resourceEntry));
+        DbResourceDto resourceObject = DbResourceDto.builder()
+                .atVersion("1.0")
+                .containingEntries(singletonList(resourceEntry))
+                .build();
         when(minerMock.getResourcesFromTopic(TOPIC)).thenReturn(of(resourceObject));
 
 
         // WHEN
-        changeHelper.removeResourceValuesWithReference(TOPIC, RESOURCE_REFERENCE, Locale.valuesAsStream().collect(toList()));
+        changeHelper.removeResourceEntryWithReference(TOPIC, RESOURCE_REFERENCE);
 
 
         // THEN
-        assertThat(resourceObject.getEntryByReference(RESOURCE_REFERENCE)).isEmpty();
+        assertThat(resourceObject.getEntries()).isEmpty();
     }
 
     @Test
     public void removeResourceValuesWithReference_whenResourceEntryDoesNotExist_shouldNotThrowException() {
         // GIVEN
-        when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(empty());
+        when(minerMock.getResourcesFromTopic(TOPIC)).thenReturn(of(createDefaultResourceObject()));
 
         // WHEN
-        changeHelper.removeResourceValuesWithReference(TOPIC, RESOURCE_REFERENCE, singletonList(LOCALE));
+        changeHelper.removeResourceEntryWithReference(TOPIC, RESOURCE_REFERENCE);
 
         // THEN: no exception
     }
 
-    private DbResourceDto createDefaultResourceObjectEnhanced() {
+    private DbResourceDto createDefaultResourceObject() {
         return DbResourceDto.builder()
                 .atVersion("1,0")
                 .withCategoryCount(1)

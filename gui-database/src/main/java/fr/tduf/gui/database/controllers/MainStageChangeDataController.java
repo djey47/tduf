@@ -29,7 +29,6 @@ import java.util.Optional;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange.ALL;
 import static fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange.fromCollection;
-import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.*;
 import static java.util.stream.Collectors.toList;
@@ -85,12 +84,9 @@ class MainStageChangeDataController extends AbstractMainStageSubController {
         getChangeHelper().moveEntryWithIdentifier(step, internalEntryId, topic);
     }
 
-    void removeResourceWithReference(DbDto.Topic topic, Locale locale, String resourceReference, boolean forAllLocales) {
-        if (forAllLocales) {
-            getChangeHelper().removeResourceEntryWithReference(topic, resourceReference);
-        } else {
-            getChangeHelper().removeResourceValuesWithReference(topic, resourceReference, singletonList(locale));
-        }
+    void removeResourceWithReference(DbDto.Topic topic, String resourceReference) {
+        requireNonNull(getChangeHelper());
+        getChangeHelper().removeResourceEntryWithReference(topic, resourceReference);
     }
 
     int addEntryForCurrentTopic() {

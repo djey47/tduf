@@ -41,15 +41,12 @@ public class ResourcesStageControllerTest {
     @Mock
     private BulkDatabaseMiner minerMock;
 
-
     @InjectMocks
     private ResourcesStageController controller;
 
-    private ChoiceBox<DbDto.Topic> topicsChoiceBox;
-
     @Before
     public void setUp() {
-        topicsChoiceBox = new ChoiceBox<>();
+        ChoiceBox<DbDto.Topic> topicsChoiceBox = new ChoiceBox<>();
         topicsChoiceBox.setValue(CAR_PHYSICS_DATA);
 
         controller.setTopicsChoiceBox(topicsChoiceBox);

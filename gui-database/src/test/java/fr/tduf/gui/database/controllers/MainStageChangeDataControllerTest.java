@@ -35,13 +35,10 @@ import static fr.tduf.libunlimited.common.game.domain.Locale.FRANCE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MainStageChangeDataControllerTest {
@@ -265,27 +262,15 @@ public class MainStageChangeDataControllerTest {
     }
 
     @Test
-    public void removeResourceWithReference_forAllLocales_shouldRemoveEntry() {
+    public void removeResourceWithReference_shouldRemoveEntry() {
         // GIVEN
         String resourceReference = "3005487";
 
         // WHEN
-        controller.removeResourceWithReference(CAR_PHYSICS_DATA, null, resourceReference, true);
+        controller.removeResourceWithReference(CAR_PHYSICS_DATA, resourceReference);
 
         // THEN
         verify(changeHelperMock).removeResourceEntryWithReference(CAR_PHYSICS_DATA, resourceReference);
-    }
-
-    @Test
-    public void removeResourceWithReference_forSingleLocales_shouldRemoveLocalizedValue() {
-        // GIVEN
-        String resourceReference = "3005487";
-
-        // WHEN
-        controller.removeResourceWithReference(CAR_PHYSICS_DATA, FRANCE, resourceReference, false);
-
-        // THEN
-        verify(changeHelperMock).removeResourceValuesWithReference(CAR_PHYSICS_DATA, resourceReference, singletonList(FRANCE));
     }
 
     private static String createTempDirectory() throws IOException {
