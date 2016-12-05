@@ -5,7 +5,9 @@
 
 /* Settings */
 .settingsToolbar {
-    -fx-base: dodgerBlue;
+}
+.settingsToolbar .menu-item .label {
+    -fx-text-fill: black;
 }
 
 #localesChoiceBox .label, #profilesChoiceBox .label {
@@ -15,7 +17,6 @@
 /* Actions */
 #entryNumberComboBox .scroll-bar:vertical {
     -fx-background-color:transparent;
-
 }
 #entryNumberComboBox .list-cell {
     -fx-text-fill: white;
@@ -25,3 +26,4 @@
 .navigationToolbar {
     -fx-base: black;
 }
+
