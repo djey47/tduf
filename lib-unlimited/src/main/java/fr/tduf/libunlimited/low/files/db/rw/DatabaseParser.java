@@ -25,6 +25,7 @@ import static java.lang.Integer.valueOf;
 import static java.util.Objects.requireNonNull;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * Helper class to extract database structure and contents from clear db file.
@@ -111,7 +112,7 @@ public class DatabaseParser {
         return DbResourceDto.builder()
                 .atVersion(version.get())
                 .withCategoryCount(categoryCount.get())
-                .containingEntries(readEntries)
+                .containingEntries(reduceGlobalResources(readEntries))
                 .build();
     }
 
@@ -138,6 +139,25 @@ public class DatabaseParser {
                 categoryCount.set(valueOf(matcher.group(1)));
             }
         }
+    }
+
+    private List<ResourceEntryDto> reduceGlobalResources(List<ResourceEntryDto> readEntries) {
+        return readEntries.stream()
+                .map(readEntry -> {
+                    Set<String> values = Locale.valuesAsStream()
+                            .map(locale -> readEntry.getValueForLocale(locale).orElse(""))
+                            .collect(toSet());
+
+                    if (1 == values.size()) {
+                        return ResourceEntryDto.builder()
+                                .forReference(readEntry.getReference())
+                                .withDefaultItem(values.stream().findAny().get())
+                                .build();
+                    } else {
+                        return readEntry;
+                    }
+                })
+                .collect(toList());
     }
 
     private void addResourceItemForLocale(Locale locale, String ref, String value, Map<String, Set<ResourceItemDto>> readItemsByRef) {
@@ -330,16 +350,16 @@ public class DatabaseParser {
 
     private void checkItemCountBetweenResources(DbDto.Topic topic, Collection<ResourceEntryDto> entries) {
         entries.forEach(entry -> {
+            Set<Locale> missingLocales = entry.getMissingLocales();
+            if (!missingLocales.isEmpty()) {
+                EnumMap<IntegrityError.ErrorInfoEnum, Object> info = new EnumMap<>(IntegrityError.ErrorInfoEnum.class);
+                info.put(SOURCE_TOPIC, topic);
+                info.put(REFERENCE, entry.getReference());
+                info.put(MISSING_LOCALES, missingLocales);
 
-                    if (entry.getItemCount() < Locale.values().length) {
-                        EnumMap<IntegrityError.ErrorInfoEnum, Object> info = new EnumMap<>(IntegrityError.ErrorInfoEnum.class);
-                        info.put(SOURCE_TOPIC, topic);
-                        info.put(REFERENCE, entry.getReference());
-                        info.put(MISSING_LOCALES, entry.getMissingLocales());
-
-                        addIntegrityError(RESOURCE_REFERENCE_NOT_FOUND, info);
-                    }
-                });
+                addIntegrityError(RESOURCE_REFERENCE_NOT_FOUND, info);
+            }
+        });
     }
 
     private void addIntegrityError(IntegrityError.ErrorTypeEnum errorTypeEnum, Map<IntegrityError.ErrorInfoEnum, Object> info) {

@@ -2,3042 +2,2340 @@
   "entries" : [ {
     "id" : 0,
     "items" : [ {
-      "name" : "REF_",
       "value" : "590074355",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "547662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "54363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "547652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "1",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "4",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "153500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "76750",
       "rank" : 9
     } ]
   }, {
     "id" : 1,
     "items" : [ {
-      "name" : "REF_",
       "value" : "623084363",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "624662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "54363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "624652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "2",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "6",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "225500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "112750",
       "rank" : 9
     } ]
   }, {
     "id" : 2,
     "items" : [ {
-      "name" : "REF_",
       "value" : "623194359",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "606662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "54363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "606652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "3",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "2",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "8",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "405000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "202500",
       "rank" : 9
     } ]
   }, {
     "id" : 3,
     "items" : [ {
-      "name" : "REF_",
       "value" : "623204357",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "618662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "54363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "618652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "4",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "2",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "10",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "1989500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "994750",
       "rank" : 9
     } ]
   }, {
     "id" : 4,
     "items" : [ {
-      "name" : "REF_",
       "value" : "568074356",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "564662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "54363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "564652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "1",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "4",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "170000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "85000",
       "rank" : 9
     } ]
   }, {
     "id" : 5,
     "items" : [ {
-      "name" : "REF_",
       "value" : "557294367",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "607662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "54363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "607652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "3",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "3",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "8",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "488500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "244250",
       "rank" : 9
     } ]
   }, {
     "id" : 6,
     "items" : [ {
-      "name" : "REF_",
       "value" : "556404373",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "589662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "54363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "589652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "4",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "3",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "10",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "3500000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "1750000",
       "rank" : 9
     } ]
   }, {
     "id" : 7,
     "items" : [ {
-      "name" : "REF_",
       "value" : "622094415",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "546662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "54363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "546652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "3",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "8",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "308500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "154250",
       "rank" : 9
     } ]
   }, {
     "id" : 8,
     "items" : [ {
-      "name" : "REF_",
       "value" : "612174360",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "563662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "55363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "563652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "1",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "4",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "185000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "92500",
       "rank" : 9
     } ]
   }, {
     "id" : 9,
     "items" : [ {
-      "name" : "REF_",
       "value" : "590074364",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "608662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "55363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "608652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "1",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "4",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "159000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "79500",
       "rank" : 9
     } ]
   }, {
     "id" : 10,
     "items" : [ {
-      "name" : "REF_",
       "value" : "622084358",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "614662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "55363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "614652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "2",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "6",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "227000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "113500",
       "rank" : 9
     } ]
   }, {
     "id" : 11,
     "items" : [ {
-      "name" : "REF_",
       "value" : "603084363",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "565662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "55363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "565652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "2",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "6",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "233000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "116500",
       "rank" : 9
     } ]
   }, {
     "id" : 12,
     "items" : [ {
-      "name" : "REF_",
       "value" : "622294368",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "557662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "55363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "557652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "3",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "3",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "8",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "515000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "257500",
       "rank" : 9
     } ]
   }, {
     "id" : 13,
     "items" : [ {
-      "name" : "REF_",
       "value" : "603094364",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "577662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "55363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "577652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "3",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "8",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "299500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "149750",
       "rank" : 9
     } ]
   }, {
     "id" : 14,
     "items" : [ {
-      "name" : "REF_",
       "value" : "557074369",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "554662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "55363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "554652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "1",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "4",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "160000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "80000",
       "rank" : 9
     } ]
   }, {
     "id" : 15,
     "items" : [ {
-      "name" : "REF_",
       "value" : "557204367",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "549662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "55363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "549652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "4",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "2",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "10",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "2225500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "1112750",
       "rank" : 9
     } ]
   }, {
     "id" : 16,
     "items" : [ {
-      "name" : "REF_",
       "value" : "589174355",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "594662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "56363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "594652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "1",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "4",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "201500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "100750",
       "rank" : 9
     } ]
   }, {
     "id" : 17,
     "items" : [ {
-      "name" : "REF_",
       "value" : "612174365",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "543662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "56363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "543652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "1",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "4",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "150000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "75000",
       "rank" : 9
     } ]
   }, {
     "id" : 18,
     "items" : [ {
-      "name" : "REF_",
       "value" : "623074351",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "553662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "56363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "553652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "1",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "4",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "150000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "75000",
       "rank" : 9
     } ]
   }, {
     "id" : 19,
     "items" : [ {
-      "name" : "REF_",
       "value" : "611104371",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "538662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "56363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "538652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "4",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "10",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "990500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "495250",
       "rank" : 9
     } ]
   }, {
     "id" : 20,
     "items" : [ {
-      "name" : "REF_",
       "value" : "590094413",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "596662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "56363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "596652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "3",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "8",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "315000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "157500",
       "rank" : 9
     } ]
   }, {
     "id" : 21,
     "items" : [ {
-      "name" : "REF_",
       "value" : "598294358",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "627662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "56363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "627652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "3",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "3",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "8",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "499500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "249750",
       "rank" : 9
     } ]
   }, {
     "id" : 22,
     "items" : [ {
-      "name" : "REF_",
       "value" : "548084361",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "555662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "56363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "555652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "2",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "6",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "238700",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "119350",
       "rank" : 9
     } ]
   }, {
     "id" : 23,
     "items" : [ {
-      "name" : "REF_",
       "value" : "607204364",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "559662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "56363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "559652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "4",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "2",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "10",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "2145000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "1072500",
       "rank" : 9
     } ]
   }, {
     "id" : 24,
     "items" : [ {
-      "name" : "REF_",
       "value" : "624104361",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "548662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "57363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "548652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "4",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "10",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "1110500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "555250",
       "rank" : 9
     } ]
   }, {
     "id" : 25,
     "items" : [ {
-      "name" : "REF_",
       "value" : "614174364",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "593662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "57363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "593652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "1",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "4",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "167500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "83750",
       "rank" : 9
     } ]
   }, {
     "id" : 26,
     "items" : [ {
-      "name" : "REF_",
       "value" : "536294417",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "567662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "57363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "567652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "3",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "3",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "8",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "502000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "251000",
       "rank" : 9
     } ]
   }, {
     "id" : 27,
     "items" : [ {
-      "name" : "REF_",
       "value" : "536404424",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "569662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "57363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "569652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "4",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "3",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "10",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "2999990",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "1499995",
       "rank" : 9
     } ]
   }, {
     "id" : 28,
     "items" : [ {
-      "name" : "REF_",
       "value" : "594194358",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "616662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "57363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "616652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "3",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "2",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "8",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "395000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "197500",
       "rank" : 9
     } ]
   }, {
     "id" : 29,
     "items" : [ {
-      "name" : "REF_",
       "value" : "604284359",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "536662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "57363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "536652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "2",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "3",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "6",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "251250",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "125625",
       "rank" : 9
     } ]
   }, {
     "id" : 30,
     "items" : [ {
-      "name" : "REF_",
       "value" : "579184369",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "615662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "57363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "615652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "2",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "2",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "6",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "221000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "110500",
       "rank" : 9
     } ]
   }, {
     "id" : 31,
     "items" : [ {
-      "name" : "REF_",
       "value" : "568174369",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "573662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "57363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "604652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "1",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "4",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "184000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "92000",
       "rank" : 9
     } ]
   }, {
     "id" : 32,
     "items" : [ {
-      "name" : "REF_",
       "value" : "614174370",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "583662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "58363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "583652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "1",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "4",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "199000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "99500",
       "rank" : 9
     } ]
   }, {
     "id" : 33,
     "items" : [ {
-      "name" : "REF_",
       "value" : "614284365",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "625662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "58363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "625652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "2",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "3",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "6",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "268500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "134250",
       "rank" : 9
     } ]
   }, {
     "id" : 34,
     "items" : [ {
-      "name" : "REF_",
       "value" : "612174362",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "623662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "58363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "573652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "1",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "4",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "164500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "82250",
       "rank" : 9
     } ]
   }, {
     "id" : 35,
     "items" : [ {
-      "name" : "REF_",
       "value" : "536094420",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "556662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "58363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "556652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "3",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "8",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "309000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "154500",
       "rank" : 9
     } ]
   }, {
     "id" : 36,
     "items" : [ {
-      "name" : "REF_",
       "value" : "604074356",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "603662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "58363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "603652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "1",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "4",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "155000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "77500",
       "rank" : 9
     } ]
   }, {
     "id" : 37,
     "items" : [ {
-      "name" : "REF_",
       "value" : "566294368",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "576662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "58363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "576652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "3",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "6",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "319500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "159750",
       "rank" : 9
     } ]
   }, {
     "id" : 38,
     "items" : [ {
-      "name" : "REF_",
       "value" : "604104360",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "558662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "58363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "558652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "4",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "10",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "1005000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "502500",
       "rank" : 9
     } ]
   }, {
     "id" : 39,
     "items" : [ {
-      "name" : "REF_",
       "value" : "604404364",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "579662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "58363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "579652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "4",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "3",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "10",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "3153250",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "1576625",
       "rank" : 9
     } ]
   }, {
     "id" : 40,
     "items" : [ {
-      "name" : "REF_",
       "value" : "550194371",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "566662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "59363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "566652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "3",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "8",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "316000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "158000",
       "rank" : 9
     } ]
   }, {
     "id" : 41,
     "items" : [ {
-      "name" : "REF_",
       "value" : "550074365",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "534662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "59363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "534652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "1",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "4",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "198000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "99000",
       "rank" : 9
     } ]
   }, {
     "id" : 42,
     "items" : [ {
-      "name" : "REF_",
       "value" : "550294369",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "597662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "59363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "597652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "3",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "3",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "8",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "510500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "255250",
       "rank" : 9
     } ]
   }, {
     "id" : 43,
     "items" : [ {
-      "name" : "REF_",
       "value" : "550104360",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "578662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "59363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "578652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "4",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "10",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "980500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "490250",
       "rank" : 9
     } ]
   }, {
     "id" : 44,
     "items" : [ {
-      "name" : "REF_",
       "value" : "539074364",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "544662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "59363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "544652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "1",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "4",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "172000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "86000",
       "rank" : 9
     } ]
   }, {
     "id" : 45,
     "items" : [ {
-      "name" : "REF_",
       "value" : "540204364",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "539662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "59363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "539652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "4",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "2",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "10",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "1999500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "999750",
       "rank" : 9
     } ]
   }, {
     "id" : 46,
     "items" : [ {
-      "name" : "REF_",
       "value" : "539084367",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "545662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "59363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "545652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "2",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "6",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "243000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "121500",
       "rank" : 9
     } ]
   }, {
     "id" : 47,
     "items" : [ {
-      "name" : "REF_",
       "value" : "540184357",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "585662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "59363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "585652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "2",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "2",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "6",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "228000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "114000",
       "rank" : 9
     } ]
   }, {
     "id" : 48,
     "items" : [ {
-      "name" : "REF_",
       "value" : "586074368",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "584662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "60363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "584652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "1",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "4",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "172500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "86250",
       "rank" : 9
     } ]
   }, {
     "id" : 49,
     "items" : [ {
-      "name" : "REF_",
       "value" : "586194367",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "537662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "60363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "537652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "3",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "2",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "8",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "400000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "200000",
       "rank" : 9
     } ]
   }, {
     "id" : 50,
     "items" : [ {
-      "name" : "REF_",
       "value" : "576094352",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "586662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "60363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "586652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "3",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "8",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "305500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "152750",
       "rank" : 9
     } ]
   }, {
     "id" : 51,
     "items" : [ {
-      "name" : "REF_",
       "value" : "576174358",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "574662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "60363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "574652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "1",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "4",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "198000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "99000",
       "rank" : 9
     } ]
   }, {
     "id" : 52,
     "items" : [ {
-      "name" : "REF_",
       "value" : "596294367",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "617662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "60363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "617652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "3",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "3",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "8",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "500500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "250250",
       "rank" : 9
     } ]
   }, {
     "id" : 53,
     "items" : [ {
-      "name" : "REF_",
       "value" : "557184358",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "595662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "60363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "595652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "2",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "2",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "6",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "234500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "117250",
       "rank" : 9
     } ]
   }, {
     "id" : 54,
     "items" : [ {
-      "name" : "REF_",
       "value" : "575084364",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "605662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "60363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "605652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "2",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "2",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "6",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "229500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "114750",
       "rank" : 9
     } ]
   }, {
     "id" : 55,
     "items" : [ {
-      "name" : "REF_",
       "value" : "566104355",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "588662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "60363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "588652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "4",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "10",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "1250000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "625000",
       "rank" : 9
     } ]
   }, {
     "id" : 56,
     "items" : [ {
-      "name" : "REF_",
       "value" : "622174363",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "604662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "61363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "623652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "1",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "4",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "178000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "89000",
       "rank" : 9
     } ]
   }, {
     "id" : 57,
     "items" : [ {
-      "name" : "REF_",
       "value" : "592184355",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "575662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "61363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "575652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "2",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "2",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "6",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "238500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "119250",
       "rank" : 9
     } ]
   }, {
     "id" : 58,
     "items" : [ {
-      "name" : "REF_",
       "value" : "592194363",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "626662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "61363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "626652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "3",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "2",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "8",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "401500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "200750",
       "rank" : 9
     } ]
   }, {
     "id" : 59,
     "items" : [ {
-      "name" : "REF_",
       "value" : "592294360",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "587662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "61363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "587652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "3",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "3",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "8",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "509800",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "254900",
       "rank" : 9
     } ]
   }, {
     "id" : 60,
     "items" : [ {
-      "name" : "REF_",
       "value" : "581084371",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "535662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "61363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "535652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "2",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "6",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "221500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "110750",
       "rank" : 9
     } ]
   }, {
     "id" : 61,
     "items" : [ {
-      "name" : "REF_",
       "value" : "593074359",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "613662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "61363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "613652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "1",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "4",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "159000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "79500",
       "rank" : 9
     } ]
   }, {
     "id" : 62,
     "items" : [ {
-      "name" : "REF_",
       "value" : "593104356",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "568662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "61363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "568652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "4",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "10",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "1180500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "590250",
       "rank" : 9
     } ]
   }, {
     "id" : 63,
     "items" : [ {
-      "name" : "REF_",
       "value" : "593204368",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "628662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "61363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "628652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "4",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "2",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "10",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "2305500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "1152750",
       "rank" : 9
     } ]
   }, {
     "id" : 64,
     "items" : [ {
-      "name" : "REF_",
       "value" : "565104358",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "598662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "62363272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "598652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "4",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "1",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "10",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "1125500",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "562750",
       "rank" : 9
     } ]
   }, {
     "id" : 65,
     "items" : [ {
-      "name" : "REF_",
       "value" : "56123114",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "599662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "53463272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "599652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "0",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "0",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "250000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "0",
       "rank" : 9
     } ]
   }, {
     "id" : 66,
     "items" : [ {
-      "name" : "REF_",
       "value" : "55133114",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "609662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "53463272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "599652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "0",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "0",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "250000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "0",
       "rank" : 9
     } ]
   }, {
     "id" : 67,
     "items" : [ {
-      "name" : "REF_",
       "value" : "61114119",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "619662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "53463272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "599652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "0",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "0",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "350000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "0",
       "rank" : 9
     } ]
   }, {
     "id" : 68,
     "items" : [ {
-      "name" : "REF_",
       "value" : "54234111",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "629662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "53463272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "599652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "0",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "0",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "350000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "0",
       "rank" : 9
     } ]
   }, {
     "id" : 69,
     "items" : [ {
-      "name" : "REF_",
       "value" : "56017115",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "540662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "53463272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "599652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "0",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "0",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "500000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "0",
       "rank" : 9
     } ]
   }, {
     "id" : 70,
     "items" : [ {
-      "name" : "REF_",
       "value" : "60145119",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "550662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "53463272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "599652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "0",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "0",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "750000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "0",
       "rank" : 9
     } ]
   }, {
     "id" : 71,
     "items" : [ {
-      "name" : "REF_",
       "value" : "58045115",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "560662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "53463272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "599652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "0",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "0",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "750000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "0",
       "rank" : 9
     } ]
   }, {
     "id" : 72,
     "items" : [ {
-      "name" : "REF_",
       "value" : "56047116",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "570662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "53463272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "599652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "0",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "0",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "500000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "0",
       "rank" : 9
     } ]
   }, {
     "id" : 73,
     "items" : [ {
-      "name" : "REF_",
       "value" : "55727116",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "580662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "53463272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "599652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "0",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "0",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "500000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "0",
       "rank" : 9
     } ]
   }, {
     "id" : 74,
     "items" : [ {
-      "name" : "REF_",
       "value" : "56505110",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "590662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "53463272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "599652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "0",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "0",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "750000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "0",
       "rank" : 9
     } ]
   }, {
     "id" : 75,
     "items" : [ {
-      "name" : "REF_",
       "value" : "57575117",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "600662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "53463272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "599652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "0",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "0",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "750000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "0",
       "rank" : 9
     } ]
   }, {
     "id" : 76,
     "items" : [ {
-      "name" : "REF_",
       "value" : "59867115",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "610662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "53463272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "599652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "0",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "0",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "500000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "0",
       "rank" : 9
     } ]
   }, {
     "id" : 77,
     "items" : [ {
-      "name" : "REF_",
       "value" : "55893111",
       "rank" : 1
     }, {
-      "name" : "Spot_Name_",
       "value" : "620662",
       "rank" : 2
     }, {
-      "name" : "Realtor_",
       "value" : "53463272",
       "rank" : 3
     }, {
-      "name" : "House_Name_",
       "value" : "599652",
       "rank" : 4
     }, {
-      "name" : "Level_",
       "value" : "0",
       "rank" : 5
     }, {
-      "name" : "Model_",
       "value" : "0",
       "rank" : 6
     }, {
-      "name" : "Nb_CarSlots_",
       "value" : "0",
       "rank" : 7
     }, {
-      "name" : "Buy_Price_",
       "value" : "250000",
       "rank" : 8
     }, {
-      "name" : "Sell_Price_",
       "value" : "0",
       "rank" : 9
     } ]

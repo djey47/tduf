@@ -59,9 +59,9 @@ public class DealerHelperTest {
         final String fileNameResourceValue = "ECD_B028";
 
         ResourceEntryDto dealerNameResourceEntry = ResourceEntryDto.builder().forReference(nameResourceReference).build();
-        dealerNameResourceEntry.setValue(nameResourceValue);
+        dealerNameResourceEntry.setDefaultValue(nameResourceValue);
         ResourceEntryDto dealerFileNameResourceEntry = ResourceEntryDto.builder().forReference(fileNameResourceReference).build();
-        dealerFileNameResourceEntry.setValue(fileNameResourceValue);
+        dealerFileNameResourceEntry.setDefaultValue(fileNameResourceValue);
         DbDto carShopsTopicObject = DbDto.builder()
                 .withData(DbDataDto.builder()
                         .addEntry(ContentEntryDto.builder()
@@ -103,7 +103,7 @@ public class DealerHelperTest {
         final String nameResourceValue = "DEALER";
 
         ResourceEntryDto dealerNameResourceEntry = ResourceEntryDto.builder().forReference(nameResourceReference).build();
-        dealerNameResourceEntry.setValue(nameResourceValue);
+        dealerNameResourceEntry.setDefaultValue(nameResourceValue);
         DbDto carShopsTopicObject = DbDto.builder()
                 .withData(DbDataDto.builder()
                         .addEntry(ContentEntryDto.builder()

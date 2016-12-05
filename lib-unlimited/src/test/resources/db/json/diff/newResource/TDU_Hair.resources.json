@@ -327,28 +327,7 @@
     "ref" : "54713527"
   }, {
     "items" : [ {
-      "locale" : "ch",
-      "value" : "StringPanthere01"
-    }, {
-      "locale" : "ko",
-      "value" : "StringPanthere01"
-    }, {
-      "locale" : "ja",
-      "value" : "StringPanthere01"
-    }, {
-      "locale" : "sp",
-      "value" : "StringPanthere01"
-    }, {
-      "locale" : "ge",
-      "value" : "StringPanthere01"
-    }, {
-      "locale" : "us",
-      "value" : "StringPanthere01"
-    }, {
-      "locale" : "it",
-      "value" : "StringPanthere01"
-    }, {
-      "locale" : "fr",
+      "locale" : "*",
       "value" : "StringPanthere01"
     } ],
     "ref" : "54713528"

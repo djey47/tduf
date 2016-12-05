@@ -7,8 +7,8 @@ import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -16,25 +16,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static fr.tduf.libunlimited.common.game.domain.Locale.*;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DiffPatchesGeneratorTest {
+class DiffPatchesGeneratorTest {
 
     private final static Class<DiffPatchesGeneratorTest> thisClass = DiffPatchesGeneratorTest.class;
 
     private final static List<DbDto> referenceDatabaseObjects = readReferenceDatabase();
 
-    @Before
-    public void setUp() {
+    @BeforeAll
+    static void setUp() {
 //        Log.set(Log.LEVEL_DEBUG);
     }
 
     @Test
-    public void prepare_shouldReturnInstance() throws Exception {
+    void prepare_shouldReturnInstance() throws Exception {
         // GIVEN-WHEN
         DiffPatchesGenerator actualGenerator = DiffPatchesGenerator.prepare(new ArrayList<>(), new ArrayList<>());
 
@@ -47,7 +48,7 @@ public class DiffPatchesGeneratorTest {
     }
 
     @Test
-    public void makePatches_whenNoDifference_shouldReturnEmptySet() throws Exception {
+    void makePatches_whenNoDifference_shouldReturnEmptySet() throws Exception {
         // GIVEN
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(referenceDatabaseObjects, referenceDatabaseObjects);
 
@@ -59,9 +60,9 @@ public class DiffPatchesGeneratorTest {
     }
 
     @Test
-    public void makePatches_whenNewContentsEntry_andREF_shouldAddFullUpdate_andStrictMode() throws Exception {
+    void makePatches_whenNewContentsEntry_andREF_shouldAddFullUpdate_andStrictMode() throws Exception {
         // GIVEN
-        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/ref-newEntry/TDU_CarPhysicsData.json");
+        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/ref-newEntry/TDU_CarPhysicsData.data.json");
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
 
 
@@ -93,9 +94,9 @@ public class DiffPatchesGeneratorTest {
     }
 
     @Test
-    public void makePatches_whenExistingContentsEntry_andREF_andChangedItem_shouldAddPartialUpdate() throws Exception {
+    void makePatches_whenExistingContentsEntry_andREF_andChangedItem_shouldAddPartialUpdate() throws Exception {
         // GIVEN
-        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/ref-existingEntry/TDU_CarPhysicsData.json");
+        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/ref-existingEntry/TDU_CarPhysicsData.data.json");
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
 
 
@@ -126,9 +127,9 @@ public class DiffPatchesGeneratorTest {
     }
 
     @Test
-    public void makePatches_whenNewContentsEntry_andNoREF_shouldAddFullUpdate() throws Exception {
+    void makePatches_whenNewContentsEntry_andNoREF_shouldAddFullUpdate() throws Exception {
         // GIVEN
-        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/noref-newEntry/TDU_CarRims.json");
+        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/noref-newEntry/TDU_CarRims.data.json");
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
 
 
@@ -157,9 +158,9 @@ public class DiffPatchesGeneratorTest {
     }
 
     @Test
-    public void makePatches_whenNewResourceEntries_shouldAddFullResourceUpdates_andStrictMode() throws Exception {
+    void makePatches_whenNewResourceEntries_shouldAddFullResourceUpdates_andStrictMode() throws Exception {
         // GIVEN
-        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/newResource/TDU_Hair.json");
+        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/newResource/TDU_Hair.data.json");
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
 
 
@@ -175,18 +176,19 @@ public class DiffPatchesGeneratorTest {
 
         List<DbPatchDto.DbChangeDto> actualChanges = actualPatchObject.getChanges();
         assertThat(actualChanges)
-                .hasSize(2)
+                .hasSize(2) // 1 global, 1 local (same value for all)
                 .extracting("type").containsOnly(UPDATE_RES);
         assertThat(actualChanges).extracting("strictMode").containsOnly(true);
         assertThat(actualChanges).extracting("ref").containsOnly("54713528", "54713529");
         assertThat(actualChanges).extracting("topic").containsOnly(HAIR);
-        assertThat(actualChanges).extracting("value").containsOnly("StringPanthere01", "CulottePetitBateau01");
+        assertThat(actualChanges).extracting("value").contains("StringPanthere01", "CulottePetitBateau01");
+        assertThat(actualChanges).extracting("locale").containsOnly(DEFAULT);
     }
 
     @Test
-    public void makePatches_whenNewResourceEntry_withLocalizedValues_shouldAddFullResourceUpdates_andStrictMode() throws Exception {
+    void makePatches_whenNewResourceEntry_withLocalizedValues_shouldAddFullResourceUpdates_andStrictMode() throws Exception {
         // GIVEN
-        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/newResource-localized/TDU_Hair.json");
+        List<DbDto> currentDatabaseObjects = readDatabase("/db/json/diff/newResource-localized/TDU_Hair.data.json");
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(currentDatabaseObjects, referenceDatabaseObjects);
 
 
@@ -207,7 +209,7 @@ public class DiffPatchesGeneratorTest {
         assertThat(actualChanges).extracting("strictMode").containsOnly(true);
         assertThat(actualChanges).extracting("ref").containsOnly("54713528");
         assertThat(actualChanges).extracting("topic").containsOnly(HAIR);
-        assertThat(actualChanges).extracting("locale").containsOnly((Object[]) Locale.values());
+        assertThat(actualChanges).extracting("locale").containsOnly(new Locale[] { ITALY, FRANCE, UNITED_STATES, KOREA, JAPAN, GERMANY, CHINA, SPAIN });
         assertThat(actualChanges).extracting("value").contains("StringPanthere01-FR", "StringPanthere01-CH", "StringPanthere01-US");
     }
 

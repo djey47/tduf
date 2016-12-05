@@ -3,11 +3,11 @@ package fr.tduf.libunlimited.low.files.db.rw;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 
 import java.io.BufferedWriter;
@@ -23,6 +23,7 @@ import java.util.List;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Helper class to generate db files (contents+structure) from database instances.
@@ -64,7 +65,7 @@ public class DatabaseWriter {
         List<String> writtenFilenames = new ArrayList<>();
 
         writtenFilenames.add(writeStructureAndContents(path));
-        writtenFilenames.addAll(writeResourcesEnhanced(path));
+        writtenFilenames.addAll(writeResources(path));
 
         return writtenFilenames;
     }
@@ -167,21 +168,12 @@ public class DatabaseWriter {
         return writtenSize;
     }
 
-    private List<String> writeResourcesEnhanced(String directoryPath) throws IOException {
-        List<String> writtenPaths = new ArrayList<>();
+    private List<String> writeResources(String directoryPath) throws IOException {
         DbResourceDto dbResourceDto = databaseDto.getResource();
-
         String topicLabel = databaseDto.getTopic().getLabel();
-        Locale.valuesAsStream()
-
-                .forEach((locale) -> {
-
-                    String resourceFilePath = writeResourcesForLocale(locale, topicLabel, dbResourceDto, directoryPath);
-                    writtenPaths.add(resourceFilePath);
-
-                });
-
-        return writtenPaths;
+        return Locale.valuesAsStream()
+                .map(locale -> writeResourcesForLocale(locale, topicLabel, dbResourceDto, directoryPath))
+                .collect(toList());
     }
 
     private static void checkPrerequisites(DbDto dbDto) {
@@ -225,14 +217,12 @@ public class DatabaseWriter {
     }
 
     private static void writeResourceLines(Locale locale, DbResourceDto resourceObject, BufferedWriter bufferedWriter) {
-        resourceObject.getEntries().stream()
-
-                .forEach((entry) -> entry.getItemForLocale(locale)
-
-                        .ifPresent((item) -> {
+        resourceObject.getEntries()
+                .forEach(entry -> entry.getValueForLocale(locale)
+                        .ifPresent(value -> {
                             try {
                                 writeAndEndWithCRLF(
-                                        format(RESOURCE_ENTRY_PATTERN, item.getValue(), entry.getReference()), bufferedWriter);
+                                        format(RESOURCE_ENTRY_PATTERN, value, entry.getReference()), bufferedWriter);
                             } catch (IOException ioe) {
                                 throw new RuntimeException("Error occured while writing resource entry", ioe);
                             }

@@ -4,12 +4,11 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
-import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceItemDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.*;
@@ -258,10 +257,9 @@ public class BulkDatabaseMiner {
     /**
      * @return localized value if it exists, empty otherwise
      */
-    public Optional<String> getLocalizedResourceValueFromTopicAndReference(String reference, DbDto.Topic topic, fr.tduf.libunlimited.common.game.domain.Locale locale) {
+    public Optional<String> getLocalizedResourceValueFromTopicAndReference(String reference, DbDto.Topic topic, Locale locale) {
         return getResourceEntryFromTopicAndReference(topic, reference)
-                .flatMap(entry -> entry.getItemForLocale(locale))
-                .map(ResourceItemDto::getValue);
+                .flatMap(entry -> entry.getValueForLocale(locale));
     }
 
     /**
@@ -310,11 +308,19 @@ public class BulkDatabaseMiner {
      */
     public static Set<String> getAllResourceValuesForReference(String reference, DbResourceDto resourceObject) {
         return resourceObject.getEntryByReference(reference)
-                .map(entry -> entry.getPresentLocales().stream()
-                        .map(presentLocale -> entry.getValueForLocale(presentLocale).orElse(null))
-                        .filter(value -> value != null)
-                        .collect(toSet()))
-                .orElse(new HashSet<>());
+                .map(entry -> {
+                    Set<Locale> presentLocales = entry.getPresentLocales();
+                    if (presentLocales.isEmpty()) {
+                        return entry.pickValue()
+                                .map(value -> new HashSet<>(singletonList(value)))
+                                .orElse(null);
+                    }
+                    return presentLocales.stream()
+                            .map(presentLocale -> entry.getValueForLocale(presentLocale).orElse(null))
+                            .filter(Objects::nonNull)
+                            .collect(toSet());
+                })
+                .orElse(new HashSet<>(0));
     }
 
     /**

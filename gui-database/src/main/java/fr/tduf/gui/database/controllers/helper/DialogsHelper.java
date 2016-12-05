@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static fr.tduf.libunlimited.common.game.domain.Locale.fromOrder;
 import static java.util.Arrays.asList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -284,7 +285,7 @@ public class DialogsHelper {
                 Optional<Locale> affectedLocale = empty();
                 int selectedLocaleIndex = localeChoiceBox.getSelectionModel().getSelectedIndex();
                 if (selectedLocaleIndex != 0) {
-                    affectedLocale = of(Locale.values()[selectedLocaleIndex - 1]);
+                    affectedLocale = of(fromOrder(selectedLocaleIndex));
                 }
                 return new LocalizedResource(new Pair<>(referenceTextField.getText(), valueTextField.getText()), affectedLocale);
             }

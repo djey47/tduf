@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.*;
 
@@ -29,13 +29,13 @@ public class DatabaseGenHelperTest {
     private static final String RESOURCE_REFERENCE = "11111111";
 
     @Mock
-    BulkDatabaseMiner minerMock;
+    private BulkDatabaseMiner minerMock;
 
     @Mock
-    DatabaseChangeHelper changeHelperMock;
+    private DatabaseChangeHelper changeHelperMock;
 
     @InjectMocks
-    DatabaseGenHelper genHelper;
+    private DatabaseGenHelper genHelper;
 
     @Test
     public void generateUniqueResourceEntryIdentifier_whenNullTopicObject_shouldReturnNull() throws Exception {
@@ -52,7 +52,7 @@ public class DatabaseGenHelperTest {
                         .atVersion("1,0")
                         .build())
                 .build();
-        topicObject.getResource().addEntryByReference(RESOURCE_REFERENCE).setValue("VAL");
+        topicObject.getResource().addEntryByReference(RESOURCE_REFERENCE).setDefaultValue("VAL");
 
         // WHEN
         String actualResourceIdentifier = DatabaseGenHelper.generateUniqueResourceEntryIdentifier(topicObject);
@@ -278,7 +278,7 @@ public class DatabaseGenHelperTest {
     public void generateDefaultResourceReference_whenDefaultResourceEntryExists_shouldReturnIt() {
         // GIVEN
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.RESOURCE_CURRENT_LOCALIZED);
-        topicObject.getResource().addEntryByReference("12345").setValue("??");
+        topicObject.getResource().addEntryByReference("12345").setDefaultValue("??");
 
 
         // WHEN

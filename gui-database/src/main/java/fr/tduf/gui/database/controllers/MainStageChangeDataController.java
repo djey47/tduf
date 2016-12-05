@@ -86,12 +86,11 @@ class MainStageChangeDataController extends AbstractMainStageSubController {
     }
 
     void removeResourceWithReference(DbDto.Topic topic, Locale locale, String resourceReference, boolean forAllLocales) {
-        List<Locale> affectedLocales = singletonList(locale);
         if (forAllLocales) {
-            affectedLocales = Locale.valuesAsStream().collect(toList());
+            getChangeHelper().removeResourceEntryWithReference(topic, resourceReference);
+        } else {
+            getChangeHelper().removeResourceValuesWithReference(topic, resourceReference, singletonList(locale));
         }
-
-        getChangeHelper().removeResourceValuesWithReference(topic, resourceReference, affectedLocales);
     }
 
     int addEntryForCurrentTopic() {

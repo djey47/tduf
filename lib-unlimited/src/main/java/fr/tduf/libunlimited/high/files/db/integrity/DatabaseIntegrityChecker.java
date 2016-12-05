@@ -213,6 +213,10 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
     }
 
     private static void checkResourceValuesForReference(ResourceEntryDto resourceEntry, DbDto.Topic sourceTopic, Set<IntegrityError> integrityErrors) {
+        if (resourceEntry.isGlobalized()) {
+            return;
+        }
+
         Map<String, Integer> resourceValueCounter = new HashMap<>();
         resourceEntry.getPresentLocales()
                 .forEach(presentLocale -> {

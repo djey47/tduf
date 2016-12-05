@@ -2,31 +2,24 @@
   "entries" : [ {
     "id" : 0,
     "items" : [ {
-      "name" : "REF",
       "value" : "54522",
       "rank" : 1
     }, {
-      "name" : "ID_HAIR",
       "value" : "54370022",
       "rank" : 2
     }, {
-      "name" : "HairName",
       "value" : "5436022",
       "rank" : 3
     }, {
-      "name" : "Sex",
       "value" : "56758127",
       "rank" : 4
     }, {
-      "name" : "File",
       "value" : "54640827",
       "rank" : 5
     }, {
-      "name" : "Mesh",
       "value" : "54707527",
       "rank" : 6
     }, {
-      "name" : "Material",
       "value" : "54713527",
       "rank" : 7
     } ]

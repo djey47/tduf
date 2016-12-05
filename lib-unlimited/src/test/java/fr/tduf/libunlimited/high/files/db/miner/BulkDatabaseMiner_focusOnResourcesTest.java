@@ -7,7 +7,7 @@ import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,8 +21,9 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class BulkDatabaseMiner_focusOnResourcesTest {
+class BulkDatabaseMiner_focusOnResourcesTest {
 
     private static final DbDto.Topic TOPIC = CAR_PHYSICS_DATA;
     private static final Locale LOCALE = UNITED_STATES;
@@ -33,7 +34,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     private static final String TOPIC_REF2 = "22222222";
 
     @Test
-    public void getResourceEnhancedFromTopic_whenTopicExists_shouldReturnIt() {
+    void getResourceEnhancedFromTopic_whenTopicExists_shouldReturnIt() {
         //GIVEN
         DbDto topicObject1 = createDefaultTopicObject(TOPIC);
         DbDto topicObject2 = createDefaultTopicObject(PNJ);
@@ -49,7 +50,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     }
 
     @Test
-    public void getResourceEnhancedFromTopic_whenTopicDoesNotExist_shouldReturnEmpty() {
+    void getResourceEnhancedFromTopic_whenTopicDoesNotExist_shouldReturnEmpty() {
         //GIVEN
         List<DbDto> topicObjects = singletonList(createDefaultTopicObject(TOPIC));
 
@@ -61,7 +62,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     }
 
     @Test
-    public void getResourceEntryFromTopicAndReference_whenTopicDoesNotExist_shouldReturnEmpty() {
+    void getResourceEntryFromTopicAndReference_whenTopicDoesNotExist_shouldReturnEmpty() {
         //GIVEN
         List<DbDto> topicObjects = singletonList(createDefaultTopicObject(TOPIC));
 
@@ -73,7 +74,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     }
 
     @Test
-    public void getResourceEntryFromTopicAndReference_whenTopicExists_butEntryDoesNot_shouldReturnEmpty() {
+    void getResourceEntryFromTopicAndReference_whenTopicExists_butEntryDoesNot_shouldReturnEmpty() {
         //GIVEN
         List<DbDto> topicObjects = singletonList(createDefaultTopicObject(TOPIC));
 
@@ -85,7 +86,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     }
 
     @Test
-    public void getResourceEntryFromTopicAndReference_whenEntryExists_shouldReturnIt() {
+    void getResourceEntryFromTopicAndReference_whenEntryExists_shouldReturnIt() {
         //GIVEN
         final DbDto topicObject = createDefaultTopicObject(TOPIC);
         final ResourceEntryDto entry = topicObject.getResource().addEntryByReference(RESOURCE_REF);
@@ -101,7 +102,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     }
 
     @Test
-    public void getLocalizedResourceValueFromTopicAndReference_whenTopicDoesNotExist_shouldReturnEmpty() {
+    void getLocalizedResourceValueFromTopicAndReference_whenTopicDoesNotExist_shouldReturnEmpty() {
         //GIVEN
         List<DbDto> topicObjects = singletonList(createDefaultTopicObject(TOPIC));
 
@@ -113,7 +114,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     }
 
     @Test
-    public void getLocalizedResourceValueFromTopicAndReference_whenTopicExists_butEntryDoesNot_shouldReturnEmpty() {
+    void getLocalizedResourceValueFromTopicAndReference_whenTopicExists_butEntryDoesNot_shouldReturnEmpty() {
         //GIVEN
         List<DbDto> topicObjects = singletonList(createDefaultTopicObject(TOPIC));
 
@@ -125,7 +126,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     }
 
     @Test
-    public void getLocalizedResourceValueFromTopicAndReference_whenTopicExists_entryExists_butValueDoesNot_shouldReturnEmpty() {
+    void getLocalizedResourceValueFromTopicAndReference_whenTopicExists_entryExists_butValueDoesNot_shouldReturnEmpty() {
         //GIVEN
         final DbDto topicObject = createDefaultTopicObject(TOPIC);
         topicObject.getResource().addEntryByReference(RESOURCE_REF);
@@ -139,12 +140,12 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     }
 
     @Test
-    public void getLocalizedResourceValueFromTopicAndReference_whenTopicExists_entryExists_andValueExistsForLocale_shouldReturnIt() {
+    void getLocalizedResourceValueFromTopicAndReference_whenTopicExists_entryExists_andValueExistsForLocale_shouldReturnIt() {
         //GIVEN
         final DbDto topicObject = createDefaultTopicObject(TOPIC);
         topicObject.getResource()
                 .addEntryByReference(RESOURCE_REF)
-                .setValue("")
+                .setDefaultValue("")
                 .setValueForLocale(RESOURCE_VALUE, LOCALE);
         List<DbDto> topicObjects = singletonList(topicObject);
 
@@ -158,7 +159,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     }
 
     @Test
-    public void getLocalizedResourceValueFromContentEntry_whenContentEntryDoesNotExist_shouldReturnEmpty() {
+    void getLocalizedResourceValueFromContentEntry_whenContentEntryDoesNotExist_shouldReturnEmpty() {
         // GIVEN
         List<DbDto> topicObjects = singletonList(createDefaultTopicObject(TOPIC));
 
@@ -169,20 +170,19 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
         assertThat(potentialValue).isEmpty();
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void getLocalizedResourceValueFromContentEntry_whenContentEntryExists_butFieldRankDoesNot_shouldThrowException() {
+    @Test
+    void getLocalizedResourceValueFromContentEntry_whenContentEntryExists_butFieldRankDoesNot_shouldThrowException() {
         // GIVEN
         final DbDto topicObject = createDefaultTopicObject(TOPIC);
         List<DbDto> topicObjects = singletonList(topicObject);
 
-        // WHEN
-        BulkDatabaseMiner.load(topicObjects).getLocalizedResourceValueFromContentEntry(0, 0, TOPIC, LOCALE);
-
-        // THEN: NSEE
+        // WHEN-THEN
+        assertThrows(IllegalStateException.class,
+                () -> BulkDatabaseMiner.load(topicObjects).getLocalizedResourceValueFromContentEntry(0, 0, TOPIC, LOCALE));
     }
 
     @Test
-    public void getLocalizedResourceValueFromContentEntry_whenContentEntryExists_fieldRankExists_butNotAResourceField_shouldReturnEmpty() {
+    void getLocalizedResourceValueFromContentEntry_whenContentEntryExists_fieldRankExists_butNotAResourceField_shouldReturnEmpty() {
         // GIVEN
         final DbDto topicObject = createDefaultTopicObject(TOPIC);
         List<DbDto> topicObjects = singletonList(topicObject);
@@ -195,7 +195,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     }
 
     @Test
-    public void getLocalizedResourceValueFromContentEntry_whenContentEntryExists_fieldRankExistsAsResourceField_butResourceEntryDoesNotExist_shouldReturnEmpty() {
+    void getLocalizedResourceValueFromContentEntry_whenContentEntryExists_fieldRankExistsAsResourceField_butResourceEntryDoesNotExist_shouldReturnEmpty() {
         // GIVEN
         final DbDto topicObject = createDefaultTopicObject(TOPIC);
         List<DbDto> topicObjects = singletonList(topicObject);
@@ -208,12 +208,12 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     }
 
     @Test
-    public void getLocalizedResourceValueFromContentEntry_whenContentEntryExists_fieldRankExistsAsResourceField_andResourceEntryExists_shouldReturnValue() {
+    void getLocalizedResourceValueFromContentEntry_whenContentEntryExists_fieldRankExistsAsResourceField_andResourceEntryExists_shouldReturnValue() {
         // GIVEN
         final DbDto topicObject = createDefaultTopicObject(TOPIC);
         topicObject.getResource()
                 .addEntryByReference(RESOURCE_REF)
-                .setValue("")
+                .setDefaultValue("")
                 .setValueForLocale(RESOURCE_VALUE, LOCALE);
         List<DbDto> topicObjects = singletonList(topicObject);
 
@@ -226,19 +226,18 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
                 .contains(RESOURCE_VALUE);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void getLocalizedResourceValueFromContentEntry_whenContentEntryExists_fieldRankExistsAsRemoteResourceField_butRemoteTopicDoesNotExist_shouldThrowException() {
+    @Test
+    void getLocalizedResourceValueFromContentEntry_whenContentEntryExists_fieldRankExistsAsRemoteResourceField_butRemoteTopicDoesNotExist_shouldThrowException() {
         // GIVEN
         List<DbDto> topicObjects = singletonList(createDefaultTopicObject(TOPIC));
 
-        // WHEN
-        BulkDatabaseMiner.load(topicObjects).getLocalizedResourceValueFromContentEntry(0, 4, TOPIC, LOCALE);
-
-        // THEN: NSEE
+        // WHEN-THEN
+        assertThrows(IllegalStateException.class,
+                () -> BulkDatabaseMiner.load(topicObjects).getLocalizedResourceValueFromContentEntry(0, 4, TOPIC, LOCALE));
     }
 
     @Test
-    public void getLocalizedResourceValueFromContentEntry_whenContentEntryExists_fieldRankExistsAsRemoteResourceField_butResourceEntryDoesNotExist_shouldReturnEmpty() {
+    void getLocalizedResourceValueFromContentEntry_whenContentEntryExists_fieldRankExistsAsRemoteResourceField_butResourceEntryDoesNotExist_shouldReturnEmpty() {
         // GIVEN
         List<DbDto> topicObjects = singletonList(createDefaultTopicObject(TOPIC));
 
@@ -250,12 +249,12 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     }
 
     @Test
-    public void getLocalizedResourceValueFromContentEntry_whenContentEntryExists_fieldRankExistsAsRemoteResourceField_andResourceEntryExists_shouldReturnValue() {
+    void getLocalizedResourceValueFromContentEntry_whenContentEntryExists_fieldRankExistsAsRemoteResourceField_andResourceEntryExists_shouldReturnValue() {
         // GIVEN
         final DbDto topicObject = createDefaultTopicObject(TOPIC);
         topicObject.getResource()
                 .addEntryByReference(RESOURCE_REF)
-                .setValue("")
+                .setDefaultValue("")
                 .setValueForLocale(RESOURCE_VALUE, LOCALE);
         List<DbDto> topicObjects = singletonList(topicObject);
 
@@ -269,7 +268,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     }
 
     @Test
-    public void getLocalizedResourceValueFromContentEntry_whenContentEntryExists_fieldRankExistsAsRemoteEntry_shouldReturnEmpty() {
+    void getLocalizedResourceValueFromContentEntry_whenContentEntryExists_fieldRankExistsAsRemoteEntry_shouldReturnEmpty() {
         // GIVEN
         final DbDto topicObject = createDefaultTopicObject(TOPIC);
         List<DbDto> topicObjects = singletonList(topicObject);
@@ -282,7 +281,7 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     }
 
     @Test
-    public void getAllResourceValuesForReference_whenEntryDoesNotExist_shouldReturnEmptySet() {
+    void getAllResourceValuesForReference_whenEntryDoesNotExist_shouldReturnEmptySet() {
         //GIVEN
         DbResourceDto resourceObject = createDefaultResourceObject();
 
@@ -294,10 +293,10 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     }
 
     @Test
-    public void getAllResourceValuesForReference_whenEntryExists_withSameValueForItems_shouldReturnValueOnce() {
+    void getAllResourceValuesForReference_whenEntryExists_withSameValueForItems_shouldReturnValueOnce() {
         //GIVEN
         DbResourceDto resourceObject = createDefaultResourceObject();
-        resourceObject.addEntryByReference(RESOURCE_REF).setValue(RESOURCE_VALUE);
+        resourceObject.addEntryByReference(RESOURCE_REF).setDefaultValue(RESOURCE_VALUE);
 
         //WHEN
         final Set<String> actualValues = BulkDatabaseMiner.getAllResourceValuesForReference(RESOURCE_REF, resourceObject);
@@ -309,11 +308,27 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
     }
 
     @Test
-    public void getAllResourceValuesForReference_whenEntryExists_withDifferentValuesForItems_shouldReturnValues() {
+    void getAllResourceValuesForReference_whenEntryExists_withGlobalizedValue_shouldReturnIt() {
         //GIVEN
         DbResourceDto resourceObject = createDefaultResourceObject();
-        resourceObject.addEntryByReference(RESOURCE_REF)
-                .setValue(RESOURCE_VALUE)
+        resourceObject.addDefaultEntryByReference(RESOURCE_REF, RESOURCE_VALUE);
+
+        //WHEN
+        final Set<String> actualValues = BulkDatabaseMiner.getAllResourceValuesForReference(RESOURCE_REF, resourceObject);
+
+        //THEN
+        assertThat(actualValues)
+                .hasSize(1)
+                .containsOnly(RESOURCE_VALUE);
+    }
+
+    @Test
+    void getAllResourceValuesForReference_whenEntryExists_withDifferentValuesForItems_shouldReturnValues() {
+        //GIVEN
+        DbResourceDto resourceObject = createDefaultResourceObject();
+        ResourceEntryDto resourceEntryDto = resourceObject.addEntryByReference(RESOURCE_REF);
+        setAllResourceValues(resourceEntryDto, RESOURCE_VALUE);
+        resourceEntryDto
                 .setValueForLocale("VALUE2", FRANCE)
                 .setValueForLocale("VALUE3", UNITED_STATES);
 
@@ -398,5 +413,10 @@ public class BulkDatabaseMiner_focusOnResourcesTest {
                     .withCategoryCount(1)
                     .atVersion("1,0")
                     .build();
+    }
+
+    private static void setAllResourceValues(ResourceEntryDto resourceEntryDto, String resourceValue) {
+        Locale.valuesAsStream()
+                .forEach(locale -> resourceEntryDto.setValueForLocale(resourceValue, locale));
     }
 }

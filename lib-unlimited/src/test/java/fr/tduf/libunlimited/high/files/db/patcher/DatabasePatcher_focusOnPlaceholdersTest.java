@@ -3,13 +3,13 @@ package fr.tduf.libunlimited.high.files.db.patcher;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
@@ -24,13 +24,13 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DatabasePatcher_focusOnPlaceholdersTest {
+class DatabasePatcher_focusOnPlaceholdersTest {
 
     private DbDto databaseObject;
     private DatabasePatcher databasePatcher;
 
-    @Before
-    public void setUp() throws ReflectiveOperationException {
+    @BeforeEach
+    void setUp() throws ReflectiveOperationException {
         databaseObject = DbDto.builder()
                 .withData(DbDataDto.builder().build())
                 .withStructure(DbStructureDto.builder()
@@ -53,7 +53,7 @@ public class DatabasePatcher_focusOnPlaceholdersTest {
     }
 
     @Test
-    public void apply_whenUpdateContents_forRef_withProperty_inValues_shouldUsePropertyValue() throws ReflectiveOperationException {
+     void apply_whenUpdateContents_forRef_withProperty_inValues_shouldUsePropertyValue() throws ReflectiveOperationException {
         // GIVEN
         final String placeholderName = "MYREF";
         DbPatchDto.DbChangeDto changeObject = DbPatchDto.DbChangeDto.builder()
@@ -78,7 +78,7 @@ public class DatabasePatcher_focusOnPlaceholdersTest {
     }
 
     @Test
-    public void apply_whenUpdateContents_forRef_withProperty_inPartialValues_shouldUsePropertyValue() throws ReflectiveOperationException {
+     void apply_whenUpdateContents_forRef_withProperty_inPartialValues_shouldUsePropertyValue() throws ReflectiveOperationException {
         // GIVEN
         final String placeholderName1 = "MYREF";
         final String placeholderName2 = "MYNEWREF";
@@ -115,7 +115,7 @@ public class DatabasePatcher_focusOnPlaceholdersTest {
     }
 
     @Test
-    public void apply_whenUpdateContents_forRef_withoutProperty_shouldUseGeneratedValue() {
+     void apply_whenUpdateContents_forRef_withoutProperty_shouldUseGeneratedValue() {
         // GIVEN
         final String placeholderName = "MYREF";
         DbPatchDto.DbChangeDto changeObject = DbPatchDto.DbChangeDto.builder()
@@ -143,7 +143,7 @@ public class DatabasePatcher_focusOnPlaceholdersTest {
     }
 
     @Test
-    public void apply_whenDeleteContents_forRef_withProperty_shouldUsePropertyValue() throws ReflectiveOperationException {
+     void apply_whenDeleteContents_forRef_withProperty_shouldUsePropertyValue() throws ReflectiveOperationException {
         // GIVEN
         final String placeholderName = "MYREF";
         DbPatchDto.DbChangeDto changeObject = DbPatchDto.DbChangeDto.builder()
@@ -174,7 +174,7 @@ public class DatabasePatcher_focusOnPlaceholdersTest {
     }
 
     @Test
-    public void apply_whenUpdateResources_forRef_withProperties_shouldUsePropertiesValues() throws ReflectiveOperationException {
+     void apply_whenUpdateResources_forRef_withProperties_shouldUsePropertiesValues() throws ReflectiveOperationException {
         // GIVEN
         final String placeholderName1 = "MYRESREF";
         final String placeholderName2 = "MYRESVAL";
@@ -201,7 +201,7 @@ public class DatabasePatcher_focusOnPlaceholdersTest {
     }
 
     @Test
-    public void apply_whenUpdateResources_forRef_withoutProperty_shouldUseGeneratedValue() throws ReflectiveOperationException {
+     void apply_whenUpdateResources_forRef_withoutProperty_shouldUseGeneratedValue() throws ReflectiveOperationException {
         // GIVEN
         final String placeholderName1 = "MYRESREF";
         final String placeholderName2 = "MYRESVAL";
@@ -231,7 +231,7 @@ public class DatabasePatcher_focusOnPlaceholdersTest {
     }
 
     @Test
-    public void apply_whenDeleteResources_forRef_withProperty_shouldUsePropertyValue() throws ReflectiveOperationException {
+     void apply_whenDeleteResources_forRef_withProperty_shouldUsePropertyValue() throws ReflectiveOperationException {
         // GIVEN
         final String placeholderName = "MYREF";
         DbPatchDto.DbChangeDto changeObject = DbPatchDto.DbChangeDto.builder()

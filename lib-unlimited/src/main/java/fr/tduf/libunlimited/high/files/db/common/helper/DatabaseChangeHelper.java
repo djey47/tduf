@@ -14,6 +14,7 @@ import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.common.game.domain.Locale.DEFAULT;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -152,7 +153,7 @@ public class DatabaseChangeHelper {
 
         resourceObject
                 .addEntryByReference(newResourceReference)
-                .setValue(newResourceValue);
+                .setDefaultValue(newResourceValue);
         resourceObject.removeEntryByReference(oldResourceReference);
     }
 
@@ -266,10 +267,22 @@ public class DatabaseChangeHelper {
     }
 
     /**
-     * Deletes values from specified topic, having given reference.
+     * Deletes entry and all localized values from specified topic, having given reference.
      *
-     * @param topic             : database topic where entry should be duplicated
+     * @param topic             : database topic where resource entry should be deleted
      * @param resourceReference : reference of resource to be deleted
+     * @throws java.util.NoSuchElementException when such a resource entry does not exist in any of affected locales.
+     */
+    public void removeResourceEntryWithReference(DbDto.Topic topic, String resourceReference) {
+        databaseMiner.getResourcesFromTopic(topic)
+                .ifPresent(entry -> entry.removeEntryByReference(resourceReference));
+    }
+
+    /**
+     * Deletes localized resource values from specified topic, having given reference.
+     *
+     * @param topic             : database topic where value should be deleted
+     * @param resourceReference : reference of resource to be affected
      * @param affectedLocales   : list of locales to be affected by deletion
      * @throws java.util.NoSuchElementException when such a resource entry does not exist in any of affected locales.
      */
@@ -324,7 +337,7 @@ public class DatabaseChangeHelper {
     private void removeResourceValueForLocales(DbDto.Topic topic, ResourceEntryDto entry, List<Locale> affectedLocales) {
         affectedLocales.forEach(entry::removeValueForLocale);
 
-        if (entry.getItemCount() == 0) {
+        if (1 == entry.getItemCount() && entry.getValueForLocale(DEFAULT).isPresent()) {
             databaseMiner.getResourcesFromTopic(topic)
                     .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resource for topic: " + topic))
                     .removeEntryByReference(entry.getReference());

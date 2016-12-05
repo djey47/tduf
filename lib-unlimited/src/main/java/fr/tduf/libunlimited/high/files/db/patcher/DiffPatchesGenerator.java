@@ -83,21 +83,8 @@ public class DiffPatchesGenerator {
 
     private Set<DbPatchDto.DbChangeDto> seekForResourcesChanges(DbResourceDto resourceObject, DbDto.Topic currentTopic) {
         return resourceObject.getEntries().stream()
-                .flatMap(resourceEntry -> {
-                    String ref = resourceEntry.getReference();
-                    if (getReferenceDatabaseMiner().getResourceEntryFromTopicAndReference(currentTopic, ref).isPresent()) {
-                        // Already exists => do nothing
-                        return null;
-                    }
-
-                    return isGlobalizedResource(resourceEntry) ?
-                            createGlobalizedResourceUpdate(currentTopic, resourceEntry)
-                            :
-                            createLocalizedResourceUpdates(currentTopic, resourceEntry);
-                })
-
-                .filter(changeObject -> changeObject != null)
-
+                .flatMap(resourceEntry -> createResourceUpdates(currentTopic, resourceEntry))
+                .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
@@ -110,7 +97,7 @@ public class DiffPatchesGenerator {
                         handleTopicWithREF(currentTopic, entry, potentialRefFieldRank.getAsInt())
                         :
                         handleTopicWithoutREF(currentTopic, entry))
-                .filter(changeObject -> changeObject != null)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
@@ -152,7 +139,7 @@ public class DiffPatchesGenerator {
                             :
                             fromCouple(fieldRank, currentValue);
                 })
-                .filter(partialValue -> partialValue != null)
+                .filter(Objects::nonNull)
                 .collect(toList());
 
         if (partialEntryValues.isEmpty()) {
@@ -181,6 +168,21 @@ public class DiffPatchesGenerator {
                 .build();
     }
 
+    private Stream<? extends DbPatchDto.DbChangeDto> createResourceUpdates(DbDto.Topic currentTopic, ResourceEntryDto resourceEntry) {
+        Optional<ResourceEntryDto> potentialResourceEntry = getReferenceDatabaseMiner().getResourceEntryFromTopicAndReference(currentTopic, resourceEntry.getReference());
+        if (potentialResourceEntry.isPresent()) {
+            // Already exists => do nothing
+            return null;
+        }
+
+        if (resourceEntry.isGlobalized()
+                || isLocalizedResourceWithUniqueValue(resourceEntry)) {
+            return createGlobalizedResourceUpdate(currentTopic, resourceEntry);
+        }
+
+        return createLocalizedResourceUpdates(currentTopic, resourceEntry);
+    }
+
     private Stream<? extends DbPatchDto.DbChangeDto> createLocalizedResourceUpdates(DbDto.Topic currentTopic, ResourceEntryDto resourceEntry) {
         return Locale.valuesAsStream()
                 .map(locale -> DbPatchDto.DbChangeDto.builder()
@@ -201,6 +203,7 @@ public class DiffPatchesGenerator {
                 .withValue(resourceEntry.pickValue()
                         .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resource value in entry for REF: " + resourceEntry.getReference() + " in topic: " + currentTopic)))
                 .forTopic(currentTopic)
+                .forLocale(Locale.DEFAULT)
                 .build());
     }
 
@@ -216,13 +219,10 @@ public class DiffPatchesGenerator {
                 .build();
     }
 
-    private static boolean isGlobalizedResource(ResourceEntryDto resourceEntry) {
+    private static boolean isLocalizedResourceWithUniqueValue(ResourceEntryDto resourceEntry) {
         return 1 == resourceEntry.getPresentLocales().stream()
-
                 .map(resourceEntry::getValueForLocale)
-
                 .map(Optional::get)
-
                 .collect(toSet()).size();
     }
 

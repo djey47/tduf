@@ -1,16 +1,17 @@
 package fr.tduf.libunlimited.high.files.db.integrity;
 
+import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import org.assertj.core.data.MapEntry;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,16 +26,13 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.*;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DatabaseIntegrityCheckerTest {
+class DatabaseIntegrityCheckerTest {
 
     private static final String UID_NON_EXISTING = "000";
     private static final String UID_EXISTING = "001";
 
-    @Before
-    public void setUp() {}
-
     @Test
-    public void checkAll_whenEmptyDatabaseObjects_shouldReturnSingleIntegrityError() throws ReflectiveOperationException {
+    void checkAll_whenEmptyDatabaseObjects_shouldReturnSingleIntegrityError() throws ReflectiveOperationException {
         //GIVEN
         DatabaseIntegrityChecker checker = createChecker(new ArrayList<>());
 
@@ -55,7 +53,7 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     @Test
-    public void checkAll_whenNoError_shouldBuildIndexes_andReturnEmptyList() throws ReflectiveOperationException {
+    void checkAll_whenNoError_shouldBuildIndexes_andReturnEmptyList() throws ReflectiveOperationException {
         //GIVEN
         List<DbDto> dbDtos = createAllDtosWithoutErrors();
 
@@ -70,7 +68,7 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     @Test
-    public void checkAll_whenMissingResourceInTopics_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
+    void checkAll_whenMissingResourceInTopics_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
         //GIVEN
         List<DbDto> dbDtos = createAllDtosWithMissingLocalResource();
 
@@ -84,7 +82,7 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     @Test
-    public void checkAll_whenMissingResourceInTopics_andTypeH_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
+    void checkAll_whenMissingResourceInTopics_andTypeH_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
         //GIVEN
         List<DbDto> dbDtos = createAllDtosWithMissingLocalResourceTypeH();
 
@@ -98,7 +96,7 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     @Test
-    public void checkAll_whenMissingResourceInRemoteTopic_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
+    void checkAll_whenMissingResourceInRemoteTopic_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
         //GIVEN
         List<DbDto> dbDtos = createAllDtosWithMissingForeignResource();
 
@@ -112,7 +110,7 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     @Test
-    public void checkAll_whenMissingResourceInLocalAndRemoteTopic_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
+    void checkAll_whenMissingResourceInLocalAndRemoteTopic_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
         //GIVEN
         List<DbDto> dbDtos = createAllDtosWithMissingLocalAndForeignResource();
 
@@ -125,7 +123,7 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     @Test
-    public void checkAll_whenMissingContentsEntryInRemoteTopic_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
+    void checkAll_whenMissingContentsEntryInRemoteTopic_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
         //GIVEN
         List<DbDto> dbDtos = createAllDtosWithMissingForeignEntry();
 
@@ -138,7 +136,7 @@ public class DatabaseIntegrityCheckerTest {
     }
 
     @Test
-    public void checkAll_whenGlobalResourceValuesNotIdentical_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
+    void checkAll_whenGlobalResourceValuesNotIdentical_shouldReturnIntegrityErrors() throws ReflectiveOperationException {
         //GIVEN
         List<DbDto> dbDtos = createAllDtosWithDifferentGlobalResourceValueForLocaleCH();
 
@@ -238,45 +236,45 @@ public class DatabaseIntegrityCheckerTest {
 
     private DbResourceDto createResourceEnhancedNoEntryMissing() {
         final DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
-        resourceObject.addEntryByReference("100").setValue("CENT");            //Local 1
-        resourceObject.addEntryByReference("200").setValue("DEUX CENTS");      //Local 2
-        resourceObject.addEntryByReference("400").setValue("QUATRE CENTS");    //Local 3
-        resourceObject.addEntryByReference("300").setValue("TROIS CENTS");     //Remote
+        setAllResourceValues(resourceObject.addEntryByReference("100"), "CENT");            //Local 1
+        setAllResourceValues(resourceObject.addEntryByReference("200"), "DEUX CENTS");      //Local 2
+        setAllResourceValues(resourceObject.addEntryByReference("400"), "QUATRE CENTS");    //Local 3
+        setAllResourceValues(resourceObject.addEntryByReference("300"), "TROIS CENTS");     //Remote
 
         return resourceObject;
     }
 
     private DbResourceDto createResourceEnhancedOneLocalEntryMissing() {
         final DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
-        resourceObject.addEntryByReference("100").setValue("CENT");            //Local 1
-        resourceObject.addEntryByReference("400").setValue("QUATRE CENTS");    //Local 2
-        resourceObject.addEntryByReference("300").setValue("TROIS CENTS");     //Remote
+        resourceObject.addEntryByReference("100").setDefaultValue("CENT");            //Local 1
+        resourceObject.addEntryByReference("400").setDefaultValue("QUATRE CENTS");    //Local 2
+        resourceObject.addEntryByReference("300").setDefaultValue("TROIS CENTS");     //Remote
 
         return resourceObject;
     }
 
     private DbResourceDto createResourceEnhancedOneLocalAndOneForeignEntryMissing() {
         final DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
-        resourceObject.addEntryByReference("100").setValue("CENT");            //Local 1
-        resourceObject.addEntryByReference("400").setValue("QUATRE CENTS");    //Local 2
+        resourceObject.addEntryByReference("100").setDefaultValue("CENT");            //Local 1
+        resourceObject.addEntryByReference("400").setDefaultValue("QUATRE CENTS");    //Local 2
 
         return resourceObject;
     }
 
     private DbResourceDto createResourceOneForeignEntryMissing() {
         final DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
-        resourceObject.addEntryByReference("100").setValue("CENT");            //Local 1
-        resourceObject.addEntryByReference("200").setValue("DEUX CENTS");      //Local 2
-        resourceObject.addEntryByReference("400").setValue("QUATRE CENTS");    //Local 3
+        resourceObject.addEntryByReference("100").setDefaultValue("CENT");            //Local 1
+        resourceObject.addEntryByReference("200").setDefaultValue("DEUX CENTS");      //Local 2
+        resourceObject.addEntryByReference("400").setDefaultValue("QUATRE CENTS");    //Local 3
 
         return resourceObject;
     }
 
     private DbResourceDto createResourceAnotherLocalEntryMissing() {
         final DbResourceDto resourceObject = createDefaultResourceObjectEnhanced();
-        resourceObject.addEntryByReference("100").setValue("CENT");            //Local 1
-        resourceObject.addEntryByReference("200").setValue("DEUX CENTS");      //Local 2
-        resourceObject.addEntryByReference("300").setValue("TROIS CENTS");      //Remote
+        resourceObject.addEntryByReference("100").setDefaultValue("CENT");            //Local 1
+        resourceObject.addEntryByReference("200").setDefaultValue("DEUX CENTS");      //Local 2
+        resourceObject.addEntryByReference("300").setDefaultValue("TROIS CENTS");      //Remote
 
         return resourceObject;
     }
@@ -390,6 +388,11 @@ public class DatabaseIntegrityCheckerTest {
         for (IntegrityError integrityError : integrityErrors) {
             assertThat(integrityError.getInformation()).containsEntry(infoKey, infoValue);
         }
+    }
+
+    private static void setAllResourceValues(ResourceEntryDto resourceEntryDto, String value) {
+        Locale.valuesAsStream()
+                .forEach(locale -> resourceEntryDto.setValueForLocale(value, locale));
     }
 
     private static DatabaseIntegrityChecker createChecker(List<DbDto> databaseObjects) throws ReflectiveOperationException {

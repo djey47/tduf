@@ -49,11 +49,11 @@ public class DbResourceDto implements Serializable {
         return ofNullable(entriesByReference.get(reference));
     }
 
+    /**
+     * @return localized resource entry which has been added
+     */
     public ResourceEntryDto addEntryByReference(String reference) {
-        getEntryByReference(reference)
-                .ifPresent(resourceEntry -> {
-                    throw new IllegalArgumentException("An ResourceEntryDto with given reference already exists: " + reference);
-                });
+        checkEntryDoesNotExistWithReference(reference);
 
         ResourceEntryDto newResourceEntryDto = ResourceEntryDto.builder()
                 .forReference(reference)
@@ -64,8 +64,31 @@ public class DbResourceDto implements Serializable {
         return newResourceEntryDto;
     }
 
+    /**
+     * @return default resource entry which has been added
+     */
+    public ResourceEntryDto addDefaultEntryByReference(String reference, String value) {
+        checkEntryDoesNotExistWithReference(reference);
+
+        ResourceEntryDto newResourceEntryDto = ResourceEntryDto.builder()
+                .forReference(reference)
+                .withDefaultItem(value)
+                .build();
+
+        entriesByReference.put(reference, newResourceEntryDto);
+
+        return newResourceEntryDto;
+    }
+
     public void removeEntryByReference(String reference) {
         entriesByReference.remove(reference);
+    }
+
+    private void checkEntryDoesNotExistWithReference(String reference) {
+        getEntryByReference(reference)
+                .ifPresent(resourceEntry -> {
+                    throw new IllegalArgumentException("An ResourceEntryDto with given reference already exists: " + reference);
+                });
     }
 
     @Override
