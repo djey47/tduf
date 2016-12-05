@@ -123,24 +123,18 @@ class DbConverterHelper {
 
     @Test
     void globalizedResources() {
-        String jsonDirectory = "/opt/workspaces/perso-git/tduf/lib-unlimited/src/test/resources/db/json";
+        String jsonDirectory = "/media/sf_DevStore/GIT/tduf/lib-unlimited/src/test/resources/db/json/ref";
 
-        DbDto.Topic.valuesAsStream()
-                .map(topic -> {
-                    try {
-                        return DatabaseReadWriteHelper.readGenuineDatabaseTopicFromJson(topic, jsonDirectory)
-                                .orElse(null);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                })
-                .filter(Objects::nonNull)
+        List<DbDto> dbDtos = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDirectory);
+
+        dbDtos.stream()
                 .map(DbDto::getResource)
                 .forEach(r -> {
                     List<ResourceEntryDto> currentEntries = new ArrayList<>(r.getEntries());
 //                    r.setEntries(reduceGlobalResources(currentEntries));
                 });
+
+        DatabaseReadWriteHelper.writeDatabaseTopicsToJson(dbDtos, jsonDirectory);
     }
 
     private static List<ResourceEntryDto> reduceGlobalResources(List<ResourceEntryDto> readEntries) {
