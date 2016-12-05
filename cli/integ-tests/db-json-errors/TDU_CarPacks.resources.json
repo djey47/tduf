@@ -3,83 +3,41 @@
   "categoryCount" : 2,
   "entries" : [ {
     "items" : [ {
-      "locale" : "ge",
-      "value" : "ERROR"
+      "value" : "ERROR",
+      "locale" : "ge"
     }, {
-      "locale" : "us",
-      "value" : "ERROR"
+      "value" : "ERROR",
+      "locale" : "us"
     }, {
-      "locale" : "fr",
-      "value" : "ERREUR!!"
+      "value" : "ERREUR!!",
+      "locale" : "fr"
     }, {
-      "locale" : "sp",
-      "value" : "ERROR"
+      "value" : "ERROR",
+      "locale" : "sp"
     }, {
-      "locale" : "it",
-      "value" : "ERROR"
+      "value" : "ERROR",
+      "locale" : "it"
     }, {
-      "locale" : "ja",
-      "value" : "ERROR"
+      "value" : "ERROR",
+      "locale" : "ja"
     }, {
-      "locale" : "ko",
-      "value" : "ERROR"
+      "value" : "ERROR",
+      "locale" : "ko"
     }, {
-      "locale" : "ch",
-      "value" : "ERROR"
+      "value" : "ERROR",
+      "locale" : "ch"
     } ],
     "ref" : "88926089"
   }, {
     "items" : [ {
-      "locale" : "ge",
-      "value" : "??"
-    }, {
-      "locale" : "us",
-      "value" : "??"
-    }, {
-      "locale" : "fr",
-      "value" : "??"
-    }, {
-      "locale" : "sp",
-      "value" : "??"
-    }, {
-      "locale" : "it",
-      "value" : "??"
-    }, {
-      "locale" : "ja",
-      "value" : "??"
-    }, {
-      "locale" : "ko",
-      "value" : "??"
-    }, {
-      "locale" : "ch",
-      "value" : "??"
+      "value" : "??",
+      "locale" : "*"
     } ],
     "ref" : "53357653"
   }, {
     "items" : [ {
-      "locale" : "ge",
-      "value" : "nismo_350"
-    }, {
-      "locale" : "us",
-      "value" : "nismo_350"
-    }, {
-      "locale" : "fr",
-      "value" : "nismo_350"
-    }, {
-      "locale" : "sp",
-      "value" : "nismo_350"
-    }, {
-      "locale" : "it",
-      "value" : "nismo_350"
-    }, {
-      "locale" : "ja",
-      "value" : "nismo_350"
-    }, {
-      "locale" : "ko",
-      "value" : "nismo_350"
-    }, {
-      "locale" : "ch",
-      "value" : "nismo_350"
+      "value" : "nismo_350",
+      "locale" : "*"
     } ],
     "ref" : "54357653"
   } ]

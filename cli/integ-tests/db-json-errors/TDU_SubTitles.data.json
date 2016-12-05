@@ -2,19 +2,15 @@
   "entries" : [ {
     "id" : 0,
     "items" : [ {
-      "name" : "SoundFileID_",
       "value" : "54756083",
       "rank" : 1
     }, {
-      "name" : "SoundFileType",
       "value" : "5569823",
       "rank" : 2
     }, {
-      "name" : "Libelle",
       "value" : "53371533",
       "rank" : 3
     }, {
-      "name" : "BitField",
       "value" : "1",
       "rank" : 4
     } ]
