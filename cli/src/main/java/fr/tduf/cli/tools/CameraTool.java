@@ -19,10 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static fr.tduf.cli.tools.CameraTool.Command.COPY_SET;
-import static fr.tduf.cli.tools.CameraTool.Command.COPY_SETS;
+import static fr.tduf.cli.tools.CameraTool.Command.*;
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 
 /**
  * Command line interface for handling TDU vehicle cameras.
@@ -51,6 +49,7 @@ public class CameraTool extends GenericTool {
      * All available commands
      */
     enum Command implements CommandHelper.CommandEnum {
+        LIST("list", "Returns all camera identifiers in provided file"),
         COPY_SET("copy-set", "Duplicate given camera set to a new identifier. Will not erase existing."),
         COPY_SETS("copy-sets", "Duplicate given camera sets (in a CSV file) to new identifiers. Will not erase existing.");
 
@@ -88,6 +87,9 @@ public class CameraTool extends GenericTool {
     @Override
     protected boolean commandDispatch() throws Exception {
         switch (command) {
+            case LIST:
+                commandResult = listCameras(inputCameraFile);
+                return true;
             case COPY_SET:
                 commandResult = copySet(inputCameraFile, outputCameraFile);
                 return true;
@@ -133,8 +135,14 @@ public class CameraTool extends GenericTool {
     @Override
     protected List<String> getExamples() {
         return asList(
-                COPY_SET.label + " -i \"C:\\Users\\Bill\\Desktop\\Cameras.bin\" -s 208 -t 209",
-                COPY_SETS.label + " -i \"C:\\Users\\Bill\\Desktop\\Cameras.bin\" -b \"instructions.csv\"");
+                LIST.label + " -i \"C:\\Desktop\\Cameras.bin\"",
+                COPY_SET.label + " -i \"C:\\Desktop\\Cameras.bin\" -s 208 -t 209",
+                COPY_SETS.label + " -i \"C:\\Desktop\\Cameras.bin\" -b \"instructions.csv\"");
+    }
+
+    private Map<String, ?> listCameras(String cameraFile) {
+        return null;
+
     }
 
     private Map<String, ?> copySet(String sourceCameraFile, String targetCameraFile) throws IOException {

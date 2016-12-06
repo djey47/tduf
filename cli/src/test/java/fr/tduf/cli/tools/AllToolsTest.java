@@ -174,6 +174,14 @@ public class AllToolsTest {
     }
 
     @Test
+    public void cameraTool_list() throws NoSuchFieldException, IOException {
+        // GIVEN-WHEN-THEN
+        exitRule.expectSystemExitWithStatus(1);
+
+        testToolCommand(new CameraTool(), LIST);
+    }
+
+    @Test
     public void cameraTool_copySet() throws NoSuchFieldException, IOException {
         // GIVEN-WHEN-THEN
         exitRule.expectSystemExitWithStatus(1);
