@@ -21,6 +21,7 @@ import java.util.Map;
 
 import static fr.tduf.cli.tools.CameraTool.Command.*;
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Command line interface for handling TDU vehicle cameras.
@@ -140,9 +141,18 @@ public class CameraTool extends GenericTool {
                 COPY_SETS.label + " -i \"C:\\Desktop\\Cameras.bin\" -b \"instructions.csv\"");
     }
 
-    private Map<String, ?> listCameras(String cameraFile) {
-        return null;
+    private Map<String, ?> listCameras(String cameraFile) throws IOException {
+        CamerasParser parser = loadAndParseCameras(cameraFile);
 
+        outLine("> Done reading cameras file.");
+
+        HashMap<String, Object> resultInfo = new HashMap<>();
+        List<Long> cameraIdentifiers = parser.getCameraIndex().keySet().stream()
+                .sorted()
+                .collect(toList());
+        resultInfo.put("cameraIdentifiers", cameraIdentifiers.toArray(new Long[cameraIdentifiers.size()]));
+
+        return resultInfo;
     }
 
     private Map<String, ?> copySet(String sourceCameraFile, String targetCameraFile) throws IOException {

@@ -1,18 +1,24 @@
 package fr.tduf.cli.tools;
 
+import fr.tduf.libtesting.common.helper.AssertionsHelper;
+import fr.tduf.libtesting.common.helper.ConsoleHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import org.apache.commons.io.FileUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.json.JSONException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CameraToolIntegTest {
+class CameraToolIntegTest {
 
     private final Path camerasIntegTestPath = Paths.get("integ-tests").resolve("cameras");
     private final Path outputPath = camerasIntegTestPath.resolve("out");
@@ -21,14 +27,34 @@ public class CameraToolIntegTest {
     private final String outputCameraFile = outputPath.resolve("Cameras.bin.extended").toString();
     private final String batchFile = camerasIntegTestPath.resolve("instructions.csv").toString();
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeEach
+    void setUp() throws IOException {
         FileUtils.deleteDirectory(new File(outputDirectory));
         FilesHelper.createDirectoryIfNotExists(outputDirectory);
     }
 
+    @AfterEach
+    public void tearDown() {
+        ConsoleHelper.restoreOutput();
+    }
+
     @Test
-    public void copySet_shouldProduceCorrectFile() throws IOException {
+    void list_shouldReturnAllCameraIdentifiers() throws IOException, JSONException {
+        // GIVEN
+        byte[] jsonContents = Files.readAllBytes(camerasIntegTestPath.resolve("json").resolve("list.out.json"));
+        String expectedJson = new String(jsonContents, FilesHelper.CHARSET_DEFAULT);
+
+        // WHEN: list
+        System.out.println("-> List!");
+        OutputStream outputStream = ConsoleHelper.hijackStandardOutput();
+        CameraTool.main(new String[]{"list", "-n", "-i", inputCameraFile});
+
+        // THEN
+        AssertionsHelper.assertOutputStreamContainsJsonExactly(outputStream, expectedJson);
+    }
+
+    @Test
+    void copySet_shouldProduceCorrectFile() throws IOException {
         String referenceCameraFile = camerasIntegTestPath.resolve("Cameras.set108CopiedTo109.bin").toString();
 
         // WHEN: copy-set
@@ -40,7 +66,7 @@ public class CameraToolIntegTest {
     }
 
     @Test
-    public void copySets_shouldProduceCorrectFile() throws IOException {
+    void copySets_shouldProduceCorrectFile() throws IOException {
         String referenceCameraFile = camerasIntegTestPath.resolve("Cameras.set108CopiedTo109.bin").toString();
 
         // WHEN: copy-sets
