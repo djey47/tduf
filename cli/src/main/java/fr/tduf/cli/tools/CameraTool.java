@@ -50,9 +50,10 @@ public class CameraTool extends GenericTool {
      * All available commands
      */
     enum Command implements CommandHelper.CommandEnum {
-        LIST("list", "Returns all camera identifiers in provided file"),
+        LIST("list", "Returns all camera identifiers in provided file."),
         COPY_SET("copy-set", "Duplicate given camera set to a new identifier. Will not erase existing."),
-        COPY_SETS("copy-sets", "Duplicate given camera sets (in a CSV file) to new identifiers. Will not erase existing.");
+        COPY_SETS("copy-sets", "Duplicate given camera sets (in a CSV file) to new identifiers. Will not erase existing."),
+        VIEW_SETS("view-sets", "Returs all set properties of a given camera identifier.");
 
         final String label;
         final String description;
@@ -97,6 +98,9 @@ public class CameraTool extends GenericTool {
             case COPY_SETS:
                 commandResult = copySets(inputCameraFile, outputCameraFile);
                 return true;
+            case VIEW_SETS:
+                commandResult = viewCameraSets(inputCameraFile, sourceIdentifier);
+                return true;
             default:
                 commandResult = null;
                 return false;
@@ -113,6 +117,12 @@ public class CameraTool extends GenericTool {
         // Output file: defaulted to input file.extended
         if (outputCameraFile == null) {
             outputCameraFile = inputCameraFile + ".extended";
+        }
+
+        // Source identifier: mandatory with view-sets
+        if (sourceIdentifier == null
+                && command == VIEW_SETS) {
+            throw new CmdLineException(parser, "Error: source identifier is required.", null);
         }
 
         // Identifiers: mandatory with copy-set
@@ -138,7 +148,12 @@ public class CameraTool extends GenericTool {
         return asList(
                 LIST.label + " -i \"C:\\Desktop\\Cameras.bin\"",
                 COPY_SET.label + " -i \"C:\\Desktop\\Cameras.bin\" -s 208 -t 209",
-                COPY_SETS.label + " -i \"C:\\Desktop\\Cameras.bin\" -b \"instructions.csv\"");
+                COPY_SETS.label + " -i \"C:\\Desktop\\Cameras.bin\" -b \"instructions.csv\"",
+                VIEW_SETS.label + " -i \"C:\\Desktop\\Cameras.bin\" -s 208");
+    }
+
+    private Map<String, ?> viewCameraSets(String cameraFile, int cameraIdentifier) {
+        return null;
     }
 
     private Map<String, ?> listCameras(String cameraFile) throws IOException {
