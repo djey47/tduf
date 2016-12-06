@@ -4,6 +4,7 @@ import fr.tduf.cli.common.helper.CommandHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasWriter;
+import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -18,6 +19,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import static fr.tduf.cli.tools.CameraTool.Command.*;
 import static java.util.Arrays.asList;
@@ -26,6 +28,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Command line interface for handling TDU vehicle cameras.
  */
+// TODO set identifier type to long
 public class CameraTool extends GenericTool {
 
     @Option(name="-i", aliases = "--inputCameraFile", usage = "Cameras.bin file to process, required.", required = true)
@@ -53,7 +56,7 @@ public class CameraTool extends GenericTool {
         LIST("list", "Returns all camera identifiers in provided file."),
         COPY_SET("copy-set", "Duplicate given camera set to a new identifier. Will not erase existing."),
         COPY_SETS("copy-sets", "Duplicate given camera sets (in a CSV file) to new identifiers. Will not erase existing."),
-        VIEW_SETS("view-sets", "Returs all set properties of a given camera identifier.");
+        VIEW_SET("view-set", "Returs all set properties of a given camera identifier.");
 
         final String label;
         final String description;
@@ -98,8 +101,8 @@ public class CameraTool extends GenericTool {
             case COPY_SETS:
                 commandResult = copySets(inputCameraFile, outputCameraFile);
                 return true;
-            case VIEW_SETS:
-                commandResult = viewCameraSets(inputCameraFile, sourceIdentifier);
+            case VIEW_SET:
+                commandResult = viewCameraSet(inputCameraFile, sourceIdentifier);
                 return true;
             default:
                 commandResult = null;
@@ -119,9 +122,9 @@ public class CameraTool extends GenericTool {
             outputCameraFile = inputCameraFile + ".extended";
         }
 
-        // Source identifier: mandatory with view-sets
+        // Source identifier: mandatory with view-set
         if (sourceIdentifier == null
-                && command == VIEW_SETS) {
+                && command == VIEW_SET) {
             throw new CmdLineException(parser, "Error: source identifier is required.", null);
         }
 
@@ -149,17 +152,30 @@ public class CameraTool extends GenericTool {
                 LIST.label + " -i \"C:\\Desktop\\Cameras.bin\"",
                 COPY_SET.label + " -i \"C:\\Desktop\\Cameras.bin\" -s 208 -t 209",
                 COPY_SETS.label + " -i \"C:\\Desktop\\Cameras.bin\" -b \"instructions.csv\"",
-                VIEW_SETS.label + " -i \"C:\\Desktop\\Cameras.bin\" -s 208");
+                VIEW_SET.label + " -i \"C:\\Desktop\\Cameras.bin\" -s 208");
     }
 
-    private Map<String, ?> viewCameraSets(String cameraFile, int cameraIdentifier) {
-        return null;
+    private Map<String, ?> viewCameraSet(String cameraFile, int cameraIdentifier) throws IOException {
+        CamerasParser parser = loadAndParseCameras(cameraFile);
+
+        // TODO use LIB to get view props
+
+        HashMap<String, Object> resultInfo = new HashMap<>();
+        List<DataStore> viewStores = parser.getCameraViews().get((long) cameraIdentifier);
+        if (viewStores == null) {
+            throw new NoSuchElementException("No view set found for identifier: " + cameraIdentifier);
+        }
+        List<String> viewProperties = viewStores.stream()
+                .map(DataStore::toJsonString)
+                .collect(toList());
+        resultInfo.put("cameraIdentifier", cameraIdentifier);
+        resultInfo.put("cameraViews",  viewProperties.toArray(new String[viewProperties.size()]));
+
+        return resultInfo;
     }
 
     private Map<String, ?> listCameras(String cameraFile) throws IOException {
         CamerasParser parser = loadAndParseCameras(cameraFile);
-
-        outLine("> Done reading cameras file.");
 
         HashMap<String, Object> resultInfo = new HashMap<>();
         List<Long> cameraIdentifiers = parser.getCameraIndex().keySet().stream()

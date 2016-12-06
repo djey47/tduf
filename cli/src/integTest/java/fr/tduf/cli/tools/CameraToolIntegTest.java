@@ -76,4 +76,19 @@ class CameraToolIntegTest {
         // THEN
         assertThat(new File(outputCameraFile)).hasSameContentAs(new File(referenceCameraFile));
     }
+
+    @Test
+    void viewSet_shouldReturnAllViewProperties() throws IOException, JSONException {
+        // GIVEN
+        byte[] jsonContents = Files.readAllBytes(camerasIntegTestPath.resolve("json").resolve("view-set.out.json"));
+        String expectedJson = new String(jsonContents, FilesHelper.CHARSET_DEFAULT);
+
+        // WHEN: list
+        System.out.println("-> View-set!");
+        OutputStream outputStream = ConsoleHelper.hijackStandardOutput();
+        CameraTool.main(new String[]{"view-set", "-n", "-i", inputCameraFile, "-s", "1000"});
+
+        // THEN
+        AssertionsHelper.assertOutputStreamContainsJsonExactly(outputStream, expectedJson);
+    }
 }

@@ -9,7 +9,7 @@ import java.io.IOException;
 
 import static fr.tduf.cli.tools.CameraTool.Command.COPY_SET;
 import static fr.tduf.cli.tools.CameraTool.Command.COPY_SETS;
-import static fr.tduf.cli.tools.CameraTool.Command.VIEW_SETS;
+import static fr.tduf.cli.tools.CameraTool.Command.VIEW_SET;
 import static fr.tduf.cli.tools.DatabaseTool.Command.*;
 import static fr.tduf.cli.tools.FileTool.Command.*;
 import static fr.tduf.cli.tools.MappingTool.Command.*;
@@ -199,11 +199,11 @@ public class AllToolsTest {
     }
 
     @Test
-    public void cameraTool_viewSets() throws NoSuchFieldException, IOException {
+    public void cameraTool_viewSet() throws NoSuchFieldException, IOException {
         // GIVEN-WHEN-THEN
         exitRule.expectSystemExitWithStatus(1);
 
-        testToolCommand(new CameraTool(), VIEW_SETS);
+        testToolCommand(new CameraTool(), VIEW_SET);
     }
 
     private static void testToolCommand(GenericTool toolInstance, CommandHelper.CommandEnum command) throws NoSuchFieldException, IOException {
