@@ -28,7 +28,6 @@ import static java.util.stream.Collectors.toList;
 /**
  * Command line interface for handling TDU vehicle cameras.
  */
-// TODO set identifier type to long
 public class CameraTool extends GenericTool {
 
     @Option(name="-i", aliases = "--inputCameraFile", usage = "Cameras.bin file to process, required.", required = true)
@@ -38,10 +37,10 @@ public class CameraTool extends GenericTool {
     private String outputCameraFile;
 
     @Option(name="-t", aliases = "--targetId", usage = "Base value of new camera identifier (required for copy-set operation).")
-    private Integer targetIdentifier;
+    private Long targetIdentifier;
 
     @Option(name="-s", aliases = "--sourceId", usage = "Identifier of camera set to copy (required for copy-set operation).")
-    private Integer sourceIdentifier;
+    private Long sourceIdentifier;
 
     @Option(name="-b", aliases = "--batchFile", usage = "CSV File containing all identifiers of camera sets to copy (required for copy-sets operation).")
     private String batchIdentifiersFile;
@@ -155,13 +154,13 @@ public class CameraTool extends GenericTool {
                 VIEW_SET.label + " -i \"C:\\Desktop\\Cameras.bin\" -s 208");
     }
 
-    private Map<String, ?> viewCameraSet(String cameraFile, int cameraIdentifier) throws IOException {
+    private Map<String, ?> viewCameraSet(String cameraFile, long cameraIdentifier) throws IOException {
         CamerasParser parser = loadAndParseCameras(cameraFile);
 
         // TODO use LIB to get view props
 
         HashMap<String, Object> resultInfo = new HashMap<>();
-        List<DataStore> viewStores = parser.getCameraViews().get((long) cameraIdentifier);
+        List<DataStore> viewStores = parser.getCameraViews().get(cameraIdentifier);
         if (viewStores == null) {
             throw new NoSuchElementException("No view set found for identifier: " + cameraIdentifier);
         }
