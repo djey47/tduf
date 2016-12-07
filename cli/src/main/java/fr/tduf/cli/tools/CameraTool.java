@@ -181,6 +181,7 @@ public class CameraTool extends GenericTool {
         List<Long> cameraIdentifiers = parser.getCameraIndex().keySet().stream()
                 .sorted()
                 .collect(toList());
+        // TODO add camera count
         resultInfo.put("cameraIdentifiers", cameraIdentifiers.toArray(new Long[cameraIdentifiers.size()]));
 
         return resultInfo;
