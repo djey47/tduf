@@ -1,14 +1,12 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.rw;
 
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
@@ -107,6 +105,24 @@ public class CamerasParser extends GenericParser<String> {
                 .reduce(0, (size1, size2) -> size1 + size2);
 
         return cachedTotalViewCount;
+    }
+
+    /**
+     * @return all handled view properties
+     */
+    public EnumMap<ViewProps, ?> getViewProps(DataStore viewStore) {
+        viewStore.getRawValue(ViewProps.TYPE.getStoreFieldName())
+                .orElseThrow(() -> new IllegalArgumentException("No view data store provided"));
+
+        EnumMap<ViewProps, Object> props = new EnumMap<>(ViewProps.class);
+
+        // TODO iterate over enum values
+        // TODO add store method to return enum member (use enum field)
+        viewStore.getInteger(ViewProps.TYPE.getStoreFieldName())
+                .map(Long::intValue)
+                .ifPresent(val -> props.put(ViewProps.TYPE, val));
+
+        return props;
     }
 
     /**

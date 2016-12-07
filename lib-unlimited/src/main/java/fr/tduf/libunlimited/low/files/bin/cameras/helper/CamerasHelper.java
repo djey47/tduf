@@ -1,11 +1,13 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.helper;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.Long.valueOf;
@@ -66,6 +68,28 @@ public class CamerasHelper {
             String[] compounds = instruction.split(";");
             duplicateCameraSet(valueOf(compounds[0]), valueOf(compounds[1]), parser);
         });
+    }
+
+    /**
+     * @param cameraIdentifier  : identifier of camera
+     * @param parser            : parsed cameras contents
+     * @return view properties for requested camera.
+     */
+    public static CameraInfo fetchInformation(long cameraIdentifier, CamerasParser parser) {
+        List<DataStore> viewStores = parser.getCameraViews().get(cameraIdentifier);
+        if (viewStores == null) {
+            throw new NoSuchElementException("Requested camera identifier does not exist: " + cameraIdentifier);
+        }
+
+        CameraInfo.CameraInfoBuilder cameraInfoBuilder = CameraInfo.builder()
+                .forIdentifier((int) cameraIdentifier);
+
+        viewStores.stream()
+                .map(parser::getViewProps)
+                .map(CameraInfo.CameraView::fromProps)
+                .forEach(cameraInfoBuilder::addView);
+
+        return cameraInfoBuilder.build();
     }
 
     private static void updateIndexInDatastore(DataStore dataStore, long sourceCameraId, long targetCameraId, Map<Long, Short> cameraIndex) {

@@ -30,6 +30,7 @@ public class CameraInfo {
         private int cameraIdentifier;
         private Map<GenuineCamViewsDto.GenuineCamViewDto.Type, CameraView> viewSets = new EnumMap<>(GenuineCamViewsDto.GenuineCamViewDto.Type.class);
 
+        // TODO set to long
         public CameraInfoBuilder forIdentifier(int cameraIdentifier) {
             this.cameraIdentifier = cameraIdentifier;
             return this;
@@ -63,6 +64,15 @@ public class CameraInfo {
             cameraView.type = type;
             cameraView.sourceCameraIdentifier = sourceCameraIdentifier;
             cameraView.sourceType = sourceType;
+
+            return cameraView;
+        }
+
+        public static CameraView fromProps(EnumMap<ViewProps, ?> viewProps) {
+            CameraView cameraView = new CameraView();
+
+            cameraView.type = GenuineCamViewsDto.GenuineCamViewDto.Type.fromInternalId((Integer) viewProps.get(ViewProps.TYPE));
+            // TODO add more props
 
             return cameraView;
         }
