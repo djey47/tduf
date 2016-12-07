@@ -2,8 +2,9 @@ package fr.tduf.libunlimited.low.files.bin.cameras.helper;
 
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -12,38 +13,43 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.expectThrows;
 
-public class CamerasHelperTest {
+class CamerasHelperTest {
+
+    private static byte[] camContents;
 
     private CamerasParser parser;
 
-    @Before
-    public void setUp() throws URISyntaxException, IOException {
-        byte[] camContents = FilesHelper.readBytesFromResourceFile("/bin/Cameras.bin");
-        ByteArrayInputStream camInputStream = new ByteArrayInputStream(camContents);
-
-        parser = CamerasParser.load(camInputStream);
-        parser.parse();
+    @BeforeAll
+    static void globalSetUp() throws IOException, URISyntaxException {
+        camContents = FilesHelper.readBytesFromResourceFile("/bin/Cameras.bin");
     }
 
-    @Test(expected = NullPointerException.class)
-    public void duplicateCameraSet_whenNullParser_shouldThrowNullPointerException() throws Exception {
-        // GIVEN-WHEN
-        CamerasHelper.duplicateCameraSet(1, 1001, null);
-
-        // THEN: NPE
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void duplicateCameraSet_whenSourceDoesNotExist_shouldThrowException() throws Exception {
-        // GIVEN-WHEN
-        CamerasHelper.duplicateCameraSet(0, 401, parser);
-
-        // THEN: IAE
+    @BeforeEach
+    void setUp() throws URISyntaxException, IOException {
+        try (ByteArrayInputStream cameraInputStream = new ByteArrayInputStream(camContents)) {
+            parser = CamerasParser.load(cameraInputStream);
+            parser.parse();
+        }
     }
 
     @Test
-    public void duplicateCameraSet_whenSourceExists_shouldAddSet() throws Exception {
+    void duplicateCameraSet_whenNullParser_shouldThrowNullPointerException() throws Exception {
+        // GIVEN-WHEN-THEN
+        expectThrows(NullPointerException.class,
+                () -> CamerasHelper.duplicateCameraSet(1, 1001, null));
+    }
+
+    @Test
+    void duplicateCameraSet_whenSourceDoesNotExist_shouldThrowException() throws Exception {
+        // GIVEN-WHEN-THEN
+        expectThrows(IllegalArgumentException.class,
+                () -> CamerasHelper.duplicateCameraSet(0, 401, parser));
+    }
+
+    @Test
+    void duplicateCameraSet_whenSourceExists_shouldAddSet() throws Exception {
         // GIVEN-WHEN
         CamerasHelper.duplicateCameraSet(1, 401, parser);
 
@@ -56,7 +62,7 @@ public class CamerasHelperTest {
     }
 
     @Test
-    public void duplicateCameraSet_whenSourceAndTargetExist_shouldDoNothing() throws Exception {
+    void duplicateCameraSet_whenSourceAndTargetExist_shouldDoNothing() throws Exception {
         // GIVEN-WHEN
         CamerasHelper.duplicateCameraSet(1, 15, parser);
 
@@ -67,7 +73,7 @@ public class CamerasHelperTest {
     }
 
     @Test
-    public void batchDuplicateCameraSets_whenSourceExist_shouldAddSets() throws Exception {
+    void batchDuplicateCameraSets_whenSourceExist_shouldAddSets() throws Exception {
         // GIVEN-WHEN
         List<String> instructions = asList ("1;401", "1;402", "1;403");
         CamerasHelper.batchDuplicateCameraSets(instructions, parser);
