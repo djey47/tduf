@@ -1,6 +1,7 @@
 package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.helper.CommandHelper;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasWriter;
@@ -16,10 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import static fr.tduf.cli.tools.CameraTool.Command.*;
 import static java.util.Arrays.asList;
@@ -157,18 +155,18 @@ public class CameraTool extends GenericTool {
     private Map<String, ?> viewCameraSet(String cameraFile, long cameraIdentifier) throws IOException {
         CamerasParser parser = loadAndParseCameras(cameraFile);
 
-        // TODO use LIB to get view props
-
         HashMap<String, Object> resultInfo = new HashMap<>();
         List<DataStore> viewStores = parser.getCameraViews().get(cameraIdentifier);
         if (viewStores == null) {
             throw new NoSuchElementException("No view set found for identifier: " + cameraIdentifier);
         }
-        List<String> viewProperties = viewStores.stream()
-                .map(DataStore::toJsonString)
+
+        List<EnumMap<ViewProps, ?>> viewProperties = viewStores.stream()
+                .map(parser::getViewProps)
                 .collect(toList());
         resultInfo.put("cameraIdentifier", cameraIdentifier);
-        resultInfo.put("cameraViews",  viewProperties.toArray(new String[viewProperties.size()]));
+        resultInfo.put("cameraViews",  viewProperties);
+        resultInfo.put("cameraViewsCount",  viewProperties.size());
 
         return resultInfo;
     }
@@ -181,9 +179,8 @@ public class CameraTool extends GenericTool {
                 .sorted()
                 .collect(toList());
 
-        int cameraCount = cameraIdentifiers.size();
-        resultInfo.put("cameraCount", cameraCount);
-        resultInfo.put("cameraIdentifiers", cameraIdentifiers.toArray(new Long[cameraCount]));
+        resultInfo.put("cameraCount", cameraIdentifiers.size());
+        resultInfo.put("cameraIdentifiers", cameraIdentifiers);
 
         return resultInfo;
     }

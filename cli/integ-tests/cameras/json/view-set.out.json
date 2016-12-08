@@ -1,4 +1,13 @@
 {
-  "cameraViews" : [ "{}", "{}", "{}", "{}" ],
-  "cameraIdentifier" : 1000
+  "cameraViews" : [ {
+    "TYPE" : 23
+  }, {
+    "TYPE" : 43
+  }, {
+    "TYPE" : 24
+  }, {
+    "TYPE" : 44
+  } ],
+  "cameraIdentifier" : 1000,
+  "cameraViewsCount" : 4
 }
