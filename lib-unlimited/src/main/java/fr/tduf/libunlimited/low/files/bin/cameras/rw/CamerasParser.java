@@ -116,10 +116,8 @@ public class CamerasParser extends GenericParser<String> {
 
         EnumMap<ViewProps, Object> props = new EnumMap<>(ViewProps.class);
 
-        // TODO iterate over enum values
-        // TODO add store method to return enum member (use enum field)
+        // TODO iterate over enum values (must provide callback in enum)
         viewStore.getInteger(ViewProps.TYPE.getStoreFieldName())
-                .map(Long::intValue)
                 .ifPresent(val -> props.put(ViewProps.TYPE, val));
 
         return props;
