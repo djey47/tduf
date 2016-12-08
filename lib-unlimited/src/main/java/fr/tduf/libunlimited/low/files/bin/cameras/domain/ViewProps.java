@@ -1,5 +1,7 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.domain;
 
+import java.util.stream.Stream;
+
 /**
  * All handled view properties
  */
@@ -15,6 +17,10 @@ public enum ViewProps {
 
     public String getStoreFieldName() {
         return storeFieldName;
+    }
+
+    public static Stream<ViewProps> valuesStream() {
+        return Stream.of(values());
     }
 
     @Override

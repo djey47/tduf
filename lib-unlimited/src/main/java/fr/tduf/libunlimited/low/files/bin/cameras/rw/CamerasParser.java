@@ -115,11 +115,12 @@ public class CamerasParser extends GenericParser<String> {
                 .orElseThrow(() -> new IllegalArgumentException("No view data store provided"));
 
         EnumMap<ViewProps, Object> props = new EnumMap<>(ViewProps.class);
-
-        // TODO iterate over enum values (must provide callback in enum)
-        // TODO type => return genuine enum value
-        viewStore.getInteger(ViewProps.TYPE.getStoreFieldName())
-                .ifPresent(val -> props.put(ViewProps.TYPE, val));
+        ViewProps.valuesStream()
+                .forEach(prop -> {
+                    // TODO type => return genuine enum value
+                    viewStore.getInteger(prop.getStoreFieldName())
+                            .ifPresent(val -> props.put(prop, val));
+                });
 
         return props;
     }
