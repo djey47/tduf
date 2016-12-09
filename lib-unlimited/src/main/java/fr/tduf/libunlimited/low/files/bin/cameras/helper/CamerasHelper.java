@@ -40,7 +40,7 @@ public class CamerasHelper {
         final Map<Long, Short> cameraIndex = parser.getCameraIndex();
         if (!cameraIndex.containsKey(sourceCameraId)
                 || !parser.getCameraViews().containsKey(sourceCameraId)) {
-            throw new IllegalArgumentException("Unknown source camera identifier: " + sourceCameraId);
+            throw new NoSuchElementException("Unknown source camera identifier: " + sourceCameraId);
         }
 
         if (cameraIndex.containsKey(targetCameraId)
