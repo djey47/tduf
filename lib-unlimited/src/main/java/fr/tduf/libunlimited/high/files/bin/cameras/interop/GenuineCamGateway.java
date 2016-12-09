@@ -5,6 +5,7 @@ import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
 import fr.tduf.libunlimited.high.files.common.interop.GenuineGateway;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.File;
@@ -60,7 +61,7 @@ public class GenuineCamGateway extends GenuineGateway {
     }
 
     private static CameraInfo.CameraView mapGenuineCamViewToCameraView(GenuineCamViewsDto.GenuineCamViewDto genuineView) {
-        GenuineCamViewsDto.GenuineCamViewDto.Type sourceType = GenuineCamViewsDto.GenuineCamViewDto.Type.fromInternalId(genuineView.getViewId());
+        ViewKind sourceType = ViewKind.fromInternalId(genuineView.getViewId());
         return CameraInfo.CameraView.from(genuineView.getViewType(), genuineView.getCameraId(), sourceType);
     }
 

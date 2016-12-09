@@ -5,6 +5,7 @@ import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.CustomizableCameraView;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -76,7 +77,7 @@ class AdjustCameraStep extends GenericStep {
 
                     genuineCamViewDto.setViewType(cameraView.getGenuineViewType());
                     genuineCamViewDto.setCameraId(Integer.parseInt(camCompounds[0]));
-                    GenuineCamViewsDto.GenuineCamViewDto.Type genuineViewType = CustomizableCameraView.fromSuffix(camCompounds[1]).getGenuineViewType();
+                    ViewKind genuineViewType = CustomizableCameraView.fromSuffix(camCompounds[1]).getGenuineViewType();
                     genuineCamViewDto.setViewId(genuineViewType.getInternalId());
 
                     return genuineCamViewDto;

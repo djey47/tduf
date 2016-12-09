@@ -1,6 +1,6 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.rw;
 
-import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
@@ -136,9 +136,9 @@ public class CamerasParser extends GenericParser<String> {
     /**
      * @return genuine view type from prop info
      */
-    public static Optional<GenuineCamViewsDto.GenuineCamViewDto.Type> getViewType(DataStore viewStore, ViewProps viewProp) {
+    public static Optional<ViewKind> getViewType(DataStore viewStore, ViewProps viewProp) {
         return viewStore.getInteger(viewProp.getStoreFieldName())
-                .map(v -> GenuineCamViewsDto.GenuineCamViewDto.Type.fromInternalId(v.intValue()));
+                .map(v -> ViewKind.fromInternalId(v.intValue()));
     }
 
     /**

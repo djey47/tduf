@@ -1,7 +1,5 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.domain;
 
-import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
-
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -55,14 +53,14 @@ public class CameraInfo {
      * Gathers all information about a particular view
      */
     public static class CameraView {
-        private GenuineCamViewsDto.GenuineCamViewDto.Type type;
+        private ViewKind type;
         private long sourceCameraIdentifier;
-        private GenuineCamViewsDto.GenuineCamViewDto.Type sourceType;
+        private ViewKind sourceType;
         private EnumMap<ViewProps, ?> settings;
 
         private CameraView() {}
 
-        public static CameraView from(GenuineCamViewsDto.GenuineCamViewDto.Type type, long sourceCameraIdentifier, GenuineCamViewsDto.GenuineCamViewDto.Type sourceType) {
+        public static CameraView from(ViewKind type, long sourceCameraIdentifier, ViewKind sourceType) {
             CameraView cameraView = new CameraView();
 
             cameraView.type = type;
@@ -75,13 +73,13 @@ public class CameraInfo {
         public static CameraView fromProps(EnumMap<ViewProps, ?> viewProps) {
             CameraView cameraView = new CameraView();
 
-            cameraView.type = (GenuineCamViewsDto.GenuineCamViewDto.Type) viewProps.get(ViewProps.TYPE);
+            cameraView.type = (ViewKind) viewProps.get(ViewProps.TYPE);
             cameraView.settings = viewProps;
 
             return cameraView;
         }
 
-        public GenuineCamViewsDto.GenuineCamViewDto.Type getType() {
+        public ViewKind getType() {
             return type;
         }
 
@@ -89,7 +87,7 @@ public class CameraInfo {
             return sourceCameraIdentifier;
         }
 
-        public GenuineCamViewsDto.GenuineCamViewDto.Type getSourceType() {
+        public ViewKind getSourceType() {
             return sourceType;
         }
 

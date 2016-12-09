@@ -1,10 +1,10 @@
 package fr.tduf.libunlimited.high.files.db.patcher.domain;
 
-import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 
 import java.util.stream.Stream;
 
-import static fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto.GenuineCamViewDto.Type.*;
+import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind.*;
 
 /** All customizable view kinds **/
 public enum CustomizableCameraView {
@@ -22,9 +22,9 @@ public enum CustomizableCameraView {
     FOLLOW_FAR_BACK("FOLLOWFARBACK", Follow_Far_Back);
 
     private final String propertySuffix;
-    private final GenuineCamViewsDto.GenuineCamViewDto.Type genuineViewType;
+    private final ViewKind genuineViewType;
 
-    CustomizableCameraView(String propertySuffix, GenuineCamViewsDto.GenuineCamViewDto.Type genuineViewType) {
+    CustomizableCameraView(String propertySuffix, ViewKind genuineViewType) {
         this.propertySuffix = propertySuffix;
         this.genuineViewType = genuineViewType;
     }
@@ -38,7 +38,7 @@ public enum CustomizableCameraView {
         }
     }
 
-    public GenuineCamViewsDto.GenuineCamViewDto.Type getGenuineViewType() {
+    public ViewKind getGenuineViewType() {
         return genuineViewType;
     }
 

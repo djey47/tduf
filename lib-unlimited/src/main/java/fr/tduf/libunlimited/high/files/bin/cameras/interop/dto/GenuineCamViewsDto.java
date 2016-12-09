@@ -1,12 +1,12 @@
 package fr.tduf.libunlimited.high.files.bin.cameras.interop.dto;
 
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * In/out object from .net cli, CAM-I and CAM-C commands.
@@ -25,37 +25,8 @@ public class GenuineCamViewsDto {
     @JsonTypeName("genuineCamView")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class  GenuineCamViewDto {
-        // TODO Extract to dedicated file in low lib
-        /** All handled view kinds **/
-        public enum Type {
-            Follow_Near(20), Follow_Near_Back(40),
-            Follow_Far(21), Follow_Far_Back(41),
-            Bumper(22), Bumper_Back(42),
-            Cockpit(23), Cockpit_Back(43),
-            Hood(24), Hood_Back(44),
-            Follow_Large(25), Follow_Large_Back(45),
-            Unknown(0);
-
-            private int internalId;
-
-            Type(int internalId) {
-                this.internalId = internalId;
-            }
-
-            public static Type fromInternalId(int internalId) {
-                return Stream.of(values())
-                        .filter(type -> type.internalId == internalId)
-                        .findAny()
-                        .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("Unknown view type identifier: " + internalId));
-            }
-
-            public int getInternalId() {
-                return internalId;
-            }
-        }
-
         @JsonProperty("type")
-        private Type viewType;
+        private ViewKind viewType;
 
         @JsonProperty("cameraId")
         private long cameraId;
@@ -66,7 +37,7 @@ public class GenuineCamViewsDto {
         @JsonProperty("customized")
         private boolean customized;
 
-        public Type getViewType() {
+        public ViewKind getViewType() {
             return viewType;
         }
 
@@ -82,7 +53,7 @@ public class GenuineCamViewsDto {
             return customized;
         }
 
-        public void setViewType(Type viewType) {
+        public void setViewType(ViewKind viewType) {
             this.viewType = viewType;
         }
 

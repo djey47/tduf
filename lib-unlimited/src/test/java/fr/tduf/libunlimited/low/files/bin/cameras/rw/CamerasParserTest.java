@@ -1,7 +1,7 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.rw;
 
 import fr.tduf.libunlimited.common.helper.FilesHelper;
-import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
@@ -97,7 +97,7 @@ class CamerasParserTest {
 
         // THEN
         assertThat(viewProps).hasSize(5);
-        assertThat(viewProps.get(ViewProps.TYPE)).isEqualTo(GenuineCamViewsDto.GenuineCamViewDto.Type.Follow_Large_Back);
+        assertThat(viewProps.get(ViewProps.TYPE)).isEqualTo(ViewKind.Follow_Large_Back);
         assertThat(viewProps.get(ViewProps.STEERING_WHEEL_TURN)).isEqualTo(30L);
         assertThat(viewProps.get(ViewProps.BINOCULARS)).isEqualTo(0L);
         assertThat(viewProps.get(ViewProps.CAMERA_POSITION_X)).isEqualTo(-100L);
