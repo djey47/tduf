@@ -25,6 +25,7 @@ public class GenuineCamViewsDto {
     @JsonTypeName("genuineCamView")
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class  GenuineCamViewDto {
+        // TODO Extract to dedicated file in low lib
         /** All handled view kinds **/
         public enum Type {
             Follow_Near(20), Follow_Near_Back(40),
