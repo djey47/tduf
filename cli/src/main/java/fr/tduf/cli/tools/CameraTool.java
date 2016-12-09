@@ -1,6 +1,7 @@
 package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.helper.CommandHelper;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
@@ -154,19 +155,10 @@ public class CameraTool extends GenericTool {
 
     private Map<String, ?> viewCameraSet(String cameraFile, long cameraIdentifier) throws IOException {
         CamerasParser parser = loadAndParseCameras(cameraFile);
+        CameraInfo cameraInfo = CamerasHelper.fetchInformation(cameraIdentifier, parser);
 
         HashMap<String, Object> resultInfo = new HashMap<>();
-        List<DataStore> viewStores = parser.getCameraViews().get(cameraIdentifier);
-        if (viewStores == null) {
-            throw new NoSuchElementException("No view set found for identifier: " + cameraIdentifier);
-        }
-
-        List<EnumMap<ViewProps, ?>> viewProperties = viewStores.stream()
-                .map(parser::getViewProps)
-                .collect(toList());
-        resultInfo.put("cameraIdentifier", cameraIdentifier);
-        resultInfo.put("cameraViews",  viewProperties);
-        resultInfo.put("cameraViewsCount",  viewProperties.size());
+        resultInfo.put("cameraSet", cameraInfo);
 
         return resultInfo;
     }

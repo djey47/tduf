@@ -14,12 +14,12 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Map;
+import java.util.List;
 
 import static fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto.GenuineCamViewDto.Type.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,10 +58,10 @@ public class GenuineCamGatewayTest {
         // THEN
         assertThat(actualCameraInfo).isNotNull();
         assertThat(actualCameraInfo.getCameraIdentifier()).isEqualToComparingFieldByField(CAMERA_ID);
-        final Map<GenuineCamViewsDto.GenuineCamViewDto.Type, CameraInfo.CameraView> actualViewSets = actualCameraInfo.getViewSets();
+        final List<CameraInfo.CameraView> actualViewSets = actualCameraInfo.getViews();
         assertThat(actualViewSets).hasSize(4);
-        assertThat(actualViewSets).containsKeys(Hood, Hood_Back, Cockpit, Cockpit_Back);
-        final CameraInfo.CameraView actualView = actualViewSets.get(Hood);
+        assertThat(actualViewSets).extracting(("type")).containsOnly(Hood, Hood_Back, Cockpit, Cockpit_Back);
+        final CameraInfo.CameraView actualView = actualViewSets.stream().filter(v -> Hood == v.getType()).findAny().get();
         assertThat(actualView.getType()).isEqualTo(Hood);
         assertThat(actualView.getSourceCameraIdentifier()).isEqualTo(0);
         assertThat(actualView.getSourceType()).isEqualTo(Unknown);

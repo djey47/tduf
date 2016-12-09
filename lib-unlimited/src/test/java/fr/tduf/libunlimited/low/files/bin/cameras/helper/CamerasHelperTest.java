@@ -14,6 +14,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import static fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto.GenuineCamViewDto.Type.*;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.expectThrows;
@@ -114,13 +115,13 @@ class CamerasHelperTest {
 
         // THEN
         assertThat(cameraInfo.getCameraIdentifier()).isEqualTo((int)cameraIdentifier);
-        assertThat(cameraInfo.getViewSets()).hasSize(4);
-        assertThat(cameraInfo.getViewSets().values())
+        assertThat(cameraInfo.getViews()).hasSize(4);
+        assertThat(cameraInfo.getViews())
                 .extracting("type")
                 .contains(
-                    GenuineCamViewsDto.GenuineCamViewDto.Type.Cockpit,
-                    GenuineCamViewsDto.GenuineCamViewDto.Type.Cockpit_Back,
-                    GenuineCamViewsDto.GenuineCamViewDto.Type.Hood,
-                    GenuineCamViewsDto.GenuineCamViewDto.Type.Hood_Back);
+                    Cockpit,
+                    Cockpit_Back,
+                    Hood,
+                    Hood_Back);
     }
 }
