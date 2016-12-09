@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.rw;
 
 import fr.tduf.libunlimited.common.helper.FilesHelper;
+import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
@@ -86,12 +87,20 @@ class CamerasParserTest {
         camerasParser.parse();
         DataStore dataStore = new DataStore(FileStructureDto.builder().build());
         dataStore.addInteger("type", 45L);
+        dataStore.addInteger("steeringWheelTurn", 30L);
+        dataStore.addInteger("binoculars", 0L);
+        dataStore.addInteger("cameraPositionX", -100L);
+        dataStore.addInteger("viewPositionZ", 100L);
 
         // WHEN
         EnumMap<ViewProps, ?> viewProps = camerasParser.getViewProps(dataStore);
 
         // THEN
-        assertThat(viewProps).hasSize(1);
-        assertThat(viewProps.get(ViewProps.TYPE)).isEqualTo(45L);
+        assertThat(viewProps).hasSize(5);
+        assertThat(viewProps.get(ViewProps.TYPE)).isEqualTo(GenuineCamViewsDto.GenuineCamViewDto.Type.Follow_Large_Back);
+        assertThat(viewProps.get(ViewProps.STEERING_WHEEL_TURN)).isEqualTo(30L);
+        assertThat(viewProps.get(ViewProps.BINOCULARS)).isEqualTo(0L);
+        assertThat(viewProps.get(ViewProps.CAMERA_POSITION_X)).isEqualTo(-100L);
+        assertThat(viewProps.get(ViewProps.VIEW_POSITION_Z)).isEqualTo(100L);
     }
 }

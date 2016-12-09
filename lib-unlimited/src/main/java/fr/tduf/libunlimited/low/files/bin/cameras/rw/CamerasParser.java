@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.rw;
 
+import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
@@ -116,11 +117,8 @@ public class CamerasParser extends GenericParser<String> {
 
         EnumMap<ViewProps, Object> props = new EnumMap<>(ViewProps.class);
         ViewProps.valuesStream()
-                .forEach(prop -> {
-                    // TODO type => return genuine enum value
-                    viewStore.getInteger(prop.getStoreFieldName())
-                            .ifPresent(val -> props.put(prop, val));
-                });
+                .forEach(prop -> prop.parse(viewStore)
+                        .ifPresent(val -> props.put(prop, val)));
 
         return props;
     }
@@ -133,6 +131,21 @@ public class CamerasParser extends GenericParser<String> {
         cachedCameraViews = null;
         cachedCameraIndex = null;
         cachedTotalViewCount = null;
+    }
+
+    /**
+     * @return genuine view type from prop info
+     */
+    public static Optional<GenuineCamViewsDto.GenuineCamViewDto.Type> getViewType(DataStore viewStore, ViewProps viewProp) {
+        return viewStore.getInteger(viewProp.getStoreFieldName())
+                .map(v -> GenuineCamViewsDto.GenuineCamViewDto.Type.fromInternalId(v.intValue()));
+    }
+
+    /**
+     * @return numeric value from prop info
+     */
+    public static Optional<Long> getNumeric(DataStore viewStore, ViewProps viewProp) {
+        return viewStore.getInteger(viewProp.getStoreFieldName());
     }
 
     Map<Long, List<DataStore>> getCachedCameraViews() {
