@@ -34,7 +34,7 @@ class AdjustCameraStep extends GenericStep {
 
     @Override
     protected void perform() throws IOException, ReflectiveOperationException {
-        int cameraId = getDatabaseContext().getPatchProperties().getCameraIdentifier().orElseGet(this::getCameraIdentifierFromDatabase);
+        long cameraId = getDatabaseContext().getPatchProperties().getCameraIdentifier().orElseGet(this::getCameraIdentifierFromDatabase);
         String cameraFileName = Paths.get(getInstallerConfiguration().resolveDatabaseDirectory(), "Cameras.bin").toString();
         GenuineCamViewsDto customViewsObject = buildCustomViewsFromProperties();
 
@@ -84,7 +84,7 @@ class AdjustCameraStep extends GenericStep {
     }
 
     // Ignore warning: method ref
-    private int getCameraIdentifierFromDatabase() {
+    private long getCameraIdentifierFromDatabase() {
         String slotReference = getDatabaseContext().getPatchProperties().getVehicleSlotReference().<IllegalStateException>orElseThrow(() -> new IllegalStateException("Slot reference is unknown at this point. Cannot continue."));
 
         return vehicleSlotsHelper.getVehicleSlotFromReference(slotReference)

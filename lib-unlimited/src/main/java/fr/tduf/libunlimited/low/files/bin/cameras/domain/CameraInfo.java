@@ -10,7 +10,7 @@ import java.util.List;
  * Brings all information about a camera (view set)
  */
 public class CameraInfo {
-    private int cameraIdentifier;
+    private long cameraIdentifier;
     private List<CameraView> views;
 
     private CameraInfo() {}
@@ -19,7 +19,7 @@ public class CameraInfo {
         return new CameraInfoBuilder();
     }
 
-    public int getCameraIdentifier() {
+    public long getCameraIdentifier() {
         return cameraIdentifier;
     }
 
@@ -28,11 +28,10 @@ public class CameraInfo {
     }
 
     public static class CameraInfoBuilder {
-        private int cameraIdentifier;
+        private long cameraIdentifier;
         private List<CameraView> views = new ArrayList<>();
 
-        // TODO set to long
-        public CameraInfoBuilder forIdentifier(int cameraIdentifier) {
+        public CameraInfoBuilder forIdentifier(long cameraIdentifier) {
             this.cameraIdentifier = cameraIdentifier;
             return this;
         }
@@ -57,13 +56,13 @@ public class CameraInfo {
      */
     public static class CameraView {
         private GenuineCamViewsDto.GenuineCamViewDto.Type type;
-        private int sourceCameraIdentifier;
+        private long sourceCameraIdentifier;
         private GenuineCamViewsDto.GenuineCamViewDto.Type sourceType;
         private EnumMap<ViewProps, ?> settings;
 
         private CameraView() {}
 
-        public static CameraView from(GenuineCamViewsDto.GenuineCamViewDto.Type type, int sourceCameraIdentifier, GenuineCamViewsDto.GenuineCamViewDto.Type sourceType) {
+        public static CameraView from(GenuineCamViewsDto.GenuineCamViewDto.Type type, long sourceCameraIdentifier, GenuineCamViewsDto.GenuineCamViewDto.Type sourceType) {
             CameraView cameraView = new CameraView();
 
             cameraView.type = type;
@@ -86,7 +85,7 @@ public class CameraInfo {
             return type;
         }
 
-        public int getSourceCameraIdentifier() {
+        public long getSourceCameraIdentifier() {
             return sourceCameraIdentifier;
         }
 

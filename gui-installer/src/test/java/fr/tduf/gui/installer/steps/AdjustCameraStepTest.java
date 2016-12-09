@@ -10,18 +10,13 @@ import fr.tduf.libunlimited.high.files.bin.cameras.interop.GenuineCamGateway;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
-import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
-import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
-import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -31,8 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto.GenuineCamViewDto.Type.*;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
-import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.UID;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -123,11 +116,11 @@ public class AdjustCameraStepTest {
         adjustCameraStep.start();
 
         // THEN
-        verify(cameraSupportMock).customizeCamera(camFileCaptor.capture(), eq(200), customizeCamCaptor.capture());
+        verify(cameraSupportMock).customizeCamera(camFileCaptor.capture(), eq(200L), customizeCamCaptor.capture());
         assertThat(Paths.get(camFileCaptor.getValue()).toString()).endsWith(Paths.get("Euro", "Bnk", "Database", "Cameras.bin").toString());
         List<GenuineCamViewsDto.GenuineCamViewDto> actualViews = customizeCamCaptor.getValue().getViews();
         assertThat(actualViews).extracting("viewType").containsOnly(Hood);
-        assertThat(actualViews).extracting("cameraId").containsOnly(201);
+        assertThat(actualViews).extracting("cameraId").containsOnly(201L);
         assertThat(actualViews).extracting("viewId").containsOnly(24);
     }
 
@@ -144,10 +137,10 @@ public class AdjustCameraStepTest {
         adjustCameraStep.start();
 
         // THEN
-        verify(cameraSupportMock).customizeCamera(anyString(), eq(200), customizeCamCaptor.capture());
+        verify(cameraSupportMock).customizeCamera(anyString(), eq(200L), customizeCamCaptor.capture());
         List<GenuineCamViewsDto.GenuineCamViewDto> actualViews = customizeCamCaptor.getValue().getViews();
         assertThat(actualViews).extracting("viewType").containsExactly(Hood, Hood_Back, Cockpit, Cockpit_Back);
-        assertThat(actualViews).extracting("cameraId").containsExactly(201, 202, 203, 204);
+        assertThat(actualViews).extracting("cameraId").containsExactly(201L, 202L, 203L, 204L);
         assertThat(actualViews).extracting("viewId").containsExactly(24, 44, 23, 43);
     }
 
@@ -186,11 +179,11 @@ public class AdjustCameraStepTest {
         adjustCameraStep.start();
 
         // THEN
-        verify(cameraSupportMock).customizeCamera(camFileCaptor.capture(), eq(200), customizeCamCaptor.capture());
+        verify(cameraSupportMock).customizeCamera(camFileCaptor.capture(), eq(200L), customizeCamCaptor.capture());
         assertThat(Paths.get(camFileCaptor.getValue()).toString()).endsWith(Paths.get("Euro", "Bnk", "Database", "Cameras.bin").toString());
         List<GenuineCamViewsDto.GenuineCamViewDto> actualViews = customizeCamCaptor.getValue().getViews();
         assertThat(actualViews).extracting("viewType").containsOnly(Hood);
-        assertThat(actualViews).extracting("cameraId").containsOnly(201);
+        assertThat(actualViews).extracting("cameraId").containsOnly(201L);
         assertThat(actualViews).extracting("viewId").containsOnly(24);
     }
 

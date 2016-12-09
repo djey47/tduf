@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class GenuineCamGatewayTest {
 
-    private static final int CAMERA_ID = 326;
+    private static final long CAMERA_ID = 326L;
 
     @Mock
     private CommandLineHelper commandLineHelperMock;
@@ -78,7 +78,7 @@ public class GenuineCamGatewayTest {
         genuineCamGateway.customizeCamera(camFileName, CAMERA_ID, customizeInput);
 
         // THEN
-        verify(commandLineHelperMock).runCliCommand(eq("mono"), anyString(), eq("CAM-C"), eq(camFileName), eq(Integer.valueOf(CAMERA_ID).toString()), commandArgumentsCaptor.capture());
+        verify(commandLineHelperMock).runCliCommand(eq("mono"), anyString(), eq("CAM-C"), eq(camFileName), eq(Long.valueOf(CAMERA_ID).toString()), commandArgumentsCaptor.capture());
 
         String expectedInputContents = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(customizeInput);
         assertThat(new File(commandArgumentsCaptor.getValue()))
@@ -100,19 +100,19 @@ public class GenuineCamGatewayTest {
         verify(commandLineHelperMock).runCliCommand(eq("mono"), anyString(), eq("CAM-R"), eq(camFileName), eq(Integer.valueOf(CAMERA_ID).toString()));
     }
 
-    private void mockCommandLineHelperToReturnCameraViewsSuccess(String bankFileName, int CAMERA_ID) throws IOException, URISyntaxException {
+    private void mockCommandLineHelperToReturnCameraViewsSuccess(String bankFileName, long CAMERA_ID) throws IOException, URISyntaxException {
         String jsonOutput = FilesHelper.readTextFromResourceFile("/files/interop/tdumt-cli/CAM-L.output.json");
         ProcessResult processResult = new ProcessResult("CAM-L", 0, jsonOutput, "");
-        when(commandLineHelperMock.runCliCommand(eq("mono"), anyString(), eq("CAM-L"), eq(bankFileName), eq(Integer.valueOf(CAMERA_ID).toString()))).thenReturn(processResult);
+        when(commandLineHelperMock.runCliCommand(eq("mono"), anyString(), eq("CAM-L"), eq(bankFileName), eq(Long.valueOf(CAMERA_ID).toString()))).thenReturn(processResult);
     }
 
-    private void mockCommandLineHelperToReturnCameraCustomizeSuccess(String bankFileName, int CAMERA_ID) throws IOException, URISyntaxException {
+    private void mockCommandLineHelperToReturnCameraCustomizeSuccess(String bankFileName, long CAMERA_ID) throws IOException, URISyntaxException {
         ProcessResult processResult = new ProcessResult("CAM-C", 0, "{}", "");
-        when(commandLineHelperMock.runCliCommand(eq("mono"), anyString(), eq("CAM-C"), eq(bankFileName), eq(Integer.valueOf(CAMERA_ID).toString()), anyString())).thenReturn(processResult);
+        when(commandLineHelperMock.runCliCommand(eq("mono"), anyString(), eq("CAM-C"), eq(bankFileName), eq(Long.valueOf(CAMERA_ID).toString()), anyString())).thenReturn(processResult);
     }
 
-    private void mockCommandLineHelperToReturnCameraResetSuccess(String bankFileName, int CAMERA_ID) throws IOException, URISyntaxException {
+    private void mockCommandLineHelperToReturnCameraResetSuccess(String bankFileName, long CAMERA_ID) throws IOException, URISyntaxException {
         ProcessResult processResult = new ProcessResult("CAM-R", 0, "{}", "");
-        when(commandLineHelperMock.runCliCommand(eq("mono"), anyString(), eq("CAM-R"), eq(bankFileName), eq(Integer.valueOf(CAMERA_ID).toString()))).thenReturn(processResult);
+        when(commandLineHelperMock.runCliCommand(eq("mono"), anyString(), eq("CAM-R"), eq(bankFileName), eq(Long.valueOf(CAMERA_ID).toString()))).thenReturn(processResult);
     }
 }

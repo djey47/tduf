@@ -26,8 +26,8 @@ public class GenuineCamGateway extends GenuineGateway {
     /**
      * tdumt-cli syntax: CAM-L <camFileName> <camId>
      */
-    public CameraInfo getCameraInfo(String camFileName, int camId) throws IOException {
-        String result = callCommandLineInterface(CAM_LIST, camFileName, Integer.toString(camId));
+    public CameraInfo getCameraInfo(String camFileName, long camId) throws IOException {
+        String result = callCommandLineInterface(CAM_LIST, camFileName, Long.toString(camId));
 
         GenuineCamViewsDto outputObject = new ObjectMapper().readValue(result, GenuineCamViewsDto.class);
         return mapGenuineCamViewsToCameraInfo(outputObject, camId);
@@ -36,20 +36,20 @@ public class GenuineCamGateway extends GenuineGateway {
     /**
      * tdumt-cli syntax: CAM-C <camFileName> <camId> <customizeInputFileName>
      */
-    public void customizeCamera(String camFileName, int camId, GenuineCamViewsDto customizeInput) throws IOException {
+    public void customizeCamera(String camFileName, long camId, GenuineCamViewsDto customizeInput) throws IOException {
         String customizeInputFileName = createCamCustomizeInputFile(customizeInput);
 
-        callCommandLineInterface(CAM_CUSTOMIZE, camFileName, Integer.toString(camId), customizeInputFileName);
+        callCommandLineInterface(CAM_CUSTOMIZE, camFileName, Long.toString(camId), customizeInputFileName);
     }
 
     /**
      * tdumt-cli syntax: CAM-R <camFileName> <camId>
      */
-    public void resetCamera(String camFileName, int camId) throws IOException {
-        callCommandLineInterface(CAM_RESET, camFileName, Integer.toString(camId));
+    public void resetCamera(String camFileName, long camId) throws IOException {
+        callCommandLineInterface(CAM_RESET, camFileName, Long.toString(camId));
     }
 
-    private static CameraInfo mapGenuineCamViewsToCameraInfo(GenuineCamViewsDto genuineCamViews, int camId) {
+    private static CameraInfo mapGenuineCamViewsToCameraInfo(GenuineCamViewsDto genuineCamViews, long camId) {
         final CameraInfo.CameraInfoBuilder cameraInfoBuilder = CameraInfo.builder()
                 .forIdentifier(camId);
 

@@ -58,7 +58,7 @@ public class GenuineCamViewsDto {
         private Type viewType;
 
         @JsonProperty("cameraId")
-        private int cameraId;
+        private long cameraId;
 
         @JsonProperty("viewId")
         private int viewId;
@@ -70,7 +70,7 @@ public class GenuineCamViewsDto {
             return viewType;
         }
 
-        public int getCameraId() {
+        public long getCameraId() {
             return cameraId;
         }
 

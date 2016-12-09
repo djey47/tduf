@@ -221,8 +221,8 @@ public class PatchProperties extends Properties {
         return retrieve(format(PLACEHOLDER_NAME_FMT_CUSTOM_CAM, cameraView.getPropertySuffix()));
     }
 
-    public Optional<Integer> getCameraIdentifier() {
-        return retrieve(PLACEHOLDER_NAME_CAMERA).map(Integer::valueOf);
+    public Optional<Long> getCameraIdentifier() {
+        return retrieve(PLACEHOLDER_NAME_CAMERA).map(Long::valueOf);
     }
 
     public Optional<String> getExteriorMainColorId(int exteriorSet) {
