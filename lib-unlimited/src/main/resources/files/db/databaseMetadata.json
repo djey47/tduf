@@ -398,6 +398,34 @@
       "location": "SE",
       "slotCount": 8,
       "availableSlots": [1,2,3,4,5,6,7,8]
+    },
+    {
+      "ref": "612156838",
+      "name": "CHEVROLET/SATURN",
+      "location": "TBD",
+      "slotCount": 10,
+      "availableSlots": [1,2,3,4,5,6,7,8,9,10]
+    },
+    {
+      "ref": "609156820",
+      "name": "CHEVROLET/SATURN",
+      "location": "TBD",
+      "slotCount": 10,
+      "availableSlots": [1,2,3,4,5,6,7,8,9,10]
+    },
+    {
+      "ref": "610156881",
+      "name": "PONTIAC",
+      "location": "Honolulu Airport",
+      "slotCount": 10,
+      "availableSlots": [1,2,3,4,5,6,7,8,9,10]
+    },
+    {
+      "ref": "586156881",
+      "name": "CADILLLAC",
+      "location": "West Coast",
+      "slotCount": 10,
+      "availableSlots": [1,2,3,4,5,6,7,8,9,10]
     }
   ]
 }
