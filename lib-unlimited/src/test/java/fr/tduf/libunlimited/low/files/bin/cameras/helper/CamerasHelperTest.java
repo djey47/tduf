@@ -13,9 +13,12 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind.*;
+import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps.BINOCULARS;
+import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps.TYPE;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.expectThrows;
@@ -155,20 +158,50 @@ class CamerasHelperTest {
     void updateViews_whenCameraExists_butViewDoesNot_shouldDoNothing() throws Exception {
         // GIVEN
         EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
-        viewProps.put(ViewProps.TYPE, Follow_Far);
-        viewProps.put(ViewProps.BINOCULARS, 0);
+        viewProps.put(TYPE, Follow_Far);
+        viewProps.put(BINOCULARS, 0L);
 
         CameraInfo.CameraView cameraView = CameraInfo.CameraView.fromProps(viewProps);
         CameraInfo configuration = CameraInfo.builder()
-                .forIdentifier(0)
+                .forIdentifier(1000)
                 .addView(cameraView)
                 .build();
 
-        // WHEN-THEN
-        expectThrows(NoSuchElementException.class,
-                () -> CamerasHelper.updateViews(configuration, readOnlyParser));
+        // WHEN
+        CameraInfo actualCameraInfo = CamerasHelper.updateViews(configuration, readOnlyParser);
+
+        // THEN
+        Map<ViewKind, CameraInfo.CameraView> viewsByType = actualCameraInfo.getViewsByKind();
+        assertThat(viewsByType.get(Cockpit).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
+        assertThat(viewsByType.get(Cockpit_Back).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
+        assertThat(viewsByType.get(Hood).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
+        assertThat(viewsByType.get(Hood_Back).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
     }
 
+    @Test
+    void updateViews_whenCameraExists_andViewExists_shouldUpdateSetting() throws Exception {
+        // GIVEN
+        CamerasParser readWriteParser = getReadWriteParser();
+        EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
+        viewProps.put(TYPE, Hood);
+        viewProps.put(BINOCULARS, 0L);
+
+        CameraInfo.CameraView cameraView = CameraInfo.CameraView.fromProps(viewProps);
+        CameraInfo configuration = CameraInfo.builder()
+                .forIdentifier(1000)
+                .addView(cameraView)
+                .build();
+
+        // WHEN
+        CameraInfo actualCameraInfo = CamerasHelper.updateViews(configuration, readWriteParser);
+
+        // THEN
+        Map<ViewKind, CameraInfo.CameraView> viewsByType = actualCameraInfo.getViewsByKind();
+        assertThat(viewsByType.get(Cockpit).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
+        assertThat(viewsByType.get(Cockpit_Back).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
+        assertThat(viewsByType.get(Hood).getSettings().get(BINOCULARS)).isEqualTo(0L);
+        assertThat(viewsByType.get(Hood_Back).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
+    }
 
     private static CamerasParser getReadWriteParser() throws IOException {
         CamerasParser parser;

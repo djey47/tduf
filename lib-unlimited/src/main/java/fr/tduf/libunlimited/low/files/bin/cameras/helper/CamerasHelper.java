@@ -106,16 +106,15 @@ public class CamerasHelper {
 
         long cameraIdentifier = configuration.getCameraIdentifier();
         extractViewStores(cameraIdentifier, parser)
-                .forEach(vs -> {
-                    ViewKind viewKind = (ViewKind) ViewProps.TYPE.parse(vs)
+                .forEach(viewStore -> {
+                    ViewKind viewKind = (ViewKind) ViewProps.TYPE.parse(viewStore)
                             .orElseThrow(() -> new IllegalStateException("No view type in store"));
 
-                    Optional<CameraInfo.CameraView> viewConfiguration = configuration.getViews().stream()
+                    configuration.getViews().stream()
                             .filter(view -> viewKind == view.getType())
-                            .findAny();
-                    if (viewConfiguration.isPresent()) {
-                        // TODO change info in store
-                    }
+                            .findAny()
+                            .ifPresent(conf -> conf.getSettings().entrySet()
+                                    .forEach(entry -> entry.getKey().updateIn(viewStore, entry.getValue())));
                 });
 
         return fetchInformation(cameraIdentifier, parser);
