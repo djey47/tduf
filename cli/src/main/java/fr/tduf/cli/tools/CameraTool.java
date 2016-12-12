@@ -44,6 +44,9 @@ public class CameraTool extends GenericTool {
     @Option(name="-b", aliases = "--batchFile", usage = "CSV File containing all identifiers of camera sets to copy (required for copy-sets operation).")
     private String batchIdentifiersFile;
 
+    @Option(name="-c", aliases = "--configurationFile", usage = "JSON File containing all view properties to modify (required for customize-set operation).")
+    private String configurationFile;
+
 
     private Command command;
 
@@ -54,7 +57,8 @@ public class CameraTool extends GenericTool {
         LIST("list", "Returns all camera identifiers in provided file."),
         COPY_SET("copy-set", "Duplicate given camera set to a new identifier. Will not erase existing."),
         COPY_SETS("copy-sets", "Duplicate given camera sets (in a CSV file) to new identifiers. Will not erase existing."),
-        VIEW_SET("view-set", "Returs all set properties of a given camera identifier.");
+        VIEW_SET("view-set", "Returns all set properties of a given camera identifier."),
+        CUSTOMIZE_SET("customize-set", "Defones set properties of a given camera identifier.");
 
         final String label;
         final String description;
@@ -102,6 +106,9 @@ public class CameraTool extends GenericTool {
             case VIEW_SET:
                 commandResult = viewCameraSet(inputCameraFile, sourceIdentifier);
                 return true;
+            case CUSTOMIZE_SET:
+                commandResult = customizeCameraSet(inputCameraFile, configurationFile);
+                return true;
             default:
                 commandResult = null;
                 return false;
@@ -137,6 +144,12 @@ public class CameraTool extends GenericTool {
                 && command == COPY_SETS) {
             throw new CmdLineException(parser, "Error: batch file is required.", null);
         }
+
+        // Config file: mandatory with customize-set
+        if (configurationFile == null
+                && command == CUSTOMIZE_SET) {
+            throw new CmdLineException(parser, "Error: JSON configuration file is required.", null);
+        }
     }
 
     @Override
@@ -150,7 +163,12 @@ public class CameraTool extends GenericTool {
                 LIST.label + " -i \"C:\\Desktop\\Cameras.bin\"",
                 COPY_SET.label + " -i \"C:\\Desktop\\Cameras.bin\" -s 208 -t 209",
                 COPY_SETS.label + " -i \"C:\\Desktop\\Cameras.bin\" -b \"instructions.csv\"",
-                VIEW_SET.label + " -i \"C:\\Desktop\\Cameras.bin\" -s 208");
+                VIEW_SET.label + " -i \"C:\\Desktop\\Cameras.bin\" -s 208",
+                CUSTOMIZE_SET.label + " -i \"C:\\Desktop\\Cameras.bin\" -c \":\\Desktop\\views-properties.json\"");
+    }
+
+    private Map<String, ?> customizeCameraSet(String inputCameraFile, String configurationFile) {
+        return null;
     }
 
     private Map<String, ?> viewCameraSet(String cameraFile, long cameraIdentifier) throws IOException {

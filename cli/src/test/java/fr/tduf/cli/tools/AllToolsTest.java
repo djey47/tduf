@@ -7,9 +7,7 @@ import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 
 import java.io.IOException;
 
-import static fr.tduf.cli.tools.CameraTool.Command.COPY_SET;
-import static fr.tduf.cli.tools.CameraTool.Command.COPY_SETS;
-import static fr.tduf.cli.tools.CameraTool.Command.VIEW_SET;
+import static fr.tduf.cli.tools.CameraTool.Command.*;
 import static fr.tduf.cli.tools.DatabaseTool.Command.*;
 import static fr.tduf.cli.tools.FileTool.Command.*;
 import static fr.tduf.cli.tools.MappingTool.Command.*;
@@ -147,7 +145,7 @@ public class AllToolsTest {
         // GIVEN-WHEN-THEN
         exitRule.expectSystemExitWithStatus(1);
 
-        testToolCommand(new MappingTool(), LIST);
+        testToolCommand(new MappingTool(), MappingTool.Command.LIST);
     }
 
     @Test
@@ -179,7 +177,7 @@ public class AllToolsTest {
         // GIVEN-WHEN-THEN
         exitRule.expectSystemExitWithStatus(1);
 
-        testToolCommand(new CameraTool(), LIST);
+        testToolCommand(new CameraTool(), CameraTool.Command.LIST);
     }
 
     @Test
@@ -204,6 +202,14 @@ public class AllToolsTest {
         exitRule.expectSystemExitWithStatus(1);
 
         testToolCommand(new CameraTool(), VIEW_SET);
+    }
+
+    @Test
+    public void cameraTool_customizeSet() throws NoSuchFieldException, IOException {
+        // GIVEN-WHEN-THEN
+        exitRule.expectSystemExitWithStatus(1);
+
+        testToolCommand(new CameraTool(), CUSTOMIZE_SET);
     }
 
     private static void testToolCommand(GenericTool toolInstance, CommandHelper.CommandEnum command) throws NoSuchFieldException, IOException {
