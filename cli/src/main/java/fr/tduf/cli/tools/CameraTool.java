@@ -17,7 +17,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static fr.tduf.cli.tools.CameraTool.Command.*;
 import static java.util.Arrays.asList;
@@ -235,18 +237,15 @@ public class CameraTool extends GenericTool {
         return lines;
     }
 
-    private CameraInfo readConfiguration(String configurationFile) {
+    private CameraInfo readConfiguration(String configurationFile) throws IOException {
         outLine("> Will use configuration file: " + configurationFile);
 
-        // TODO Parse JSON file
-        // TODO Convert numeric value to long !
-        CameraInfo cameraInfo = CameraInfo.builder().build();
+        CameraInfo readInfo = jsonMapper.readValue(new File(configurationFile), CameraInfo.class);
 
         outLine("> Done reading configuration.");
 
-        return cameraInfo;
+        return readInfo;
     }
-
 
     private CamerasParser loadAndParseCameras(String cameraFile) throws IOException {
         outLine("> Will use Cameras file: " + cameraFile);
