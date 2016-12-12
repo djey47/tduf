@@ -1,5 +1,7 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -28,6 +30,7 @@ public class CameraInfo {
         return views;
     }
 
+    @JsonIgnore
     public Map<ViewKind, CameraView> getViewsByKind() {
         return getViews().stream()
                 .collect(toMap(CameraInfo.CameraView::getType, v -> v));
