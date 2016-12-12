@@ -25,7 +25,7 @@ class CameraToolIntegTest {
     private final Path jsonPath = camerasIntegTestPath.resolve("json");
     private final String outputDirectory = outputPath.toString();
     private final String inputCameraFile = camerasIntegTestPath.resolve("Cameras.bin").toString();
-    private final String outputCameraFile = outputPath.resolve("Cameras.bin.extended").toString();
+    private final String outputCameraFile = outputPath.resolve("Cameras.bin.modified").toString();
     private final String batchFile = camerasIntegTestPath.resolve("instructions.csv").toString();
     private final String viewConfigurationFile = jsonPath.resolve("customize-set.in.json").toString();
 
@@ -103,7 +103,7 @@ class CameraToolIntegTest {
         // WHEN: list
         System.out.println("-> Customize-set!");
         OutputStream outputStream = ConsoleHelper.hijackStandardOutput();
-        CameraTool.main(new String[]{"customize-set", "-n", "-i", inputCameraFile, "-c", viewConfigurationFile});
+        CameraTool.main(new String[]{"customize-set", "-n", "-i", inputCameraFile,  "-o", outputCameraFile, "-c", viewConfigurationFile});
 
         // THEN
         AssertionsHelper.assertOutputStreamContainsJsonExactly(outputStream, expectedJson);
