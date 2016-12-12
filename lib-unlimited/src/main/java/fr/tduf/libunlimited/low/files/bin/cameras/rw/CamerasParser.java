@@ -137,15 +137,31 @@ public class CamerasParser extends GenericParser<String> {
      * @return genuine view type from prop info
      */
     public static Optional<ViewKind> getViewType(DataStore viewStore, ViewProps viewProp) {
-        return viewStore.getInteger(viewProp.getStoreFieldName())
+        return getNumeric(viewStore, viewProp)
                 .map(v -> ViewKind.fromInternalId(v.intValue()));
     }
 
     /**
      * @return numeric value from prop info
      */
+    // TODO Move to GenericParser
     public static Optional<Long> getNumeric(DataStore viewStore, ViewProps viewProp) {
         return viewStore.getInteger(viewProp.getStoreFieldName());
+    }
+
+    /**
+     * Update view type to prop
+     */
+    public static void setViewType(Object viewKind, DataStore viewStore, ViewProps viewProp) {
+        setNumeric(((ViewKind)viewKind).getInternalId(), viewStore, viewProp);
+    }
+
+    /**
+     * Update numeric value to prop
+     */
+    // TODO Move to GenericParser
+    public static void setNumeric(Object value, DataStore viewStore, ViewProps viewProp) {
+        viewStore.addInteger(viewProp.getStoreFieldName(), ((Long) value));
     }
 
     Map<Long, List<DataStore>> getCachedCameraViews() {
