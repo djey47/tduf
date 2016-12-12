@@ -2,11 +2,9 @@ package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.helper.CommandHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasWriter;
-import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -107,7 +105,7 @@ public class CameraTool extends GenericTool {
                 commandResult = viewCameraSet(inputCameraFile, sourceIdentifier);
                 return true;
             case CUSTOMIZE_SET:
-                commandResult = customizeCameraSet(inputCameraFile, configurationFile);
+                commandResult = customizeCameraSet(inputCameraFile, outputCameraFile, configurationFile);
                 return true;
             default:
                 commandResult = null;
@@ -124,7 +122,8 @@ public class CameraTool extends GenericTool {
     protected void checkAndAssignDefaultParameters(CmdLineParser parser) throws CmdLineException {
         // Output file: defaulted to input file.extended
         if (outputCameraFile == null) {
-            outputCameraFile = inputCameraFile + ".extended";
+            outputCameraFile = inputCameraFile
+                    + (COPY_SET == command || COPY_SETS == command ? ".extended" : ".customized");
         }
 
         // Source identifier: mandatory with view-set
@@ -167,18 +166,23 @@ public class CameraTool extends GenericTool {
                 CUSTOMIZE_SET.label + " -i \"C:\\Desktop\\Cameras.bin\" -c \":\\Desktop\\views-properties.json\"");
     }
 
-    private Map<String, ?> customizeCameraSet(String inputCameraFile, String configurationFile) {
-        return null;
+    private Map<String, ?> customizeCameraSet(String sourceCameraFile, String targetCameraFile, String configurationFile) throws IOException {
+        CamerasParser parser = loadAndParseCameras(sourceCameraFile);
+        CameraInfo configurationObject = readConfiguration(configurationFile);
+        CameraInfo updatedCameraInfo = CamerasHelper.updateViews(configurationObject, parser);
+
+        outLine("> Done customizing camera set.");
+
+        writeModifiedCameras(parser, targetCameraFile);
+
+        return makeCommandResultForViewDetails(updatedCameraInfo);
     }
 
     private Map<String, ?> viewCameraSet(String cameraFile, long cameraIdentifier) throws IOException {
         CamerasParser parser = loadAndParseCameras(cameraFile);
         CameraInfo cameraInfo = CamerasHelper.fetchInformation(cameraIdentifier, parser);
 
-        HashMap<String, Object> resultInfo = new HashMap<>();
-        resultInfo.put("cameraSet", cameraInfo);
-
-        return resultInfo;
+        return makeCommandResultForViewDetails(cameraInfo);
     }
 
     private Map<String, ?> listCameras(String cameraFile) throws IOException {
@@ -230,6 +234,18 @@ public class CameraTool extends GenericTool {
         return lines;
     }
 
+    private CameraInfo readConfiguration(String configurationFile) {
+        outLine("> Will use configuration file: " + configurationFile);
+
+        // TODO Parse JSON file
+        CameraInfo cameraInfo = CameraInfo.builder().build();
+
+        outLine("> Done reading configuration.");
+
+        return cameraInfo;
+    }
+
+
     private CamerasParser loadAndParseCameras(String cameraFile) throws IOException {
         outLine("> Will use Cameras file: " + cameraFile);
 
@@ -255,6 +271,13 @@ public class CameraTool extends GenericTool {
 
         Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("cameraFileCreated", absolutePath);
+
+        return resultInfo;
+    }
+
+    private Map<String, ?> makeCommandResultForViewDetails(CameraInfo cameraInfo) {
+        HashMap<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("cameraSet", cameraInfo);
 
         return resultInfo;
     }

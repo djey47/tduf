@@ -1,0 +1,24 @@
+{
+  "cameraSet" : {
+    "cameraIdentifier" : 1000,
+    "views" : [ {
+      "type" : "Cockpit",
+      "settings" : {
+        "STEERING_WHEEL_TURN" : 0,
+        "STEERING_WHEEL_TILT" : 0,
+        "CAMERA_POSITION_X" : 0,
+        "CAMERA_POSITION_Y" : 0,
+        "CAMERA_POSITION_Z" : 0,
+        "VIEW_POSITION_X" : 0,
+        "VIEW_POSITION_Y" : 0,
+        "VIEW_POSITION_Z" : 0,
+        "BINOCULARS" : 0
+      }
+    }, {
+      "type" : "Cockpit_Back",
+      "settings" : {
+        "BINOCULARS" : 0
+      }
+    } ]
+  }
+}
