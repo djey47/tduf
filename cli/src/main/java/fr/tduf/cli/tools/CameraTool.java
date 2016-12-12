@@ -5,6 +5,7 @@ import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
 import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasWriter;
+import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -173,7 +174,7 @@ public class CameraTool extends GenericTool {
 
         outLine("> Done customizing camera set.");
 
-        writeModifiedCameras(parser, targetCameraFile);
+        writeModifiedCameras(parser.getDataStore(), targetCameraFile);
 
         return makeCommandResultForViewDetails(updatedCameraInfo);
     }
@@ -206,7 +207,7 @@ public class CameraTool extends GenericTool {
 
         outLine("> Done copying camera set.");
 
-        writeModifiedCameras(parser, targetCameraFile);
+        writeModifiedCameras(parser.getDataStore(), targetCameraFile);
 
         return makeCommandResultForCopy(targetCameraFile);
     }
@@ -219,7 +220,7 @@ public class CameraTool extends GenericTool {
 
         outLine("> Done copying camera sets.");
 
-        writeModifiedCameras(parser, targetCameraFile);
+        writeModifiedCameras(parser.getDataStore(), targetCameraFile);
 
         return makeCommandResultForCopy(targetCameraFile);
     }
@@ -238,6 +239,7 @@ public class CameraTool extends GenericTool {
         outLine("> Will use configuration file: " + configurationFile);
 
         // TODO Parse JSON file
+        // TODO Convert numeric value to long !
         CameraInfo cameraInfo = CameraInfo.builder().build();
 
         outLine("> Done reading configuration.");
@@ -261,8 +263,8 @@ public class CameraTool extends GenericTool {
         return new ByteArrayInputStream(Files.readAllBytes(Paths.get(sourceCameraFile)));
     }
 
-    private void writeModifiedCameras(CamerasParser parser, String targetCameraFile) throws IOException {
-        ByteArrayOutputStream outputStream = CamerasWriter.load(parser.getDataStore()).write();
+    private void writeModifiedCameras(DataStore dataStore, String targetCameraFile) throws IOException {
+        ByteArrayOutputStream outputStream = CamerasWriter.load(dataStore).write();
         Files.write(Paths.get(targetCameraFile), outputStream.toByteArray(), StandardOpenOption.CREATE);
     }
 
