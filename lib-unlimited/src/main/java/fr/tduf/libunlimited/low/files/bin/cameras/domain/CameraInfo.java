@@ -3,6 +3,9 @@ package fr.tduf.libunlimited.low.files.bin.cameras.domain;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
+
+import static java.util.stream.Collectors.toMap;
 
 /**
  * Brings all information about a camera (view set)
@@ -23,6 +26,11 @@ public class CameraInfo {
 
     public List<CameraView> getViews() {
         return views;
+    }
+
+    public Map<ViewKind, CameraView> getViewsByKind() {
+        return getViews().stream()
+                .collect(toMap(CameraInfo.CameraView::getType, v -> v));
     }
 
     public static class CameraInfoBuilder {
