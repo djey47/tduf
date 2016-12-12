@@ -158,10 +158,22 @@ public class CamerasParser extends GenericParser<String> {
 
     /**
      * Update numeric value to prop
+     * @param value : Integer or Long value
      */
-    // TODO Move to GenericParser
+    // TODO Move to GenericParser and add test
     public static void setNumeric(Object value, DataStore viewStore, ViewProps viewProp) {
-        viewStore.addInteger(viewProp.getStoreFieldName(), ((Long) value));
+        if (!(value instanceof Long) && !(value instanceof Integer)) {
+            throw new IllegalArgumentException("Value type is not supported: " + value.getClass());
+        }
+
+        long effectiveValue;
+        if (value instanceof Integer) {
+            effectiveValue = ((Integer)value).longValue();
+        } else {
+            effectiveValue = (long) value;
+        }
+
+        viewStore.addInteger(viewProp.getStoreFieldName(), effectiveValue);
     }
 
     Map<Long, List<DataStore>> getCachedCameraViews() {
