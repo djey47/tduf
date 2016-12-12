@@ -2,12 +2,15 @@ package fr.tduf.libunlimited.low.files.bin.cameras.helper;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.Long.valueOf;
@@ -66,7 +69,7 @@ public class CamerasHelper {
 
         instructions.forEach(instruction -> {
             String[] compounds = instruction.split(";");
-            duplicateCameraSet(valueOf(compounds[0]), valueOf(compounds[1]), parser);
+            duplicateCameraSet(valueOf(compounds[0]), valueOf(compounds[1]), requireNonNull(parser, "Parser with cameras contents is required."));
         });
     }
 
@@ -76,10 +79,7 @@ public class CamerasHelper {
      * @return view properties for requested camera.
      */
     public static CameraInfo fetchInformation(long cameraIdentifier, CamerasParser parser) {
-        List<DataStore> viewStores = parser.getCameraViews().get(cameraIdentifier);
-        if (viewStores == null) {
-            throw new NoSuchElementException("Requested camera identifier does not exist: " + cameraIdentifier);
-        }
+        List<DataStore> viewStores = extractViewStores(cameraIdentifier, parser);
 
         CameraInfo.CameraInfoBuilder cameraInfoBuilder = CameraInfo.builder()
                 .forIdentifier((int) cameraIdentifier);
@@ -90,6 +90,35 @@ public class CamerasHelper {
                 .forEach(cameraInfoBuilder::addView);
 
         return cameraInfoBuilder.build();
+    }
+
+    /**
+     * @param configuration : view properties to be updated
+     * @param parser        : parsed cameras contents
+     * @return updated view properties.
+     */
+    public static CameraInfo updateViews(CameraInfo configuration, CamerasParser parser) {
+        requireNonNull(configuration, "View configuration is required.");
+
+        if (configuration.getViews().isEmpty()) {
+            throw new IllegalArgumentException("No views to update in provided configuration.");
+        }
+
+        long cameraIdentifier = configuration.getCameraIdentifier();
+        extractViewStores(cameraIdentifier, parser)
+                .forEach(vs -> {
+                    ViewKind viewKind = (ViewKind) ViewProps.TYPE.parse(vs)
+                            .orElseThrow(() -> new IllegalStateException("No view type in store"));
+
+                    Optional<CameraInfo.CameraView> viewConfiguration = configuration.getViews().stream()
+                            .filter(view -> viewKind == view.getType())
+                            .findAny();
+                    if (viewConfiguration.isPresent()) {
+                        // TODO change info in store
+                    }
+                });
+
+        return fetchInformation(cameraIdentifier, parser);
     }
 
     private static void updateIndexInDatastore(DataStore dataStore, long sourceCameraId, long targetCameraId, Map<Long, Short> cameraIndex) {
@@ -117,5 +146,14 @@ public class CamerasHelper {
         newStore.addInteger(KEY_CAMERA_ID, targetCameraId);
 
         return newStore;
+    }
+
+    private static List<DataStore> extractViewStores(long cameraIdentifier, CamerasParser parser) {
+        List<DataStore> viewStores = requireNonNull(parser, "Parser with cameras contents is required.")
+                .getCameraViews().get(cameraIdentifier);
+        if (viewStores == null) {
+            throw new NoSuchElementException("Requested camera identifier does not exist: " + cameraIdentifier);
+        }
+        return viewStores;
     }
 }

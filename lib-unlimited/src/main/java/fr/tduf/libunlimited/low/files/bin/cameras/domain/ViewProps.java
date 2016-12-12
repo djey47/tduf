@@ -31,6 +31,7 @@ public enum ViewProps {
         this.parsingFunction = parsingFunction;
     }
 
+    // TODO rename to retrieveIn()
     public Optional<?> parse(DataStore dataStore) {
         return parsingFunction.apply(dataStore, this);
     }

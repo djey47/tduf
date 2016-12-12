@@ -2,6 +2,8 @@ package fr.tduf.libunlimited.low.files.bin.cameras.helper;
 
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -9,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -116,6 +119,56 @@ class CamerasHelperTest {
                     Hood,
                     Hood_Back);
     }
+
+    @Test
+    void updateViews_whenNullConfiguration_shouldThrowException() throws IOException {
+        // GIVEN-WHEN-THEN
+        expectThrows(NullPointerException.class,
+                () -> CamerasHelper.updateViews(null, readOnlyParser));
+    }
+
+    @Test
+    void updateViews_whenEmptyConfiguration_shouldThrowException() throws IOException {
+        // GIVEN
+        CameraInfo configuration = CameraInfo.builder().build();
+
+        // WHEN-THEN
+        expectThrows(IllegalArgumentException.class,
+                () -> CamerasHelper.updateViews(configuration, readOnlyParser));
+    }
+
+    @Test
+    void updateViews_whenCameraDoesNotExist_shouldThrowException() throws Exception {
+        // GIVEN
+        CameraInfo.CameraView cameraView = CameraInfo.CameraView.from(ViewKind.Bumper, 0, ViewKind.Bumper);
+        CameraInfo configuration = CameraInfo.builder()
+                .forIdentifier(0)
+                .addView(cameraView)
+                .build();
+
+        // WHEN-THEN
+        expectThrows(NoSuchElementException.class,
+                () -> CamerasHelper.updateViews(configuration, readOnlyParser));
+    }
+
+    @Test
+    void updateViews_whenCameraExists_butViewDoesNot_shouldDoNothing() throws Exception {
+        // GIVEN
+        EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
+        viewProps.put(ViewProps.TYPE, Follow_Far);
+        viewProps.put(ViewProps.BINOCULARS, 0);
+
+        CameraInfo.CameraView cameraView = CameraInfo.CameraView.fromProps(viewProps);
+        CameraInfo configuration = CameraInfo.builder()
+                .forIdentifier(0)
+                .addView(cameraView)
+                .build();
+
+        // WHEN-THEN
+        expectThrows(NoSuchElementException.class,
+                () -> CamerasHelper.updateViews(configuration, readOnlyParser));
+    }
+
 
     private static CamerasParser getReadWriteParser() throws IOException {
         CamerasParser parser;
