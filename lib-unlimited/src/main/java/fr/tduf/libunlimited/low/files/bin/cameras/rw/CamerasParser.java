@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.low.files.bin.cameras.rw;
 
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
+import fr.tduf.libunlimited.low.files.common.domain.DataStoreProps;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
 
@@ -136,44 +137,16 @@ public class CamerasParser extends GenericParser<String> {
     /**
      * @return genuine view type from prop info
      */
-    public static Optional<ViewKind> getViewType(DataStore viewStore, ViewProps viewProp) {
+    public static Optional<ViewKind> getViewType(DataStore viewStore, DataStoreProps viewProp) {
         return getNumeric(viewStore, viewProp)
                 .map(v -> ViewKind.fromInternalId(v.intValue()));
     }
 
     /**
-     * @return numeric value from prop info
-     */
-    // TODO Move to GenericParser
-    public static Optional<Long> getNumeric(DataStore viewStore, ViewProps viewProp) {
-        return viewStore.getInteger(viewProp.getStoreFieldName());
-    }
-
-    /**
      * Update view type to prop
      */
-    public static void setViewType(Object viewKind, DataStore viewStore, ViewProps viewProp) {
+    public static void setViewType(Object viewKind, DataStore viewStore, DataStoreProps viewProp) {
         setNumeric(((ViewKind)viewKind).getInternalId(), viewStore, viewProp);
-    }
-
-    /**
-     * Update numeric value to prop
-     * @param value : Integer or Long value
-     */
-    // TODO Move to GenericParser and add test
-    public static void setNumeric(Object value, DataStore viewStore, ViewProps viewProp) {
-        if (!(value instanceof Long) && !(value instanceof Integer)) {
-            throw new IllegalArgumentException("Value type is not supported: " + value.getClass());
-        }
-
-        long effectiveValue;
-        if (value instanceof Integer) {
-            effectiveValue = ((Integer)value).longValue();
-        } else {
-            effectiveValue = (long) value;
-        }
-
-        viewStore.addInteger(viewProp.getStoreFieldName(), effectiveValue);
     }
 
     Map<Long, List<DataStore>> getCachedCameraViews() {

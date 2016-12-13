@@ -2,7 +2,9 @@ package fr.tduf.libunlimited.low.files.bin.cameras.domain;
 
 import fr.tduf.libunlimited.framework.function.TriConsumer;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
+import fr.tduf.libunlimited.low.files.common.domain.DataStoreProps;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
+import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
 
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -11,46 +13,49 @@ import java.util.stream.Stream;
 /**
  * All handled view properties
  */
-public enum ViewProps {
+public enum ViewProps implements DataStoreProps {
     TYPE("type", CamerasParser::getViewType, CamerasParser::setViewType),
-    STEERING_WHEEL_TURN("steeringWheelTurn", CamerasParser::getNumeric, CamerasParser::setNumeric),
-    STEERING_WHEEL_TILT("steeringWheelTilt", CamerasParser::getNumeric, CamerasParser::setNumeric),
-    CAMERA_POSITION_X("cameraPositionX", CamerasParser::getNumeric, CamerasParser::setNumeric),
-    CAMERA_POSITION_Y("cameraPositionY", CamerasParser::getNumeric, CamerasParser::setNumeric),
-    CAMERA_POSITION_Z("cameraPositionZ", CamerasParser::getNumeric, CamerasParser::setNumeric),
-    VIEW_POSITION_X("viewPositionX", CamerasParser::getNumeric, CamerasParser::setNumeric),
-    VIEW_POSITION_Y("viewPositionY", CamerasParser::getNumeric, CamerasParser::setNumeric),
-    VIEW_POSITION_Z("viewPositionZ", CamerasParser::getNumeric, CamerasParser::setNumeric),
-    BINOCULARS("binoculars", CamerasParser::getNumeric, CamerasParser::setNumeric);
+    STEERING_WHEEL_TURN("steeringWheelTurn", GenericParser::getNumeric, GenericParser::setNumeric),
+    STEERING_WHEEL_TILT("steeringWheelTilt", GenericParser::getNumeric, GenericParser::setNumeric),
+    CAMERA_POSITION_X("cameraPositionX", GenericParser::getNumeric, GenericParser::setNumeric),
+    CAMERA_POSITION_Y("cameraPositionY", GenericParser::getNumeric, GenericParser::setNumeric),
+    CAMERA_POSITION_Z("cameraPositionZ", GenericParser::getNumeric, GenericParser::setNumeric),
+    VIEW_POSITION_X("viewPositionX", GenericParser::getNumeric, GenericParser::setNumeric),
+    VIEW_POSITION_Y("viewPositionY", GenericParser::getNumeric, GenericParser::setNumeric),
+    VIEW_POSITION_Z("viewPositionZ", GenericParser::getNumeric, GenericParser::setNumeric),
+    BINOCULARS("binoculars", GenericParser::getNumeric, GenericParser::setNumeric);
 
     private String storeFieldName;
-    private BiFunction<DataStore, ViewProps, Optional<?>> parsingFunction;
-    private TriConsumer<Object, DataStore, ViewProps> updatingFunction;
+    private BiFunction<DataStore, DataStoreProps, Optional<?>> parsingFunction;
+    private TriConsumer<Object, DataStore, DataStoreProps> updatingFunction;
 
-    ViewProps(String storeFieldName, BiFunction<DataStore, ViewProps, Optional<?>> parsingFunction, TriConsumer<Object, DataStore, ViewProps> updatingFunction) {
+    ViewProps(String storeFieldName, BiFunction<DataStore, DataStoreProps, Optional<?>> parsingFunction, TriConsumer<Object, DataStore, DataStoreProps> updatingFunction) {
         this.storeFieldName = storeFieldName;
         this.parsingFunction = parsingFunction;
         this.updatingFunction = updatingFunction;
     }
 
+    @Override
     public Optional<?> retrieveFrom(DataStore viewStore) {
         return parsingFunction.apply(viewStore, this);
     }
 
+    @Override
     public void updateIn(DataStore viewStore, Object value) {
         updatingFunction.accept(value, viewStore, this);
     }
 
+    @Override
     public String getStoreFieldName() {
         return storeFieldName;
-    }
-
-    public static Stream<ViewProps> valuesStream() {
-        return Stream.of(values());
     }
 
     @Override
     public String toString() {
         return storeFieldName;
+    }
+
+    public static Stream<ViewProps> valuesStream() {
+        return Stream.of(values());
     }
 }

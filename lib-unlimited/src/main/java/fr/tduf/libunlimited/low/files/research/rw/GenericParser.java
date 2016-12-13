@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.research.rw;
 
+import fr.tduf.libunlimited.low.files.common.domain.DataStoreProps;
 import fr.tduf.libunlimited.low.files.research.common.helper.FormulaHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.StructureHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
@@ -62,6 +63,33 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
      */
     public String dump() {
         return this.dumpBuilder.toString();
+    }
+
+    /**
+     * @return numeric value from prop info
+     */
+    public static Optional<Long> getNumeric(DataStore viewStore, DataStoreProps viewProp) {
+        return viewStore.getInteger(viewProp.getStoreFieldName());
+    }
+
+    /**
+     * Update numeric value to prop
+     * @param value : Integer or Long value
+     */
+    // TODO tests
+    public static void setNumeric(Object value, DataStore viewStore, DataStoreProps viewProp) {
+        if (!(value instanceof Long) && !(value instanceof Integer)) {
+            throw new IllegalArgumentException("Value type is not supported: " + value.getClass());
+        }
+
+        long effectiveValue;
+        if (value instanceof Integer) {
+            effectiveValue = ((Integer)value).longValue();
+        } else {
+            effectiveValue = (long) value;
+        }
+
+        viewStore.addInteger(viewProp.getStoreFieldName(), effectiveValue);
     }
 
     /**
