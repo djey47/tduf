@@ -68,8 +68,8 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
     /**
      * @return numeric value from prop info
      */
-    public static Optional<Long> getNumeric(DataStore viewStore, DataStoreProps viewProp) {
-        return viewStore.getInteger(viewProp.getStoreFieldName());
+    public static Optional<Long> getNumeric(DataStore dataStore, DataStoreProps dataProp) {
+        return dataStore.getInteger(dataProp.getStoreFieldName());
     }
 
     /**
@@ -77,7 +77,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
      * @param value : Integer or Long value
      */
     // TODO tests
-    public static void setNumeric(Object value, DataStore viewStore, DataStoreProps viewProp) {
+    public static void setNumeric(Object value, DataStore dataStore, DataStoreProps dataProp) {
         if (!(value instanceof Long) && !(value instanceof Integer)) {
             throw new IllegalArgumentException("Value type is not supported: " + value.getClass());
         }
@@ -89,7 +89,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
             effectiveValue = (long) value;
         }
 
-        viewStore.addInteger(viewProp.getStoreFieldName(), effectiveValue);
+        dataStore.addInteger(dataProp.getStoreFieldName(), effectiveValue);
     }
 
     /**
