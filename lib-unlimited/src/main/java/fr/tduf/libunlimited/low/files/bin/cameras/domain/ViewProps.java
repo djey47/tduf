@@ -12,7 +12,6 @@ import java.util.stream.Stream;
  * All handled view properties
  */
 public enum ViewProps {
-    // TODO introduce field for class and use generics
     TYPE("type", CamerasParser::getViewType, CamerasParser::setViewType),
     STEERING_WHEEL_TURN("steeringWheelTurn", CamerasParser::getNumeric, CamerasParser::setNumeric),
     STEERING_WHEEL_TILT("steeringWheelTilt", CamerasParser::getNumeric, CamerasParser::setNumeric),
@@ -34,8 +33,7 @@ public enum ViewProps {
         this.updatingFunction = updatingFunction;
     }
 
-    // TODO rename to retrieveIn()
-    public Optional<?> parse(DataStore viewStore) {
+    public Optional<?> retrieveFrom(DataStore viewStore) {
         return parsingFunction.apply(viewStore, this);
     }
 

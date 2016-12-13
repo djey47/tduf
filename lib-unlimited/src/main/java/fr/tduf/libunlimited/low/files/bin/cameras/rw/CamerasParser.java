@@ -117,7 +117,7 @@ public class CamerasParser extends GenericParser<String> {
 
         EnumMap<ViewProps, Object> props = new EnumMap<>(ViewProps.class);
         ViewProps.valuesStream()
-                .forEach(prop -> prop.parse(viewStore)
+                .forEach(prop -> prop.retrieveFrom(viewStore)
                         .ifPresent(val -> props.put(prop, val)));
 
         return props;

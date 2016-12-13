@@ -10,7 +10,6 @@ import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.Long.valueOf;
@@ -107,7 +106,7 @@ public class CamerasHelper {
         long cameraIdentifier = configuration.getCameraIdentifier();
         extractViewStores(cameraIdentifier, parser)
                 .forEach(viewStore -> {
-                    ViewKind viewKind = (ViewKind) ViewProps.TYPE.parse(viewStore)
+                    ViewKind viewKind = (ViewKind) ViewProps.TYPE.retrieveFrom(viewStore)
                             .orElseThrow(() -> new IllegalStateException("No view type in store"));
 
                     configuration.getViews().stream()
