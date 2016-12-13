@@ -2,27 +2,60 @@ package fr.tduf.libunlimited.low.files.research.rw;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
-import org.junit.Before;
-import org.junit.Test;
+import fr.tduf.libunlimited.low.files.common.domain.DataStoreProps;
+import fr.tduf.libunlimited.low.files.research.domain.DataStore;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.mockito.MockitoAnnotations;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Optional;
 
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.expectThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-public class GenericParserTest {
+class GenericParserTest {
 
     private static Class<GenericParserTest> thisClass = GenericParserTest.class;
-    private static final String DATA = "data";
 
-    @Before
-    public void setUp() {
+    private static final String DATA = "data";
+    private static final String FIELD_NAME = "fieldName";
+
+    private enum TestingProps implements DataStoreProps {
+        PROP;
+
+        @Override
+        public Optional<?> retrieveFrom(DataStore dataStore) {
+            return null;
+        }
+
+        @Override
+        public void updateIn(DataStore dataStore, Object value) {
+
+        }
+
+        @Override
+        public String getStoreFieldName() {
+            return FIELD_NAME;
+        }
+    }
+
+    @BeforeAll
+    static void setUp() {
         Log.set(Log.LEVEL_INFO);
+
+        MockitoAnnotations.initMocks(thisClass);
     }
 
     @Test
-    public void newParser_whenProvidedContents_shouldReturnParserInstance() throws Exception {
+    void newParser_whenProvidedContents_shouldReturnParserInstance() throws Exception {
         // GIVEN-WHEN
         GenericParser<String> actualParser = createGenericParser();
 
@@ -32,7 +65,7 @@ public class GenericParserTest {
     }
 
     @Test
-    public void newParser_whenProvidedContents_andStructureAsFilePath_shouldReturnParserInstance() throws Exception {
+    void newParser_whenProvidedContents_andStructureAsFilePath_shouldReturnParserInstance() throws Exception {
         // GIVEN
         ByteArrayInputStream inputStream = createInputStreamFromReferenceFile();
 
@@ -44,7 +77,7 @@ public class GenericParserTest {
     }
 
     @Test
-    public void parse_whenProvidedFiles_shouldReturnDomainObject() throws IOException, URISyntaxException {
+    void parse_whenProvidedFiles_shouldReturnDomainObject() throws IOException, URISyntaxException {
         // GIVEN
         GenericParser<String> actualParser = createGenericParser();
 
@@ -57,7 +90,7 @@ public class GenericParserTest {
     }
 
     @Test
-    public void parse_whenProvidedFiles_andEncryptedContents_shouldReturnDomainObject() throws IOException, URISyntaxException {
+    void parse_whenProvidedFiles_andEncryptedContents_shouldReturnDomainObject() throws IOException, URISyntaxException {
         // GIVEN
         ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-encrypted.bin"));
         GenericParser<String> actualParser = createGenericParserEncrypted(inputStream);
@@ -71,7 +104,7 @@ public class GenericParserTest {
     }
 
     @Test
-    public void dump_whenProvidedContents_andSizeGivenByAnotherField_shouldReturnAllParsedData() throws IOException, URISyntaxException {
+    void dump_whenProvidedContents_andSizeGivenByAnotherField_shouldReturnAllParsedData() throws IOException, URISyntaxException {
         // GIVEN
         GenericParser<String> actualParser = createGenericParserForFormulas();
         actualParser.parse();
@@ -85,7 +118,7 @@ public class GenericParserTest {
     }
 
     @Test
-    public void dump_whenProvidedContents_shouldReturnAllParsedData() throws IOException, URISyntaxException {
+    void dump_whenProvidedContents_shouldReturnAllParsedData() throws IOException, URISyntaxException {
         // GIVEN
         GenericParser<String> actualParser = createGenericParser();
         actualParser.parse();
@@ -99,7 +132,7 @@ public class GenericParserTest {
     }
 
     @Test
-    public void dump_whenProvidedContents_andHalfFloatValues_shouldReturnAllParsedData() throws IOException, URISyntaxException {
+    void dump_whenProvidedContents_andHalfFloatValues_shouldReturnAllParsedData() throws IOException, URISyntaxException {
         // GIVEN
         GenericParser<String> actualParser = createGenericParserHalfFloat();
         actualParser.parse();
@@ -113,7 +146,7 @@ public class GenericParserTest {
     }
 
     @Test
-    public void dump_whenProvidedContents_andVeryShortValues_shouldReturnAllParsedData() throws IOException, URISyntaxException {
+    void dump_whenProvidedContents_andVeryShortValues_shouldReturnAllParsedData() throws IOException, URISyntaxException {
         // GIVEN
         GenericParser<String> actualParser = createGenericParserVeryShortInt();
         actualParser.parse();
@@ -127,7 +160,7 @@ public class GenericParserTest {
     }
 
     @Test
-    public void dump_whenProvidedContentsInLittleEndian_shouldReturnAllParsedData() throws IOException, URISyntaxException {
+    void dump_whenProvidedContentsInLittleEndian_shouldReturnAllParsedData() throws IOException, URISyntaxException {
         // GIVEN
         GenericParser<String> actualParser = createGenericParserLittleEndian();
         actualParser.parse();
@@ -141,7 +174,7 @@ public class GenericParserTest {
     }
 
     @Test
-    public void dump_whenProvidedContentsSigned_shouldReturnAllParsedData() throws IOException, URISyntaxException {
+    void dump_whenProvidedContentsSigned_shouldReturnAllParsedData() throws IOException, URISyntaxException {
         // GIVEN
         GenericParser<String> actualParser = createGenericParserSigned();
         actualParser.parse();
@@ -153,6 +186,64 @@ public class GenericParserTest {
         // THEN
         assertThat(actualDump).isEqualTo(getExpectedDumpSignedInteger());
     }
+
+    @Test
+    void getNumeric_whenValueExistInStore_shouldReturnIt() {
+        // GIVEN
+        DataStore viewStoreMock = mock(DataStore.class);
+        when(viewStoreMock.getInteger(FIELD_NAME)).thenReturn(of(100L));
+
+        // WHEN
+        Optional<Long> actualValue = GenericParser.getNumeric(viewStoreMock, TestingProps.PROP);
+
+        // THEN
+        assertThat(actualValue).contains(100L);
+    }
+
+    @Test
+    void getNumeric_whenValueDoesNotExistInStore_shouldReturnEmpty() {
+        // GIVEN
+        DataStore viewStoreMock = mock(DataStore.class);
+        when(viewStoreMock.getInteger(FIELD_NAME)).thenReturn(empty());
+
+        // WHEN
+        Optional<Long> actualValue = GenericParser.getNumeric(viewStoreMock, TestingProps.PROP);
+
+        // THEN
+        assertThat(actualValue).isEmpty();
+    }
+
+    @Test
+    void setNumeric_whenNonInteger_norLongValue_shouldThrowException() {
+        // GIVEN-WHEN-THEN
+        expectThrows(IllegalArgumentException.class,
+                ()-> GenericParser.setNumeric(450.54, mock(DataStore.class), TestingProps.PROP));
+    }
+
+    @Test
+    void setNumeric_whenIntegerValue_shouldUpdateDataStore() {
+        // GIVEN
+        DataStore dataStoreMock = mock(DataStore.class);
+
+        // WHEN
+        GenericParser.setNumeric(450, dataStoreMock, TestingProps.PROP);
+
+        // THEN
+        verify(dataStoreMock).addInteger(FIELD_NAME, 450L);
+    }
+
+    @Test
+    void setNumeric_whenLongValue_shouldUpdateDataStore() {
+        // GIVEN
+        DataStore dataStoreMock = mock(DataStore.class);
+
+        // WHEN
+        GenericParser.setNumeric(450L, dataStoreMock, TestingProps.PROP);
+
+        // THEN
+        verify(dataStoreMock).addInteger(FIELD_NAME, 450L);
+    }
+
 
     private String getExpectedDump() throws IOException, URISyntaxException {
         return FilesHelper.readTextFromResourceFile("/files/dumps/TEST-basicFields.txt");
