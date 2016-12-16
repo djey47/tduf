@@ -27,7 +27,8 @@ class CameraToolIntegTest {
     private final String inputCameraFile = camerasIntegTestPath.resolve("Cameras.bin").toString();
     private final String outputCameraFile = outputPath.resolve("Cameras.bin.modified").toString();
     private final String batchFile = camerasIntegTestPath.resolve("instructions.csv").toString();
-    private final String viewConfigurationFile = jsonPath.resolve("customize-set.in.json").toString();
+    private final String setConfigurationFile = jsonPath.resolve("customize-set.in.json").toString();
+    private final String useViewsConfigurationFile = jsonPath.resolve("use-views.in.json").toString();
 
     @BeforeEach
     void setUp() throws IOException {
@@ -85,7 +86,7 @@ class CameraToolIntegTest {
         byte[] jsonContents = Files.readAllBytes(jsonPath.resolve("view-set.out.json"));
         String expectedJson = new String(jsonContents, FilesHelper.CHARSET_DEFAULT);
 
-        // WHEN: list
+        // WHEN: viewSet
         System.out.println("-> View-set!");
         OutputStream outputStream = ConsoleHelper.hijackStandardOutput();
         CameraTool.main(new String[]{"view-set", "-n", "-i", inputCameraFile, "-s", "1000"});
@@ -100,10 +101,25 @@ class CameraToolIntegTest {
         byte[] jsonContents = Files.readAllBytes(jsonPath.resolve("customize-set.out.json"));
         String expectedJson = new String(jsonContents, FilesHelper.CHARSET_DEFAULT);
 
-        // WHEN: list
+        // WHEN: customizeSet
         System.out.println("-> Customize-set!");
         OutputStream outputStream = ConsoleHelper.hijackStandardOutput();
-        CameraTool.main(new String[]{"customize-set", "-n", "-i", inputCameraFile,  "-o", outputCameraFile, "-c", viewConfigurationFile});
+        CameraTool.main(new String[]{"customize-set", "-n", "-i", inputCameraFile,  "-o", outputCameraFile, "-c", setConfigurationFile});
+
+        // THEN
+        AssertionsHelper.assertOutputStreamContainsJsonExactly(outputStream, expectedJson);
+    }
+
+    @Test
+    void useViews_shouldUseProperties_andReturnAllViewProperties() throws IOException, JSONException {
+        // GIVEN
+        byte[] jsonContents = Files.readAllBytes(jsonPath.resolve("use-views.out.json"));
+        String expectedJson = new String(jsonContents, FilesHelper.CHARSET_DEFAULT);
+
+        // WHEN: useViews
+        System.out.println("-> Use-views!");
+        OutputStream outputStream = ConsoleHelper.hijackStandardOutput();
+        CameraTool.main(new String[]{"use-views", "-n", "-i", inputCameraFile,  "-o", outputCameraFile, "-c", useViewsConfigurationFile});
 
         // THEN
         AssertionsHelper.assertOutputStreamContainsJsonExactly(outputStream, expectedJson);
