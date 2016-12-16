@@ -19,6 +19,7 @@ import java.util.Map;
 /**
  * Parent class of all CLI tools
  */
+// TODO Bring enum type (generic or constructor?)
 public abstract class GenericTool {
 
     @Argument
@@ -111,6 +112,7 @@ public abstract class GenericTool {
     /**
      * Should return some usage examples.
      */
+    // Provide default implementation based on enum examples
     protected abstract List<String> getExamples();
 
     boolean checkArgumentsAndOptions(String[] args) {

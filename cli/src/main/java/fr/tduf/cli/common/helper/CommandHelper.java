@@ -55,6 +55,7 @@ public class CommandHelper {
     /**
      * Contract to implement for all app commands.
      */
+    // TODO make all implementations declare own examples
     public interface CommandEnum {
 
         /**
