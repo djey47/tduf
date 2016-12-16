@@ -59,7 +59,8 @@ public class CameraTool extends GenericTool {
         COPY_SET("copy-set", "Duplicate given camera set to a new identifier. Will not erase existing."),
         COPY_SETS("copy-sets", "Duplicate given camera sets (in a CSV file) to new identifiers. Will not erase existing."),
         VIEW_SET("view-set", "Returns all set properties of a given camera identifier."),
-        CUSTOMIZE_SET("customize-set", "Defones set properties of a given camera identifier.");
+        CUSTOMIZE_SET("customize-set", "Defines set properties of a given camera identifier."),
+        USE_VIEWS("use-views", "Make a particular camera set re-use views from other cameras.");
 
         final String label;
         final String description;
@@ -110,6 +111,9 @@ public class CameraTool extends GenericTool {
             case CUSTOMIZE_SET:
                 commandResult = customizeCameraSet(inputCameraFile, outputCameraFile, configurationFile);
                 return true;
+            case USE_VIEWS:
+                commandResult = useViews(inputCameraFile, outputCameraFile, configurationFile);
+                return true;
             default:
                 commandResult = null;
                 return false;
@@ -131,25 +135,25 @@ public class CameraTool extends GenericTool {
 
         // Source identifier: mandatory with view-set
         if (sourceIdentifier == null
-                && command == VIEW_SET) {
+                && VIEW_SET == command) {
             throw new CmdLineException(parser, "Error: source identifier is required.", null);
         }
 
         // Identifiers: mandatory with copy-set
         if ((targetIdentifier == null || sourceIdentifier == null)
-                && command == COPY_SET) {
+                && COPY_SET == command) {
             throw new CmdLineException(parser, "Error: target and source identifiers are required.", null);
         }
 
         // Batch file: mandatory with copy-sets
         if (batchIdentifiersFile == null
-                && command == COPY_SETS) {
+                && COPY_SETS == command) {
             throw new CmdLineException(parser, "Error: batch file is required.", null);
         }
 
-        // Config file: mandatory with customize-set
+        // Config file: mandatory with customize-set or use-views
         if (configurationFile == null
-                && command == CUSTOMIZE_SET) {
+                && (CUSTOMIZE_SET == command || USE_VIEWS == command)) {
             throw new CmdLineException(parser, "Error: JSON configuration file is required.", null);
         }
     }
@@ -166,7 +170,12 @@ public class CameraTool extends GenericTool {
                 COPY_SET.label + " -i \"C:\\Desktop\\Cameras.bin\" -s 208 -t 209",
                 COPY_SETS.label + " -i \"C:\\Desktop\\Cameras.bin\" -b \"instructions.csv\"",
                 VIEW_SET.label + " -i \"C:\\Desktop\\Cameras.bin\" -s 208",
-                CUSTOMIZE_SET.label + " -i \"C:\\Desktop\\Cameras.bin\" -c \":\\Desktop\\views-properties.json\"");
+                CUSTOMIZE_SET.label + " -i \"C:\\Desktop\\Cameras.bin\" -c \":\\Desktop\\views-properties.json\"",
+                USE_VIEWS.label + " -i \"C:\\Desktop\\Cameras.bin\" -c \":\\Desktop\\views-properties.json\"");
+    }
+
+    private Map<String, ?> useViews(String sourceCameraFile, String targetCameraFile, String configurationFile) {
+        return null;
     }
 
     private Map<String, ?> customizeCameraSet(String sourceCameraFile, String targetCameraFile, String configurationFile) throws IOException {

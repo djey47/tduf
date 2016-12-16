@@ -212,6 +212,14 @@ public class AllToolsTest {
         testToolCommand(new CameraTool(), CUSTOMIZE_SET);
     }
 
+    @Test
+    public void cameraTool_useViews() throws NoSuchFieldException, IOException {
+        // GIVEN-WHEN-THEN
+        exitRule.expectSystemExitWithStatus(1);
+
+        testToolCommand(new CameraTool(), USE_VIEWS);
+    }
+
     private static void testToolCommand(GenericTool toolInstance, CommandHelper.CommandEnum command) throws NoSuchFieldException, IOException {
 
         System.out.println("> Now testing tool " + toolInstance.getClass().getSimpleName() + ", command " + command + "...");
