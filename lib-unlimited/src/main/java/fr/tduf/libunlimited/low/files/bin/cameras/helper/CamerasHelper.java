@@ -1,18 +1,25 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.helper;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.libunlimited.common.helper.CommandLineHelper;
+import fr.tduf.libunlimited.high.files.bin.cameras.interop.GenuineCamGateway;
+import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.Long.valueOf;
+import static java.nio.file.Files.readAllBytes;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -27,6 +34,8 @@ public class CamerasHelper {
     private static final String KEY_CAMERA_ID = "cameraId";
     private static final String KEY_VIEW_COUNT = "viewCount";
     private static final String KEY_INDEX_SIZE = "indexSize";
+
+    private static GenuineCamGateway cameraSupport = new GenuineCamGateway(new CommandLineHelper());
 
     private CamerasHelper(){}
 
@@ -97,13 +106,8 @@ public class CamerasHelper {
      * @return updated view properties.
      */
     public static CameraInfo updateViews(CameraInfo configuration, CamerasParser parser) {
-        requireNonNull(configuration, "View configuration is required.");
+        long cameraIdentifier = validateConfiguration(configuration);
 
-        if (configuration.getViews().isEmpty()) {
-            throw new IllegalArgumentException("No views to update in provided configuration.");
-        }
-
-        long cameraIdentifier = configuration.getCameraIdentifier();
         extractViewStores(cameraIdentifier, parser)
                 .forEach(viewStore -> {
                     ViewKind viewKind = (ViewKind) ViewProps.TYPE.retrieveFrom(viewStore)
@@ -117,6 +121,63 @@ public class CamerasHelper {
                 });
 
         return fetchInformation(cameraIdentifier, parser);
+    }
+
+    /**
+     * Applies view properties from other camera set.
+     * @param configuration     : views to use
+     * @param sourceCamerasFile : camera contents to be modified
+     * @return updated view properties.
+     */
+    public static CameraInfo useViews(CameraInfo configuration, String sourceCamerasFile) throws IOException {
+        long cameraIdentifier = validateConfiguration(configuration);
+
+        GenuineCamViewsDto customizeInput = mapCameraInfoToGenuineCamViews(configuration);
+        cameraSupport.customizeCamera(sourceCamerasFile, cameraIdentifier, customizeInput);
+
+        CameraInfo cameraInfoFromTDUMT = cameraSupport.getCameraInfo(sourceCamerasFile, cameraIdentifier);
+
+        CamerasParser camerasParser = CamerasParser.load(getCamerasInputStream(sourceCamerasFile));
+        camerasParser.parse();
+        CameraInfo cameraInfoFromTDUF = fetchInformation(cameraIdentifier, camerasParser);
+
+        return mergeCameraInfo(cameraInfoFromTDUF, cameraInfoFromTDUMT);
+    }
+
+    private static CameraInfo mergeCameraInfo(CameraInfo cameraInfoFromTDUF, CameraInfo cameraInfoFromTDUMT) {
+        return CameraInfo.builder()
+                .forIdentifier(cameraInfoFromTDUF.getCameraIdentifier())
+                .withUsedViews(cameraInfoFromTDUF.getViews(), cameraInfoFromTDUMT.getViews())
+                .build();
+    }
+
+    private static GenuineCamViewsDto mapCameraInfoToGenuineCamViews(CameraInfo configuration) {
+        List<GenuineCamViewsDto.GenuineCamViewDto> views = configuration.getViews().stream()
+                .map(CamerasHelper::mapCameraViewToGenuineCamView)
+                .collect(toList());
+
+        return GenuineCamViewsDto.withViews(views);
+    }
+
+    private static GenuineCamViewsDto.GenuineCamViewDto mapCameraViewToGenuineCamView(CameraInfo.CameraView view) {
+        GenuineCamViewsDto.GenuineCamViewDto genuineCamViewDto = new GenuineCamViewsDto.GenuineCamViewDto();
+
+        genuineCamViewDto.setViewType(view.getType());
+        genuineCamViewDto.setCameraId(Long.valueOf(view.getSourceCameraIdentifier()).intValue());
+        genuineCamViewDto.setViewId(view.getSourceType().getInternalId());
+        genuineCamViewDto.setCustomized(true);
+
+        return genuineCamViewDto;
+    }
+
+    private static long validateConfiguration(CameraInfo configuration) {
+        requireNonNull(configuration, "View configuration is required.");
+
+        if (configuration.getViews().isEmpty()) {
+            throw new IllegalArgumentException("No views to update in provided configuration.");
+        }
+
+        return configuration.getCameraIdentifier();
     }
 
     private static void updateIndexInDatastore(DataStore dataStore, long sourceCameraId, long targetCameraId, Map<Long, Short> cameraIndex) {
@@ -153,5 +214,14 @@ public class CamerasHelper {
             throw new NoSuchElementException("Requested camera identifier does not exist: " + cameraIdentifier);
         }
         return viewStores;
+    }
+
+    private static ByteArrayInputStream getCamerasInputStream(String sourceCameraFile) throws IOException {
+        return new ByteArrayInputStream(readAllBytes(Paths.get(sourceCameraFile)));
+    }
+
+    // For testing
+    static void setCameraSupport(GenuineCamGateway genuineCamGateway) {
+        cameraSupport = genuineCamGateway;
     }
 }
