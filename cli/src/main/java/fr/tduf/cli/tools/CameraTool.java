@@ -48,7 +48,6 @@ public class CameraTool extends GenericTool {
     @Option(name="-c", aliases = "--configurationFile", usage = "JSON File containing all view properties to modify (required for customize-set operation).")
     private String configurationFile;
 
-
     private Command command;
 
     /**
@@ -60,7 +59,7 @@ public class CameraTool extends GenericTool {
         COPY_SETS("copy-sets", "Duplicate given camera sets (in a CSV file) to new identifiers. Will not erase existing."),
         VIEW_SET("view-set", "Returns all set properties of a given camera identifier."),
         CUSTOMIZE_SET("customize-set", "Defines set properties of a given camera identifier."),
-        USE_VIEWS("use-views", "Make a particular camera set re-use views from other cameras.");
+        USE_VIEWS("use-views", "Make a particular camera set re-use views from other cameras (modifies provided camera file).");
 
         final String label;
         final String description;
@@ -112,7 +111,7 @@ public class CameraTool extends GenericTool {
                 commandResult = customizeCameraSet(inputCameraFile, outputCameraFile, configurationFile);
                 return true;
             case USE_VIEWS:
-                commandResult = useViews(inputCameraFile, outputCameraFile, configurationFile);
+                commandResult = useViews(inputCameraFile, configurationFile);
                 return true;
             default:
                 commandResult = null;
@@ -127,7 +126,7 @@ public class CameraTool extends GenericTool {
 
     @Override
     protected void checkAndAssignDefaultParameters(CmdLineParser parser) throws CmdLineException {
-        // Output file: defaulted to input file.extended
+        // Output file: defaulted to input file.extended or .customized
         if (outputCameraFile == null) {
             outputCameraFile = inputCameraFile
                     + (COPY_SET == command || COPY_SETS == command ? ".extended" : ".customized");
@@ -170,12 +169,17 @@ public class CameraTool extends GenericTool {
                 COPY_SET.label + " -i \"C:\\Desktop\\Cameras.bin\" -s 208 -t 209",
                 COPY_SETS.label + " -i \"C:\\Desktop\\Cameras.bin\" -b \"instructions.csv\"",
                 VIEW_SET.label + " -i \"C:\\Desktop\\Cameras.bin\" -s 208",
-                CUSTOMIZE_SET.label + " -i \"C:\\Desktop\\Cameras.bin\" -c \":\\Desktop\\views-properties.json\"",
-                USE_VIEWS.label + " -i \"C:\\Desktop\\Cameras.bin\" -c \":\\Desktop\\views-properties.json\"");
+                CUSTOMIZE_SET.label + " -i \"C:\\Desktop\\Cameras.bin\" -c \"C:\\Desktop\\views-properties.json\"",
+                USE_VIEWS.label + " -i \"C:\\Desktop\\Cameras.bin\" -c \"C:\\Desktop\\views-properties.json\"");
     }
 
-    private Map<String, ?> useViews(String sourceCameraFile, String targetCameraFile, String configurationFile) {
-        return null;
+    private Map<String, ?> useViews(String sourceCameraFile, String configurationFile) throws IOException {
+        CameraInfo configurationObject = readConfiguration(configurationFile);
+        CameraInfo updatedCameraInfo = CamerasHelper.useViews(configurationObject, sourceCameraFile);
+
+        outLine("> Done using views.");
+
+        return makeCommandResultForViewDetails(updatedCameraInfo);
     }
 
     private Map<String, ?> customizeCameraSet(String sourceCameraFile, String targetCameraFile, String configurationFile) throws IOException {
@@ -259,6 +263,7 @@ public class CameraTool extends GenericTool {
     private CamerasParser loadAndParseCameras(String cameraFile) throws IOException {
         outLine("> Will use Cameras file: " + cameraFile);
 
+        // TODO extract to helper
         CamerasParser parser = CamerasParser.load(getCamerasInputStream(cameraFile));
         parser.parse();
 

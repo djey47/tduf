@@ -116,12 +116,19 @@ class CameraToolIntegTest {
         byte[] jsonContents = Files.readAllBytes(jsonPath.resolve("use-views.out.json"));
         String expectedJson = new String(jsonContents, FilesHelper.CHARSET_DEFAULT);
 
+        String tempDirectory = fr.tduf.libtesting.common.helper.FilesHelper.createTempDirectoryForLibrary();
+        Path cameraPath = Paths.get(tempDirectory, "cameras.bin");
+        Files.copy(Paths.get(inputCameraFile), cameraPath);
+
+
         // WHEN: useViews
         System.out.println("-> Use-views!");
         OutputStream outputStream = ConsoleHelper.hijackStandardOutput();
-        CameraTool.main(new String[]{"use-views", "-n", "-i", inputCameraFile,  "-o", outputCameraFile, "-c", useViewsConfigurationFile});
+        CameraTool.main(new String[]{"use-views", "-n", "-i", cameraPath.toString(), "-c", useViewsConfigurationFile});
+
 
         // THEN
+        assertThat(cameraPath).exists();
         AssertionsHelper.assertOutputStreamContainsJsonExactly(outputStream, expectedJson);
     }
 }
