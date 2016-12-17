@@ -50,6 +50,17 @@ public class CameraInfo {
             return this;
         }
 
+        public CameraInfoBuilder withUsedViews(List<CameraView> allViews, List<CameraView> usedViews) {
+            views.addAll(allViews);
+            views
+                    .forEach(view -> usedViews.stream()
+                            .filter(usedView -> usedView.getType() == view.getType())
+                            .filter(usedView -> usedView.getSourceCameraIdentifier() != 0L && usedView.getSourceType() != null)
+                            .findAny()
+                            .ifPresent(view::setUsedSettings));
+            return this;
+        }
+
         public CameraInfo build() {
             final CameraInfo cameraInfo = new CameraInfo();
 
@@ -104,6 +115,11 @@ public class CameraInfo {
 
         public EnumMap<ViewProps, ?> getSettings() {
             return settings;
+        }
+
+        void setUsedSettings(CameraView usedView) {
+            sourceCameraIdentifier = usedView.sourceCameraIdentifier;
+            sourceType = usedView.sourceType;
         }
     }
 }
