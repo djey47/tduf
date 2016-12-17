@@ -15,11 +15,24 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GenuineCamViewsDto {
 
+    // TODO private constructor and use factory method
+
     @JsonProperty("views")
     private List<GenuineCamViewDto> views = new ArrayList<>();
 
     public List<GenuineCamViewDto> getViews() {
         return views;
+    }
+
+    /**
+     * Recommended factory.
+     * @param views : views to use
+     * @return a new object with existing views
+     */
+    public static GenuineCamViewsDto withViews(List<GenuineCamViewDto> views) {
+        GenuineCamViewsDto genuineCamViews = new GenuineCamViewsDto();
+        genuineCamViews.views.addAll(views);
+        return genuineCamViews;
     }
 
     @JsonTypeName("genuineCamView")
@@ -63,6 +76,10 @@ public class GenuineCamViewsDto {
 
         public void setViewId(int viewId) {
             this.viewId = viewId;
+        }
+
+        public void setCustomized(boolean customized) {
+            this.customized = customized;
         }
     }
 }
