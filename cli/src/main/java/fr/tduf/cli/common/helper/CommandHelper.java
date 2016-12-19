@@ -44,18 +44,14 @@ public class CommandHelper {
      */
     public static CommandEnum fromLabel(CommandEnum commandEnum, String label) {
         return Stream.of(commandEnum.getValues())
-
                 .filter(cmd -> cmd.getLabel().equals(label))
-
                 .findAny()
-
-                .get();
+                .orElseThrow(() -> new IllegalArgumentException("Provided command has no member with provided label: " + label));
     }
 
     /**
      * Contract to implement for all app commands.
      */
-    // TODO make all implementations declare own examples
     public interface CommandEnum {
 
         /**

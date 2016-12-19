@@ -13,17 +13,19 @@ import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Comparator.comparing;
 
 /**
  * Parent class of all CLI tools
  */
-// TODO Bring enum type (generic or constructor?)
 public abstract class GenericTool {
 
     @Argument
-    protected List<String> arguments = new ArrayList<>();
+    private List<String> arguments = new ArrayList<>();
 
     @Option(name = "-n", aliases = "--normalized", usage = "Not mandatory. Produces output as JSON instead of natural language.")
     private boolean withNormalizedOutput = false;
@@ -31,7 +33,7 @@ public abstract class GenericTool {
     @Option(name = "-v", aliases = "--verbose", usage = "Not mandatory. Also displays DEBUG messages.")
     private boolean withVerboseOutput = false;
 
-    protected Map<String, ?> commandResult = null;
+    Map<String, ?> commandResult = null;
 
     protected ObjectMapper jsonMapper = new ObjectMapper();
     protected ObjectWriter jsonWriter = jsonMapper.writerWithDefaultPrettyPrinter();
@@ -100,14 +102,14 @@ public abstract class GenericTool {
     /**
      * Should check parameter validity and assign default ones, eventually.
      * @param parser    : command line parser instance to use
-     * @throws CmdLineException
+     * @throws CmdLineException when syntax error occurs
      */
     protected abstract void checkAndAssignDefaultParameters(CmdLineParser parser) throws CmdLineException;
 
     /**
      * Should return one command enum instance.
      */
-    protected abstract CommandHelper.CommandEnum getCommand();
+    protected abstract CommandHelper.CommandEnum  getCommand();
 
     /**
      * Should return some usage examples.
@@ -157,9 +159,7 @@ public abstract class GenericTool {
         System.err.println("  .Commands:");
         CommandHelper.getValuesAsMap(getCommand())
                 .entrySet().stream()
-
-                .sorted((entry1, entry2) -> entry1.getKey().compareTo(entry2.getKey()))
-
+                .sorted(comparing(Map.Entry::getKey))
                 .forEach((entry) -> {
                     System.err.println();
                     System.err.println(" " + entry.getKey() + " : " + entry.getValue());
@@ -175,9 +175,7 @@ public abstract class GenericTool {
 
         System.err.println("  .Examples:");
         getExamples().stream()
-
                 .sorted(String::compareTo)
-
                 .forEach((example) -> {
                     System.err.println();
                     System.err.println(" " + displayedClassName + " " + example);
