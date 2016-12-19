@@ -15,7 +15,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GenuineCamViewsDto {
 
-    // TODO private constructor and use factory method
+    private GenuineCamViewsDto() {}
 
     @JsonProperty("views")
     private List<GenuineCamViewDto> views = new ArrayList<>();

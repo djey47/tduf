@@ -9,11 +9,12 @@ import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Customizes views for installed vehicle.
@@ -48,19 +49,12 @@ class AdjustCameraStep extends GenericStep {
     }
 
     private GenuineCamViewsDto buildCustomViewsFromProperties() {
-        final GenuineCamViewsDto genuineCamViewsDto = new GenuineCamViewsDto();
-
-        Stream.of(CustomizableCameraView.values())
-
+        List<GenuineCamViewsDto.GenuineCamViewDto> views = Stream.of(CustomizableCameraView.values())
                 .map(this::buildCustomViewFromProperties)
-
                 .filter(Optional::isPresent)
-
                 .map(Optional::get)
-
-                .collect(toCollection(genuineCamViewsDto::getViews));
-
-        return genuineCamViewsDto;
+                .collect(toList());
+        return GenuineCamViewsDto.withViews(views);
     }
 
     // Ignore warning: method ref
