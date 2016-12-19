@@ -4,6 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -17,7 +18,8 @@ import static java.util.Optional.ofNullable;
 public class ApplicationConfiguration extends Properties {
     private static final String THIS_CLASS_NAME = ApplicationConfiguration.class.getSimpleName();
 
-    private static String configurationFile = Paths.get(System.getProperty("user.home"), "tduf.properties").toString();
+    private static String genuineConfigurationFile = Paths.get(System.getProperty("user.home"), "tduf.properties").toString();
+    private static String configurationFile = Paths.get(System.getProperty("user.home"), ".tduf", "tduf.properties").toString();
 
     private static final String KEY_DATABASE_DIR = "tdu.database.directory";
     private static final String KEY_TDU_DIR = "tdu.root.directory";
@@ -88,6 +90,9 @@ public class ApplicationConfiguration extends Properties {
      * @throws IOException when storage error occurs
      */
     public void store() throws IOException {
+        Path parentPath = Paths.get(configurationFile).getParent();
+        Files.createDirectories(parentPath);
+
         OutputStream os = new FileOutputStream(configurationFile);
         store(os, "TDUF configuration");
     }
@@ -98,14 +103,23 @@ public class ApplicationConfiguration extends Properties {
      */
     public void load() throws IOException {
         try {
-            InputStream is = new FileInputStream(configurationFile);
-            load(is);
+            // TODO to be removed later
+            Path genuinePath = Paths.get(genuineConfigurationFile);
+            if (Files.exists(genuinePath)) {
+                Log.warn(THIS_CLASS_NAME, "Configuration file exists at obsolete location. It will be relocated to " + configurationFile);
+                InputStream is = new FileInputStream(genuineConfigurationFile);
+                load(is);
+                store();
+                Files.delete(genuinePath);
+            } else {
+                InputStream is = new FileInputStream(configurationFile);
+                load(is);
+            }
         } catch (FileNotFoundException fnfe) {
             Log.info(THIS_CLASS_NAME, "Configuration file does not exist, still. It will be created.", fnfe);
             store();
         }
     }
-
 
     /**
      * Deletes all settings and saves configuration file
@@ -123,5 +137,8 @@ public class ApplicationConfiguration extends Properties {
     // For tests
     static void setConfigurationFile(String file) {
         configurationFile = file;
+    }
+    static void setGenuineConfigurationFile(String file) {
+        genuineConfigurationFile = file;
     }
 }

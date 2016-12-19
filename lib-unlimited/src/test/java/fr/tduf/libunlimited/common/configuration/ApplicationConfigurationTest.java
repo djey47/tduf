@@ -6,6 +6,8 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -14,11 +16,14 @@ public class ApplicationConfigurationTest {
     private final ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
 
     private String configFileName;
+    private String genuineConfigFileName;
 
     @Before
     public void setUp() throws IOException {
-        configFileName = Paths.get(FilesHelper.createTempDirectoryForLibrary(), "test.properties").toString();
+        configFileName = Paths.get(FilesHelper.createTempDirectoryForLibrary(), ".tduf", "test.properties").toString();
+        genuineConfigFileName = Paths.get(FilesHelper.createTempDirectoryForLibrary(), "test.properties").toString();
         ApplicationConfiguration.setConfigurationFile(configFileName);
+        ApplicationConfiguration.setGenuineConfigurationFile(genuineConfigFileName);
     }
 
     @Test
@@ -37,6 +42,30 @@ public class ApplicationConfigurationTest {
 
         // THEN
         assertThat(new File(configFileName)).exists();
+    }
+
+    @Test
+    public void load_whenConfigFile() throws Exception {
+        // GIVEN
+        Path configFilePath = Paths.get(configFileName);
+        Files.createDirectories(configFilePath.getParent());
+        Files.createFile(configFilePath);
+
+        // WHEN-THEN
+        applicationConfiguration.load();
+    }
+
+    @Test
+    public void load_whenConfigFileAtGenuineLocation_shouldCreateAtNewLocation_andDeleteOriginalFile() throws Exception {
+        // GIVEN
+        Files.createFile(Paths.get(genuineConfigFileName));
+
+        // WHEN
+        applicationConfiguration.load();
+
+        // THEN
+        assertThat(new File(configFileName)).exists();
+        assertThat(new File(genuineConfigFileName)).doesNotExist();
     }
 
     @Test
