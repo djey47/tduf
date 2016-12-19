@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import static fr.tduf.libunlimited.common.game.domain.Locale.FRANCE;
 import static fr.tduf.libunlimited.common.helper.FilesHelper.readObjectFromJsonResourceFile;
 import static fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher_commonTest.createPatcher;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BOTS;
@@ -33,8 +34,8 @@ class DatabasePatcher_focusOnResourcesTest {
 
         // THEN
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
-        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("54367256", BOTS, Locale.FRANCE)).contains("Brian Molko");
-        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", BOTS, Locale.FRANCE)).contains("Cindy");
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("54367256", BOTS, FRANCE)).contains("Brian Molko");
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", BOTS, FRANCE)).contains("Cindy");
     }
 
     @Test
@@ -52,8 +53,8 @@ class DatabasePatcher_focusOnResourcesTest {
 
         // THEN
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
-        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("54367256", BOTS, Locale.FRANCE)).contains("Brian Molko");
-        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", BOTS, Locale.FRANCE)).contains("Cindy");
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("54367256", BOTS, FRANCE)).contains("Brian Molko");
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", BOTS, FRANCE)).contains("Cindy");
         assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("54367256", BOTS, Locale.ITALY)).contains("Brian Molko");
         assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", BOTS, Locale.ITALY)).contains("Cindy");
     }
@@ -73,8 +74,8 @@ class DatabasePatcher_focusOnResourcesTest {
 
         // THEN
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
-        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("54367256", BOTS, Locale.FRANCE)).contains("Brian Molko");
-        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", BOTS, Locale.FRANCE)).contains("Cindy");
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("54367256", BOTS, FRANCE)).contains("Brian Molko");
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", BOTS, FRANCE)).contains("Cindy");
         assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("54367256", BOTS, Locale.ITALY)).contains("Brian Molko");
         assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", BOTS, Locale.ITALY)).contains("Cindy");
     }
@@ -94,17 +95,20 @@ class DatabasePatcher_focusOnResourcesTest {
 
         // THEN
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
-        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("54367256", BOTS, Locale.FRANCE)).contains("Brian");
-        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", BOTS, Locale.FRANCE)).contains("Cindy");
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("54367256", BOTS, FRANCE)).contains("Brian");
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", BOTS, FRANCE)).contains("Cindy");
         assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("54367256", BOTS, Locale.ITALY)).contains("Brian");
         assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", BOTS, Locale.ITALY)).contains("Cindy");
     }
 
     @Test
-     void apply_whenDeleteResourcesPatch_shouldRemoveExistingEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
+     void apply_whenDeleteResourcesPatch_shouldRemoveExistingItem() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto deleteResourcesPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/deleteResources.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(BOTS);
+        databaseObject.getResource().getEntryByReference("60367256")
+                .orElseThrow(() -> new IllegalStateException("Resource entry should exist"))
+                .setValueForLocale("SpikeFR", FRANCE);
 
         DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
 
@@ -115,8 +119,8 @@ class DatabasePatcher_focusOnResourcesTest {
 
         // THEN
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
-        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("60367256", BOTS, Locale.FRANCE)).isEmpty();
-        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", BOTS, Locale.FRANCE)).isEmpty();
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("60367256", BOTS, FRANCE)).contains("Spike");
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", BOTS, FRANCE)).isEmpty();
     }
 
     @Test
@@ -134,8 +138,8 @@ class DatabasePatcher_focusOnResourcesTest {
 
         // THEN
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
-        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("60367256", BOTS, Locale.FRANCE)).isEmpty();
-        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", BOTS, Locale.FRANCE)).isEmpty();
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("60367256", BOTS, FRANCE)).isEmpty();
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", BOTS, FRANCE)).isEmpty();
         assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("60367256", BOTS, Locale.ITALY)).isEmpty();
         assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", BOTS, Locale.ITALY)).isEmpty();
     }
@@ -155,8 +159,8 @@ class DatabasePatcher_focusOnResourcesTest {
 
         // THEN
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
-        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("60367256", BOTS, Locale.FRANCE)).isEmpty();
-        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", BOTS, Locale.FRANCE)).isEmpty();
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("60367256", BOTS, FRANCE)).isEmpty();
+        assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", BOTS, FRANCE)).isEmpty();
         assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("60367256", BOTS, Locale.ITALY)).isEmpty();
         assertThat(databaseMiner.getLocalizedResourceValueFromTopicAndReference("33333333", BOTS, Locale.ITALY)).isEmpty();
     }
