@@ -50,7 +50,7 @@ public class CacheManagerTest {
     public void getValueFromKey_whenNullCallback_shouldThrowException(){
         // GIVEN-WHEN-THEN
         assertThrows(IllegalArgumentException.class,
-                cacheManagerInstance.getValueFromKey(null, null, null));
+                () -> cacheManagerInstance.getValueFromKey(null, null, null));
     }
 
     @Test
