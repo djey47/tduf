@@ -10,7 +10,6 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -263,17 +262,11 @@ public class CameraTool extends GenericTool {
     private CamerasParser loadAndParseCameras(String cameraFile) throws IOException {
         outLine("> Will use Cameras file: " + cameraFile);
 
-        // TODO extract to helper
-        CamerasParser parser = CamerasParser.load(getCamerasInputStream(cameraFile));
-        parser.parse();
+        CamerasParser parser = CamerasHelper.loadAndParseFile(cameraFile);
 
         outLine("> Done reading cameras.");
 
         return parser;
-    }
-
-    private ByteArrayInputStream getCamerasInputStream(String sourceCameraFile) throws IOException {
-        return new ByteArrayInputStream(Files.readAllBytes(Paths.get(sourceCameraFile)));
     }
 
     private void writeModifiedCameras(DataStore dataStore, String targetCameraFile) throws IOException {

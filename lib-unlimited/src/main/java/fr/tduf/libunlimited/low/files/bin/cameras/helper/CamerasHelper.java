@@ -136,12 +136,18 @@ public class CamerasHelper {
         cameraSupport.customizeCamera(sourceCamerasFile, cameraIdentifier, customizeInput);
 
         CameraInfo cameraInfoFromTDUMT = cameraSupport.getCameraInfo(sourceCamerasFile, cameraIdentifier);
-
-        CamerasParser camerasParser = CamerasParser.load(getCamerasInputStream(sourceCamerasFile));
-        camerasParser.parse();
-        CameraInfo cameraInfoFromTDUF = fetchInformation(cameraIdentifier, camerasParser);
+        CameraInfo cameraInfoFromTDUF = fetchInformation(cameraIdentifier, loadAndParseFile(sourceCamerasFile));
 
         return mergeCameraInfo(cameraInfoFromTDUF, cameraInfoFromTDUMT);
+    }
+
+    /**
+     * @return parsed camera contents.
+     */
+    public static CamerasParser loadAndParseFile(String cameraFile) throws IOException {
+        CamerasParser parser = CamerasParser.load(getCamerasInputStream(cameraFile));
+        parser.parse();
+        return parser;
     }
 
     private static CameraInfo mergeCameraInfo(CameraInfo cameraInfoFromTDUF, CameraInfo cameraInfoFromTDUMT) {
