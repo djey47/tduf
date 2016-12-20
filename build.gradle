@@ -6,6 +6,7 @@ buildscript {
     }
     dependencies {
         classpath 'org.kordamp:markdown-gradle-plugin:1.0.0'
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0-M3'
     }
 }
 
@@ -22,7 +23,6 @@ scmVersion {
         prefix = 'tduf'
     }
 }
-
 
 // Project definition
 allprojects {
@@ -42,6 +42,7 @@ allprojects {
 
 subprojects {
     apply plugin: 'java'
+    apply plugin: 'org.junit.platform.gradle.plugin'
 
     repositories {
         maven  {
@@ -70,6 +71,23 @@ subprojects {
     compileJava {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    junitPlatform {
+        platformVersion "$junitPlatformVersion"
+        filters {
+            engines {
+                 include 'junit-jupiter', 'junit-vintage'
+                // exclude 'custom-engine'
+            }
+            tags {
+                include 'fast'
+                exclude 'slow'
+            }
+            includeClassNamePattern '.*Test'
+        }
+        enableStandardTestTask true
+        reportsDir file('build/test-results/junit-platform')
     }
 
     task fatJar(type: Jar) {
