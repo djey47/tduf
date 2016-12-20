@@ -3,6 +3,7 @@ package fr.tduf.gui.installer.domain;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.Comparator.comparingInt;
 import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
@@ -94,13 +95,13 @@ public class VehicleSlot {
 
     public List<RimSlot> getAllRimOptionsSorted() {
         return rimOptions.stream()
-                .sorted((rim1, rim2) -> Integer.compare(rim1.getRank(), rim2.getRank()))
+                .sorted(comparingInt(RimSlot::getRank))
                 .collect(Collectors.toList());
     }
 
     public List<RimSlot> getAllRimCandidatesSorted() {
         return rimCandidates.stream()
-                .sorted((rim1, rim2) -> Integer.compare(rim1.getRank(), rim2.getRank()))
+                .sorted(comparingInt(RimSlot::getRank))
                 .collect(Collectors.toList());
     }
 

@@ -11,7 +11,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
-import static org.junit.jupiter.api.Assertions.expectThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class DatabasePatcher_commonTest {
 
@@ -25,28 +25,28 @@ class DatabasePatcher_commonTest {
     @Test
      void apply_whenNullPatchObject_shouldThrowException() throws ReflectiveOperationException {
         // GIVEN-WHEN-THEN
-        expectThrows(NullPointerException.class,
+        assertThrows(NullPointerException.class,
                 () -> patcher.apply(null));
     }
 
     @Test
      void batchApply_whenNullPatchList_shouldThrowException() throws ReflectiveOperationException, IOException, URISyntaxException {
         // GIVEN-WHEN-THEN
-        expectThrows(NullPointerException.class,
+        assertThrows(NullPointerException.class,
                 () -> patcher.batchApply(null));
     }
 
     @Test
      void batchApplyWithProperties_whenNullPatchMap_shouldThrowException() throws ReflectiveOperationException, IOException, URISyntaxException {
         // GIVEN-WHEN-THEN
-        expectThrows(NullPointerException.class,
+        assertThrows(NullPointerException.class,
                 () -> patcher.batchApplyWithProperties(null));
     }
 
     @Test
      void applyWithProperties_whenNullProperties_shouldThrowException() throws ReflectiveOperationException {
         // GIVEN-WHEN-THEN
-        expectThrows(NullPointerException.class,
+        assertThrows(NullPointerException.class,
                 () -> patcher.applyWithProperties(DbPatchDto.builder().build(), null));
     }
 

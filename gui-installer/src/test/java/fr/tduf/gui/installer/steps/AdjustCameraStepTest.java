@@ -29,8 +29,6 @@ import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind.*;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -50,8 +48,6 @@ public class AdjustCameraStepTest {
     @Captor
     private ArgumentCaptor<GenuineCamViewsDto> customizeCamCaptor;
 
-    private InstallerConfiguration installerConfiguration;
-
     private DatabaseContext databaseContext;
 
     private AdjustCameraStep adjustCameraStep;
@@ -65,7 +61,7 @@ public class AdjustCameraStepTest {
         Files.createDirectories(tduDatabasePath);
         FilesHelper.createFakeDatabase(tduDatabasePath.toString(), "");
 
-        installerConfiguration = InstallerConfiguration.builder()
+        InstallerConfiguration installerConfiguration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduTempDirectory)
                 .overridingCameraSupport(cameraSupportMock)
                 .build();

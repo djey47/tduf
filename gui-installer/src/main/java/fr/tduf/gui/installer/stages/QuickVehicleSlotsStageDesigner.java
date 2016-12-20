@@ -3,7 +3,6 @@ package fr.tduf.gui.installer.stages;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.FxConstants;
 import fr.tduf.gui.installer.controllers.QuickVehicleSlotsStageController;
-import fr.tduf.gui.installer.controllers.VehicleSlotsStageController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

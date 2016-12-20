@@ -8,8 +8,6 @@ import fr.tduf.gui.installer.domain.exceptions.StepException;
 import javafx.beans.property.ObjectProperty;
 
 import static fr.tduf.gui.installer.steps.GenericStep.StepType.*;
-import static fr.tduf.gui.installer.steps.GenericStep.StepType.REMOVE_BACKUP;
-import static fr.tduf.gui.installer.steps.GenericStep.StepType.SAVE_DATABASE;
 
 /**
  * Orchestrates all steps for uninstall and handles errors

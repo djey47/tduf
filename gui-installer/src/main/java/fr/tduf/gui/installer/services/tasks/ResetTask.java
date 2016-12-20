@@ -8,7 +8,6 @@ import fr.tduf.gui.installer.domain.exceptions.StepException;
 import javafx.beans.property.ObjectProperty;
 
 import static fr.tduf.gui.installer.steps.GenericStep.StepType.RESTORE_SLOT;
-import static fr.tduf.gui.installer.steps.GenericStep.StepType.REVERT_CAMERA;
 import static fr.tduf.gui.installer.steps.GenericStep.StepType.SAVE_DATABASE;
 
 /**

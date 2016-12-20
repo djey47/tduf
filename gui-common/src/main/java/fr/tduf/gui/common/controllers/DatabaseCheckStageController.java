@@ -23,12 +23,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.NumberStringConverter;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.lang.Integer.compare;
+import static java.util.Comparator.comparingInt;
 import static java.util.Objects.requireNonNull;
 
 public class DatabaseCheckStageController extends AbstractGuiController {
@@ -87,7 +89,7 @@ public class DatabaseCheckStageController extends AbstractGuiController {
 
         errorsByType.entrySet().stream()
 
-                .sorted((entry1, entry2) -> compare(entry1.getKey().getRenderOrder(), entry2.getKey().getRenderOrder()))
+                .sorted(comparingInt(entry2 -> entry2.getKey().getRenderOrder()))
 
                 .forEach((entry) -> {
                     IntegrityError.ErrorTypeEnum errorType = entry.getKey();
@@ -128,7 +130,7 @@ public class DatabaseCheckStageController extends AbstractGuiController {
     private static void addInformationColumns(Map<IntegrityError.ErrorInfoEnum, Object> information, TableView<IntegrityError> tableView) {
         information.entrySet().stream()
 
-                .sorted((entry1, entry2) -> compare(entry1.getKey().getRenderOrder(), entry2.getKey().getRenderOrder()))
+                .sorted(comparingInt(entry2 -> entry2.getKey().getRenderOrder()))
 
                 .forEach((entry) -> {
                     final IntegrityError.ErrorInfoEnum itemName = entry.getKey();

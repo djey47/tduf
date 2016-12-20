@@ -12,49 +12,46 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8.0.72" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.installer.controllers.DealerSlotsStageController">
-   <children>
-      <VBox id="mainVbox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <ToolBar prefHeight="40.0" styleClass="navigationToolbar" VBox.vgrow="NEVER">
-               <items>
-                  <Label alignment="TOP_CENTER" layoutX="10.0" layoutY="16.0" text="Select dealer slot to put vehicle on it:" />
-                  <TextField fx:id="dealerRefTextField" prefWidth="100.0" />
-                  <TextField fx:id="slotTextField" prefWidth="35.0" />
-                  <Button mnemonicParsing="false" onAction="#handleOkButtonAction" text="OK" />
-                  <Button mnemonicParsing="false" onAction="#handleNoSlotButtonAction" text="Nope" />
-               </items>
-            </ToolBar>
-            <ToolBar prefHeight="40.0" prefWidth="200.0">
-              <items>
-                  <Label alignment="TOP_CENTER" text="Filter by kind:" />
-                  <ChoiceBox fx:id="dealerKindFilterChoiceBox" prefWidth="150.0" />
-              </items>
-            </ToolBar>
-            <AnchorPane VBox.vgrow="ALWAYS">
-               <children>
-                  <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <children>
-                        <TableView fx:id="dealersTableView" maxWidth="1.7976931348623157E308" onMouseClicked="#handleDealersTableMouseClick" prefWidth="290.0" HBox.hgrow="ALWAYS">
-                           <columns>
-                              <TableColumn editable="false" prefWidth="96.0" text="REF" />
-                              <TableColumn editable="false" prefWidth="225.0" text="Name" />
-                              <TableColumn editable="false" prefWidth="225.0" text="Location" />
-                              <TableColumn editable="false" prefWidth="100.0" text="Free slots" />
-                           </columns>
-                           <VBox.margin>
-                              <Insets bottom="5.0" />
-                           </VBox.margin>
-                        </TableView>
-                        <TableView fx:id="slotsTableView" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" onMouseClicked="#handleSlotsTableMouseClick" prefWidth="350.0" HBox.hgrow="ALWAYS">
-                           <columns>
-                              <TableColumn editable="false" prefWidth="30.0" text="#" />
-                              <TableColumn editable="false" prefWidth="400.0" text="Vehicle name" />
-                           </columns>
-                        </TableView>
-                     </children>
-                  </VBox>
-               </children></AnchorPane>
-         </children></VBox>
-   </children>
+<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8.0.72"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="fr.tduf.gui.installer.controllers.DealerSlotsStageController">
+   <VBox id="mainVbox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+         AnchorPane.topAnchor="0.0">
+      <ToolBar prefHeight="40.0" styleClass="navigationToolbar" VBox.vgrow="NEVER">
+         <Label alignment="TOP_CENTER" layoutX="10.0" layoutY="16.0"
+                text="Select dealer slot to put vehicle on it:"/>
+         <TextField fx:id="dealerRefTextField" prefWidth="100.0"/>
+         <TextField fx:id="slotTextField" prefWidth="35.0"/>
+         <Button mnemonicParsing="false" onAction="#handleOkButtonAction" text="OK"/>
+         <Button mnemonicParsing="false" onAction="#handleNoSlotButtonAction" text="Nope"/>
+      </ToolBar>
+      <ToolBar prefHeight="40.0" prefWidth="200.0">
+         <Label alignment="TOP_CENTER" text="Filter by kind:"/>
+         <ChoiceBox fx:id="dealerKindFilterChoiceBox" prefWidth="150.0"/>
+      </ToolBar>
+      <AnchorPane VBox.vgrow="ALWAYS">
+         <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+               AnchorPane.topAnchor="0.0">
+            <TableView fx:id="dealersTableView" maxWidth="1.7976931348623157E308"
+                       onMouseClicked="#handleDealersTableMouseClick" prefWidth="290.0" HBox.hgrow="ALWAYS">
+               <columns>
+                  <TableColumn editable="false" prefWidth="96.0" text="REF"/>
+                  <TableColumn editable="false" prefWidth="225.0" text="Name"/>
+                  <TableColumn editable="false" prefWidth="225.0" text="Location"/>
+                  <TableColumn editable="false" prefWidth="100.0" text="Free slots"/>
+               </columns>
+               <VBox.margin>
+                  <Insets bottom="5.0"/>
+               </VBox.margin>
+            </TableView>
+            <TableView fx:id="slotsTableView" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308"
+                       onMouseClicked="#handleSlotsTableMouseClick" prefWidth="350.0" HBox.hgrow="ALWAYS">
+               <columns>
+                  <TableColumn editable="false" prefWidth="30.0" text="#"/>
+                  <TableColumn editable="false" prefWidth="400.0" text="Vehicle name"/>
+               </columns>
+            </TableView>
+         </VBox>
+      </AnchorPane>
+   </VBox>
 </AnchorPane>

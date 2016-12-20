@@ -208,7 +208,7 @@ public class VehicleSlotsHelper extends CommonHelper {
         }
 
         final RimSlot rimSlot = vehicleSlot.getRimAtRank(rimRank)
-                .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("Vehicle slot hasn't required rim at rank: " + rimRank));
+                .orElseThrow(() -> new IllegalArgumentException("Vehicle slot hasn't required rim at rank: " + rimRank));
         RimSlot.RimInfo rimInfo = FRONT_RIM == rimBankFileType ?
                 rimSlot.getFrontRimInfo() : rimSlot.getRearRimInfo();
 
@@ -253,12 +253,12 @@ public class VehicleSlotsHelper extends CommonHelper {
      */
     public List<VehicleSlot> getVehicleSlots(SlotKind slotKind, VehicleKind vehicleKind) {
         return miner.getDatabaseTopic(CAR_PHYSICS_DATA)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("Database topic not found: CAR_PHYSICS_DATA"))
+                .orElseThrow(() -> new IllegalStateException("Database topic not found: CAR_PHYSICS_DATA"))
                 .getData().getEntries().stream()
                 .filter(slotEntry -> byVehicleKind(slotEntry, vehicleKind))
                 .filter(slotEntry -> bySlotKind(slotEntry, slotKind))
                 .map(drivableSlotEntry -> drivableSlotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_REF)
-                        .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No item at rank 1: slot reference")))
+                        .orElseThrow(() -> new IllegalStateException("No item at rank 1: slot reference")))
                 .map(drivableSlotItem -> getVehicleSlotFromReference(drivableSlotItem.getRawValue()))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -277,7 +277,7 @@ public class VehicleSlotsHelper extends CommonHelper {
 
                     IntStream.rangeClosed(DatabaseConstants.FIELD_RANK_INTERIOR_1, DatabaseConstants.FIELD_RANK_INTERIOR_15)
                             .mapToObj(rank -> entry.getItemAtRank(rank)
-                                    .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No INTERIOR item at rank: " + rank))
+                                    .orElseThrow(() -> new IllegalStateException("No INTERIOR item at rank: " + rank))
                                     .getRawValue())
                             .filter(interiorPatternRef -> !DatabaseConstants.REF_NO_INTERIOR.equals(interiorPatternRef))
                             .forEach(paintJobBuilder::addInteriorPattern);
@@ -296,10 +296,10 @@ public class VehicleSlotsHelper extends CommonHelper {
         AtomicInteger rimRank = new AtomicInteger(1);
         return miner.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, slotReference), CAR_RIMS)
                 .map(entry -> entry.getItemAtRank(DatabaseConstants.FIELD_RANK_RIM_ASSO_REF)
-                        .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No CAR_RIMS item at rank 2")))
+                        .orElseThrow(() -> new IllegalStateException("No CAR_RIMS item at rank 2")))
                 .map(ContentItemDto::getRawValue)
                 .map(rimSlotReference -> miner.getContentEntryFromTopicWithReference(rimSlotReference, RIMS)
-                        .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No RIMS entry at ref: " + rimSlotReference)))
+                        .orElseThrow(() -> new IllegalStateException("No RIMS entry at ref: " + rimSlotReference)))
                 .map(rimEntry -> getRimSlotFromDatabaseEntry(rimEntry, rimRank.getAndIncrement(), defaultRimsReference.orElse(null)))
                 .collect(toList());
     }
@@ -312,7 +312,7 @@ public class VehicleSlotsHelper extends CommonHelper {
         final RimSlot defaultRims = rimOptions.stream()
                 .filter(RimSlot::isDefault)
                 .findAny()
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No default rims for slot ref: " + slotReference));
+                .orElseThrow(() -> new IllegalStateException("No default rims for slot ref: " + slotReference));
         final String defaultRimsReference = defaultRims.getRef();
 
         List<RimSlot> rimCandidates = new ArrayList<>(9);
@@ -330,7 +330,7 @@ public class VehicleSlotsHelper extends CommonHelper {
 
     private RimSlot getRimSlotFromDatabaseEntry(ContentEntryDto rimEntry, int rimRank, String defaultRimsReference) {
         String rimsReference = getStringValueFromDatabaseEntry(rimEntry, DatabaseConstants.FIELD_RANK_RIM_REF)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No RIMS entry ref at rank 1"));
+                .orElseThrow(() -> new IllegalStateException("No RIMS entry ref at rank 1"));
         Optional<Resource> defaulRimsParentDirectory = getResourceFromDatabaseEntry(rimEntry, RIMS, DatabaseConstants.FIELD_RANK_RSC_PATH);
         Optional<Resource> frontFileName = getResourceFromDatabaseEntry(rimEntry, RIMS, DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_FRONT);
         Optional<Resource> rearFileName = getResourceFromDatabaseEntry(rimEntry, RIMS, DatabaseConstants.FIELD_RANK_RSC_FILE_NAME_REAR);
@@ -376,7 +376,7 @@ public class VehicleSlotsHelper extends CommonHelper {
 
     private static boolean byVehicleKind(ContentEntryDto slotEntry, VehicleKind vehicleKind) {
         final String groupRawValue = slotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_GROUP)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No CAR_PHYSICS_DATA entry item at rank 5"))
+                .orElseThrow(() -> new IllegalStateException("No CAR_PHYSICS_DATA entry item at rank 5"))
                 .getRawValue();
         switch (vehicleKind) {
             case DRIVABLE:
@@ -392,7 +392,7 @@ public class VehicleSlotsHelper extends CommonHelper {
 
     private static boolean bySlotKind(ContentEntryDto slotEntry, SlotKind slotKind) {
         final String slotReference = slotEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_CAR_REF)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No CAR_PHYSICS_DATA entry REF at rank 1"))
+                .orElseThrow(() -> new IllegalStateException("No CAR_PHYSICS_DATA entry REF at rank 1"))
                 .getRawValue();
         switch (slotKind) {
             case ALL:

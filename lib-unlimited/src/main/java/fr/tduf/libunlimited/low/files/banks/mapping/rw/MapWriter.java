@@ -4,8 +4,10 @@ import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import fr.tduf.libunlimited.low.files.research.rw.GenericWriter;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 
+import static java.util.Comparator.comparingLong;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -35,7 +37,7 @@ public class MapWriter extends GenericWriter<BankMap> {
 
         List<BankMap.Entry> sortedEntries = this.getData().getEntries().stream()
 
-                .sorted((entry1, entry2) -> Long.compare(entry1.getHash(), entry2.getHash()))
+                .sorted(comparingLong(BankMap.Entry::getHash))
 
                 .collect(toList());
 

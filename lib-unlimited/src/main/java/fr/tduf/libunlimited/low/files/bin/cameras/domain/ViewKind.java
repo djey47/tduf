@@ -24,7 +24,7 @@ public enum ViewKind {
         return Stream.of(values())
                 .filter(type -> type.internalId == internalId)
                 .findAny()
-                .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("Unknown view type identifier: " + internalId));
+                .orElseThrow(() -> new IllegalArgumentException("Unknown view type identifier: " + internalId));
     }
 
     public int getInternalId() {

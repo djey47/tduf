@@ -2,7 +2,6 @@ package fr.tduf.gui.installer.steps.helper;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.DatabaseConstants;
-import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
@@ -19,7 +18,10 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;

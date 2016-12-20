@@ -1,67 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.controllers.ResourcesStageController">
-   <children>
-      <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <ToolBar prefHeight="40.0" styleClass="navigationToolbar" VBox.vgrow="NEVER">
-               <items>
-                  <ChoiceBox fx:id="topicsChoiceBox" prefHeight="25.0" prefWidth="180.0" />
-                  <Separator orientation="VERTICAL" prefHeight="30.0" />
-                  <Button mnemonicParsing="false" onAction="#handleEditResourceButtonMouseClick" prefHeight="25.0" text="Edit...">
-                     <tooltip>
-                        <Tooltip text="Modifies selected resource." />
-                     </tooltip>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#handleAddResourceButtonMouseClick" prefHeight="25.0" prefWidth="28.0" text="+">
-                     <tooltip>
-                        <Tooltip text="Adds a new resource to current topic and locale." />
-                     </tooltip>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#handleRemoveResourceButtonMouseClick" prefWidth="28.0" text="-">
-                     <tooltip>
-                        <Tooltip text="Removes selected resource from current topic." />
-                     </tooltip>
-                  </Button>
-                  <Separator orientation="VERTICAL" prefHeight="30.0" />
-                  <Button mnemonicParsing="false" onAction="#handleSelectResourceButtonMouseClick" text="Select">
-                     <tooltip>
-                        <Tooltip text="Uses selected resource in database field." />
-                     </tooltip>
-                  </Button>
-               </items>
-            </ToolBar>
-            <AnchorPane VBox.vgrow="ALWAYS">
-               <children>
-                  <TableView fx:id="resourcesTableView" onMouseClicked="#handleResourceTableMouseClick" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <columns>
-                      <TableColumn prefWidth="100.0" text="#" />
-                      <TableColumn prefWidth="200.0" text="fr" />
-                        <TableColumn prefWidth="200.0" text="ge" />
-                        <TableColumn prefWidth="200.0" text="us" />
-                        <TableColumn prefWidth="200.0" text="ko" />
-                        <TableColumn prefWidth="200.0" text="ch" />
-                        <TableColumn prefWidth="200.0" text="ja" />
-                        <TableColumn prefWidth="200.0" text="it" />
-                        <TableColumn prefWidth="200.0" text="sp" />
-                    </columns>
-                  </TableView>
-               </children>
-            </AnchorPane>
-            <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar">
-               <items>
-                  <Button mnemonicParsing="false" onAction="#handleSearchEntryButtonAction" prefWidth="80.0" text="REF...">
-                     <tooltip><Tooltip text="Searches entry with REF." /></tooltip>
-                  </Button>
-                  <Separator orientation="VERTICAL" />
-               </items>
-            </ToolBar>
-         </children>
-      </VBox>
-   </children>
+<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="fr.tduf.gui.database.controllers.ResourcesStageController">
+   <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+         AnchorPane.topAnchor="0.0">
+      <ToolBar prefHeight="40.0" styleClass="navigationToolbar" VBox.vgrow="NEVER">
+         <ChoiceBox fx:id="topicsChoiceBox" prefHeight="25.0" prefWidth="180.0"/>
+         <Separator orientation="VERTICAL" prefHeight="30.0"/>
+         <Button mnemonicParsing="false" onAction="#handleEditResourceButtonMouseClick" prefHeight="25.0"
+                 text="Edit...">
+            <tooltip>
+               <Tooltip text="Modifies selected resource."/>
+            </tooltip>
+         </Button>
+         <Button mnemonicParsing="false" onAction="#handleAddResourceButtonMouseClick" prefHeight="25.0"
+                 prefWidth="28.0" text="+">
+            <tooltip>
+               <Tooltip text="Adds a new resource to current topic and locale."/>
+            </tooltip>
+         </Button>
+         <Button mnemonicParsing="false" onAction="#handleRemoveResourceButtonMouseClick" prefWidth="28.0"
+                 text="-">
+            <tooltip>
+               <Tooltip text="Removes selected resource from current topic."/>
+            </tooltip>
+         </Button>
+         <Separator orientation="VERTICAL" prefHeight="30.0"/>
+         <Button mnemonicParsing="false" onAction="#handleSelectResourceButtonMouseClick" text="Select">
+            <tooltip>
+               <Tooltip text="Uses selected resource in database field."/>
+            </tooltip>
+         </Button>
+      </ToolBar>
+      <AnchorPane VBox.vgrow="ALWAYS">
+         <TableView fx:id="resourcesTableView" onMouseClicked="#handleResourceTableMouseClick"
+                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                    AnchorPane.topAnchor="0.0">
+            <columns>
+               <TableColumn prefWidth="100.0" text="#"/>
+               <TableColumn prefWidth="200.0" text="fr"/>
+               <TableColumn prefWidth="200.0" text="ge"/>
+               <TableColumn prefWidth="200.0" text="us"/>
+               <TableColumn prefWidth="200.0" text="ko"/>
+               <TableColumn prefWidth="200.0" text="ch"/>
+               <TableColumn prefWidth="200.0" text="ja"/>
+               <TableColumn prefWidth="200.0" text="it"/>
+               <TableColumn prefWidth="200.0" text="sp"/>
+            </columns>
+         </TableView>
+      </AnchorPane>
+      <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar">
+         <Button mnemonicParsing="false" onAction="#handleSearchEntryButtonAction" prefWidth="80.0" text="REF...">
+            <tooltip>
+               <Tooltip text="Searches entry with REF."/>
+            </tooltip>
+         </Button>
+         <Separator orientation="VERTICAL"/>
+      </ToolBar>
+   </VBox>
 </AnchorPane>

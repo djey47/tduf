@@ -14,7 +14,7 @@ import java.net.URISyntaxException;
 import java.util.EnumMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.expectThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 class CamerasParserTest {
@@ -75,7 +75,7 @@ class CamerasParserTest {
         DataStore dataStore = new DataStore(FileStructureDto.builder().build());
 
         // WHEN-THEN
-        expectThrows(IllegalArgumentException.class,
+        assertThrows(IllegalArgumentException.class,
                 () -> camerasParser.getViewProps(dataStore));
     }
 

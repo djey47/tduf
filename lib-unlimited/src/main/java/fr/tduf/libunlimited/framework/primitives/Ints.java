@@ -273,11 +273,6 @@ public final class Ints {
      * array; equivalent to {@code ByteBuffer.allocate(4).putInt(value).array()}.
      * For example, the input value {@code 0x12131415} would yield the byte array
      * {@code {0x12, 0x13, 0x14, 0x15}}.
-     *
-     * <p>If you need to convert and concatenate several values (possibly even of
-     * different types), use a shared {@link java.nio.ByteBuffer} instance, or use
-     * {@link com.google.common.io.ByteStreams#newDataOutput()} to get a growable
-     * buffer.
      */
     public static byte[] toByteArray(int value) {
         return new byte[] {

@@ -2,7 +2,6 @@ package fr.tduf.gui.installer.controllers;
 
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.installer.common.helper.InstallerTestsHelper;
 import fr.tduf.gui.installer.stages.QuickVehicleSlotsStageDesigner;
 import fr.tduf.libtesting.common.helper.game.DatabaseHelper;
 import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;

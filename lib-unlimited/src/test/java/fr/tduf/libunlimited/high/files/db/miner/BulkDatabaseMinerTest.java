@@ -2,7 +2,6 @@ package fr.tduf.libunlimited.high.files.db.miner;
 
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import org.assertj.core.api.StrictAssertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +15,7 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BOTS;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.expectThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class BulkDatabaseMinerTest {
 
@@ -30,7 +29,7 @@ class BulkDatabaseMinerTest {
     @Test
     void load_whenNullDatabaseObjects_shouldThrowNullPointerException() {
         // GIVEN-WHEN-THEN
-        expectThrows(NullPointerException.class, () -> BulkDatabaseMiner.load(null));
+        assertThrows(NullPointerException.class, () -> BulkDatabaseMiner.load(null));
     }
 
     @Test
@@ -65,7 +64,7 @@ class BulkDatabaseMinerTest {
         Optional<DbDto> actualResult = BulkDatabaseMiner.load(topicObjectsFromResources).getDatabaseTopic(ACHIEVEMENTS);
 
         // THEN
-        StrictAssertions.assertThat(actualResult).isEmpty();
+        assertThat(actualResult).isEmpty();
     }
 
     @Test
@@ -80,7 +79,7 @@ class BulkDatabaseMinerTest {
     @Test
     void getDatabaseTopicFromReference_whenNotFound_shouldThrowException() throws IOException, URISyntaxException {
         // GIVEN-WHEN-THEN
-        expectThrows(IllegalStateException.class,
+        assertThrows(IllegalStateException.class,
                 () -> BulkDatabaseMiner.load(topicObjectsFromResources).getDatabaseTopicFromReference("000"));
     }
 

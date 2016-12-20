@@ -12,45 +12,42 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8.0.72" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.installer.controllers.VehicleSlotsStageController">
-   <children>
-      <VBox id="mainVbox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <ToolBar prefHeight="40.0" styleClass="navigationToolbar" VBox.vgrow="NEVER">
-               <items>
-                  <Label fx:id="instructionsLabel" alignment="TOP_CENTER" layoutX="10.0" layoutY="16.0" text="Select slot to install vehicle on it:" />
-                  <TextField fx:id="slotRefTextField" prefWidth="100.0" />
-                  <Button mnemonicParsing="false" onAction="#handleOkButtonAction" text="OK" />
-               </items>
-            </ToolBar>
-            <ToolBar prefHeight="40.0" prefWidth="200.0">
-               <items>
-                  <Label alignment="TOP_CENTER" text="Filter by vehicle kind:" />
-                  <ChoiceBox fx:id="vehicleKindFilterChoiceBox" prefWidth="150.0" />
-                  <Label alignment="TOP_CENTER" layoutX="10.0" layoutY="16.0" text="and slot kind:" />
-                  <ChoiceBox fx:id="slotKindFilterChoiceBox" layoutX="154.0" layoutY="11.0" prefWidth="150.0" />
-               </items>
-            </ToolBar>
-            <AnchorPane VBox.vgrow="ALWAYS">
-               <children>
-                  <TableView fx:id="slotsTableView" editable="true" onMouseClicked="#handleSlotsTableMouseClick" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <columns>
-                        <TableColumn fx:id="installedSlotTableColumn" prefWidth="89.0" text="Installed?" />
-                      <TableColumn editable="false" prefWidth="100.0" text="REF" />
-                      <TableColumn editable="false" prefWidth="510.0" text="Vehicle name" />
-                        <TableColumn editable="false" prefWidth="60.0" text="Car ID" />
-                    </columns>
-                  </TableView>
-               </children>
-            </AnchorPane>
-            <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar">
-               <items>
-                  <Button mnemonicParsing="false" onAction="#handleSearchSlotButtonAction" prefWidth="80.0" text="REF...">
-                     <tooltip><Tooltip text="Searches entry with REF." /></tooltip>
-                  </Button>
-                  <Separator orientation="VERTICAL" />
-               </items>
-            </ToolBar>
-         </children></VBox>
-   </children>
+<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8.0.72"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="fr.tduf.gui.installer.controllers.VehicleSlotsStageController">
+   <VBox id="mainVbox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+         AnchorPane.topAnchor="0.0">
+      <ToolBar prefHeight="40.0" styleClass="navigationToolbar" VBox.vgrow="NEVER">
+         <Label fx:id="instructionsLabel" alignment="TOP_CENTER" layoutX="10.0" layoutY="16.0"
+                text="Select slot to install vehicle on it:"/>
+         <TextField fx:id="slotRefTextField" prefWidth="100.0"/>
+         <Button mnemonicParsing="false" onAction="#handleOkButtonAction" text="OK"/>
+      </ToolBar>
+      <ToolBar prefHeight="40.0" prefWidth="200.0">
+         <Label alignment="TOP_CENTER" text="Filter by vehicle kind:"/>
+         <ChoiceBox fx:id="vehicleKindFilterChoiceBox" prefWidth="150.0"/>
+         <Label alignment="TOP_CENTER" layoutX="10.0" layoutY="16.0" text="and slot kind:"/>
+         <ChoiceBox fx:id="slotKindFilterChoiceBox" layoutX="154.0" layoutY="11.0" prefWidth="150.0"/>
+      </ToolBar>
+      <AnchorPane VBox.vgrow="ALWAYS">
+         <TableView fx:id="slotsTableView" editable="true" onMouseClicked="#handleSlotsTableMouseClick"
+                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                    AnchorPane.topAnchor="0.0">
+            <columns>
+               <TableColumn fx:id="installedSlotTableColumn" prefWidth="89.0" text="Installed?"/>
+               <TableColumn editable="false" prefWidth="100.0" text="REF"/>
+               <TableColumn editable="false" prefWidth="510.0" text="Vehicle name"/>
+               <TableColumn editable="false" prefWidth="60.0" text="Car ID"/>
+            </columns>
+         </TableView>
+      </AnchorPane>
+      <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar">
+         <Button mnemonicParsing="false" onAction="#handleSearchSlotButtonAction" prefWidth="80.0" text="REF...">
+            <tooltip>
+               <Tooltip text="Searches entry with REF."/>
+            </tooltip>
+         </Button>
+         <Separator orientation="VERTICAL"/>
+      </ToolBar>
+   </VBox>
 </AnchorPane>

@@ -265,15 +265,13 @@ public class DatabaseReadWriteHelper {
                 .forEach(currentLocale -> {
                     String resourceFileName = getDatabaseFileName(topic.getLabel(), databaseDirectory, currentLocale.getCode());
 
-                    List<String> readLines = null;
                     try {
-                        readLines = parseLinesInFile(resourceFileName, ENCODING_UTF_16);
+                        List<String> readLines = parseLinesInFile(resourceFileName, ENCODING_UTF_16);
+                        resourcesLinesByLocale.put(currentLocale, readLines);
                     } catch (FileNotFoundException fnfe) {
                         Log.warn(THIS_CLASS_NAME, "Unable to parse resource file: " + resourceFileName, fnfe);
                         throw new RuntimeException(fnfe);
                     }
-
-                    resourcesLinesByLocale.put(currentLocale, readLines);
                 });
         return resourcesLinesByLocale;
     }

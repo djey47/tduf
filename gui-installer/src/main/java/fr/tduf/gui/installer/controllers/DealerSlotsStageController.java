@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static java.util.Arrays.asList;
+import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
@@ -216,7 +217,7 @@ public class DealerSlotsStageController extends AbstractGuiController {
 
         dealersData.addAll(dealerHelper.getDealers(selectedDealerKind).stream()
                 .map(DealerSlotData.DealerDataItem::fromDealer)
-                .sorted((item1, item2) -> item1.nameProperty().get().compareTo(item2.nameProperty().get()))
+                .sorted(comparing(item -> item.nameProperty().get()))
                 .collect(toList()));
     }
 

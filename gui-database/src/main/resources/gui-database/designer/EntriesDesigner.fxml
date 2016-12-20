@@ -1,53 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import javafx.geometry.*?>
-<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.controllers.EntriesStageController">
-   <children>
-      <VBox id="mainVbox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <ToolBar prefHeight="40.0" styleClass="navigationToolbar" VBox.vgrow="NEVER">
-               <items>
-                  <Label fx:id="currentTopicLabel" alignment="TOP_CENTER" prefWidth="175.0" text="&lt;TOPIC&gt;">
-                     <font>
-                        <Font name="System Bold Italic" size="13.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="instructionsLabel" alignment="TOP_CENTER" layoutX="10.0" layoutY="16.0" text="Click an entry below to use it.">
-                     <font>
-                        <Font name="System Italic" size="13.0" />
-                     </font>
-                  </Label>
-                  <Separator orientation="VERTICAL" prefHeight="30.0" />
-                  <Button fx:id="selectMultiButton" mnemonicParsing="false" onAction="#handleSelectEntriesButtonMouseClick" text="Select">
-                     <tooltip>
-                        <Tooltip text="Uses selected entries." />
-                     </tooltip>
-                  </Button>
-               </items>
-            </ToolBar>
-            <AnchorPane VBox.vgrow="ALWAYS">
-               <children>
-                  <TableView fx:id="entriesTableView" onMouseClicked="#handleResourceTableMouseClick" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <columns>
-                      <TableColumn prefWidth="96.0" text="REF" />
-                      <TableColumn prefWidth="543.0" text="Value" />
-                    </columns>
-                  </TableView>
-               </children>
-            </AnchorPane>
-            <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar">
-               <items>
-                  <Button mnemonicParsing="false" onAction="#handleSearchEntryButtonAction" prefWidth="80.0" text="REF...">
-                     <tooltip><Tooltip text="Searches entry with REF."/></tooltip>
-                  </Button>
-                  <Separator orientation="VERTICAL" />
-               </items>
-            </ToolBar>
-         </children></VBox>
-   </children>
+<?import javafx.scene.text.Font?>
+<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.controllers.EntriesStageController">
+   <VBox id="mainVbox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+         AnchorPane.topAnchor="0.0">
+      <ToolBar prefHeight="40.0" styleClass="navigationToolbar" VBox.vgrow="NEVER">
+         <Label fx:id="currentTopicLabel" alignment="TOP_CENTER" prefWidth="175.0" text="&lt;TOPIC&gt;">
+            <font>
+               <Font name="System Bold Italic" size="13.0"/>
+            </font>
+         </Label>
+         <Label fx:id="instructionsLabel" alignment="TOP_CENTER" layoutX="10.0" layoutY="16.0"
+                text="Click an entry below to use it.">
+            <font>
+               <Font name="System Italic" size="13.0"/>
+            </font>
+         </Label>
+         <Separator orientation="VERTICAL" prefHeight="30.0"/>
+         <Button fx:id="selectMultiButton" mnemonicParsing="false" onAction="#handleSelectEntriesButtonMouseClick"
+                 text="Select">
+            <tooltip>
+               <Tooltip text="Uses selected entries."/>
+            </tooltip>
+         </Button>
+      </ToolBar>
+      <AnchorPane VBox.vgrow="ALWAYS">
+         <TableView fx:id="entriesTableView" onMouseClicked="#handleResourceTableMouseClick"
+                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                    AnchorPane.topAnchor="0.0">
+            <columns>
+               <TableColumn prefWidth="96.0" text="REF"/>
+               <TableColumn prefWidth="543.0" text="Value"/>
+            </columns>
+         </TableView>
+      </AnchorPane>
+      <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar">
+         <Button mnemonicParsing="false" onAction="#handleSearchEntryButtonAction" prefWidth="80.0" text="REF...">
+            <tooltip>
+               <Tooltip text="Searches entry with REF."/>
+            </tooltip>
+         </Button>
+         <Separator orientation="VERTICAL"/>
+      </ToolBar>
+   </VBox>
 </AnchorPane>
