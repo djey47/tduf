@@ -35,6 +35,7 @@ allprojects {
     ext.jsonassertVersion = '1.2.3'
     ext.junitVersion = '4.12'
     ext.junitJupiterVersion = '5.0.0-M3'
+    ext.junitPlatformVersion = '1.0.0-M3'
     ext.mockitoVersion = '2.2.26'
     ext.minlogVersion = '1.2'
 }
@@ -57,13 +58,13 @@ subprojects {
 
         testCompile project(':lib-testing')
         testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: "$junitJupiterVersion"
-        testCompile group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.0.0-M3'
+        testCompile group: 'org.junit.platform', name: 'junit-platform-launcher', version: "$junitPlatformVersion"
         testCompile group: 'junit', name: 'junit', version: "$junitVersion"
         testCompile group: 'org.mockito', name: 'mockito-core', version: "$mockitoVersion"
         testCompile group: 'org.assertj', name: 'assertj-core', version: "$assertjVersion"
         testCompile group: 'org.skyscreamer', name: 'jsonassert', version: "$jsonassertVersion"
         testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: "$junitJupiterVersion"
-        testRuntime group: 'org.junit.vintage', name: 'junit-vintage-engine', version: '4.12.0-M3'
+        testRuntime group: 'org.junit.vintage', name: 'junit-vintage-engine', version: "$junitVersion.0-M3"
     }
 
     compileJava {
