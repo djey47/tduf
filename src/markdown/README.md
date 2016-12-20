@@ -10,7 +10,6 @@ TDUF aims at making Test Drive Unlmited modding easier:
 
 
 ### Database Editor Main features
-
 * Opens and saves a database from/to either regular BNK or JSON form
 * Provides profiles to address different modding use cases (car editing, tuning kits, rims ...)
 * Displays all fields within a topic, in an ordered manner
@@ -29,22 +28,36 @@ TDUF aims at making Test Drive Unlmited modding easier:
 
 
 ### What's in this version ? (1.9.0)
+* Documentation: https://github.com/djey47/tdu-cp/wiki/TDUF-Customizing-Cameras
 
-* 
+
+* DatabaseEditor: deleting resource for a particular locale is not useful and feature has been removed
+* DatabaseEditor: changes location of tduf.properties file f(now under userhome/.tduf/)
+
+
+* CameraTool(use-views): new operation to reuse views from another camera (TDUMT feature)
+* CameraTool(customize-set): new operation to change some views settings (brand new feature)
+* CameraTool(view-set): new operation to display views settings
+* CameraTool(list): new operation to display avialbale camera identifiers
+
+
+* Library(database): changes resource layout to reduce JSON file size (global language)
+* Library(database): adds some more dealer info
+* Library(interop): uses latest tdumt-cli (0.4.2) and tdumt-lib (2.0.1).
 
 
 ### Fixed issues
+* DatabaseEditor: changes menu item color in dropdowns for easier reading
 
-* Library: fixes corruption when saving cameras with added sets.
+
+* Library(cameras): fixes corruption when saving cameras with added sets.
 
 
 ### Known bugs
-
 * You tell me!
 
 
 ### What you will need to run TDUF
-
 * Please uninstall any Java Runtime < 8
 * [Update / Install Java 8 Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)
 * Make sure .net apps can be run
@@ -53,7 +66,6 @@ TDUF aims at making Test Drive Unlmited modding easier:
 
 
 ### Running Database Editor!
-
     - Launch TDUF-database-gui.cmd from Windows explorer
     - In DatabaseEditor, browse location of TDU database BNK or JSON files. Load (may take a while)
     - Make your changes. Save (may take a while)
@@ -61,23 +73,19 @@ TDUF aims at making Test Drive Unlmited modding easier:
 
 
 ### Running Advanced tools!
-
     - Launch TDUF-cli.cmd from Windows explorer
     - Follow instructions.
 
 
 ### Troubleshooting
-
 If you encounter some issues to run tools, launch -noadmin.cmd files instead.
 
 
 ### Using JAR library and/or CLI Tools in your projects
-
 It's for free, but you ought to put a mention (kinda 'Powered By TDUF project') and give a link to thread @ [TurboDuck](http://forum.turboduck.net/threads/32570-Djey-Discussion-about-new-modding-possibilities)
 
 
 ### And especially...
-
 Have fun! As much as I had with developing those tools !
 
 If you wish to donate, please head to [this](http://bit.ly/13YI3bP)
