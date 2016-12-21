@@ -227,7 +227,7 @@ public class CamerasHelper {
     }
 
     // For testing
-    static void setCameraSupport(GenuineCamGateway genuineCamGateway) {
+    public static void setCameraSupport(GenuineCamGateway genuineCamGateway) {
         cameraSupport = genuineCamGateway;
     }
 }

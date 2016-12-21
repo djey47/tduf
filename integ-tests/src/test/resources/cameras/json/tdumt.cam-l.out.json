@@ -1,0 +1,28 @@
+{
+  "views": [
+    {
+      "type": "Cockpit_Back",
+      "cameraId": 0,
+      "viewId": 0,
+      "customized": false
+    },
+    {
+      "type": "Hood",
+      "cameraId": 0,
+      "viewId": 0,
+      "customized": false
+    },
+    {
+      "type": "Cockpit",
+      "cameraId": 101,
+      "viewId": 23,
+      "customized": true
+    },
+    {
+      "type": "Hood_Back",
+      "cameraId": 101,
+      "viewId": 44,
+      "customized": true
+    }
+  ]
+}

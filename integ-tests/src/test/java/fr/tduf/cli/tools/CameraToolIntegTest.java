@@ -2,12 +2,17 @@ package fr.tduf.cli.tools;
 
 import fr.tduf.libtesting.common.helper.AssertionsHelper;
 import fr.tduf.libtesting.common.helper.ConsoleHelper;
+import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
+import fr.tduf.libunlimited.common.system.domain.ProcessResult;
+import fr.tduf.libunlimited.high.files.bin.cameras.interop.GenuineCamGateway;
+import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +23,8 @@ import java.nio.file.Paths;
 
 import static fr.tduf.tests.IntegTestsConstants.RESOURCES_PATH;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
 
 class CameraToolIntegTest {
 
@@ -121,6 +128,8 @@ class CameraToolIntegTest {
         Path cameraPath = Paths.get(tempDirectory, "cameras.bin");
         Files.copy(Paths.get(inputCameraFile), cameraPath);
 
+        CamerasHelper.setCameraSupport(getGatewayWithMockedCLI());
+
 
         // WHEN: useViews
         System.out.println("-> Use-views!");
@@ -131,5 +140,19 @@ class CameraToolIntegTest {
         // THEN
         assertThat(cameraPath).exists();
         AssertionsHelper.assertOutputStreamContainsJsonExactly(outputStream, expectedJson);
+    }
+
+    private GenuineCamGateway getGatewayWithMockedCLI() throws IOException {
+        byte[] genuineJsonContents = Files.readAllBytes(jsonPath.resolve("tdumt.cam-l.out.json"));
+        String genuineJson = new String(genuineJsonContents, FilesHelper.CHARSET_DEFAULT);
+
+        CommandLineHelper commandLineHelperMock = Mockito.mock(CommandLineHelper.class);
+        GenuineCamGateway camGateway = new GenuineCamGateway(commandLineHelperMock);
+
+        when(commandLineHelperMock.runCliCommand(anyString(), any())).thenReturn(
+                new ProcessResult("mono", 0, "{}", ""),
+                new ProcessResult("mono", 0, genuineJson, ""));
+
+        return camGateway;
     }
 }
