@@ -58,15 +58,17 @@ subprojects {
         compile group: 'com.esotericsoftware.minlog', name: 'minlog', version: "$minlogVersion"
 
         testCompile project(':lib-testing')
+
         testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: "$junitJupiterVersion"
-        testCompile group: 'org.junit.platform', name: 'junit-platform-launcher', version: "$junitPlatformVersion"
+        testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: "$junitJupiterVersion"
+
         testCompile group: 'junit', name: 'junit', version: "$junitVersion"
+        testRuntime group: 'org.junit.vintage', name: 'junit-vintage-engine', version: "$junitVersion.0-M3"
+
         testCompile group: 'org.mockito', name: 'mockito-core', version: "$mockitoVersion"
         testCompile group: 'org.assertj', name: 'assertj-core', version: "$assertjVersion"
         testCompile group: 'org.skyscreamer', name: 'jsonassert', version: "$jsonassertVersion"
         testCompile group: 'com.github.stefanbirkner', name: 'system-rules', version: '1.8.0'
-        testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: "$junitJupiterVersion"
-        testRuntime group: 'org.junit.vintage', name: 'junit-vintage-engine', version: "$junitVersion.0-M3"
     }
 
     compileJava {
@@ -77,18 +79,8 @@ subprojects {
     junitPlatform {
         platformVersion "$junitPlatformVersion"
         filters {
-            engines {
-                 include 'junit-jupiter', 'junit-vintage'
-                // exclude 'custom-engine'
-            }
-            tags {
-                include 'fast'
-                exclude 'slow'
-            }
             includeClassNamePattern '.*Test'
         }
-        enableStandardTestTask true
-        reportsDir file('build/test-results/junit-platform')
     }
 
     task fatJar(type: Jar) {
@@ -107,19 +99,9 @@ project(':integ-tests') {
     }
 
     junitPlatform {
-        platformVersion "$junitPlatformVersion"
         filters {
-            engines {
-                include 'junit-jupiter', 'junit-vintage'
-            }
-            tags {
-                include 'fast'
-                exclude 'slow'
-            }
             includeClassNamePattern '.*IntegTest'
         }
-        enableStandardTestTask true
-        reportsDir file('build/test-results/junit-platform')
     }
 
     task integTestReport() {
