@@ -241,8 +241,8 @@ class CamerasHelperTest {
                 .forIdentifier(1000L)
                 .addView(CameraInfo.CameraView.from(Hood, 101L, Hood))
                 .addView(CameraInfo.CameraView.from(Cockpit_Back, 101L, Cockpit_Back))
-                .addView(CameraInfo.CameraView.from(Hood_Back, 0, null))
-                .addView(CameraInfo.CameraView.from(Cockpit, 0, null))
+                .addView(CameraInfo.CameraView.from(Hood_Back, 0, Unknown))
+                .addView(CameraInfo.CameraView.from(Cockpit, 0, Unknown))
                 .build();
         when(cameraSupportMock.getCameraInfo(camFile, 1000L)).thenReturn(cameraInfoFromModdingTools);
 

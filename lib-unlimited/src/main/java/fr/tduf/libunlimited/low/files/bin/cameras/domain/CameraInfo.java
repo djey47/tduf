@@ -36,6 +36,7 @@ public class CameraInfo {
                 .collect(toMap(CameraInfo.CameraView::getType, v -> v));
     }
 
+
     public static class CameraInfoBuilder {
         private long cameraIdentifier;
         private List<CameraView> views = new ArrayList<>();
@@ -50,12 +51,13 @@ public class CameraInfo {
             return this;
         }
 
+        // TODO test
         public CameraInfoBuilder withUsedViews(List<CameraView> allViews, List<CameraView> usedViews) {
             views.addAll(allViews);
             views
                     .forEach(view -> usedViews.stream()
                             .filter(usedView -> usedView.getType() == view.getType())
-                            .filter(usedView -> usedView.getSourceCameraIdentifier() != 0L && usedView.getSourceType() != null)
+                            .filter(usedView -> usedView.getSourceCameraIdentifier() != 0L)
                             .findAny()
                             .ifPresent(view::setUsedSettings));
             return this;
