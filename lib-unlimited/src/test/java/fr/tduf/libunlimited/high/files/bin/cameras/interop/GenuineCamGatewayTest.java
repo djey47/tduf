@@ -23,8 +23,7 @@ import java.util.List;
 
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
