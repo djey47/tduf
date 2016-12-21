@@ -42,24 +42,24 @@ import java.util.Optional;
 import static fr.tduf.libunlimited.common.game.domain.Locale.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
+import static fr.tduf.tests.IntegTestsConstants.RESOURCES_PATH;
 import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DatabaseToolIntegTest {
-    private static final Path PATH_INTEG_TESTS = Paths.get("integ-tests");
-    private static final Path PATH_PATCHER = PATH_INTEG_TESTS.resolve("patcher");
-    private static final Path PATH_DATABASE_BANKS = PATH_INTEG_TESTS.resolve("banks").resolve("db");
+    private static final Path PATH_PATCHER = RESOURCES_PATH.resolve("patcher");
+    private static final Path PATH_DATABASE_BANKS = RESOURCES_PATH.resolve("banks").resolve("db");
 
     private static final String DIRECTORY_DATABASE_BANKS = PATH_DATABASE_BANKS.toString();
     private static final String DIRECTORY_DATABASE_BANKS_OUTPUT = PATH_DATABASE_BANKS.resolve("out").toString();
     private static final String DIRECTORY_PATCH = PATH_PATCHER.toString();
     private static final String DIRECTORY_PATCH_OUTPUT = PATH_PATCHER.resolve("out").toString();
-    private static final String DIRECTORY_PATCHED_DATABASE = PATH_INTEG_TESTS.resolve("db-patched").toString();
-    private static final String DIRECTORY_JSON_DATABASE = PATH_INTEG_TESTS.resolve("db-json").toString();
-    private static final String DIRECTORY_ERR_JSON_DATABASE = PATH_INTEG_TESTS.resolve("db-json-errors").toString();
-    private static final String DIRECTORY_DIFF_JSON_DATABASE = PATH_INTEG_TESTS.resolve("db-json-diff").toString();
+    private static final String DIRECTORY_PATCHED_DATABASE = RESOURCES_PATH.resolve("db-patched").toString();
+    private static final String DIRECTORY_JSON_DATABASE = RESOURCES_PATH.resolve("db-json").toString();
+    private static final String DIRECTORY_ERR_JSON_DATABASE = RESOURCES_PATH.resolve("db-json-errors").toString();
+    private static final String DIRECTORY_DIFF_JSON_DATABASE = RESOURCES_PATH.resolve("db-json-diff").toString();
 
     @Rule
     public final ExpectedSystemExit exitRule = ExpectedSystemExit.none();

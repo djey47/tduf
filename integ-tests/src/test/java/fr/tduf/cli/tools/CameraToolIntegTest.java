@@ -16,11 +16,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static fr.tduf.tests.IntegTestsConstants.RESOURCES_PATH;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class CameraToolIntegTest {
 
-    private final Path camerasIntegTestPath = Paths.get("integ-tests").resolve("cameras");
+    private final Path camerasIntegTestPath = RESOURCES_PATH.resolve("cameras");
     private final Path outputPath = camerasIntegTestPath.resolve("out");
     private final Path jsonPath = camerasIntegTestPath.resolve("json");
     private final String outputDirectory = outputPath.toString();
@@ -37,7 +38,7 @@ class CameraToolIntegTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         ConsoleHelper.restoreOutput();
     }
 

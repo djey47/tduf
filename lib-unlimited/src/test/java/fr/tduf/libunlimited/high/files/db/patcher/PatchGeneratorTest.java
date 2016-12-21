@@ -28,7 +28,6 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.expectThrows;
 
 class PatchGeneratorTest {
 
@@ -200,7 +199,7 @@ class PatchGeneratorTest {
 
 
         // WHEN-THEN
-        expectThrows(UnsupportedOperationException.class,
+        assertThrows(UnsupportedOperationException.class,
                 () -> generator.makePatch(ACHIEVEMENTS, ALL, fieldRange));
     }
 

@@ -14,11 +14,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static fr.tduf.tests.IntegTestsConstants.RESOURCES_PATH;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MappingToolIntegTest {
 
-    private final String mappingDirectory = "integ-tests/mapping";
+    private final String mappingDirectory = RESOURCES_PATH.resolve("mapping").toString();
     private final String contentsDirectory1 = Paths.get(mappingDirectory).resolve("cnt1").toString();
     private final String contentsDirectory2 = Paths.get(contentsDirectory1).resolve("cnt2").toString();
 

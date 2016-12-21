@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static fr.tduf.tests.IntegTestsConstants.RESOURCES_PATH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,21 +30,19 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class FileToolIntegTest {
 
-    private final String testRootDirectory = "integ-tests";
-
     private final String sourceFileNameToBeEncrypted = "TDU_CarColors.json";
 
     private final String encryptedFileName = "TDU_CarColors.json.enc";
-    private final String sourceDirectoryForEncryption = Paths.get(testRootDirectory, "crypto").toString();
-    private final String decryptDirectory = Paths.get(testRootDirectory, "unencrypted").toString();
-    private final String encryptDirectory = Paths.get(testRootDirectory, "encrypted").toString();
-    private final String jsonifyDirectory = Paths.get(testRootDirectory, "jsonified").toString();
-    private final String applyjsonDirectory = Paths.get(testRootDirectory, "applied").toString();
+    private final String sourceDirectoryForEncryption = RESOURCES_PATH.resolve("crypto").toString();
+    private final String decryptDirectory = RESOURCES_PATH.resolve("unencrypted").toString();
+    private final String encryptDirectory = RESOURCES_PATH.resolve("encrypted").toString();
+    private final String jsonifyDirectory = RESOURCES_PATH.resolve( "jsonified").toString();
+    private final String applyjsonDirectory = RESOURCES_PATH.resolve("applied").toString();
 
     private final String bankFileName =  "Bank.bnk";
-    private final String bankDirectory = Paths.get(testRootDirectory, "banks").toString();
-    private final String unpackedDirectory = Paths.get(testRootDirectory, "unpacked/").toString();
-    private final String repackedDirectory = Paths.get(testRootDirectory, "repacked").toString();
+    private final String bankDirectory = RESOURCES_PATH.resolve("banks").toString();
+    private final String unpackedDirectory = RESOURCES_PATH.resolve("unpacked/").toString();
+    private final String repackedDirectory = RESOURCES_PATH.resolve("repacked").toString();
 
     @Mock
     private BankSupport bankSupportMock;
@@ -132,7 +131,7 @@ public class FileToolIntegTest {
 
     @Test
     public void jsonifyApplyJson_whenEncryptedContents_shouldGiveOriginalContentsBack() throws IOException {
-        String researchDirectory = Paths.get(testRootDirectory, "research").toString();
+        String researchDirectory = RESOURCES_PATH.resolve("research").toString();
         String structureFileName = Paths.get(researchDirectory, "BTRQ-map.json").toString();
 
         // GIVEN
@@ -236,7 +235,7 @@ public class FileToolIntegTest {
 
     @Test
     public void repack_whenOutputFileNotProvided_andInputEndsWithSeparator_shouldGenerateRightFileName() throws IOException {
-        String expectedOutputBankFile = Paths.get(testRootDirectory, "unpacked-repacked.bnk").toString();
+        String expectedOutputBankFile = RESOURCES_PATH.resolve("unpacked-repacked.bnk").toString();
 
         // WHEN
         System.out.println("-> Repack!");

@@ -1,5 +1,5 @@
 {
-  "bankFile": "integ-tests/banks/Empty.bnk",
+  "bankFile": "src/test/resources/banks/Empty.bnk",
   "bankInfo": {
     "year" : 2014,
     "fileSize" : 0,
