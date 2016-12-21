@@ -128,7 +128,8 @@ project(':integ-tests') {
             Desktop.desktop.browse(('file://' + reportFileAbsolutePath).toURI())
         }
     }
-    tasks.test.finalizedBy tasks.integTestReport
+    // Unsupported by codeship CI
+//    tasks.test.finalizedBy tasks.integTestReport
 }
 
 
