@@ -36,7 +36,6 @@ public class CameraInfo {
                 .collect(toMap(CameraInfo.CameraView::getType, v -> v));
     }
 
-
     public static class CameraInfoBuilder {
         private long cameraIdentifier;
         private List<CameraView> views = new ArrayList<>();
@@ -51,7 +50,6 @@ public class CameraInfo {
             return this;
         }
 
-        // TODO test
         public CameraInfoBuilder withUsedViews(List<CameraView> allViews, List<CameraView> usedViews) {
             views.addAll(allViews);
             views
