@@ -44,6 +44,7 @@ class AdjustCameraStep extends GenericStep {
             Log.info(THIS_CLASS_NAME, "->No customization for camera id " + cameraId);
         } else {
             Log.info(THIS_CLASS_NAME, "->Adjusting camera id " + cameraId + ": " + cameraFileName);
+            // TODO use camerashelper instead
             getInstallerConfiguration().getCameraSupport().customizeCamera(cameraFileName, cameraId, customViewsObject);
         }
     }
