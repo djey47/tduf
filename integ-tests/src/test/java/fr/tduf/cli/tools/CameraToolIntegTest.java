@@ -121,7 +121,7 @@ class CameraToolIntegTest {
     @Test
     void useViews_shouldUseProperties_andReturnAllViewProperties() throws IOException, JSONException {
         // GIVEN
-        byte[] jsonContents = Files.readAllBytes(jsonPath.resolve("use-views.out.json"));
+        byte[] jsonContents = Files.readAllBytes(jsonPath.resolve("use-views.mock.out.json"));
         String expectedJson = new String(jsonContents, FilesHelper.CHARSET_DEFAULT);
 
         String tempDirectory = fr.tduf.libtesting.common.helper.FilesHelper.createTempDirectoryForLibrary();
@@ -150,8 +150,8 @@ class CameraToolIntegTest {
         GenuineCamGateway camGateway = new GenuineCamGateway(commandLineHelperMock);
 
         when(commandLineHelperMock.runCliCommand(anyString(), any())).thenReturn(
-                new ProcessResult("mono", 0, "{}", ""),
-                new ProcessResult("mono", 0, genuineJson, ""));
+            new ProcessResult("mono", 0, "{}", ""),    // CAM-C
+            new ProcessResult("mono", 0, genuineJson, "")); // CAM-L
 
         return camGateway;
     }
