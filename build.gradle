@@ -282,7 +282,7 @@ task fullJar( type: Jar , dependsOn: 'gatherAllContentsForJar' ) {
     description 'Creates jar with all contents from temp directory.'
 
     destinationDir = file('./pack/tools/lib/')
-    baseName = 'tduf-' + project.version
+    baseName = 'tduf'
     from tempJarDirectory
 }
 
