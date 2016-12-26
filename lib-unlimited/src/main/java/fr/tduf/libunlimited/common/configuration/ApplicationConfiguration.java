@@ -93,8 +93,9 @@ public class ApplicationConfiguration extends Properties {
         Path parentPath = Paths.get(configurationFile).getParent();
         Files.createDirectories(parentPath);
 
-        OutputStream os = new FileOutputStream(configurationFile);
-        store(os, "TDUF configuration");
+        try (OutputStream os = new FileOutputStream(configurationFile)) {
+            store(os, "TDUF configuration");
+        }
     }
 
     /**
@@ -103,17 +104,18 @@ public class ApplicationConfiguration extends Properties {
      */
     public void load() throws IOException {
         try {
-            // TODO to be removed later
             Path genuinePath = Paths.get(genuineConfigurationFile);
             if (Files.exists(genuinePath)) {
                 Log.warn(THIS_CLASS_NAME, "Configuration file exists at obsolete location. It will be relocated to " + configurationFile);
-                InputStream is = new FileInputStream(genuineConfigurationFile);
-                load(is);
+                try (InputStream is = new FileInputStream(genuineConfigurationFile)) {
+                    load(is);
+                }
                 store();
                 Files.delete(genuinePath);
             } else {
-                InputStream is = new FileInputStream(configurationFile);
-                load(is);
+                try (InputStream is = new FileInputStream(configurationFile)) {
+                    load(is);
+                }
             }
         } catch (FileNotFoundException fnfe) {
             Log.info(THIS_CLASS_NAME, "Configuration file does not exist, still. It will be created.", fnfe);
