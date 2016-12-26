@@ -1,8 +1,8 @@
 package fr.tduf.libunlimited.common.configuration;
 
 import fr.tduf.libtesting.common.helper.FilesHelper;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,14 +12,14 @@ import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ApplicationConfigurationTest {
+class ApplicationConfigurationTest {
     private final ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
 
     private String configFileName;
     private String genuineConfigFileName;
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeEach
+    void setUp() throws IOException {
         configFileName = Paths.get(FilesHelper.createTempDirectoryForLibrary(), ".tduf", "test.properties").toString();
         genuineConfigFileName = Paths.get(FilesHelper.createTempDirectoryForLibrary(), "test.properties").toString();
         ApplicationConfiguration.setConfigurationFile(configFileName);
@@ -27,7 +27,7 @@ public class ApplicationConfigurationTest {
     }
 
     @Test
-    public void store_shouldCreatePropertiesFile() throws Exception {
+    void store_shouldCreatePropertiesFile() throws Exception {
         // GIVEN-WHEN
         applicationConfiguration.store();
 
@@ -36,7 +36,7 @@ public class ApplicationConfigurationTest {
     }
 
     @Test
-    public void load_whenNoConfigFile_shouldCreateIt() throws Exception {
+    void load_whenNoConfigFile_shouldCreateIt() throws Exception {
         // GIVEN-WHEN
         applicationConfiguration.load();
 
@@ -45,7 +45,7 @@ public class ApplicationConfigurationTest {
     }
 
     @Test
-    public void load_whenConfigFile() throws Exception {
+    void load_whenConfigFile() throws Exception {
         // GIVEN
         Path configFilePath = Paths.get(configFileName);
         Files.createDirectories(configFilePath.getParent());
@@ -56,7 +56,7 @@ public class ApplicationConfigurationTest {
     }
 
     @Test
-    public void load_whenConfigFileAtGenuineLocation_shouldCreateAtNewLocation_andDeleteOriginalFile() throws Exception {
+    void load_whenConfigFileAtGenuineLocation_shouldCreateAtNewLocation_andDeleteOriginalFile() throws Exception {
         // GIVEN
         Files.createFile(Paths.get(genuineConfigFileName));
 
@@ -69,7 +69,7 @@ public class ApplicationConfigurationTest {
     }
 
     @Test
-    public void reset_shouldClearSettings_andUpdateFile() throws IOException {
+    void reset_shouldClearSettings_andUpdateFile() throws IOException {
         // GIVEN
         applicationConfiguration.setProperty("key", "value");
 
