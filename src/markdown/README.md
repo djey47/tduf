@@ -27,30 +27,15 @@ TDUF aims at making Test Drive Unlmited modding easier:
 * ...
 
 
-### What's in this version ? (1.9.0)
+### What's in this version ? (1.10.0)
 * Documentation: https://github.com/djey47/tdu-cp/wiki/TDUF-Customizing-Cameras
 
 
-* DatabaseEditor: deleting resource for a particular locale is not useful and feature has been removed
-* DatabaseEditor: changes location of tduf.properties file f(now under userhome/.tduf/)
-
-
-* CameraTool(use-views): new operation to reuse views from another camera (TDUMT feature)
-* CameraTool(customize-set): new operation to change some views settings (brand new feature)
-* CameraTool(view-set): new operation to display views settings
-* CameraTool(list): new operation to display avialbale camera identifiers
-
-
-* Library(database): changes resource layout to reduce JSON file size (global language)
-* Library(database): adds some more dealer info
-* Library(interop): uses latest tdumt-cli (0.4.2) and tdumt-lib (2.0.1).
+* 
 
 
 ### Fixed issues
-* DatabaseEditor: changes menu item color in dropdowns for easier reading
-
-
-* Library(cameras): fixes corruption when saving cameras with added sets.
+* 
 
 
 ### Known bugs
