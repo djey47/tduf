@@ -1,11 +1,14 @@
 package fr.tduf.gui.database.controllers.helper;
 
 import fr.tduf.gui.common.javafx.helper.ControlHelper;
+import fr.tduf.gui.common.stages.ImageConstants;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.controllers.MainStageController;
 import fr.tduf.gui.database.listener.ErrorChangeListener;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableBooleanValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -13,6 +16,8 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -98,6 +103,19 @@ abstract class AbstractDynamicControlsHelper {
         contextualButton.disableProperty().bind(not(activationCondition));
 
         return contextualButton;
+    }
+
+    protected static void addErrorSign(HBox hBox, BooleanProperty errorProperty, StringProperty errorMessageProperty) {
+        Image errorSignImage = new Image(ImageConstants.RESOURCE_ERROR, 24.0, 24.0, true, true);
+
+        ImageView imageView = new ImageView(errorSignImage);
+        imageView.visibleProperty().bindBidirectional(errorProperty);
+
+        Tooltip tooltip = new Tooltip();
+        tooltip.textProperty().bindBidirectional(errorMessageProperty);
+        Tooltip.install(imageView, tooltip);
+
+        hBox.getChildren().add(imageView);
     }
 
     protected BulkDatabaseMiner getMiner() {

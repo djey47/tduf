@@ -1,6 +1,5 @@
 package fr.tduf.gui.database.controllers.helper;
 
-import fr.tduf.gui.common.stages.ImageConstants;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
@@ -22,8 +21,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.apache.commons.lang3.StringUtils;
@@ -278,19 +275,6 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
 
         vbox.getChildren().add(checkBox);
-    }
-
-    private static void addErrorSign(HBox hBox, BooleanProperty errorProperty, StringProperty errorMessageProperty) {
-        Image errorSignImage = new Image(ImageConstants.RESOURCE_ERROR, 24.0, 24.0, true, true);
-
-        ImageView imageView = new ImageView(errorSignImage);
-        imageView.visibleProperty().bindBidirectional(errorProperty);
-
-        Tooltip tooltip = new Tooltip();
-        tooltip.textProperty().bindBidirectional(errorMessageProperty);
-        Tooltip.install(imageView, tooltip);
-
-        hBox.getChildren().add(imageView);
     }
 
     private static void addResourceValueLabel(HBox fieldBox, boolean fieldReadOnly, StringProperty property) {

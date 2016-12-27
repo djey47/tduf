@@ -2,6 +2,7 @@ package fr.tduf.gui.database.controllers.helper;
 
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.controllers.MainStageController;
+import fr.tduf.gui.database.domain.ItemViewModel;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
@@ -65,6 +66,11 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
         addButtonsForLinkedTopic(fieldBox, targetProfileName, targetTopic, tableView.getSelectionModel(), topicLinkObject);
+
+        fieldBox.getChildren().add(new Separator(VERTICAL));
+
+        ItemViewModel itemViewModel = controller.getViewData().getItemPropsByFieldRank();
+        addErrorSign(fieldBox, itemViewModel.errorPropertyAtFieldRank(0), itemViewModel.errorMessagePropertyAtFieldRank(0));
     }
 
     private TableView<ContentEntryDataItem> addTableViewForLinkedTopic(HBox fieldBox, TopicLinkDto topicLinkObject, ObservableList<ContentEntryDataItem> resourceData, DbDto.Topic targetTopic) {
@@ -166,6 +172,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
 
         String toolTipText = ofNullable(topicLinkObject.getToolTip()).orElse("");
 
+        // FIXME field rank to 0 does not allow more than 1 link
         addFieldLabel(fieldBox, topicLinkObject.isReadOnly(), fieldName, toolTipText, 0);
     }
 }
