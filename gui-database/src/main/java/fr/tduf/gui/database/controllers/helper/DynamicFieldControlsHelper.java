@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers.helper;
 
+import fr.tduf.gui.common.stages.ImageConstants;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
@@ -7,6 +8,7 @@ import fr.tduf.gui.database.controllers.MainStageController;
 import fr.tduf.gui.database.controllers.MainStageViewDataController;
 import fr.tduf.gui.database.converter.BitfieldToStringConverter;
 import fr.tduf.gui.database.converter.PercentNumberToStringConverter;
+import fr.tduf.gui.database.domain.ItemViewModel;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.gui.database.listener.ErrorChangeListener;
@@ -16,9 +18,12 @@ import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.apache.commons.lang3.StringUtils;
@@ -32,6 +37,7 @@ import static javafx.geometry.Orientation.VERTICAL;
  * Helper class to be used to generate Editor controls for regular fields at runtime.
  */
 public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
+    private static final Class<DynamicFieldControlsHelper> THIS_CLASS = DynamicFieldControlsHelper.class;
 
     /**
      * @param controller    : main controller instance
@@ -200,14 +206,17 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
     }
 
+    // TODO use rawvalue property from view data
     private void addResourceValueControls(HBox fieldBox, boolean fieldReadOnly, DbStructureDto.Field field, StringProperty rawValueProperty, DbDto.Topic topic) {
         String fieldTargetRef = field.getTargetRef();
         DbDto.Topic effectiveTopic = fieldTargetRef == null ?
                 topic : getMiner().getDatabaseTopicFromReference(fieldTargetRef).getTopic();
 
         int fieldRank = field.getRank();
-        StringProperty property = controller.getViewData()
-                .getItemPropsByFieldRank()
+
+
+        ItemViewModel itemViewModel = controller.getViewData().getItemPropsByFieldRank();
+        StringProperty property = itemViewModel
                 .resolvedValuePropertyAtFieldRank(fieldRank);
         property.set(DisplayConstants.VALUE_RESOURCE_DEFAULT);
 
@@ -227,6 +236,10 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
                     controller.handleBrowseResourcesButtonMouseClick(effectiveTopic, rawValueProperty, fieldRank)
             );
         }
+
+        fieldBox.getChildren().add(new Separator(VERTICAL));
+
+        addErrorSign(fieldBox, itemViewModel.errorPropertyAtFieldRank(fieldRank), itemViewModel.errorMessagePropertyAtFieldRank(fieldRank));
     }
 
     private void addBitfieldValueControls(HBox fieldBox, int fieldRank, boolean fieldReadOnly, StringProperty rawValueProperty, DbDto.Topic currentTopic) {
@@ -259,6 +272,19 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
 
         vbox.getChildren().add(checkBox);
+    }
+
+    private static void addErrorSign(HBox hBox, BooleanProperty errorProperty, StringProperty errorMessageProperty) {
+        Image errorSignImage = new Image(ImageConstants.RESOURCE_ERROR, 24.0, 24.0, true, true);
+
+        ImageView imageView = new ImageView(errorSignImage);
+        imageView.visibleProperty().bindBidirectional(errorProperty);
+
+        Tooltip tooltip = new Tooltip();
+        tooltip.textProperty().bindBidirectional(errorMessageProperty);
+        Tooltip.install(imageView, tooltip);
+
+        hBox.getChildren().add(imageView);
     }
 
     private static void addResourceValueLabel(HBox fieldBox, boolean fieldReadOnly, StringProperty property) {

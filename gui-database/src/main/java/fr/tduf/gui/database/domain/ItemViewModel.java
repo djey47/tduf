@@ -54,6 +54,13 @@ public class ItemViewModel {
         return getItemPropsAtFieldRank(fieldRank).error;
     }
 
+    /**
+     * @return a simple property for given field rank. Creates a property if it does not exist.
+     */
+    public StringProperty errorMessagePropertyAtFieldRank(int fieldRank) {
+        return getItemPropsAtFieldRank(fieldRank).errorMessage;
+    }
+
     private ItemProperties getItemPropsAtFieldRank(int fieldRank) {
         ItemProperties props = itemPropsByFieldRank.getOrDefault(fieldRank, new ItemProperties());
         itemPropsByFieldRank.putIfAbsent(fieldRank, props);
@@ -68,5 +75,6 @@ public class ItemViewModel {
         private final StringProperty rawValue = new SimpleStringProperty();
         private final StringProperty resolvedValue = new SimpleStringProperty();
         private final BooleanProperty error = new SimpleBooleanProperty(false);
+        private final StringProperty errorMessage = new SimpleStringProperty("");
     }
 }

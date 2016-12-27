@@ -465,10 +465,14 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         BooleanProperty errorProperty = itemPropsByFieldRank
                 .errorPropertyAtFieldRank(resourceItem.getFieldRank());
         errorProperty.set(false);
+        StringProperty errorMessageProperty = itemPropsByFieldRank
+                .errorMessagePropertyAtFieldRank(resourceItem.getFieldRank());
+        errorMessageProperty.set("");
         String resourceReference = resourceItem.getRawValue();
         String resourceValue = getMiner().getLocalizedResourceValueFromTopicAndReference(resourceReference, resourceTopic, locale)
                 .orElseGet(() -> {
                     errorProperty.set(true);
+                    errorMessageProperty.set(DisplayConstants.TOOLTIP_ERROR_RESOURCE_NOT_FOUND);
                     return DisplayConstants.VALUE_RESOURCE_DEFAULT;
                 });
         itemPropsByFieldRank

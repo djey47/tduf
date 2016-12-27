@@ -52,6 +52,7 @@ public class DisplayConstants {
     public static final String TOOLTIP_BUTTON_MOVE_LINKED_ENTRY_UP = "Moves current linked entry one rank up.";
     public static final String TOOLTIP_BUTTON_MOVE_LINKED_ENTRY_DOWN = "Moves current linked entry one rank down.";
     public static final String TOOLTIP_FIELD_TEMPLATE = "#%d:%s";
+    public static final String TOOLTIP_ERROR_RESOURCE_NOT_FOUND = "No resource with provided identifier: either select or create one.";
 
     public static final String COLUMN_HEADER_DATA = "Linked data";
     public static final String COLUMN_HEADER_ID = "#";
@@ -99,7 +100,6 @@ public class DisplayConstants {
     public static final String MESSAGE_FILE_EXPORT_KO = "Contents could not be exported to file.";
 
     public static final String TAB_NAME_DEFAULT = "Default";
-
 
     private DisplayConstants() {}
 }
