@@ -126,6 +126,24 @@ public class DatabaseQueryHelperTest {
         assertThat(actualLabel).isEqualTo("RES1 - REMOTE ENTRY");
     }
 
+    @Test
+    public void fetchResourceValuesWithEntryId_whenReferenceField_andRemoteEntryUnavailable() throws Exception {
+        // GIVEN
+        List<Integer> fieldRanks = asList(4, 5);
+        String resValue = "RES1";
+
+        when(minerMock.getRemoteContentEntryWithInternalIdentifier(TOPIC, 5, 1, TOPIC_REMOTE)).thenReturn(empty());
+        when(minerMock.getLocalizedResourceValueFromContentEntry(1, 4, TOPIC, FRANCE)).thenReturn(of(resValue));
+
+
+        // WHEN
+        final String actualLabel = DatabaseQueryHelper.fetchResourceValuesWithEntryId(1, TOPIC, FRANCE, fieldRanks, minerMock, layoutObject);
+
+
+        // THEN
+        assertThat(actualLabel).isEqualTo("RES1 - <>");
+    }
+
     @Test(expected = IllegalStateException.class)
     public void fetchResourceValuesWithEntryId_whenLocalResourceUnavailable_andItemUnavailable_shouldThrowException() throws Exception {
         // GIVEN

@@ -59,18 +59,19 @@ public class DatabaseQueryHelper {
                 .orElseGet(() -> {
                     final String rawValue = databaseMiner.getContentItemWithEntryIdentifierAndFieldRank(topic, fieldRank, entryId)
                             .map(ContentItemDto::getRawValue)
-                            .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No content item with identifier and field rank: (" + entryId + ":" + fieldRank + ")"));
+                            .orElseThrow(() -> new IllegalStateException("No content item with identifier and field rank: (" + entryId + ":" + fieldRank + ")"));
                     return String.format(DisplayConstants.VALUE_UNKNOWN, rawValue);
                 });
     }
 
     private static String resolveValueForReferenceField(int entryId, DbDto.Topic topic, Locale locale, BulkDatabaseMiner databaseMiner, EditorLayoutDto editorLayoutDto, Integer fieldRank, DbStructureDto.Field structureField) {
-        DbDto remoteTopicObject = databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef());
-        final DbDto.Topic remoteTopic = remoteTopicObject.getTopic();
-        int remoteEntryId = databaseMiner.getRemoteContentEntryWithInternalIdentifier(topic, fieldRank, entryId, remoteTopic)
+        final DbDto.Topic remoteTopic = databaseMiner.getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
+        return databaseMiner.getRemoteContentEntryWithInternalIdentifier(topic, fieldRank, entryId, remoteTopic)
                 .map(ContentEntryDto::getId)
-                .orElseThrow(() -> new IllegalStateException("No remote entry in topic: " + remoteTopic));
-        final List<Integer> labelFieldRanks = EditorLayoutHelper.getAvailableProfileByTopic(remoteTopic, editorLayoutDto).getEntryLabelFieldRanks();
-        return fetchResourceValuesWithEntryId(remoteEntryId, remoteTopic, locale, labelFieldRanks, databaseMiner, editorLayoutDto);
+                .map(remoteEntryId -> {
+                    final List<Integer> labelFieldRanks = EditorLayoutHelper.getAvailableProfileByTopic(remoteTopic, editorLayoutDto).getEntryLabelFieldRanks();
+                    return fetchResourceValuesWithEntryId(remoteEntryId, remoteTopic, locale, labelFieldRanks, databaseMiner, editorLayoutDto);
+                })
+                .orElse(String.format(DisplayConstants.VALUE_UNKNOWN, ""));
     }
 }
