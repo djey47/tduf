@@ -137,7 +137,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
                 break;
             default:
                 if (field.isAResourceField()) {
-                    addResourceValueControls(fieldBox, fieldReadOnly, field, property, currentTopic);
+                    addResourceValueControls(fieldBox, fieldReadOnly, field, currentTopic);
                 }
                 break;
         }
@@ -209,14 +209,12 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         addErrorSign(fieldBox, errorProperty, itemViewModel.errorMessagePropertyAtFieldRank(fieldRank));
     }
 
-    // TODO use rawvalue property from view data
-    private void addResourceValueControls(HBox fieldBox, boolean fieldReadOnly, DbStructureDto.Field field, StringProperty rawValueProperty, DbDto.Topic topic) {
+    private void addResourceValueControls(HBox fieldBox, boolean fieldReadOnly, DbStructureDto.Field field, DbDto.Topic topic) {
         String fieldTargetRef = field.getTargetRef();
         DbDto.Topic effectiveTopic = fieldTargetRef == null ?
                 topic : getMiner().getDatabaseTopicFromReference(fieldTargetRef).getTopic();
 
         int fieldRank = field.getRank();
-
 
         ItemViewModel itemViewModel = controller.getViewData().getItemPropsByFieldRank();
         StringProperty property = itemViewModel
@@ -232,6 +230,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
         if (!fieldReadOnly) {
+            StringProperty rawValueProperty = itemViewModel.rawValuePropertyAtFieldRank(fieldRank);
             addContextualButton(
                     fieldBox,
                     DisplayConstants.LABEL_BUTTON_BROWSE,
