@@ -31,14 +31,13 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 import java.util.Optional;
 
+import static javafx.beans.binding.Bindings.not;
 import static javafx.geometry.Orientation.VERTICAL;
 
 /**
  * Helper class to be used to generate Editor controls for regular fields at runtime.
  */
 public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
-    private static final Class<DynamicFieldControlsHelper> THIS_CLASS = DynamicFieldControlsHelper.class;
-
     /**
      * @param controller    : main controller instance
      */
@@ -184,6 +183,9 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
+        ItemViewModel itemViewModel = viewData.getItemPropsByFieldRank();
+        BooleanProperty errorProperty = itemViewModel.errorPropertyAtFieldRank(fieldRank);
+
         Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRank(fieldRank, viewData.currentProfile().getValue());
         if (potentialFieldSettings.isPresent()) {
             String targetProfileName = potentialFieldSettings.get().getRemoteReferenceProfile();
@@ -195,15 +197,19 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
                         fieldBox,
                         DisplayConstants.LABEL_BUTTON_BROWSE,
                         DisplayConstants.TOOLTIP_BUTTON_BROWSE_ENTRIES,
-                        controller.handleBrowseEntriesButtonMouseClick(targetTopic, labelFieldRanks, entryReferenceProperty, fieldRank)
-                );
+                        controller.handleBrowseEntriesButtonMouseClick(targetTopic, labelFieldRanks, entryReferenceProperty, fieldRank));
             }
-            addContextualButton(
+            addContextualButtonWithActivationCondition(
                     fieldBox,
                     DisplayConstants.LABEL_BUTTON_GOTO,
                     DisplayConstants.TOOLTIP_BUTTON_GOTO_LINKED_ENTRY,
-                    controller.handleGotoReferenceButtonMouseClick(targetTopic, fieldRank, targetProfileName));
+                    controller.handleGotoReferenceButtonMouseClick(targetTopic, fieldRank, targetProfileName),
+                    not(errorProperty));
         }
+
+        fieldBox.getChildren().add(new Separator(VERTICAL));
+
+        addErrorSign(fieldBox, errorProperty, itemViewModel.errorMessagePropertyAtFieldRank(fieldRank));
     }
 
     // TODO use rawvalue property from view data

@@ -512,7 +512,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                 .ifPresent(remoteReferenceProfile -> remoteFieldRanks.addAll(
                         EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(remoteReferenceProfile, getLayoutObject())));
 
-        String remoteContents = fetchRemoteContentsWithEntryRef(remoteTopic, referenceItem.getRawValue(), remoteFieldRanks);
+        String remoteContents = fetchRemoteContentsWithEntryRef(structureField.getRank(), remoteTopic, referenceItem.getRawValue(), remoteFieldRanks);
         itemPropsByFieldRank
                 .resolvedValuePropertyAtFieldRank(referenceItem.getFieldRank())
                 .set(remoteContents);
@@ -531,7 +531,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
             String remoteEntryReference = contentEntry.getItems().get(1).getRawValue();
             databaseEntry.setReference(remoteEntryReference);
             databaseEntry.setInternalEntryId(contentEntry.getId());
-            databaseEntry.setValue(fetchRemoteContentsWithEntryRef(remoteTopic, remoteEntryReference, remoteFieldRanks));
+            databaseEntry.setValue(fetchRemoteContentsWithEntryRef(0, remoteTopic, remoteEntryReference, remoteFieldRanks));
         } else {
             // Classic topic (e.g. Car_Colors)
             databaseEntry.setInternalEntryId(entryId);
@@ -545,11 +545,13 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         return databaseEntry;
     }
 
-    private String fetchRemoteContentsWithEntryRef(DbDto.Topic remoteTopic, String remoteEntryReference, List<Integer> remoteFieldRanks) {
+    private String fetchRemoteContentsWithEntryRef(int fieldRank, DbDto.Topic remoteTopic, String remoteEntryReference, List<Integer> remoteFieldRanks) {
         requireNonNull(remoteFieldRanks, "A list of field ranks (even empty) must be provided.");
 
         OptionalInt potentialEntryId = getMiner().getContentEntryInternalIdentifierWithReference(remoteEntryReference, remoteTopic);
+        BooleanProperty errorProperty = itemPropsByFieldRank.errorPropertyAtFieldRank(fieldRank);
         if (potentialEntryId.isPresent()) {
+            errorProperty.set(false);
             return DatabaseQueryHelper.fetchResourceValuesWithEntryId(
                     potentialEntryId.getAsInt(), remoteTopic,
                     currentLocaleProperty.getValue(),
@@ -557,7 +559,11 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                     getMiner(),
                     getLayoutObject());
         }
-        return DisplayConstants.VALUE_ERROR_ENTRY_NOT_FOUND;
+
+        errorProperty.set(true);
+        itemPropsByFieldRank.errorMessagePropertyAtFieldRank(fieldRank).set(DisplayConstants.TOOLTIP_ERROR_CONTENT_NOT_FOUND);
+
+        return DisplayConstants.VALUE_FIELD_DEFAULT;
     }
 
     private void switchToInitialProfile() {

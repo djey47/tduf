@@ -6,7 +6,6 @@ package fr.tduf.gui.database.common;
 public class DisplayConstants {
     public static final String SEPARATOR_VALUES = " - ";
     public static final String VALUE_ENTRY_CELL = "%d:%s";
-    public static final String VALUE_ERROR_ENTRY_NOT_FOUND = "<ERROR: entry not found!>";
     public static final String VALUE_UNKNOWN = "<%s>";
     public static final String VALUE_FIELD_DEFAULT = "";
     public static final String VALUE_RESOURCE_DEFAULT = "";
@@ -53,6 +52,7 @@ public class DisplayConstants {
     public static final String TOOLTIP_BUTTON_MOVE_LINKED_ENTRY_DOWN = "Moves current linked entry one rank down.";
     public static final String TOOLTIP_FIELD_TEMPLATE = "#%d:%s";
     public static final String TOOLTIP_ERROR_RESOURCE_NOT_FOUND = "No resource with provided identifier: either select or create one.";
+    public static final String TOOLTIP_ERROR_CONTENT_NOT_FOUND = "No content with provided identifier: either select or create one.";
 
     public static final String COLUMN_HEADER_DATA = "Linked data";
     public static final String COLUMN_HEADER_ID = "#";

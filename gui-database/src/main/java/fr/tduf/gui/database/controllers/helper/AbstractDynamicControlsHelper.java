@@ -6,6 +6,7 @@ import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.controllers.MainStageController;
 import fr.tduf.gui.database.listener.ErrorChangeListener;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
+import javafx.beans.value.ObservableBooleanValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -18,6 +19,8 @@ import javafx.scene.layout.VBox;
 
 import java.util.Map;
 import java.util.Optional;
+
+import static javafx.beans.binding.Bindings.not;
 
 /**
  * Provides all common features to DynamicHelpers.
@@ -77,7 +80,7 @@ abstract class AbstractDynamicControlsHelper {
         return label;
     }
 
-    protected static void addContextualButton(Pane fieldPane, String buttonLabel, String tooltipText, EventHandler<ActionEvent> action) {
+    protected static Button addContextualButton(Pane fieldPane, String buttonLabel, String tooltipText, EventHandler<ActionEvent> action) {
         Button contextualButton = new Button(buttonLabel);
         contextualButton.setPrefWidth(34);
         ControlHelper.setTooltipText(contextualButton, tooltipText);
@@ -85,6 +88,16 @@ abstract class AbstractDynamicControlsHelper {
         contextualButton.setOnAction(action);
 
         fieldPane.getChildren().add(contextualButton);
+
+        return contextualButton;
+    }
+
+    protected static Button addContextualButtonWithActivationCondition(Pane fieldPane, String buttonLabel, String tooltipText, EventHandler<ActionEvent> action, ObservableBooleanValue activationCondition) {
+        Button contextualButton = addContextualButton(fieldPane, buttonLabel, tooltipText, action);
+
+        contextualButton.disableProperty().bind(not(activationCondition));
+
+        return contextualButton;
     }
 
     protected BulkDatabaseMiner getMiner() {
