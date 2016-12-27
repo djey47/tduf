@@ -9,3 +9,7 @@
 .fieldLabel {
     -fx-padding: 5,0,0,5;
 }
+
+.error {
+    -fx-text-fill: red;
+}

@@ -9,6 +9,7 @@ import fr.tduf.gui.database.converter.BitfieldToStringConverter;
 import fr.tduf.gui.database.converter.PercentNumberToStringConverter;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
+import fr.tduf.gui.database.listener.ErrorChangeListener;
 import fr.tduf.libunlimited.framework.base.Strings;
 import fr.tduf.libunlimited.high.files.db.common.helper.BitfieldHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
@@ -90,7 +91,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         HBox fieldBox = addFieldBox(Optional.ofNullable(groupName), 25.0);
 
-        addFieldLabel(fieldBox, fieldReadOnly, fieldName, toolTipText);
+        addFieldLabel(fieldBox, fieldReadOnly, fieldName, toolTipText, fieldRank);
 
         addValueTextField(fieldBox, field, fieldReadOnly, toolTipText, property);
 
@@ -100,6 +101,12 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     private void addValueTextField(HBox fieldBox, DbStructureDto.Field field, boolean fieldReadOnly, String toolTip, StringProperty property) {
         boolean valueTextFieldReadOnly = DbStructureDto.FieldType.PERCENT == field.getFieldType() || fieldReadOnly;
         TextField valueTextField = new TextField();
+
+        int fieldRank = field.getRank();
+        controller.getViewData()
+                .getItemPropsByFieldRank()
+                .errorPropertyAtFieldRank(fieldRank)
+                .addListener(new ErrorChangeListener(valueTextField));
 
         if (valueTextFieldReadOnly) {
             valueTextField.getStyleClass().add(FxConstants.CSS_CLASS_READONLY_FIELD);
@@ -111,7 +118,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         valueTextField.textProperty().bindBidirectional(property);
         if (!valueTextFieldReadOnly) {
-            valueTextField.focusedProperty().addListener(controller.handleTextFieldFocusChange(field.getRank(), property));
+            valueTextField.focusedProperty().addListener(controller.handleTextFieldFocusChange(fieldRank, property));
         }
     }
 
@@ -134,7 +141,6 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
     }
 
-    // Ignore warning (method ref)
     private void addPercentValueControls(HBox fieldBox, int fieldRank, boolean fieldReadOnly, StringProperty rawValueProperty) {
         Slider slider = new Slider(0.0, 100.0, 0.0);
         slider.setShowTickLabels(true);
@@ -223,7 +229,6 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
     }
 
-    // Ignore warning (method ref)
     private void addBitfieldValueControls(HBox fieldBox, int fieldRank, boolean fieldReadOnly, StringProperty rawValueProperty, DbDto.Topic currentTopic) {
         VBox vbox = new VBox();
 
@@ -235,7 +240,6 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         fieldBox.getChildren().add(vbox);
     }
 
-    // Ignore warning (method ref)
     private void addBitValueCheckbox(VBox vbox, int fieldRank, DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto ref, boolean fieldReadOnly, StringProperty rawValueProperty, DbDto.Topic currentTopic, BitfieldHelper bitfieldHelper) {
         int bitIndex = ref.getIndex();
         String displayedIndex = Strings.padStart(Integer.toString(bitIndex), 2, '0');

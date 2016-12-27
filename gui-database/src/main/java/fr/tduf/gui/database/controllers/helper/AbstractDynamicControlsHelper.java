@@ -4,6 +4,7 @@ import fr.tduf.gui.common.javafx.helper.ControlHelper;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.controllers.MainStageController;
+import fr.tduf.gui.database.listener.ErrorChangeListener;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -47,10 +48,15 @@ abstract class AbstractDynamicControlsHelper {
         return fieldBox;
     }
 
-    protected static void addFieldLabel(HBox fieldBox, boolean readOnly, String fieldName, String toolTipText) {
+    protected void addFieldLabel(HBox fieldBox, boolean readOnly, String fieldName, String toolTipText, int fieldRank) {
         Label fieldLabel = addLabel(fieldBox, readOnly, 225.0, fieldName);
 
         fieldLabel.setTooltip(new Tooltip(toolTipText));
+
+        controller.getViewData()
+                .getItemPropsByFieldRank()
+                .errorPropertyAtFieldRank(fieldRank)
+                .addListener(new ErrorChangeListener(fieldLabel));
 
         fieldLabel.getStyleClass().add(FxConstants.CSS_CLASS_FIELD_NAME);
     }

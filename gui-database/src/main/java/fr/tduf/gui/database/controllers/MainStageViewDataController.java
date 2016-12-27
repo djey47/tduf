@@ -26,6 +26,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
@@ -461,9 +462,15 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
             resourceTopic = getMiner().getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
         }
 
+        BooleanProperty errorProperty = itemPropsByFieldRank
+                .errorPropertyAtFieldRank(resourceItem.getFieldRank());
+        errorProperty.set(false);
         String resourceReference = resourceItem.getRawValue();
         String resourceValue = getMiner().getLocalizedResourceValueFromTopicAndReference(resourceReference, resourceTopic, locale)
-                .orElse(DisplayConstants.VALUE_ERROR_RESOURCE_NOT_FOUND);
+                .orElseGet(() -> {
+                    errorProperty.set(true);
+                    return DisplayConstants.VALUE_RESOURCE_DEFAULT;
+                });
         itemPropsByFieldRank
                 .resolvedValuePropertyAtFieldRank(resourceItem.getFieldRank())
                 .set(resourceValue);

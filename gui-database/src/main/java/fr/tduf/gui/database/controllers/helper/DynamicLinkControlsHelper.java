@@ -145,7 +145,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
 
     private DbDto.Topic retrieveTargetTopicForLink(TopicLinkDto topicLinkObject) {
         List<DbStructureDto.Field> structureFields = getMiner().getDatabaseTopic(topicLinkObject.getTopic())
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No database object for topic: " + topicLinkObject.getTopic()))
+                .orElseThrow(() -> new IllegalStateException("No database object for topic: " + topicLinkObject.getTopic()))
                 .getStructure()
                 .getFields();
         DbDto.Topic targetTopic = topicLinkObject.getTopic();
@@ -158,7 +158,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         return targetTopic;
     }
 
-    private static void addFieldLabelForLinkedTopic(HBox fieldBox, TopicLinkDto topicLinkObject) {
+    private void addFieldLabelForLinkedTopic(HBox fieldBox, TopicLinkDto topicLinkObject) {
         String fieldName = topicLinkObject.getTopic().name();
         if (topicLinkObject.getLabel() != null) {
             fieldName = topicLinkObject.getLabel();
@@ -166,6 +166,6 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
 
         String toolTipText = ofNullable(topicLinkObject.getToolTip()).orElse("");
 
-        addFieldLabel(fieldBox, topicLinkObject.isReadOnly(), fieldName, toolTipText);
+        addFieldLabel(fieldBox, topicLinkObject.isReadOnly(), fieldName, toolTipText, 0);
     }
 }

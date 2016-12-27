@@ -1,6 +1,8 @@
 package fr.tduf.gui.database.domain;
 
 import com.esotericsoftware.minlog.Log;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -45,6 +47,13 @@ public class ItemViewModel {
         return getItemPropsAtFieldRank(fieldRank).resolvedValue;
     }
 
+    /**
+     * @return a simple property for given field rank. Creates a property if it does not exist.
+     */
+    public BooleanProperty errorPropertyAtFieldRank(int fieldRank) {
+        return getItemPropsAtFieldRank(fieldRank).error;
+    }
+
     private ItemProperties getItemPropsAtFieldRank(int fieldRank) {
         ItemProperties props = itemPropsByFieldRank.getOrDefault(fieldRank, new ItemProperties());
         itemPropsByFieldRank.putIfAbsent(fieldRank, props);
@@ -58,5 +67,6 @@ public class ItemViewModel {
     private class ItemProperties {
         private final StringProperty rawValue = new SimpleStringProperty();
         private final StringProperty resolvedValue = new SimpleStringProperty();
+        private final BooleanProperty error = new SimpleBooleanProperty(false);
     }
 }
