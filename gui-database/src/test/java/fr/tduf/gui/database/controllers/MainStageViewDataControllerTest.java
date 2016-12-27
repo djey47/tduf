@@ -555,7 +555,9 @@ public class MainStageViewDataControllerTest {
         controller.updateItemProperties(itemObject);
 
         // THEN
-        assertThat(resolvedValueProperty.get()).isEqualTo("<ERROR: entry not found!>");
+        assertThat(resolvedValueProperty.get()).isEqualTo("");
+        assertThat(itemViewModel.errorPropertyAtFieldRank(1).get()).isTrue();
+        assertThat(itemViewModel.errorMessagePropertyAtFieldRank(1).get()).isNotEmpty();
     }
 
     @Test
