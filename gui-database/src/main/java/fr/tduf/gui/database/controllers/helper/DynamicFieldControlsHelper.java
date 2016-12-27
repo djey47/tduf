@@ -15,7 +15,7 @@ import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -71,8 +71,8 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
             return;
         }
 
-        SimpleStringProperty property = new SimpleStringProperty(DisplayConstants.VALUE_FIELD_DEFAULT);
-        viewData.getRawValuesByFieldRank().put(fieldRank, property);
+        final StringProperty property = viewData.getItemPropsByFieldRank().rawValuePropertyAtFieldRank(fieldRank);
+        property.set(DisplayConstants.VALUE_FIELD_DEFAULT);
 
         String fieldName = field.getName();
         if (fieldSettings.getLabel() != null) {
@@ -97,7 +97,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         addCustomControls(fieldBox, field, fieldReadOnly, currentTopic, property);
     }
 
-    private void addValueTextField(HBox fieldBox, DbStructureDto.Field field, boolean fieldReadOnly, String toolTip, SimpleStringProperty property) {
+    private void addValueTextField(HBox fieldBox, DbStructureDto.Field field, boolean fieldReadOnly, String toolTip, StringProperty property) {
         boolean valueTextFieldReadOnly = DbStructureDto.FieldType.PERCENT == field.getFieldType() || fieldReadOnly;
         TextField valueTextField = new TextField();
 
@@ -115,7 +115,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
     }
 
-    private void addCustomControls(HBox fieldBox, DbStructureDto.Field field, boolean fieldReadOnly, DbDto.Topic currentTopic, SimpleStringProperty property) {
+    private void addCustomControls(HBox fieldBox, DbStructureDto.Field field, boolean fieldReadOnly, DbDto.Topic currentTopic, StringProperty property) {
         switch (field.getFieldType()) {
             case PERCENT:
                 addPercentValueControls(fieldBox, field.getRank(), fieldReadOnly, property);
@@ -135,7 +135,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     }
 
     // Ignore warning (method ref)
-    private void addPercentValueControls(HBox fieldBox, int fieldRank, boolean fieldReadOnly, SimpleStringProperty rawValueProperty) {
+    private void addPercentValueControls(HBox fieldBox, int fieldRank, boolean fieldReadOnly, StringProperty rawValueProperty) {
         Slider slider = new Slider(0.0, 100.0, 0.0);
         slider.setShowTickLabels(true);
         slider.setShowTickMarks(true);
@@ -156,9 +156,9 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
     private void addReferenceValueControls(HBox fieldBox, boolean fieldReadOnly, DbStructureDto.Field field) {
         int fieldRank = field.getRank();
-        SimpleStringProperty property = new SimpleStringProperty(DisplayConstants.LABEL_ITEM_REFERENCE);
         final MainStageViewDataController viewData = controller.getViewData();
-        viewData.getResolvedValuesByFieldRank().put(fieldRank, property);
+        StringProperty property = viewData.getItemPropsByFieldRank().resolvedValuePropertyAtFieldRank(fieldRank);
+        property.set(DisplayConstants.LABEL_ITEM_REFERENCE);
 
         final String valueUnknown = String.format(DisplayConstants.VALUE_UNKNOWN, "?");
         Label remoteValueLabel = addCustomLabel(fieldBox, fieldReadOnly, valueUnknown);
@@ -173,10 +173,10 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
         Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRank(fieldRank, viewData.currentProfile().getValue());
-        if (potentialFieldSettings.isPresent() && potentialFieldSettings.get() != null) {
+        if (potentialFieldSettings.isPresent()) {
             String targetProfileName = potentialFieldSettings.get().getRemoteReferenceProfile();
             List<Integer> labelFieldRanks = EditorLayoutHelper.getAvailableProfileByName(targetProfileName, controller.getLayoutObject()).getEntryLabelFieldRanks();
-            SimpleStringProperty entryReferenceProperty = viewData.getRawValuesByFieldRank().get(fieldRank);
+            StringProperty entryReferenceProperty = viewData.getItemPropsByFieldRank().rawValuePropertyAtFieldRank(fieldRank);
 
             if (!fieldReadOnly) {
                 addContextualButton(
@@ -194,14 +194,16 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
     }
 
-    private void addResourceValueControls(HBox fieldBox, boolean fieldReadOnly, DbStructureDto.Field field, SimpleStringProperty rawValueProperty, DbDto.Topic topic) {
+    private void addResourceValueControls(HBox fieldBox, boolean fieldReadOnly, DbStructureDto.Field field, StringProperty rawValueProperty, DbDto.Topic topic) {
         String fieldTargetRef = field.getTargetRef();
         DbDto.Topic effectiveTopic = fieldTargetRef == null ?
                 topic : getMiner().getDatabaseTopicFromReference(fieldTargetRef).getTopic();
 
         int fieldRank = field.getRank();
-        SimpleStringProperty property = new SimpleStringProperty(DisplayConstants.VALUE_RESOURCE_DEFAULT);
-        controller.getViewData().getResolvedValuesByFieldRank().put(fieldRank, property);
+        StringProperty property = controller.getViewData()
+                .getItemPropsByFieldRank()
+                .resolvedValuePropertyAtFieldRank(fieldRank);
+        property.set(DisplayConstants.VALUE_RESOURCE_DEFAULT);
 
         addResourceValueLabel(fieldBox, fieldReadOnly, property);
 
@@ -222,7 +224,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     }
 
     // Ignore warning (method ref)
-    private void addBitfieldValueControls(HBox fieldBox, int fieldRank, boolean fieldReadOnly, SimpleStringProperty rawValueProperty, DbDto.Topic currentTopic) {
+    private void addBitfieldValueControls(HBox fieldBox, int fieldRank, boolean fieldReadOnly, StringProperty rawValueProperty, DbDto.Topic currentTopic) {
         VBox vbox = new VBox();
 
         BitfieldHelper bitfieldHelper = new BitfieldHelper();
@@ -234,7 +236,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     }
 
     // Ignore warning (method ref)
-    private void addBitValueCheckbox(VBox vbox, int fieldRank, DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto ref, boolean fieldReadOnly, SimpleStringProperty rawValueProperty, DbDto.Topic currentTopic, BitfieldHelper bitfieldHelper) {
+    private void addBitValueCheckbox(VBox vbox, int fieldRank, DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto ref, boolean fieldReadOnly, StringProperty rawValueProperty, DbDto.Topic currentTopic, BitfieldHelper bitfieldHelper) {
         int bitIndex = ref.getIndex();
         String displayedIndex = Strings.padStart(Integer.toString(bitIndex), 2, '0');
         String label = String.format("%s: %s", displayedIndex, ref.getLabel());
@@ -255,7 +257,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         vbox.getChildren().add(checkBox);
     }
 
-    private static void addResourceValueLabel(HBox fieldBox, boolean fieldReadOnly, SimpleStringProperty property) {
+    private static void addResourceValueLabel(HBox fieldBox, boolean fieldReadOnly, StringProperty property) {
         Label resourceValueLabel = addLabel(fieldBox, fieldReadOnly, 450, null);
 
         resourceValueLabel.textProperty().bindBidirectional(property);

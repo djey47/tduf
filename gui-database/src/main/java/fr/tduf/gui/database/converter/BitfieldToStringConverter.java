@@ -2,7 +2,7 @@ package fr.tduf.gui.database.converter;
 
 import fr.tduf.libunlimited.high.files.db.common.helper.BitfieldHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.util.StringConverter;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,12 +18,12 @@ public class BitfieldToStringConverter extends StringConverter<Boolean>{
 
     private static final char BINARY_ZERO = '0';
 
-    private final SimpleStringProperty rawValueProperty;
+    private final StringProperty rawValueProperty;
     private final int bitIndex;
     private final DbDto.Topic currentTopic;
     private BitfieldHelper bitfieldHelper;
 
-    public BitfieldToStringConverter(DbDto.Topic topic, int bitIndex, SimpleStringProperty rawValueProperty, BitfieldHelper bitfieldHelper) {
+    public BitfieldToStringConverter(DbDto.Topic topic, int bitIndex, StringProperty rawValueProperty, BitfieldHelper bitfieldHelper) {
         requireNonNull(bitfieldHelper, "BitfieldHelper instance is required.");
 
         this.currentTopic = topic;
@@ -39,7 +39,8 @@ public class BitfieldToStringConverter extends StringConverter<Boolean>{
             rawValue = String.valueOf(BINARY_ZERO);
         }
 
-        return bitfieldHelper.updateRawValue(currentTopic, rawValue, bitIndex, switchState).get();
+        return bitfieldHelper.updateRawValue(currentTopic, rawValue, bitIndex, switchState)
+                .orElseThrow(() -> new IllegalStateException("No reference for bitfield at index " + bitIndex));
     }
 
     @Override

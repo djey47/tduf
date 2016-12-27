@@ -12,6 +12,7 @@ import fr.tduf.gui.database.controllers.helper.DynamicLinkControlsHelper;
 import fr.tduf.gui.database.converter.CurrentEntryIndexToStringConverter;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.domain.EditorLocation;
+import fr.tduf.gui.database.domain.ItemViewModel;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
@@ -27,7 +28,7 @@ import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -65,10 +66,9 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     private final ObservableList<ContentEntryDataItem> browsableEntries = FXCollections.observableArrayList();
     private final Map<String, VBox> tabContentByName = new HashMap<>();
-    private final Map<Integer, SimpleStringProperty> rawValuesByFieldRank = new HashMap<>();
     private final Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> resourcesByTopicLink = new HashMap<>();
-    private final Map<Integer, SimpleStringProperty> resolvedValuesByFieldRank = new HashMap<>();
 
+    private final ItemViewModel itemPropsByFieldRank = new ItemViewModel();
 
     MainStageViewDataController(MainStageController mainStageController) {
         super(mainStageController);
@@ -76,6 +76,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         dynamicFieldControlsHelper = new DynamicFieldControlsHelper(mainStageController);
         dynamicLinkControlsHelper = new DynamicLinkControlsHelper(mainStageController);
     }
+
 
     void initTopToolbar() {
         getCreditsLabel().setText(DisplayConstants.LABEL_STATUS_VERSION);
@@ -135,7 +136,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         final EditorLayoutDto.EditorProfileDto profileObject = EditorLayoutHelper.getAvailableProfileByName(profileName, getLayoutObject());
         final DbDto.Topic topic = profileObject.getTopic();
         final DbDto currentTopicObject = getMiner().getDatabaseTopic(topic)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException(MESSAGE_NO_DATABASE_OBJECT_FOR_TOPIC + topic));
+                .orElseThrow(() -> new IllegalStateException(MESSAGE_NO_DATABASE_OBJECT_FOR_TOPIC + topic));
 
         currentTopicProperty().setValue(topic);
 
@@ -153,7 +154,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     }
 
     void refreshAll() {
-        resolvedValuesByFieldRank.clear();
+        itemPropsByFieldRank.clear();
         resourcesByTopicLink.clear();
         currentEntryIndexProperty().setValue(0);
 
@@ -175,13 +176,13 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     void updateItemProperties(ContentItemDto item) {
         final int fieldRank = item.getFieldRank();
-        final SimpleStringProperty rawValueProperty = rawValuesByFieldRank.get(fieldRank);
+        final StringProperty rawValueProperty =  itemPropsByFieldRank.rawValuePropertyAtFieldRank(fieldRank);
         if (rawValueProperty == null) {
             return;
         }
         rawValueProperty.set(item.getRawValue());
 
-        if (!resolvedValuesByFieldRank.containsKey(fieldRank)) {
+        if (itemPropsByFieldRank.resolvedValuePropertyAtFieldRank(fieldRank) == null) {
             return;
         }
 
@@ -218,7 +219,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                         remoteContentEntryId = selectedResource.internalEntryIdProperty().get();
                     } else {
                         remoteContentEntryId = getMiner().getContentEntryInternalIdentifierWithReference(entryReference, targetTopic)
-                                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No entry with ref: " + entryReference + " for topic: " + targetTopic));
+                                .orElseThrow(() -> new IllegalStateException("No entry with ref: " + entryReference + " for topic: " + targetTopic));
                     }
 
                     switchToProfileAndEntry(targetProfileName, remoteContentEntryId, true);
@@ -405,7 +406,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     }
 
     private void initDynamicControls() {
-        rawValuesByFieldRank.clear();
+        itemPropsByFieldRank.clear();
 
         final EditorLayoutDto.EditorProfileDto currentProfile = currentProfileProperty.getValue();
         if (currentProfile.getFieldSettings() != null) {
@@ -463,8 +464,9 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         String resourceReference = resourceItem.getRawValue();
         String resourceValue = getMiner().getLocalizedResourceValueFromTopicAndReference(resourceReference, resourceTopic, locale)
                 .orElse(DisplayConstants.VALUE_ERROR_RESOURCE_NOT_FOUND);
-        final SimpleStringProperty valueProperty = resolvedValuesByFieldRank.get(resourceItem.getFieldRank());
-        valueProperty.set(resourceValue);
+        itemPropsByFieldRank
+                .resolvedValuePropertyAtFieldRank(resourceItem.getFieldRank())
+                .set(resourceValue);
     }
 
     private void updateLinkProperties(Map.Entry<TopicLinkDto, ObservableList<ContentEntryDataItem>> remoteEntry) {
@@ -474,15 +476,15 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
         final int currentEntryIndex = currentEntryIndexProperty().getValue();
         String currentEntryRef = getMiner().getContentEntryReferenceWithInternalIdentifier(currentEntryIndex, currentTopicProperty().getValue())
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No REF available for entry at id: " + currentEntryIndex));
+                .orElseThrow(() -> new IllegalStateException("No REF available for entry at id: " + currentEntryIndex));
 
         final DbDto.Topic linkTopic = linkObject.getTopic();
         DbDto linkedTopicObject = getMiner().getDatabaseTopic(linkTopic)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException(MESSAGE_NO_DATABASE_OBJECT_FOR_TOPIC + linkTopic));
+                .orElseThrow(() -> new IllegalStateException(MESSAGE_NO_DATABASE_OBJECT_FOR_TOPIC + linkTopic));
 
         linkedTopicObject.getData().getEntries().stream()
                 .filter(contentEntry -> currentEntryRef.equals(contentEntry.getItemAtRank(1)
-                        .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No content item at rank 1 for entry id: " + contentEntry.getId()))
+                        .orElseThrow(() -> new IllegalStateException("No content item at rank 1 for entry id: " + contentEntry.getId()))
                         .getRawValue())
                 )
                 .map(contentEntry -> fetchLinkResourceFromContentEntry(linkedTopicObject, contentEntry, linkObject))
@@ -500,7 +502,9 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                         EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(remoteReferenceProfile, getLayoutObject())));
 
         String remoteContents = fetchRemoteContentsWithEntryRef(remoteTopic, referenceItem.getRawValue(), remoteFieldRanks);
-        resolvedValuesByFieldRank.get(referenceItem.getFieldRank()).set(remoteContents);
+        itemPropsByFieldRank
+                .resolvedValuePropertyAtFieldRank(referenceItem.getFieldRank())
+                .set(remoteContents);
     }
 
     private ContentEntryDataItem fetchLinkResourceFromContentEntry(DbDto topicObject, ContentEntryDto contentEntry, TopicLinkDto linkObject) {
@@ -573,6 +577,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     private void loadAndFillLocales(ChangeListener<Locale> localeChangeListener) {
         getApplicationConfiguration().getEditorLocale().ifPresent(currentLocaleProperty::setValue);
 
+        //noinspection ResultOfMethodCallIgnored
         Locale.valuesAsStream()
                 .collect(toCollection(() -> getLocalesChoiceBox().getItems()));
 
@@ -597,16 +602,8 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         return tabContentByName;
     }
 
-    public Map<Integer, SimpleStringProperty> getRawValuesByFieldRank() {
-        return rawValuesByFieldRank;
-    }
-
     public Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> getResourcesByTopicLink() {
         return resourcesByTopicLink;
-    }
-
-    public Map<Integer, SimpleStringProperty> getResolvedValuesByFieldRank() {
-        return resolvedValuesByFieldRank;
     }
 
     public Property<EditorLayoutDto.EditorProfileDto> currentProfile() {
@@ -615,5 +612,9 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     ObservableList<ContentEntryDataItem> getBrowsableEntries() {
         return browsableEntries;
+    }
+
+    public ItemViewModel getItemPropsByFieldRank() {
+        return itemPropsByFieldRank;
     }
 }

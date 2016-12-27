@@ -97,19 +97,10 @@ public class MainStageController extends AbstractGuiController {
     private final DatabaseFixer databaseFixer = new DatabaseFixer();
 
     @FXML
-    ChoiceBox<Locale> localesChoiceBox;
-
-    @FXML
     Button loadDatabaseButton;
 
     @FXML
-    TextField databaseLocationTextField;
-
-    @FXML
     Label creditsLabel;
-
-    @FXML
-    TitledPane settingsPane;
 
     @FXML
     TextField entryNumberTextField;
@@ -125,6 +116,15 @@ public class MainStageController extends AbstractGuiController {
 
     @FXML
     ComboBox<ContentEntryDataItem> entryNumberComboBox;
+
+    @FXML
+    private TextField databaseLocationTextField;
+
+    @FXML
+    private TitledPane settingsPane;
+
+    @FXML
+    private ChoiceBox<Locale> localesChoiceBox;
 
     @FXML
     private ChoiceBox<String> profilesChoiceBox;
@@ -399,7 +399,7 @@ public class MainStageController extends AbstractGuiController {
                 .ifPresent(topicObject -> askForGenuinePatchLocationAndImportDataFromFile());
     }
 
-    public EventHandler<ActionEvent> handleBrowseResourcesButtonMouseClick(DbDto.Topic targetTopic, SimpleStringProperty targetReferenceProperty, int fieldRank) {
+    public EventHandler<ActionEvent> handleBrowseResourcesButtonMouseClick(DbDto.Topic targetTopic, StringProperty targetReferenceProperty, int fieldRank) {
         return actionEvent -> {
             Log.trace(THIS_CLASS_NAME, "->browseResourcesButton clicked");
 
@@ -407,7 +407,7 @@ public class MainStageController extends AbstractGuiController {
         };
     }
 
-    public EventHandler<ActionEvent> handleBrowseEntriesButtonMouseClick(DbDto.Topic targetTopic, List<Integer> labelFieldRanks, SimpleStringProperty targetEntryReferenceProperty, int fieldRank) {
+    public EventHandler<ActionEvent> handleBrowseEntriesButtonMouseClick(DbDto.Topic targetTopic, List<Integer> labelFieldRanks, StringProperty targetEntryReferenceProperty, int fieldRank) {
         return actionEvent -> {
             Log.trace(THIS_CLASS_NAME, "->browseEntriesButton clicked");
 
@@ -436,7 +436,7 @@ public class MainStageController extends AbstractGuiController {
             Log.trace(THIS_CLASS_NAME, "->handleAddLinkedEntryButton clicked, targetTopic:" + targetTopic + LOG_TARGET_PROFILE_NAME + targetProfileName);
 
             List<DbStructureDto.Field> structureFields = databaseMiner.getDatabaseTopic(targetTopic)
-                    .<IllegalStateException>orElseThrow(() -> new IllegalStateException("Database object not found for topic: " + targetTopic))
+                    .orElseThrow(() -> new IllegalStateException("Database object not found for topic: " + targetTopic))
                     .getStructure().getFields();
             if (DatabaseStructureQueryHelper.getUidFieldRank(structureFields).isPresent()) {
                 // Association topic -> browse remote entries in target topic
@@ -488,7 +488,7 @@ public class MainStageController extends AbstractGuiController {
         };
     }
 
-    public ChangeListener<Boolean> handleTextFieldFocusChange(int fieldRank, SimpleStringProperty textFieldValueProperty) {
+    public ChangeListener<Boolean> handleTextFieldFocusChange(int fieldRank, StringProperty textFieldValueProperty) {
         return (observable, oldFocusState, newFocusState) -> {
             Log.trace(THIS_CLASS_NAME, "->handleTextFieldFocusChange, focused=" + newFocusState + ", fieldRank=" + fieldRank + ", fieldValue=" + textFieldValueProperty.get());
 
@@ -498,7 +498,7 @@ public class MainStageController extends AbstractGuiController {
         };
     }
 
-    public ChangeListener<Boolean> handleSliderValueChange(int fieldRank, SimpleStringProperty rawValueProperty) {
+    public ChangeListener<Boolean> handleSliderValueChange(int fieldRank, StringProperty rawValueProperty) {
         return (observable, oldState, newState) -> {
             Log.trace(THIS_CLASS_NAME, "->handleSliderValueChange, fieldRank=" + fieldRank + ", rawValue=" + rawValueProperty.get());
 
@@ -506,7 +506,7 @@ public class MainStageController extends AbstractGuiController {
         };
     }
 
-    public ChangeListener<Boolean> handleBitfieldCheckboxSelectionChange(int fieldRank, SimpleStringProperty textFieldValueProperty) {
+    public ChangeListener<Boolean> handleBitfieldCheckboxSelectionChange(int fieldRank, StringProperty textFieldValueProperty) {
         return (observable, oldCheckedState, newCheckedState) -> {
             Log.trace(THIS_CLASS_NAME, "->handleBitfieldCheckboxSelectionChange, checked=" + newCheckedState + ", fieldRank=" + fieldRank);
 

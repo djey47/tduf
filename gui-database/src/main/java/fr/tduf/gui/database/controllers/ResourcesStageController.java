@@ -14,7 +14,7 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -56,7 +56,7 @@ public class ResourcesStageController extends AbstractGuiController {
 
     private final Property<LocalizedResource> browsedResourceProperty = new SimpleObjectProperty<>();
 
-    private SimpleStringProperty resourceReferenceProperty;
+    private StringProperty resourceReferenceProperty;
 
     private int fieldRank;
 
@@ -99,7 +99,8 @@ public class ResourcesStageController extends AbstractGuiController {
         ofNullable(resourcesTableView.getSelectionModel().selectedItemProperty().getValue())
                 .ifPresent(selectedResource -> {
                     String currentResourceReference = selectedResource.referenceProperty().get();
-                    DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("Topic not found: " + getCurrentTopic()));
+                    DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic())
+                            .orElseThrow(() -> new IllegalArgumentException("Topic not found: " + getCurrentTopic()));
                     dialogsHelper.showEditResourceDialog(currentTopicObject, selectedResource, currentLocale)
                             .ifPresent(localizedResource -> editResourceAndUpdateMainStage(getCurrentTopic(), currentResourceReference, localizedResource));
                 });
@@ -109,7 +110,8 @@ public class ResourcesStageController extends AbstractGuiController {
     private void handleAddResourceButtonMouseClick() {
         Log.trace(THIS_CLASS_NAME, "->handleAddResourceButtonMouseClick");
 
-        DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic()).<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("Topic not found: " + getCurrentTopic()));
+        DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic())
+                .orElseThrow(() -> new IllegalArgumentException("Topic not found: " + getCurrentTopic()));
         dialogsHelper.showAddResourceDialog(currentTopicObject, currentLocale)
                 .ifPresent(newLocalizedResource -> editNewResourceAndUpdateMainStage(getCurrentTopic(), newLocalizedResource));
     }
@@ -151,7 +153,7 @@ public class ResourcesStageController extends AbstractGuiController {
         selectResourceInTableAndScroll(newResource.getReference());
     }
 
-    void initAndShowDialog(SimpleStringProperty referenceProperty, int entryFieldRank, Locale locale, DbDto.Topic targetTopic) {
+    void initAndShowDialog(StringProperty referenceProperty, int entryFieldRank, Locale locale, DbDto.Topic targetTopic) {
         resourceReferenceProperty = referenceProperty;
         fieldRank = entryFieldRank;
         currentLocale = locale;

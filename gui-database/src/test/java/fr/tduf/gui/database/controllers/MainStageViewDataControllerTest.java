@@ -2,6 +2,7 @@ package fr.tduf.gui.database.controllers;
 
 import fr.tduf.gui.database.DatabaseEditor;
 import fr.tduf.gui.database.domain.EditorLocation;
+import fr.tduf.gui.database.domain.ItemViewModel;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
@@ -374,7 +375,7 @@ public class MainStageViewDataControllerTest {
         controller.currentProfile().setValue(getFirstLayoutProfile());
         controller.getBrowsableEntries().add(new ContentEntryDataItem());
 
-        when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(createTopicObjectWithDataEntryAndRef("entryRef")));
+        when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(createTopicObjectWithDataEntryAndRef()));
         when(minerMock.getContentEntryReferenceWithInternalIdentifier(0, TOPIC2)).thenReturn(empty());
 
 
@@ -401,7 +402,7 @@ public class MainStageViewDataControllerTest {
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(topicObjectWithDataEntry);
         when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(TOPIC2));
 
-        when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(createTopicObjectWithDataEntryAndRef("entryRef")));
+        when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(createTopicObjectWithDataEntryAndRef()));
         when(minerMock.getContentEntryReferenceWithInternalIdentifier(0, TOPIC2)).thenReturn(empty());
         when(minerMock.getContentEntryFromTopicWithInternalIdentifier(0, TOPIC2)).thenReturn(of(topicObjectWithDataEntry.getData().getEntries().get(0)));
 
@@ -431,7 +432,7 @@ public class MainStageViewDataControllerTest {
 
         // THEN
         assertThat(currentEntryIndexProperty.getValue()).isEqualTo(0);
-        assertThat(controller.getResolvedValuesByFieldRank()).isEmpty();
+        assertThat(controller.getItemPropsByFieldRank().isEmpty()).isTrue();
         assertThat(controller.getResourcesByTopicLink()).isEmpty();
     }
 
@@ -459,7 +460,9 @@ public class MainStageViewDataControllerTest {
                 .build();
 
         controller.currentProfile().setValue(getFirstLayoutProfile());
-        controller.getRawValuesByFieldRank().put(1, new SimpleStringProperty("VAL1"));
+        controller.getItemPropsByFieldRank()
+                .rawValuePropertyAtFieldRank(1)
+                .set("VAL1");
 
         when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0));
         when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(TOPIC1));
@@ -483,7 +486,6 @@ public class MainStageViewDataControllerTest {
         when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(currentEntryIndexProperty);
         final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>(TOPIC1);
         when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
-//        when(minerMock.getLocalizedResourceValueFromContentEntry(0, 1, TOPIC1, LOCALE)).thenReturn(of("label"));
 
         // WHEN
         controller.updateCurrentEntryLabelProperty();
@@ -524,8 +526,9 @@ public class MainStageViewDataControllerTest {
     public void updateItemProperties_withRawValueSet_andNoResolvedValueInIndex_shouldOnlyUpdateProperty() {
         // GIVEN
         ContentItemDto itemObject = createContentItem();
-        SimpleStringProperty rawValueProperty = new SimpleStringProperty("old rawValue");
-        controller.getRawValuesByFieldRank().put(1, rawValueProperty);
+        StringProperty rawValueProperty = controller.getItemPropsByFieldRank()
+                .rawValuePropertyAtFieldRank(1);
+        rawValueProperty.set("old rawValue");
 
         // WHEN
         controller.updateItemProperties(itemObject);
@@ -541,9 +544,12 @@ public class MainStageViewDataControllerTest {
         when(minerMock.getDatabaseTopicFromReference(TOPIC_REFERENCE)).thenReturn(createTopicObject());
         when(minerMock.getContentEntryInternalIdentifierWithReference("rawValue", TOPIC2)).thenReturn(OptionalInt.empty());
         ContentItemDto itemObject = createContentItem();
-        controller.getRawValuesByFieldRank().put(1, new SimpleStringProperty("old reference rawValue"));
-        SimpleStringProperty resolvedValueProperty = new SimpleStringProperty("resolved value");
-        controller.getResolvedValuesByFieldRank().put(1, resolvedValueProperty);
+        ItemViewModel itemViewModel = controller.getItemPropsByFieldRank();
+        itemViewModel
+                .rawValuePropertyAtFieldRank(1)
+                .set("old reference rawValue");
+        StringProperty resolvedValueProperty = itemViewModel.resolvedValuePropertyAtFieldRank(1);
+        resolvedValueProperty.set("resolved value");
 
         // WHEN
         controller.updateItemProperties(itemObject);
@@ -560,9 +566,12 @@ public class MainStageViewDataControllerTest {
         when(minerMock.getContentEntryInternalIdentifierWithReference("rawValue", TOPIC2)).thenReturn(OptionalInt.of(0));
         when(minerMock.getLocalizedResourceValueFromContentEntry(0, 1, TOPIC2, LOCALE)).thenReturn(of("resource value"));
         ContentItemDto itemObject = createContentItem();
-        controller.getRawValuesByFieldRank().put(1, new SimpleStringProperty("old reference rawValue"));
-        SimpleStringProperty resolvedValueProperty = new SimpleStringProperty("resolved value");
-        controller.getResolvedValuesByFieldRank().put(1, resolvedValueProperty);
+        ItemViewModel itemViewModel = controller.getItemPropsByFieldRank();
+        itemViewModel
+                .rawValuePropertyAtFieldRank(1)
+                .set("old reference rawValue");
+        StringProperty resolvedValueProperty = itemViewModel.resolvedValuePropertyAtFieldRank(1);
+        resolvedValueProperty.set("resolved value");
 
         // WHEN
         controller.updateItemProperties(itemObject);
@@ -574,9 +583,12 @@ public class MainStageViewDataControllerTest {
     @Test
     public void updateItemProperties_withRawValueSet_andResolvedValueInIndex_forLocalResourceField_shouldUpdateProperty() {
         // GIVEN
-        controller.getRawValuesByFieldRank().put(1, new SimpleStringProperty("old local resource rawValue"));
-        final SimpleStringProperty resolvedValueProperty = new SimpleStringProperty("old local resource value");
-        controller.getResolvedValuesByFieldRank().put(1, resolvedValueProperty);
+        ItemViewModel itemViewModel = controller.getItemPropsByFieldRank();
+        itemViewModel
+                .rawValuePropertyAtFieldRank(1)
+                .set("old local resource rawValue");
+        StringProperty resolvedValueProperty = itemViewModel.resolvedValuePropertyAtFieldRank(1);
+        resolvedValueProperty.set("old local resource value");
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(createTopicObjectForLocalResource());
         ContentItemDto itemObject = createContentItem();
 
@@ -594,9 +606,12 @@ public class MainStageViewDataControllerTest {
     @Test
     public void updateItemProperties_withRawValueSet_andResolvedValueInIndex_forRemoteResourceField_shouldUpdateProperty() {
         // GIVEN
-        controller.getRawValuesByFieldRank().put(1, new SimpleStringProperty("old remote resource rawValue"));
-        final SimpleStringProperty resolvedValueProperty = new SimpleStringProperty("old local resource value");
-        controller.getResolvedValuesByFieldRank().put(1, resolvedValueProperty);
+        ItemViewModel itemViewModel = controller.getItemPropsByFieldRank();
+        itemViewModel
+                .rawValuePropertyAtFieldRank(1)
+                .set("old remote resource rawValue");
+        StringProperty resolvedValueProperty = itemViewModel.resolvedValuePropertyAtFieldRank(1);
+        resolvedValueProperty.set("old local resource value");
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(createTopicObjectForRemoteResource());
         ContentItemDto itemObject = createContentItem();
 
@@ -677,7 +692,7 @@ public class MainStageViewDataControllerTest {
         final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>(TOPIC1);
         when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
         when(minerMock.getContentEntryReferenceWithInternalIdentifier(0, TOPIC1)).thenReturn(of("entryRef"));
-        when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(createTopicObjectWithDataEntryAndRef("entryRef")));
+        when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(createTopicObjectWithDataEntryAndRef()));
         when(minerMock.getLocalizedResourceValueFromContentEntry(0, 1, TOPIC2, LOCALE)).thenReturn(of("remote value"));
 
         // WHEN
@@ -701,7 +716,7 @@ public class MainStageViewDataControllerTest {
         when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0));
         when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(TOPIC1));
         when(minerMock.getContentEntryReferenceWithInternalIdentifier(0, TOPIC1)).thenReturn(of("entryRef1"));
-        when(minerMock.getDatabaseTopic(TOPIC3)).thenReturn(of(createAssociationTopicObjectWithDataEntriesAndRefs("entryRef1", "entryRef2")));
+        when(minerMock.getDatabaseTopic(TOPIC3)).thenReturn(of(createAssociationTopicObjectWithDataEntriesAndRefs()));
         final DbDto remoteTopicObject = createRemoteTopicObject();
         when(minerMock.getDatabaseTopicFromReference(TOPIC_REMOTE_REFERENCE)).thenReturn(remoteTopicObject);
         when(minerMock.getContentEntryInternalIdentifierWithReference("entryRef2", TOPIC4)).thenReturn(OptionalInt.of(0));
@@ -811,7 +826,7 @@ public class MainStageViewDataControllerTest {
                 .build();
     }
 
-    private DbDto createTopicObjectWithDataEntryAndRef(String ref) {
+    private DbDto createTopicObjectWithDataEntryAndRef() {
         return DbDto.builder()
                 .withStructure(DbStructureDto.builder()
                         .forTopic(TOPIC2)
@@ -822,13 +837,13 @@ public class MainStageViewDataControllerTest {
                         .build())
                 .withData(DbDataDto.builder()
                         .addEntry(ContentEntryDto.builder()
-                                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(ref).build())
+                                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue("entryRef").build())
                                 .build())
                         .build())
                 .build();
     }
 
-    private DbDto createAssociationTopicObjectWithDataEntriesAndRefs(String sourceRef, String targetRef) {
+    private DbDto createAssociationTopicObjectWithDataEntriesAndRefs() {
         return DbDto.builder()
                 .withStructure(DbStructureDto.builder()
                         .forTopic(TOPIC3)
@@ -845,8 +860,8 @@ public class MainStageViewDataControllerTest {
                         .build())
                 .withData(DbDataDto.builder()
                         .addEntry(ContentEntryDto.builder()
-                                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(sourceRef).build())
-                                .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(targetRef).build())
+                                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue("entryRef1").build())
+                                .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue("entryRef2").build())
                                 .build())
                         .build())
                 .build();
