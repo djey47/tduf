@@ -50,6 +50,11 @@ public class CameraInfo {
             return this;
         }
 
+        public CameraInfoBuilder withViews(List<CameraView> allViews) {
+            views.addAll(allViews);
+            return this;
+        }
+
         public CameraInfoBuilder withUsedViews(List<CameraView> allViews, List<CameraView> usedViews) {
             views.addAll(allViews);
             views
