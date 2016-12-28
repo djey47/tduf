@@ -15,6 +15,7 @@ import java.util.*;
 import static fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMinerTest.createTopicObjectsFromResources;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -179,6 +180,28 @@ class BulkDatabaseMiner_focusOnContentsTest {
     }
 
     @Test
+    void getContentEntryPseudoReference_shouldUseTwoFirstItemValues() {
+        // GIVEN
+        ContentEntryDto entry = createContentEntryWithItems(asList(createContentItemWithRank(1), createContentItemWithRank(2)));
+
+        // WHEN
+        String actualEntryReference = BulkDatabaseMiner.getContentEntryPseudoReference(entry);
+
+        // THEN
+        assertThat(actualEntryReference).isEqualTo("123|123");
+    }
+
+    @Test
+    void getContentEntryPseudoReference_whenNotEnoughItems_shouldThrowException() {
+        // GIVEN
+        ContentEntryDto entry = createContentEntryWithItems(singletonList(createContentItemWithRank(1)));
+
+        // WHEN-THEN
+        assertThrows(IllegalArgumentException.class,
+                () -> BulkDatabaseMiner.getContentEntryPseudoReference(entry));
+    }
+
+    @Test
     void getRemoteContentEntryWithInternalIdentifier_whenEntryInternalIdentifierDoesNotExist_shouldThrowException() throws IOException, URISyntaxException {
         // GIVEN
         List<DbDto> topicObjects = createTopicObjectsWithRemoteReferencesFromResources();
@@ -329,6 +352,7 @@ class BulkDatabaseMiner_focusOnContentsTest {
     private static ContentItemDto createContentItemWithRank(int fieldRank) {
         return ContentItemDto.builder()
                 .ofFieldRank(fieldRank)
+                .withRawValue("123")
                 .build();
     }
 }
