@@ -10,7 +10,10 @@ import fr.tduf.libunlimited.high.files.bin.cameras.interop.GenuineCamGateway;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
+import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -19,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,8 +37,12 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AdjustCameraStepTest {
+    private static String tduTempDirectory;
+
     private static final String SLOTREF_1 = "999999";
     private static final String SLOTREF_2 = "999998";
+
+    private static DatabaseContext databaseContext;
 
     @Mock
     private GenuineCamGateway cameraSupportMock;
@@ -48,31 +56,35 @@ public class AdjustCameraStepTest {
     @Captor
     private ArgumentCaptor<GenuineCamViewsDto> customizeCamCaptor;
 
-    private DatabaseContext databaseContext;
-
     private AdjustCameraStep adjustCameraStep;
 
+    @BeforeClass
+    public static void globalSetUp() throws IOException, URISyntaxException {
+        tduTempDirectory = FilesHelper.createTempDirectoryForInstaller();
+        final Path tduDatabasePath = FilesHelper.getTduDatabasePath(tduTempDirectory);
+        FilesHelper.createFakeDatabase(tduDatabasePath.toString(), "");
+
+        String camFileName = fr.tduf.libunlimited.common.helper.FilesHelper.getFileNameFromResourcePath("/bin/Cameras.bin");
+        Files.copy(Paths.get(camFileName), tduDatabasePath.resolve("Cameras.bin"));
+
+        databaseContext = new DatabaseContext(new ArrayList<>(0), "");
+        databaseContext.setPatch(DbPatchDto.builder().build(), new PatchProperties());
+    }
 
     @Before
     public void setUp() throws IOException, StepException {
-        final String tduTempDirectory = FilesHelper.createTempDirectoryForInstaller();
-        final Path tduDatabasePath = FilesHelper.getTduDatabasePath(tduTempDirectory);
-
-        Files.createDirectories(tduDatabasePath);
-        FilesHelper.createFakeDatabase(tduDatabasePath.toString(), "");
-
         InstallerConfiguration installerConfiguration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduTempDirectory)
                 .overridingCameraSupport(cameraSupportMock)
                 .build();
 
-        databaseContext = new DatabaseContext(new ArrayList<>(0), "");
-        databaseContext.setPatch(DbPatchDto.builder().build(), new PatchProperties());
+        databaseContext.getPatchProperties().clear();
 
         adjustCameraStep = (AdjustCameraStep) GenericStep.starterStep(installerConfiguration, databaseContext)
                 .nextStep(GenericStep.StepType.ADJUST_CAMERA);
 
         mockVehicleSlots();
+        mockCameras();
     }
 
     @Test
@@ -193,5 +205,11 @@ public class AdjustCameraStepTest {
 
         when(vehicleSlotsHelperMock.getVehicleSlotFromReference(SLOTREF_1)).thenReturn(of(vehicleSlot));
         when(vehicleSlotsHelperMock.getVehicleSlotFromReference(SLOTREF_2)).thenReturn(empty());
+    }
+
+    private void mockCameras() throws IOException {
+        CameraInfo cameraInfo = CameraInfo.builder().forIdentifier(200L).build();
+        when(cameraSupportMock.getCameraInfo(anyString(), eq(200L))).thenReturn(cameraInfo);
+        CamerasHelper.setCameraSupport(cameraSupportMock);
     }
 }
