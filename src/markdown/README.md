@@ -82,3 +82,8 @@ If you wish to donate, please head to [this](http://bit.ly/13YI3bP)
 * [Tools Reference: TDUCP WIKI @ GitHub](https://github.com/djey47/tdu-cp/wiki/Tools-reference)
 
 -[Djey, *core* tools developer](https://github.com/djey47)-
+
+
+### Licenses
+
+* TDU application icon: [Creative Commons](https://creativecommons.org/licenses/by-nc-nd/4.0/#) - unmodified

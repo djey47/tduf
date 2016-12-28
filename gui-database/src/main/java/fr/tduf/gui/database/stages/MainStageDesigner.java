@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.stages;
 
+import fr.tduf.gui.common.stages.StageHelper;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
 import javafx.fxml.FXMLLoader;
@@ -35,5 +36,7 @@ public class MainStageDesigner {
 
         primaryStage.setScene(new Scene(mainRoot, 1280, 720));
         primaryStage.setTitle(DisplayConstants.TITLE_APPLICATION);
+
+        StageHelper.setStandardIcon(primaryStage);
     }
 }
