@@ -71,6 +71,19 @@ class PatchGeneratorTest {
     }
 
     @Test
+     void makePatch_whenUsingRealDatabase_andEntryIdentifiersAsEnumeration_shouldReturnCorrectPatchObjectWithExistingEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        List<DbDto> databaseObjects = createDatabaseObjectsWithOneTopicFromRealFile();
+        PatchGenerator generator = createPatchGenerator(databaseObjects);
+
+        // WHEN
+        DbPatchDto actualPatchObject = generator.makePatch(ACHIEVEMENTS, ItemRange.fromCliOption(Optional.of("0,1")), createDefaultRange());
+
+        // THEN
+        assertPatchGeneratedWithinRangeForOneTopicWithoutREFSupport(actualPatchObject);
+    }
+
+    @Test
      void makePatch_whenUsingRealDatabase_andRefsAsEnumeration_shouldReturnCorrectPatchObjectWithExistingRefs() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         List<DbDto> databaseObjects = createDatabaseObjectsWithTwoLinkedTopicsFromRealFiles();
@@ -297,6 +310,24 @@ class PatchGeneratorTest {
         assertThat(actualChanges).extracting("locale").contains(null, FRANCE, ITALY, UNITED_STATES, JAPAN, GERMANY, SPAIN, CHINA, KOREA);
         assertThat(actualChanges).extracting("topic").containsOnly(ACHIEVEMENTS);
         assertThat(actualChanges).extracting("value").contains(null, "COLLEZIONISTA ESTREMO");
+    }
+
+    private static void assertPatchGeneratedWithinRangeForOneTopicWithoutREFSupport(DbPatchDto patchObject) {
+        assertThat(patchObject).isNotNull();
+
+        List<DbPatchDto.DbChangeDto> actualChanges = patchObject.getChanges();
+        assertThat(actualChanges).hasSize(60); // 2 UPDATE + 58 UPDATE_RES
+
+        assertThat(actualChanges).extracting("topic").containsOnly(ACHIEVEMENTS);
+
+        DbPatchDto.DbChangeDto changeObject1 = actualChanges.get(0);
+        assertThat(changeObject1.getType()).isEqualTo(UPDATE);
+        assertThat(changeObject1.getRef()).isNull();
+        assertThat(changeObject1.getValues()).hasSize(9);
+        assertThat(changeObject1.getValues().get(0)).isEqualTo("55736935");
+
+        DbPatchDto.DbChangeDto changeObject2 = actualChanges.get(2);
+        assertThat(changeObject2.getType()).isEqualTo(UPDATE_RES);
     }
 
     private static void assertPatchGeneratedWithinRangeForOneTopic(DbPatchDto patchObject) {
