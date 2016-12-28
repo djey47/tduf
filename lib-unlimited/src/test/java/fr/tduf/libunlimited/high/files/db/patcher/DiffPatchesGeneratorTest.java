@@ -209,7 +209,7 @@ class DiffPatchesGeneratorTest {
         assertThat(actualChanges).extracting("strictMode").containsOnly(true);
         assertThat(actualChanges).extracting("ref").containsOnly("54713528");
         assertThat(actualChanges).extracting("topic").containsOnly(HAIR);
-        assertThat(actualChanges).extracting("locale").containsOnly(new Locale[] { ITALY, FRANCE, UNITED_STATES, KOREA, JAPAN, GERMANY, CHINA, SPAIN });
+        assertThat(actualChanges).extracting("locale").containsOnly((Object[]) new Locale[] { ITALY, FRANCE, UNITED_STATES, KOREA, JAPAN, GERMANY, CHINA, SPAIN });
         assertThat(actualChanges).extracting("value").contains("StringPanthere01-FR", "StringPanthere01-CH", "StringPanthere01-US");
     }
 

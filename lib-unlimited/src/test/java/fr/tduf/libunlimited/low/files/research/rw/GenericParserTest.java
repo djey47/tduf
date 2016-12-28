@@ -16,10 +16,8 @@ import java.util.Optional;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.expectThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 class GenericParserTest {
 
@@ -216,7 +214,7 @@ class GenericParserTest {
     @Test
     void setNumeric_whenNonInteger_norLongValue_shouldThrowException() {
         // GIVEN-WHEN-THEN
-        expectThrows(IllegalArgumentException.class,
+        assertThrows(IllegalArgumentException.class,
                 ()-> GenericParser.setNumeric(450.54, mock(DataStore.class), TestingProps.PROP));
     }
 

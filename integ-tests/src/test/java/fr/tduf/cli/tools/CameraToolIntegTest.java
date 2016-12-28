@@ -17,6 +17,7 @@ import org.mockito.Mockito;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -65,7 +66,7 @@ class CameraToolIntegTest {
     }
 
     @Test
-    void copySet_shouldProduceCorrectFile() throws IOException {
+    void copySet_shouldProduceCorrectFile() throws IOException, URISyntaxException {
         String referenceCameraFile = camerasIntegTestPath.resolve("Cameras.set108CopiedTo109.bin").toString();
 
         // WHEN: copy-set
@@ -73,11 +74,11 @@ class CameraToolIntegTest {
         CameraTool.main(new String[]{"copy-set", "-n", "-i", inputCameraFile, "-o", outputCameraFile, "-s", "108", "-t", "109"});
 
         // THEN
-        assertThat(new File(outputCameraFile)).hasSameContentAs(new File(referenceCameraFile));
+        AssertionsHelper.assertFileMatchesReference(new File(outputCameraFile), new File(referenceCameraFile));
     }
 
     @Test
-    void copySets_shouldProduceCorrectFile() throws IOException {
+    void copySets_shouldProduceCorrectFile() throws IOException, URISyntaxException {
         String referenceCameraFile = camerasIntegTestPath.resolve("Cameras.set108CopiedTo109.bin").toString();
 
         // WHEN: copy-sets
@@ -85,7 +86,7 @@ class CameraToolIntegTest {
         CameraTool.main(new String[]{"copy-sets", "-n", "-i", inputCameraFile, "-o", outputCameraFile, "-b", batchFile});
 
         // THEN
-        assertThat(new File(outputCameraFile)).hasSameContentAs(new File(referenceCameraFile));
+        AssertionsHelper.assertFileMatchesReference(new File(outputCameraFile), new File(referenceCameraFile));
     }
 
     @Test

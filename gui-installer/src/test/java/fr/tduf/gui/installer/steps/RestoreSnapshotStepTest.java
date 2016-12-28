@@ -7,21 +7,21 @@ import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
-import static org.assertj.core.api.StrictAssertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class RestoreSnapshotStepTest {
+class RestoreSnapshotStepTest {
     private static final Class<RestoreSnapshotStepTest> THIS_CLASS = RestoreSnapshotStepTest.class;
 
     private static final String RESREF = "10101010";
 
     @Test
-    public void perform_shouldApplySnapshot_withProperties() throws Exception {
+    void perform_shouldApplySnapshot_withProperties() throws Exception {
         // GIVEN
         InstallerConfiguration installerConfiguration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory("")

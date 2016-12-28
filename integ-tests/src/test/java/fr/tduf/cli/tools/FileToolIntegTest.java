@@ -19,6 +19,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -130,7 +131,7 @@ public class FileToolIntegTest {
     }
 
     @Test
-    public void jsonifyApplyJson_whenEncryptedContents_shouldGiveOriginalContentsBack() throws IOException {
+    public void jsonifyApplyJson_whenEncryptedContents_shouldGiveOriginalContentsBack() throws IOException, URISyntaxException {
         String researchDirectory = RESOURCES_PATH.resolve("research").toString();
         String structureFileName = Paths.get(researchDirectory, "BTRQ-map.json").toString();
 
@@ -177,7 +178,7 @@ public class FileToolIntegTest {
 
         assertThat(actualFile).exists();
         assertThat(expectedFile).exists();
-        assertThat(actualFile).hasSameContentAs(expectedFile);
+        AssertionsHelper.assertFileMatchesReference(actualFile, expectedFile);
     }
 
     @Test

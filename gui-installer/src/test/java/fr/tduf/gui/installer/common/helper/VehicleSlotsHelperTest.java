@@ -1,7 +1,10 @@
 package fr.tduf.gui.installer.common.helper;
 
 import fr.tduf.gui.installer.common.DatabaseConstants;
-import fr.tduf.gui.installer.domain.*;
+import fr.tduf.gui.installer.domain.Brand;
+import fr.tduf.gui.installer.domain.RimSlot;
+import fr.tduf.gui.installer.domain.SecurityOptions;
+import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -25,13 +28,12 @@ import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.VehicleKind
 import static fr.tduf.gui.installer.domain.Resource.from;
 import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
-import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -57,7 +59,6 @@ public class VehicleSlotsHelperTest {
     @Before
     public void setUp() {
         mockBrandHelper();
-        mockMinerForBrands();
     }
 
     @Test
@@ -169,14 +170,14 @@ public class VehicleSlotsHelperTest {
                 .build();
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(SLOTREF, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
         when(bulkDatabaseMinerMock.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, SLOTREF), CAR_RIMS)).thenReturn(
-                asList(
+                Stream.of(
                     carRimsEntry1,
                     carRimsEntry2
-                ).stream(),
-                asList(
+                ),
+                Stream.of(
                     carRimsEntry1,
                     carRimsEntry2
-                ).stream());
+                ));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef1, RIMS)).thenReturn(of(rimsEntry1));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef2, RIMS)).thenReturn(of(rimsEntry2));
         when(bulkDatabaseMinerMock.getContentEntryStreamMatchingSimpleCondition(any(DbFieldValueDto.class), eq(CAR_COLORS))).thenReturn(Stream.of(carColorsEntry));
@@ -579,14 +580,6 @@ public class VehicleSlotsHelperTest {
 
         // THEN
         assertThat(actualFileName).isEqualTo("RX8_F_02.bnk");
-    }
-
-    private void mockMinerForBrands() {
-        ContentEntryDto brandsEntry = ContentEntryDto.builder()
-                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(BRANDREF).build())
-                .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(BRAND_ID_REF).build())
-                .addItem(ContentItemDto.builder().ofFieldRank(3).withRawValue(BRAND_NAME_REF).build())
-                .build();
     }
 
     private void mockBrandHelper() {

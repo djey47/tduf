@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.nio.charset.Charset.defaultCharset;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
@@ -54,8 +55,8 @@ public class CommandLineHelper {
         try {
             Process process = builder.start();
 
-            String stdout = IOUtils.toString(process.getInputStream());
-            String stderr = IOUtils.toString(process.getErrorStream());
+            String stdout = IOUtils.toString(process.getInputStream(), defaultCharset());
+            String stderr = IOUtils.toString(process.getErrorStream(), defaultCharset());
             int returnCode = process.waitFor();
 
             return new ProcessResult(

@@ -1,9 +1,10 @@
 package fr.tduf.libunlimited.high.files.banks.mapping.helper;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.libtesting.common.helper.AssertionsHelper;
 import fr.tduf.libtesting.common.helper.FilesHelper;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -13,23 +14,24 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
-public class MagicMapHelperTest {
+class MagicMapHelperTest {
 
     private static final Class<MagicMapHelperTest> thisClass = MagicMapHelperTest.class;
 
     private String tempDirectory;
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeEach
+    void setUp() throws IOException {
         Log.set(Log.LEVEL_INFO);
 
         tempDirectory = FilesHelper.createTempDirectoryForLibrary();
     }
 
     @Test
-    public void fixMagicMap_shouldUpdateWithNewFiles_andReturnNewFileList() throws Exception {
+    void fixMagicMap_shouldUpdateWithNewFiles_andReturnNewFileList() throws Exception {
         // GIVEN
         Path originalMagicMapPath = getOriginalMagicMapPath();
         Path magicMapPath = getTemporaryMapPath(originalMagicMapPath);
@@ -52,35 +54,33 @@ public class MagicMapHelperTest {
                 "vehicules/a3_v6.bnk");
 
         Path expectedMagicMapPath = Paths.get(thisClass.getResource("/banks/Bnk1-enhanced.map").toURI());
-        assertThat(magicMapPath.toFile()).hasSameContentAs(expectedMagicMapPath.toFile());
+        AssertionsHelper.assertFileMatchesReference(magicMapPath.toFile(), expectedMagicMapPath.toFile());
     }
 
-    @Test(expected = NullPointerException.class)
-    public void fixMagicMap_whenMagicMapFileNull_shouldThrowException() throws Exception {
+    @Test
+    void fixMagicMap_whenMagicMapFileNull_shouldThrowException() throws Exception {
         // GIVEN
         Path originalMagicMapPath = getOriginalMagicMapPath();
         Path banksPath = originalMagicMapPath.getParent();
 
-        // WHEN
-        MagicMapHelper.fixMagicMap(null, banksPath.toString());
-
-        // THEN: NPE
+        // WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> MagicMapHelper.fixMagicMap(null, banksPath.toString()));
     }
 
-    @Test(expected = NullPointerException.class)
-    public void fixMagicMap_whenBankDirectoryNull_shouldThrowException() throws Exception {
+    @Test
+    void fixMagicMap_whenBankDirectoryNull_shouldThrowException() throws Exception {
         // GIVEN
         Path originalMagicMapPath = getOriginalMagicMapPath();
         Path magicMapPath = Paths.get(tempDirectory).resolve(originalMagicMapPath.getFileName());
 
-        // WHEN
-        MagicMapHelper.fixMagicMap(magicMapPath.toString(), null);
-
-        // THEN: NPE
+        // WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> MagicMapHelper.fixMagicMap(magicMapPath.toString(), null));
     }
 
     @Test
-    public void toMagicMap_whenNormalMap_shouldSetAllEntrySizesTo0() throws URISyntaxException, IOException {
+    void toMagicMap_whenNormalMap_shouldSetAllEntrySizesTo0() throws URISyntaxException, IOException {
         // GIVEN
         Path originalMapPath = getOriginalMapPath();
         Path mapPath = getTemporaryMapPath(originalMapPath);
@@ -90,15 +90,14 @@ public class MagicMapHelperTest {
 
         // THEN
         Path originalMagicMapPath = getOriginalMagicMapPath();
-        assertThat(mapPath.toFile()).hasSameContentAs(originalMagicMapPath.toFile());
+        AssertionsHelper.assertFileMatchesReference(mapPath.toFile(), originalMagicMapPath.toFile());
     }
 
-    @Test(expected = NullPointerException.class)
-    public void toMagicMap_whenNullMapFile_shouldThrowException() throws IOException {
-        // GIVEN-WHEN
-        MagicMapHelper.toMagicMap(null);
-
-        // THEN: NPE
+    @Test
+    void toMagicMap_whenNullMapFile_shouldThrowException() throws IOException {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> MagicMapHelper.toMagicMap(null));
     }
 
     private static Path getOriginalMagicMapPath() throws URISyntaxException {

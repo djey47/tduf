@@ -37,15 +37,28 @@ public class AssertionsHelper {
 
     /**
      * Checks if specified file contents are the same as the one from the same name in resources.
+     * Works with binary files.
+     *
      * @param fileName          : path and file name
      * @param resourceDirectory : directory in app resources
      * @throws URISyntaxException
      */
-    public static void assertFileMatchesReference(String fileName, String resourceDirectory) throws URISyntaxException {
+    public static void assertFileMatchesReference(String fileName, String resourceDirectory) throws URISyntaxException, IOException {
         File actualContentsFile = assertFileExistAndGet(fileName);
         File expectedContentsFile = new File(thisClass.getResource(resourceDirectory + actualContentsFile.getName()).toURI());
 
-        assertThat(actualContentsFile).describedAs("File must match reference one: " + expectedContentsFile.getPath()).hasSameContentAs(expectedContentsFile);
+        assertThat(actualContentsFile).describedAs("File must match reference one: " + expectedContentsFile.getPath())
+                .hasBinaryContent(Files.readAllBytes(expectedContentsFile.toPath()));
+    }
+
+    /**
+     * Ensures that specified file contents are the same as the expected one's.
+     * Works with binary files.
+     */
+    public static void assertFileMatchesReference(File actualFile, File expectedFile) throws URISyntaxException, IOException {
+        byte[] expectedBytes = Files.readAllBytes(expectedFile.toPath());
+        assertThat(actualFile).describedAs("File must match reference one: " + expectedFile.getPath())
+                .hasBinaryContent(expectedBytes);
     }
 
     /**
@@ -120,7 +133,6 @@ public class AssertionsHelper {
 
         assertThat(actualBytes).isNotEqualTo(unexpectedBytes);
     }
-
 
     /**
      * @param outputStream  : stream to analyze

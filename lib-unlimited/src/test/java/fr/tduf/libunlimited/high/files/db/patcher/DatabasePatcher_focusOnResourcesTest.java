@@ -15,7 +15,7 @@ import static fr.tduf.libunlimited.common.helper.FilesHelper.readObjectFromJsonR
 import static fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher_commonTest.createPatcher;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BOTS;
 import static java.util.Collections.singletonList;
-import static org.assertj.core.api.StrictAssertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class DatabasePatcher_focusOnResourcesTest {
     @Test
