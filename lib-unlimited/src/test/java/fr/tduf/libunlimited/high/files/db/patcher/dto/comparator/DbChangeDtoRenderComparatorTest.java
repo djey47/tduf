@@ -240,6 +240,45 @@ public class DbChangeDtoRenderComparatorTest {
     }
 
     @Test
+    public void compare_pseudoreference_against_pseudoreference_returns_positive() throws Exception {
+        // GIVEN
+        DbPatchDto.DbChangeDto updateChangeObject1 = createChangeObjectForCarPhysicsWithRef(UPDATE, "1001|10");
+        DbPatchDto.DbChangeDto updateChangeObject2 = createChangeObjectForCarPhysicsWithRef(UPDATE, "1000|10");
+
+        // WHEN
+        int compareResult = renderComparator.compare(updateChangeObject1, updateChangeObject2);
+
+        // THEN
+        assertThat(compareResult).isPositive();
+    }
+
+    @Test
+    public void compare_pseudoreference_against_pseudoreference_returns_negative() throws Exception {
+        // GIVEN
+        DbPatchDto.DbChangeDto updateChangeObject1 = createChangeObjectForCarPhysicsWithRef(UPDATE, "1001|10");
+        DbPatchDto.DbChangeDto updateChangeObject2 = createChangeObjectForCarPhysicsWithRef(UPDATE, "1001|11");
+
+        // WHEN
+        int compareResult = renderComparator.compare(updateChangeObject1, updateChangeObject2);
+
+        // THEN
+        assertThat(compareResult).isNegative();
+    }
+
+    @Test
+    public void compare_pseudoreference_against_pseudoreference_returns_zero() throws Exception {
+        // GIVEN
+        DbPatchDto.DbChangeDto updateChangeObject1 = createChangeObjectForCarPhysicsWithRef(UPDATE, "1001|10");
+        DbPatchDto.DbChangeDto updateChangeObject2 = createChangeObjectForCarPhysicsWithRef(UPDATE, "1001|10");
+
+        // WHEN
+        int compareResult = renderComparator.compare(updateChangeObject1, updateChangeObject2);
+
+        // THEN
+        assertThat(compareResult).isZero();
+    }
+
+    @Test
     public void compare_noLocale_against_anyLocale_returns_positive() throws Exception {
         // GIVEN
         DbPatchDto.DbChangeDto updateChangeObject1 = createChangeObjectForCarPhysicsWithRef(UPDATE_RES, "10010101");

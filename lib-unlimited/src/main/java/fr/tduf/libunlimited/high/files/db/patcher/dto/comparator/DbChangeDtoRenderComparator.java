@@ -119,7 +119,24 @@ public class DbChangeDtoRenderComparator implements Comparator<DbPatchDto.DbChan
                 return 1;
             }
 
-            return Long.valueOf(ref1).compareTo(Long.valueOf(ref2));
+            String[] ref1Compounds = ref1.split("\\|");
+            long effectiveRef1 = Long.valueOf(ref1Compounds[0]);
+            long effectiveSubref1 = 0L;
+            if (ref1Compounds.length == 2) {
+                effectiveSubref1 = Long.valueOf(ref1Compounds[1]);
+            }
+
+            String[] ref2Compounds = ref2.split("\\|");
+            long effectiveRef2 = Long.valueOf(ref2Compounds[0]);
+            long effectiveSubref2 = 0L;
+            if (ref2Compounds.length == 2) {
+                effectiveSubref2 = Long.valueOf(ref2Compounds[1]);
+            }
+
+            return ComparisonChain.start()
+                    .compare(effectiveRef1, effectiveRef2)
+                    .compare(effectiveSubref1, effectiveSubref2)
+                    .result();
         };
     }
 }
