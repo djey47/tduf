@@ -1,7 +1,7 @@
 package fr.tduf.libunlimited.low.files.banks.mapping.helper;
 
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,14 +15,14 @@ import java.util.Map;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MapHelperTest {
+class MapHelperTest {
 
     private static Class<MapHelperTest> thisClass = MapHelperTest.class;
 
     @Test
-    public void parseBanks_whenEmptyFiles_shouldReturnFileNameList() throws URISyntaxException, IOException {
+    void parseBanks_whenEmptyFiles_shouldReturnFileNameList() throws URISyntaxException, IOException {
         // GIVEN
-        Path path = Paths.get(thisClass.getResource("/banks/Bnk1.map").toURI());
+        Path path = Paths.get(thisClass.getResource("/banks/Bnk1.no.magic.map").toURI());
         String bnkFolderName = path.getParent().toString();
         List<String> expectedFileList = createExpectedFileList();
 
@@ -37,7 +37,7 @@ public class MapHelperTest {
     }
 
     @Test
-    public void computeChecksums_whenEmptyFiles_shouldReturnAllChecksums() {
+    void computeChecksums_whenEmptyFiles_shouldReturnAllChecksums() {
         // GIVEN
         List<String> files = createExpectedFileList();
 
@@ -49,12 +49,12 @@ public class MapHelperTest {
                 .isNotNull()
                 .hasSameSizeAs(files);
         assertThat(checksums.get(0xc48bdcaaL)).isEqualTo("avatar/barb.bnk");
-        assertThat(checksums.get(0xfe168a1cL)).isEqualTo("bnk1.map");
+        assertThat(checksums.get(0xe5b1ee5fL)).isEqualTo("bnk1.no.magic.map");
         assertThat(checksums.get(0x0b6b3ea2L)).isEqualTo("frontend/hires/gauges/hud01.bnk");
     }
 
     @Test
-    public void computeChecksum_forGivenFileNames_shouldReturnMapHash() {
+    void computeChecksum_forGivenFileNames_shouldReturnMapHash() {
         // GIVEN
         String fileName1 = "avatar/barb.bnk";
         String fileName2 = "bnk1.map";
@@ -72,7 +72,7 @@ public class MapHelperTest {
     }
 
     @Test
-    public void computeChecksum_forGivenFileName_andExtendedCharacter_shouldReturnMapHash() {
+    void computeChecksum_forGivenFileName_andExtendedCharacter_shouldReturnMapHash() {
         // GIVEN
         String fileName = "bnk1ï.map";
 
@@ -84,7 +84,7 @@ public class MapHelperTest {
     }
 
     @Test
-    public void findNewChecksums_forGivenValues_shouldReturnDifferences() {
+    void findNewChecksums_forGivenValues_shouldReturnDifferences() {
         // GIVEN
         BankMap bankMap = new BankMap();
         bankMap.addMagicEntry(0xc48bdcaaL);
@@ -110,9 +110,9 @@ public class MapHelperTest {
 
     private static List<String> createExpectedFileList() {
         return asList(
-                "Bnk1.map",
                 "Bnk1.no.magic.map",
-                "Bnk1-enhanced.map",
+                "Bnk1-enhanced1.map",
+                "Bnk1-enhanced2.map",
                 String.format("Avatar%1$sBARB.BNK", File.separator),
                 String.format("FrontEnd%1$sHires%1$sGauges%1$shud01.bnk", File.separator),
                 String.format("Vehicules%1$sA3_V6.bnk", File.separator));

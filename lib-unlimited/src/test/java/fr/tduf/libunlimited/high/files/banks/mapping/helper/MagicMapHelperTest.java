@@ -3,6 +3,7 @@ package fr.tduf.libunlimited.high.files.banks.mapping.helper;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libtesting.common.helper.AssertionsHelper;
 import fr.tduf.libtesting.common.helper.FilesHelper;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,19 +24,21 @@ class MagicMapHelperTest {
 
     private String tempDirectory;
 
+    @BeforeAll
+    static void globalSetUp() {
+        Log.set(Log.LEVEL_INFO);
+    }
+
     @BeforeEach
     void setUp() throws IOException {
-        Log.set(Log.LEVEL_INFO);
-
         tempDirectory = FilesHelper.createTempDirectoryForLibrary();
     }
 
     @Test
     void fixMagicMap_shouldUpdateWithNewFiles_andReturnNewFileList() throws Exception {
         // GIVEN
-        Path originalMagicMapPath = getOriginalMagicMapPath();
-        Path magicMapPath = getTemporaryMapPath(originalMagicMapPath);
-        Path banksPath = originalMagicMapPath.getParent();
+        Path magicMapPath = createTemporaryMapPath();
+        Path banksPath = getOriginalMapPath().getParent();
 
 
         // WHEN
@@ -48,19 +51,19 @@ class MagicMapHelperTest {
         assertThat(actualFiles).containsOnly(
                 "avatar/barb.bnk",
                 "bnk1.no.magic.map",
-                "bnk1-enhanced.map",
+                "bnk1-enhanced1.map",
+                "bnk1-enhanced2.map",
                 "frontend/hires/gauges/hud01.bnk",
-                "bnk1.map",
                 "vehicules/a3_v6.bnk");
 
-        Path expectedMagicMapPath = Paths.get(thisClass.getResource("/banks/Bnk1-enhanced.map").toURI());
+        Path expectedMagicMapPath = Paths.get(thisClass.getResource("/banks/Bnk1-enhanced1.map").toURI());
         AssertionsHelper.assertFileMatchesReference(magicMapPath.toFile(), expectedMagicMapPath.toFile());
     }
 
     @Test
     void fixMagicMap_whenMagicMapFileNull_shouldThrowException() throws Exception {
         // GIVEN
-        Path originalMagicMapPath = getOriginalMagicMapPath();
+        Path originalMagicMapPath = getOriginalMapPath();
         Path banksPath = originalMagicMapPath.getParent();
 
         // WHEN-THEN
@@ -71,8 +74,7 @@ class MagicMapHelperTest {
     @Test
     void fixMagicMap_whenBankDirectoryNull_shouldThrowException() throws Exception {
         // GIVEN
-        Path originalMagicMapPath = getOriginalMagicMapPath();
-        Path magicMapPath = Paths.get(tempDirectory).resolve(originalMagicMapPath.getFileName());
+        Path magicMapPath = Paths.get(tempDirectory, "Bnk1.map");
 
         // WHEN-THEN
         assertThrows(NullPointerException.class,
@@ -82,15 +84,14 @@ class MagicMapHelperTest {
     @Test
     void toMagicMap_whenNormalMap_shouldSetAllEntrySizesTo0() throws URISyntaxException, IOException {
         // GIVEN
-        Path originalMapPath = getOriginalMapPath();
-        Path mapPath = getTemporaryMapPath(originalMapPath);
+        Path mapPath = createTemporaryMapPath();
 
         // WHEN
         MagicMapHelper.toMagicMap(mapPath.toString());
 
         // THEN
-        Path originalMagicMapPath = getOriginalMagicMapPath();
-        AssertionsHelper.assertFileMatchesReference(mapPath.toFile(), originalMagicMapPath.toFile());
+        byte[] expected = fr.tduf.libunlimited.common.helper.FilesHelper.readBytesFromResourceFile("/banks/Bnk1-enhanced2.map");
+        assertThat(mapPath.toFile()).hasBinaryContent(expected);
     }
 
     @Test
@@ -100,18 +101,15 @@ class MagicMapHelperTest {
                 () -> MagicMapHelper.toMagicMap(null));
     }
 
-    private static Path getOriginalMagicMapPath() throws URISyntaxException {
-        return Paths.get(thisClass.getResource("/banks/Bnk1.map").toURI());
-    }
-
     private static Path getOriginalMapPath() throws URISyntaxException {
         return Paths.get(thisClass.getResource("/banks/Bnk1.no.magic.map").toURI());
     }
 
-    private Path getTemporaryMapPath(Path originalMapPath) throws IOException, URISyntaxException {
-        Path magicMapPath = Paths.get(tempDirectory).resolve(originalMapPath.getFileName());
+    private Path createTemporaryMapPath() throws IOException, URISyntaxException {
+        Path magicMapPath = Paths.get(tempDirectory, "Bnk1.map");
 
-        Files.copy(originalMapPath, magicMapPath);
+        byte[] bytes = fr.tduf.libunlimited.common.helper.FilesHelper.readBytesFromResourceFile("/banks/Bnk1.map");
+        Files.write(magicMapPath, bytes);
 
         return magicMapPath;
     }

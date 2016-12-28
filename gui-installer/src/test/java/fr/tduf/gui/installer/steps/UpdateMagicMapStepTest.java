@@ -3,6 +3,7 @@ package fr.tduf.gui.installer.steps;
 import fr.tduf.gui.installer.common.helper.InstallerTestsHelper;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.libtesting.common.helper.FilesHelper;
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -40,8 +41,7 @@ class UpdateMagicMapStepTest {
 
         // THEN
         File actualMagicMapFile = Paths.get(tempDirectory, "Euro", "Bnk", "Bnk1.map").toFile();
-        File expectedMagicMapFile = new File(thisClass.getResource("/banks/Bnk1-enhanced.map").getFile());
-        byte[] expectedBytes = Files.readAllBytes(expectedMagicMapFile.toPath());
+        byte[] expectedBytes = IOUtils.toByteArray(thisClass.getResource("/banks/Bnk1-enhanced.map"));
         assertThat(actualMagicMapFile).hasBinaryContent(expectedBytes);
     }
 }
