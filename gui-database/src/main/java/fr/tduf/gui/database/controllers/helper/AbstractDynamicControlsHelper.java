@@ -1,7 +1,7 @@
 package fr.tduf.gui.database.controllers.helper;
 
 import fr.tduf.gui.common.javafx.helper.ControlHelper;
-import fr.tduf.gui.common.stages.ImageConstants;
+import fr.tduf.gui.common.ImageConstants;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.controllers.MainStageController;

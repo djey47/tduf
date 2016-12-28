@@ -1,4 +1,4 @@
-package fr.tduf.gui.common.stages;
+package fr.tduf.gui.common;
 
 // TODO move to parent package
 public class ImageConstants {

@@ -1,5 +1,6 @@
 package fr.tduf.gui.common.stages;
 
+import fr.tduf.gui.common.ImageConstants;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
