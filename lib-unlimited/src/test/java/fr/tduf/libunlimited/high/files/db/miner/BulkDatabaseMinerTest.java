@@ -94,6 +94,7 @@ class BulkDatabaseMinerTest {
 
     static List<DbDto> createTopicObjectsFromResources() throws IOException, URISyntaxException {
         return asList(
+                FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/miner/TDU_Achievements_FAKE.json"),
                 FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/miner/TDU_Bots_FAKE.json"),
                 FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/db/json/miner/TDU_PNJ_FAKE.json"));
     }

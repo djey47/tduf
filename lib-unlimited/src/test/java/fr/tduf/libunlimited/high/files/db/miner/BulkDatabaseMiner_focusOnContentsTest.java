@@ -41,7 +41,7 @@ class BulkDatabaseMiner_focusOnContentsTest {
     void getContentEntryFromTopicWithInternalIdentifier_whenTopicNotFound_shouldThrowException() throws IOException, URISyntaxException {
         // GIVEN-WHEN-THEN
         assertThrows(NoSuchElementException.class,
-                () -> BulkDatabaseMiner.load(topicObjectsFromResources).getContentEntryFromTopicWithInternalIdentifier(1, ACHIEVEMENTS));
+                () -> BulkDatabaseMiner.load(topicObjectsFromResources).getContentEntryFromTopicWithInternalIdentifier(1, INTERIOR));
     }
 
     @Test
@@ -110,6 +110,18 @@ class BulkDatabaseMiner_focusOnContentsTest {
         assertThat(actualEntry).isPresent();
         assertThat(actualEntry.get().getId()).isEqualTo(0);
         assertThat(actualEntry.get().getItemAtRank(1).get().getRawValue()).isEqualTo("606298799");
+    }
+
+    @Test
+    void getContentEntryFromTopicWithRef_whenPseudoRefFound_shouldReturnIt() throws IOException, URISyntaxException {
+        // GIVEN-WHEN
+        Optional<ContentEntryDto> actualEntry = BulkDatabaseMiner.load(topicObjectsFromResources).getContentEntryFromTopicWithReference("55736935|5", ACHIEVEMENTS);
+
+        // THEN
+        assertThat(actualEntry).isPresent();
+        assertThat(actualEntry.get().getId()).isEqualTo(0);
+        assertThat(actualEntry.get().getItemAtRank(1).get().getRawValue()).isEqualTo("55736935");
+        assertThat(actualEntry.get().getItemAtRank(2).get().getRawValue()).isEqualTo("5");
     }
 
     @Test
@@ -302,7 +314,7 @@ class BulkDatabaseMiner_focusOnContentsTest {
         ContentItemDto expectedItem = topicObjectsFromResources.get(0).getData().getEntries().get(0).getItems().get(0);
 
         // WHEN
-        Optional<ContentItemDto> potentialItem = BulkDatabaseMiner.load(topicObjectsFromResources).getContentItemWithEntryIdentifierAndFieldRank(BOTS, 1, 0);
+        Optional<ContentItemDto> potentialItem = BulkDatabaseMiner.load(topicObjectsFromResources).getContentItemWithEntryIdentifierAndFieldRank(ACHIEVEMENTS, 1, 0);
 
         // THEN
         assertThat(potentialItem).contains(expectedItem);

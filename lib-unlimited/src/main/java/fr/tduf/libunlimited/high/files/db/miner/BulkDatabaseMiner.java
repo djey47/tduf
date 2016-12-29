@@ -99,7 +99,7 @@ public class BulkDatabaseMiner {
     }
 
     /**
-     * @param ref   : external identifier of entry
+     * @param ref   : external identifier of entry (REF or pseudo REF)
      * @param topic : topic in TDU Database to search
      * @return database entry having specified reference as identifier.
      */
