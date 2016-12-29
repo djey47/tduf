@@ -232,8 +232,10 @@ public class DatabaseQueryHelperTest {
     }
 
     private ContentEntryDto createRemoteContentEntry() {
-        ContentEntryDto remoteEntry = ContentEntryDto.builder().build();
-        DbDataDto.builder().addEntry(remoteEntry).build();
+        ContentEntryDto remoteEntry = ContentEntryDto.builder()
+                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue("").build())
+                .build();
+        DbDataDto.builder().forTopic(BRANDS).addEntry(remoteEntry).build();
         return remoteEntry;
     }
 

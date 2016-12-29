@@ -400,7 +400,7 @@ public class VehicleSlotsHelperTest {
         ContentItemDto refItem = ContentItemDto.builder().ofFieldRank(1).withRawValue(SLOTREF_UNDRIVABLE).build();
         ContentItemDto groupItem = ContentItemDto.builder().ofFieldRank(5).withRawValue("92900264").build();
         ContentEntryDto undrivableEntry = ContentEntryDto.builder().addItem(refItem, groupItem).build();
-        DbDataDto dataObject = DbDataDto.builder().addEntry(undrivableEntry).build();
+        DbDataDto dataObject = DbDataDto.builder().forTopic(CAR_PHYSICS_DATA).addEntry(undrivableEntry).build();
         DbDto topicObject = DbDto.builder().withData(dataObject).build();
 
         when(bulkDatabaseMinerMock.getDatabaseTopic(CAR_PHYSICS_DATA)).thenReturn(of(topicObject));
@@ -425,7 +425,7 @@ public class VehicleSlotsHelperTest {
         ContentItemDto groupItem2 = ContentItemDto.builder().ofFieldRank(5).withRawValue("77800264").build();
         ContentEntryDto undrivableEntry = ContentEntryDto.builder().addItem(refItem1, brandItem1, groupItem1).build();
         ContentEntryDto drivableEntry = ContentEntryDto.builder().addItem(refItem2, brandItem2, groupItem2).build();
-        DbDataDto dataObject = DbDataDto.builder().addEntry(undrivableEntry, drivableEntry).build();
+        DbDataDto dataObject = DbDataDto.builder().forTopic(CAR_PHYSICS_DATA).addEntry(undrivableEntry, drivableEntry).build();
         DbDto topicObject = DbDto.builder().withData(dataObject).build();
 
         when(bulkDatabaseMinerMock.getDatabaseTopic(CAR_PHYSICS_DATA)).thenReturn(of(topicObject));

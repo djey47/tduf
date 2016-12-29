@@ -664,25 +664,6 @@ public class MainStageViewDataControllerTest {
         // THEN:ISE
     }
 
-    @Test(expected=IllegalStateException.class)
-    public void updateLinkProperties_whenEntryNotFoundInLinkedTopic_shouldThrowException() {
-        // GIVEN
-        TopicLinkDto topicLinkObject = createTopicLinkObject();
-        ContentEntryDataItem item = new ContentEntryDataItem();
-        ObservableList<ContentEntryDataItem> resources = observableArrayList(item);
-        controller.getResourcesByTopicLink().put(topicLinkObject, resources);
-        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0));
-        final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>(TOPIC1);
-        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
-        when(minerMock.getContentEntryReferenceWithInternalIdentifier(0, TOPIC1)).thenReturn(of("entryRef"));
-        when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(createTopicObjectWithDataEntry()));
-
-        // WHEN
-        controller.updateLinkProperties(topicLinkObject);
-
-        // THEN:ISE
-    }
-
     @Test
     public void updateLinkProperties_whenEntryFoundInLinkedTopic_shouldUpdateProperties() {
         // GIVEN
@@ -823,7 +804,10 @@ public class MainStageViewDataControllerTest {
                                 .build())
                         .build())
                 .withData(DbDataDto.builder()
-                        .addEntry(ContentEntryDto.builder().build())
+                        .forTopic(TOPIC2)
+                        .addEntry(ContentEntryDto.builder()
+                                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue("REF").build())
+                                .build())
                         .build())
                 .build();
     }
@@ -838,6 +822,7 @@ public class MainStageViewDataControllerTest {
                                 .build())
                         .build())
                 .withData(DbDataDto.builder()
+                        .forTopic(TOPIC2)
                         .addEntry(ContentEntryDto.builder()
                                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue("entryRef").build())
                                 .build())
@@ -861,6 +846,7 @@ public class MainStageViewDataControllerTest {
                                 .build())
                         .build())
                 .withData(DbDataDto.builder()
+                        .forTopic(TOPIC3)
                         .addEntry(ContentEntryDto.builder()
                                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue("entryRef1").build())
                                 .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue("entryRef2").build())

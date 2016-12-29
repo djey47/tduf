@@ -64,6 +64,7 @@ public class DealerHelperTest {
         dealerFileNameResourceEntry.setDefaultValue(fileNameResourceValue);
         DbDto carShopsTopicObject = DbDto.builder()
                 .withData(DbDataDto.builder()
+                        .forTopic(CAR_SHOPS)
                         .addEntry(ContentEntryDto.builder()
                                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(DEALERREF_NOMETA).build())
                                 .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(fileNameResourceReference).build())
@@ -106,6 +107,7 @@ public class DealerHelperTest {
         dealerNameResourceEntry.setDefaultValue(nameResourceValue);
         DbDto carShopsTopicObject = DbDto.builder()
                 .withData(DbDataDto.builder()
+                        .forTopic(CAR_SHOPS)
                         .addEntry(ContentEntryDto.builder()
                                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(DEALERREF).build())
                                 .addItem(ContentItemDto.builder().ofFieldRank(3).withRawValue(nameResourceReference).build())
@@ -138,6 +140,7 @@ public class DealerHelperTest {
         ResourceEntryDto dealerNameResourceEntry = ResourceEntryDto.builder().forReference(nameResourceReference).build();
         DbDto carShopsTopicObject = DbDto.builder()
                 .withData(DbDataDto.builder()
+                        .forTopic(CAR_SHOPS)
                         .addEntry(ContentEntryDto.builder()
                                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(DEALERREF).build())
                                 .addItem(ContentItemDto.builder().ofFieldRank(3).withRawValue(nameResourceReference).build())
@@ -177,6 +180,7 @@ public class DealerHelperTest {
         ResourceEntryDto dealerNameResourceEntry = ResourceEntryDto.builder().forReference(nameResourceReference).build();
         DbDto carShopsTopicObject = DbDto.builder()
                 .withData(DbDataDto.builder()
+                        .forTopic(CAR_SHOPS)
                         .addEntry(ContentEntryDto.builder()
                                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(DEALERREF).build())
                                 .addItem(ContentItemDto.builder().ofFieldRank(3).withRawValue(nameResourceReference).build())
