@@ -103,9 +103,12 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     }
 
     private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForContentsWithId(List<DbStructureDto.Field> structureFields, ItemRange range, ItemRange fieldRange, RequiredReferences requiredReferences) {
+        OptionalInt potentialRank = DatabaseStructureQueryHelper.getUidFieldRank(structureFields);
+        Integer refFieldRank = potentialRank.isPresent() ? potentialRank.getAsInt() : null;
+
         return topicObject.getData().getEntries().stream()
                 .filter(entry -> isInIdRange(entry, range))
-                .map(acceptedEntry -> makeChangeObjectForEntry(topicObject.getTopic(), acceptedEntry, null, structureFields, fieldRange, requiredReferences))
+                .map(acceptedEntry -> makeChangeObjectForEntry(topicObject.getTopic(), acceptedEntry, refFieldRank, structureFields, fieldRange, requiredReferences))
                 .collect(toSet());
     }
 
@@ -173,14 +176,12 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
     private DbPatchDto.DbChangeDto makeChangeObjectForEntry(DbDto.Topic topic, ContentEntryDto entry, Integer refFieldRank, List<DbStructureDto.Field> structureFields, ItemRange fieldRange, RequiredReferences requiredReferences) {
         String entryReference = refFieldRank == null ?
-                null
-                :BulkDatabaseMiner.getContentEntryReference(entry, refFieldRank);
+                BulkDatabaseMiner.getContentEntryPseudoReference(entry)
+                : BulkDatabaseMiner.getContentEntryReference(entry, refFieldRank);
 
         List<ContentItemDto> items = entry.getItems();
         if (fieldRange.isGlobal()) {
             return makeGlobalChangeObject(entryReference, topic, items, structureFields, requiredReferences);
-        } else if (entryReference == null) {
-            throw new UnsupportedOperationException("Partial field export from this topic is not possible, yet.");
         } else {
             return makePartialChangeObject(entryReference, topic, items, structureFields, fieldRange, requiredReferences);
         }
