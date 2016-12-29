@@ -155,6 +155,7 @@ public class PlaceholderResolver {
                 .collect(toList());
     }
 
+    // TODO handle pseudo references
     static String resolveReferencePlaceholder(boolean forContents, String value, PatchProperties patchProperties, DbDto topicObject, Set<String> generatedIdentifiers) {
         final Matcher matcher = PATTERN_PLACEHOLDER.matcher(value);
 
