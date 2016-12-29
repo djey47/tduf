@@ -1,7 +1,7 @@
 package fr.tduf.libunlimited.low.files.db.dto.content;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
@@ -12,45 +12,43 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_RIMS;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-// TODO migrate to Junit5
-public class DbDataDtoTest {
+class DbDataDtoTest {
 
     private DbDataDto dataObjectWithoutREFSupport;
     private DbDataDto dataObjectWithREFSupport;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         dataObjectWithoutREFSupport = createDataWithoutRefSupport();
         dataObjectWithREFSupport = createDataWithRefSupport();
     }
 
-    @Test(expected = NullPointerException.class)
-    public void buildItem_whenNullRawValue_andBitfield_shouldThrowException() {
-        // GIVEN-WHEN
-        ContentItemDto.builder()
+    @Test
+    void buildItem_whenNullRawValue_andBitfield_shouldThrowException() {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> ContentItemDto.builder()
                 .ofFieldRank(101)
                 .withRawValue(null)
                 .bitFieldForTopic(true, CAR_PHYSICS_DATA)
-                .build();
-
-        // THEN: NPE
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void buildItem_whenNullTopic_andBitfield_shouldThrowException() {
-        // GIVEN-WHEN
-        ContentItemDto.builder()
-                .ofFieldRank(101)
-                .withRawValue("111")
-                .bitFieldForTopic(true, null)
-                .build();
-
-        // THEN: NPE
+                .build());
     }
 
     @Test
-    public void buildItem_whenNullRawValueAndNullTopic_andNoBitfield_shouldNotSetSwitchValues() {
+    void buildItem_whenNullTopic_andBitfield_shouldThrowException() {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> ContentItemDto.builder()
+                .ofFieldRank(101)
+                .withRawValue("111")
+                .bitFieldForTopic(true, null)
+                .build());
+    }
+
+    @Test
+    void buildItem_whenNullRawValueAndNullTopic_andNoBitfield_shouldNotSetSwitchValues() {
         // GIVEN-WHEN
         ContentItemDto actualItem = ContentItemDto.builder()
                 .ofFieldRank(101)
@@ -62,7 +60,7 @@ public class DbDataDtoTest {
     }
 
     @Test
-    public void buildItem_whenBitfield_shouldReturnCorrectSwitchValues() {
+    void buildItem_whenBitfield_shouldReturnCorrectSwitchValues() {
         // GIVEN-WHEN
         List<SwitchValueDto> actualValues = ContentItemDto.builder()
                 .ofFieldRank(101)
@@ -79,7 +77,7 @@ public class DbDataDtoTest {
     }
 
     @Test
-    public void prepareSwitchValues_whenBitfield_andReferenceNotFound_shouldReturnEmptyList() {
+    void prepareSwitchValues_whenBitfield_andReferenceNotFound_shouldReturnEmptyList() {
         // GIVEN-WHEN
         List<SwitchValueDto> actualValues = ContentItemDto.builder()
                 .ofFieldRank(101)
@@ -92,8 +90,8 @@ public class DbDataDtoTest {
         assertThat(actualValues).isEmpty();
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void getEntries_shouldReturnNewReadOnlyList() {
+    @Test
+    void getEntries_shouldReturnNewReadOnlyList() {
         // GIVEN
         final ContentEntryDto contentEntry = createContentEntry();
         dataObjectWithREFSupport.addEntry(contentEntry);
@@ -103,11 +101,12 @@ public class DbDataDtoTest {
 
         // THEN
         assertThat(actualEntries).containsExactly(contentEntry);
-        actualEntries.add(contentEntry);
+        assertThrows(UnsupportedOperationException.class,
+                () -> actualEntries.add(contentEntry));
     }
 
     @Test
-    public void getEntryId_whenUnattachedEntry_shouldReturnMinusOne() {
+    void getEntryId_whenUnattachedEntry_shouldReturnMinusOne() {
         // GIVEN
         ContentEntryDto contentEntry = ContentEntryDto.builder().build();
 
@@ -116,7 +115,7 @@ public class DbDataDtoTest {
     }
 
     @Test
-    public void getEntryId_whenAattachedEntries_shouldReturnListRanks() {
+    void getEntryId_whenAattachedEntries_shouldReturnListRanks() {
         // GIVEN
         ContentEntryDto contentEntry1 = createContentEntryWithReference("1");
         ContentEntryDto contentEntry2 = createContentEntryWithReference("2");
@@ -129,13 +128,13 @@ public class DbDataDtoTest {
     }
 
     @Test
-    public void getEntryWithInternalIdentifier_whenUnknownId_shouldReturnEmpty() {
+    void getEntryWithInternalIdentifier_whenUnknownId_shouldReturnEmpty() {
         // GIVEN-WHEN-THEN
         assertThat(dataObjectWithoutREFSupport.getEntryWithInternalIdentifier(560)).isEmpty();
     }
 
     @Test
-    public void getEntryWithInternalIdentifier_whenExistingEntry_shouldReturnIt() {
+    void getEntryWithInternalIdentifier_whenExistingEntry_shouldReturnIt() {
         // GIVEN
         ContentEntryDto contentEntry = createContentEntryWithPseudoReference("1", "1");
         dataObjectWithoutREFSupport.addEntry(contentEntry);
@@ -148,13 +147,13 @@ public class DbDataDtoTest {
     }
 
     @Test
-    public void getEntryWithReference_whenNoReferenceIndex_andUnknownEntry_shouldReturnEmpty() {
+    void getEntryWithReference_whenNoReferenceIndex_andUnknownEntry_shouldReturnEmpty() {
         // GIVEN-WHEN-THEN
         assertThat(dataObjectWithoutREFSupport.getEntryWithReference("REF")).isEmpty();
     }
 
     @Test
-    public void getEntryWithReference_whenPseudoRef_shouldCheckTwoFirstFields() {
+    void getEntryWithReference_whenPseudoRef_shouldCheckTwoFirstFields() {
         // GIVEN
         ContentEntryDto contentEntry = createContentEntryWithPseudoReference("100", "101");
         dataObjectWithoutREFSupport.addEntry(contentEntry);
@@ -167,7 +166,7 @@ public class DbDataDtoTest {
     }
 
     @Test
-    public void getEntryWithReference_whenReferenceIndex_andUnknownEntry_shouldReturnEmpty() {
+    void getEntryWithReference_whenReferenceIndex_andUnknownEntry_shouldReturnEmpty() {
         // GIVEN
         DbDataDto dataObjectWithRefSupport = createDataWithRefSupport();
 
@@ -176,7 +175,7 @@ public class DbDataDtoTest {
     }
 
     @Test
-    public void getEntryWithReference_whenReferenceIndex_andKnownEntry_shouldReturnIt() {
+    void getEntryWithReference_whenReferenceIndex_andKnownEntry_shouldReturnIt() {
         // GIVEN
         DbDataDto dataObjectWithRefSupport = createDataWithRefSupport();
         ContentEntryDto contentEntry = createContentEntry();
@@ -190,7 +189,7 @@ public class DbDataDtoTest {
     }
 
     @Test
-    public void setEntries_withoutRefSupport_shouldInitProperties() {
+    void setEntries_withoutRefSupport_shouldInitProperties() {
         // GIVEN
         final ContentEntryDto contentEntry = createContentEntryWithPseudoReference("1", "1");
 
@@ -206,7 +205,7 @@ public class DbDataDtoTest {
     }
 
     @Test
-    public void setEntries_withoutRefSupport_shouldCreateIndexAsWell() {
+    void setEntries_withoutRefSupport_shouldCreateIndexAsWell() {
         // GIVEN
         final ContentEntryDto contentEntry1 = createContentEntryWithPseudoReference("1", "1");
         final ContentEntryDto contentEntry2 = createContentEntryWithPseudoReference("1", "2");
@@ -225,7 +224,7 @@ public class DbDataDtoTest {
     }
 
     @Test
-    public void setEntries_withRefSupport_shouldCreateIndex() {
+    void setEntries_withRefSupport_shouldCreateIndex() {
         // GIVEN
         final ContentEntryDto contentEntry1 = createContentEntryWithReference("REF1");
         final ContentEntryDto contentEntry2 = createContentEntryWithReference("REF2");
@@ -243,7 +242,7 @@ public class DbDataDtoTest {
     }
 
     @Test
-    public void addEntry_shouldUpdateContext() {
+    void addEntry_shouldUpdateContext() {
         // GIVEN
         DbDataDto dataObjectWithRefSupport = createDataWithRefSupport();
         ContentEntryDto contentEntry = createContentEntry();
@@ -260,7 +259,7 @@ public class DbDataDtoTest {
     }
 
     @Test
-    public void addEntryWithItems() {
+    void addEntryWithItems() {
         // GIVEN
         List<ContentItemDto> items = singletonList(ContentItemDto.builder().ofFieldRank(1).withRawValue("1").build());
         DbDataDto dataObjectWithRefSupport = createDataWithRefSupport();
@@ -276,7 +275,7 @@ public class DbDataDtoTest {
     }
 
     @Test
-    public void removeEntry() {
+    void removeEntry() {
         // GIVEN
         ContentEntryDto contentEntry = createContentEntry();
         dataObjectWithREFSupport.addEntry(contentEntry);
@@ -289,7 +288,7 @@ public class DbDataDtoTest {
     }
 
     @Test
-    public void removeEntry_withRefSupport_shouldRemoveFromIndex() {
+    void removeEntry_withRefSupport_shouldRemoveFromIndex() {
         // GIVEN
         ContentEntryDto contentEntry = createContentEntry();
         dataObjectWithREFSupport.addEntry(contentEntry);
@@ -302,7 +301,7 @@ public class DbDataDtoTest {
     }
 
     @Test
-    public void removeEntry_withoutRefSupport_shouldRemoveFromIndex() {
+    void removeEntry_withoutRefSupport_shouldRemoveFromIndex() {
         // GIVEN
         ContentEntryDto contentEntry = createContentEntryWithPseudoReference("1", "1");
         dataObjectWithoutREFSupport.addEntry(contentEntry);
@@ -315,7 +314,7 @@ public class DbDataDtoTest {
     }
 
     @Test
-    public void removeEntries_shouldRemoveExisting() {
+    void removeEntries_shouldRemoveExisting() {
         // GIVEN
         ContentEntryDto contentEntry1 = ContentEntryDto.builder()
                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue("REF1").build())
@@ -339,7 +338,7 @@ public class DbDataDtoTest {
     }
 
     @Test
-    public void moveEntryUp_whenUnattachedEntry_shouldDoNothing() {
+    void moveEntryUp_whenUnattachedEntry_shouldDoNothing() {
         // GIVEN
         final ContentEntryDto contentEntry1 = createContentEntry();
         final ContentEntryDto contentEntry2 = createContentEntry();
@@ -361,7 +360,7 @@ public class DbDataDtoTest {
     }
 
     @Test
-    public void moveEntryUp_whenEntryCanBeMoved() {
+    void moveEntryUp_whenEntryCanBeMoved() {
         // GIVEN
         final ContentEntryDto contentEntry1 = createContentEntry();
         final ContentEntryDto contentEntry2 = createContentEntry();
@@ -383,7 +382,7 @@ public class DbDataDtoTest {
     }
 
     @Test
-    public void moveEntryDown_whenEntryCannotBeMoved_shouldDoNothing() {
+    void moveEntryDown_whenEntryCannotBeMoved_shouldDoNothing() {
         // GIVEN
         final ContentEntryDto contentEntry = createContentEntry();
         dataObjectWithREFSupport.addEntry(contentEntry);
@@ -399,7 +398,7 @@ public class DbDataDtoTest {
     }
 
     @Test
-    public void moveEntryDown_whenEntryCanBeMoved() {
+    void moveEntryDown_whenEntryCanBeMoved() {
         // GIVEN
         final ContentEntryDto contentEntry1 = createContentEntry();
         final ContentEntryDto contentEntry2 = createContentEntry();
