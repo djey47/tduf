@@ -1,25 +1,27 @@
 package fr.tduf.libunlimited.low.files.db.dto.content;
 
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Optional;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ContentEntryDtoTest {
+class ContentEntryDtoTest {
 
     private ContentEntryDto contentEntry;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         contentEntry = ContentEntryDto.builder().build();
     }
 
     @Test
-    public void addItemAtRank_shouldUpdateItemRank() {
+    void addItemAtRank_shouldUpdateItemRank() {
         // GIVEN
         ContentItemDto item = ContentItemDto.builder().ofFieldRank(3).build();
 
@@ -34,7 +36,7 @@ public class ContentEntryDtoTest {
     }
 
     @Test
-    public void addItemAtRank_shouldRecomputeValuesHash() {
+    void addItemAtRank_shouldRecomputeValuesHash() {
         // GIVEN
         ContentItemDto item1 = ContentItemDto.builder().ofFieldRank(1).withRawValue("V1").build();
         ContentItemDto item2 = ContentItemDto.builder().ofFieldRank(2).withRawValue("V2").build();
@@ -61,7 +63,7 @@ public class ContentEntryDtoTest {
     }
 
     @Test
-    public void appendItem_shouldUpdateItemRank() {
+    void appendItem_shouldUpdateItemRank() {
         // GIVEN
         ContentItemDto item = ContentItemDto.builder().ofFieldRank(3).build();
 
@@ -76,7 +78,7 @@ public class ContentEntryDtoTest {
     }
 
     @Test
-    public void replaceItems_shouldRecomputeValuesHash() {
+    void replaceItems_shouldRecomputeValuesHash() {
         // GIVEN
         ContentItemDto item1 = ContentItemDto.builder().ofFieldRank(1).withRawValue("V1").build();
         contentEntry.appendItem(item1);
@@ -97,8 +99,8 @@ public class ContentEntryDtoTest {
         assertThat(actualItem2).isSameAs(item3);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void getItems_shouldReturnReadOnlyList(){
+    @Test
+    void getItems_shouldReturnReadOnlyList(){
         // GIVEN
         ContentItemDto item = ContentItemDto.builder().ofFieldRank(1).withRawValue("V1").build();
         contentEntry.appendItem(item);
@@ -108,11 +110,12 @@ public class ContentEntryDtoTest {
 
         // THEN
         assertThat(actualItems).containsOnly(item);
-        actualItems.add(item);
+        assertThrows(UnsupportedOperationException.class,
+                () -> actualItems.add(item));
     }
 
     @Test
-    public void getItemAtRank_whenNoItemAtThisRank_shouldReturnEmpty() {
+    void getItemAtRank_whenNoItemAtThisRank_shouldReturnEmpty() {
         // GIVEN
         ContentItemDto item = ContentItemDto.builder().ofFieldRank(1).withRawValue("V1").build();
         contentEntry.appendItem(item);
@@ -125,7 +128,7 @@ public class ContentEntryDtoTest {
     }
 
     @Test
-    public void getItemAtRank_whenItemExists_shouldReturnIt() {
+    void getItemAtRank_whenItemExists_shouldReturnIt() {
         // GIVEN
         ContentItemDto item1 = ContentItemDto.builder().ofFieldRank(1).withRawValue("V1").build();
         ContentItemDto item2 = ContentItemDto.builder().ofFieldRank(2).withRawValue("V2").build();
@@ -141,20 +144,19 @@ public class ContentEntryDtoTest {
         assertThat(actualItem).contains(item2);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void updateItemValueAtRank_whenNoItemAtThisRank_shouldThrowException() {
+    @Test
+    void updateItemValueAtRank_whenNoItemAtThisRank_shouldThrowException() {
         // GIVEN
         ContentItemDto item = ContentItemDto.builder().ofFieldRank(1).withRawValue("V1").build();
         contentEntry.appendItem(item);
 
-        // WHEN
-        contentEntry.updateItemValueAtRank("V", 2);
-
-        // THEN: IAE
+        // WHEN-THEN
+        assertThrows(IllegalArgumentException.class,
+                () -> contentEntry.updateItemValueAtRank("V", 2));
     }
 
     @Test
-    public void updateItemValueAtRank_whenItemAtThisRank_andValueAlreadyChanged_shouldReturnEmpty() {
+    void updateItemValueAtRank_whenItemAtThisRank_andValueAlreadyChanged_shouldReturnEmpty() {
         // GIVEN
         ContentItemDto item = ContentItemDto.builder().ofFieldRank(1).withRawValue("V").build();
         contentEntry.appendItem(item);
@@ -167,7 +169,7 @@ public class ContentEntryDtoTest {
     }
 
     @Test
-    public void updateItemValueAtRank_whenItemAtThisRank_shouldReturnModifiedItem_andRecomputeValuesHash() {
+    void updateItemValueAtRank_whenItemAtThisRank_shouldReturnModifiedItem_andRecomputeValuesHash() {
         // GIVEN
         ContentItemDto item = ContentItemDto.builder().ofFieldRank(1).withRawValue("V1").build();
         contentEntry.appendItem(item);
@@ -183,13 +185,13 @@ public class ContentEntryDtoTest {
     }
 
     @Test
-    public void getId_whenUnattachedEntry_shouldReturnMinusOne() {
+    void getId_whenUnattachedEntry_shouldReturnMinusOne() {
         // GIVEN-WHEN-THEN
         assertThat(contentEntry.getId()).isEqualTo(-1);
     }
 
     @Test
-    public void getId_whenAttachedEntry_shouldReturnIndexInList() {
+    void getId_whenAttachedEntry_shouldReturnIndexInList() {
         // GIVEN
         DbDataDto.builder().addEntry(contentEntry).build();
 
@@ -201,13 +203,13 @@ public class ContentEntryDtoTest {
     }
 
     @Test
-    public void getValuesHash_whenNoItems_shouldReturnOne() {
+    void getValuesHash_whenNoItems_shouldReturnOne() {
         // GIVEN-WHEN-THEN
         assertThat(contentEntry.getValuesHash()).isEqualTo(1);
     }
 
     @Test
-    public void getValuesHash_whenItems_shouldReturnNorZeroNorOne() {
+    void getValuesHash_whenItems_shouldReturnNorZeroNorOne() {
         // GIVEN
         ContentItemDto item = ContentItemDto.builder().ofFieldRank(1).withRawValue("V1").build();
         contentEntry.appendItem(item);
@@ -218,16 +220,15 @@ public class ContentEntryDtoTest {
                 .isNotEqualTo(1);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getFirstItemValue_whenNoItem_shouldThrowException() {
-        // GIVEN-WHEN
-        contentEntry.getFirstItemValue();
-
-        // THEN: IAE
+    @Test
+    void getFirstItemValue_whenNoItem_shouldThrowException() {
+        // GIVEN-WHEN-THEN
+        assertThrows(IllegalArgumentException.class,
+                () -> contentEntry.getFirstItemValue());
     }
 
     @Test
-    public void getFirstItemValue_whenSingleItem_shouldReturnIt() {
+    void getFirstItemValue_whenSingleItem_shouldReturnIt() {
         // GIVEN
         ContentItemDto item = ContentItemDto.builder().ofFieldRank(1).withRawValue("V1").build();
         contentEntry.appendItem(item);
@@ -237,5 +238,28 @@ public class ContentEntryDtoTest {
 
         // THEN
         assertThat(actualItemValue).isEqualTo("V1");
+    }       
+    
+    @Test
+    void getPseudoRef_whenSingleItem_shouldThrowException() {
+        // GIVEN
+        contentEntry.appendItem(ContentItemDto.builder().ofFieldRank(1).withRawValue("V1").build());
+
+        // WHEN-THEN
+        assertThrows(IllegalArgumentException.class,
+                () -> contentEntry.getPseudoRef());
+    }
+    
+    @Test
+    void getPseudoRef_whenTwoItems_shouldReturnIt() {
+        // GIVEN
+        contentEntry.appendItem(ContentItemDto.builder().ofFieldRank(1).withRawValue("V1").build());
+        contentEntry.appendItem(ContentItemDto.builder().ofFieldRank(2).withRawValue("V2").build());
+
+        // WHEN
+        String actualItemValue = contentEntry.getPseudoRef();
+
+        // THEN
+        assertThat(actualItemValue).isEqualTo("V1|V2");
     }
 }

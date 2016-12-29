@@ -72,7 +72,7 @@ public class ContentEntryDto {
 
     public Optional<ContentItemDto> updateItemValueAtRank(String newValue, int fieldRank) {
         ContentItemDto i = getItemAtRank(fieldRank)
-                .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("No item at field rank: " + fieldRank));
+                .orElseThrow(() -> new IllegalArgumentException("No item at field rank: " + fieldRank));
 
         if (newValue.equals(i.getRawValue())) {
             return empty();
@@ -120,8 +120,18 @@ public class ContentEntryDto {
 
     String getFirstItemValue() {
         return getItemAtRank(1)
-                .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("Entry has no item at field rank 1"))
+                .orElseThrow(() -> new IllegalArgumentException("Entry has no item at field rank 1"))
                 .getRawValue();
+    }
+
+    String getPseudoRef() {
+        String firstValue = getItemAtRank(1)
+                .orElseThrow(() -> new IllegalArgumentException("Entry has no item at field rank 1"))
+                .getRawValue();
+        String secondValue = getItemAtRank(2)
+                .orElseThrow(() -> new IllegalArgumentException("Entry has no item at field rank 2"))
+                .getRawValue();
+        return String.format("%s|%s", firstValue, secondValue);
     }
 
     void computeValuesHash() {
