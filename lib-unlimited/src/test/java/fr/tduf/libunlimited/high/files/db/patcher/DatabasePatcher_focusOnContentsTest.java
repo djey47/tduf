@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class DatabasePatcher_focusOnContentsTest {
 
     @Test
-     void apply_whenUpdateContentsPatch_forAllFields_andIncorrectValueCount_shouldThrowException() throws IOException, URISyntaxException, ReflectiveOperationException {
+    void apply_whenUpdateContentsPatch_forAllFields_andIncorrectValueCount_shouldThrowException() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateContents-addAll-badCount.mini.json");
         DatabasePatcher patcher = createPatcher(singletonList(DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.BOTS)));
@@ -37,7 +37,7 @@ class DatabasePatcher_focusOnContentsTest {
     }
 
     @Test
-     void apply_whenUpdateContentsPatch_forAllFields_shouldAddNewEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
+    void apply_whenUpdateContentsPatch_forAllFields_shouldAddNewEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateContents-addAll-noRef.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.BOTS);
@@ -66,7 +66,7 @@ class DatabasePatcher_focusOnContentsTest {
     }
 
     @Test
-     void batchApply_whenTwoUpdateContentsPatches_shouldAddEntries() throws ReflectiveOperationException, IOException, URISyntaxException {
+    void batchApply_whenTwoUpdateContentsPatches_shouldAddEntries() throws ReflectiveOperationException, IOException, URISyntaxException {
         // GIVEN
         DbPatchDto updateContentsPatch1 = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateContents-addAll-noRef.mini.json");
         DbPatchDto updateContentsPatch2 = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateContents-addAll-noRef-2.mini.json");
@@ -104,7 +104,7 @@ class DatabasePatcher_focusOnContentsTest {
     }
 
     @Test
-     void apply_whenUpdateContentsPatch_forAllFields_andSameEntryExists_shouldIgnoreIt() throws IOException, URISyntaxException, ReflectiveOperationException {
+    void apply_whenUpdateContentsPatch_forAllFields_andSameEntryExists_shouldIgnoreIt() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateContents-addAll-noRef-existing.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.BOTS);
@@ -127,7 +127,7 @@ class DatabasePatcher_focusOnContentsTest {
     }
 
     @Test
-     void apply_whenUpdateContentsPatch_forAllFields_withRefSupport_shouldAddNewEntryAndUpdateExisting() throws IOException, URISyntaxException, ReflectiveOperationException {
+    void apply_whenUpdateContentsPatch_forAllFields_withRefSupport_shouldAddNewEntryAndUpdateExisting() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateContents-addAll-ref.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(CAR_PHYSICS_DATA);
@@ -162,7 +162,7 @@ class DatabasePatcher_focusOnContentsTest {
     }
 
     @Test
-     void apply_whenUpdateContentsPatch_forAllFields_withRefSupport_andStrictMode_shouldOnlyAddNewEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
+    void apply_whenUpdateContentsPatch_forAllFields_withRefSupport_andStrictMode_shouldOnlyAddNewEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateContents-addAll-ref-strict.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(CAR_PHYSICS_DATA);
@@ -197,7 +197,7 @@ class DatabasePatcher_focusOnContentsTest {
     }
 
     @Test
-     void apply_whenUpdateContentsPatch_withAssociationEntries_shouldCreateThem() throws IOException, URISyntaxException, ReflectiveOperationException {
+    void apply_whenUpdateContentsPatch_withAssociationEntries_shouldCreateThem() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateContents-addAll-assoc.mini.json");
 
@@ -224,7 +224,7 @@ class DatabasePatcher_focusOnContentsTest {
     }
 
     @Test
-     void apply_whenUpdateContentsPatch_andBitfield_shouldUpdateBitfield() throws IOException, URISyntaxException, ReflectiveOperationException {
+    void apply_whenUpdateContentsPatch_andBitfield_shouldUpdateBitfield() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateContents-mixed-bitfield.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.CAR_SHOPS);
@@ -251,7 +251,7 @@ class DatabasePatcher_focusOnContentsTest {
     }
 
     @Test
-     void apply_whenUpdateContentsPatch_forOneItem_andREFDoesNotExist_shouldIgnoreIt() throws IOException, URISyntaxException, ReflectiveOperationException {
+    void apply_whenUpdateContentsPatch_forOneItem_andREFDoesNotExist_shouldIgnoreIt() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updatePartialContents-newRef.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(CAR_PHYSICS_DATA);
@@ -273,7 +273,7 @@ class DatabasePatcher_focusOnContentsTest {
     }
 
     @Test
-     void apply_whenUpdateContentsPatch_forOneItem_andREFExists_butInvalidRank_shouldIgnoreIt() throws IOException, URISyntaxException, ReflectiveOperationException {
+    void apply_whenUpdateContentsPatch_forOneItem_andREFExists_butInvalidRank_shouldIgnoreIt() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updatePartialContents-badRank-existingRef.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(CAR_PHYSICS_DATA);
@@ -299,7 +299,7 @@ class DatabasePatcher_focusOnContentsTest {
     }
 
     @Test
-     void apply_whenUpdateContentsPatch_forNoItem_andREFExists_shouldIgnoreIt() throws IOException, URISyntaxException, ReflectiveOperationException {
+    void apply_whenUpdateContentsPatch_forNoItem_andREFExists_shouldIgnoreIt() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updatePartialContents-noValues-existingRef.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(CAR_PHYSICS_DATA);
@@ -326,7 +326,7 @@ class DatabasePatcher_focusOnContentsTest {
     }
 
     @Test
-     void apply_whenUpdateContentsPatch_forOneItem_andREFExists_shouldChangeIt() throws IOException, URISyntaxException, ReflectiveOperationException {
+    void apply_whenUpdateContentsPatch_forOneItem_andREFExists_shouldChangeIt() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updatePartialContents-existingRef.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(CAR_PHYSICS_DATA);
@@ -337,7 +337,7 @@ class DatabasePatcher_focusOnContentsTest {
 
         List<ContentEntryDto> topicEntries = databaseMiner.getDatabaseTopic(CAR_PHYSICS_DATA).get().getData().getEntries();
         int previousEntryCount = topicEntries.size();
-        List<String> previousValues = extractAllItemsFromCarPhysicsEntryExceptedLastOne(databaseMiner, "1139121456");
+        List<String> previousValues = extractAllItemsFromEntryExcepted(databaseMiner, "1139121456", CAR_PHYSICS_DATA, 103);
 
 
         // WHEN
@@ -348,7 +348,7 @@ class DatabasePatcher_focusOnContentsTest {
         int actualEntryCount = topicEntries.size();
         assertThat(actualEntryCount).isEqualTo(previousEntryCount);
 
-        List<String> actualValues = extractAllItemsFromCarPhysicsEntryExceptedLastOne(databaseMiner, "1139121456");
+        List<String> actualValues = extractAllItemsFromEntryExcepted(databaseMiner, "1139121456", CAR_PHYSICS_DATA, 103);
         assertThat(actualValues).isEqualTo(previousValues);
 
         String actualItemValue = databaseMiner
@@ -360,7 +360,43 @@ class DatabasePatcher_focusOnContentsTest {
     }
 
     @Test
-     void apply_whenUpdateContentsPatch_forOneItem_andFilterWithOneCondition_shouldChangeThem() throws IOException, URISyntaxException, ReflectiveOperationException {
+    void apply_whenUpdateContentsPatch_forOneItem_andPseudoREFExists_shouldChangeIt() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        DbPatchDto updateContentsPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updatePartialContents-existingPseudoRef.mini.json");
+        DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(CAR_COLORS);
+
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
+
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
+
+        List<ContentEntryDto> topicEntries = databaseMiner.getDatabaseTopic(CAR_COLORS).get().getData().getEntries();
+        int previousEntryCount = topicEntries.size();
+
+        String pseudoReference = "632098801|57376127";
+        List<String> previousValues = extractAllItemsFromEntryExcepted(databaseMiner, pseudoReference, CAR_COLORS, 6);
+
+
+        // WHEN
+        patcher.apply(updateContentsPatch);
+
+
+        // THEN
+        int actualEntryCount = topicEntries.size();
+        assertThat(actualEntryCount).isEqualTo(previousEntryCount);
+
+        List<String> actualValues = extractAllItemsFromEntryExcepted(databaseMiner, pseudoReference, CAR_COLORS, 6);
+        assertThat(actualValues).isEqualTo(previousValues);
+
+        String actualItemValue = databaseMiner
+                .getContentEntryFromTopicWithReference(pseudoReference, CAR_COLORS).get()
+                .getItems()
+                .get(5)
+                .getRawValue();
+        assertThat(actualItemValue).isEqualTo("5000");
+    }
+
+    @Test
+    void apply_whenUpdateContentsPatch_forOneItem_andFilterWithOneCondition_shouldChangeThem() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updatePartialContents-filter.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.ACHIEVEMENTS);
@@ -389,7 +425,7 @@ class DatabasePatcher_focusOnContentsTest {
     }
 
     @Test
-     void apply_whenUpdateContentsPatch_forOneItem_andFilterWithTwoConditions_shouldChangeIt() throws IOException, URISyntaxException, ReflectiveOperationException {
+    void apply_whenUpdateContentsPatch_forOneItem_andFilterWithTwoConditions_shouldChangeIt() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updatePartialContents-filter2.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.ACHIEVEMENTS);
@@ -418,7 +454,7 @@ class DatabasePatcher_focusOnContentsTest {
     }
 
     @Test
-     void apply_whenDeleteContentsPatch_shouldRemoveExistingEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
+    void apply_whenDeleteContentsPatch_shouldRemoveExistingEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto deleteContentsPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/deleteContents-ref.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(CAR_PHYSICS_DATA);
@@ -436,7 +472,7 @@ class DatabasePatcher_focusOnContentsTest {
     }
 
     @Test
-     void apply_whenDeleteContentsPatch_andFilterWithOneCondition_shouldRemoveExistingEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
+    void apply_whenDeleteContentsPatch_andFilterWithOneCondition_shouldRemoveExistingEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto deleteContentsPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/deleteContents-filter.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.ACHIEVEMENTS);
@@ -454,7 +490,7 @@ class DatabasePatcher_focusOnContentsTest {
     }
 
     @Test
-     void apply_whenDeleteContentsPatch_andFilterWithTwoConditions_shouldRemoveExistingEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
+    void apply_whenDeleteContentsPatch_andFilterWithTwoConditions_shouldRemoveExistingEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto deleteContentsPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/deleteContents-filter2.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.ACHIEVEMENTS);
@@ -480,7 +516,7 @@ class DatabasePatcher_focusOnContentsTest {
     }
 
     @Test
-     void apply_whenMovePatch_andUpDirection_shouldMoveExistingEntryOnePosition() throws IOException, URISyntaxException, ReflectiveOperationException {
+    void apply_whenMovePatch_andUpDirection_shouldMoveExistingEntryOnePosition() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto movePatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/moveContents-up-default.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.CAR_COLORS);
@@ -507,7 +543,7 @@ class DatabasePatcher_focusOnContentsTest {
     }
 
     @Test
-     void apply_whenMovePatch_andUpDirection_andTwoSteps_shouldMoveExistingEntryTwoPositions() throws IOException, URISyntaxException, ReflectiveOperationException {
+    void apply_whenMovePatch_andUpDirection_andTwoSteps_shouldMoveExistingEntryTwoPositions() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto movePatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/moveContents-up-2steps.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.CAR_COLORS);
@@ -534,7 +570,7 @@ class DatabasePatcher_focusOnContentsTest {
     }
 
     @Test
-     void apply_whenMovePatch_andDownDirection_andOneStep_shouldMoveExistingEntryOnePosition() throws IOException, URISyntaxException, ReflectiveOperationException {
+    void apply_whenMovePatch_andDownDirection_andOneStep_shouldMoveExistingEntryOnePosition() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto movePatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/moveContents-down-1step.mini.json");
         DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(DbDto.Topic.CAR_COLORS);
@@ -566,11 +602,11 @@ class DatabasePatcher_focusOnContentsTest {
                 .get().hashCode();
     }
 
-    private static List<String> extractAllItemsFromCarPhysicsEntryExceptedLastOne(BulkDatabaseMiner databaseMiner, String ref) {
+    private static List<String> extractAllItemsFromEntryExcepted(BulkDatabaseMiner databaseMiner, String ref, DbDto.Topic topic, int rejectedFieldRank) {
         return databaseMiner
-                .getContentEntryFromTopicWithReference(ref, CAR_PHYSICS_DATA).get()
+                .getContentEntryFromTopicWithReference(ref, topic).get()
                 .getItems().stream()
-                .filter((item) -> item.getFieldRank() != 103)
+                .filter((item) -> item.getFieldRank() != rejectedFieldRank)
                 .map(ContentItemDto::getRawValue)
                 .collect(toList());
     }

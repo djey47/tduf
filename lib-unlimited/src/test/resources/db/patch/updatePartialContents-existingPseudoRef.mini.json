@@ -1,0 +1,16 @@
+{
+  "changes": [
+    {
+      "comment": "Partially (price item only) updates an entry with known pseudo REF.",
+      "type": "UPDATE",
+      "topic": "CAR_COLORS",
+      "ref": "632098801|57376127",
+      "partialValues": [
+        {
+          "rank": 6,
+          "value": "5000"
+        }
+      ]
+    }
+  ]
+}
