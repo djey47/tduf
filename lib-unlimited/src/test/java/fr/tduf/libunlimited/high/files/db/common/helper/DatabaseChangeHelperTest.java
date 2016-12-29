@@ -487,6 +487,7 @@ public class DatabaseChangeHelperTest {
 
     private static DbDataDto createDefaultDataObject() {
         return DbDataDto.builder()
+                .forTopic(TOPIC)
                 .build();
     }
 

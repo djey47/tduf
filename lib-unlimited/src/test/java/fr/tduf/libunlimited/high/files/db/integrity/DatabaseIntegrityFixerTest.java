@@ -27,8 +27,10 @@ import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoE
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.AFTER_MARKET_PACKS;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -223,10 +225,10 @@ public class DatabaseIntegrityFixerTest {
         Set<IntegrityError> integrityErrors = new HashSet<>(singletonList(IntegrityError.builder().ofType(CONTENTS_FIELDS_COUNT_MISMATCH).addInformations(info).build()));
 
         DbDto topicObject = dbDtos.get(1);
-        DbStructureDto.Field firstStructureField = topicObject.getStructure().getFields().get(0);
+        DbStructureDto.Field secondStructureField = topicObject.getStructure().getFields().get(1);
         DbStructureDto.Field thirdStructureField = topicObject.getStructure().getFields().get(2);
-        ContentItemDto firstItem = ContentItemDto.builder()
-                .fromStructureFieldAndTopic(firstStructureField, AFTER_MARKET_PACKS)
+        ContentItemDto secondItem = ContentItemDto.builder()
+                .fromStructureFieldAndTopic(secondStructureField, AFTER_MARKET_PACKS)
                 .withRawValue("11111111")
                 .build();
         ContentItemDto thirdItem = ContentItemDto.builder()
@@ -234,8 +236,8 @@ public class DatabaseIntegrityFixerTest {
                 .withRawValue("200")
                 .build();
 
-        when(genHelperMock.buildDefaultContentItem(Optional.empty(), firstStructureField,  topicObject)).thenReturn(firstItem);
-        when(genHelperMock.buildDefaultContentItem(Optional.empty(), thirdStructureField,  topicObject)).thenReturn(thirdItem);
+        when(genHelperMock.buildDefaultContentItem(empty(), secondStructureField,  topicObject)).thenReturn(secondItem);
+        when(genHelperMock.buildDefaultContentItem(empty(), thirdStructureField,  topicObject)).thenReturn(thirdItem);
 
 
         // WHEN
@@ -259,11 +261,11 @@ public class DatabaseIntegrityFixerTest {
 
         ContentItemDto item1 = createdEntry.getItems().get(0);
         assertThat(item1.getFieldRank()).isEqualTo(1);
-        assertThat(item1.getRawValue()).isEqualTo("11111111");
+        assertThat(item1.getRawValue()).isEqualTo("100");
 
         ContentItemDto item2 = createdEntry.getItems().get(1);
         assertThat(item2.getFieldRank()).isEqualTo(2);
-        assertThat(item2.getRawValue()).isEqualTo("100");
+        assertThat(item2.getRawValue()).isEqualTo("11111111");
 
         ContentItemDto item3 = createdEntry.getItems().get(2);
         assertThat(item3.getFieldRank()).isEqualTo(3);
@@ -521,15 +523,17 @@ public class DatabaseIntegrityFixerTest {
 
     private static DbDataDto createDefaultContentsObject() {
         return DbDataDto.builder()
+                .forTopic(CAR_PHYSICS_DATA)
                 .build();
     }
 
     private static DbDataDto createContentsObjectWithTwoFieldsMissing() {
-        // Missing: Field 1 = ID, Field 3 = RemoteRef
+        // Missing: Field 2, Field 3 = RemoteRef
         return DbDataDto.builder()
+                .forTopic(CAR_PHYSICS_DATA)
                 .addEntry(ContentEntryDto.builder()
                         .addItem(ContentItemDto.builder()
-                                .ofFieldRank(2)
+                                .ofFieldRank(1)
                                 .withRawValue("100")
                                 .build())
                         .build())

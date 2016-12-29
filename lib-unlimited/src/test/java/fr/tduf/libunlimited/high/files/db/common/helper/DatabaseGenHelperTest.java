@@ -18,6 +18,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.*;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.TUTORIALS;
 import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -356,12 +358,14 @@ public class DatabaseGenHelperTest {
     private static DbDto createTopicObjectOneUIDField() {
         return DbDto.builder()
                 .withStructure(DbStructureDto.builder()
+                        .forTopic(CAR_PHYSICS_DATA)
                         .addItem(DbStructureDto.Field.builder()
                                 .fromType(DbStructureDto.FieldType.UID)
                                 .ofRank(1)
                                 .build())
                         .build())
                 .withData(DbDataDto.builder()
+                        .forTopic(CAR_PHYSICS_DATA)
                         .addEntry(ContentEntryDto.builder()
                                 .addItem(ContentItemDto.builder()
                                         .ofFieldRank(1)

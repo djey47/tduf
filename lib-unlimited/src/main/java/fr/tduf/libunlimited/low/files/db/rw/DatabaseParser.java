@@ -10,7 +10,6 @@ import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceItemDto;
-import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -214,7 +213,6 @@ public class DatabaseParser {
         return DbDataDto.builder()
                 .forTopic(topic)
                 .addEntries(entries)
-                .supportingReferenceIndex(DatabaseStructureQueryHelper.isUidSupportForTopic(topic))
                 .build();
     }
 

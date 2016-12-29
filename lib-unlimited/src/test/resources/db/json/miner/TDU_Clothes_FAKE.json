@@ -60,6 +60,7 @@
     "categoryCount" : 8
   },
   "data" : {
+    "topic": "CLOTHES",
     "entries" : [ {
       "id" : 0,
       "items" : [ {

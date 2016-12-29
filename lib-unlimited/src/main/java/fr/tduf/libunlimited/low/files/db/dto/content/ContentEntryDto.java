@@ -118,6 +118,7 @@ public class ContentEntryDto {
         return reflectionToString(this);
     }
 
+    // TODO rename to getRealRef
     String getFirstItemValue() {
         return getItemAtRank(1)
                 .orElseThrow(() -> new IllegalArgumentException("Entry has no item at field rank 1"))

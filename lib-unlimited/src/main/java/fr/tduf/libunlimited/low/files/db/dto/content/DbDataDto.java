@@ -1,6 +1,5 @@
 package fr.tduf.libunlimited.low.files.db.dto.content;
 
-import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -11,6 +10,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -27,6 +27,9 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 public class DbDataDto implements Serializable {
     private static final String THIS_CLASS_NAME = DbDataDto.class.getSimpleName();
 
+    // TODO externalize pseudo ref constants
+    private static final Pattern PATTERN_PSEUDO_REF = Pattern.compile("\\d+\\|\\d+");
+
     @JsonProperty("topic")
     private DbDto.Topic topic;
 
@@ -34,7 +37,6 @@ public class DbDataDto implements Serializable {
     private List<ContentEntryDto> entries;
 
     @JsonIgnore
-    // TODO include pseudo refs in index when possible
     private Map<String, ContentEntryDto> entriesByReference;
 
     /**
@@ -57,14 +59,14 @@ public class DbDataDto implements Serializable {
     }
 
     public Optional<ContentEntryDto> getEntryWithReference(String ref) {
-        if (entriesByReference == null) {
-            Log.warn(THIS_CLASS_NAME, "Will process entry search without index. Please fix contents for topic: " + topic);
-            boolean pseudoReference = isPseudoReference(ref);
-            return entries.stream()
-                    .filter(entry -> pseudoReference ? entry.getPseudoRef().equals(ref) : entry.getFirstItemValue().equals(ref))
-                    .findFirst();
-        }
-        // TODO provide index for pseudo refs if possible
+        // TODO remove
+        //        if (entriesByReference == null) {
+//            Log.warn(THIS_CLASS_NAME, "Will process entry search without index. Please fix contents for topic: " + topic);
+//            boolean pseudoReference = isPseudoReference(ref);
+//            return entries.stream()
+//                    .filter(entry -> pseudoReference ? entry.getPseudoRef().equals(ref) : entry.getFirstItemValue().equals(ref))
+//                    .findFirst();
+//        }
         return ofNullable(entriesByReference.get(ref));
     }
 
@@ -134,13 +136,12 @@ public class DbDataDto implements Serializable {
         return entriesByReference;
     }
 
+    // TODO to be deserialized once topic item is resolved
     @JsonSetter("entries")
     void setEntries(Collection<ContentEntryDto> entries) {
         this.entries = new ArrayList<>(entries);
 
-        if (topic == null || DatabaseStructureQueryHelper.isUidSupportForTopic(topic)) {
-            entriesByReference = createEntryIndexByReference(entries);
-        }
+        createEntryIndexByReference(entries);
 
         entries.forEach(entry -> {
             entry.computeValuesHash();
@@ -150,21 +151,25 @@ public class DbDataDto implements Serializable {
 
     private void updateEntryIndexByReferenceWithNewEntry(ContentEntryDto entry) {
         if (entriesByReference != null) {
-            entriesByReference.put(entry.getFirstItemValue(), entry);
+            entriesByReference.put(getEffectiveRef(entry), entry);
         }
     }
 
     private void removeEntryFromIndexByReference(ContentEntryDto entry) {
         if (entriesByReference != null) {
-            entriesByReference.remove(entry.getFirstItemValue());
+            entriesByReference.remove(getEffectiveRef(entry));
         }
     }
 
-    private static Map<String, ContentEntryDto> createEntryIndexByReference(Collection<ContentEntryDto> entries) {
-        return new HashMap<>(entries.stream()
+    private String getEffectiveRef(ContentEntryDto entry) {
+        return DatabaseStructureQueryHelper.isUidSupportForTopic(topic) ? entry.getFirstItemValue() : entry.getPseudoRef();
+    }
+
+    private void createEntryIndexByReference(Collection<ContentEntryDto> entries) {
+        entriesByReference = new HashMap<>(entries.stream()
                 .parallel()
                 .collect(Collectors.toConcurrentMap(
-                        ContentEntryDto::getFirstItemValue,
+                        this::getEffectiveRef,
                         identity(),
                         (e1, e2) -> e2)
                 ));
@@ -189,14 +194,11 @@ public class DbDataDto implements Serializable {
     }
 
     private static boolean isPseudoReference(String ref) {
-        // TODO externalize pseudo ref constants
-        Pattern pattern = Pattern.compile("\\d+\\|\\d+");
-        return pattern.matcher(ref).matches();
+        return PATTERN_PSEUDO_REF.matcher(ref).matches();
     }
 
     public static class DbDataDtoBuilder {
         private List<ContentEntryDto> entries = new ArrayList<>();
-        private boolean refIndexSupport = false;
         private DbDto.Topic topic;
 
         public DbDataDtoBuilder addEntry(ContentEntryDto... entry) {
@@ -205,11 +207,6 @@ public class DbDataDto implements Serializable {
 
         public DbDataDtoBuilder addEntries(List<ContentEntryDto> entries) {
             this.entries.addAll(entries);
-            return this;
-        }
-
-        public DbDataDtoBuilder supportingReferenceIndex(boolean refSupport) {
-            this.refIndexSupport = refSupport;
             return this;
         }
 
@@ -224,9 +221,7 @@ public class DbDataDto implements Serializable {
             dbDataDto.entries = entries;
             dbDataDto.topic = topic;
 
-            if (refIndexSupport) {
-                dbDataDto.entriesByReference = createEntryIndexByReference(entries);
-            }
+            dbDataDto.createEntryIndexByReference(entries);
 
             dbDataDto.entries.forEach(entry -> entry.setDataHost(dbDataDto));
 

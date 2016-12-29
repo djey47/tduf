@@ -374,7 +374,7 @@ class BulkDatabaseMiner_focusOnResourcesTest {
                         .toTargetReference(TOPIC_REF)
                         .build())
                 .build();
-        DbDataDto dataObject = DbDataDto.builder().build();
+        DbDataDto dataObject = DbDataDto.builder().forTopic(TOPIC).build();
         dataObject.addEntryWithItems(asList(
                 ContentItemDto.builder()
                         .ofFieldRank(1)

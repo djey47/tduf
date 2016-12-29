@@ -13,15 +13,16 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
+// TODO migrate to Junit5
 public class DbDataDtoTest {
 
-    private DbDataDto dataObject;
+    private DbDataDto dataObjectWithoutREFSupport;
+    private DbDataDto dataObjectWithREFSupport;
 
     @Before
     public void setUp() {
-        dataObject = DbDataDto.builder()
-                .forTopic(CAR_RIMS)
-                .build();
+        dataObjectWithoutREFSupport = createDataWithoutRefSupport();
+        dataObjectWithREFSupport = createDataWithRefSupport();
     }
 
     @Test(expected = NullPointerException.class)
@@ -94,11 +95,11 @@ public class DbDataDtoTest {
     @Test(expected = UnsupportedOperationException.class)
     public void getEntries_shouldReturnNewReadOnlyList() {
         // GIVEN
-        final ContentEntryDto contentEntry = ContentEntryDto.builder().build();
-        dataObject.addEntry(contentEntry);
+        final ContentEntryDto contentEntry = createContentEntry();
+        dataObjectWithREFSupport.addEntry(contentEntry);
 
         // WHEN
-        final List<ContentEntryDto> actualEntries = dataObject.getEntries();
+        final List<ContentEntryDto> actualEntries = dataObjectWithREFSupport.getEntries();
 
         // THEN
         assertThat(actualEntries).containsExactly(contentEntry);
@@ -111,36 +112,36 @@ public class DbDataDtoTest {
         ContentEntryDto contentEntry = ContentEntryDto.builder().build();
 
         // WHEN-THEN
-        assertThat(dataObject.getEntryId(contentEntry)).isEqualTo(-1);
+        assertThat(dataObjectWithoutREFSupport.getEntryId(contentEntry)).isEqualTo(-1);
     }
 
     @Test
     public void getEntryId_whenAattachedEntries_shouldReturnListRanks() {
         // GIVEN
-        ContentEntryDto contentEntry1 = ContentEntryDto.builder().build();
-        ContentEntryDto contentEntry2 = ContentEntryDto.builder().build();
-        dataObject.addEntry(contentEntry1);
-        dataObject.addEntry(contentEntry2);
+        ContentEntryDto contentEntry1 = createContentEntryWithReference("1");
+        ContentEntryDto contentEntry2 = createContentEntryWithReference("2");
+        dataObjectWithREFSupport.addEntry(contentEntry1);
+        dataObjectWithREFSupport.addEntry(contentEntry2);
 
         // WHEN-THEN
-        assertThat(dataObject.getEntryId(contentEntry1)).isEqualTo(0);
-        assertThat(dataObject.getEntryId(contentEntry2)).isEqualTo(1);
+        assertThat(dataObjectWithREFSupport.getEntryId(contentEntry1)).isEqualTo(0);
+        assertThat(dataObjectWithREFSupport.getEntryId(contentEntry2)).isEqualTo(1);
     }
 
     @Test
     public void getEntryWithInternalIdentifier_whenUnknownId_shouldReturnEmpty() {
         // GIVEN-WHEN-THEN
-        assertThat(dataObject.getEntryWithInternalIdentifier(560)).isEmpty();
+        assertThat(dataObjectWithoutREFSupport.getEntryWithInternalIdentifier(560)).isEmpty();
     }
 
     @Test
     public void getEntryWithInternalIdentifier_whenExistingEntry_shouldReturnIt() {
         // GIVEN
-        ContentEntryDto contentEntry = ContentEntryDto.builder().build();
-        dataObject.addEntry(contentEntry);
+        ContentEntryDto contentEntry = createContentEntryWithPseudoReference("1", "1");
+        dataObjectWithoutREFSupport.addEntry(contentEntry);
 
         // WHEN
-        final Optional<ContentEntryDto> actualEntry = dataObject.getEntryWithInternalIdentifier(0);
+        final Optional<ContentEntryDto> actualEntry = dataObjectWithoutREFSupport.getEntryWithInternalIdentifier(0);
 
         // THEN
         assertThat(actualEntry).contains(contentEntry);
@@ -149,30 +150,17 @@ public class DbDataDtoTest {
     @Test
     public void getEntryWithReference_whenNoReferenceIndex_andUnknownEntry_shouldReturnEmpty() {
         // GIVEN-WHEN-THEN
-        assertThat(dataObject.getEntryWithReference("REF")).isEmpty();
-    }
-
-    @Test
-    public void getEntryWithReference_whenNoReferenceIndex_shouldCheckFirstField() {
-        // GIVEN
-        ContentEntryDto contentEntry = createContentEntry();
-        dataObject.addEntry(contentEntry);
-
-        // WHEN
-        final Optional<ContentEntryDto> actualEntry = dataObject.getEntryWithReference("REF");
-
-        // THEN
-        assertThat(actualEntry).contains(contentEntry);
+        assertThat(dataObjectWithoutREFSupport.getEntryWithReference("REF")).isEmpty();
     }
 
     @Test
     public void getEntryWithReference_whenPseudoRef_shouldCheckTwoFirstFields() {
         // GIVEN
         ContentEntryDto contentEntry = createContentEntryWithPseudoReference("100", "101");
-        dataObject.addEntry(contentEntry);
+        dataObjectWithoutREFSupport.addEntry(contentEntry);
 
         // WHEN
-        final Optional<ContentEntryDto> actualEntry = dataObject.getEntryWithReference("100|101");
+        final Optional<ContentEntryDto> actualEntry = dataObjectWithoutREFSupport.getEntryWithReference("100|101");
 
         // THEN
         assertThat(actualEntry).contains(contentEntry);
@@ -204,35 +192,36 @@ public class DbDataDtoTest {
     @Test
     public void setEntries_withoutRefSupport_shouldInitProperties() {
         // GIVEN
-        final ContentEntryDto contentEntry = createContentEntry();
+        final ContentEntryDto contentEntry = createContentEntryWithPseudoReference("1", "1");
 
         // WHEN
-        dataObject.setEntries(singletonList(contentEntry));
+        dataObjectWithoutREFSupport.setEntries(singletonList(contentEntry));
 
         // THEN
-        final List<ContentEntryDto> actualEntries = dataObject.getEntries();
+        final List<ContentEntryDto> actualEntries = dataObjectWithoutREFSupport.getEntries();
         assertThat(actualEntries).hasSize(1);
         final ContentEntryDto actualEntry = actualEntries.get(0);
-        assertThat(actualEntry.getDataHost()).isSameAs(dataObject);
+        assertThat(actualEntry.getDataHost()).isSameAs(dataObjectWithoutREFSupport);
         assertThat(actualEntry.getValuesHash()).isNotZero();
     }
 
     @Test
-    public void setEntries_withoutRefSupport_shouldNotCreateIndex() {
+    public void setEntries_withoutRefSupport_shouldCreateIndexAsWell() {
         // GIVEN
-        final ContentEntryDto contentEntry1 = createContentEntry();
-        final ContentEntryDto contentEntry2 = createContentEntry();
-        final ContentEntryDto contentEntry3 = createContentEntry();
-        final ContentEntryDto contentEntry4 = createContentEntry();
+        final ContentEntryDto contentEntry1 = createContentEntryWithPseudoReference("1", "1");
+        final ContentEntryDto contentEntry2 = createContentEntryWithPseudoReference("1", "2");
+        final ContentEntryDto contentEntry3 = createContentEntryWithPseudoReference("2", "1");
+        final ContentEntryDto contentEntry4 = createContentEntryWithPseudoReference("2", "2");
         final List<ContentEntryDto> entries = asList(contentEntry1, contentEntry2, contentEntry3, contentEntry4);
 
         // WHEN
-        dataObject.setEntries(entries);
+        dataObjectWithoutREFSupport.setEntries(entries);
 
         // THEN
-        final List<ContentEntryDto> actualEntries = dataObject.getEntries();
+        final List<ContentEntryDto> actualEntries = dataObjectWithoutREFSupport.getEntries();
         assertThat(actualEntries).hasSize(4);
-        assertThat(dataObject.getEntriesByReference()).isNull();
+        assertThat(dataObjectWithoutREFSupport.getEntriesByReference()).hasSize(4);
+        assertThat(dataObjectWithoutREFSupport.getEntriesByReference().keySet()).contains("1|1", "1|2", "2|1", "2|2");
     }
 
     @Test
@@ -243,13 +232,12 @@ public class DbDataDtoTest {
         final ContentEntryDto contentEntry3 = createContentEntryWithReference("REF3");
         final ContentEntryDto contentEntry4 = createContentEntryWithReference("REF4");
         final List<ContentEntryDto> entries = asList(contentEntry1, contentEntry2, contentEntry3, contentEntry4);
-        final DbDataDto dataWithRefSupport = createDataWithRefSupport();
 
         // WHEN
-        dataWithRefSupport.setEntries(entries);
+        dataObjectWithREFSupport.setEntries(entries);
 
         // THEN
-        final Map<String, ContentEntryDto> actualIndex = dataWithRefSupport.getEntriesByReference();
+        final Map<String, ContentEntryDto> actualIndex = dataObjectWithREFSupport.getEntriesByReference();
         assertThat(actualIndex).hasSize(4);
         assertThat(actualIndex.keySet()).contains("REF1", "REF2", "REF3", "REF4");
     }
@@ -290,28 +278,40 @@ public class DbDataDtoTest {
     @Test
     public void removeEntry() {
         // GIVEN
-        ContentEntryDto contentEntry = ContentEntryDto.builder().build();
-        dataObject.addEntry(contentEntry);
+        ContentEntryDto contentEntry = createContentEntry();
+        dataObjectWithREFSupport.addEntry(contentEntry);
 
         // WHEN
-        dataObject.removeEntry(contentEntry);
+        dataObjectWithREFSupport.removeEntry(contentEntry);
 
         // THEN
-        assertThat(dataObject.getEntries()).isEmpty();
+        assertThat(dataObjectWithREFSupport.getEntries()).isEmpty();
     }
 
     @Test
-    public void removeEntry_withRefSupport_shouldAlsoRemoveFromIndex() {
+    public void removeEntry_withRefSupport_shouldRemoveFromIndex() {
         // GIVEN
-        DbDataDto dataWithRefSupport = createDataWithRefSupport();
         ContentEntryDto contentEntry = createContentEntry();
-        dataWithRefSupport.addEntry(contentEntry);
+        dataObjectWithREFSupport.addEntry(contentEntry);
 
         // WHEN
-        dataWithRefSupport.removeEntry(contentEntry);
+        dataObjectWithREFSupport.removeEntry(contentEntry);
 
         // THEN
-        assertThat(dataWithRefSupport.getEntriesByReference()).doesNotContainKey("REF");
+        assertThat(dataObjectWithREFSupport.getEntriesByReference()).isEmpty();
+    }
+
+    @Test
+    public void removeEntry_withoutRefSupport_shouldRemoveFromIndex() {
+        // GIVEN
+        ContentEntryDto contentEntry = createContentEntryWithPseudoReference("1", "1");
+        dataObjectWithoutREFSupport.addEntry(contentEntry);
+
+        // WHEN
+        dataObjectWithoutREFSupport.removeEntry(contentEntry);
+
+        // THEN
+        assertThat(dataObjectWithoutREFSupport.getEntriesByReference()).isEmpty();
     }
 
     @Test
@@ -326,14 +326,14 @@ public class DbDataDtoTest {
         ContentEntryDto contentEntry3 = ContentEntryDto.builder()
                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue("REF3").build())
                 .build();
-        dataObject.addEntry(contentEntry1);
-        dataObject.addEntry(contentEntry2);
+        dataObjectWithREFSupport.addEntry(contentEntry1);
+        dataObjectWithREFSupport.addEntry(contentEntry2);
 
         // WHEN
-        dataObject.removeEntries(asList(contentEntry2, contentEntry3));
+        dataObjectWithREFSupport.removeEntries(asList(contentEntry2, contentEntry3));
 
         // THEN
-        final List<ContentEntryDto> actualEntries = dataObject.getEntries();
+        final List<ContentEntryDto> actualEntries = dataObjectWithREFSupport.getEntries();
         assertThat(actualEntries).hasSize(1);
         assertThat(actualEntries.get(0).getItems()).extracting("rawValue").containsExactly("REF1");
     }
@@ -345,15 +345,15 @@ public class DbDataDtoTest {
         final ContentEntryDto contentEntry2 = createContentEntry();
         final ContentEntryDto contentEntry3 = createContentEntry();
         final ContentEntryDto contentEntry4 = createContentEntry();
-        dataObject.addEntry(contentEntry1);
-        dataObject.addEntry(contentEntry2);
-        dataObject.addEntry(contentEntry3);
+        dataObjectWithREFSupport.addEntry(contentEntry1);
+        dataObjectWithREFSupport.addEntry(contentEntry2);
+        dataObjectWithREFSupport.addEntry(contentEntry3);
 
         // WHEN
-        dataObject.moveEntryUp(contentEntry4);
+        dataObjectWithREFSupport.moveEntryUp(contentEntry4);
 
         // THEN
-        final List<ContentEntryDto> actualEntries = dataObject.getEntries();
+        final List<ContentEntryDto> actualEntries = dataObjectWithREFSupport.getEntries();
         assertThat(actualEntries).hasSize(3);
         assertThat(actualEntries.get(0)).isSameAs(contentEntry1);
         assertThat(actualEntries.get(1)).isSameAs(contentEntry2);
@@ -366,15 +366,15 @@ public class DbDataDtoTest {
         final ContentEntryDto contentEntry1 = createContentEntry();
         final ContentEntryDto contentEntry2 = createContentEntry();
         final ContentEntryDto contentEntry3 = createContentEntry();
-        dataObject.addEntry(contentEntry1);
-        dataObject.addEntry(contentEntry2);
-        dataObject.addEntry(contentEntry3);
+        dataObjectWithREFSupport.addEntry(contentEntry1);
+        dataObjectWithREFSupport.addEntry(contentEntry2);
+        dataObjectWithREFSupport.addEntry(contentEntry3);
 
         // WHEN
-        dataObject.moveEntryUp(contentEntry2);
+        dataObjectWithREFSupport.moveEntryUp(contentEntry2);
 
         // THEN
-        final List<ContentEntryDto> actualEntries = dataObject.getEntries();
+        final List<ContentEntryDto> actualEntries = dataObjectWithREFSupport.getEntries();
         assertThat(actualEntries).hasSize(3);
         assertThat(actualEntries.get(0)).isSameAs(contentEntry2);
         assertThat(actualEntries.get(1)).isSameAs(contentEntry1);
@@ -386,13 +386,13 @@ public class DbDataDtoTest {
     public void moveEntryDown_whenEntryCannotBeMoved_shouldDoNothing() {
         // GIVEN
         final ContentEntryDto contentEntry = createContentEntry();
-        dataObject.addEntry(contentEntry);
+        dataObjectWithREFSupport.addEntry(contentEntry);
 
         // WHEN
-        dataObject.moveEntryDown(contentEntry);
+        dataObjectWithREFSupport.moveEntryDown(contentEntry);
 
         // THEN
-        final List<ContentEntryDto> actualEntries = dataObject.getEntries();
+        final List<ContentEntryDto> actualEntries = dataObjectWithREFSupport.getEntries();
         assertThat(actualEntries).hasSize(1);
         assertThat(actualEntries.get(0)).isSameAs(contentEntry);
         assertThat(actualEntries).extracting("id").containsExactly(0);
@@ -404,15 +404,15 @@ public class DbDataDtoTest {
         final ContentEntryDto contentEntry1 = createContentEntry();
         final ContentEntryDto contentEntry2 = createContentEntry();
         final ContentEntryDto contentEntry3 = createContentEntry();
-        dataObject.addEntry(contentEntry1);
-        dataObject.addEntry(contentEntry2);
-        dataObject.addEntry(contentEntry3);
+        dataObjectWithREFSupport.addEntry(contentEntry1);
+        dataObjectWithREFSupport.addEntry(contentEntry2);
+        dataObjectWithREFSupport.addEntry(contentEntry3);
 
         // WHEN
-        dataObject.moveEntryDown(contentEntry2);
+        dataObjectWithREFSupport.moveEntryDown(contentEntry2);
 
         // THEN
-        final List<ContentEntryDto> actualEntries = dataObject.getEntries();
+        final List<ContentEntryDto> actualEntries = dataObjectWithREFSupport.getEntries();
         assertThat(actualEntries).hasSize(3);
         assertThat(actualEntries.get(0)).isSameAs(contentEntry1);
         assertThat(actualEntries.get(1)).isSameAs(contentEntry3);
@@ -423,7 +423,12 @@ public class DbDataDtoTest {
     private DbDataDto createDataWithRefSupport() {
         return DbDataDto.builder()
                     .forTopic(CAR_PHYSICS_DATA)
-                    .supportingReferenceIndex(true)
+                    .build();
+    }
+
+    private DbDataDto createDataWithoutRefSupport() {
+        return DbDataDto.builder()
+                    .forTopic(CAR_RIMS)
                     .build();
     }
 

@@ -32,7 +32,7 @@ class DatabasePatcher_focusOnPlaceholdersTest {
     @BeforeEach
     void setUp() throws ReflectiveOperationException {
         databaseObject = DbDto.builder()
-                .withData(DbDataDto.builder().build())
+                .withData(DbDataDto.builder().forTopic(CAR_PHYSICS_DATA).build())
                 .withStructure(DbStructureDto.builder()
                         .forTopic(CAR_PHYSICS_DATA)
                         .addItem(DbStructureDto.Field.builder()

@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.low.files.db.mapper;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
@@ -15,6 +16,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 
@@ -67,6 +69,7 @@ public class DbDataMapperTest {
                 .addItem(item23)
                 .build();
         DbDataDto dbDataDto = DbDataDto.builder()
+                .forTopic(CAR_PHYSICS_DATA)
                 .addEntry(entry1)
                 .addEntry(entry2)
                 .build();

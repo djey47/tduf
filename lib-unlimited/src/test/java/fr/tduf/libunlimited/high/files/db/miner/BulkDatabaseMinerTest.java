@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BOTS;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.TUTORIALS;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -61,7 +62,7 @@ class BulkDatabaseMinerTest {
     @Test
     void getDatabaseTopic_whenNotFound_shouldReturnEmpty() throws IOException, URISyntaxException {
         // GIVEN-WHEN
-        Optional<DbDto> actualResult = BulkDatabaseMiner.load(topicObjectsFromResources).getDatabaseTopic(ACHIEVEMENTS);
+        Optional<DbDto> actualResult = BulkDatabaseMiner.load(topicObjectsFromResources).getDatabaseTopic(TUTORIALS);
 
         // THEN
         assertThat(actualResult).isEmpty();
