@@ -118,21 +118,18 @@ public class ContentEntryDto {
         return reflectionToString(this);
     }
 
-    // TODO rename to getRealRef
-    String getFirstItemValue() {
+    String getNativeRef() {
         return getItemAtRank(1)
                 .orElseThrow(() -> new IllegalArgumentException("Entry has no item at field rank 1"))
                 .getRawValue();
     }
 
     String getPseudoRef() {
-        String firstValue = getItemAtRank(1)
-                .orElseThrow(() -> new IllegalArgumentException("Entry has no item at field rank 1"))
-                .getRawValue();
         String secondValue = getItemAtRank(2)
                 .orElseThrow(() -> new IllegalArgumentException("Entry has no item at field rank 2"))
                 .getRawValue();
-        return String.format("%s|%s", firstValue, secondValue);
+        // TODO extract constant
+        return String.format("%s|%s", getNativeRef(), secondValue);
     }
 
     void computeValuesHash() {

@@ -4,7 +4,6 @@ package fr.tduf.libunlimited.low.files.db.dto.content;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -206,7 +205,7 @@ class ContentEntryDtoTest {
     void getFirstItemValue_whenNoItem_shouldThrowException() {
         // GIVEN-WHEN-THEN
         assertThrows(IllegalArgumentException.class,
-                () -> createEntryWithoutItems().getFirstItemValue());
+                () -> createEntryWithoutItems().getNativeRef());
     }
 
     @Test
@@ -216,7 +215,7 @@ class ContentEntryDtoTest {
         contentEntry.appendItem(item);
 
         // WHEN
-        String actualItemValue = contentEntry.getFirstItemValue();
+        String actualItemValue = contentEntry.getNativeRef();
 
         // THEN
         assertThat(actualItemValue).isEqualTo("V1");

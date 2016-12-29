@@ -59,14 +59,6 @@ public class DbDataDto implements Serializable {
     }
 
     public Optional<ContentEntryDto> getEntryWithReference(String ref) {
-        // TODO remove
-        //        if (entriesByReference == null) {
-//            Log.warn(THIS_CLASS_NAME, "Will process entry search without index. Please fix contents for topic: " + topic);
-//            boolean pseudoReference = isPseudoReference(ref);
-//            return entries.stream()
-//                    .filter(entry -> pseudoReference ? entry.getPseudoRef().equals(ref) : entry.getFirstItemValue().equals(ref))
-//                    .findFirst();
-//        }
         return ofNullable(entriesByReference.get(ref));
     }
 
@@ -162,7 +154,7 @@ public class DbDataDto implements Serializable {
     }
 
     private String getEffectiveRef(ContentEntryDto entry) {
-        return DatabaseStructureQueryHelper.isUidSupportForTopic(topic) ? entry.getFirstItemValue() : entry.getPseudoRef();
+        return DatabaseStructureQueryHelper.isUidSupportForTopic(topic) ? entry.getNativeRef() : entry.getPseudoRef();
     }
 
     private void createEntryIndexByReference(Collection<ContentEntryDto> entries) {
