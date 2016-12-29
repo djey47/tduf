@@ -472,6 +472,24 @@ class DatabasePatcher_focusOnContentsTest {
     }
 
     @Test
+    void apply_whenDeleteContentsPatch_andPseudoREF_shouldRemoveExistingEntry() throws IOException, URISyntaxException, ReflectiveOperationException {
+        // GIVEN
+        DbPatchDto deleteContentsPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/deleteContents-pseudoRef.mini.json");
+        DbDto databaseObject = DatabaseHelper.createDatabaseTopicForReadOnly(CAR_COLORS);
+
+        DatabasePatcher patcher = createPatcher(singletonList(databaseObject));
+
+
+        // WHEN
+        patcher.apply(deleteContentsPatch);
+
+
+        // THEN
+        BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(singletonList(databaseObject));
+        assertThat(databaseMiner.getContentEntryFromTopicWithReference("632098801|57376127", CAR_COLORS)).isEmpty();
+    }
+
+    @Test
     void apply_whenDeleteContentsPatch_andFilterWithOneCondition_shouldRemoveExistingEntries() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
         DbPatchDto deleteContentsPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/deleteContents-filter.mini.json");

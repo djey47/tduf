@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "comment": "Existing entry to be removed: pseudo ref",
+      "type" : "DELETE",
+      "topic" : "CAR_COLORS",
+      "ref": "632098801|57376127"
+    }
+  ]
+}
