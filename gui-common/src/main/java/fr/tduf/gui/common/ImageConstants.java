@@ -1,6 +1,5 @@
 package fr.tduf.gui.common;
 
-// TODO move to parent package
 public class ImageConstants {
     private static final String RESOURCE_PATH_IMAGES = "/gui-common/img/fwdw/";
     private static final String RESOURCE_PATH_ICONS = "/gui-common/img/icons/";
