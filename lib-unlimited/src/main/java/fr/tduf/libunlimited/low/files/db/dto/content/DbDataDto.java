@@ -11,6 +11,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -33,6 +34,7 @@ public class DbDataDto implements Serializable {
     private List<ContentEntryDto> entries;
 
     @JsonIgnore
+    // TODO include pseudo refs in index when possible
     private Map<String, ContentEntryDto> entriesByReference;
 
     /**
@@ -57,10 +59,12 @@ public class DbDataDto implements Serializable {
     public Optional<ContentEntryDto> getEntryWithReference(String ref) {
         if (entriesByReference == null) {
             Log.warn(THIS_CLASS_NAME, "Will process entry search without index. Please fix contents for topic: " + topic);
+            boolean pseudoReference = isPseudoReference(ref);
             return entries.stream()
-                    .filter(entry -> entry.getFirstItemValue().equals(ref))
+                    .filter(entry -> pseudoReference ? entry.getPseudoRef().equals(ref) : entry.getFirstItemValue().equals(ref))
                     .findFirst();
         }
+        // TODO provide index for pseudo refs if possible
         return ofNullable(entriesByReference.get(ref));
     }
 
@@ -178,10 +182,16 @@ public class DbDataDto implements Serializable {
         }
 
         ContentEntryDto neighbourEntry = getEntryWithInternalIdentifier(neighbourEntryId)
-                .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("No neighbour entry with identifier: " + neighbourEntryId));
+                .orElseThrow(() -> new IllegalArgumentException("No neighbour entry with identifier: " + neighbourEntryId));
 
         entries.set(entryId, neighbourEntry);
         entries.set(neighbourEntryId, entry);
+    }
+
+    private static boolean isPseudoReference(String ref) {
+        // TODO externalize pseudo ref constants
+        Pattern pattern = Pattern.compile("\\d+\\|\\d+");
+        return pattern.matcher(ref).matches();
     }
 
     public static class DbDataDtoBuilder {

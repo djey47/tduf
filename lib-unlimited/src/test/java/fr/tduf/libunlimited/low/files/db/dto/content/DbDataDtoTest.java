@@ -166,6 +166,19 @@ public class DbDataDtoTest {
     }
 
     @Test
+    public void getEntryWithReference_whenPseudoRef_shouldCheckTwoFirstFields() {
+        // GIVEN
+        ContentEntryDto contentEntry = createContentEntryWithPseudoReference("100", "101");
+        dataObject.addEntry(contentEntry);
+
+        // WHEN
+        final Optional<ContentEntryDto> actualEntry = dataObject.getEntryWithReference("100|101");
+
+        // THEN
+        assertThat(actualEntry).contains(contentEntry);
+    }
+
+    @Test
     public void getEntryWithReference_whenReferenceIndex_andUnknownEntry_shouldReturnEmpty() {
         // GIVEN
         DbDataDto dataObjectWithRefSupport = createDataWithRefSupport();
@@ -423,6 +436,13 @@ public class DbDataDtoTest {
     private ContentEntryDto createContentEntryWithReference(String ref) {
         return ContentEntryDto.builder()
                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(ref).build())
+                .build();
+    }
+
+    private ContentEntryDto createContentEntryWithPseudoReference(String ref1, String ref2) {
+        return ContentEntryDto.builder()
+                .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(ref1).build())
+                .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(ref2).build())
                 .build();
     }
 }
