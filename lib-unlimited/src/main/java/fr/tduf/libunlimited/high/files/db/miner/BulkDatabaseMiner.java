@@ -14,7 +14,6 @@ import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import java.util.*;
 import java.util.stream.Stream;
 
-import static fr.tduf.libunlimited.framework.primitives.Ints.asList;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.RESOURCE_REMOTE;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
@@ -335,24 +334,6 @@ public class BulkDatabaseMiner {
         return entry.getItemAtRank(uidFieldRank)
                 .map(ContentItemDto::getRawValue)
                 .orElseThrow(() -> new IllegalStateException("No REF item for entry at id: " + entry.getId()));
-    }
-
-    /**
-     * @param entry        : contents entry to be analyzed
-     * @return pseudo entry reference, aka. two first item values separated by pipe character
-     */
-    public static String getContentEntryPseudoReference(ContentEntryDto entry) {
-        Log.trace(THIS_CLASS_NAME, "getContentEntryPseudoReference(" + entry.getId() + ")");
-
-        if (entry.getItems().size() < 2) {
-            throw new IllegalArgumentException("Entry need at least 2 items to create a pseudo reference");
-        }
-
-        return asList(1, 2).stream()
-                .map(entry::getItemAtRank)
-                .map(item -> item.map(ContentItemDto::getRawValue)
-                        .orElseThrow(() -> new IllegalStateException("No item for entry at id: " + entry.getId())))
-                .collect(joining("|"));
     }
 
     private String getRawValueAtEntryIndexAndRank(DbDto.Topic topic, int fieldRank, int entryIndex) {

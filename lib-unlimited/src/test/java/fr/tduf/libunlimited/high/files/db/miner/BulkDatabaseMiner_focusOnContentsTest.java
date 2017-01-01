@@ -15,7 +15,6 @@ import java.util.*;
 import static fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMinerTest.createTopicObjectsFromResources;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -189,28 +188,6 @@ class BulkDatabaseMiner_focusOnContentsTest {
 
         // THEN
         assertThat(actualEntryReference).isEqualTo("123456789");
-    }
-
-    @Test
-    void getContentEntryPseudoReference_shouldUseTwoFirstItemValues() {
-        // GIVEN
-        ContentEntryDto entry = createContentEntryWithItems(asList(createContentItemWithRank(1), createContentItemWithRank(2)));
-
-        // WHEN
-        String actualEntryReference = BulkDatabaseMiner.getContentEntryPseudoReference(entry);
-
-        // THEN
-        assertThat(actualEntryReference).isEqualTo("123|123");
-    }
-
-    @Test
-    void getContentEntryPseudoReference_whenNotEnoughItems_shouldThrowException() {
-        // GIVEN
-        ContentEntryDto entry = createContentEntryWithItems(singletonList(createContentItemWithRank(1)));
-
-        // WHEN-THEN
-        assertThrows(IllegalArgumentException.class,
-                () -> BulkDatabaseMiner.getContentEntryPseudoReference(entry));
     }
 
     @Test

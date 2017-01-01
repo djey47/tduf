@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_RIMS;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -238,5 +239,39 @@ class ContentEntryDtoTest {
 
         // THEN
         assertThat(actualItemValue).isEqualTo("V1|V2");
+    }
+
+    @Test
+    void getEffectiveRef_whenStandalone_shouldResolveSimpleREF() {
+        // GIVEN-WHEN
+        String actualRef = contentEntry.getEffectiveRef();
+
+        // THEN
+        assertThat(actualRef).isEqualTo("V1");
+    }
+
+    @Test
+    void getEffectiveRef_whenREFSupport() {
+        // GIVEN
+        contentEntry.setDataHost(DbDataDto.builder().forTopic(CAR_PHYSICS_DATA).build());
+
+        // WHEN
+        String actualRef = contentEntry.getEffectiveRef();
+
+        // THEN
+        assertThat(actualRef).isEqualTo("V1");
+    }
+
+    @Test
+    void getEffectiveRef_whenNoREFSupport() {
+        // GIVEN
+        contentEntry.appendItem(ContentItemDto.builder().ofFieldRank(2).withRawValue("V2").build());
+        contentEntry.setDataHost(DbDataDto.builder().forTopic(CAR_RIMS).build());
+
+        // WHEN
+        String actualRef = contentEntry.getEffectiveRef();
+
+        // THEN
+        assertThat(actualRef).isEqualTo("V1|V2");
     }
 }

@@ -1,5 +1,7 @@
 package fr.tduf.libunlimited.low.files.db.dto.content;
 
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
@@ -18,6 +20,8 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @JsonPropertyOrder({ "id", "items"})
 public class ContentEntryDto {
+
+    private static final String FORMAT_PSEUDO_REF = "%s|%s";
 
     @JsonProperty("items")
     private List<ContentItemDto> items;
@@ -85,6 +89,16 @@ public class ContentEntryDto {
         return of(i);
     }
 
+    @JsonIgnore
+    public String getEffectiveRef() {
+        if (dataHost == null) {
+            return getNativeRef();
+        }
+
+        DbDto.Topic topic = this.getDataHost().getTopic();
+        return DatabaseStructureQueryHelper.isUidSupportForTopic(topic) ? getNativeRef() : getPseudoRef();
+    }
+
     @JsonProperty("id")
     public int getId() {
         return dataHost == null ? -1 : dataHost.getEntryId(this);
@@ -128,8 +142,7 @@ public class ContentEntryDto {
         String secondValue = getItemAtRank(2)
                 .orElseThrow(() -> new IllegalArgumentException("Entry has no item at field rank 2"))
                 .getRawValue();
-        // TODO extract constant
-        return String.format("%s|%s", getNativeRef(), secondValue);
+        return String.format(FORMAT_PSEUDO_REF, getNativeRef(), secondValue);
     }
 
     void computeValuesHash() {

@@ -11,7 +11,6 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import java.io.Serializable;
 import java.util.*;
 import java.util.Optional;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -25,10 +24,6 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 @JsonTypeName("db")
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class DbDataDto implements Serializable {
-    private static final String THIS_CLASS_NAME = DbDataDto.class.getSimpleName();
-
-    // TODO externalize pseudo ref constants
-    private static final Pattern PATTERN_PSEUDO_REF = Pattern.compile("\\d+\\|\\d+");
 
     @JsonProperty("topic")
     private DbDto.Topic topic;
@@ -96,6 +91,10 @@ public class DbDataDto implements Serializable {
         moveEntry(entry, false);
     }
 
+    public DbDto.Topic getTopic() {
+        return topic;
+    }
+
     @Override
     public boolean equals(Object that) {
         return that != null
@@ -128,7 +127,6 @@ public class DbDataDto implements Serializable {
         return entriesByReference;
     }
 
-    // TODO to be deserialized once topic item is resolved
     @JsonSetter("entries")
     void setEntries(Collection<ContentEntryDto> entries) {
         this.entries = new ArrayList<>(entries);
@@ -183,10 +181,6 @@ public class DbDataDto implements Serializable {
 
         entries.set(entryId, neighbourEntry);
         entries.set(neighbourEntryId, entry);
-    }
-
-    private static boolean isPseudoReference(String ref) {
-        return PATTERN_PSEUDO_REF.matcher(ref).matches();
     }
 
     public static class DbDataDtoBuilder {

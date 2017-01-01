@@ -175,10 +175,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
     }
 
     private DbPatchDto.DbChangeDto makeChangeObjectForEntry(DbDto.Topic topic, ContentEntryDto entry, Integer refFieldRank, List<DbStructureDto.Field> structureFields, ItemRange fieldRange, RequiredReferences requiredReferences) {
-        String entryReference = refFieldRank == null ?
-                BulkDatabaseMiner.getContentEntryPseudoReference(entry)
-                : BulkDatabaseMiner.getContentEntryReference(entry, refFieldRank);
-
+        String entryReference = entry.getEffectiveRef();
         List<ContentItemDto> items = entry.getItems();
         if (fieldRange.isGlobal()) {
             return makeGlobalChangeObject(entryReference, topic, items, structureFields, requiredReferences);
