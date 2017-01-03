@@ -6,6 +6,7 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import org.apache.commons.lang3.Range;
 
@@ -27,7 +28,10 @@ import static java.util.stream.Collectors.toSet;
  */
 public class PlaceholderResolver {
 
-    private static final Pattern PATTERN_PLACEHOLDER = Pattern.compile("\\{(.+)\\}");
+    private static final Pattern PATTERN_PLACEHOLDER = Pattern.compile("\\{(.+)}");                         // e.g {FOO}
+    private static final Pattern PATTERN_PLACEHOLDER_PSEUDO_REF = Pattern.compile("\\{(.+)}\\|\\{(.+)}");   // e.g {FOO}|{BAR}
+
+    // TODO extract to metadata
     private static final int FIELD_RANK_ID_CAR = 102;
 
     private final DbPatchDto patchObject;
@@ -77,7 +81,7 @@ public class PlaceholderResolver {
                 .forEach(changeObject -> {
                     final DbDto.Topic currentTopic = changeObject.getTopic();
                     DbDto topicObject = databaseMiner.getDatabaseTopic(currentTopic)
-                            .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No database object found for topic: " + currentTopic));
+                            .orElseThrow(() -> new IllegalStateException("No database object found for topic: " + currentTopic));
                     String effectiveReference = resolveReferencePlaceholder(true, changeObject.getRef(), patchProperties, topicObject, generatedIdentifiers);
                     changeObject.setRef(effectiveReference);
                 });
@@ -91,7 +95,7 @@ public class PlaceholderResolver {
                 .forEach(changeObject -> {
                     final DbDto.Topic currentTopic = changeObject.getTopic();
                     DbDto topicObject = databaseMiner.getDatabaseTopic(changeObject.getTopic())
-                            .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No database object found for topic: " + currentTopic));
+                            .orElseThrow(() -> new IllegalStateException("No database object found for topic: " + currentTopic));
                     String effectiveReference = resolveReferencePlaceholder(false, changeObject.getRef(), patchProperties, topicObject, generatedIdentifiers);
                     changeObject.setRef(effectiveReference);
                 });
@@ -155,21 +159,34 @@ public class PlaceholderResolver {
                 .collect(toList());
     }
 
-    // TODO handle pseudo references
     static String resolveReferencePlaceholder(boolean forContents, String value, PatchProperties patchProperties, DbDto topicObject, Set<String> generatedIdentifiers) {
-        final Matcher matcher = PATTERN_PLACEHOLDER.matcher(value);
+        if (forContents) {
+            final Matcher matcherForPseudoRef = PATTERN_PLACEHOLDER_PSEUDO_REF.matcher(value);
+            if (matcherForPseudoRef.matches()) {
+                final String placeholderName1 = matcherForPseudoRef.group(1);
+                final String placeholderName2 = matcherForPseudoRef.group(2);
+                String ref1 = resolveReferencePlaceholderOrGenerate(true, placeholderName1, topicObject, patchProperties, generatedIdentifiers);
+                String ref2 = resolveReferencePlaceholderOrGenerate(true, placeholderName2, topicObject, patchProperties, generatedIdentifiers);
+                return String.format(ContentEntryDto.FORMAT_PSEUDO_REF, ref1, ref2);
+            }
+        }
 
+        final Matcher matcher = PATTERN_PLACEHOLDER.matcher(value);
         if (matcher.matches()) {
             final String placeholderName = matcher.group(1);
-            return patchProperties.retrieve(placeholderName)
-                    .orElseGet(() -> {
-                        String uniqueValue = generateUniqueIdentifier(forContents, topicObject, generatedIdentifiers);
-                        patchProperties.register(placeholderName, uniqueValue);
-                        return uniqueValue;
-                    });
+            return resolveReferencePlaceholderOrGenerate(forContents, placeholderName, topicObject, patchProperties, generatedIdentifiers);
         }
 
         return value;
+    }
+
+    private static String resolveReferencePlaceholderOrGenerate(boolean forContents, String placeholderName, DbDto topicObject, PatchProperties patchProperties, Set<String> generatedIdentifiers) {
+        return patchProperties.retrieve(placeholderName)
+                .orElseGet(() -> {
+                    String uniqueValue = generateUniqueIdentifier(forContents, topicObject, generatedIdentifiers);
+                    patchProperties.register(placeholderName, uniqueValue);
+                    return uniqueValue;
+                });
     }
 
     static String resolveValuePlaceholder(String value, PatchProperties patchProperties, BulkDatabaseMiner miner) {
@@ -211,10 +228,10 @@ public class PlaceholderResolver {
 
     private static String generateValueForCARIDPlaceholder(BulkDatabaseMiner miner) {
         final DbDto topicObject = miner.getDatabaseTopic(CAR_PHYSICS_DATA)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No database object found for topic: CAR_PHYSICS_DATA"));
+                .orElseThrow(() -> new IllegalStateException("No database object found for topic: CAR_PHYSICS_DATA"));
         final Set<String> allIdCars = topicObject.getData().getEntries().stream()
                 .map(entry -> entry.getItemAtRank(FIELD_RANK_ID_CAR)
-                        .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No ID_CAR item found for entry id: " + entry.getId()))
+                        .orElseThrow(() -> new IllegalStateException("No ID_CAR item found for entry id: " + entry.getId()))
                 )
                 .map(ContentItemDto::getRawValue)
                 .collect(toSet());

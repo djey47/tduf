@@ -116,7 +116,32 @@ public class PlaceholderResolverTest {
     }
 
     @Test
-    public void resolveContentsReferencePlaceholder_whenPlaceholder_withoutProperty_shouldReturnGeneratedValue() {
+    public void resolveContentsReferencePlaceholder_whenPlaceholder_andPseudoRef_withProperties_shouldReturnPropertyValue() {
+        // GIVEN
+        final PatchProperties patchProperties = new PatchProperties();
+        patchProperties.register("FOO1", "1");
+        patchProperties.register("FOO2", "2");
+
+        // WHEN-THEN
+        assertThat(
+                PlaceholderResolver.resolveReferencePlaceholder(true, "{FOO1}|{FOO2}", patchProperties, databaseObject, new HashSet<>())
+        ).isEqualTo("1|2");
+    }
+
+    @Test
+    public void resolveContentsReferencePlaceholder_whenPlaceholder_andPseudoRef_withMissingProperty_shouldReturnPropertyValue() {
+        // GIVEN
+        final PatchProperties patchProperties = new PatchProperties();
+        patchProperties.register("FOO1", "1");
+
+        // WHEN-THEN
+        assertThat(
+                PlaceholderResolver.resolveReferencePlaceholder(true, "{FOO1}|{FOO2}", patchProperties, databaseObject, new HashSet<>())
+        ).startsWith("1|");
+    }
+
+    @Test
+    public void resolveContentsReferencePlaceholder_whenPlaceholder_withMissingProperty_shouldReturnProvidedAndGeneratedValues() {
         // GIVEN-WHEN-THEN
         assertThat(
                 PlaceholderResolver.resolveReferencePlaceholder(true, "{FOO}", new PatchProperties(), databaseObject, new HashSet<>())
