@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto.TopicMetadataDto.FIELD_RANK_ID_CAR;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Objects.requireNonNull;
@@ -30,9 +31,6 @@ public class PlaceholderResolver {
 
     private static final Pattern PATTERN_PLACEHOLDER = Pattern.compile("\\{(.+)}");                         // e.g {FOO}
     private static final Pattern PATTERN_PLACEHOLDER_PSEUDO_REF = Pattern.compile("\\{(.+)}\\|\\{(.+)}");   // e.g {FOO}|{BAR}
-
-    // TODO extract to metadata
-    private static final int FIELD_RANK_ID_CAR = 102;
 
     private final DbPatchDto patchObject;
     private final PatchProperties patchProperties;

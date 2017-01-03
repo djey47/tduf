@@ -31,6 +31,8 @@ public class DbMetadataDto {
     @JsonTypeName("topicMetadata")
     public static class TopicMetadataDto {
 
+        public static final int FIELD_RANK_ID_CAR = 102;
+
         @JsonProperty("topicName")
         private DbDto.Topic topic;
 
