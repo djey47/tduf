@@ -21,7 +21,7 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 @JsonPropertyOrder({ "id", "items"})
 public class ContentEntryDto {
 
-    private static final String FORMAT_PSEUDO_REF = "%s|%s";
+    public static final String FORMAT_PSEUDO_REF = "%s|%s";
 
     @JsonProperty("items")
     private List<ContentItemDto> items;
