@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.dto;
 
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 
@@ -32,6 +33,9 @@ public class TopicLinkDto {
 
     @JsonProperty("toolTip")
     private String toolTip;
+
+    @JsonIgnore
+    private int id;
 
     @Override
     public boolean equals(Object o) {
@@ -77,5 +81,13 @@ public class TopicLinkDto {
 
     public String getToolTip() {
         return toolTip;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
