@@ -20,6 +20,7 @@ import javafx.scene.layout.VBox;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Optional.ofNullable;
 import static javafx.geometry.Orientation.VERTICAL;
@@ -42,9 +43,13 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
      * @param profileObject : selected profile
      */
     public void addAllLinksControls(EditorLayoutDto.EditorProfileDto profileObject) {
+        AtomicInteger linkId = new AtomicInteger(0);
         profileObject.getTopicLinks().stream()
                 .sorted((topicLinkObject1, topicLinkObject2) -> Integer.compare(topicLinkObject2.getPriority(), topicLinkObject1.getPriority()))
-                .forEach(topicLinkObject -> addLinkControls(topicLinkObject, controller.getViewData().getResourcesByTopicLink()));
+                .forEach(topicLinkObject -> {
+                    topicLinkObject.setId(linkId.decrementAndGet());
+                    addLinkControls(topicLinkObject, controller.getViewData().getResourcesByTopicLink());
+                });
     }
 
     private void addLinkControls(TopicLinkDto topicLinkObject, Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> resourceListByTopicLinkIndex) {
@@ -70,7 +75,8 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
         ItemViewModel itemViewModel = controller.getViewData().getItemPropsByFieldRank();
-        addErrorSign(fieldBox, itemViewModel.errorPropertyAtFieldRank(0), itemViewModel.errorMessagePropertyAtFieldRank(0));
+        int linkId = topicLinkObject.getId();
+        addErrorSign(fieldBox, itemViewModel.errorPropertyAtFieldRank(linkId), itemViewModel.errorMessagePropertyAtFieldRank(linkId));
     }
 
     private TableView<ContentEntryDataItem> addTableViewForLinkedTopic(HBox fieldBox, TopicLinkDto topicLinkObject, ObservableList<ContentEntryDataItem> resourceData, DbDto.Topic targetTopic) {
@@ -172,7 +178,6 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
 
         String toolTipText = ofNullable(topicLinkObject.getToolTip()).orElse("");
 
-        // FIXME field rank to 0 does not allow more than 1 link
-        addFieldLabel(fieldBox, topicLinkObject.isReadOnly(), fieldName, toolTipText, 0);
+        addFieldLabel(fieldBox, topicLinkObject.isReadOnly(), fieldName, toolTipText, topicLinkObject.getId());
     }
 }

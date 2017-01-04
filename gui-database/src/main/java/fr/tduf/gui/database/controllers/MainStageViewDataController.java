@@ -500,6 +500,10 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                 )
                 .map(contentEntry -> fetchLinkResourceFromContentEntry(linkedTopicObject, contentEntry, linkObject))
                 .forEach(values::add);
+
+        if (values.isEmpty()) {
+            itemPropsByFieldRank.clearItem(linkObject.getId());
+        }
     }
 
     private void updateReferenceProperties(ContentItemDto referenceItem, DbStructureDto.Field structureField) {
@@ -531,7 +535,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
             String remoteEntryReference = contentEntry.getItems().get(1).getRawValue();
             databaseEntry.setReference(remoteEntryReference);
             databaseEntry.setInternalEntryId(contentEntry.getId());
-            databaseEntry.setValue(fetchRemoteContentsWithEntryRef(0, remoteTopic, remoteEntryReference, remoteFieldRanks));
+            databaseEntry.setValue(fetchRemoteContentsWithEntryRef(linkObject.getId(), remoteTopic, remoteEntryReference, remoteFieldRanks));
         } else {
             // Classic topic (e.g. Car_Colors)
             databaseEntry.setInternalEntryId(entryId);
