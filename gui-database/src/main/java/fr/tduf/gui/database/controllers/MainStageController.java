@@ -728,7 +728,7 @@ public class MainStageController extends AbstractGuiController {
 
     private void addLinkedEntryWithTargetRefAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, ContentEntryDataItem linkedEntry, TopicLinkDto topicLinkObject) {
         changeDataController.addLinkedEntryWithTargetRef(targetTopic, linkedEntry);
-        viewDataController.updateLinkProperties(topicLinkObject);
+        viewDataController.updateAllLinkProperties(topicLinkObject);
         TableViewHelper.selectLastRowAndScroll(tableViewSelectionModel.getTableView());
     }
 
@@ -745,7 +745,7 @@ public class MainStageController extends AbstractGuiController {
     private void removeLinkedEntryAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
         ContentEntryDataItem selectedItem = tableViewSelectionModel.getSelectedItem();
         changeDataController.removeEntryWithIdentifier(selectedItem.internalEntryIdProperty().get(), topicLinkObject.getTopic());
-        viewDataController.updateLinkProperties(topicLinkObject);
+        viewDataController.updateAllLinkProperties(topicLinkObject);
         TableViewHelper.selectRowAndScroll(tableViewSelectionModel.getSelectedIndex(), tableViewSelectionModel.getTableView());
     }
 
@@ -757,7 +757,7 @@ public class MainStageController extends AbstractGuiController {
         }
 
         changeDataController.moveEntryWithIdentifier(-1, tableViewSelectionModel.getSelectedItem().internalEntryIdProperty().get(), topicLinkObject.getTopic());
-        viewDataController.updateLinkProperties(topicLinkObject);
+        viewDataController.updateAllLinkProperties(topicLinkObject);
         TableViewHelper.selectRowAndScroll(initialRowIndex - 1, tableView);
     }
 
@@ -769,7 +769,7 @@ public class MainStageController extends AbstractGuiController {
         }
 
         changeDataController.moveEntryWithIdentifier(1, tableViewSelectionModel.getSelectedItem().internalEntryIdProperty().get(), topicLinkObject.getTopic());
-        viewDataController.updateLinkProperties(topicLinkObject);
+        viewDataController.updateAllLinkProperties(topicLinkObject);
         TableViewHelper.selectRowAndScroll(initialRowIndex + 1, tableView);
     }
 

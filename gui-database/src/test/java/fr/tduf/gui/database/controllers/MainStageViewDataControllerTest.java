@@ -20,6 +20,7 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TabPane;
@@ -85,7 +86,7 @@ public class MainStageViewDataControllerTest {
 
     private final EditorLayoutDto layoutObject = createLayoutObject();
 
-    private final DbDto topicObject = createTopicObject();
+    private final DbDto topicObject = createTopicObject(TOPIC2);
 
     private final StringProperty currentEntryLabelProperty = new SimpleStringProperty("");
     private final Property<Integer> currentEntryIndexProperty = new SimpleObjectProperty<>(-1);
@@ -299,7 +300,7 @@ public class MainStageViewDataControllerTest {
     @Test
     public void updateDisplayWithLoadedObjects_whenNoProfileInProperties_shouldUseFirstProfile_andUpdateConfiguration() throws IOException {
         // GIVEN
-        when(mainStageControllerMock.getDatabaseObjects()).thenReturn(singletonList(createTopicObject()));
+        when(mainStageControllerMock.getDatabaseObjects()).thenReturn(singletonList(createTopicObject(TOPIC2)));
         Deque<EditorLocation> navigationHistory = new ArrayDeque<>();
         navigationHistory.add(new EditorLocation(1, "profile", 0));
         when(mainStageControllerMock.getNavigationHistory()).thenReturn(navigationHistory);
@@ -325,7 +326,7 @@ public class MainStageViewDataControllerTest {
         // GIVEN
         final String profileName = getSecondLayoutProfile().getName();
         when(applicationConfigurationMock.getEditorProfile()).thenReturn(of(profileName));
-        when(mainStageControllerMock.getDatabaseObjects()).thenReturn(singletonList(createTopicObject()));
+        when(mainStageControllerMock.getDatabaseObjects()).thenReturn(singletonList(createTopicObject(TOPIC2)));
         when(mainStageControllerMock.getNavigationHistory()).thenReturn(new ArrayDeque<>());
 
 
@@ -345,7 +346,7 @@ public class MainStageViewDataControllerTest {
     public void updateDisplayWithLoadedObjects_whenUnknownProfileInProperties_shouldNotOverwriteProperty() throws IOException {
         // GIVEN
         when(applicationConfigurationMock.getEditorProfile()).thenReturn(of(TEST_UNK_PROFILE_NAME));
-        when(mainStageControllerMock.getDatabaseObjects()).thenReturn(singletonList(createTopicObject()));
+        when(mainStageControllerMock.getDatabaseObjects()).thenReturn(singletonList(createTopicObject(TOPIC2)));
         when(mainStageControllerMock.getNavigationHistory()).thenReturn(new ArrayDeque<>());
 
         // WHEN
@@ -541,7 +542,7 @@ public class MainStageViewDataControllerTest {
     public void updateItemProperties_withRawValueSet_andResolvedValueInIndex_forReferenceField_withUnknownRemoteReference_shouldUpdatePropertyWithErrorLabel() {
         // GIVEN
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(createTopicObjectForReference());
-        when(minerMock.getDatabaseTopicFromReference(TOPIC_REFERENCE)).thenReturn(createTopicObject());
+        when(minerMock.getDatabaseTopicFromReference(TOPIC_REFERENCE)).thenReturn(createTopicObject(TOPIC2));
         when(minerMock.getContentEntryInternalIdentifierWithReference("rawValue", TOPIC2)).thenReturn(OptionalInt.empty());
         ContentItemDto itemObject = createContentItem();
         ItemViewModel itemViewModel = controller.getItemPropsByFieldRank();
@@ -564,7 +565,7 @@ public class MainStageViewDataControllerTest {
     public void updateItemProperties_withRawValueSet_andResolvedValueInIndex_forReferenceField_withExistingRemoteReference_shouldUpdateProperty() {
         // GIVEN
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(createTopicObjectForReference());
-        when(minerMock.getDatabaseTopicFromReference(TOPIC_REFERENCE)).thenReturn(createTopicObject());
+        when(minerMock.getDatabaseTopicFromReference(TOPIC_REFERENCE)).thenReturn(createTopicObject(TOPIC2));
         when(minerMock.getContentEntryInternalIdentifierWithReference("rawValue", TOPIC2)).thenReturn(OptionalInt.of(0));
         when(minerMock.getLocalizedResourceValueFromContentEntry(0, 1, TOPIC2, LOCALE)).thenReturn(of("resource value"));
         ContentItemDto itemObject = createContentItem();
@@ -617,7 +618,7 @@ public class MainStageViewDataControllerTest {
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(createTopicObjectForRemoteResource());
         ContentItemDto itemObject = createContentItem();
 
-        when(minerMock.getDatabaseTopicFromReference(TOPIC_REMOTE_REFERENCE)).thenReturn(createTopicObject());
+        when(minerMock.getDatabaseTopicFromReference(TOPIC_REMOTE_REFERENCE)).thenReturn(createTopicObject(TOPIC2));
         when(minerMock.getLocalizedResourceValueFromTopicAndReference("rawValue", TOPIC2, LOCALE)).thenReturn(of("resolved remote value"));
 
         // WHEN
@@ -628,9 +629,9 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test(expected=IllegalStateException.class)
-    public void updateLinkProperties_whenReferenceNotAvailable_shouldThrowException() {
+    public void updateAllLinkProperties_whenReferenceNotAvailable_shouldThrowException() {
         // GIVEN
-        TopicLinkDto topicLinkObject = createTopicLinkObject();
+        TopicLinkDto topicLinkObject = createTopicLinkObject(TOPIC2);
         ContentEntryDataItem item = new ContentEntryDataItem();
         ObservableList<ContentEntryDataItem> resources = observableArrayList(item);
         controller.getResourcesByTopicLink().put(topicLinkObject, resources);
@@ -640,15 +641,15 @@ public class MainStageViewDataControllerTest {
         when(minerMock.getContentEntryReferenceWithInternalIdentifier(0, TOPIC1)).thenReturn(empty());
 
         // WHEN
-        controller.updateLinkProperties(topicLinkObject);
+        controller.updateAllLinkProperties(topicLinkObject);
 
         // THEN:ISE
     }
 
     @Test(expected=IllegalStateException.class)
-    public void updateLinkProperties_whenLinkedTopicNotFound_shouldThrowException() {
+    public void updateAllLinkProperties_whenLinkedTopicNotFound_shouldThrowException() {
         // GIVEN
-        TopicLinkDto topicLinkObject = createTopicLinkObject();
+        TopicLinkDto topicLinkObject = createTopicLinkObject(TOPIC2);
         ContentEntryDataItem item = new ContentEntryDataItem();
         ObservableList<ContentEntryDataItem> resources = observableArrayList(item);
         controller.getResourcesByTopicLink().put(topicLinkObject, resources);
@@ -659,15 +660,15 @@ public class MainStageViewDataControllerTest {
         when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(empty());
 
         // WHEN
-        controller.updateLinkProperties(topicLinkObject);
+        controller.updateAllLinkProperties(topicLinkObject);
 
         // THEN:ISE
     }
 
     @Test
-    public void updateLinkProperties_whenEntryFoundInLinkedTopic_shouldUpdateProperties() {
+    public void updateAllLinkProperties_whenEntryFoundInLinkedTopic_shouldUpdateProperties() {
         // GIVEN
-        TopicLinkDto topicLinkObject = createTopicLinkObject();
+        TopicLinkDto topicLinkObject = createTopicLinkObject(TOPIC2);
         ContentEntryDataItem item = new ContentEntryDataItem();
         ObservableList<ContentEntryDataItem> resources = observableArrayList(item);
         controller.getResourcesByTopicLink().put(topicLinkObject, resources);
@@ -679,7 +680,7 @@ public class MainStageViewDataControllerTest {
         when(minerMock.getLocalizedResourceValueFromContentEntry(0, 1, TOPIC2, LOCALE)).thenReturn(of("remote value"));
 
         // WHEN
-        controller.updateLinkProperties(topicLinkObject);
+        controller.updateAllLinkProperties(topicLinkObject);
 
         // THEN
         assertThat(resources).hasSize(1);
@@ -690,7 +691,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void updateLinkProperties_whenEntryFoundInLinkedTopic_andLinkedTopicAsAssociation_shouldUpdateProperties() {
+    public void updateAllLinkProperties_whenEntryFoundInLinkedTopic_andLinkedTopicAsAssociation_shouldUpdateProperties() {
         // GIVEN
         TopicLinkDto topicLinkObject = createTopicLinkObjectForAssociation();
         ContentEntryDataItem item = new ContentEntryDataItem();
@@ -707,7 +708,7 @@ public class MainStageViewDataControllerTest {
         when(minerMock.getLocalizedResourceValueFromContentEntry(0, 1, TOPIC4, LOCALE)).thenReturn(of("remote value"));
 
         // WHEN
-        controller.updateLinkProperties(topicLinkObject);
+        controller.updateAllLinkProperties(topicLinkObject);
 
         // THEN
         assertThat(resources).hasSize(1);
@@ -715,6 +716,29 @@ public class MainStageViewDataControllerTest {
         assertThat(actualDataItem.internalEntryIdProperty().get()).isEqualTo(0);
         assertThat(actualDataItem.referenceProperty().get()).isEqualTo("entryRef2");
         assertThat(actualDataItem.valueProperty().get()).isEqualTo("remote value");
+    }
+
+    @Test
+    public void updateLinkProperties_whenNoMoreLinkedItem_shouldResetErrorProps() {
+        // GIVEN
+        ItemViewModel itemProps = controller.getItemPropsByFieldRank();
+        itemProps.rawValuePropertyAtFieldRank(-1).set("RAW VALUE");
+        Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> remoteEntries = new HashMap<>();
+        ObservableList<ContentEntryDataItem> entries = FXCollections.observableArrayList();
+        remoteEntries.put(createTopicLinkObjectForAssociation(), entries);
+        Map.Entry<TopicLinkDto, ObservableList<ContentEntryDataItem>> remoteEntry = remoteEntries.entrySet().stream().findAny().get();
+
+        when(minerMock.getDatabaseTopic(TOPIC3)).thenReturn(of(createTopicObject(TOPIC3)));
+        when(minerMock.getContentEntryReferenceWithInternalIdentifier(-1, TOPIC1)).thenReturn(of("000000"));
+        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(TOPIC1));
+
+
+        // WHEN
+        controller.updateLinkProperties(remoteEntry);
+
+
+        // THEN
+        assertThat(itemProps.isEmpty()).isTrue();
     }
 
     @Test
@@ -739,6 +763,38 @@ public class MainStageViewDataControllerTest {
 
         // THEN
         assertThat(actualEntries).isEmpty();
+    }
+
+    @Test
+    public void fetchRemoteContentsWithEntryRef_whenRemoteEntryDoesNotExist_shouldUpdateErrorProps_andReturnDefaultValue() {
+        // GIVEN
+        when(minerMock.getContentEntryInternalIdentifierWithReference("000000", TOPIC1)).thenReturn(OptionalInt.empty());
+
+        // WHEN
+        String actualValue = controller.fetchRemoteContentsWithEntryRef(1, TOPIC1, "000000", singletonList(1));
+
+        // THEN
+        ItemViewModel itemProps = controller.getItemPropsByFieldRank();
+        assertThat(itemProps.errorMessagePropertyAtFieldRank(1).get()).isEqualTo("No content with provided identifier: either select or create one.");
+        assertThat(itemProps.errorPropertyAtFieldRank(1).get()).isTrue();
+        assertThat(actualValue).isEmpty();
+    }
+
+    @Test
+    public void fetchRemoteContentsWithEntryRef_whenRemoteEntryDoesExist_shouldNotUpdateErrorProps_andReturnResolveddValue() {
+        // GIVEN
+        ItemViewModel itemProps = controller.getItemPropsByFieldRank();
+        itemProps.errorPropertyAtFieldRank(1).set(true);
+        itemProps.errorMessagePropertyAtFieldRank(1).set("Error!");
+        when(minerMock.getContentEntryInternalIdentifierWithReference("000000", TOPIC1)).thenReturn(OptionalInt.of(0));
+
+        // WHEN
+        String actualValue = controller.fetchRemoteContentsWithEntryRef(1, TOPIC1, "000000", new ArrayList<>(0));
+
+        // THEN
+        assertThat(itemProps.errorMessagePropertyAtFieldRank(1).get()).isEqualTo("Error!");
+        assertThat(itemProps.errorPropertyAtFieldRank(1).get()).isTrue();
+        assertThat(actualValue).isEqualTo("<?>");
     }
 
     private EditorLayoutDto createLayoutObject() {
@@ -768,10 +824,10 @@ public class MainStageViewDataControllerTest {
         return layoutObject;
     }
 
-    private DbDto createTopicObject() {
+    private DbDto createTopicObject(DbDto.Topic topic) {
         return DbDto.builder()
                 .withStructure(DbStructureDto.builder()
-                        .forTopic(TOPIC2)
+                        .forTopic(topic)
                         .addItem(DbStructureDto.Field.builder()
                                 .ofRank(1)
                                 .fromType(INTEGER)
@@ -855,9 +911,10 @@ public class MainStageViewDataControllerTest {
                 .build();
     }
 
-    private TopicLinkDto createTopicLinkObject() {
+    private TopicLinkDto createTopicLinkObject(DbDto.Topic topic) {
         TopicLinkDto topicLinkObject = new TopicLinkDto();
-        topicLinkObject.setTopic(TOPIC2);
+        topicLinkObject.setTopic(topic);
+        topicLinkObject.setId(-1);
         topicLinkObject.setRemoteReferenceProfile(TEST_REMOTE_PROFILE_NAME);
         return topicLinkObject;
     }
@@ -865,6 +922,7 @@ public class MainStageViewDataControllerTest {
     private TopicLinkDto createTopicLinkObjectForAssociation() {
         TopicLinkDto topicLinkObject = new TopicLinkDto();
         topicLinkObject.setTopic(TOPIC3);
+        topicLinkObject.setId(-1);
         topicLinkObject.setRemoteReferenceProfile(TEST_REMOTE_ASSO_PROFILE_NAME);
         return topicLinkObject;
     }

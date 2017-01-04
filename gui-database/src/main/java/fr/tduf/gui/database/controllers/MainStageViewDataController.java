@@ -54,8 +54,8 @@ import static javafx.beans.binding.Bindings.size;
  * Specialized controller to display database contents.
  */
 public class MainStageViewDataController extends AbstractMainStageSubController {
-    private static final String THIS_CLASS_NAME = MainStageViewDataController.class.getSimpleName();
     private static final Class<MainStageViewDataController> thisClass = MainStageViewDataController.class;
+    private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 
     private static final String MESSAGE_NO_DATABASE_OBJECT_FOR_TOPIC = "No database object for topic: ";
 
@@ -195,11 +195,37 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         }
     }
 
-    void updateLinkProperties(TopicLinkDto topicLinkObject) {
+    void updateAllLinkProperties(TopicLinkDto topicLinkObject) {
         resourcesByTopicLink.entrySet().stream()
                 .filter(mapEntry -> mapEntry.getKey().equals(topicLinkObject))
                 .findAny()
                 .ifPresent(this::updateLinkProperties);
+    }
+
+    void updateLinkProperties(Map.Entry<TopicLinkDto, ObservableList<ContentEntryDataItem>> remoteEntry) {
+        TopicLinkDto linkObject = remoteEntry.getKey();
+        ObservableList<ContentEntryDataItem> values = remoteEntry.getValue();
+        values.clear();
+
+        final int currentEntryIndex = currentEntryIndexProperty().getValue();
+        String currentEntryRef = getMiner().getContentEntryReferenceWithInternalIdentifier(currentEntryIndex, currentTopicProperty().getValue())
+                .orElseThrow(() -> new IllegalStateException("No REF available for entry at id: " + currentEntryIndex));
+
+        final DbDto.Topic linkTopic = linkObject.getTopic();
+        DbDto linkedTopicObject = getMiner().getDatabaseTopic(linkTopic)
+                .orElseThrow(() -> new IllegalStateException(MESSAGE_NO_DATABASE_OBJECT_FOR_TOPIC + linkTopic));
+
+        linkedTopicObject.getData().getEntries().stream()
+                .filter(contentEntry -> currentEntryRef.equals(contentEntry.getItemAtRank(1)
+                        .orElseThrow(() -> new IllegalStateException("No content item at rank 1 for entry id: " + contentEntry.getId()))
+                        .getRawValue())
+                )
+                .map(contentEntry -> fetchLinkResourceFromContentEntry(linkedTopicObject, contentEntry, linkObject))
+                .forEach(values::add);
+
+        if (values.isEmpty()) {
+            itemPropsByFieldRank.clearItem(linkObject.getId());
+        }
     }
 
     void updateEntriesAndSwitchTo(int entryIndex) {
@@ -360,6 +386,27 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                 .map(Path::toString);
     }
 
+    String fetchRemoteContentsWithEntryRef(int fieldRank, DbDto.Topic remoteTopic, String remoteEntryReference, List<Integer> remoteFieldRanks) {
+        requireNonNull(remoteFieldRanks, "A list of field ranks (even empty) must be provided.");
+
+        OptionalInt potentialEntryId = getMiner().getContentEntryInternalIdentifierWithReference(remoteEntryReference, remoteTopic);
+        if (potentialEntryId.isPresent()) {
+            return DatabaseQueryHelper.fetchResourceValuesWithEntryId(
+                    potentialEntryId.getAsInt(), remoteTopic,
+                    currentLocaleProperty.getValue(),
+                    remoteFieldRanks,
+                    getMiner(),
+                    getLayoutObject());
+        }
+
+        itemPropsByFieldRank.errorPropertyAtFieldRank(fieldRank)
+                .set(true);
+        itemPropsByFieldRank.errorMessagePropertyAtFieldRank(fieldRank)
+                .set(DisplayConstants.TOOLTIP_ERROR_CONTENT_NOT_FOUND);
+
+        return DisplayConstants.VALUE_FIELD_DEFAULT;
+    }
+
     private void updateConfiguration() {
         try {
             final ApplicationConfiguration applicationConfiguration = getApplicationConfiguration();
@@ -407,8 +454,6 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     }
 
     private void initDynamicControls() {
-        itemPropsByFieldRank.clear();
-
         final EditorLayoutDto.EditorProfileDto currentProfile = currentProfileProperty.getValue();
         if (currentProfile.getFieldSettings() != null) {
             dynamicFieldControlsHelper.addAllFieldsControls(
@@ -480,32 +525,6 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                 .set(resourceValue);
     }
 
-    private void updateLinkProperties(Map.Entry<TopicLinkDto, ObservableList<ContentEntryDataItem>> remoteEntry) {
-        TopicLinkDto linkObject = remoteEntry.getKey();
-        ObservableList<ContentEntryDataItem> values = remoteEntry.getValue();
-        values.clear();
-
-        final int currentEntryIndex = currentEntryIndexProperty().getValue();
-        String currentEntryRef = getMiner().getContentEntryReferenceWithInternalIdentifier(currentEntryIndex, currentTopicProperty().getValue())
-                .orElseThrow(() -> new IllegalStateException("No REF available for entry at id: " + currentEntryIndex));
-
-        final DbDto.Topic linkTopic = linkObject.getTopic();
-        DbDto linkedTopicObject = getMiner().getDatabaseTopic(linkTopic)
-                .orElseThrow(() -> new IllegalStateException(MESSAGE_NO_DATABASE_OBJECT_FOR_TOPIC + linkTopic));
-
-        linkedTopicObject.getData().getEntries().stream()
-                .filter(contentEntry -> currentEntryRef.equals(contentEntry.getItemAtRank(1)
-                        .orElseThrow(() -> new IllegalStateException("No content item at rank 1 for entry id: " + contentEntry.getId()))
-                        .getRawValue())
-                )
-                .map(contentEntry -> fetchLinkResourceFromContentEntry(linkedTopicObject, contentEntry, linkObject))
-                .forEach(values::add);
-
-        if (values.isEmpty()) {
-            itemPropsByFieldRank.clearItem(linkObject.getId());
-        }
-    }
-
     private void updateReferenceProperties(ContentItemDto referenceItem, DbStructureDto.Field structureField) {
         DbDto.Topic remoteTopic = getMiner().getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
 
@@ -547,27 +566,6 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                     getLayoutObject()));
         }
         return databaseEntry;
-    }
-
-    private String fetchRemoteContentsWithEntryRef(int fieldRank, DbDto.Topic remoteTopic, String remoteEntryReference, List<Integer> remoteFieldRanks) {
-        requireNonNull(remoteFieldRanks, "A list of field ranks (even empty) must be provided.");
-
-        OptionalInt potentialEntryId = getMiner().getContentEntryInternalIdentifierWithReference(remoteEntryReference, remoteTopic);
-        BooleanProperty errorProperty = itemPropsByFieldRank.errorPropertyAtFieldRank(fieldRank);
-        if (potentialEntryId.isPresent()) {
-            errorProperty.set(false);
-            return DatabaseQueryHelper.fetchResourceValuesWithEntryId(
-                    potentialEntryId.getAsInt(), remoteTopic,
-                    currentLocaleProperty.getValue(),
-                    remoteFieldRanks,
-                    getMiner(),
-                    getLayoutObject());
-        }
-
-        errorProperty.set(true);
-        itemPropsByFieldRank.errorMessagePropertyAtFieldRank(fieldRank).set(DisplayConstants.TOOLTIP_ERROR_CONTENT_NOT_FOUND);
-
-        return DisplayConstants.VALUE_FIELD_DEFAULT;
     }
 
     private void switchToInitialProfile() {
