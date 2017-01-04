@@ -27,6 +27,16 @@ public class ItemViewModel {
     }
 
     /**
+     * Removes properties for a single field
+     * @param fieldRank : field rank or link identifier
+     */
+    public void clearItem(int fieldRank) {
+        itemPropsByFieldRank.remove(fieldRank);
+
+        Log.debug(THIS_CLASS_NAME, "View data store was cleared for fieldRank=" + fieldRank);
+    }
+
+    /**
      * @return true if view model does not contain any property
      */
     public boolean isEmpty() {
