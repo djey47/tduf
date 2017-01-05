@@ -499,7 +499,7 @@ public class MainStageViewDataControllerTest {
     public void updateCurrentEntryLabelProperty_whenSingleFieldRank_shouldRetrieveLabel() {
         // GIVEN
         final EditorLayoutDto.EditorProfileDto profileObject = getFirstLayoutProfile();
-        profileObject.addEntryLabelFieldRank(1);
+        profileObject.addDefaultEntryLabelFieldRank();
         controller.currentProfile().setValue(profileObject);
         final Property<Integer> currentEntryIndexProperty = new SimpleObjectProperty<>(0);
         when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(currentEntryIndexProperty);
@@ -809,7 +809,7 @@ public class MainStageViewDataControllerTest {
 
         EditorLayoutDto.EditorProfileDto remoteProfileObject = new EditorLayoutDto.EditorProfileDto(TEST_REMOTE_PROFILE_NAME);
         remoteProfileObject.setTopic(TOPIC1);
-        remoteProfileObject.addEntryLabelFieldRank(1);
+        remoteProfileObject.addDefaultEntryLabelFieldRank();
         layoutObject.getProfiles().add(remoteProfileObject);
 
         EditorLayoutDto.EditorProfileDto simpleProfileObject = new EditorLayoutDto.EditorProfileDto(TEST_PROFILE_NAME);
@@ -818,7 +818,7 @@ public class MainStageViewDataControllerTest {
 
         EditorLayoutDto.EditorProfileDto remoteAssociationProfileObject = new EditorLayoutDto.EditorProfileDto(TEST_REMOTE_ASSO_PROFILE_NAME);
         remoteAssociationProfileObject.setTopic(TOPIC3);
-        remoteAssociationProfileObject.addEntryLabelFieldRank(1);
+        remoteAssociationProfileObject.addDefaultEntryLabelFieldRank();
         layoutObject.getProfiles().add(remoteAssociationProfileObject);
 
         return layoutObject;

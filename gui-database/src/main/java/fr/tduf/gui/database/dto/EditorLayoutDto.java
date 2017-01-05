@@ -73,8 +73,8 @@ public class EditorLayoutDto {
             return entryLabelFieldRanks;
         }
 
-        public void addEntryLabelFieldRank(int fieldRank) {
-            entryLabelFieldRanks.add(fieldRank);
+        public void addDefaultEntryLabelFieldRank() {
+            entryLabelFieldRanks.add(1);
         }
 
         public void setTopic(DbDto.Topic topic) {
