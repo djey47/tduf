@@ -26,6 +26,14 @@ public class DatabaseLoader extends Service<List<DbDto>> {
     private StringProperty databaseLocation = new SimpleStringProperty();
     private SimpleObjectProperty<BankSupport> bankSupport = new SimpleObjectProperty<>();
 
+    /**
+     * Exists only for overriding/mocking purposes. Prefer using it.
+     * @return same as parent.getValue()
+     */
+    public List<DbDto> fetchValue() {
+        return getValue();
+    }
+
     @Override
     protected Task<List<DbDto>> createTask() {
         return new Task<List<DbDto>>() {
