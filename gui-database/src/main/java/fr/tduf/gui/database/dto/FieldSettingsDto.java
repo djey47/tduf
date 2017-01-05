@@ -83,4 +83,8 @@ public class FieldSettingsDto {
     public String getPluginName() {
         return pluginName;
     }
+
+    public void setPluginName(String pluginName) {
+        this.pluginName = pluginName;
+    }
 }

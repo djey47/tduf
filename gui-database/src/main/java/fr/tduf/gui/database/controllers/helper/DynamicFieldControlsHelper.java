@@ -55,6 +55,31 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
                 ));
     }
 
+    void addCustomControls(HBox fieldBox, DbStructureDto.Field field, FieldSettingsDto fieldSettings, DbDto.Topic currentTopic, StringProperty property) {
+        boolean fieldReadOnly = fieldSettings.isReadOnly();
+        int fieldRank = field.getRank();
+
+        String pluginName = fieldSettings.getPluginName();
+        if (pluginName != null) {
+            addPluginControls(pluginName, currentTopic, fieldBox, fieldSettings, property);
+            return;
+        }
+
+        switch (field.getFieldType()) {
+            case PERCENT:
+                addPercentValueControls(fieldBox, fieldRank, fieldReadOnly, property);
+                break;
+            case REFERENCE:
+                addReferenceValueControls(fieldBox, fieldReadOnly, field);
+                break;
+            default:
+                if (field.isAResourceField()) {
+                    addResourceValueControls(fieldBox, fieldReadOnly, field, currentTopic);
+                }
+                break;
+        }
+    }
+
     private void addFieldControls(DbStructureDto.Field field, DbDto.Topic currentTopic) {
         int fieldRank = field.getRank();
         final MainStageViewDataController viewData = controller.getViewData();
@@ -91,7 +116,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         addValueTextField(fieldBox, field, fieldReadOnly, toolTipText, property);
 
-        addCustomControls(fieldBox, field, fieldReadOnly, currentTopic, property);
+        addCustomControls(fieldBox, field, fieldSettings, currentTopic, property);
     }
 
     private void addValueTextField(HBox fieldBox, DbStructureDto.Field field, boolean fieldReadOnly, String toolTip, StringProperty property) {
@@ -118,23 +143,14 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
     }
 
-    private void addCustomControls(HBox fieldBox, DbStructureDto.Field field, boolean fieldReadOnly, DbDto.Topic currentTopic, StringProperty property) {
-        switch (field.getFieldType()) {
-            case PERCENT:
-                addPercentValueControls(fieldBox, field.getRank(), fieldReadOnly, property);
-                break;
-            case BITFIELD:
-                addBitfieldValueControls(fieldBox, field.getRank(), fieldReadOnly, property, currentTopic);
-                break;
-            case REFERENCE:
-                addReferenceValueControls(fieldBox, fieldReadOnly, field);
-                break;
-            default:
-                if (field.isAResourceField()) {
-                    addResourceValueControls(fieldBox, fieldReadOnly, field, currentTopic);
-                }
-                break;
-        }
+    private void addPluginControls(String pluginName, DbDto.Topic currentTopic, HBox fieldBox, FieldSettingsDto fieldSettings, StringProperty property) {
+        PluginContext pluginContext = controller.getPluginHandler().getContext();
+        pluginContext.setCurrentTopic(currentTopic);
+        pluginContext.setFieldRank(fieldSettings.getRank());
+        pluginContext.setFieldReadOnly(fieldSettings.isReadOnly());
+        pluginContext.setRawValueProperty(property);
+
+        controller.getPluginHandler().renderPluginByName(pluginName, fieldBox);
     }
 
     private void addPercentValueControls(HBox fieldBox, int fieldRank, boolean fieldReadOnly, StringProperty rawValueProperty) {
@@ -237,17 +253,6 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         fieldBox.getChildren().add(new Separator(VERTICAL));
 
         addErrorSign(fieldBox, itemViewModel.errorPropertyAtFieldRank(fieldRank), itemViewModel.errorMessagePropertyAtFieldRank(fieldRank));
-    }
-
-    private void addBitfieldValueControls(HBox fieldBox, int fieldRank, boolean fieldReadOnly, StringProperty rawValueProperty, DbDto.Topic currentTopic) {
-        // TODO Dynamic plugin use from layout
-        // TODO fill plugin context before
-        PluginContext pluginContext = controller.getPluginHandler().getContext();
-        pluginContext.setCurrentTopic(currentTopic);
-        pluginContext.setFieldRank(fieldRank);
-        pluginContext.setFieldReadOnly(fieldReadOnly);
-        pluginContext.setRawValueProperty(rawValueProperty);
-        controller.getPluginHandler().renderPluginByName("BITFIELD", fieldBox);
     }
 
     private static void addResourceValueLabel(HBox fieldBox, boolean fieldReadOnly, StringProperty property) {

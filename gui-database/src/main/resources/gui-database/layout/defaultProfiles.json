@@ -605,7 +605,8 @@
         },
         {
           "name": "BitField",
-          "rank": 103
+          "rank": 103,
+          "pluginName": "BITFIELD"
         }
       ]
     },
@@ -772,7 +773,8 @@
           "rank" : 6
         }, {
           "name" : "BitField",
-          "rank" : 7
+          "rank" : 7,
+          "pluginName": "BITFIELD"
         }
       ]
     },
@@ -873,7 +875,8 @@
         {
           "name": "BitField",
           "rank": 16,
-          "toolTip": "Effect of this option is yet unknown"
+          "toolTip": "Effect of this option is yet unknown",
+          "pluginName": "BITFIELD"
         }
       ]
     },
@@ -1413,7 +1416,8 @@
         },
         {
           "name": "BitField",
-          "rank": 17
+          "rank": 17,
+          "pluginName": "BITFIELD"
         }
       ]
     },
@@ -1512,7 +1516,8 @@
         },
         {
           "name": "BitField",
-          "rank": 13
+          "rank": 13,
+          "pluginName": "BITFIELD"
         }
       ]
     },
@@ -1619,7 +1624,8 @@
         },
         {
           "name": "BitField",
-          "rank": 3
+          "rank": 3,
+          "pluginName": "BITFIELD"
         }
       ]
     },
@@ -1642,7 +1648,8 @@
         },
         {
           "name": "BitField",
-          "rank": 4
+          "rank": 4,
+          "pluginName": "BITFIELD"
         }
       ]
     },
@@ -2372,7 +2379,8 @@
         },
         {
           "name": "BitField",
-          "rank": 103
+          "rank": 103,
+          "pluginName": "BITFIELD"
         }
       ]
     }
