@@ -15,6 +15,7 @@ import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
+import fr.tduf.gui.database.plugins.common.PluginHandler;
 import fr.tduf.gui.database.services.DatabaseLoader;
 import fr.tduf.gui.database.services.DatabaseSaver;
 import fr.tduf.gui.database.stages.EntriesDesigner;
@@ -80,6 +81,7 @@ public class MainStageController extends AbstractGuiController {
     private DialogsHelper dialogsHelper;
     private final BankSupport bankSupport = new GenuineBnkGateway(new CommandLineHelper());
     private final ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
+    private PluginHandler pluginHandler;
 
     private MainStageViewDataController viewDataController;
     private MainStageChangeDataController changeDataController;
@@ -146,6 +148,7 @@ public class MainStageController extends AbstractGuiController {
         fieldsBrowserStageController = FieldsBrowserDesigner.init(this);
 
         dialogsHelper = new DialogsHelper();
+        pluginHandler = new PluginHandler();
 
         viewDataController.initTopToolbar();
 
@@ -1056,5 +1059,9 @@ public class MainStageController extends AbstractGuiController {
 
     TextField getDatabaseLocationTextField() {
         return databaseLocationTextField;
+    }
+
+    PluginHandler getPluginHandler() {
+        return pluginHandler;
     }
 }
