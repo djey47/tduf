@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 /**
  * Defines all database editor plugins.
  */
-public enum PluginIndex {
+enum PluginIndex {
     NOPE("Default plugin, doing nothing", new NopePlugin());
 
     private final String description;
@@ -18,15 +18,15 @@ public enum PluginIndex {
         this.pluginInstance = pluginInstance;
     }
 
-    public static Stream<PluginIndex> allAsStream() {
+    static Stream<PluginIndex> allAsStream() {
         return Stream.of(values());
     }
 
-    public String getDescription() {
+    String getDescription() {
         return description;
     }
 
-    public DatabasePlugin getPluginInstance() {
+    DatabasePlugin getPluginInstance() {
         return pluginInstance;
     }
 }
