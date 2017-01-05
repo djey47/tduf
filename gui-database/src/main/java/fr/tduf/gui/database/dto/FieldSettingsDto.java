@@ -32,6 +32,9 @@ public class FieldSettingsDto {
     @JsonProperty("remoteReferenceProfile")
     private String remoteReferenceProfile;
 
+    @JsonProperty("pluginName")
+    private String pluginName;
+
     public FieldSettingsDto() {}
 
     public FieldSettingsDto(int fieldRank) {
@@ -75,5 +78,9 @@ public class FieldSettingsDto {
 
     public void setRank(int rank) {
         this.rank = rank;
+    }
+
+    public String getPluginName() {
+        return pluginName;
     }
 }
