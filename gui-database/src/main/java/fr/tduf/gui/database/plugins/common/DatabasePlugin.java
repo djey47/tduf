@@ -12,8 +12,7 @@ public interface DatabasePlugin {
     void onInit();
 
     /**
-     * Creates FX controls at specified join point.
-     * @param parentNode    : join point
+     * @return rendered FX controls
      */
-    void renderControls(Node parentNode);
+    Node renderControls();
 }
