@@ -1,38 +1,66 @@
 package fr.tduf.gui.database.controllers;
 
-import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.database.stages.MainStageDesigner;
-import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
-import javafx.stage.Stage;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
+import fr.tduf.gui.database.plugins.common.PluginHandler;
+import fr.tduf.gui.database.services.DatabaseLoader;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-@Ignore
-public class MainStageControllerTest {
+import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
-    @Rule
-    public JavaFXThreadingRule javaFXRule = new JavaFXThreadingRule();
+class MainStageControllerTest {
+    @Mock
+    private DatabaseLoader databaseLoaderMock;
 
-    @Before
+    @Mock
+    private PluginHandler pluginHandlerMock;
+
+    @Mock
+    private MainStageViewDataController viewDataControllerMock;
+
+    @InjectMocks
+    private MainStageController controller;
+
+    @BeforeEach
     public void setUp() {
-        Log.set(Log.LEVEL_TRACE);
+        initMocks(this);
     }
 
     @Test
-    public void display() throws Exception {
-        // GIVEN-WHEN
-        initMainStageController().showAndWait();
+    void handleDatabaseLoaderSuccess_whenNoLoadedObjects_shouldDoNothing() {
+        // given
+        when(databaseLoaderMock.fetchValue()).thenReturn(new ArrayList<>(0));
+
+        // when
+        controller.handleDatabaseLoaderSuccess();
+
+        // then
+        assertThat(controller.getDatabaseObjects()).isEmpty();
+        verifyZeroInteractions(pluginHandlerMock, viewDataControllerMock);
     }
 
-    private static Stage initMainStageController() throws IOException {
-        Stage stage = new Stage();
+    @Test
+    void handleDatabaseLoaderSuccess_whenLoadedObjects_shouldReplaceObjects_andUpdateDisplay() {
+        // given
+        DbDto previousDatabaseObject = DbDto.builder().build();
+        controller.getDatabaseObjects().add(previousDatabaseObject);
+        List<DbDto> loadedObjects = singletonList(DbDto.builder().build());
+        when(databaseLoaderMock.fetchValue()).thenReturn(loadedObjects);
 
-        MainStageDesigner.init(stage);
+        // when
+        controller.handleDatabaseLoaderSuccess();
 
-        return stage;
+        // then
+        assertThat(controller.getDatabaseObjects()).isEqualTo(loadedObjects);
+        verify(pluginHandlerMock).initializeAllPlugins(loadedObjects);
+        verify(viewDataControllerMock).updateDisplayWithLoadedObjects();
     }
 }

@@ -93,10 +93,11 @@ public class MainStageController extends AbstractGuiController {
     private DbDto currentTopicObject;
 
     private final BooleanProperty runningServiceProperty = new SimpleBooleanProperty();
-    private final DatabaseLoader databaseLoader = new DatabaseLoader();
     private final DatabaseSaver databaseSaver = new DatabaseSaver();
     private final DatabaseChecker databaseChecker = new DatabaseChecker();
     private final DatabaseFixer databaseFixer = new DatabaseFixer();
+    // Removing final allows it to be mocked in tests
+    private DatabaseLoader databaseLoader = new DatabaseLoader();
 
     @FXML
     Button loadDatabaseButton;
@@ -519,6 +520,16 @@ public class MainStageController extends AbstractGuiController {
         };
     }
 
+    void handleDatabaseLoaderSuccess() {
+        if (databaseLoader.fetchValue().isEmpty()) {
+            return;
+        }
+        databaseObjects.clear();
+        databaseObjects.addAll(databaseLoader.fetchValue());
+        pluginHandler.initializeAllPlugins(databaseObjects);
+        viewDataController.updateDisplayWithLoadedObjects();
+    }
+
     private void handleProfileChoiceChanged(String newProfileName) {
         Log.trace(THIS_CLASS_NAME, "->handleProfileChoiceChanged: " + newProfileName);
 
@@ -657,11 +668,8 @@ public class MainStageController extends AbstractGuiController {
 
     private ChangeListener<Worker.State> getLoaderStateChangeListener() {
         return (observableValue, oldState, newState) -> {
-            if (SUCCEEDED == newState
-                    && !databaseLoader.getValue().isEmpty()) {
-                databaseObjects.clear();
-                databaseObjects.addAll(databaseLoader.getValue());
-                viewDataController.updateDisplayWithLoadedObjects();
+            if (SUCCEEDED == newState) {
+                handleDatabaseLoaderSuccess();
             } else if (FAILED == newState) {
                 final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
                         .withContext(ERROR)
@@ -673,6 +681,7 @@ public class MainStageController extends AbstractGuiController {
             }
         };
     }
+
 
     private void browseForDatabaseDirectory() {
         if (runningServiceProperty.get()) {
