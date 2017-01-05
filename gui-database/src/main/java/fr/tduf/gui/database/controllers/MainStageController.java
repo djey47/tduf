@@ -149,7 +149,7 @@ public class MainStageController extends AbstractGuiController {
         fieldsBrowserStageController = FieldsBrowserDesigner.init(this);
 
         dialogsHelper = new DialogsHelper();
-        pluginHandler = new PluginHandler();
+        pluginHandler = new PluginHandler(this);
 
         viewDataController.initTopToolbar();
 
@@ -1070,7 +1070,7 @@ public class MainStageController extends AbstractGuiController {
         return databaseLocationTextField;
     }
 
-    PluginHandler getPluginHandler() {
+    public PluginHandler getPluginHandler() {
         return pluginHandler;
     }
 }

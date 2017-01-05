@@ -12,7 +12,8 @@ public interface DatabasePlugin {
     void onInit();
 
     /**
+     * @param context : all required information about Database Editor
      * @return rendered FX controls
      */
-    Node renderControls();
+    Node renderControls(PluginContext context);
 }

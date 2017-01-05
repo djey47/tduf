@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.plugins.common;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.database.controllers.MainStageController;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
@@ -12,8 +13,18 @@ import static java.util.Objects.requireNonNull;
 /**
  * Ensures support for database editor plugins.
  */
+// TODO public methods can't crash application: catch and log errors
 public class PluginHandler {
     private static final String THIS_CLASS_NAME = PluginHandler.class.getSimpleName();
+
+    private PluginContext context = new PluginContext();
+
+    /**
+     * Creates plugin handler for specified database editor controller
+     */
+    public PluginHandler(MainStageController mainStageController) {
+        context.setMainStageController(mainStageController);
+    }
 
     /**
      * Calls all init methods from all plugins in index
@@ -33,7 +44,7 @@ public class PluginHandler {
 
         PluginIndex resolvedPlugin = PluginIndex.valueOf(pluginName);
 
-        Node renderedNode = resolvedPlugin.getPluginInstance().renderControls();
+        Node renderedNode = resolvedPlugin.getPluginInstance().renderControls(context);
         parentPane.getChildren().add(renderedNode);
     }
 
@@ -41,5 +52,9 @@ public class PluginHandler {
         Log.debug(THIS_CLASS_NAME, "Now initializing plugin: " + pluginIndex);
 
         pluginIndex.getPluginInstance().onInit();
+    }
+
+    public PluginContext getContext() {
+        return context;
     }
 }

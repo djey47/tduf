@@ -5,25 +5,19 @@ import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
 import fr.tduf.gui.database.controllers.MainStageController;
 import fr.tduf.gui.database.controllers.MainStageViewDataController;
-import fr.tduf.gui.database.converter.BitfieldToStringConverter;
 import fr.tduf.gui.database.converter.PercentNumberToStringConverter;
 import fr.tduf.gui.database.domain.ItemViewModel;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.gui.database.listener.ErrorChangeListener;
-import fr.tduf.libunlimited.framework.base.Strings;
-import fr.tduf.libunlimited.high.files.db.common.helper.BitfieldHelper;
-import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
+import fr.tduf.gui.database.plugins.common.PluginContext;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
-import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -144,6 +138,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     }
 
     private void addPercentValueControls(HBox fieldBox, int fieldRank, boolean fieldReadOnly, StringProperty rawValueProperty) {
+        // TODO set to plugin?
         Slider slider = new Slider(0.0, 100.0, 0.0);
         slider.setShowTickLabels(true);
         slider.setShowTickMarks(true);
@@ -245,35 +240,14 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     }
 
     private void addBitfieldValueControls(HBox fieldBox, int fieldRank, boolean fieldReadOnly, StringProperty rawValueProperty, DbDto.Topic currentTopic) {
-        VBox vbox = new VBox();
-
-        BitfieldHelper bitfieldHelper = new BitfieldHelper();
-        bitfieldHelper.getBitfieldReferenceForTopic(currentTopic)
-                .ifPresent(refs -> refs
-                        .forEach(ref -> addBitValueCheckbox(vbox, fieldRank, ref, fieldReadOnly, rawValueProperty, currentTopic, bitfieldHelper)));
-
-        fieldBox.getChildren().add(vbox);
-    }
-
-    private void addBitValueCheckbox(VBox vbox, int fieldRank, DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto ref, boolean fieldReadOnly, StringProperty rawValueProperty, DbDto.Topic currentTopic, BitfieldHelper bitfieldHelper) {
-        int bitIndex = ref.getIndex();
-        String displayedIndex = Strings.padStart(Integer.toString(bitIndex), 2, '0');
-        String label = String.format("%s: %s", displayedIndex, ref.getLabel());
-        CheckBox checkBox = new CheckBox(label);
-
-        checkBox.setPadding(new Insets(0, 5, 0, 5));
-        checkBox.setDisable(fieldReadOnly);
-
-        if (StringUtils.isNotEmpty(ref.getComment())) {
-            checkBox.setTooltip(new Tooltip(ref.getComment()));
-        }
-
-        Bindings.bindBidirectional(rawValueProperty, checkBox.selectedProperty(), new BitfieldToStringConverter(currentTopic, bitIndex, rawValueProperty, bitfieldHelper));
-        if (!fieldReadOnly) {
-            checkBox.selectedProperty().addListener(controller.handleBitfieldCheckboxSelectionChange(fieldRank, rawValueProperty));
-        }
-
-        vbox.getChildren().add(checkBox);
+        // TODO Dynamic plugin use from layout
+        // TODO fill plugin context before
+        PluginContext pluginContext = controller.getPluginHandler().getContext();
+        pluginContext.setCurrentTopic(currentTopic);
+        pluginContext.setFieldRank(fieldRank);
+        pluginContext.setFieldReadOnly(fieldReadOnly);
+        pluginContext.setRawValueProperty(rawValueProperty);
+        controller.getPluginHandler().renderPluginByName("BITFIELD", fieldBox);
     }
 
     private static void addResourceValueLabel(HBox fieldBox, boolean fieldReadOnly, StringProperty property) {
