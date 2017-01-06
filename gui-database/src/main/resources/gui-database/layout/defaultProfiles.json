@@ -581,7 +581,8 @@
         },
         {
           "name": "Camera",
-          "rank": 98
+          "rank": 98,
+          "pluginName": "CAMERAS"
         },
         {
           "name": "Same_IK",
@@ -2359,7 +2360,8 @@
         {
           "name": "Camera",
           "rank": 98,
-          "group": "Aesthetic Values"
+          "group": "Aesthetic Values",
+          "pluginName": "CAMERAS"
         },
         {
           "name": "Same_IK",
