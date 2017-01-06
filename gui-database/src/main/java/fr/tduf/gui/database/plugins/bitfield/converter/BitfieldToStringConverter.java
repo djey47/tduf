@@ -1,4 +1,4 @@
-package fr.tduf.gui.database.converter;
+package fr.tduf.gui.database.plugins.bitfield.converter;
 
 import fr.tduf.libunlimited.high.files.db.common.helper.BitfieldHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;

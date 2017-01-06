@@ -1,6 +1,6 @@
 package fr.tduf.gui.database.plugins.bitfield;
 
-import fr.tduf.gui.database.converter.BitfieldToStringConverter;
+import fr.tduf.gui.database.plugins.bitfield.converter.BitfieldToStringConverter;
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
 import fr.tduf.gui.database.plugins.common.PluginContext;
 import fr.tduf.libunlimited.framework.base.Strings;
