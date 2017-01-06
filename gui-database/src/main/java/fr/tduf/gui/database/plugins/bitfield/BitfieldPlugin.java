@@ -15,6 +15,8 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
 import org.apache.commons.lang3.StringUtils;
 
+import static fr.tduf.gui.database.plugins.bitfield.common.DisplayConstants.LABEL_FORMAT_BITFIELD_CHECKBOX;
+
 /**
  * Pretty prints bitfield values with easy changes.
  * Required items in context:
@@ -46,8 +48,7 @@ public class BitfieldPlugin implements DatabasePlugin {
     private void addBitValueCheckbox(PluginContext context, VBox vbox, DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto ref) {
         int bitIndex = ref.getIndex();
         String displayedIndex = Strings.padStart(Integer.toString(bitIndex), 2, '0');
-        // TODO extract to constant
-        String label = String.format("%s: %s", displayedIndex, ref.getLabel());
+        String label = String.format(LABEL_FORMAT_BITFIELD_CHECKBOX, displayedIndex, ref.getLabel());
         CheckBox checkBox = new CheckBox(label);
 
         checkBox.setPadding(new Insets(0, 5, 0, 5));
@@ -61,6 +62,7 @@ public class BitfieldPlugin implements DatabasePlugin {
         StringProperty rawValueProperty = context.getRawValueProperty();
         Bindings.bindBidirectional(rawValueProperty, checkBox.selectedProperty(), new BitfieldToStringConverter(context.getCurrentTopic(), bitIndex, rawValueProperty, bitfieldHelper));
         if (!fieldReadOnly) {
+            // TODO create an handler field in context and use it instead
             checkBox.selectedProperty().addListener(context.getMainStageController().handleBitfieldCheckboxSelectionChange(context.getFieldRank(), rawValueProperty));
         }
 
