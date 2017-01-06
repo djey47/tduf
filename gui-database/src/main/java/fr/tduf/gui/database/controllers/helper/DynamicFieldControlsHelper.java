@@ -5,7 +5,6 @@ import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
 import fr.tduf.gui.database.controllers.MainStageController;
 import fr.tduf.gui.database.controllers.MainStageViewDataController;
-import fr.tduf.gui.database.converter.PercentNumberToStringConverter;
 import fr.tduf.gui.database.domain.ItemViewModel;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
@@ -13,7 +12,6 @@ import fr.tduf.gui.database.listener.ErrorChangeListener;
 import fr.tduf.gui.database.plugins.common.PluginContext;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.*;
@@ -56,19 +54,14 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     }
 
     void addCustomControls(HBox fieldBox, DbStructureDto.Field field, FieldSettingsDto fieldSettings, DbDto.Topic currentTopic, StringProperty property) {
-        boolean fieldReadOnly = fieldSettings.isReadOnly();
-        int fieldRank = field.getRank();
-
         String pluginName = fieldSettings.getPluginName();
         if (pluginName != null) {
             addPluginControls(pluginName, currentTopic, fieldBox, fieldSettings, property);
             return;
         }
 
+        boolean fieldReadOnly = fieldSettings.isReadOnly();
         switch (field.getFieldType()) {
-            case PERCENT:
-                addPercentValueControls(fieldBox, fieldRank, fieldReadOnly, property);
-                break;
             case REFERENCE:
                 addReferenceValueControls(fieldBox, fieldReadOnly, field);
                 break;
@@ -151,26 +144,6 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         pluginContext.setRawValueProperty(property);
 
         controller.getPluginHandler().renderPluginByName(pluginName, fieldBox);
-    }
-
-    private void addPercentValueControls(HBox fieldBox, int fieldRank, boolean fieldReadOnly, StringProperty rawValueProperty) {
-        // TODO set to plugin?
-        Slider slider = new Slider(0.0, 100.0, 0.0);
-        slider.setShowTickLabels(true);
-        slider.setShowTickMarks(true);
-        slider.setMajorTickUnit(10);
-        slider.setMinorTickCount(3);
-        slider.setBlockIncrement(1);
-        slider.setPrefWidth(450);
-        slider.setDisable(fieldReadOnly);
-
-        Bindings.bindBidirectional(rawValueProperty, slider.valueProperty(), new PercentNumberToStringConverter());
-        if (!fieldReadOnly) {
-            slider.valueChangingProperty().addListener(controller.handleSliderValueChange(fieldRank, rawValueProperty));
-        }
-
-        fieldBox.getChildren().add(slider);
-        fieldBox.getChildren().add(new Separator(VERTICAL));
     }
 
     private void addReferenceValueControls(HBox fieldBox, boolean fieldReadOnly, DbStructureDto.Field field) {

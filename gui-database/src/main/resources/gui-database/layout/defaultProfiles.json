@@ -68,7 +68,8 @@
         {
           "name": "Rarety",
           "rank": 6,
-          "group": "Datasheet"
+          "group": "Datasheet",
+          "pluginName": "PERCENT"
         },
         {
           "name": "Price_dollar",
@@ -1320,7 +1321,8 @@
         },
         {
           "name": "Rarety",
-          "rank": 8
+          "rank": 8,
+          "pluginName": "PERCENT"
         }
       ]
     },
@@ -1803,7 +1805,8 @@
           "name": "Rarety",
           "rank": 6,
           "group": "Miscellaneous",
-          "label": "Rarity"
+          "label": "Rarity",
+          "pluginName": "PERCENT"
         },
         {
           "name": "Price_dollar",

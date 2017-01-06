@@ -1,4 +1,4 @@
-package fr.tduf.gui.database.converter;
+package fr.tduf.gui.database.plugins.percent.converter;
 
 import fr.tduf.gui.database.common.DisplayConstants;
 import javafx.util.converter.NumberStringConverter;

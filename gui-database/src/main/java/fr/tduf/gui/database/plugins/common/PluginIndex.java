@@ -2,6 +2,7 @@ package fr.tduf.gui.database.plugins.common;
 
 import fr.tduf.gui.database.plugins.bitfield.BitfieldPlugin;
 import fr.tduf.gui.database.plugins.nope.NopePlugin;
+import fr.tduf.gui.database.plugins.percent.PercentPlugin;
 
 import java.util.stream.Stream;
 
@@ -10,7 +11,8 @@ import java.util.stream.Stream;
  */
 enum PluginIndex {
     NOPE("Default plugin, doing nothing", new NopePlugin()),
-    BITFIELD("Allows to display known bitfield labels and checkboxes for easier changes", new BitfieldPlugin());
+    BITFIELD("Allows to display known bitfield labels and checkboxes for easier changes", new BitfieldPlugin()),
+    PERCENT("Allows to make percent value changes easier", new PercentPlugin());
 
     private final String description;
     private final DatabasePlugin pluginInstance;
