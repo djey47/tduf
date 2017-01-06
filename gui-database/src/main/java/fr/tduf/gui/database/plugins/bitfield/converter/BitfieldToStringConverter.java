@@ -9,15 +9,13 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.gui.database.plugins.bitfield.common.DisplayConstants.VALUE_BINARY_ZERO;
 import static java.util.Objects.requireNonNull;
 
 /**
  * Converts a bitfield item into a raw value String and vice-versa.
  */
 public class BitfieldToStringConverter extends StringConverter<Boolean>{
-
-    private static final char BINARY_ZERO = '0';
-
     private final StringProperty rawValueProperty;
     private final int bitIndex;
     private final DbDto.Topic currentTopic;
@@ -36,7 +34,7 @@ public class BitfieldToStringConverter extends StringConverter<Boolean>{
     public String toString(Boolean switchState) {
         String rawValue = rawValueProperty.getValue();
         if (StringUtils.isEmpty(rawValue)) {
-            rawValue = String.valueOf(BINARY_ZERO);
+            rawValue = String.valueOf(VALUE_BINARY_ZERO);
         }
 
         return bitfieldHelper.updateRawValue(currentTopic, rawValue, bitIndex, switchState)
@@ -47,7 +45,7 @@ public class BitfieldToStringConverter extends StringConverter<Boolean>{
     public Boolean fromString(String bitfieldRawValue) {
         String rawValue = bitfieldRawValue;
         if (StringUtils.isEmpty(bitfieldRawValue)) {
-            rawValue = String.valueOf(BINARY_ZERO);
+            rawValue = String.valueOf(VALUE_BINARY_ZERO);
         }
 
         Optional<List<Boolean>> resolvedValues = bitfieldHelper.resolve(currentTopic, rawValue);
