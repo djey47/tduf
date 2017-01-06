@@ -60,7 +60,7 @@ class MainStageControllerTest {
 
         // then
         assertThat(controller.getDatabaseObjects()).isEqualTo(loadedObjects);
-        verify(pluginHandlerMock).initializeAllPlugins(loadedObjects);
+        verify(pluginHandlerMock).initializeAllPlugins();
         verify(viewDataControllerMock).updateDisplayWithLoadedObjects();
     }
 }

@@ -2,35 +2,30 @@ package fr.tduf.gui.database.plugins.common;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.database.controllers.MainStageController;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
-
-import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
 /**
  * Ensures support for database editor plugins.
  */
-// TODO public methods can't crash application: catch and log errors
 public class PluginHandler {
     private static final String THIS_CLASS_NAME = PluginHandler.class.getSimpleName();
 
-    private PluginContext context = new PluginContext();
+    private final PluginContext context = new PluginContext();
 
     /**
      * Creates plugin handler for specified database editor controller
      */
     public PluginHandler(MainStageController mainStageController) {
-        context.setMainStageController(mainStageController);
+        context.setMainStageController(requireNonNull(mainStageController, "Main stage controller instance is required."));
     }
 
     /**
      * Calls all init methods from all plugins in index
-     * @param databaseObjects   : loaded database topic objects
      */
-    public void initializeAllPlugins(List<DbDto> databaseObjects) {
+    public void initializeAllPlugins() {
        PluginIndex.allAsStream().forEach(this::initializePlugin);
     }
 
@@ -40,18 +35,26 @@ public class PluginHandler {
      * @param parentPane    : required
      */
     public void renderPluginByName(String pluginName, Pane parentPane) {
-        requireNonNull(parentPane, "A parent node to attach rendered component to is reuired");
+        requireNonNull(parentPane, "A parent node to attach rendered component to is required");
 
-        PluginIndex resolvedPlugin = PluginIndex.valueOf(pluginName);
+        try {
+            PluginIndex resolvedPlugin = PluginIndex.valueOf(pluginName);
 
-        Node renderedNode = resolvedPlugin.getPluginInstance().renderControls(context);
-        parentPane.getChildren().add(renderedNode);
+            Node renderedNode = resolvedPlugin.getPluginInstance().renderControls(context);
+            parentPane.getChildren().add(renderedNode);
+        } catch(Exception e) {
+            Log.error(THIS_CLASS_NAME, "Error occured while rendering plugin: " + pluginName, e);
+        }
     }
 
     private void initializePlugin(PluginIndex pluginIndex) {
         Log.debug(THIS_CLASS_NAME, "Now initializing plugin: " + pluginIndex);
 
-        pluginIndex.getPluginInstance().onInit();
+        try {
+            pluginIndex.getPluginInstance().onInit();
+        } catch (Exception e) {
+            Log.error(THIS_CLASS_NAME, "Error occured while initializing plugin: " + pluginIndex, e);
+        }
     }
 
     public PluginContext getContext() {

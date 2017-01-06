@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.plugins.common;
 
+import fr.tduf.gui.database.controllers.MainStageController;
 import javafx.scene.layout.HBox;
 import org.junit.jupiter.api.Test;
 
@@ -7,13 +8,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PluginHandlerTest {
-    private PluginHandler pluginHandler = new PluginHandler(null);
+    private PluginHandler pluginHandler = new PluginHandler(new MainStageController());
 
     @Test
-    void renderPluginByName_whenUnknownPlugin_shouldThrowException() {
+    void renderPluginByName_whenUnknownPlugin_shouldNotThrowException() {
         // given-when-then
-        assertThrows(IllegalArgumentException.class,
-                () -> pluginHandler.renderPluginByName("foo", new HBox()));
+        pluginHandler.renderPluginByName("foo", new HBox());
     }
 
     @Test
