@@ -10,7 +10,7 @@ import javafx.scene.layout.VBox;
  */
 public class NopePlugin implements DatabasePlugin {
     @Override
-    public void onInit() {
+    public void onInit(PluginContext context) {
 
     }
 

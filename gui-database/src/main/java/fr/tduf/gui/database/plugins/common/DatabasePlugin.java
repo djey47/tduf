@@ -8,8 +8,9 @@ import javafx.scene.Node;
 public interface DatabasePlugin {
     /**
      * Performs initialization tasks. Will be invoked once database loaded.
+     * @param context : all required information about Database Editor
      */
-    void onInit();
+    void onInit(PluginContext context);
 
     /**
      * @param context : all required information about Database Editor

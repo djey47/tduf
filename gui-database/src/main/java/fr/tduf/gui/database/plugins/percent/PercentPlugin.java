@@ -22,7 +22,7 @@ import static javafx.geometry.Orientation.VERTICAL;
  */
 public class PercentPlugin implements DatabasePlugin {
     @Override
-    public void onInit() { }
+    public void onInit(PluginContext context) { }
 
     @Override
     public Node renderControls(PluginContext context) {

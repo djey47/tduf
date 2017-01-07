@@ -51,7 +51,7 @@ public class PluginHandler {
         Log.debug(THIS_CLASS_NAME, "Now initializing plugin: " + pluginIndex);
 
         try {
-            pluginIndex.getPluginInstance().onInit();
+            pluginIndex.getPluginInstance().onInit(context);
         } catch (Exception e) {
             Log.error(THIS_CLASS_NAME, "Error occured while initializing plugin: " + pluginIndex, e);
         }

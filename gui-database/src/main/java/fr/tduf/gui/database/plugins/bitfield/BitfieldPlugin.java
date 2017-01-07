@@ -30,7 +30,7 @@ public class BitfieldPlugin implements DatabasePlugin {
     private BitfieldHelper bitfieldHelper;
 
     @Override
-    public void onInit() {
+    public void onInit(PluginContext context) {
         bitfieldHelper = new BitfieldHelper();
     }
 

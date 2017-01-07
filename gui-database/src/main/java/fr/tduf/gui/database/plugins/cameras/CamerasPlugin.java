@@ -14,7 +14,7 @@ import javafx.scene.layout.VBox;
  */
 public class CamerasPlugin implements DatabasePlugin {
     @Override
-    public void onInit() {
+    public void onInit(PluginContext context) {
 
     }
 
