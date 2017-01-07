@@ -1,6 +1,7 @@
 .gradle/
 .idea/
 build/
+classes/
 integ-tests/src/test/resources/applied/
 integ-tests/src/test/resources/banks/db/out/
 integ-tests/src/test/resources/cameras/out/
