@@ -526,7 +526,10 @@ public class MainStageController extends AbstractGuiController {
         }
         databaseObjects.clear();
         databaseObjects.addAll(databaseLoader.fetchValue());
+
+        pluginHandler.getContext().setDatabaseLocation(databaseLoader.databaseLocationProperty().get());
         pluginHandler.initializeAllPlugins();
+
         viewDataController.updateDisplayWithLoadedObjects();
     }
 

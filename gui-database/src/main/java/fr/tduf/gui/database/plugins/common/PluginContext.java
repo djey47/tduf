@@ -13,9 +13,10 @@ public class PluginContext {
     private int fieldRank;
     private boolean fieldReadOnly;
     private StringProperty rawValueProperty;
+    private String databaseLocation;
     private MainStageController mainStageController;
 
-    private CamerasContext camerasContext;
+    private CamerasContext camerasContext = new CamerasContext();
 
     public DbDto.Topic getCurrentTopic() {
         return currentTopic;
@@ -63,5 +64,13 @@ public class PluginContext {
 
     public void setCamerasContext(CamerasContext camerasContext) {
         this.camerasContext = camerasContext;
+    }
+
+    public void setDatabaseLocation(String databaseLocation) {
+        this.databaseLocation = databaseLocation;
+    }
+
+    public String getDatabaseLocation() {
+        return databaseLocation;
     }
 }
