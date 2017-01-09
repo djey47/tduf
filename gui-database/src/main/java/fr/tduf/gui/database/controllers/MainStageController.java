@@ -502,21 +502,12 @@ public class MainStageController extends AbstractGuiController {
         };
     }
 
+    // TODO Move to Percent plugin
     public ChangeListener<Boolean> handleSliderValueChange(int fieldRank, StringProperty rawValueProperty) {
         return (observable, oldState, newState) -> {
             Log.trace(THIS_CLASS_NAME, "->handleSliderValueChange, fieldRank=" + fieldRank + ", rawValue=" + rawValueProperty.get());
 
             changeDataController.updateContentItem(currentTopicObject.getTopic(), fieldRank, rawValueProperty.get());
-        };
-    }
-
-    public ChangeListener<Boolean> handleBitfieldCheckboxSelectionChange(int fieldRank, StringProperty textFieldValueProperty) {
-        return (observable, oldCheckedState, newCheckedState) -> {
-            Log.trace(THIS_CLASS_NAME, "->handleBitfieldCheckboxSelectionChange, checked=" + newCheckedState + ", fieldRank=" + fieldRank);
-
-            if (newCheckedState != oldCheckedState) {
-                changeDataController.updateContentItem(currentTopicObject.getTopic(), fieldRank, textFieldValueProperty.get());
-            }
         };
     }
 
@@ -1029,7 +1020,7 @@ public class MainStageController extends AbstractGuiController {
         return viewDataController;
     }
 
-    MainStageChangeDataController getChangeData() {
+    public MainStageChangeDataController getChangeData() {
         return changeDataController;
     }
 

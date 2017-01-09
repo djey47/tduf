@@ -1,13 +1,16 @@
 package fr.tduf.gui.database.plugins.bitfield;
 
+import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.bitfield.converter.BitfieldToStringConverter;
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
 import fr.tduf.gui.database.plugins.common.PluginContext;
 import fr.tduf.libunlimited.framework.base.Strings;
 import fr.tduf.libunlimited.high.files.db.common.helper.BitfieldHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
@@ -62,10 +65,18 @@ public class BitfieldPlugin implements DatabasePlugin {
         StringProperty rawValueProperty = context.getRawValueProperty();
         Bindings.bindBidirectional(rawValueProperty, checkBox.selectedProperty(), new BitfieldToStringConverter(context.getCurrentTopic(), bitIndex, rawValueProperty, bitfieldHelper));
         if (!fieldReadOnly) {
-            // TODO create an handler field in context and use it instead
-            checkBox.selectedProperty().addListener(context.getMainStageController().handleBitfieldCheckboxSelectionChange(context.getFieldRank(), rawValueProperty));
+            checkBox.selectedProperty().addListener(handleBitfieldCheckboxSelectionChange(context.getFieldRank(), rawValueProperty, context.getCurrentTopic(), context.getMainStageController().getChangeData()));
         }
 
         vbox.getChildren().add(checkBox);
+    }
+
+    private ChangeListener<Boolean> handleBitfieldCheckboxSelectionChange(int fieldRank, StringProperty rawValueProperty, DbDto.Topic topic, MainStageChangeDataController changeDataController) {
+        return (observable, oldCheckedState, newCheckedState) -> {
+            if (newCheckedState == oldCheckedState) {
+                return;
+            }
+            changeDataController.updateContentItem(topic, fieldRank, rawValueProperty.get());
+        };
     }
 }
