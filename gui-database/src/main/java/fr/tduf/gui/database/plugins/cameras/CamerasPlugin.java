@@ -24,11 +24,13 @@ import javafx.util.StringConverter;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import static fr.tduf.gui.database.plugins.cameras.common.DisplayConstants.LABEL_FORMAT_CAMERA_ITEM;
+import static fr.tduf.gui.database.plugins.cameras.common.DisplayConstants.LABEL_FORMAT_VIEW_ITEM;
 import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
@@ -76,27 +78,30 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
      */
     @Override
     public Node renderControls(PluginContext context) {
+        ObservableList<CameraInfo.CameraView> cameraViews = FXCollections.observableArrayList();
+        ObservableList<CameraInfo> cameraItems = FXCollections.observableArrayList(context.getCamerasContext().getAllCameras().stream()
+                .sorted(comparingLong(CameraInfo::getCameraIdentifier))
+                .collect(toList()));
+
         HBox hBox = new HBox();
 
         VBox mainColumnBox = new VBox();
 
         HBox camSelectorBox = new HBox();
-        ObservableList<CameraInfo> cameraItems = FXCollections.observableArrayList(context.getCamerasContext().getAllCameras().stream()
-                .sorted(comparingLong(CameraInfo::getCameraIdentifier))
-                .collect(toList()));
         ComboBox<CameraInfo> cameraSelectorComboBox = new ComboBox<>(cameraItems);
         cameraSelectorComboBox.setConverter(getCameraInfoToItemConverter());
         StringProperty rawValueProperty = context.getRawValueProperty();
         Bindings.bindBidirectional(
                 rawValueProperty, cameraSelectorComboBox.valueProperty(), getCameraInfoToRawValueConverter(cameraItems));
         cameraSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
-                getCameraSelectorChangeListener(context.getFieldRank(), rawValueProperty, context.getCurrentTopic(), context.getMainStageController().getChangeData()));
+                getCameraSelectorChangeListener(context.getFieldRank(), rawValueProperty, context.getCurrentTopic(), cameraViews, context.getMainStageController().getChangeData()));
         camSelectorBox.getChildren().add(new Label("Available cameras:"));
         camSelectorBox.getChildren().add(cameraSelectorComboBox);
         mainColumnBox.getChildren().add(camSelectorBox);
 
         HBox viewSelectorBox = new HBox();
-        ComboBox<Integer> viewSelectorComboBox = new ComboBox<>();
+        ComboBox<CameraInfo.CameraView> viewSelectorComboBox = new ComboBox<>(cameraViews);
+        viewSelectorComboBox.setConverter(getCameraViewToItemConverter());
         viewSelectorBox.getChildren().add(new Label("Available views:"));
         viewSelectorBox.getChildren().add(viewSelectorComboBox);
         mainColumnBox.getChildren().add(viewSelectorBox);
@@ -126,6 +131,21 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
     }
 
     // TODO extract converter to own class
+    private StringConverter<CameraInfo.CameraView> getCameraViewToItemConverter() {
+        return new StringConverter<CameraInfo.CameraView>() {
+            @Override
+            public String toString(CameraInfo.CameraView cameraView) {
+                return String.format(LABEL_FORMAT_VIEW_ITEM, cameraView.getType().getInternalId(), cameraView.getType().name());
+            }
+
+            @Override
+            public CameraInfo.CameraView fromString(String cameraIdentifierAsString) {
+                return null;
+            }
+        };
+    }
+
+    // TODO extract converter to own class
     private StringConverter<CameraInfo> getCameraInfoToRawValueConverter(ObservableList<CameraInfo> allCameras) {
         return new StringConverter<CameraInfo>() {
             @Override
@@ -148,12 +168,17 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         };
     }
 
-    private ChangeListener<CameraInfo> getCameraSelectorChangeListener(int fieldRank, StringProperty rawValueProperty, DbDto.Topic topic, MainStageChangeDataController changeDataController) {
+    private ChangeListener<CameraInfo> getCameraSelectorChangeListener(int fieldRank, StringProperty rawValueProperty, DbDto.Topic topic, ObservableList<CameraInfo.CameraView> cameraViews, MainStageChangeDataController changeDataController) {
         return (observable, oldValue, newValue) -> {
             if (Objects.equals(oldValue, newValue)) {
                 return;
             }
             changeDataController.updateContentItem(topic, fieldRank, rawValueProperty.get());
+
+            cameraViews.clear();
+            cameraViews.addAll(newValue.getViews().stream()
+                    .sorted(Comparator.comparingInt(v -> v.getType().getInternalId()))
+                    .collect(toList()));
         };
     }
 }
