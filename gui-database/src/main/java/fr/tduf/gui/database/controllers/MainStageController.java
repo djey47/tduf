@@ -57,9 +57,7 @@ import static java.util.Optional.ofNullable;
 import static javafx.beans.binding.Bindings.when;
 import static javafx.concurrent.Worker.State.FAILED;
 import static javafx.concurrent.Worker.State.SUCCEEDED;
-import static javafx.scene.control.Alert.AlertType.ERROR;
-import static javafx.scene.control.Alert.AlertType.INFORMATION;
-import static javafx.scene.control.Alert.AlertType.WARNING;
+import static javafx.scene.control.Alert.AlertType.*;
 
 /**
  * Makes it a possible to intercept all GUI events.
@@ -499,15 +497,6 @@ public class MainStageController extends AbstractGuiController {
             if (oldFocusState && !newFocusState) {
                 changeDataController.updateContentItem(currentTopicObject.getTopic(), fieldRank, textFieldValueProperty.get());
             }
-        };
-    }
-
-    // TODO Move to Percent plugin
-    public ChangeListener<Boolean> handleSliderValueChange(int fieldRank, StringProperty rawValueProperty) {
-        return (observable, oldState, newState) -> {
-            Log.trace(THIS_CLASS_NAME, "->handleSliderValueChange, fieldRank=" + fieldRank + ", rawValue=" + rawValueProperty.get());
-
-            changeDataController.updateContentItem(currentTopicObject.getTopic(), fieldRank, rawValueProperty.get());
         };
     }
 
