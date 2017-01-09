@@ -1,8 +1,10 @@
 package fr.tduf.gui.database.controllers;
 
+import fr.tduf.gui.database.plugins.common.PluginContext;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
 import fr.tduf.gui.database.services.DatabaseLoader;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import javafx.beans.property.SimpleStringProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -54,12 +56,16 @@ class MainStageControllerTest {
         controller.getDatabaseObjects().add(previousDatabaseObject);
         List<DbDto> loadedObjects = singletonList(DbDto.builder().build());
         when(databaseLoaderMock.fetchValue()).thenReturn(loadedObjects);
+        when(databaseLoaderMock.databaseLocationProperty()).thenReturn(new SimpleStringProperty("/db"));
+        PluginContext pluginContext = new PluginContext();
+        when(pluginHandlerMock.getContext()).thenReturn(pluginContext);
 
         // when
         controller.handleDatabaseLoaderSuccess();
 
         // then
         assertThat(controller.getDatabaseObjects()).isEqualTo(loadedObjects);
+        assertThat(pluginContext.getDatabaseLocation()).isEqualTo("/db");
         verify(pluginHandlerMock).initializeAllPlugins();
         verify(viewDataControllerMock).updateDisplayWithLoadedObjects();
     }
