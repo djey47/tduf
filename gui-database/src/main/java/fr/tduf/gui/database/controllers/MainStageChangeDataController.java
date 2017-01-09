@@ -36,7 +36,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Specialized controller to update database contents.
  */
-class MainStageChangeDataController extends AbstractMainStageSubController {
+public class MainStageChangeDataController extends AbstractMainStageSubController {
     private static final String THIS_CLASS_NAME = MainStageChangeDataController.class.getSimpleName();
 
     private DatabaseGenHelper databaseGenHelper;
@@ -45,7 +45,7 @@ class MainStageChangeDataController extends AbstractMainStageSubController {
         super(mainStageController);
     }
 
-    void updateContentItem(DbDto.Topic topic, int fieldRank, String newRawValue) {
+    public void updateContentItem(DbDto.Topic topic, int fieldRank, String newRawValue) {
         requireNonNull(getChangeHelper());
 
         final int currentEntryIndex = currentEntryIndexProperty().getValue();
