@@ -1,14 +1,16 @@
 package fr.tduf.gui.database.plugins.cameras;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.cameras.common.DisplayConstants;
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
 import fr.tduf.gui.database.plugins.common.PluginContext;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
 import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.Property;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,6 +26,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static fr.tduf.gui.database.plugins.cameras.common.DisplayConstants.LABEL_FORMAT_CAMERA_ITEM;
 import static java.util.Comparator.comparingLong;
@@ -83,10 +86,11 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
                 .collect(toList()));
         ComboBox<CameraInfo> cameraSelectorComboBox = new ComboBox<>(cameraItems);
         cameraSelectorComboBox.setConverter(getCameraInfoToItemConverter());
-        Property<String> rawValueProperty = context.getRawValueProperty();
+        StringProperty rawValueProperty = context.getRawValueProperty();
         Bindings.bindBidirectional(
                 rawValueProperty, cameraSelectorComboBox.valueProperty(), getCameraInfoToRawValueConverter(cameraItems));
-        cameraSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(getCameraSelectorChangeListener());
+        cameraSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
+                getCameraSelectorChangeListener(context.getFieldRank(), rawValueProperty, context.getCurrentTopic(), context.getMainStageController().getChangeData()));
         camSelectorBox.getChildren().add(new Label("Available cameras:"));
         camSelectorBox.getChildren().add(cameraSelectorComboBox);
         mainColumnBox.getChildren().add(camSelectorBox);
@@ -144,9 +148,12 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         };
     }
 
-    private ChangeListener<CameraInfo> getCameraSelectorChangeListener() {
+    private ChangeListener<CameraInfo> getCameraSelectorChangeListener(int fieldRank, StringProperty rawValueProperty, DbDto.Topic topic, MainStageChangeDataController changeDataController) {
         return (observable, oldValue, newValue) -> {
-            // TODO update views
+            if (Objects.equals(oldValue, newValue)) {
+                return;
+            }
+            changeDataController.updateContentItem(topic, fieldRank, rawValueProperty.get());
         };
     }
 }
