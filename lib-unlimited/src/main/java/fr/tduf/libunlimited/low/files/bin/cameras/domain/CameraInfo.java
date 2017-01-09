@@ -2,12 +2,11 @@ package fr.tduf.libunlimited.low.files.bin.cameras.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.stream.Collectors.toMap;
+import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
+import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 
 /**
  * Brings all information about a camera (view set)
@@ -34,6 +33,16 @@ public class CameraInfo {
     public Map<ViewKind, CameraView> getViewsByKind() {
         return getViews().stream()
                 .collect(toMap(CameraInfo.CameraView::getType, v -> v));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return reflectionEquals(this, o);
+    }
+
+    @Override
+    public int hashCode() {
+        return reflectionHashCode(this);
     }
 
     public static class CameraInfoBuilder {
@@ -104,6 +113,16 @@ public class CameraInfo {
             cameraView.settings = viewProps;
 
             return cameraView;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return reflectionEquals(this, o);
+        }
+
+        @Override
+        public int hashCode() {
+            return reflectionHashCode(this);
         }
 
         public ViewKind getType() {
