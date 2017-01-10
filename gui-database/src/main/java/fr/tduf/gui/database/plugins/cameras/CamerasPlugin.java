@@ -23,6 +23,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -43,6 +44,7 @@ import static javafx.scene.layout.Priority.ALWAYS;
 /**
  * Advanced cameras edition plugin
  */
+// TODO externalize strings
 public class CamerasPlugin implements DatabasePlugin {
 private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName();
     /**
@@ -137,6 +139,7 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
 
         TableView<Map.Entry<ViewProps, ?>> setPropertyTableView = new TableView<>(viewProps);
         setPropertyTableView.setMinSize(columWidth,200);
+        setPropertyTableView.setEditable(true);
         TableColumn<Map.Entry<ViewProps, ?>, Object> settingColumn = new TableColumn<>("Setting");
         settingColumn.setMinWidth(175);
         settingColumn.setCellValueFactory((cellData) -> (ObservableValue) new SimpleStringProperty(cellData.getValue().getKey().name()));
@@ -144,6 +147,7 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         TableColumn<Map.Entry<ViewProps, ?>, Object> valueColumn = new TableColumn<>("Value");
         valueColumn.setMinWidth(100);
         valueColumn.setCellValueFactory((cellData) -> (ObservableValue) new SimpleStringProperty(cellData.getValue().getValue().toString()));
+        valueColumn.setCellFactory(TextFieldTableCell.forTableColumn(null));
         setPropertyTableView.getColumns().add(valueColumn);
 
         mainColumnBox.getChildren().add(camSelectorBox);
@@ -151,7 +155,6 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         mainColumnBox.getChildren().add(setPropertyTableView);
 
         VBox buttonColumnBox = new VBox();
-        buttonColumnBox.getChildren().add(new Button("Apply"));
         buttonColumnBox.getChildren().add(new Button("Copy"));
         buttonColumnBox.getChildren().add(new Button("Paste"));
 
