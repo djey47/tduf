@@ -2,7 +2,9 @@ package fr.tduf.gui.database.plugins.cameras;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.database.controllers.MainStageChangeDataController;
-import fr.tduf.gui.database.plugins.cameras.common.DisplayConstants;
+import fr.tduf.gui.database.plugins.cameras.converter.CameraInfoToItemConverter;
+import fr.tduf.gui.database.plugins.cameras.converter.CameraInfoToRawValueConverter;
+import fr.tduf.gui.database.plugins.cameras.converter.CameraViewToItemConverter;
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
 import fr.tduf.gui.database.plugins.common.PluginContext;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
@@ -24,7 +26,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.util.StringConverter;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -35,8 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static fr.tduf.gui.database.plugins.cameras.common.DisplayConstants.LABEL_FORMAT_CAMERA_ITEM;
-import static fr.tduf.gui.database.plugins.cameras.common.DisplayConstants.LABEL_FORMAT_VIEW_ITEM;
 import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
@@ -92,7 +91,7 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
     @Override
     public Node renderControls(PluginContext context) {
         HBox hBox = new HBox();
-        if (context.getCamerasContext().isPluginLoaded()) {
+        if (!context.getCamerasContext().isPluginLoaded()) {
             Log.warn(THIS_CLASS_NAME, "No cameras were loaded");
             return hBox;
         }
@@ -113,10 +112,10 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         camSelectorBox.setPrefWidth(columWidth);
         ComboBox<CameraInfo> cameraSelectorComboBox = new ComboBox<>(cameraItems);
         cameraSelectorComboBox.setPrefWidth(comboWidth);
-        cameraSelectorComboBox.setConverter(getCameraInfoToItemConverter());
+        cameraSelectorComboBox.setConverter(new CameraInfoToItemConverter());
         StringProperty rawValueProperty = context.getRawValueProperty();
         Bindings.bindBidirectional(
-                rawValueProperty, cameraSelectorComboBox.valueProperty(), getCameraInfoToRawValueConverter(cameraItems));
+                rawValueProperty, cameraSelectorComboBox.valueProperty(), new CameraInfoToRawValueConverter(cameraItems));
         cameraSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
                 getCameraSelectorChangeListener(context.getFieldRank(), rawValueProperty, context.getCurrentTopic(), cameraViews, context.getMainStageController().getChangeData()));
         Region camRegion = new Region();
@@ -129,7 +128,7 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         viewSelectorBox.setPrefWidth(columWidth);
         ComboBox<CameraInfo.CameraView> viewSelectorComboBox = new ComboBox<>(cameraViews);
         viewSelectorComboBox.setPrefWidth(comboWidth);
-        viewSelectorComboBox.setConverter(getCameraViewToItemConverter());
+        viewSelectorComboBox.setConverter(new CameraViewToItemConverter());
         viewSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
                 getViewSelectorChangeListener(viewProps));
         viewSelectorBox.getChildren().add(new Label("Available views:"));
@@ -163,60 +162,6 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         hBox.getChildren().add(buttonColumnBox);
 
         return hBox;
-    }
-
-    // TODO extract converter to own class
-    private StringConverter<CameraInfo> getCameraInfoToItemConverter() {
-        return new StringConverter<CameraInfo>() {
-            @Override
-            public String toString(CameraInfo cameraInfo) {
-                // TODO add metadata
-                return String.format(LABEL_FORMAT_CAMERA_ITEM, cameraInfo.getCameraIdentifier(), cameraInfo.getViews().size());
-            }
-
-            @Override
-            public CameraInfo fromString(String cameraIdentifierAsString) {
-                return null;
-            }
-        };
-    }
-
-    // TODO extract converter to own class
-    private StringConverter<CameraInfo.CameraView> getCameraViewToItemConverter() {
-        return new StringConverter<CameraInfo.CameraView>() {
-            @Override
-            public String toString(CameraInfo.CameraView cameraView) {
-                return String.format(LABEL_FORMAT_VIEW_ITEM, cameraView.getType().getInternalId(), cameraView.getType().name());
-            }
-
-            @Override
-            public CameraInfo.CameraView fromString(String cameraIdentifierAsString) {
-                return null;
-            }
-        };
-    }
-
-    // TODO extract converter to own class
-    private StringConverter<CameraInfo> getCameraInfoToRawValueConverter(ObservableList<CameraInfo> allCameras) {
-        return new StringConverter<CameraInfo>() {
-            @Override
-            public String toString(CameraInfo cameraInfo) {
-                if (cameraInfo == null) {
-                    return DisplayConstants.LABEL_CAMERA_RAW_VALUE_DEFAULT;
-                }
-                return Long.toString(cameraInfo.getCameraIdentifier());
-            }
-
-            @Override
-            public CameraInfo fromString(String cameraIdentifierAsString) {
-                // TODO handle illegal format
-                long cameraId = Long.valueOf(cameraIdentifierAsString);
-                return allCameras.stream()
-                        .filter(camera -> camera.getCameraIdentifier() == cameraId)
-                        .findAny()
-                        .orElse(null);
-            }
-        };
     }
 
     private ChangeListener<CameraInfo> getCameraSelectorChangeListener(int fieldRank, StringProperty rawValueProperty, DbDto.Topic topic, ObservableList<CameraInfo.CameraView> cameraViews, MainStageChangeDataController changeDataController) {
