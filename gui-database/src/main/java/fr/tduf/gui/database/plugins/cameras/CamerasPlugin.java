@@ -8,22 +8,22 @@ import fr.tduf.gui.database.plugins.cameras.converter.CameraViewToItemConverter;
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
 import fr.tduf.gui.database.plugins.common.PluginContext;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -34,11 +34,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo.CameraView.fromProps;
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps.TYPE;
 import static java.util.Collections.singletonList;
 import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
+import static javafx.geometry.Orientation.VERTICAL;
+import static javafx.scene.control.cell.TextFieldTableCell.forTableColumn;
 import static javafx.scene.layout.Priority.ALWAYS;
 
 /**
@@ -51,6 +54,7 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
      * Required contextual information:
      * - databaseLocation
      * - camerasContext->allCameras
+     * - camerasContext->camerasParser
      * @param context : all required information about Database Editor
      * @throws IOException when camars file can't be parsed for some reason
      */
@@ -72,6 +76,7 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         Log.debug(THIS_CLASS_NAME, "Loading camera info from " + cameraFile);
         CamerasParser camerasParser = CamerasHelper.loadAndParseFile(cameraFile.toString());
         camerasContext.setPluginLoaded(true);
+        camerasContext.setCamerasParser(camerasParser);
 
         //noinspection ResultOfMethodCallIgnored
         camerasParser.getCameraViews().entrySet().stream()
@@ -91,30 +96,31 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
     @Override
     public Node renderControls(PluginContext context) {
         HBox hBox = new HBox();
-        if (!context.getCamerasContext().isPluginLoaded()) {
+        CamerasContext camerasContext = context.getCamerasContext();
+        if (!camerasContext.isPluginLoaded()) {
             Log.warn(THIS_CLASS_NAME, "No cameras were loaded");
             return hBox;
         }
 
         ObservableList<Map.Entry<ViewProps, ?>> viewProps = FXCollections.observableArrayList();
         ObservableList<CameraInfo.CameraView> cameraViews = FXCollections.observableArrayList();
-        ObservableList<CameraInfo> cameraItems = FXCollections.observableArrayList(context.getCamerasContext().getAllCameras().stream()
+        ObservableList<CameraInfo> cameraItems = FXCollections.observableArrayList(camerasContext.getAllCameras().stream()
                 .sorted(comparingLong(CameraInfo::getCameraIdentifier))
                 .collect(toList()));
 
         hBox.setPadding(new Insets(5.0));
 
         VBox mainColumnBox = new VBox();
-        int columWidth = 445;
-        int comboWidth = 275;
+        int mainColumWidth = 625;
+        int comboWidth = 455;
 
         HBox viewSelectorBox = new HBox();
-        viewSelectorBox.setPrefWidth(columWidth);
+        viewSelectorBox.setPrefWidth(mainColumWidth);
         ComboBox<CameraInfo.CameraView> viewSelectorComboBox = new ComboBox<>(cameraViews);
         viewSelectorComboBox.setPrefWidth(comboWidth);
         viewSelectorComboBox.setConverter(new CameraViewToItemConverter());
         viewSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
-                getViewSelectorChangeListener(viewProps));
+                getViewSelectorChangeListener(camerasContext.getViewTypeProperty(), viewProps));
         viewSelectorBox.getChildren().add(new Label("Available views:"));
         Region viewRegion = new Region();
         HBox.setHgrow(viewRegion, ALWAYS);
@@ -122,7 +128,7 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         viewSelectorBox.getChildren().add(viewSelectorComboBox);
 
         HBox camSelectorBox = new HBox();
-        camSelectorBox.setPrefWidth(columWidth);
+        camSelectorBox.setPrefWidth(mainColumWidth);
         ComboBox<CameraInfo> cameraSelectorComboBox = new ComboBox<>(cameraItems);
         cameraSelectorComboBox.setPrefWidth(comboWidth);
         cameraSelectorComboBox.setConverter(new CameraInfoToItemConverter());
@@ -138,16 +144,17 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         camSelectorBox.getChildren().add(cameraSelectorComboBox);
 
         TableView<Map.Entry<ViewProps, ?>> setPropertyTableView = new TableView<>(viewProps);
-        setPropertyTableView.setMinSize(columWidth,200);
+        setPropertyTableView.setMinSize(mainColumWidth,200);
         setPropertyTableView.setEditable(true);
-        TableColumn<Map.Entry<ViewProps, ?>, Object> settingColumn = new TableColumn<>("Setting");
+        TableColumn<Map.Entry<ViewProps, ?>, String> settingColumn = new TableColumn<>("Setting");
         settingColumn.setMinWidth(175);
-        settingColumn.setCellValueFactory((cellData) -> (ObservableValue) new SimpleStringProperty(cellData.getValue().getKey().name()));
+        settingColumn.setCellValueFactory((cellData) -> new SimpleStringProperty(cellData.getValue().getKey().name()));
         setPropertyTableView.getColumns().add(settingColumn);
-        TableColumn<Map.Entry<ViewProps, ?>, Object> valueColumn = new TableColumn<>("Value");
+        TableColumn<Map.Entry<ViewProps, ?>, String> valueColumn = new TableColumn<>("Value");
         valueColumn.setMinWidth(100);
-        valueColumn.setCellValueFactory((cellData) -> (ObservableValue) new SimpleStringProperty(cellData.getValue().getValue().toString()));
-        valueColumn.setCellFactory(TextFieldTableCell.forTableColumn(null));
+        valueColumn.setCellValueFactory((cellData) -> new SimpleStringProperty(cellData.getValue().getValue().toString()));
+        valueColumn.setCellFactory(forTableColumn());
+        valueColumn.setOnEditCommit(getCellEditEventHandler(camerasContext.getCamerasParser(), context.getRawValueProperty(), camerasContext.getViewTypeProperty()));
         setPropertyTableView.getColumns().add(valueColumn);
 
         mainColumnBox.getChildren().add(camSelectorBox);
@@ -155,14 +162,40 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         mainColumnBox.getChildren().add(setPropertyTableView);
 
         VBox buttonColumnBox = new VBox();
-        buttonColumnBox.getChildren().add(new Button("Copy"));
-        buttonColumnBox.getChildren().add(new Button("Paste"));
+//        buttonColumnBox.getChildren().add(new Button("+"));
+//        buttonColumnBox.getChildren().add(new Button("-"));
+//        buttonColumnBox.getChildren().add(new Button("C"));
+//        buttonColumnBox.getChildren().add(new Button("P"));
 
         hBox.getChildren().add(mainColumnBox);
-        hBox.getChildren().add(new Separator(Orientation.VERTICAL));
+        hBox.getChildren().add(new Separator(VERTICAL));
         hBox.getChildren().add(buttonColumnBox);
 
         return hBox;
+    }
+
+    private EventHandler<TableColumn.CellEditEvent<Map.Entry<ViewProps, ?>, String>> getCellEditEventHandler(CamerasParser camerasParser, StringProperty rawValueProperty, Property<ViewKind> currentViewType) {
+        return cellEditEvent -> {
+            // TODO check valid input?
+            Map.Entry<ViewProps, ?> editedEntry = cellEditEvent.getRowValue();
+            Log.info(THIS_CLASS_NAME, "Edited prop: " + editedEntry.getKey() + ", old=" + cellEditEvent.getOldValue() + ", new=" + cellEditEvent.getNewValue());
+
+            long cameraIdentifier = Long.valueOf(rawValueProperty.get());
+            int newValueAsNumeric = Integer.valueOf(cellEditEvent.getNewValue());
+
+            EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
+            viewProps.put(TYPE, currentViewType.getValue());
+            viewProps.put(editedEntry.getKey(), newValueAsNumeric);
+            CameraInfo updatedConfiguration = CameraInfo.builder()
+                    .forIdentifier(cameraIdentifier)
+                    .addView(fromProps(viewProps))
+                    .build();
+
+            Log.info(THIS_CLASS_NAME, "Will update camera: " + cameraIdentifier);
+            CamerasHelper.updateViews(updatedConfiguration, camerasParser);
+
+            // TODO update observable list
+        };
     }
 
     private ChangeListener<CameraInfo> getCameraSelectorChangeListener(int fieldRank, StringProperty rawValueProperty, DbDto.Topic topic, ObservableList<CameraInfo.CameraView> cameraViews, ComboBox<CameraInfo.CameraView> viewSelectorComboBox, MainStageChangeDataController changeDataController) {
@@ -191,7 +224,7 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         };
     }
 
-    private ChangeListener<CameraInfo.CameraView> getViewSelectorChangeListener(ObservableList<Map.Entry<ViewProps, ?>> allViewProps) {
+    private ChangeListener<CameraInfo.CameraView> getViewSelectorChangeListener(Property<ViewKind> currentViewTypeProperty, ObservableList<Map.Entry<ViewProps, ?>> allViewProps) {
         return (observable, oldValue, newValue) -> {
             if (Objects.equals(oldValue, newValue)) {
                 return;
@@ -200,9 +233,11 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
             allViewProps.clear();
 
             if (newValue == null) {
+                currentViewTypeProperty.setValue(null);
                 return;
             }
             allViewProps.addAll(getEditableProps(newValue));
+            currentViewTypeProperty.setValue(newValue.getType());
         };
     }
 
