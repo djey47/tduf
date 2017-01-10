@@ -31,11 +31,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
+import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps.TYPE;
+import static java.util.Collections.singletonList;
 import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
@@ -67,7 +66,6 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
             return;
         }
 
-        // TODO load via service
         camerasContext.setBinaryFileLocation(cameraFile.toString());
         Log.debug(THIS_CLASS_NAME, "Loading camera info from " + cameraFile);
         CamerasParser camerasParser = CamerasHelper.loadAndParseFile(cameraFile.toString());
@@ -189,9 +187,16 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
             if (newValue == null) {
                 return;
             }
-            allViewProps.addAll(newValue.getSettings().entrySet().stream()
-                    .sorted(Comparator.comparing(Map.Entry::getKey))
-                    .collect(toList()));
+            allViewProps.addAll(getEditableProps(newValue));
         };
+    }
+
+    private List<Map.Entry<ViewProps, ?>> getEditableProps(CameraInfo.CameraView newValue) {
+        final Set<ViewProps> nonEditableProps = new HashSet<>(singletonList(TYPE));
+
+        return newValue.getSettings().entrySet().stream()
+                .filter(propsEntry -> !nonEditableProps.contains(propsEntry.getKey()))
+                .sorted(Comparator.comparing(Map.Entry::getKey))
+                .collect(toList());
     }
 }
