@@ -11,6 +11,7 @@ import java.util.List;
 public class CamerasContext {
     private String binaryFileLocation;
     private List<CameraInfo> allCameras = new ArrayList<>();
+    private boolean pluginLoaded = false;
 
     public List<CameraInfo> getAllCameras() {
         return allCameras;
@@ -22,5 +23,17 @@ public class CamerasContext {
 
     public void setBinaryFileLocation(String binaryFileLocation) {
         this.binaryFileLocation = binaryFileLocation;
+    }
+
+    public String getBinaryFileLocation() {
+        return binaryFileLocation;
+    }
+
+    public void setPluginLoaded(boolean pluginLoaded) {
+        this.pluginLoaded = pluginLoaded;
+    }
+
+    public boolean isPluginLoaded() {
+        return pluginLoaded;
     }
 }

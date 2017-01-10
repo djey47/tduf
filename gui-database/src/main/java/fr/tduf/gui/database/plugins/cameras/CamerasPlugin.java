@@ -27,6 +27,8 @@ import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
@@ -54,17 +56,23 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
      */
     @Override
     public void onInit(PluginContext context) throws IOException {
+        CamerasContext camerasContext = context.getCamerasContext();
+        List<CameraInfo> allCameras = camerasContext.getAllCameras();
+        allCameras.clear();
 
-        // TODO what to do when JSON directory used ? ask for specific file?
-        String cameraFile = Paths.get(context.getDatabaseLocation(), "cameras.bin").toString();
-        context.getCamerasContext().setBinaryFileLocation(cameraFile);
+        String databaseLocation = context.getDatabaseLocation();
+        Path cameraFile = Paths.get(databaseLocation, "cameras.bin");
+        if (!Files.exists(cameraFile)) {
+            Log.warn(THIS_CLASS_NAME, "No cameras.bin file was found in database directory: " + databaseLocation);
+            camerasContext.setPluginLoaded(false);
+            return;
+        }
 
         // TODO load via service
+        camerasContext.setBinaryFileLocation(cameraFile.toString());
         Log.debug(THIS_CLASS_NAME, "Loading camera info from " + cameraFile);
-        CamerasParser camerasParser = CamerasHelper.loadAndParseFile(cameraFile);
-
-        List<CameraInfo> allCameras = context.getCamerasContext().getAllCameras();
-        allCameras.clear();
+        CamerasParser camerasParser = CamerasHelper.loadAndParseFile(cameraFile.toString());
+        camerasContext.setPluginLoaded(true);
 
         //noinspection ResultOfMethodCallIgnored
         camerasParser.getCameraViews().entrySet().stream()
@@ -83,13 +91,18 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
      */
     @Override
     public Node renderControls(PluginContext context) {
+        HBox hBox = new HBox();
+        if (context.getCamerasContext().isPluginLoaded()) {
+            Log.warn(THIS_CLASS_NAME, "No cameras were loaded");
+            return hBox;
+        }
+
         ObservableList<Map.Entry<ViewProps, ?>> viewProps = FXCollections.observableArrayList();
         ObservableList<CameraInfo.CameraView> cameraViews = FXCollections.observableArrayList();
         ObservableList<CameraInfo> cameraItems = FXCollections.observableArrayList(context.getCamerasContext().getAllCameras().stream()
                 .sorted(comparingLong(CameraInfo::getCameraIdentifier))
                 .collect(toList()));
 
-        HBox hBox = new HBox();
         hBox.setPadding(new Insets(5.0));
 
         VBox mainColumnBox = new VBox();
