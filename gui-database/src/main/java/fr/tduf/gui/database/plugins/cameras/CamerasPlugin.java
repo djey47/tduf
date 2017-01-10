@@ -106,22 +106,6 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         int columWidth = 445;
         int comboWidth = 275;
 
-        HBox camSelectorBox = new HBox();
-        camSelectorBox.setPrefWidth(columWidth);
-        ComboBox<CameraInfo> cameraSelectorComboBox = new ComboBox<>(cameraItems);
-        cameraSelectorComboBox.setPrefWidth(comboWidth);
-        cameraSelectorComboBox.setConverter(new CameraInfoToItemConverter());
-        StringProperty rawValueProperty = context.getRawValueProperty();
-        Bindings.bindBidirectional(
-                rawValueProperty, cameraSelectorComboBox.valueProperty(), new CameraInfoToRawValueConverter(cameraItems));
-        cameraSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
-                getCameraSelectorChangeListener(context.getFieldRank(), rawValueProperty, context.getCurrentTopic(), cameraViews, context.getMainStageController().getChangeData()));
-        Region camRegion = new Region();
-        HBox.setHgrow(camRegion, ALWAYS);
-        camSelectorBox.getChildren().add(new Label("Available cameras:"));
-        camSelectorBox.getChildren().add(camRegion);
-        camSelectorBox.getChildren().add(cameraSelectorComboBox);
-
         HBox viewSelectorBox = new HBox();
         viewSelectorBox.setPrefWidth(columWidth);
         ComboBox<CameraInfo.CameraView> viewSelectorComboBox = new ComboBox<>(cameraViews);
@@ -134,6 +118,22 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         HBox.setHgrow(viewRegion, ALWAYS);
         viewSelectorBox.getChildren().add(viewRegion);
         viewSelectorBox.getChildren().add(viewSelectorComboBox);
+
+        HBox camSelectorBox = new HBox();
+        camSelectorBox.setPrefWidth(columWidth);
+        ComboBox<CameraInfo> cameraSelectorComboBox = new ComboBox<>(cameraItems);
+        cameraSelectorComboBox.setPrefWidth(comboWidth);
+        cameraSelectorComboBox.setConverter(new CameraInfoToItemConverter());
+        StringProperty rawValueProperty = context.getRawValueProperty();
+        Bindings.bindBidirectional(
+                rawValueProperty, cameraSelectorComboBox.valueProperty(), new CameraInfoToRawValueConverter(cameraItems));
+        cameraSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
+                getCameraSelectorChangeListener(context.getFieldRank(), rawValueProperty, context.getCurrentTopic(), cameraViews, viewSelectorComboBox, context.getMainStageController().getChangeData()));
+        Region camRegion = new Region();
+        HBox.setHgrow(camRegion, ALWAYS);
+        camSelectorBox.getChildren().add(new Label("Available cameras:"));
+        camSelectorBox.getChildren().add(camRegion);
+        camSelectorBox.getChildren().add(cameraSelectorComboBox);
 
         TableView<Map.Entry<ViewProps, ?>> setPropertyTableView = new TableView<>(viewProps);
         setPropertyTableView.setMinSize(columWidth,200);
@@ -162,17 +162,29 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         return hBox;
     }
 
-    private ChangeListener<CameraInfo> getCameraSelectorChangeListener(int fieldRank, StringProperty rawValueProperty, DbDto.Topic topic, ObservableList<CameraInfo.CameraView> cameraViews, MainStageChangeDataController changeDataController) {
+    private ChangeListener<CameraInfo> getCameraSelectorChangeListener(int fieldRank, StringProperty rawValueProperty, DbDto.Topic topic, ObservableList<CameraInfo.CameraView> cameraViews, ComboBox<CameraInfo.CameraView> viewSelectorComboBox, MainStageChangeDataController changeDataController) {
         return (observable, oldValue, newValue) -> {
             if (Objects.equals(oldValue, newValue)) {
                 return;
             }
-            changeDataController.updateContentItem(topic, fieldRank, rawValueProperty.get());
 
             cameraViews.clear();
+
+            String cameraIdAsString = rawValueProperty.get();
+            if (newValue == null) {
+                Log.warn(THIS_CLASS_NAME, "No camera for identifier: " + cameraIdAsString);
+                return;
+            }
+
             cameraViews.addAll(newValue.getViews().stream()
                     .sorted(Comparator.comparingInt(v -> v.getType().getInternalId()))
                     .collect(toList()));
+
+            if (!cameraViews.isEmpty()) {
+                viewSelectorComboBox.valueProperty().setValue(cameraViews.get(0));
+            }
+
+            changeDataController.updateContentItem(topic, fieldRank, cameraIdAsString);
         };
     }
 
