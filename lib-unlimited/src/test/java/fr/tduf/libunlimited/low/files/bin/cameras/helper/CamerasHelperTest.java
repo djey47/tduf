@@ -144,6 +144,15 @@ class CamerasHelperTest {
     }
 
     @Test
+    void fetchAllInformation_shouldReturnAllCameras() {
+        // GIVEN-WHEN
+        List<CameraInfo> cameraInfos = CamerasHelper.fetchAllInformation(readOnlyParser);
+
+        // THEN
+        assertThat(cameraInfos).hasSize(148);
+    }
+
+    @Test
     void updateViews_whenNullConfiguration_shouldThrowException() throws IOException {
         // GIVEN-WHEN-THEN
         assertThrows(NullPointerException.class,

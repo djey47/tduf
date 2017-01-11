@@ -101,6 +101,17 @@ public class CamerasHelper {
     }
 
     /**
+     * @param parser : parsed cameras contents
+     * @return all cameras and their view properties.
+     */
+    public static List<CameraInfo> fetchAllInformation(CamerasParser parser) {
+        return parser.getCameraViews().entrySet().stream()
+                .map(Map.Entry::getKey)
+                .map(cameraId -> CamerasHelper.fetchInformation(cameraId, parser))
+                .collect(toList());
+    }
+
+    /**
      * @param configuration : view properties to be updated
      * @param parser        : parsed cameras contents
      * @return updated view properties.
