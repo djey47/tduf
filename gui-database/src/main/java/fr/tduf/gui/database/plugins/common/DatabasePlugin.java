@@ -18,7 +18,7 @@ public interface DatabasePlugin {
      * Performs saving tasks or processing drawn by database saving
      * @param context : all required information about Database Editor
      */
-    void onSave(PluginContext context);
+    void onSave(PluginContext context) throws IOException;
 
     /**
      * @param context : all required information about Database Editor

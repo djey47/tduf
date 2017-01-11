@@ -11,11 +11,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class CamerasPluginTest {
     private final CamerasPlugin camerasPlugin = new CamerasPlugin();
+    private final PluginContext context = new PluginContext();
 
     @Test
     void onInit_whenNoCameras_shouldNotAttemptLoading() throws IOException {
         // given
-        PluginContext context = new PluginContext();
         context.setDatabaseLocation(".");
 
         // when
@@ -26,9 +26,14 @@ class CamerasPluginTest {
     }
 
     @Test
+    void onSave_whenNoCamerasLoaded_shouldNotAttemptSaving() throws IOException {
+        // given-when-then
+        camerasPlugin.onSave(context);
+    }
+
+    @Test
     void renderControls_whenNoCamerasLoaded_shouldReturnEmptyComponent() throws IOException {
         // given
-        PluginContext context = new PluginContext();
         context.getCamerasContext().setPluginLoaded(false);
 
         // when

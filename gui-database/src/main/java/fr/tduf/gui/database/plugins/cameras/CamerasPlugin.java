@@ -66,7 +66,7 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         allCameras.clear();
 
         String databaseLocation = context.getDatabaseLocation();
-        Path cameraFile = Paths.get(databaseLocation, "cameras.bin");
+        Path cameraFile = resolveCameraFilePath(databaseLocation);
         if (!Files.exists(cameraFile)) {
             Log.warn(THIS_CLASS_NAME, "No cameras.bin file was found in database directory: " + databaseLocation);
             camerasContext.setPluginLoaded(false);
@@ -84,8 +84,17 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
     }
 
     @Override
-    public void onSave(PluginContext context) {
-        // TODO
+    public void onSave(PluginContext context) throws IOException {
+        CamerasContext camerasContext = context.getCamerasContext();
+        if (!camerasContext.isPluginLoaded()) {
+            Log.warn(THIS_CLASS_NAME, "Cameras plugin not loaded, no saving will be performed");
+            return;
+        }
+
+        String cameraFile = camerasContext.getBinaryFileLocation();
+        Log.info(THIS_CLASS_NAME, "Saving camera info to " + cameraFile);
+        CamerasHelper.saveFile(camerasContext.getCamerasParser(), cameraFile);
+        // FIXME find why values not written to file?
     }
 
     /**
@@ -99,7 +108,7 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         HBox hBox = new HBox();
         CamerasContext camerasContext = context.getCamerasContext();
         if (!camerasContext.isPluginLoaded()) {
-            Log.warn(THIS_CLASS_NAME, "No cameras were loaded");
+            Log.warn(THIS_CLASS_NAME, "Cameras plugin not loaded, no rendering will be performed");
             return hBox;
         }
 
@@ -263,5 +272,9 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
                     .orElseThrow(() -> new IllegalStateException("View not found for camera id: " + cameraIdentifier + " : " + currentViewType.getValue()));
             cameraViews.set(replacedIndex, updatedView);
         };
+    }
+
+    private Path resolveCameraFilePath(String databaseLocation) {
+        return Paths.get(databaseLocation, "cameras.bin");
     }
 }
