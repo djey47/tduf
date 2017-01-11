@@ -40,7 +40,6 @@ import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps.TYPE;
 import static java.util.Collections.singletonList;
 import static java.util.Comparator.comparing;
 import static java.util.Comparator.comparingLong;
-import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 import static javafx.geometry.Orientation.VERTICAL;
 import static javafx.scene.control.cell.TextFieldTableCell.forTableColumn;
@@ -80,12 +79,7 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         camerasContext.setPluginLoaded(true);
         camerasContext.setCamerasParser(camerasParser);
 
-        //noinspection ResultOfMethodCallIgnored
-        camerasParser.getCameraViews().entrySet().stream()
-                .map(Map.Entry::getKey)
-                .map(cameraId -> CamerasHelper.fetchInformation(cameraId, camerasParser))
-                .collect(toCollection(() -> allCameras));
-
+        allCameras.addAll(CamerasHelper.fetchAllInformation(camerasParser));
         Log.debug(THIS_CLASS_NAME, "Loaded sets count: " + allCameras.size());
     }
 
@@ -203,20 +197,11 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
                     .map(cameraViews::indexOf)
                     .orElseThrow(() -> new IllegalStateException("Replaced view not found for camera id: " + cameraIdentifier + " : " + currentViewType.getValue()));
 
-            // TODO extract lookup by id to parser
-            CameraInfo.CameraView updatedView = camerasParser.getCameraViews().entrySet().stream()
-                    .map(Map.Entry::getKey)
-                    .filter(cameraId -> cameraIdentifier == cameraId)
+            CameraInfo.CameraView updatedView = CamerasHelper.fetchInformation(cameraIdentifier, camerasParser).getViews().stream()
+                    .filter(cv -> currentViewType.getValue() == cv.getType())
                     .findAny()
-                    .map(cameraId -> CamerasHelper.fetchInformation(cameraId, camerasParser))
-                    .flatMap(cameraInfo -> cameraInfo.getViews().stream()
-                            .filter(cv -> currentViewType.getValue() == cv.getType())
-                            .findAny())
                     .orElseThrow(() -> new IllegalStateException("View not found for camera id: " + cameraIdentifier + " : " + currentViewType.getValue()));
-
             cameraViews.set(replacedIndex, updatedView);
-
-            // TODO update camera list
         };
     }
 
@@ -235,15 +220,9 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
             }
 
             cameraViews.addAll(
-                camerasParser.getCameraViews().entrySet().stream()
-                        .map(Map.Entry::getKey)
-                        .filter(cameraId -> Long.valueOf(cameraIdAsString).equals(cameraId))
-                        .findAny()
-                        .map(cameraId -> CamerasHelper.fetchInformation(cameraId, camerasParser))
-                        .map(cameraInfo -> cameraInfo.getViews().stream()
-                                .sorted(comparing(CameraInfo.CameraView::getType))
-                                .collect(toList()))
-                        .orElse(new ArrayList<>(0))
+                    CamerasHelper.fetchInformation(Long.valueOf(cameraIdAsString), camerasParser).getViews().stream()
+                            .sorted(comparing(CameraInfo.CameraView::getType))
+                            .collect(toList())
             );
 
             if (!cameraViews.isEmpty()) {
