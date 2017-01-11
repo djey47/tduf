@@ -269,6 +269,7 @@ public class CameraTool extends GenericTool {
         return parser;
     }
 
+    // TODO use Helper method instead
     private void writeModifiedCameras(DataStore dataStore, String targetCameraFile) throws IOException {
         ByteArrayOutputStream outputStream = CamerasWriter.load(dataStore).write();
         Files.write(Paths.get(targetCameraFile), outputStream.toByteArray(), StandardOpenOption.CREATE);

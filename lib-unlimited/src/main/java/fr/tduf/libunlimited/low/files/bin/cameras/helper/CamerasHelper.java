@@ -8,11 +8,15 @@ import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
+import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasWriter;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -159,6 +163,17 @@ public class CamerasHelper {
         CamerasParser parser = CamerasParser.load(getCamerasInputStream(cameraFile));
         parser.parse();
         return parser;
+    }
+
+    /**
+     * Write file according to cameras.bin file format
+     * @param camerasParser : parsed camera contents
+     * @param cameraFile    : file to be written. Existing file will be replaced.
+     * @throws IOException when a file system error occurs
+     */
+    public static void saveFile(CamerasParser camerasParser, String cameraFile) throws IOException {
+        ByteArrayOutputStream outputStream = CamerasWriter.load(camerasParser.getDataStore()).write();
+        Files.write(Paths.get(cameraFile), outputStream.toByteArray(), StandardOpenOption.CREATE);
     }
 
     private static CameraInfo mergeCameraInfo(CameraInfo cameraInfoFromTDUF, CameraInfo cameraInfoFromTDUMT) {
