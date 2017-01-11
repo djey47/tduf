@@ -83,6 +83,11 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         Log.debug(THIS_CLASS_NAME, "Loaded sets count: " + allCameras.size());
     }
 
+    @Override
+    public void onSave(PluginContext context) {
+        // TODO
+    }
+
     /**
      * Required contextual information:
      * - rawValueProperty

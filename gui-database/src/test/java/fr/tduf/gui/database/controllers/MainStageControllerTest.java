@@ -69,4 +69,13 @@ class MainStageControllerTest {
         verify(pluginHandlerMock).initializeAllPlugins();
         verify(viewDataControllerMock).updateDisplayWithLoadedObjects();
     }
+
+    @Test
+    void handleDatabaseSaverSuccess_shouldInvokePluginHandler() {
+        // given-when
+        controller.handleDatabaseSaverSuccess();
+
+        // then
+        verify(pluginHandlerMock).triggerOnSaveForAllPLugins();
+    }
 }

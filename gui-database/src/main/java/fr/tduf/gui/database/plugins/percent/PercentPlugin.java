@@ -28,6 +28,11 @@ public class PercentPlugin implements DatabasePlugin {
     public void onInit(PluginContext context) { }
 
     @Override
+    public void onSave(PluginContext context) {
+        // Nothing to do for this plugin
+    }
+
+    @Override
     public Node renderControls(PluginContext context) {
         boolean fieldReadOnly = context.isFieldReadOnly();
         StringProperty rawValueProperty = context.getRawValueProperty();

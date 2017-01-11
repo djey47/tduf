@@ -38,6 +38,11 @@ public class BitfieldPlugin implements DatabasePlugin {
     }
 
     @Override
+    public void onSave(PluginContext context) {
+        // Nothing to do for this plugin
+    }
+
+    @Override
     public Node renderControls(PluginContext context) {
         VBox vbox = new VBox();
 

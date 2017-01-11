@@ -513,6 +513,10 @@ public class MainStageController extends AbstractGuiController {
         viewDataController.updateDisplayWithLoadedObjects();
     }
 
+    void handleDatabaseSaverSuccess() {
+        pluginHandler.triggerOnSaveForAllPLugins();
+    }
+
     private void handleProfileChoiceChanged(String newProfileName) {
         Log.trace(THIS_CLASS_NAME, "->handleProfileChoiceChanged: " + newProfileName);
 
@@ -630,6 +634,7 @@ public class MainStageController extends AbstractGuiController {
     private ChangeListener<Worker.State> getSaverStateChangeListener() {
         return (observableValue, oldState, newState) -> {
             if (SUCCEEDED == newState) {
+                handleDatabaseSaverSuccess();
                 final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
                         .withContext(INFORMATION)
                         .withTitle(DisplayConstants.TITLE_APPLICATION)

@@ -30,6 +30,13 @@ public class PluginHandler {
     }
 
     /**
+     * Calls all triggerOnSaveForPlugin methods from all plugins in index
+     */
+    public void triggerOnSaveForAllPLugins() {
+        PluginIndex.allAsStream().forEach(this::triggerOnSaveForPlugin);
+    }
+
+    /**
      * Renders plugin controls and attach to provided parent node.
      * @param pluginName    : must match a valid name in PluginIndex
      * @param parentPane    : required
@@ -54,6 +61,16 @@ public class PluginHandler {
             pluginIndex.getPluginInstance().onInit(context);
         } catch (Exception e) {
             Log.error(THIS_CLASS_NAME, "Error occured while initializing plugin: " + pluginIndex, e);
+        }
+    }
+
+    private void triggerOnSaveForPlugin(PluginIndex pluginIndex) {
+        Log.debug(THIS_CLASS_NAME, "Now triggering onSave for plugin: " + pluginIndex);
+
+        try {
+            pluginIndex.getPluginInstance().onSave(context);
+        } catch (Exception e) {
+            Log.error(THIS_CLASS_NAME, "Error occured while triggering onSave for plugin: " + pluginIndex, e);
         }
     }
 

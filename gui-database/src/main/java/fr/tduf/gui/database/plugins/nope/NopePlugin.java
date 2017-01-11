@@ -15,6 +15,11 @@ public class NopePlugin implements DatabasePlugin {
     }
 
     @Override
+    public void onSave(PluginContext context) {
+
+    }
+
+    @Override
     public Node renderControls(PluginContext context) {
         return new VBox();
     }
