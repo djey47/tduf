@@ -170,44 +170,6 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         return hBox;
     }
 
-    private EventHandler<TableColumn.CellEditEvent<Map.Entry<ViewProps, ?>, String>> getCellEditEventHandler(CamerasParser camerasParser, StringProperty rawValueProperty, Property<ViewKind> currentViewType, ObservableList<CameraInfo.CameraView> cameraViews) {
-        return cellEditEvent -> {
-            //noinspection unchecked
-            Map.Entry<ViewProps, Object> editedEntry = (Map.Entry<ViewProps, Object>) cellEditEvent.getRowValue();
-            Log.debug(THIS_CLASS_NAME, "Edited prop: " + editedEntry.getKey() + ", old=" + cellEditEvent.getOldValue() + ", new=" + cellEditEvent.getNewValue());
-
-            // TODO check valid input?
-            editedEntry.setValue(Integer.valueOf(cellEditEvent.getNewValue()));
-
-            EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
-            viewProps.put(TYPE, currentViewType.getValue());
-            viewProps.put(editedEntry.getKey(), editedEntry.getValue());
-
-            long cameraIdentifier = Long.valueOf(rawValueProperty.get());
-            CameraInfo updatedConfiguration = CameraInfo.builder()
-                    .forIdentifier(cameraIdentifier)
-                    .addView(fromProps(viewProps))
-                    .build();
-
-            Log.debug(THIS_CLASS_NAME, "Will update camera: " + cameraIdentifier);
-            // TODO use return value instead of refetching it
-            CamerasHelper.updateViews(updatedConfiguration, camerasParser);
-
-            // TODO simplify
-            int replacedIndex = cameraViews.stream()
-                    .filter(cv -> currentViewType.getValue() == cv.getType())
-                    .findAny()
-                    .map(cameraViews::indexOf)
-                    .orElseThrow(() -> new IllegalStateException("Replaced view not found for camera id: " + cameraIdentifier + " : " + currentViewType.getValue()));
-
-            CameraInfo.CameraView updatedView = CamerasHelper.fetchInformation(cameraIdentifier, camerasParser).getViews().stream()
-                    .filter(cv -> currentViewType.getValue() == cv.getType())
-                    .findAny()
-                    .orElseThrow(() -> new IllegalStateException("View not found for camera id: " + cameraIdentifier + " : " + currentViewType.getValue()));
-            cameraViews.set(replacedIndex, updatedView);
-        };
-    }
-
     private ChangeListener<CameraInfo> getCameraSelectorChangeListener(int fieldRank, StringProperty rawValueProperty, DbDto.Topic topic, ObservableList<CameraInfo.CameraView> cameraViews, ComboBox<CameraInfo.CameraView> viewSelectorComboBox, MainStageChangeDataController changeDataController, CamerasParser camerasParser) {
         return (ObservableValue<? extends CameraInfo> observable, CameraInfo oldValue, CameraInfo newValue) -> {
             if (Objects.equals(oldValue, newValue)) {
@@ -260,5 +222,41 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
                 .filter(propsEntry -> !nonEditableProps.contains(propsEntry.getKey()))
                 .sorted(comparing(Map.Entry::getKey))
                 .collect(toList());
+    }
+
+    private EventHandler<TableColumn.CellEditEvent<Map.Entry<ViewProps, ?>, String>> getCellEditEventHandler(CamerasParser camerasParser, StringProperty rawValueProperty, Property<ViewKind> currentViewType, ObservableList<CameraInfo.CameraView> cameraViews) {
+        return cellEditEvent -> {
+            //noinspection unchecked
+            Map.Entry<ViewProps, Object> editedEntry = (Map.Entry<ViewProps, Object>) cellEditEvent.getRowValue();
+            Log.debug(THIS_CLASS_NAME, "Edited prop: " + editedEntry.getKey() + ", old=" + cellEditEvent.getOldValue() + ", new=" + cellEditEvent.getNewValue());
+
+            // TODO check valid input?
+            editedEntry.setValue(Integer.valueOf(cellEditEvent.getNewValue()));
+
+            EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
+            viewProps.put(TYPE, currentViewType.getValue());
+            viewProps.put(editedEntry.getKey(), editedEntry.getValue());
+
+            long cameraIdentifier = Long.valueOf(rawValueProperty.get());
+            CameraInfo updatedConfiguration = CameraInfo.builder()
+                    .forIdentifier(cameraIdentifier)
+                    .addView(fromProps(viewProps))
+                    .build();
+
+            Log.debug(THIS_CLASS_NAME, "Will update camera: " + cameraIdentifier);
+            CameraInfo updatedCameraInfo = CamerasHelper.updateViews(updatedConfiguration, camerasParser);
+
+            // TODO simplify
+            int replacedIndex = cameraViews.stream()
+                    .filter(cv -> currentViewType.getValue() == cv.getType())
+                    .findAny()
+                    .map(cameraViews::indexOf)
+                    .orElseThrow(() -> new IllegalStateException("Replaced view not found for camera id: " + cameraIdentifier + " : " + currentViewType.getValue()));
+            CameraInfo.CameraView updatedView = updatedCameraInfo.getViews().stream()
+                    .filter(cv -> currentViewType.getValue() == cv.getType())
+                    .findAny()
+                    .orElseThrow(() -> new IllegalStateException("View not found for camera id: " + cameraIdentifier + " : " + currentViewType.getValue()));
+            cameraViews.set(replacedIndex, updatedView);
+        };
     }
 }
