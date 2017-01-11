@@ -4,18 +4,14 @@ import fr.tduf.cli.common.helper.CommandHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
 import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
-import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasWriter;
-import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -188,7 +184,7 @@ public class CameraTool extends GenericTool {
 
         outLine("> Done customizing camera set.");
 
-        writeModifiedCameras(parser.getDataStore(), targetCameraFile);
+        CamerasHelper.saveFile(parser, targetCameraFile);
 
         return makeCommandResultForViewDetails(updatedCameraInfo);
     }
@@ -221,7 +217,7 @@ public class CameraTool extends GenericTool {
 
         outLine("> Done copying camera set.");
 
-        writeModifiedCameras(parser.getDataStore(), targetCameraFile);
+        CamerasHelper.saveFile(parser, targetCameraFile);
 
         return makeCommandResultForCopy(targetCameraFile);
     }
@@ -234,7 +230,7 @@ public class CameraTool extends GenericTool {
 
         outLine("> Done copying camera sets.");
 
-        writeModifiedCameras(parser.getDataStore(), targetCameraFile);
+        CamerasHelper.saveFile(parser, targetCameraFile);
 
         return makeCommandResultForCopy(targetCameraFile);
     }
@@ -267,12 +263,6 @@ public class CameraTool extends GenericTool {
         outLine("> Done reading cameras.");
 
         return parser;
-    }
-
-    // TODO use Helper method instead
-    private void writeModifiedCameras(DataStore dataStore, String targetCameraFile) throws IOException {
-        ByteArrayOutputStream outputStream = CamerasWriter.load(dataStore).write();
-        Files.write(Paths.get(targetCameraFile), outputStream.toByteArray(), StandardOpenOption.CREATE);
     }
 
     private Map<String, Object> makeCommandResultForCopy(String fileName) {
