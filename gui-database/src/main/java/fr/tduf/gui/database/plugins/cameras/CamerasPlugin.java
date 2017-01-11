@@ -83,6 +83,12 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         Log.debug(THIS_CLASS_NAME, "Loaded sets count: " + allCameras.size());
     }
 
+    /**
+     * Required contextual information:
+     * - camerasContext->pluginLoaded
+     * - camerasContext->binaryFileLocation
+     * @param context : all required information about Database Editor
+     */
     @Override
     public void onSave(PluginContext context) throws IOException {
         CamerasContext camerasContext = context.getCamerasContext();
@@ -94,17 +100,22 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         String cameraFile = camerasContext.getBinaryFileLocation();
         Log.info(THIS_CLASS_NAME, "Saving camera info to " + cameraFile);
         CamerasHelper.saveFile(camerasContext.getCamerasParser(), cameraFile);
-        // FIXME find why values not written to file?
     }
 
     /**
      * Required contextual information:
      * - rawValueProperty
+     * - fieldRank
+     * - currentTopic
      * - camerasContext->allCameras
+     * - camerasContext->viewTypeProperty
+     * - camerasContext->camerasParser
      * @param context : all required information about Database Editor
      */
     @Override
     public Node renderControls(PluginContext context) {
+        // TODO extract methods
+
         HBox hBox = new HBox();
         CamerasContext camerasContext = context.getCamerasContext();
         if (!camerasContext.isPluginLoaded()) {
@@ -118,6 +129,9 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
                 .sorted(comparingLong(CameraInfo::getCameraIdentifier))
                 .collect(toList()));
 
+        Property<ViewKind> currentViewTypeProperty = camerasContext.getViewTypeProperty();
+        CamerasParser camerasParser = camerasContext.getCamerasParser();
+
         hBox.setPadding(new Insets(5.0));
 
         VBox mainColumnBox = new VBox();
@@ -130,7 +144,7 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         viewSelectorComboBox.setPrefWidth(comboWidth);
         viewSelectorComboBox.setConverter(new CameraViewToItemConverter());
         viewSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
-                getViewSelectorChangeListener(camerasContext.getViewTypeProperty(), viewProps));
+                getViewSelectorChangeListener(currentViewTypeProperty, viewProps));
         viewSelectorBox.getChildren().add(new Label("Available views:"));
         Region viewRegion = new Region();
         HBox.setHgrow(viewRegion, ALWAYS);
@@ -146,7 +160,7 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         Bindings.bindBidirectional(
                 rawValueProperty, cameraSelectorComboBox.valueProperty(), new CameraInfoToRawValueConverter(cameraItems));
         cameraSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
-                getCameraSelectorChangeListener(context.getFieldRank(), rawValueProperty, context.getCurrentTopic(), cameraViews, viewSelectorComboBox, context.getMainStageController().getChangeData(), camerasContext.getCamerasParser()));
+                getCameraSelectorChangeListener(context.getFieldRank(), rawValueProperty, context.getCurrentTopic(), cameraViews, viewSelectorComboBox, context.getMainStageController().getChangeData(), camerasParser));
         Region camRegion = new Region();
         HBox.setHgrow(camRegion, ALWAYS);
         camSelectorBox.getChildren().add(new Label("Available cameras:"));
@@ -164,7 +178,7 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         valueColumn.setMinWidth(100);
         valueColumn.setCellValueFactory((cellData) -> new SimpleStringProperty(cellData.getValue().getValue().toString()));
         valueColumn.setCellFactory(forTableColumn());
-        valueColumn.setOnEditCommit(getCellEditEventHandler(camerasContext.getCamerasParser(), context.getRawValueProperty(), camerasContext.getViewTypeProperty(), cameraViews));
+        valueColumn.setOnEditCommit(getCellEditEventHandler(camerasParser, context.getRawValueProperty(), currentViewTypeProperty, cameraViews));
         setPropertyTableView.getColumns().add(valueColumn);
 
         mainColumnBox.getChildren().add(camSelectorBox);
@@ -240,6 +254,8 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
 
     private EventHandler<TableColumn.CellEditEvent<Map.Entry<ViewProps, ?>, String>> getCellEditEventHandler(CamerasParser camerasParser, StringProperty rawValueProperty, Property<ViewKind> currentViewTypeProperty, ObservableList<CameraInfo.CameraView> cameraViews) {
         return cellEditEvent -> {
+            // TODO simplify
+
             //noinspection unchecked
             Map.Entry<ViewProps, Object> editedEntry = (Map.Entry<ViewProps, Object>) cellEditEvent.getRowValue();
             String newValue = cellEditEvent.getNewValue();
@@ -260,9 +276,9 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
 
             Log.debug(THIS_CLASS_NAME, "Will update camera: " + cameraIdentifier);
 
+            // FIXME does not seem to work...
             CameraInfo updatedCameraInfo = CamerasHelper.updateViews(updatedConfiguration, camerasParser);
 
-            // TODO simplify
             int replacedIndex = cameraViews.stream()
                     .filter(cv -> currentViewKind == cv.getType())
                     .findAny()

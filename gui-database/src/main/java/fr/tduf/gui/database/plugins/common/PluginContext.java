@@ -14,6 +14,7 @@ public class PluginContext {
     private boolean fieldReadOnly;
     private StringProperty rawValueProperty;
     private String databaseLocation;
+    // TODO see to replace with change data controller
     private MainStageController mainStageController;
 
     private CamerasContext camerasContext = new CamerasContext();
