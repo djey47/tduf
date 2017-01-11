@@ -172,22 +172,25 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
 
     private EventHandler<TableColumn.CellEditEvent<Map.Entry<ViewProps, ?>, String>> getCellEditEventHandler(CamerasParser camerasParser, StringProperty rawValueProperty, Property<ViewKind> currentViewType, ObservableList<CameraInfo.CameraView> cameraViews) {
         return cellEditEvent -> {
-            // TODO check valid input?
-            Map.Entry<ViewProps, ?> editedEntry = cellEditEvent.getRowValue();
-            Log.info(THIS_CLASS_NAME, "Edited prop: " + editedEntry.getKey() + ", old=" + cellEditEvent.getOldValue() + ", new=" + cellEditEvent.getNewValue());
+            //noinspection unchecked
+            Map.Entry<ViewProps, Object> editedEntry = (Map.Entry<ViewProps, Object>) cellEditEvent.getRowValue();
+            Log.debug(THIS_CLASS_NAME, "Edited prop: " + editedEntry.getKey() + ", old=" + cellEditEvent.getOldValue() + ", new=" + cellEditEvent.getNewValue());
 
-            long cameraIdentifier = Long.valueOf(rawValueProperty.get());
-            int newValueAsNumeric = Integer.valueOf(cellEditEvent.getNewValue());
+            // TODO check valid input?
+            editedEntry.setValue(Integer.valueOf(cellEditEvent.getNewValue()));
 
             EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
             viewProps.put(TYPE, currentViewType.getValue());
-            viewProps.put(editedEntry.getKey(), newValueAsNumeric);
+            viewProps.put(editedEntry.getKey(), editedEntry.getValue());
+
+            long cameraIdentifier = Long.valueOf(rawValueProperty.get());
             CameraInfo updatedConfiguration = CameraInfo.builder()
                     .forIdentifier(cameraIdentifier)
                     .addView(fromProps(viewProps))
                     .build();
 
-            Log.info(THIS_CLASS_NAME, "Will update camera: " + cameraIdentifier);
+            Log.debug(THIS_CLASS_NAME, "Will update camera: " + cameraIdentifier);
+            // TODO use return value instead of refetching it
             CamerasHelper.updateViews(updatedConfiguration, camerasParser);
 
             // TODO simplify
