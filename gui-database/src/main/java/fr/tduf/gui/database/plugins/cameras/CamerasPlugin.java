@@ -18,6 +18,7 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -37,6 +38,7 @@ import java.util.*;
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo.CameraView.fromProps;
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps.TYPE;
 import static java.util.Collections.singletonList;
+import static java.util.Comparator.comparing;
 import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
@@ -136,7 +138,7 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         Bindings.bindBidirectional(
                 rawValueProperty, cameraSelectorComboBox.valueProperty(), new CameraInfoToRawValueConverter(cameraItems));
         cameraSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
-                getCameraSelectorChangeListener(context.getFieldRank(), rawValueProperty, context.getCurrentTopic(), cameraViews, viewSelectorComboBox, context.getMainStageController().getChangeData()));
+                getCameraSelectorChangeListener(context.getFieldRank(), rawValueProperty, context.getCurrentTopic(), cameraViews, viewSelectorComboBox, context.getMainStageController().getChangeData(), camerasContext.getCamerasParser()));
         Region camRegion = new Region();
         HBox.setHgrow(camRegion, ALWAYS);
         camSelectorBox.getChildren().add(new Label("Available cameras:"));
@@ -154,7 +156,7 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         valueColumn.setMinWidth(100);
         valueColumn.setCellValueFactory((cellData) -> new SimpleStringProperty(cellData.getValue().getValue().toString()));
         valueColumn.setCellFactory(forTableColumn());
-        valueColumn.setOnEditCommit(getCellEditEventHandler(camerasContext.getCamerasParser(), context.getRawValueProperty(), camerasContext.getViewTypeProperty()));
+        valueColumn.setOnEditCommit(getCellEditEventHandler(camerasContext.getCamerasParser(), context.getRawValueProperty(), camerasContext.getViewTypeProperty(), cameraViews));
         setPropertyTableView.getColumns().add(valueColumn);
 
         mainColumnBox.getChildren().add(camSelectorBox);
@@ -174,7 +176,7 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         return hBox;
     }
 
-    private EventHandler<TableColumn.CellEditEvent<Map.Entry<ViewProps, ?>, String>> getCellEditEventHandler(CamerasParser camerasParser, StringProperty rawValueProperty, Property<ViewKind> currentViewType) {
+    private EventHandler<TableColumn.CellEditEvent<Map.Entry<ViewProps, ?>, String>> getCellEditEventHandler(CamerasParser camerasParser, StringProperty rawValueProperty, Property<ViewKind> currentViewType, ObservableList<CameraInfo.CameraView> cameraViews) {
         return cellEditEvent -> {
             // TODO check valid input?
             Map.Entry<ViewProps, ?> editedEntry = cellEditEvent.getRowValue();
@@ -194,12 +196,32 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
             Log.info(THIS_CLASS_NAME, "Will update camera: " + cameraIdentifier);
             CamerasHelper.updateViews(updatedConfiguration, camerasParser);
 
-            // TODO update observable list
+            // TODO simplify
+            int replacedIndex = cameraViews.stream()
+                    .filter(cv -> currentViewType.getValue() == cv.getType())
+                    .findAny()
+                    .map(cameraViews::indexOf)
+                    .orElseThrow(() -> new IllegalStateException("Replaced view not found for camera id: " + cameraIdentifier + " : " + currentViewType.getValue()));
+
+            // TODO extract lookup by id to parser
+            CameraInfo.CameraView updatedView = camerasParser.getCameraViews().entrySet().stream()
+                    .map(Map.Entry::getKey)
+                    .filter(cameraId -> cameraIdentifier == cameraId)
+                    .findAny()
+                    .map(cameraId -> CamerasHelper.fetchInformation(cameraId, camerasParser))
+                    .flatMap(cameraInfo -> cameraInfo.getViews().stream()
+                            .filter(cv -> currentViewType.getValue() == cv.getType())
+                            .findAny())
+                    .orElseThrow(() -> new IllegalStateException("View not found for camera id: " + cameraIdentifier + " : " + currentViewType.getValue()));
+
+            cameraViews.set(replacedIndex, updatedView);
+
+            // TODO update camera list
         };
     }
 
-    private ChangeListener<CameraInfo> getCameraSelectorChangeListener(int fieldRank, StringProperty rawValueProperty, DbDto.Topic topic, ObservableList<CameraInfo.CameraView> cameraViews, ComboBox<CameraInfo.CameraView> viewSelectorComboBox, MainStageChangeDataController changeDataController) {
-        return (observable, oldValue, newValue) -> {
+    private ChangeListener<CameraInfo> getCameraSelectorChangeListener(int fieldRank, StringProperty rawValueProperty, DbDto.Topic topic, ObservableList<CameraInfo.CameraView> cameraViews, ComboBox<CameraInfo.CameraView> viewSelectorComboBox, MainStageChangeDataController changeDataController, CamerasParser camerasParser) {
+        return (ObservableValue<? extends CameraInfo> observable, CameraInfo oldValue, CameraInfo newValue) -> {
             if (Objects.equals(oldValue, newValue)) {
                 return;
             }
@@ -212,9 +234,17 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
                 return;
             }
 
-            cameraViews.addAll(newValue.getViews().stream()
-                    .sorted(Comparator.comparingInt(v -> v.getType().getInternalId()))
-                    .collect(toList()));
+            cameraViews.addAll(
+                camerasParser.getCameraViews().entrySet().stream()
+                        .map(Map.Entry::getKey)
+                        .filter(cameraId -> Long.valueOf(cameraIdAsString).equals(cameraId))
+                        .findAny()
+                        .map(cameraId -> CamerasHelper.fetchInformation(cameraId, camerasParser))
+                        .map(cameraInfo -> cameraInfo.getViews().stream()
+                                .sorted(comparing(CameraInfo.CameraView::getType))
+                                .collect(toList()))
+                        .orElse(new ArrayList<>(0))
+            );
 
             if (!cameraViews.isEmpty()) {
                 viewSelectorComboBox.valueProperty().setValue(cameraViews.get(0));
@@ -246,7 +276,7 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
 
         return newValue.getSettings().entrySet().stream()
                 .filter(propsEntry -> !nonEditableProps.contains(propsEntry.getKey()))
-                .sorted(Comparator.comparing(Map.Entry::getKey))
+                .sorted(comparing(Map.Entry::getKey))
                 .collect(toList());
     }
 }
