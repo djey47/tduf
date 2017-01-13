@@ -1,7 +1,7 @@
 package fr.tduf.gui.database.plugins.nope;
 
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
-import fr.tduf.gui.database.plugins.common.PluginContext;
+import fr.tduf.gui.database.plugins.common.EditorContext;
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 
@@ -10,17 +10,17 @@ import javafx.scene.layout.VBox;
  */
 public class NopePlugin implements DatabasePlugin {
     @Override
-    public void onInit(PluginContext context) {
+    public void onInit(EditorContext context) {
 
     }
 
     @Override
-    public void onSave(PluginContext context) {
+    public void onSave(EditorContext context) {
 
     }
 
     @Override
-    public Node renderControls(PluginContext context) {
+    public Node renderControls(EditorContext context) {
         return new VBox();
     }
 }

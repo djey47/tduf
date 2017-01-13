@@ -1,6 +1,6 @@
 package fr.tduf.gui.database.controllers;
 
-import fr.tduf.gui.database.plugins.common.PluginContext;
+import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
 import fr.tduf.gui.database.services.DatabaseLoader;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -57,7 +57,7 @@ class MainStageControllerTest {
         List<DbDto> loadedObjects = singletonList(DbDto.builder().build());
         when(databaseLoaderMock.fetchValue()).thenReturn(loadedObjects);
         when(databaseLoaderMock.databaseLocationProperty()).thenReturn(new SimpleStringProperty("/db"));
-        PluginContext pluginContext = new PluginContext();
+        EditorContext pluginContext = new EditorContext();
         when(pluginHandlerMock.getContext()).thenReturn(pluginContext);
 
         // when

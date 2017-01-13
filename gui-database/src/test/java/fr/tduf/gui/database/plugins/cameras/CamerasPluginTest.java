@@ -1,6 +1,6 @@
 package fr.tduf.gui.database.plugins.cameras;
 
-import fr.tduf.gui.database.plugins.common.PluginContext;
+import fr.tduf.gui.database.plugins.common.EditorContext;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class CamerasPluginTest {
     private final CamerasPlugin camerasPlugin = new CamerasPlugin();
-    private final PluginContext context = new PluginContext();
+    private final EditorContext context = new EditorContext();
 
     @Test
     void onInit_whenNoCameras_shouldNotAttemptLoading() throws IOException {

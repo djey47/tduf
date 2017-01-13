@@ -6,7 +6,7 @@ import fr.tduf.gui.database.plugins.cameras.converter.CameraInfoToItemConverter;
 import fr.tduf.gui.database.plugins.cameras.converter.CameraInfoToRawValueConverter;
 import fr.tduf.gui.database.plugins.cameras.converter.CameraViewToItemConverter;
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
-import fr.tduf.gui.database.plugins.common.PluginContext;
+import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
@@ -61,15 +61,11 @@ public class CamerasPlugin implements DatabasePlugin {
      * @throws IOException when camars file can't be parsed for some reason
      */
     @Override
-    public void onInit(PluginContext context) throws IOException {
+    public void onInit(EditorContext context) throws IOException {
         CamerasContext camerasContext = context.getCamerasContext();
         Property<CamerasParser> camerasParserProperty = camerasContext.getCamerasParserProperty();
 
-        // TODO add reset method for all plugin contexts (via interface) and use it instead
-        camerasContext.setPluginLoaded(false);
-        camerasContext.getCurrentViewProperty().setValue(null);
-        camerasContext.getCurrentCameraSetProperty().setValue(null);
-        camerasParserProperty.setValue(null);
+        camerasContext.reset();
 
         String databaseLocation = context.getDatabaseLocation();
         Path cameraFile = resolveCameraFilePath(databaseLocation);
@@ -92,7 +88,7 @@ public class CamerasPlugin implements DatabasePlugin {
      * @param context : all required information about Database Editor
      */
     @Override
-    public void onSave(PluginContext context) throws IOException {
+    public void onSave(EditorContext context) throws IOException {
         CamerasContext camerasContext = context.getCamerasContext();
         if (!camerasContext.isPluginLoaded()) {
             Log.warn(THIS_CLASS_NAME, "Cameras plugin not loaded, no saving will be performed");
@@ -115,7 +111,7 @@ public class CamerasPlugin implements DatabasePlugin {
      * @param context : all required information about Database Editor
      */
     @Override
-    public Node renderControls(PluginContext context) {
+    public Node renderControls(EditorContext context) {
         HBox hBox = new HBox();
         ObservableList<Node> mainRowChildren = hBox.getChildren();
         hBox.setPadding(new Insets(5.0));
@@ -144,7 +140,7 @@ public class CamerasPlugin implements DatabasePlugin {
         return hBox;
     }
 
-    private VBox createMainColumn(PluginContext context, ObservableList<Map.Entry<ViewProps, ?>> viewProps, ObservableList<CameraInfo.CameraView> cameraViews, ObservableList<CameraInfo> cameraItems, CamerasContext camerasContext) {
+    private VBox createMainColumn(EditorContext context, ObservableList<Map.Entry<ViewProps, ?>> viewProps, ObservableList<CameraInfo.CameraView> cameraViews, ObservableList<CameraInfo> cameraItems, CamerasContext camerasContext) {
         Property<CamerasParser> camerasParserProperty = camerasContext.getCamerasParserProperty();
 
         Property<CameraInfo.CameraView> currentViewProperty = camerasContext.getCurrentViewProperty();
@@ -179,7 +175,7 @@ public class CamerasPlugin implements DatabasePlugin {
 //        buttonColumnBox.getChildren().add(new Button("P"));
     }
 
-    private TableView<Map.Entry<ViewProps, ?>> createPropertiesTableView(PluginContext context, ObservableList<Map.Entry<ViewProps, ?>> viewProps, ObservableList<CameraInfo.CameraView> cameraViews, Property<CameraInfo.CameraView> currentViewProperty, Property<CamerasParser> camerasParserProperty, int mainColumWidth) {
+    private TableView<Map.Entry<ViewProps, ?>> createPropertiesTableView(EditorContext context, ObservableList<Map.Entry<ViewProps, ?>> viewProps, ObservableList<CameraInfo.CameraView> cameraViews, Property<CameraInfo.CameraView> currentViewProperty, Property<CamerasParser> camerasParserProperty, int mainColumWidth) {
         TableView<Map.Entry<ViewProps, ?>> setPropertyTableView = new TableView<>(viewProps);
         setPropertyTableView.setMinSize(mainColumWidth,200);
         setPropertyTableView.setEditable(true);
@@ -196,7 +192,7 @@ public class CamerasPlugin implements DatabasePlugin {
         return setPropertyTableView;
     }
 
-    private HBox createCamSelectorBox(PluginContext context, ObservableList<CameraInfo> cameraItems, Property<CamerasParser> camerasParserProperty, int mainColumWidth, int comboWidth) {
+    private HBox createCamSelectorBox(EditorContext context, ObservableList<CameraInfo> cameraItems, Property<CamerasParser> camerasParserProperty, int mainColumWidth, int comboWidth) {
         HBox camSelectorBox = new HBox();
         camSelectorBox.setPrefWidth(mainColumWidth);
         ComboBox<CameraInfo> cameraSelectorComboBox = new ComboBox<>(cameraItems);

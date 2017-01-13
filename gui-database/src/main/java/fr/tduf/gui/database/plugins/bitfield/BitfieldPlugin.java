@@ -3,7 +3,7 @@ package fr.tduf.gui.database.plugins.bitfield;
 import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.bitfield.converter.BitfieldToStringConverter;
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
-import fr.tduf.gui.database.plugins.common.PluginContext;
+import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.libunlimited.framework.base.Strings;
 import fr.tduf.libunlimited.high.files.db.common.helper.BitfieldHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
@@ -33,17 +33,17 @@ public class BitfieldPlugin implements DatabasePlugin {
     private BitfieldHelper bitfieldHelper;
 
     @Override
-    public void onInit(PluginContext context) {
+    public void onInit(EditorContext context) {
         bitfieldHelper = new BitfieldHelper();
     }
 
     @Override
-    public void onSave(PluginContext context) {
+    public void onSave(EditorContext context) {
         // Nothing to do for this plugin
     }
 
     @Override
-    public Node renderControls(PluginContext context) {
+    public Node renderControls(EditorContext context) {
         VBox vbox = new VBox();
 
         bitfieldHelper.getBitfieldReferenceForTopic(context.getCurrentTopic())
@@ -53,7 +53,7 @@ public class BitfieldPlugin implements DatabasePlugin {
         return vbox;
     }
 
-    private void addBitValueCheckbox(PluginContext context, VBox vbox, DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto ref) {
+    private void addBitValueCheckbox(EditorContext context, VBox vbox, DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto ref) {
         int bitIndex = ref.getIndex();
         String displayedIndex = Strings.padStart(Integer.toString(bitIndex), 2, '0');
         String label = String.format(LABEL_FORMAT_BITFIELD_CHECKBOX, displayedIndex, ref.getLabel());

@@ -2,7 +2,7 @@ package fr.tduf.gui.database.plugins.percent;
 
 import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
-import fr.tduf.gui.database.plugins.common.PluginContext;
+import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.gui.database.plugins.percent.converter.PercentNumberToStringConverter;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.binding.Bindings;
@@ -25,15 +25,15 @@ import static javafx.geometry.Orientation.VERTICAL;
  */
 public class PercentPlugin implements DatabasePlugin {
     @Override
-    public void onInit(PluginContext context) { }
+    public void onInit(EditorContext context) { }
 
     @Override
-    public void onSave(PluginContext context) {
+    public void onSave(EditorContext context) {
         // Nothing to do for this plugin
     }
 
     @Override
-    public Node renderControls(PluginContext context) {
+    public Node renderControls(EditorContext context) {
         boolean fieldReadOnly = context.isFieldReadOnly();
         StringProperty rawValueProperty = context.getRawValueProperty();
 

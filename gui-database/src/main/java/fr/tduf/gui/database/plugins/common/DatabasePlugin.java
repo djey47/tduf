@@ -12,17 +12,17 @@ public interface DatabasePlugin {
      * Performs initialization tasks. Will be invoked once database loaded.
      * @param context : all required information about Database Editor
      */
-    void onInit(PluginContext context) throws IOException;
+    void onInit(EditorContext context) throws IOException;
 
     /**
      * Performs saving tasks or processing drawn by database saving
      * @param context : all required information about Database Editor
      */
-    void onSave(PluginContext context) throws IOException;
+    void onSave(EditorContext context) throws IOException;
 
     /**
      * @param context : all required information about Database Editor
      * @return rendered FX controls
      */
-    Node renderControls(PluginContext context);
+    Node renderControls(EditorContext context);
 }

@@ -9,7 +9,7 @@ import fr.tduf.gui.database.domain.ItemViewModel;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.gui.database.listener.ErrorChangeListener;
-import fr.tduf.gui.database.plugins.common.PluginContext;
+import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import javafx.beans.property.BooleanProperty;
@@ -137,11 +137,11 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     }
 
     private void addPluginControls(String pluginName, DbDto.Topic currentTopic, HBox fieldBox, FieldSettingsDto fieldSettings, StringProperty property) {
-        PluginContext pluginContext = controller.getPluginHandler().getContext();
-        pluginContext.setCurrentTopic(currentTopic);
-        pluginContext.setFieldRank(fieldSettings.getRank());
-        pluginContext.setFieldReadOnly(fieldSettings.isReadOnly());
-        pluginContext.setRawValueProperty(property);
+        EditorContext editorContext = controller.getPluginHandler().getContext();
+        editorContext.setCurrentTopic(currentTopic);
+        editorContext.setFieldRank(fieldSettings.getRank());
+        editorContext.setFieldReadOnly(fieldSettings.isReadOnly());
+        editorContext.setRawValueProperty(property);
 
         controller.getPluginHandler().renderPluginByName(pluginName, fieldBox);
     }

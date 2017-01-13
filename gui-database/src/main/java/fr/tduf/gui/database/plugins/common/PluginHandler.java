@@ -13,7 +13,7 @@ import static java.util.Objects.requireNonNull;
 public class PluginHandler {
     private static final String THIS_CLASS_NAME = PluginHandler.class.getSimpleName();
 
-    private final PluginContext context = new PluginContext();
+    private final EditorContext context = new EditorContext();
 
     /**
      * Creates plugin handler for specified database editor controller
@@ -74,7 +74,7 @@ public class PluginHandler {
         }
     }
 
-    public PluginContext getContext() {
+    public EditorContext getContext() {
         return context;
     }
 }

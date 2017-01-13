@@ -4,7 +4,7 @@ import fr.tduf.gui.database.controllers.MainStageController;
 import fr.tduf.gui.database.controllers.MainStageViewDataController;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
-import fr.tduf.gui.database.plugins.common.PluginContext;
+import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
@@ -72,8 +72,8 @@ class DynamicFieldControlsHelperTest {
         fieldSettings.setPluginName("PLUGIN");
         HBox fieldBox = new HBox();
 
-        PluginContext pluginContext = new PluginContext();
-        when(pluginHandlerMock.getContext()).thenReturn(pluginContext);
+        EditorContext editorContext = new EditorContext();
+        when(pluginHandlerMock.getContext()).thenReturn(editorContext);
 
 
         // when
