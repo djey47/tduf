@@ -8,6 +8,7 @@ import javafx.beans.property.StringProperty;
 /**
  * Contains all information for correct plugin execution
  */
+// TODO rename to EditorContext and implement PluginContext interface
 public class PluginContext {
     private DbDto.Topic currentTopic;
     private int fieldRank;

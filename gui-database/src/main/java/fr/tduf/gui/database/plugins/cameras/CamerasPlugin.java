@@ -50,7 +50,8 @@ import static javafx.scene.layout.Priority.ALWAYS;
  */
 // TODO externalize strings
 public class CamerasPlugin implements DatabasePlugin {
-private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName();
+    private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName();
+
     /**
      * Required contextual information:
      * - databaseLocation
@@ -63,13 +64,16 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
     public void onInit(PluginContext context) throws IOException {
         CamerasContext camerasContext = context.getCamerasContext();
         List<CameraInfo> allCameras = camerasContext.getAllCameras();
+
+        // TODO add reset method for all plugin contexts (via interface) and use it instead
         allCameras.clear();
+        camerasContext.setPluginLoaded(false);
+        camerasContext.setCamerasParser(null);
 
         String databaseLocation = context.getDatabaseLocation();
         Path cameraFile = resolveCameraFilePath(databaseLocation);
         if (!Files.exists(cameraFile)) {
             Log.warn(THIS_CLASS_NAME, "No cameras.bin file was found in database directory: " + databaseLocation);
-            camerasContext.setPluginLoaded(false);
             return;
         }
 
@@ -79,6 +83,7 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
         camerasContext.setPluginLoaded(true);
         camerasContext.setCamerasParser(camerasParser);
 
+        // TODO use parser instead?
         allCameras.addAll(CamerasHelper.fetchAllInformation(camerasParser));
         Log.debug(THIS_CLASS_NAME, "Loaded sets count: " + allCameras.size());
     }
@@ -321,7 +326,6 @@ private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName(
 
         Log.debug(THIS_CLASS_NAME, "Will update camera: " + cameraIdentifier);
 
-        // FIXME does not seem to work...
         return CamerasHelper.updateViews(updatedConfiguration, camerasParser);
     }
 

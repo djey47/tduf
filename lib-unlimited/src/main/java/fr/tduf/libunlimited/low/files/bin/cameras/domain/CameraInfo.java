@@ -45,6 +45,8 @@ public class CameraInfo {
         return reflectionHashCode(this);
     }
 
+    // TODO implement toString with camera id
+
     public static class CameraInfoBuilder {
         private long cameraIdentifier;
         private List<CameraView> views = new ArrayList<>();
@@ -124,6 +126,8 @@ public class CameraInfo {
         public int hashCode() {
             return reflectionHashCode(this);
         }
+
+        // TODO implement toString with view kind
 
         public ViewKind getType() {
             return type;
