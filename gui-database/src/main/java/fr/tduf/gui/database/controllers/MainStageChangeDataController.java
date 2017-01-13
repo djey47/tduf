@@ -45,6 +45,14 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
         super(mainStageController);
     }
 
+    /**
+     * Only use when unit testing
+     * @return a speciol instance
+     */
+    public static MainStageChangeDataController testingInstance() {
+        return new MainStageChangeDataController(new MainStageController());
+    }
+
     public void updateContentItem(DbDto.Topic topic, int fieldRank, String newRawValue) {
         requireNonNull(getChangeHelper());
 
@@ -105,6 +113,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
         return newEntry.getId();
     }
 
+
     void addLinkedEntryWithTargetRef(DbDto.Topic targetTopic, ContentEntryDataItem linkedEntry) {
         String sourceEntryRef = getMiner().getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty().getValue(), currentTopicProperty().getValue()).get();
         Optional<String> targetEntryRef = ofNullable(linkedEntry)
@@ -112,7 +121,6 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
 
         addLinkedEntry(sourceEntryRef, targetEntryRef, targetTopic);
     }
-
 
     void addResourceWithReference(DbDto.Topic topic, Locale locale, String newResourceReference, String newResourceValue) {
         requireNonNull(getGenHelper());

@@ -1,7 +1,7 @@
 package fr.tduf.gui.database.plugins.common;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.database.controllers.MainStageController;
+import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 
@@ -18,8 +18,8 @@ public class PluginHandler {
     /**
      * Creates plugin handler for specified database editor controller
      */
-    public PluginHandler(MainStageController mainStageController) {
-        context.setMainStageController(requireNonNull(mainStageController, "Main stage controller instance is required."));
+    public PluginHandler(MainStageChangeDataController changeDataController) {
+        context.setChangeDataController(requireNonNull(changeDataController, "Change data controller instance is required."));
     }
 
     /**

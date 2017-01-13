@@ -70,7 +70,7 @@ public class BitfieldPlugin implements DatabasePlugin {
         StringProperty rawValueProperty = context.getRawValueProperty();
         Bindings.bindBidirectional(rawValueProperty, checkBox.selectedProperty(), new BitfieldToStringConverter(context.getCurrentTopic(), bitIndex, rawValueProperty, bitfieldHelper));
         if (!fieldReadOnly) {
-            checkBox.selectedProperty().addListener(handleBitfieldCheckboxSelectionChange(context.getFieldRank(), rawValueProperty, context.getCurrentTopic(), context.getMainStageController().getChangeData()));
+            checkBox.selectedProperty().addListener(handleBitfieldCheckboxSelectionChange(context.getFieldRank(), rawValueProperty, context.getCurrentTopic(), context.getChangeDataController()));
         }
 
         vbox.getChildren().add(checkBox);

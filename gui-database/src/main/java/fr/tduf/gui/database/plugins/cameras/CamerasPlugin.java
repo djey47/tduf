@@ -202,7 +202,7 @@ public class CamerasPlugin implements DatabasePlugin {
         Bindings.bindBidirectional(
                 rawValueProperty, cameraSelectorComboBox.valueProperty(), new CameraInfoToRawValueConverter(cameraItems));
         cameraSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
-                getCameraSelectorChangeListener(context.getFieldRank(), rawValueProperty, context.getCurrentTopic(), context.getMainStageController().getChangeData(), camerasParserProperty, context.getCamerasContext().getCurrentCameraSetProperty()));
+                getCameraSelectorChangeListener(context.getFieldRank(), rawValueProperty, context.getCurrentTopic(), context.getChangeDataController(), camerasParserProperty, context.getCamerasContext().getCurrentCameraSetProperty()));
         Region camRegion = new Region();
         HBox.setHgrow(camRegion, ALWAYS);
         // TODO bold label

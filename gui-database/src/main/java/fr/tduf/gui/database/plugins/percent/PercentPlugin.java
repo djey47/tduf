@@ -50,7 +50,7 @@ public class PercentPlugin implements DatabasePlugin {
         Bindings.bindBidirectional(rawValueProperty, slider.valueProperty(), new PercentNumberToStringConverter());
         if (!fieldReadOnly) {
             slider.valueChangingProperty().addListener(
-                    handleSliderValueChange(context.getFieldRank(), context.getCurrentTopic(), rawValueProperty, context.getMainStageController().getChangeData()));
+                    handleSliderValueChange(context.getFieldRank(), context.getCurrentTopic(), rawValueProperty, context.getChangeDataController()));
         }
 
         hBox.getChildren().add(slider);

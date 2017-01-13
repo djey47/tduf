@@ -1,6 +1,6 @@
 package fr.tduf.gui.database.plugins.common;
 
-import fr.tduf.gui.database.controllers.MainStageController;
+import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.cameras.CamerasContext;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.StringProperty;
@@ -14,8 +14,7 @@ public class EditorContext implements PluginContext {
     private boolean fieldReadOnly;
     private StringProperty rawValueProperty;
     private String databaseLocation;
-    // TODO see to replace with change data controller
-    private MainStageController mainStageController;
+    private MainStageChangeDataController changeDataController;
 
     private CamerasContext camerasContext = new CamerasContext();
 
@@ -48,12 +47,12 @@ public class EditorContext implements PluginContext {
         return rawValueProperty;
     }
 
-    public MainStageController getMainStageController() {
-        return mainStageController;
+    public MainStageChangeDataController getChangeDataController() {
+        return changeDataController;
     }
 
-    public void setMainStageController(MainStageController mainStageController) {
-        this.mainStageController = mainStageController;
+    void setChangeDataController(MainStageChangeDataController changeDataController) {
+        this.changeDataController = changeDataController;
     }
 
     public void setFieldReadOnly(boolean fieldReadOnly) {
@@ -66,10 +65,6 @@ public class EditorContext implements PluginContext {
 
     public CamerasContext getCamerasContext() {
         return camerasContext;
-    }
-
-    public void setCamerasContext(CamerasContext camerasContext) {
-        this.camerasContext = camerasContext;
     }
 
     public void setDatabaseLocation(String databaseLocation) {
