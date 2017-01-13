@@ -135,6 +135,8 @@ public class CamerasHelper {
                                     .forEach(entry -> entry.getKey().updateIn(viewStore, entry.getValue())));
                 });
 
+        parser.flushCaches();
+
         return fetchInformation(cameraIdentifier, parser);
     }
 
