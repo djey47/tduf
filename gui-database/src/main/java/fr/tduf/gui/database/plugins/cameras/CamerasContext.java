@@ -1,13 +1,9 @@
 package fr.tduf.gui.database.plugins.cameras;
 
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Piece of information required by Cameras plugin.
@@ -15,13 +11,10 @@ import java.util.List;
 public class CamerasContext {
     private String binaryFileLocation;
     private boolean pluginLoaded = false;
-    private CamerasParser camerasParser;
-    private final List<CameraInfo> allCameras = new ArrayList<>();
-    private final Property<ViewKind> viewTypeProperty = new SimpleObjectProperty<>();
 
-    List<CameraInfo> getAllCameras() {
-        return allCameras;
-    }
+    private final Property<CamerasParser> camerasParserProperty = new SimpleObjectProperty<>();
+    private final Property<CameraInfo> currentCameraSetProperty = new SimpleObjectProperty<>();
+    private final Property<CameraInfo.CameraView> currentViewProperty = new SimpleObjectProperty<>();
 
     void setBinaryFileLocation(String binaryFileLocation) {
         this.binaryFileLocation = binaryFileLocation;
@@ -39,15 +32,15 @@ public class CamerasContext {
         return pluginLoaded;
     }
 
-    CamerasParser getCamerasParser() {
-        return camerasParser;
+    Property<CamerasParser> getCamerasParserProperty() {
+        return camerasParserProperty;
     }
 
-    void setCamerasParser(CamerasParser camerasParser) {
-        this.camerasParser = camerasParser;
+    Property<CameraInfo.CameraView> getCurrentViewProperty() {
+        return currentViewProperty;
     }
 
-    Property<ViewKind> getViewTypeProperty() {
-        return viewTypeProperty;
+    Property<CameraInfo> getCurrentCameraSetProperty() {
+        return currentCameraSetProperty;
     }
 }
