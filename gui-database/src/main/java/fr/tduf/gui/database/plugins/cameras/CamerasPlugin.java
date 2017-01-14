@@ -126,11 +126,12 @@ public class CamerasPlugin implements DatabasePlugin {
                 .sorted(comparingLong(CameraInfo::getCameraIdentifier))
                 .collect(toList());
 
+        // TODO create in sub methods
         ObservableList<CameraInfo> cameraItems = FXCollections.observableArrayList(allCamerasSorted);
-        ObservableList<Map.Entry<ViewProps, ?>> viewProps = FXCollections.observableArrayList();
+        ObservableList<Map.Entry<ViewProps, ?>> allViewProps = FXCollections.observableArrayList();
         ObservableList<CameraInfo.CameraView> cameraViews = FXCollections.observableArrayList();
 
-        VBox mainColumnBox = createMainColumn(context, viewProps, cameraViews, cameraItems, camerasContext);
+        VBox mainColumnBox = createMainColumn(context, cameraViews, cameraItems, camerasContext, allViewProps);
         VBox buttonColumnBox = createButtonColumn();
 
         mainRowChildren.add(mainColumnBox);
@@ -140,15 +141,11 @@ public class CamerasPlugin implements DatabasePlugin {
         return hBox;
     }
 
-    private VBox createMainColumn(EditorContext context, ObservableList<Map.Entry<ViewProps, ?>> viewProps, ObservableList<CameraInfo.CameraView> cameraViews, ObservableList<CameraInfo> cameraItems, CamerasContext camerasContext) {
+    private VBox createMainColumn(EditorContext context, ObservableList<CameraInfo.CameraView> cameraViews, ObservableList<CameraInfo> cameraItems, CamerasContext camerasContext, ObservableList<Map.Entry<ViewProps, ?>> allViewProps) {
         Property<CamerasParser> camerasParserProperty = camerasContext.getCamerasParserProperty();
 
-        Property<CameraInfo.CameraView> currentViewProperty = camerasContext.getCurrentViewProperty();
-        currentViewProperty.addListener(getCurrentViewChangeListener(viewProps));
-
-        Property<CameraInfo> currentCameraSetProperty = camerasContext.getCurrentCameraSetProperty();
         ComboBox<CameraInfo.CameraView> viewSelectorComboBox = new ComboBox<>(cameraViews);
-        currentCameraSetProperty.addListener(getSetChangeListener(cameraViews, viewSelectorComboBox, camerasContext.getCamerasParserProperty()));
+        ComboBox<CameraInfo> cameraSelectorComboBox = new ComboBox<>(cameraItems);
 
         VBox mainColumnBox = new VBox();
         ObservableList<Node> mainColumnChildren = mainColumnBox.getChildren();
@@ -157,9 +154,9 @@ public class CamerasPlugin implements DatabasePlugin {
         int mainColumWidth = 625;
         int comboWidth = 455;
 
-        HBox viewSelectorBox = createViewSelectorBox(currentViewProperty, mainColumWidth, comboWidth, viewSelectorComboBox);
-        HBox camSelectorBox = createCamSelectorBox(context, cameraItems, camerasParserProperty, mainColumWidth, comboWidth);
-        TableView<Map.Entry<ViewProps, ?>> setPropertyTableView = createPropertiesTableView(context, viewProps, cameraViews, currentViewProperty, camerasParserProperty, mainColumWidth);
+        HBox viewSelectorBox = createViewSelectorBox(mainColumWidth, comboWidth, viewSelectorComboBox, allViewProps);
+        HBox camSelectorBox = createCamSelectorBox(context, cameraItems, camerasParserProperty, mainColumWidth, comboWidth, cameraSelectorComboBox, viewSelectorComboBox);
+        TableView<Map.Entry<ViewProps, ?>> setPropertyTableView = createPropertiesTableView(context, allViewProps, cameraViews, viewSelectorComboBox.valueProperty(), camerasParserProperty, mainColumWidth);
 
         mainColumnChildren.add(camSelectorBox);
         mainColumnChildren.add(viewSelectorBox);
@@ -192,17 +189,16 @@ public class CamerasPlugin implements DatabasePlugin {
         return setPropertyTableView;
     }
 
-    private HBox createCamSelectorBox(EditorContext context, ObservableList<CameraInfo> cameraItems, Property<CamerasParser> camerasParserProperty, int mainColumWidth, int comboWidth) {
+    private HBox createCamSelectorBox(EditorContext context, ObservableList<CameraInfo> cameraItems, Property<CamerasParser> camerasParserProperty, int mainColumWidth, int comboWidth, ComboBox<CameraInfo> cameraSelectorComboBox, ComboBox<CameraInfo.CameraView> viewSelectorComboBox) {
         HBox camSelectorBox = new HBox();
         camSelectorBox.setPrefWidth(mainColumWidth);
-        ComboBox<CameraInfo> cameraSelectorComboBox = new ComboBox<>(cameraItems);
         cameraSelectorComboBox.setPrefWidth(comboWidth);
         cameraSelectorComboBox.setConverter(new CameraInfoToItemConverter());
         StringProperty rawValueProperty = context.getRawValueProperty();
         Bindings.bindBidirectional(
                 rawValueProperty, cameraSelectorComboBox.valueProperty(), new CameraInfoToRawValueConverter(cameraItems));
         cameraSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
-                getCameraSelectorChangeListener(context.getFieldRank(), rawValueProperty, context.getCurrentTopic(), context.getChangeDataController(), camerasParserProperty, context.getCamerasContext().getCurrentCameraSetProperty()));
+                getCameraSelectorChangeListener(context.getFieldRank(), context.getCurrentTopic(), context.getChangeDataController(), camerasParserProperty, viewSelectorComboBox.valueProperty(), viewSelectorComboBox.itemsProperty().get()));
         Region camRegion = new Region();
         HBox.setHgrow(camRegion, ALWAYS);
         // TODO bold label
@@ -212,13 +208,14 @@ public class CamerasPlugin implements DatabasePlugin {
         return camSelectorBox;
     }
 
-    private HBox createViewSelectorBox(Property<CameraInfo.CameraView> currentViewProperty, int mainColumWidth, int comboWidth, ComboBox<CameraInfo.CameraView> viewSelectorComboBox) {
+    private HBox createViewSelectorBox(int mainColumWidth, int comboWidth, ComboBox<CameraInfo.CameraView> viewSelectorComboBox, ObservableList<Map.Entry<ViewProps, ?>> allViewProps) {
         HBox viewSelectorBox = new HBox();
         viewSelectorBox.setPrefWidth(mainColumWidth);
         viewSelectorComboBox.setPrefWidth(comboWidth);
         viewSelectorComboBox.setConverter(new CameraViewToItemConverter());
         viewSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
-                getViewSelectorChangeListener(currentViewProperty));
+                getViewSelectorChangeListener(allViewProps));
+
         // TODO bold label
         viewSelectorBox.getChildren().add(new Label("Available views:"));
         Region viewRegion = new Region();
@@ -228,55 +225,38 @@ public class CamerasPlugin implements DatabasePlugin {
         return viewSelectorBox;
     }
 
-    private ChangeListener<CameraInfo> getCameraSelectorChangeListener(int fieldRank, StringProperty rawValueProperty, DbDto.Topic topic, MainStageChangeDataController changeDataController, Property<CamerasParser> camerasParserProperty, Property<CameraInfo> currentCameraSetProperty) {
+    private ChangeListener<CameraInfo> getCameraSelectorChangeListener(int fieldRank, DbDto.Topic topic, MainStageChangeDataController changeDataController, Property<CamerasParser> camerasParserProperty, Property<CameraInfo.CameraView> currentCameraViewProperty, ObservableList<CameraInfo.CameraView> allCameraViews) {
         return (ObservableValue<? extends CameraInfo> observable, CameraInfo oldValue, CameraInfo newValue) -> {
             if (Objects.equals(oldValue, newValue)) {
                 return;
             }
 
-            if (newValue == null) {
-                currentCameraSetProperty.setValue(null);
-            } else {
-                String cameraIdAsString = rawValueProperty.get();
-                CameraInfo newCameraInfo = CamerasHelper.fetchInformation(Long.valueOf(cameraIdAsString), camerasParserProperty.getValue());
-                currentCameraSetProperty.setValue(newCameraInfo);
-
-                // TODO move to getSetChangeListener
-                changeDataController.updateContentItem(topic, fieldRank, cameraIdAsString);
-            }
-        };
-    }
-
-    private ChangeListener<CameraInfo> getSetChangeListener(ObservableList<CameraInfo.CameraView> allCameraViews, ComboBox<CameraInfo.CameraView> viewSelectorComboBox, Property<CamerasParser> camerasParserProperty) {
-        return (observable, oldValue, newValue) -> {
             allCameraViews.clear();
-            if (newValue == null) {
-                return;
-            }
-            allCameraViews.addAll(
-                    CamerasHelper.fetchInformation(newValue.getCameraIdentifier(), camerasParserProperty.getValue()).getViews().stream()
-                            .sorted(comparing(CameraInfo.CameraView::getType))
-                            .collect(toList())
-            );
-            if (!allCameraViews.isEmpty()) {
-                viewSelectorComboBox.valueProperty().setValue(allCameraViews.get(0));
+
+            if (newValue != null) {
+                long newCameraIdentifier = newValue.getCameraIdentifier();
+                CamerasParser camerasParser = camerasParserProperty.getValue();
+                allCameraViews.addAll(
+                        CamerasHelper.fetchInformation(newCameraIdentifier, camerasParser).getViews().stream()
+                                .sorted(comparing(CameraInfo.CameraView::getType))
+                                .collect(toList()));
+                if (!allCameraViews.isEmpty()) {
+                    currentCameraViewProperty.setValue(allCameraViews.get(0));
+                }
+
+                changeDataController.updateContentItem(topic, fieldRank, Long.toString(newCameraIdentifier));
             }
         };
     }
 
-    private ChangeListener<CameraInfo.CameraView> getViewSelectorChangeListener(Property<CameraInfo.CameraView> currentViewProperty) {
-        // TODO bind directly?
+    private ChangeListener<CameraInfo.CameraView> getViewSelectorChangeListener(ObservableList<Map.Entry<ViewProps, ?>> allViewProps) {
         return (observable, oldValue, newValue) -> {
             if (Objects.equals(oldValue, newValue)) {
                 return;
             }
-            currentViewProperty.setValue(newValue);
-        };
-    }
 
-    private ChangeListener<CameraInfo.CameraView> getCurrentViewChangeListener(ObservableList<Map.Entry<ViewProps, ?>> allViewProps) {
-        return (observable, oldValue, newValue) -> {
             allViewProps.clear();
+
             if (newValue != null) {
                 allViewProps.addAll(getEditableProps(newValue));
             }
