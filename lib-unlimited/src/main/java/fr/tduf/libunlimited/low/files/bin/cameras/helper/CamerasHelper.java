@@ -123,6 +123,9 @@ public class CamerasHelper {
     public static CameraInfo updateViews(CameraInfo configuration, CamerasParser parser) {
         long cameraIdentifier = validateConfiguration(configuration);
 
+        // Will ensure extracted view stores are the freshest ones
+        parser.flushCaches();
+
         extractViewStores(cameraIdentifier, parser)
                 .forEach(viewStore -> {
                     ViewKind viewKind = (ViewKind) ViewProps.TYPE.retrieveFrom(viewStore)
@@ -134,8 +137,6 @@ public class CamerasHelper {
                             .ifPresent(conf -> conf.getSettings().entrySet()
                                     .forEach(entry -> entry.getKey().updateIn(viewStore, entry.getValue())));
                 });
-
-        parser.flushCaches();
 
         return fetchInformation(cameraIdentifier, parser);
     }
