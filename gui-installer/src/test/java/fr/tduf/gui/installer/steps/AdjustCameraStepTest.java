@@ -64,7 +64,7 @@ public class AdjustCameraStepTest {
         final Path tduDatabasePath = FilesHelper.getTduDatabasePath(tduTempDirectory);
         FilesHelper.createFakeDatabase(tduDatabasePath.toString(), "");
 
-        byte[] camBytes = fr.tduf.libunlimited.common.helper.FilesHelper.readBytesFromResourceFile("/bin/Cameras.bin");
+        byte[] camBytes = fr.tduf.libunlimited.common.helper.FilesHelper.readBytesFromResourceFile("/bin/cameras.bin");
         Files.write(tduDatabasePath.resolve("Cameras.bin"), camBytes);
 
         databaseContext = new DatabaseContext(new ArrayList<>(0), "");
@@ -125,7 +125,7 @@ public class AdjustCameraStepTest {
 
         // THEN
         verify(cameraSupportMock).customizeCamera(camFileCaptor.capture(), eq(200L), customizeCamCaptor.capture());
-        assertThat(Paths.get(camFileCaptor.getValue()).toString()).endsWith(Paths.get("Euro", "Bnk", "Database", "Cameras.bin").toString());
+        assertThat(Paths.get(camFileCaptor.getValue()).toString()).endsWith(Paths.get("Euro", "Bnk", "Database", "cameras.bin").toString());
         List<GenuineCamViewsDto.GenuineCamViewDto> actualViews = customizeCamCaptor.getValue().getViews();
         assertThat(actualViews).extracting("viewType").containsOnly(Hood);
         assertThat(actualViews).extracting("cameraId").containsOnly(201L);
@@ -188,7 +188,7 @@ public class AdjustCameraStepTest {
 
         // THEN
         verify(cameraSupportMock).customizeCamera(camFileCaptor.capture(), eq(200L), customizeCamCaptor.capture());
-        assertThat(Paths.get(camFileCaptor.getValue()).toString()).endsWith(Paths.get("Euro", "Bnk", "Database", "Cameras.bin").toString());
+        assertThat(Paths.get(camFileCaptor.getValue()).toString()).endsWith(Paths.get("Euro", "Bnk", "Database", "cameras.bin").toString());
         List<GenuineCamViewsDto.GenuineCamViewDto> actualViews = customizeCamCaptor.getValue().getViews();
         assertThat(actualViews).extracting("viewType").containsOnly(Hood);
         assertThat(actualViews).extracting("cameraId").containsOnly(201L);

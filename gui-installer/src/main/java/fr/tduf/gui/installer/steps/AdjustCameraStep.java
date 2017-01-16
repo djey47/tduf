@@ -39,7 +39,7 @@ class AdjustCameraStep extends GenericStep {
     protected void perform() throws IOException, ReflectiveOperationException {
         long cameraId = getDatabaseContext().getPatchProperties().getCameraIdentifier()
                 .orElseGet(this::getCameraIdentifierFromDatabase);
-        String cameraFileName = Paths.get(getInstallerConfiguration().resolveDatabaseDirectory(), "Cameras.bin").toString();
+        String cameraFileName = Paths.get(getInstallerConfiguration().resolveDatabaseDirectory(), CamerasHelper.FILE_CAMERAS_BIN).toString();
         CameraInfo cameraInfo = buildCustomViewsFromProperties(cameraId);
 
         if(cameraInfo.getViews().isEmpty()) {
