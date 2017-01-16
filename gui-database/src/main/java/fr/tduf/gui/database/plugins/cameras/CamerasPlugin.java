@@ -119,22 +119,12 @@ public class CamerasPlugin implements DatabasePlugin {
         // TODO extract to CSS
         hBox.setPadding(new Insets(5.0));
 
-        CamerasContext camerasContext = context.getCamerasContext();
-        if (!camerasContext.isPluginLoaded()) {
+        if (!context.getCamerasContext().isPluginLoaded()) {
             Log.warn(THIS_CLASS_NAME, "Cameras plugin not loaded, no rendering will be performed");
             return hBox;
         }
 
-        List<CameraInfo> allCamerasSorted = CamerasHelper.fetchAllInformation(camerasParserProperty.getValue()).stream()
-                .sorted(comparingLong(CameraInfo::getCameraIdentifier))
-                .collect(toList());
-
-        // TODO create in sub methods
-        ObservableList<CameraInfo> cameraItems = FXCollections.observableArrayList(allCamerasSorted);
-        ObservableList<Map.Entry<ViewProps, ?>> allViewProps = FXCollections.observableArrayList();
-        ObservableList<CameraInfo.CameraView> cameraViews = FXCollections.observableArrayList();
-
-        VBox mainColumnBox = createMainColumn(context, cameraViews, cameraItems, allViewProps);
+        VBox mainColumnBox = createMainColumn(context);
         VBox buttonColumnBox = createButtonColumn();
 
         mainRowChildren.add(mainColumnBox);
@@ -144,9 +134,12 @@ public class CamerasPlugin implements DatabasePlugin {
         return hBox;
     }
 
-    private VBox createMainColumn(EditorContext context, ObservableList<CameraInfo.CameraView> cameraViews, ObservableList<CameraInfo> cameraItems, ObservableList<Map.Entry<ViewProps, ?>> allViewProps) {
+    private VBox createMainColumn(EditorContext context) {
+        ObservableList<CameraInfo> cameraItems = FXCollections.observableArrayList(getSortedCameraSets());
+        ObservableList<Map.Entry<ViewProps, ?>> allViewProps = FXCollections.observableArrayList();
+
         ComboBox<CameraInfo> cameraSelectorComboBox = new ComboBox<>(cameraItems);
-        ComboBox<CameraInfo.CameraView> viewSelectorComboBox = new ComboBox<>(cameraViews);
+        ComboBox<CameraInfo.CameraView> viewSelectorComboBox = new ComboBox<>(FXCollections.observableArrayList());
 
         VBox mainColumnBox = new VBox();
         ObservableList<Node> mainColumnChildren = mainColumnBox.getChildren();
@@ -256,9 +249,15 @@ public class CamerasPlugin implements DatabasePlugin {
 
             if (newValue != null) {
                 allViewProps.addAll(
-                        getEditableViewProperties(currentCameraSetProperty.getValue().getCameraIdentifier(), newValue.getType()));
+                        getSortedAndEditableViewProperties(currentCameraSetProperty.getValue().getCameraIdentifier(), newValue.getType()));
             }
         };
+    }
+
+    private List<CameraInfo> getSortedCameraSets() {
+        return CamerasHelper.fetchAllInformation(camerasParserProperty.getValue()).stream()
+                .sorted(comparingLong(CameraInfo::getCameraIdentifier))
+                .collect(toList());
     }
 
     private List<CameraInfo.CameraView> getSortedViews(CameraInfo cameraInfo) {
@@ -267,15 +266,10 @@ public class CamerasPlugin implements DatabasePlugin {
                 .collect(toList());
     }
 
-    private List<Map.Entry<ViewProps, ?>> getEditableViewProperties(long cameraIdentifier, ViewKind viewKind) {
+    private List<Map.Entry<ViewProps, ?>> getSortedAndEditableViewProperties(long cameraIdentifier, ViewKind viewKind) {
         final Set<ViewProps> nonEditableProps = new HashSet<>(singletonList(TYPE));
 
-        // TODO extract view lookup to helper
-        return CamerasHelper.fetchInformation(cameraIdentifier, camerasParserProperty.getValue()).getViews().stream()
-                .filter(cv -> viewKind == cv.getType())
-                .findAny()
-                .orElseThrow(() -> new IllegalStateException("No view available: " + viewKind))
-                .getSettings().entrySet().stream()
+        return CamerasHelper.fetchViewProperties(cameraIdentifier, viewKind, camerasParserProperty.getValue()).entrySet().stream()
                 .filter(propsEntry -> !nonEditableProps.contains(propsEntry.getKey()))
                 .sorted(comparing(Map.Entry::getKey))
                 .collect(toList());
