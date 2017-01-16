@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.domain;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import java.util.*;
@@ -45,7 +46,12 @@ public class CameraInfo {
         return reflectionHashCode(this);
     }
 
-    // TODO implement toString with camera id
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("cameraIdentifier", cameraIdentifier)
+                .toString();
+    }
 
     public static class CameraInfoBuilder {
         private long cameraIdentifier;
@@ -127,7 +133,12 @@ public class CameraInfo {
             return reflectionHashCode(this);
         }
 
-        // TODO implement toString with view kind
+        @Override
+        public String toString() {
+            return new ToStringBuilder(this)
+                    .append("type", type)
+                    .toString();
+        }
 
         public ViewKind getType() {
             return type;
