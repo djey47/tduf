@@ -158,7 +158,7 @@ public class CamerasPlugin implements DatabasePlugin {
 
         HBox camSelectorBox = createCamSelectorBox(context, cameraItems, camerasParserProperty, mainColumWidth, comboWidth, cameraSelectorComboBox, viewSelectorComboBox);
         HBox viewSelectorBox = createViewSelectorBox(mainColumWidth, comboWidth, viewSelectorComboBox, cameraSelectorComboBox.valueProperty(), allViewProps, camerasParserProperty);
-        TableView<Map.Entry<ViewProps, ?>> setPropertyTableView = createPropertiesTableView(context, allViewProps, cameraViews, viewSelectorComboBox.valueProperty(), camerasParserProperty, mainColumWidth);
+        TableView<Map.Entry<ViewProps, ?>> setPropertyTableView = createPropertiesTableView(context, allViewProps, viewSelectorComboBox.valueProperty(), camerasParserProperty, mainColumWidth);
 
         mainColumnChildren.add(camSelectorBox);
         mainColumnChildren.add(viewSelectorBox);
@@ -174,7 +174,7 @@ public class CamerasPlugin implements DatabasePlugin {
 //        buttonColumnBox.getChildren().add(new Button("P"));
     }
 
-    private TableView<Map.Entry<ViewProps, ?>> createPropertiesTableView(EditorContext context, ObservableList<Map.Entry<ViewProps, ?>> viewProps, ObservableList<CameraInfo.CameraView> cameraViews, Property<CameraInfo.CameraView> currentViewProperty, Property<CamerasParser> camerasParserProperty, int mainColumWidth) {
+    private TableView<Map.Entry<ViewProps, ?>> createPropertiesTableView(EditorContext context, ObservableList<Map.Entry<ViewProps, ?>> viewProps, Property<CameraInfo.CameraView> currentViewProperty, Property<CamerasParser> camerasParserProperty, int mainColumWidth) {
         TableView<Map.Entry<ViewProps, ?>> setPropertyTableView = new TableView<>(viewProps);
         setPropertyTableView.setMinSize(mainColumWidth,200);
         setPropertyTableView.setEditable(true);
@@ -186,7 +186,7 @@ public class CamerasPlugin implements DatabasePlugin {
         valueColumn.setMinWidth(100);
         valueColumn.setCellValueFactory((cellData) -> new SimpleStringProperty(cellData.getValue().getValue().toString()));
         valueColumn.setCellFactory(forTableColumn());
-        valueColumn.setOnEditCommit(getCellEditEventHandler(camerasParserProperty, context.getRawValueProperty(), currentViewProperty, cameraViews));
+        valueColumn.setOnEditCommit(getCellEditEventHandler(camerasParserProperty, context.getRawValueProperty(), currentViewProperty));
         setPropertyTableView.getColumns().add(valueColumn);
         return setPropertyTableView;
     }
@@ -258,7 +258,7 @@ public class CamerasPlugin implements DatabasePlugin {
 
             if (newValue != null) {
                 allViewProps.addAll(
-                        getEditableProps(currentCameraSetProperty.getValue().getCameraIdentifier(), newValue.getType(), currentParserProperty.getValue()));
+                        getEditableViewProperties(currentCameraSetProperty.getValue().getCameraIdentifier(), newValue.getType(), currentParserProperty.getValue()));
             }
         };
     }
@@ -269,7 +269,7 @@ public class CamerasPlugin implements DatabasePlugin {
                 .collect(toList());
     }
 
-    private List<Map.Entry<ViewProps, ?>> getEditableProps(long cameraIdentifier, ViewKind viewKind, CamerasParser camerasParser) {
+    private List<Map.Entry<ViewProps, ?>> getEditableViewProperties(long cameraIdentifier, ViewKind viewKind, CamerasParser camerasParser) {
         final Set<ViewProps> nonEditableProps = new HashSet<>(singletonList(TYPE));
 
         // TODO extract view lookup to helper
@@ -283,7 +283,7 @@ public class CamerasPlugin implements DatabasePlugin {
                 .collect(toList());
     }
 
-    private EventHandler<TableColumn.CellEditEvent<Map.Entry<ViewProps, ?>, String>> getCellEditEventHandler(Property<CamerasParser> camerasParserProperty, Property<String> rawValueProperty, Property<CameraInfo.CameraView> currentViewProperty, ObservableList<CameraInfo.CameraView> cameraViews) {
+    private EventHandler<TableColumn.CellEditEvent<Map.Entry<ViewProps, ?>, String>> getCellEditEventHandler(Property<CamerasParser> camerasParserProperty, Property<String> rawValueProperty, Property<CameraInfo.CameraView> currentViewProperty) {
         return cellEditEvent -> {
             String newValue = cellEditEvent.getNewValue();
             Map.Entry<ViewProps, ?> editedRowValue = cellEditEvent.getRowValue();
@@ -295,25 +295,8 @@ public class CamerasPlugin implements DatabasePlugin {
 
             ViewKind currentViewKind = currentViewProperty.getValue().getType();
             long cameraIdentifier = Long.valueOf(rawValueProperty.getValue());
-
-            CameraInfo updatedCameraInfo = updateViewPropertiesInParser(cameraIdentifier, currentViewKind, editedEntry, camerasParserProperty.getValue());
-
-            updateCurrentViewInList(cameraIdentifier, currentViewKind, updatedCameraInfo, cameraViews);
+            updateViewPropertiesInParser(cameraIdentifier, currentViewKind, editedEntry, camerasParserProperty.getValue());
         };
-    }
-
-    private void updateCurrentViewInList(long cameraIdentifier, ViewKind currentViewKind, CameraInfo updatedCameraInfo, ObservableList<CameraInfo.CameraView> cameraViews) {
-        // TODO extract view lookup to helper
-        int replacedIndex = cameraViews.stream()
-                .filter(cv -> currentViewKind == cv.getType())
-                .findAny()
-                .map(cameraViews::indexOf)
-                .orElseThrow(() -> new IllegalStateException("Replaced view not found for camera id: " + cameraIdentifier + " : " + currentViewKind));
-        CameraInfo.CameraView updatedView = updatedCameraInfo.getViews().stream()
-                .filter(cv -> currentViewKind == cv.getType())
-                .findAny()
-                .orElseThrow(() -> new IllegalStateException("View not found for camera id: " + cameraIdentifier + " : " + currentViewKind));
-        cameraViews.set(replacedIndex, updatedView);
     }
 
     private CameraInfo updateViewPropertiesInParser(long cameraIdentifier, ViewKind currentViewKind, Map.Entry<ViewProps, Object> editedProp, CamerasParser camerasParser) {
