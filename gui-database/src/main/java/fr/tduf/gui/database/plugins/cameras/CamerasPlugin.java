@@ -36,6 +36,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static fr.tduf.gui.database.plugins.cameras.common.DisplayConstants.*;
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo.CameraView.fromProps;
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps.TYPE;
 import static java.util.Collections.singletonList;
@@ -49,7 +50,6 @@ import static javafx.scene.layout.Priority.ALWAYS;
 /**
  * Advanced cameras edition plugin
  */
-// TODO externalize strings
 public class CamerasPlugin implements DatabasePlugin {
     private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName();
 
@@ -170,11 +170,11 @@ public class CamerasPlugin implements DatabasePlugin {
         TableView<Map.Entry<ViewProps, ?>> setPropertyTableView = new TableView<>(viewProps);
         setPropertyTableView.setMinSize(mainColumWidth,200);
         setPropertyTableView.setEditable(true);
-        TableColumn<Map.Entry<ViewProps, ?>, String> settingColumn = new TableColumn<>("Setting");
+        TableColumn<Map.Entry<ViewProps, ?>, String> settingColumn = new TableColumn<>(HEADER_PROPTABLE_SETTING);
         settingColumn.setMinWidth(175);
         settingColumn.setCellValueFactory((cellData) -> new SimpleStringProperty(cellData.getValue().getKey().name()));
         setPropertyTableView.getColumns().add(settingColumn);
-        TableColumn<Map.Entry<ViewProps, ?>, String> valueColumn = new TableColumn<>("Value");
+        TableColumn<Map.Entry<ViewProps, ?>, String> valueColumn = new TableColumn<>(HEADER_PROPTABLE_VALUE);
         valueColumn.setMinWidth(100);
         valueColumn.setCellValueFactory((cellData) -> new SimpleStringProperty(cellData.getValue().getValue().toString()));
         valueColumn.setCellFactory(forTableColumn());
@@ -196,7 +196,7 @@ public class CamerasPlugin implements DatabasePlugin {
         Region camRegion = new Region();
         HBox.setHgrow(camRegion, ALWAYS);
         // TODO bold label
-        camSelectorBox.getChildren().add(new Label("Available cameras:"));
+        camSelectorBox.getChildren().add(new Label(LABEL_AVAILABLE_CAMERAS));
         camSelectorBox.getChildren().add(camRegion);
         camSelectorBox.getChildren().add(cameraSelectorComboBox);
         return camSelectorBox;
@@ -211,7 +211,7 @@ public class CamerasPlugin implements DatabasePlugin {
                 getViewSelectorChangeListener(currentCameraSetProperty, allViewProps));
 
         // TODO bold label
-        viewSelectorBox.getChildren().add(new Label("Available views:"));
+        viewSelectorBox.getChildren().add(new Label(LABEL_AVAILABLE_VIEWS));
         Region viewRegion = new Region();
         HBox.setHgrow(viewRegion, ALWAYS);
         viewSelectorBox.getChildren().add(viewRegion);
@@ -316,6 +316,6 @@ public class CamerasPlugin implements DatabasePlugin {
     }
 
     private Path resolveCameraFilePath(String databaseLocation) {
-        return Paths.get(databaseLocation, "cameras.bin");
+        return Paths.get(databaseLocation, CamerasHelper.FILE_CAMERAS_BIN);
     }
 }

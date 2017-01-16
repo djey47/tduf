@@ -32,6 +32,8 @@ import static java.util.stream.Collectors.toList;
  * Static methods tho access or modify camera information in datastore.
  */
 public class CamerasHelper {
+    public static final String FILE_CAMERAS_BIN = "cameras.bin";
+
     private static final String THIS_CLASS_NAME = CamerasHelper.class.getSimpleName();
 
     private static final String KEY_INDEX = "index";

@@ -7,5 +7,11 @@ public class DisplayConstants {
 
     public static final String LABEL_CAMERA_RAW_VALUE_DEFAULT = "";
 
+    public static final String LABEL_AVAILABLE_CAMERAS = "Available cameras:";
+    public static final String LABEL_AVAILABLE_VIEWS = "Available views:";
+
+    public static final String HEADER_PROPTABLE_SETTING = "Setting";
+    public static final String HEADER_PROPTABLE_VALUE = "Value";
+
     private DisplayConstants() {}
 }
