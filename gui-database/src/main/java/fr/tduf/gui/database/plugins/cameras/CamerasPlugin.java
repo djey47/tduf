@@ -2,6 +2,7 @@ package fr.tduf.gui.database.plugins.cameras;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.database.controllers.MainStageChangeDataController;
+import fr.tduf.gui.database.plugins.cameras.common.FxConstants;
 import fr.tduf.gui.database.plugins.cameras.converter.CameraInfoToItemConverter;
 import fr.tduf.gui.database.plugins.cameras.converter.CameraInfoToRawValueConverter;
 import fr.tduf.gui.database.plugins.cameras.converter.CameraViewToItemConverter;
@@ -17,13 +18,11 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -37,6 +36,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import static fr.tduf.gui.database.plugins.cameras.common.DisplayConstants.*;
+import static fr.tduf.gui.database.plugins.cameras.common.FxConstants.*;
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo.CameraView.fromProps;
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps.TYPE;
 import static java.util.Collections.singletonList;
@@ -115,9 +115,7 @@ public class CamerasPlugin implements DatabasePlugin {
     @Override
     public Node renderControls(EditorContext context) {
         HBox hBox = new HBox();
-        ObservableList<Node> mainRowChildren = hBox.getChildren();
-        // TODO extract to CSS
-        hBox.setPadding(new Insets(5.0));
+        hBox.getStyleClass().add(CSS_CLASS_PLUGIN_BOX);
 
         if (!context.getCamerasContext().isPluginLoaded()) {
             Log.warn(THIS_CLASS_NAME, "Cameras plugin not loaded, no rendering will be performed");
@@ -127,6 +125,7 @@ public class CamerasPlugin implements DatabasePlugin {
         VBox mainColumnBox = createMainColumn(context);
         VBox buttonColumnBox = createButtonColumn();
 
+        ObservableList<Node> mainRowChildren = hBox.getChildren();
         mainRowChildren.add(mainColumnBox);
         mainRowChildren.add(new Separator(VERTICAL));
         mainRowChildren.add(buttonColumnBox);
@@ -139,18 +138,19 @@ public class CamerasPlugin implements DatabasePlugin {
         ObservableList<Map.Entry<ViewProps, ?>> allViewProps = FXCollections.observableArrayList();
 
         ComboBox<CameraInfo> cameraSelectorComboBox = new ComboBox<>(cameraItems);
+        cameraSelectorComboBox.getStyleClass().add(CSS_CLASS_CAM_SELECTOR_COMBOBOX);
+        cameraSelectorComboBox.setConverter(new CameraInfoToItemConverter());
+
         ComboBox<CameraInfo.CameraView> viewSelectorComboBox = new ComboBox<>(FXCollections.observableArrayList());
+        viewSelectorComboBox.getStyleClass().add(CSS_CLASS_VIEW_SELECTOR_COMBOBOX);
+        viewSelectorComboBox.setConverter(new CameraViewToItemConverter());
 
         VBox mainColumnBox = new VBox();
         ObservableList<Node> mainColumnChildren = mainColumnBox.getChildren();
 
-        // TODO extract to constants or CSS
-        int mainColumWidth = 625;
-        int comboWidth = 455;
-
-        HBox camSelectorBox = createCamSelectorBox(context, cameraItems, mainColumWidth, comboWidth, cameraSelectorComboBox, viewSelectorComboBox);
-        HBox viewSelectorBox = createViewSelectorBox(mainColumWidth, comboWidth, viewSelectorComboBox, cameraSelectorComboBox.valueProperty(), allViewProps);
-        TableView<Map.Entry<ViewProps, ?>> setPropertyTableView = createPropertiesTableView(context, allViewProps, viewSelectorComboBox.valueProperty(), mainColumWidth);
+        HBox camSelectorBox = createCamSelectorBox(context, cameraItems, cameraSelectorComboBox, viewSelectorComboBox);
+        HBox viewSelectorBox = createViewSelectorBox(viewSelectorComboBox, cameraSelectorComboBox.valueProperty(), allViewProps);
+        TableView<Map.Entry<ViewProps, ?>> setPropertyTableView = createPropertiesTableView(context, allViewProps, viewSelectorComboBox.valueProperty());
 
         mainColumnChildren.add(camSelectorBox);
         mainColumnChildren.add(viewSelectorBox);
@@ -166,56 +166,68 @@ public class CamerasPlugin implements DatabasePlugin {
 //        buttonColumnBox.getChildren().add(new Button("P"));
     }
 
-    private TableView<Map.Entry<ViewProps, ?>> createPropertiesTableView(EditorContext context, ObservableList<Map.Entry<ViewProps, ?>> viewProps, Property<CameraInfo.CameraView> currentViewProperty, int mainColumWidth) {
+    private TableView<Map.Entry<ViewProps, ?>> createPropertiesTableView(EditorContext context, ObservableList<Map.Entry<ViewProps, ?>> viewProps, Property<CameraInfo.CameraView> currentViewProperty) {
         TableView<Map.Entry<ViewProps, ?>> setPropertyTableView = new TableView<>(viewProps);
-        setPropertyTableView.setMinSize(mainColumWidth,200);
+        setPropertyTableView.getStyleClass().add(CSS_CLASS_SET_PROPERTY_TABLEVIEW);
         setPropertyTableView.setEditable(true);
+
         TableColumn<Map.Entry<ViewProps, ?>, String> settingColumn = new TableColumn<>(HEADER_PROPTABLE_SETTING);
-        settingColumn.setMinWidth(175);
+        settingColumn.getStyleClass().add(CSS_CLASS_SETTING_TABLECOLUMN);
         settingColumn.setCellValueFactory((cellData) -> new SimpleStringProperty(cellData.getValue().getKey().name()));
-        setPropertyTableView.getColumns().add(settingColumn);
+
         TableColumn<Map.Entry<ViewProps, ?>, String> valueColumn = new TableColumn<>(HEADER_PROPTABLE_VALUE);
-        valueColumn.setMinWidth(100);
+        valueColumn.getStyleClass().add(CSS_CLASS_VALUE_TABLECOLUMN);
         valueColumn.setCellValueFactory((cellData) -> new SimpleStringProperty(cellData.getValue().getValue().toString()));
         valueColumn.setCellFactory(forTableColumn());
         valueColumn.setOnEditCommit(getCellEditEventHandler(context.getRawValueProperty(), currentViewProperty));
+
+        setPropertyTableView.getColumns().add(settingColumn);
         setPropertyTableView.getColumns().add(valueColumn);
+
         return setPropertyTableView;
     }
 
-    private HBox createCamSelectorBox(EditorContext context, ObservableList<CameraInfo> cameraItems, int mainColumWidth, int comboWidth, ComboBox<CameraInfo> cameraSelectorComboBox, ComboBox<CameraInfo.CameraView> viewSelectorComboBox) {
+    private HBox createCamSelectorBox(EditorContext context, ObservableList<CameraInfo> cameraItems, ComboBox<CameraInfo> cameraSelectorComboBox, ComboBox<CameraInfo.CameraView> viewSelectorComboBox) {
         HBox camSelectorBox = new HBox();
-        camSelectorBox.setPrefWidth(mainColumWidth);
-        cameraSelectorComboBox.setPrefWidth(comboWidth);
-        cameraSelectorComboBox.setConverter(new CameraInfoToItemConverter());
-        StringProperty rawValueProperty = context.getRawValueProperty();
-        Bindings.bindBidirectional(
-                rawValueProperty, cameraSelectorComboBox.valueProperty(), new CameraInfoToRawValueConverter(cameraItems));
+        camSelectorBox.getStyleClass().add(CSS_CLASS_CAM_SELECTOR_BOX);
+
         cameraSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
                 getCameraSelectorChangeListener(context.getFieldRank(), context.getCurrentTopic(), context.getChangeDataController(), viewSelectorComboBox.valueProperty(), viewSelectorComboBox.itemsProperty().get()));
+        Bindings.bindBidirectional(
+                context.getRawValueProperty(), cameraSelectorComboBox.valueProperty(), new CameraInfoToRawValueConverter(cameraItems));
+
+        Label availableCamerasLabel = new Label(LABEL_AVAILABLE_CAMERAS);
+        availableCamerasLabel.setLabelFor(cameraSelectorComboBox);
+        availableCamerasLabel.getStyleClass().add(CSS_CLASS_AVAILABLE_CAMERAS_LABEL);
+
         Region camRegion = new Region();
         HBox.setHgrow(camRegion, ALWAYS);
-        // TODO bold label
-        camSelectorBox.getChildren().add(new Label(LABEL_AVAILABLE_CAMERAS));
+
+        camSelectorBox.getChildren().add(availableCamerasLabel);
         camSelectorBox.getChildren().add(camRegion);
         camSelectorBox.getChildren().add(cameraSelectorComboBox);
+
         return camSelectorBox;
     }
 
-    private HBox createViewSelectorBox(int mainColumWidth, int comboWidth, ComboBox<CameraInfo.CameraView> viewSelectorComboBox, Property<CameraInfo> currentCameraSetProperty, ObservableList<Map.Entry<ViewProps, ?>> allViewProps) {
+    private HBox createViewSelectorBox(ComboBox<CameraInfo.CameraView> viewSelectorComboBox, Property<CameraInfo> currentCameraSetProperty, ObservableList<Map.Entry<ViewProps, ?>> allViewProps) {
         HBox viewSelectorBox = new HBox();
-        viewSelectorBox.setPrefWidth(mainColumWidth);
-        viewSelectorComboBox.setPrefWidth(comboWidth);
-        viewSelectorComboBox.setConverter(new CameraViewToItemConverter());
+        viewSelectorBox.getStyleClass().add(FxConstants.CSS_CLASS_VIEW_SELECTOR_BOX);
+
         viewSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
                 getViewSelectorChangeListener(currentCameraSetProperty, allViewProps));
 
-        // TODO bold label
-        viewSelectorBox.getChildren().add(new Label(LABEL_AVAILABLE_VIEWS));
+        Label availableViewsLabel = new Label(LABEL_AVAILABLE_VIEWS);
+        availableViewsLabel.setLabelFor(viewSelectorComboBox);
+        availableViewsLabel.getStyleClass().add(CSS_CLASS_AVAILABLE_VIEWS_LABEL);
+
         Region viewRegion = new Region();
         HBox.setHgrow(viewRegion, ALWAYS);
+
+        viewSelectorBox.getChildren().add(availableViewsLabel);
         viewSelectorBox.getChildren().add(viewRegion);
         viewSelectorBox.getChildren().add(viewSelectorComboBox);
+
         return viewSelectorBox;
     }
 

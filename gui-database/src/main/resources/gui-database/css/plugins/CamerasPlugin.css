@@ -1,0 +1,28 @@
+.pluginBox {
+    -fx-padding: 5.0;
+}
+
+.camSelectorBox, .viewSelectorBox {
+    -fx-pref-width: 625.0;
+}
+
+.camSelectorComboBox, .viewSelectorComboBox {
+    -fx-pref-width: 455.0;
+}
+
+.availableCamerasLabel, .availableViewsLabel {
+    -fx-font-weight: bold;
+}
+
+.setPropertyTableView {
+    -fx-min-height: 200.0;
+    -fx-pref-width: 625.0;
+}
+
+.settingTableColumn {
+    -fx-min-width: 175.0;
+}
+
+.valueTableColumn {
+    -fx-min-width: 100.0;
+}
