@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -113,6 +114,20 @@ public class CamerasHelper {
                 .map(Map.Entry::getKey)
                 .map(cameraId -> CamerasHelper.fetchInformation(cameraId, parser))
                 .collect(toList());
+    }
+
+    /**
+     * @param cameraIdentifier  : identifier of camera
+     * @param viewKind          : existing view in set
+     * @param parser            : parsed cameras contents
+     * @return view properties for requested camera.
+     */
+    public static EnumMap<ViewProps, ?> fetchViewProperties(long cameraIdentifier, ViewKind viewKind, CamerasParser parser) {
+        return fetchInformation(cameraIdentifier, parser).getViews().stream()
+                .filter(cv -> viewKind == cv.getType())
+                .findAny()
+                .map(CameraInfo.CameraView::getSettings)
+                .orElseThrow(() -> new NoSuchElementException("Camera view not found: (" + cameraIdentifier + ", " + viewKind + ")"));
     }
 
     /**

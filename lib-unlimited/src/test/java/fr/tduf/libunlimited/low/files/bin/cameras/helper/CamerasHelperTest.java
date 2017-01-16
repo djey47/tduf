@@ -153,6 +153,27 @@ class CamerasHelperTest {
     }
 
     @Test
+    void fetchViewProperties_whenViewDoesNotExist_shouldThrowException() throws Exception {
+        // GIVEN-WHEN-THEN
+        assertThrows(NoSuchElementException.class,
+                () -> CamerasHelper.fetchViewProperties(1000, Follow_Large_Back, readOnlyParser));
+    }
+
+    @Test
+    void fetchViewProperties_whenViewExists_shouldReturnProps() {
+        // GIVEN
+        long cameraIdentifier = 1000;
+
+        // WHEN
+        EnumMap<ViewProps, ?> actualProperties = CamerasHelper.fetchViewProperties(cameraIdentifier, Cockpit, readOnlyParser);
+
+        // THEN
+        assertThat(actualProperties).hasSize(10);
+        assertThat(actualProperties.keySet()).containsExactlyInAnyOrder(ViewProps.values());
+        assertThat(actualProperties.values()).doesNotContainNull();
+    }
+
+    @Test
     void updateViews_whenNullConfiguration_shouldThrowException() throws IOException {
         // GIVEN-WHEN-THEN
         assertThrows(NullPointerException.class,
@@ -172,7 +193,7 @@ class CamerasHelperTest {
     @Test
     void updateViews_whenCameraDoesNotExist_shouldThrowException() throws Exception {
         // GIVEN
-        CameraInfo.CameraView cameraView = CameraInfo.CameraView.from(ViewKind.Bumper, 0, ViewKind.Bumper);
+        CameraInfo.CameraView cameraView = CameraInfo.CameraView.from(Bumper, 0, Bumper);
         CameraInfo configuration = CameraInfo.builder()
                 .forIdentifier(0)
                 .addView(cameraView)
