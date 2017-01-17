@@ -3,7 +3,7 @@
 TDUF aims at making Test Drive Unlmited modding easier:
 
 * Providing base modding features to save time in a command line interface (CLI)
-* Making database editing less harmful with a new Database Editor (GUI)
+* Making database and cameras editing less harmful with a new Database Editor (GUI)
 * Capitalizing about reverse-engineering
 * Bringing new desktop applications for end-users
 * ...
@@ -11,6 +11,7 @@ TDUF aims at making Test Drive Unlmited modding easier:
 
 ### Database Editor Main features
 * Opens and saves a database from/to either regular BNK or JSON form
+* Opens and saves cameras.bin file in database directory above
 * Provides profiles to address different modding use cases (car editing, tuning kits, rims ...)
 * Displays all fields within a topic, in an ordered manner
 * Makes changes easier for special values (percent, bitfields, links etc.)
@@ -24,18 +25,27 @@ TDUF aims at making Test Drive Unlmited modding easier:
 * Imports data from TDUMT (.pch patches)
 * Exports current entry to following forms: EDEN-classic/TDUPE, TDUMT, TDUF mini-patch
 * Checks database and proposes to fix errors (advanced feature)
+* Display available camera sets and views
+* Changes some camera view settings
 * ...
 
 
 ### What's in this version ? (1.10.0)
-* Documentation: https://github.com/djey47/tdu-cp/wiki/TDUF-Customizing-Cameras
+* Documentation (WIP):
+    - https://github.com/djey47/tdu-cp/wiki/TDUF-Customizing-Cameras
+    - https://github.com/djey47/tdu-cp/wiki/TDUF-Database-Editor-Cameras
 
-
-* 
+* DatabaseEditor:
+    - camera editing via Vehicle Slots profile!
+    - REF errors now properly displayed next to fields
+    - export selected entries for all topics (to be continued)
+    - application gets its own icon, finally!
 
 
 ### Fixed issues
-* 
+* CameraTool: view settings now correctly updated
+
+* DatabaseEditor: entry refreshes correctly even though its remote is missing
 
 
 ### Known bugs
