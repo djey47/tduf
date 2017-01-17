@@ -23,13 +23,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.NumberStringConverter;
 
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.lang.Integer.compare;
 import static java.util.Comparator.comparingInt;
 import static java.util.Objects.requireNonNull;
 

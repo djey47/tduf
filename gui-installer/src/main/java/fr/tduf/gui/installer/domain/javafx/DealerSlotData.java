@@ -22,9 +22,7 @@ public class DealerSlotData {
 
     /**
      * Unique way to create an instance
-     * @param dealerDataItem
-     * @param slotDataItem
-     * @return
+     * @return instance
      */
     public static DealerSlotData from(DealerDataItem dealerDataItem, SlotDataItem slotDataItem) {
         DealerSlotData dataItem = new DealerSlotData();

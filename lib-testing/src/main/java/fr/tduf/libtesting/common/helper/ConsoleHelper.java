@@ -43,8 +43,6 @@ public class ConsoleHelper {
 
     /**
      * Closes output stream and return contents as a String
-     *
-     * @throws IOException
      */
     public static String finalizeAndGetContents(OutputStream outputStream) throws IOException {
         outputStream.flush();

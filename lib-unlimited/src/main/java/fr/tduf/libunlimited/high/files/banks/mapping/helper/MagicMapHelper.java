@@ -25,7 +25,6 @@ public class MagicMapHelper {
      * @param magicMapFile  : map file to be fixed
      * @param bankDirectory : directory where TDU bank files are located, e.g 'C:\Test Drive Unlimited\Euro\Bnk'
      * @return list of new file names.
-     * @throws IOException
      */
     public static List<String> fixMagicMap(String magicMapFile, String bankDirectory) throws IOException {
         requireNonNull(magicMapFile, "Magic Map file is required.");
@@ -56,7 +55,6 @@ public class MagicMapHelper {
      * Fixes magic map file at specified TDU banks location.
      * @param bankDirectory : directory where TDU bank files are located, e.g 'C:\Test Drive Unlimited\Euro\Bnk'
      * @return list of new file names.
-     * @throws IOException
      */
     public static List<String> fixMagicMap(String bankDirectory) throws IOException {
         String magicMapFile = Paths.get(bankDirectory, MAPPING_FILE_NAME).toString();
@@ -67,7 +65,6 @@ public class MagicMapHelper {
     /**
      * Converts given map file to magic map.
      * @param mapFile : map file to be magified
-     * @throws IOException
      */
     public static void toMagicMap(String mapFile) throws IOException {
         requireNonNull(mapFile, "Map file name is required.");

@@ -147,7 +147,7 @@ public class ContentItemDto {
             List<SwitchValueDto> switchValues = new ArrayList<>();
             bitfieldReference.ifPresent(refs -> {
                 List<Boolean> values = bitfieldHelper.resolve(topicForBitField, raw)
-                        .<IllegalStateException>orElseThrow(() -> new IllegalStateException("Bitfield information unavailable for topic: " + topicForBitField));
+                        .orElseThrow(() -> new IllegalStateException("Bitfield information unavailable for topic: " + topicForBitField));
                 refs.forEach(ref -> {
                             boolean switchState = values.get(ref.getIndex() - 1);
                             switchValues.add(new SwitchValueDto(ref.getIndex(), ref.getLabel(), switchState));

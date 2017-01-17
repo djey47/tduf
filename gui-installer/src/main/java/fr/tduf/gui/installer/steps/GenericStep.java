@@ -91,9 +91,6 @@ public abstract class GenericStep {
     /**
      * What a particular step should do.
      * Do not call it directly, use {@link GenericStep#start()} method instead
-     *
-     * @throws IOException
-     * @throws ReflectiveOperationException
      */
     protected abstract void perform() throws IOException, ReflectiveOperationException, URISyntaxException;
 

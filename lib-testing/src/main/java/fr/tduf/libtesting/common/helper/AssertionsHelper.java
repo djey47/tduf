@@ -41,7 +41,6 @@ public class AssertionsHelper {
      *
      * @param fileName          : path and file name
      * @param resourceDirectory : directory in app resources
-     * @throws URISyntaxException
      */
     public static void assertFileMatchesReference(String fileName, String resourceDirectory) throws URISyntaxException, IOException {
         File actualContentsFile = assertFileExistAndGet(fileName);
@@ -65,8 +64,6 @@ public class AssertionsHelper {
      * Checks if specified JSON file contents are the same as the one from the same name in resources.
      * @param fileName          : path and file name
      * @param resourceDirectory : directory in app resources
-     * @throws URISyntaxException
-     * @throws IOException
      */
     public static void assertJsonFileMatchesReference(String fileName, String resourceDirectory) throws URISyntaxException, IOException, JSONException {
         File actualContentsFile = assertFileExistAndGet(fileName);
@@ -122,7 +119,6 @@ public class AssertionsHelper {
      * Ensures that specified file contents are not the same as the one from the same name in resources.
      * @param fileName          : path and file name
      * @param resourceDirectory : directory in app resources
-     * @throws URISyntaxException
      */
     public static void assertFileDoesNotMatchReference(String fileName, String resourceDirectory) throws URISyntaxException, IOException {
         File actualContentsFile = assertFileExistAndGet(fileName);
@@ -137,7 +133,6 @@ public class AssertionsHelper {
     /**
      * @param outputStream  : stream to analyze
      * @param expected      : JSON contents which must be contained in stream.
-     * @throws IOException
      */
     public static void assertOutputStreamContainsJsonExactly(OutputStream outputStream, String expected) throws IOException, JSONException {
         finalizeOutputStream(outputStream);
@@ -147,7 +142,6 @@ public class AssertionsHelper {
     /**
      * @param outputStream  : stream to analyze
      * @param expected      : contents which must be contained in stream.
-     * @throws IOException
      */
     public static void assertOutputStreamContainsExactly(OutputStream outputStream, String expected) throws IOException {
         finalizeOutputStream(outputStream);
@@ -157,7 +151,6 @@ public class AssertionsHelper {
     /**
      * @param outputStream  : stream to analyze
      * @param expectedItems : items which must be sequentially contained in stream.
-     * @throws IOException
      */
     public static void assertOutputStreamContainsSequence(OutputStream outputStream, String... expectedItems) throws IOException {
         finalizeOutputStream(outputStream);

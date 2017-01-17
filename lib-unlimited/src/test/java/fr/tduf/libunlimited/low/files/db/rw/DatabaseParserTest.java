@@ -150,7 +150,6 @@ class DatabaseParserTest {
         //THEN
         assertThat(actualDb).isNotNull();
         assertThat(databaseParser.getIntegrityErrors()).hasSize(1);
-        /** {@link fr.tduf.libunlimited.low.files.db.domain.IntegrityError#getError()} */
         assertThat(databaseParser.getIntegrityErrors()).extracting("error").containsExactly("CONTENTS_FIELDS_COUNT_MISMATCH");
         assertThat(databaseParser.getIntegrityErrors().get(0).getInformation().get(SOURCE_TOPIC)).isEqualTo(ACHIEVEMENTS);
     }

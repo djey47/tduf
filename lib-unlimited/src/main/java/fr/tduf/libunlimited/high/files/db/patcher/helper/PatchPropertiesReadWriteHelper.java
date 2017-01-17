@@ -20,7 +20,6 @@ public class PatchPropertiesReadWriteHelper {
     /**
      * @param patchFile : JSON mini patch file to be applied
      * @return loaded properties if a corresponding property file exists
-     * @throws IOException
      */
     public static PatchProperties readPatchProperties(File patchFile) throws IOException {
         String propertyFile = patchFile + ".properties";
@@ -46,7 +45,6 @@ public class PatchPropertiesReadWriteHelper {
     /**
      * @param patchFile : JSON mini patch file which has just been applied
      * @return path of effective property file if any, otherwise empty
-     * @throws IOException
      */
     public static Optional<String> writeEffectivePatchProperties(PatchProperties patchProperties, String patchFile) throws IOException {
         return writeEffectivePatchPropertiesWithPrefix(patchProperties, patchFile, "effective-");
@@ -55,7 +53,6 @@ public class PatchPropertiesReadWriteHelper {
     /**
      * @param patchFile : JSON mini patch file which has just been applied
      * @return path of property file if any, otherwise empty
-     * @throws IOException
      */
     public static Optional<String> writePatchProperties(PatchProperties patchProperties, String patchFile) throws IOException {
         return writeEffectivePatchPropertiesWithPrefix(patchProperties, patchFile, "");
@@ -79,5 +76,4 @@ public class PatchPropertiesReadWriteHelper {
 
         return of(targetPropertyFile);
     }
-
 }

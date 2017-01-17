@@ -103,7 +103,9 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
             String reference = (String) information.get(REFERENCE);
             Integer entryIdentifier = (Integer) information.get(ENTRY_ID);
             fr.tduf.libunlimited.common.game.domain.Locale locale = (Locale) information.get(ErrorInfoEnum.LOCALE);
+            //noinspection unchecked
             Optional<Set<Locale>> missingLocales = Optional.ofNullable ((Set<Locale>) information.get(MISSING_LOCALES));
+            //noinspection unchecked
             Map<String, Integer> perValueCount = (Map<String, Integer>) information.get(PER_VALUE_COUNT);
 
             switch (integrityError.getErrorTypeEnum()) {
@@ -112,7 +114,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
                     break;
                 case CONTENTS_REFERENCE_NOT_FOUND:
                     addContentsEntryWithDefaultItems(Optional.of(reference), remoteTopic
-                            .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No remote topic for a contents reference"))
+                            .orElseThrow(() -> new IllegalStateException("No remote topic for a contents reference"))
                     );
                     break;
                 case CONTENTS_FIELDS_COUNT_MISMATCH:
@@ -143,7 +145,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
 
         Locale referenceLocale = pickAvailableLocaleOrElseWhatever(UNITED_STATES, validResourceLocales);
         databaseMiner.getResourcesFromTopic(topic)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resources for topic: " + topic))
+                .orElseThrow(() -> new IllegalStateException("No resources for topic: " + topic))
                 .getEntries()
                 .forEach(entry -> {
                     String referenceValue = entry.getValueForLocale(referenceLocale)
@@ -154,10 +156,10 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
 
     private void addMissingContentsFields(int entryInternalIdentifier, DbDto.Topic topic) {
         DbDto topicObject = databaseMiner.getDatabaseTopic(topic)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No contents for topic: " + topic));
+                .orElseThrow(() -> new IllegalStateException("No contents for topic: " + topic));
 
         ContentEntryDto invalidEntry = databaseMiner.getContentEntryFromTopicWithInternalIdentifier(entryInternalIdentifier, topic)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("Invalid entry not found at id: " + entryInternalIdentifier));
+                .orElseThrow(() -> new IllegalStateException("Invalid entry not found at id: " + entryInternalIdentifier));
 
         // Structure is the reference
         topicObject.getStructure().getFields().stream()
@@ -195,17 +197,16 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
 
         Locale referenceLocale = pickAvailableLocaleOrElseWhatever(UNITED_STATES, validResourceLocales);
         DbResourceDto resourceObject = databaseMiner.getResourcesFromTopic(topic)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resources for topic: " + topic));
+                .orElseThrow(() -> new IllegalStateException("No resources for topic: " + topic));
         ResourceEntryDto entry = resourceObject
                 .getEntryByReference(reference)
                 // Use supplier to only invoke addEntry when result is absent
                 .orElseGet(() -> resourceObject.addEntryByReference(reference));
 
-        missingLocales.orElse(Locale.valuesAsStream().collect(toSet())).stream()
-                .forEach(missingLocale -> {
-                    String referenceValue = entry.getValueForLocale(referenceLocale)
-                            .orElse(RESOURCE_VALUE_DEFAULT);
-                    entry.setValueForLocale(referenceValue, missingLocale);
+        missingLocales.orElse(Locale.valuesAsStream().collect(toSet())).forEach(missingLocale -> {
+            String referenceValue = entry.getValueForLocale(referenceLocale)
+                    .orElse(RESOURCE_VALUE_DEFAULT);
+            entry.setValueForLocale(referenceValue, missingLocale);
         });
     }
 
@@ -239,7 +240,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
         }
 
         return validResourceLocales.stream().findFirst()
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No valid resource locale available"));
+                .orElseThrow(() -> new IllegalStateException("No valid resource locale available"));
     }
 
     Set<IntegrityError> getIntegrityErrors() {

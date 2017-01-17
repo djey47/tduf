@@ -32,8 +32,10 @@ public class TableViewHelper {
 
         T selectedItem = null;
         if (node instanceof TableRow) {
+            //noinspection unchecked
             selectedItem = (T) ((TableRow) node).getItem();
         } else if (node.getParent() instanceof TableRow) {
+            //noinspection unchecked
             selectedItem = (T) ((TableRow) node.getParent()).getItem();
         }
 

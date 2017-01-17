@@ -57,7 +57,7 @@ public class SnapshotBuilder {
     public void take(String backupDirectory) throws IOException {
         final PatchProperties effectiveProperties = requireNonNull(databaseContext.getPatchProperties(), "Patch properties are required.");
         String vehicleSlotRef = effectiveProperties.getVehicleSlotReference()
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("Vehicle slot reference not found in properties"));
+                .orElseThrow(() -> new IllegalStateException("Vehicle slot reference not found in properties"));
 
         List<DbPatchDto.DbChangeDto> cleaningOps = generateCleaningOperationsTemplates();
         List<DbPatchDto.DbChangeDto> snapshotOps = generateSnapshotOperationsForVehicleSlot(vehicleSlotRef);
@@ -109,12 +109,12 @@ public class SnapshotBuilder {
                 .ifPresent(dealerRef -> {
                     final int slotRank = DatabaseConstants.FIELD_RANK_DEALER_SLOT_1
                             + effectiveProperties.getDealerSlot()
-                            .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No dealer slot rank provided."))
+                            .orElseThrow(() -> new IllegalStateException("No dealer slot rank provided."))
                             - 1;
                     final String currentVehicleRef = databaseContext.getMiner().getContentEntryFromTopicWithReference(dealerRef, CAR_SHOPS)
                             .flatMap(entry -> entry.getItemAtRank(slotRank))
                             .map(ContentItemDto::getRawValue)
-                            .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No dealer at ref: " + dealerRef));
+                            .orElseThrow(() -> new IllegalStateException("No dealer at ref: " + dealerRef));
                     DbFieldValueDto partialValue = DbFieldValueDto.fromCouple(slotRank, currentVehicleRef);
                     final DbPatchDto.DbChangeDto dbChangeDto = DbPatchDto.DbChangeDto.builder()
                             .forTopic(CAR_SHOPS)

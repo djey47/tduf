@@ -130,7 +130,6 @@ public class FilesHelper {
     /**
      * @param object    : instance to be written to json format
      * @param fileName  : path of file to be created
-     * @throws IOException
      */
     public static void writeJsonObjectToFile(Object object, String fileName) throws IOException {
         Path patchFilePath = Paths.get(fileName);

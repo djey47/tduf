@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
@@ -97,10 +98,10 @@ class CopyFilesStep extends GenericStep {
         VehicleSlotsHelper vehicleSlotsHelper = VehicleSlotsHelper.load(getDatabaseContext().getMiner());
 
         String slotReference = getDatabaseContext().getPatchProperties().getVehicleSlotReference()
-                .<InternalStepException>orElseThrow(() -> new InternalStepException(getType(), "No slot reference provided in properties."));
+                .orElseThrow(() -> new InternalStepException(getType(), "No slot reference provided in properties."));
 
         VehicleSlot vehicleSlot = vehicleSlotsHelper.getVehicleSlotFromReference(slotReference)
-                .<InternalStepException>orElseThrow(() -> new InternalStepException(getType(), "No vehicle slot found for reference: " + slotReference));
+                .orElseThrow(() -> new InternalStepException(getType(), "No vehicle slot found for reference: " + slotReference));
 
         Path effectiveTargetPath = targetPath;
         List<String> targetFileNames;
@@ -146,7 +147,7 @@ class CopyFilesStep extends GenericStep {
 
         int rimRank = Integer.parseInt(matcher.group(2));
         final RimSlot rimSlot = vehicleSlot.getRimAtRank(rimRank)
-                .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("Vehicle slot hasn't required rim at rank: " + rimRank));
+                .orElseThrow(() -> new IllegalArgumentException("Vehicle slot hasn't required rim at rank: " + rimRank));
 
         return targetPath.resolve(rimSlot.getParentDirectoryName().getValue());
     }
@@ -191,7 +192,9 @@ class CopyFilesStep extends GenericStep {
                             Files.createDirectories(backupFinalPath.getParent());
 
                             final File finalFile = finalPath.toFile();
+                            //noinspection ResultOfMethodCallIgnored
                             finalFile.setWritable(true);
+                            //noinspection ResultOfMethodCallIgnored
                             finalFile.setReadable(true);
 
                             Files.copy(finalPath, backupFinalPath);

@@ -34,7 +34,7 @@ public enum CustomizableCameraView {
             return customizableViewStream
                     .filter(view -> view.propertySuffix.equalsIgnoreCase(code))
                     .findAny()
-                    .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("Unknown view code: " + code));
+                    .orElseThrow(() -> new IllegalArgumentException("Unknown view code: " + code));
         }
     }
 

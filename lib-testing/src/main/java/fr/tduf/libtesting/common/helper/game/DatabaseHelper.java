@@ -70,7 +70,7 @@ public class DatabaseHelper {
         return createDatabaseForReadOnly().stream()
                 .filter(databaseObject -> topic == databaseObject.getStructure().getTopic())
                 .findAny()
-                .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("Topic not found in database: " + topic));
+                .orElseThrow(() -> new IllegalArgumentException("Topic not found in database: " + topic));
     }
 
     private static void copyDatabaseResourceFilesFromClasspath(Path jsonDatabasePath, String destDir) throws IOException {

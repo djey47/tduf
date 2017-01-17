@@ -53,7 +53,6 @@ public class DatabaseReadWriteHelper {
      * @param databaseDirectory : location of database contents as db + fr,it,ge... files
      * @param integrityErrors    : list of database errors, encountered when parsing.  @return a global object for topic.
      * @return empty value if topic could not be read properly.
-     * @throws FileNotFoundException
      */
     public static Optional<DbDto> readDatabaseTopic(DbDto.Topic topic, String databaseDirectory, Set<IntegrityError> integrityErrors) throws IOException {
         requireNonNull(integrityErrors, "A list (even empty) must be provided.");
@@ -154,7 +153,6 @@ public class DatabaseReadWriteHelper {
      * @param dbDto             : topic contents to be written
      * @param outputDirectory   : location of generated files
      * @return a list of written TDU files
-     * @throws FileNotFoundException
      */
     public static List<String> writeDatabaseTopic(DbDto dbDto, String outputDirectory) throws IOException {
 
@@ -206,7 +204,6 @@ public class DatabaseReadWriteHelper {
     /**
      * Creates a temporary directory.
      * @return full directory name
-     * @throws IOException
      */
     public static String createTempDirectory() throws IOException {
         return Files.createTempDirectory("libUnlimited-databaseRW").toString();
@@ -285,7 +282,7 @@ public class DatabaseReadWriteHelper {
 
                 .map(entry -> {
                     Locale locale = entry.getKey();
-                    Map<IntegrityError.ErrorInfoEnum, Object> info = new EnumMap(IntegrityError.ErrorInfoEnum.class);
+                    Map<IntegrityError.ErrorInfoEnum, Object> info = new EnumMap<>(IntegrityError.ErrorInfoEnum.class);
                     info.put(SOURCE_TOPIC, topic);
                     info.put(FILE, String.format(FMT_FILENAME_EXTENSION, topic.getLabel(), locale.getCode()));
                     info.put(LOCALE, locale);
@@ -307,7 +304,7 @@ public class DatabaseReadWriteHelper {
             return contentsFile.getAbsolutePath();
         }
 
-        Map<IntegrityError.ErrorInfoEnum, Object> info = new EnumMap(IntegrityError.ErrorInfoEnum.class);
+        Map<IntegrityError.ErrorInfoEnum, Object> info = new EnumMap<>(IntegrityError.ErrorInfoEnum.class);
         info.put(SOURCE_TOPIC, topic);
         info.put(FILE, contentsFile.getAbsolutePath());
         IntegrityError integrityError = IntegrityError.builder()
@@ -357,7 +354,7 @@ public class DatabaseReadWriteHelper {
         } catch (Exception e) {
             Log.warn(THIS_CLASS_NAME, "Can't unencrypt file: " + contentsFileName, e);
 
-            Map<IntegrityError.ErrorInfoEnum, Object> info = new EnumMap(IntegrityError.ErrorInfoEnum.class);
+            Map<IntegrityError.ErrorInfoEnum, Object> info = new EnumMap<>(IntegrityError.ErrorInfoEnum.class);
             info.put(FILE, contentsFileName);
             IntegrityError integrityError = IntegrityError.builder()
                     .ofType(IntegrityError.ErrorTypeEnum.CONTENTS_ENCRYPTION_NOT_SUPPORTED)

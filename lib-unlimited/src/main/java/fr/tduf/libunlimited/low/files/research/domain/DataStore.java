@@ -34,7 +34,7 @@ public class DataStore {
 
     private static final Pattern FIELD_NAME_PATTERN = Pattern.compile("^(?:.*\\.)?(.+)$");              // e.g 'entry_list[1].my_field', 'my_field'
 
-    private static final Pattern SUB_FIELD_NAME_PATTERN = Pattern.compile("^(.+)\\[(\\d+)\\]\\.(.+)$"); // e.g 'entry_list[1].my_field'
+    private static final Pattern SUB_FIELD_NAME_PATTERN = Pattern.compile("^(.+)\\[(\\d+)]\\.(.+)$"); // e.g 'entry_list[1].my_field'
     private static final String SUB_FIELD_PREFIX_FORMAT = "%s[%d]" + REPEATER_FIELD_SEPARATOR;
 
     private final Map<String, Entry> store = new HashMap<>();
@@ -430,7 +430,7 @@ public class DataStore {
         } else {
 
             FileStructureDto.Field fieldDefinition = StructureHelper.getFieldDefinitionFromFullName(parentKey, fileStructure)
-                    .<IllegalStateException>orElseThrow(() -> new IllegalStateException("Field definition not found for key: " + parentKey));
+                    .orElseThrow(() -> new IllegalStateException("Field definition not found for key: " + parentKey));
             if (jsonNode instanceof IntNode || jsonNode instanceof LongNode) {
 
                 type = INTEGER;

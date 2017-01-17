@@ -219,7 +219,7 @@ public class CryptoHelper {
             return Stream.of(EncryptionModeEnum.values())
                     .filter(encryptionModeEnum -> encryptionModeEnum.id == cryptoMode)
                     .findAny()
-                    .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("Unhandled encryption mode: " + cryptoMode));
+                    .orElseThrow(() -> new IllegalArgumentException("Unhandled encryption mode: " + cryptoMode));
         }
     }
 }

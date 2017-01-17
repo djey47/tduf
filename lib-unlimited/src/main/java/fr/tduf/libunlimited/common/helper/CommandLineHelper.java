@@ -41,7 +41,6 @@ public class CommandLineHelper {
      * @param command   : operation to execute, generally the first parameter to call
      * @param args      : other parameters.
      * @return a process result, giving access to exit code and stdout/stderr contents.
-     * @throws IOException
      */
     public ProcessResult runCliCommand(String command, String... args) throws IOException {
         requireNonNull(command, "A CLI command is required.");

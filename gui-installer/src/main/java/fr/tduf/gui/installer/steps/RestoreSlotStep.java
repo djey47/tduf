@@ -39,7 +39,7 @@ class RestoreSlotStep extends GenericStep {
         requireNonNull(getDatabaseContext().getUserSelection(), "User selection is required.");
 
         final VehicleSlot slot = getDatabaseContext().getUserSelection().getVehicleSlot()
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No vehicle slot has been selected"));
+                .orElseThrow(() -> new IllegalStateException("No vehicle slot has been selected"));
         final String slotReference = slot.getRef();
         final String carIdentifier = Integer.toString(slot.getCarIdentifier());
 

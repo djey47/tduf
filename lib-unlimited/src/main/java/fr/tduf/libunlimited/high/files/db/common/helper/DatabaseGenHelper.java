@@ -32,7 +32,6 @@ public class DatabaseGenHelper {
 
     /**
      * Main constructor
-     * @param databaseMiner
      */
     public DatabaseGenHelper(BulkDatabaseMiner databaseMiner) {
         this.databaseMiner = databaseMiner;
@@ -191,7 +190,7 @@ public class DatabaseGenHelper {
                         .filter(item -> item.getFieldRank() == identifierField.getRank())
                         .findAny()
                         .map(ContentItemDto::getRawValue)
-                        .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No identifier field for topic object: " + topicObject.getTopic())))
+                        .orElseThrow(() -> new IllegalStateException("No identifier field for topic object: " + topicObject.getTopic())))
 
                 .collect(toSet());
     }

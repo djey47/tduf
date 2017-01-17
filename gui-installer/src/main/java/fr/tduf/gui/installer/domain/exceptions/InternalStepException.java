@@ -10,9 +10,6 @@ public class InternalStepException extends RuntimeException {
 
     /**
      * Constructor from known cause
-     * @param stepType
-     * @param message
-     * @param cause
      */
     public InternalStepException(GenericStep.StepType stepType, String message, Throwable cause) {
         super(message, cause);
@@ -21,8 +18,6 @@ public class InternalStepException extends RuntimeException {
 
     /**
      * Constructor from unknown cause
-     * @param stepType
-     * @param message
      */
     public InternalStepException(GenericStep.StepType stepType, String message) {
         super(message);

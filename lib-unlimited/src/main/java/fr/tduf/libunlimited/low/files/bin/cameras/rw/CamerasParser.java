@@ -57,9 +57,9 @@ public class CamerasParser extends GenericParser<String> {
         cachedCameraIndex = new LinkedHashMap<>();
         getDataStore().getRepeatedValues("index").forEach((store) -> {
                     long cameraId = store.getInteger("cameraId")
-                            .<IllegalStateException>orElseThrow(() -> new IllegalStateException("cameraId attribute not found in store"));
+                            .orElseThrow(() -> new IllegalStateException("cameraId attribute not found in store"));
                     short viewCount = store.getInteger("viewCount")
-                            .<IllegalStateException>orElseThrow(() -> new IllegalStateException("viewCount attribute not found in store"))
+                            .orElseThrow(() -> new IllegalStateException("viewCount attribute not found in store"))
                             .shortValue();
                     cachedCameraIndex.put(cameraId, viewCount);
                 });
@@ -78,7 +78,7 @@ public class CamerasParser extends GenericParser<String> {
         cachedCameraViews = new LinkedHashMap<>();
         getDataStore().getRepeatedValues("views").forEach(store -> {
                     long cameraId = store.getInteger("cameraId")
-                            .<IllegalStateException>orElseThrow(() -> new IllegalStateException("cameraId attribute not found in store"));
+                            .orElseThrow(() -> new IllegalStateException("cameraId attribute not found in store"));
 
                     List<DataStore> currentViews;
                     if (cachedCameraViews.containsKey(cameraId)) {

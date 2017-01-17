@@ -4,7 +4,6 @@ import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import fr.tduf.libunlimited.low.files.research.rw.GenericWriter;
 
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.List;
 
 import static java.util.Comparator.comparingLong;

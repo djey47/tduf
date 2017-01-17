@@ -22,6 +22,7 @@ import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChange
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TdumtPatchConverterTest {
@@ -271,7 +272,7 @@ public class TdumtPatchConverterTest {
         List<String> values = asList("000000", "111111", "222222");
 
         // WHEN
-        String actualValue = TdumtPatchConverter.getContentsValue(Optional.<String>empty(), values);
+        String actualValue = TdumtPatchConverter.getContentsValue(empty(), values);
 
         // THEN
         assertThat(actualValue).isEqualTo("000000=111111|000000\t111111\t222222");

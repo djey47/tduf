@@ -46,6 +46,7 @@ class DatabaseIntegrityCheckerTest {
         assertThat(integrityErrors).hasSize(1);
         assertThat(integrityErrors).extracting("errorTypeEnum").containsOnly(INCOMPLETE_DATABASE);
 
+        //noinspection unchecked
         Set<DbDto.Topic> missingTopics = (Set<DbDto.Topic>) integrityErrors.stream()
                 .findFirst().get()
                 .getInformation().get(IntegrityError.ErrorInfoEnum.MISSING_TOPICS);
@@ -157,6 +158,7 @@ class DatabaseIntegrityCheckerTest {
                 .containsKey(SOURCE_TOPIC)
                 .containsKey(PER_VALUE_COUNT);
 
+        //noinspection unchecked
         Map<String, Integer> valueCounter = (Map<String, Integer>) integrityError.getInformation().get(PER_VALUE_COUNT);
         assertThat(valueCounter).contains(MapEntry.entry("CENT", 7));
         assertThat(valueCounter).contains(MapEntry.entry("CENT_ALTERED", 1));

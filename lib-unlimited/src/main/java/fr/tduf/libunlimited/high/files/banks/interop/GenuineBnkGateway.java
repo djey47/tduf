@@ -96,7 +96,7 @@ public class GenuineBnkGateway extends GenuineGateway implements BankSupport {
                     .filter(Files::isRegularFile)
                     .filter(path -> EXTENSION_BANKS.equalsIgnoreCase(FilesHelper.getExtension(path.toString())))
                     .findAny()
-                    .<IOException>orElseThrow(() -> new IOException("No original bank has been found in this directory: " + inputDirectory));
+                    .orElseThrow(() -> new IOException("No original bank has been found in this directory: " + inputDirectory));
         }
     }
 

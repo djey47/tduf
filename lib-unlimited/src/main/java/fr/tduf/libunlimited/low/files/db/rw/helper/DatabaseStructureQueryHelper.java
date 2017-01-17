@@ -65,7 +65,7 @@ public class DatabaseStructureQueryHelper {
         return requireNonNull(structureFields, MESSAGE_ERR_FIELDS).stream()
                 .filter(field -> field.getRank() == fieldRank)
                 .findAny()
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No structure field for item at rank: " + fieldRank));
+                .orElseThrow(() -> new IllegalStateException("No structure field for item at rank: " + fieldRank));
     }
 
     /**

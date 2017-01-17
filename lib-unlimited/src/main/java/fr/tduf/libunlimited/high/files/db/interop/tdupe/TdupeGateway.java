@@ -59,7 +59,7 @@ public class TdupeGateway extends AbstractDatabaseHolder {
     }
 
     static void checkCarPhysicsDataLine(String carPhysicsDataLine) {
-        Pattern linePattern = Pattern.compile("^([0-9\\-\\.,]*;){103}$");
+        Pattern linePattern = Pattern.compile("^([0-9\\-.,]*;){103}$");
 
         if (!linePattern.matcher(carPhysicsDataLine).matches()) {
             throw new IllegalArgumentException("Unrecognized Car Physics line: " + carPhysicsDataLine);

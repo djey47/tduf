@@ -59,19 +59,19 @@ public class BrandHelper extends CommonHelper {
 
     private Stream<Brand> getAllBrandsStream() {
         return miner.getDatabaseTopic(BRANDS)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No brands information was found in database"))
+                .orElseThrow(() -> new IllegalStateException("No brands information was found in database"))
                 .getData().getEntries().stream()
                 .map(this::brandEntryToDomainObject);
     }
 
     private Brand brandEntryToDomainObject(ContentEntryDto brandEntry) {
         String brandRef = brandEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_BRAND_REF)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No item at rank 1 in brands topic"))
+                .orElseThrow(() -> new IllegalStateException("No item at rank 1 in brands topic"))
                 .getRawValue();
         Resource idResource = getResourceFromDatabaseEntry(brandEntry, BRANDS, DatabaseConstants.FIELD_RANK_MANUFACTURER_ID)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No manufacturer identifier"));
+                .orElseThrow(() -> new IllegalStateException("No manufacturer identifier"));
         Resource nameResource = getResourceFromDatabaseEntry(brandEntry, BRANDS, DatabaseConstants.FIELD_RANK_MANUFACTURER_NAME)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No manufacturerbrand name"));
+                .orElseThrow(() -> new IllegalStateException("No manufacturerbrand name"));
 
         return Brand.builder()
                 .withReference(brandRef)

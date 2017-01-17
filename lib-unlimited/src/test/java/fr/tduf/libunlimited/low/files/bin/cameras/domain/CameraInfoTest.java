@@ -7,7 +7,6 @@ import java.util.List;
 
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind.Cockpit;
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind.Cockpit_Back;
-import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind.Unknown;
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps.BINOCULARS;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;

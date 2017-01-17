@@ -131,7 +131,7 @@ public class DiffPatchesGenerator {
                     int fieldRank = entryItem.getFieldRank();
                     String currentValue = entryItem.getRawValue();
                     String referenceValue = referenceEntry.getItemAtRank(fieldRank)
-                            .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No content item at rank: " + fieldRank + " in reference entry: " + entry.getId()))
+                            .orElseThrow(() -> new IllegalStateException("No content item at rank: " + fieldRank + " in reference entry: " + entry.getId()))
                             .getRawValue();
 
                     return currentValue.equals(referenceValue) ?
@@ -201,7 +201,7 @@ public class DiffPatchesGenerator {
                 .enableStrictMode(true)
                 .asReference(resourceEntry.getReference())
                 .withValue(resourceEntry.pickValue()
-                        .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resource value in entry for REF: " + resourceEntry.getReference() + " in topic: " + currentTopic)))
+                        .orElseThrow(() -> new IllegalStateException("No resource value in entry for REF: " + resourceEntry.getReference() + " in topic: " + currentTopic)))
                 .forTopic(currentTopic)
                 .forLocale(Locale.DEFAULT)
                 .build());

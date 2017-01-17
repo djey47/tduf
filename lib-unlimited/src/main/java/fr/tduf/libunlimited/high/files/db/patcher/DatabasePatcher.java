@@ -243,7 +243,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
                     if (selectedLocale == null
                             || DEFAULT == selectedLocale) {
                         databaseMiner.getResourcesFromTopic(topic)
-                                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resource object for topic: " + topic))
+                                .orElseThrow(() -> new IllegalStateException("No resource object for topic: " + topic))
                                 .removeEntryByReference(ref);
                     } else {
                         entry.removeValueForLocale(selectedLocale);
@@ -261,7 +261,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
         }
 
         DbResourceDto resources = databaseMiner.getResourcesFromTopic(topic)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resource object for topic: " + topic));
+                .orElseThrow(() -> new IllegalStateException("No resource object for topic: " + topic));
 
         ResourceEntryDto resourceEntry = potentialResourceEntry
                 .orElseGet(() -> resources.addEntryByReference(ref));

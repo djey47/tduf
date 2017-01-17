@@ -27,7 +27,6 @@ public class DbHelper {
      * Eligible files are TDU_*.fr ... etc, having UTF-16LE as encoding.
      * @param sampleFiles   : resource names of files to read
      * @return a list of list of lines
-     * @throws IOException
      */
     public static List<List<String>> readResourcesFromSamples(String... sampleFiles) throws IOException {
         List<List<String>> resourceLines = new ArrayList<>();
@@ -45,7 +44,6 @@ public class DbHelper {
      * @param sampleFile    : resource name of file to read
      * @param encoding      : etither UTF-8 or UTF-16
      * @return a list of lines
-     * @throws IOException
      */
     public static List<String> readContentsFromSample(String sampleFile, String encoding) throws IOException {
 

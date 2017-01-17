@@ -50,9 +50,7 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
 
     @Override
     protected void postPrepare() {
-        /**
-         * No operation required so far
-         */
+        // No operation required so far
     }
 
     private void checkRequirements(Set<IntegrityError> integrityErrors) {
@@ -222,7 +220,7 @@ public class DatabaseIntegrityChecker extends AbstractDatabaseHolder {
                 .forEach(presentLocale -> {
                     final Optional<String> resourceValue = resourceEntry.getValueForLocale(presentLocale);
                     updateResourceValueCounter(resourceValueCounter, resourceValue
-                            .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No resource value for locale: " + presentLocale + ", at ref: " + resourceEntry.getReference())));
+                            .orElseThrow(() -> new IllegalStateException("No resource value for locale: " + presentLocale + ", at ref: " + resourceEntry.getReference())));
                 });
 
         if (resourceValueCounter.size() > 1) {

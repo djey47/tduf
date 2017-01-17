@@ -108,7 +108,9 @@ public class CopyFilesStepTest {
 
         final Path existingFilePath = vehicleBanksPath.resolve("AC_427.bnk");
         final File existingFile = Files.createFile(existingFilePath).toFile();
+        //noinspection ResultOfMethodCallIgnored
         existingFile.setWritable(false);
+        //noinspection ResultOfMethodCallIgnored
         existingFile.setReadable(false);
 
         InstallerConfiguration configuration = createConfigurationForCarSingleRimSet();

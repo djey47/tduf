@@ -148,7 +148,7 @@ public class ResourcesStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleBrowseToResource: " + newResource);
 
         topicsChoiceBox.setValue(newResource.getTopic()
-                .<IllegalArgumentException>orElseThrow(IllegalArgumentException::new));
+                .orElseThrow(IllegalArgumentException::new));
 
         selectResourceInTableAndScroll(newResource.getReference());
     }

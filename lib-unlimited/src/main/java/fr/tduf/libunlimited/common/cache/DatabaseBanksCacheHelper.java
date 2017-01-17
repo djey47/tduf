@@ -34,7 +34,6 @@ public class DatabaseBanksCacheHelper {
      * @param realDatabasePath  : TDU database path
      * @param bankSupport       : component to handle TDU banks
      * @return directory of freshest JSON database files
-     * @throws IOException
      */
     public static String unpackDatabaseToJsonWithCacheSupport(Path realDatabasePath, BankSupport bankSupport) throws IOException {
         final Path cachePath = resolveCachePath(realDatabasePath);
@@ -63,7 +62,6 @@ public class DatabaseBanksCacheHelper {
      *
      * @param realDatabasePath  : TDU database path
      * @param bankSupport       : component to handle TDU banks
-     * @throws IOException
      */
     public static void repackDatabaseFromJsonWithCacheSupport(Path realDatabasePath, BankSupport bankSupport) throws IOException {
         final String jsonDatabaseDirectory = resolveCachePath(realDatabasePath).toString();
@@ -75,7 +73,6 @@ public class DatabaseBanksCacheHelper {
 
     /**
      * @param realDatabasePath  : TDU database path
-     * @throws IOException
      */
     public static void clearCache(Path realDatabasePath) throws IOException {
         Path cachePath = resolveCachePath(realDatabasePath);

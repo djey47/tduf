@@ -11,11 +11,13 @@ import org.kohsuke.args4j.Option;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static fr.tduf.cli.tools.MappingTool.Command.*;
 import static fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper.MAPPING_FILE_NAME;
-import static java.lang.Long.compare;
 import static java.util.Arrays.asList;
 import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.toList;

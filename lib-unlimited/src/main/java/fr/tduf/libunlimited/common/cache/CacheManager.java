@@ -63,6 +63,7 @@ public enum CacheManager {
                 }
 
                 stores.putIfAbsent(storeName, new ConcurrentHashMap<>(16));
+                //noinspection unchecked
                 Map<String, R> storeMap = (Map<String, R>) stores.get(storeName);
 
                 R previousValue = storeMap.putIfAbsent(key, supplier.get());

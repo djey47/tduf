@@ -187,7 +187,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
         ContentEntryDto currentEntry = getMiner().getContentEntryFromTopicWithInternalIdentifier(
                 currentEntryIndex,
                 currentTopic)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No content entry for topic: " + currentTopic + " at id: " + currentEntryIndex));
+                .orElseThrow(() -> new IllegalStateException("No content entry for topic: " + currentTopic + " at id: " + currentEntryIndex));
         return currentEntry.getItems().stream()
 
                 .map(ContentItemDto::getRawValue)

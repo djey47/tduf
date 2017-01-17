@@ -41,7 +41,7 @@ public class ItemRangeTest {
     @Test
     public void fromCliOption_whenAbsentValue_shouldCreateGlobalRange() {
         // GIVEN-WHEN
-        ItemRange actualRange = ItemRange.fromCliOption(Optional.<String>empty());
+        ItemRange actualRange = ItemRange.fromCliOption(empty());
 
         // THEN
         assertThat(actualRange).isNotNull();

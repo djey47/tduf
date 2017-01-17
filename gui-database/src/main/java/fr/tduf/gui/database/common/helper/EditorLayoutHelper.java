@@ -39,7 +39,7 @@ public class EditorLayoutHelper {
         return layoutObject.getProfiles().stream()
                 .filter(profile -> topic == profile.getTopic())
                 .findFirst()
-                .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("Unknown profile for topic: " + topic));
+                .orElseThrow(() -> new IllegalArgumentException("Unknown profile for topic: " + topic));
     }
 
     /**

@@ -73,7 +73,7 @@ public class DealerHelper extends CommonHelper {
      */
     public List<Dealer> getDealers(DealerKind dealerKind) {
         return miner.getDatabaseTopic(CAR_SHOPS)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No data for car shops topic"))
+                .orElseThrow(() -> new IllegalStateException("No data for car shops topic"))
                 .getData().getEntries().stream()
                 .filter(carShopsEntry -> entryMatchesDealerKind(carShopsEntry, dealerKind))
                 .map(this::dealerEntryToDomainObject)
@@ -86,7 +86,7 @@ public class DealerHelper extends CommonHelper {
      */
     public Map<String, List<Integer>> searchForVehicleSlot(String vehicleSlotReference) {
         return miner.getDatabaseTopic(CAR_SHOPS)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No data for car shops topic"))
+                .orElseThrow(() -> new IllegalStateException("No data for car shops topic"))
                 .getData().getEntries().stream()
                 .parallel()
                 .collect(toConcurrentMap(
@@ -177,7 +177,7 @@ public class DealerHelper extends CommonHelper {
 
     private static String getDealerReferenceFromEntry(ContentEntryDto entry) {
         return getStringValueFromDatabaseEntry(entry, 1)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No item at rank 1"));
+                .orElseThrow(() -> new IllegalStateException("No item at rank 1"));
     }
 
     // For testing use

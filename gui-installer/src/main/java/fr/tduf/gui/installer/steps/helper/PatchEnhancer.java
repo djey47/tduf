@@ -59,7 +59,7 @@ public class PatchEnhancer {
         enhancePatchProperties(patchProperties);
 
         final String vehicleSlotReference = patchProperties.getVehicleSlotReference()
-                .<InternalStepException>orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Selected vehicle slot not found in properties"));
+                .orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Selected vehicle slot not found in properties"));
 
         if(patchProperties.getDealerReference().isPresent()
                 && patchProperties.getDealerSlot().isPresent()) {
@@ -79,9 +79,9 @@ public class PatchEnhancer {
         VehicleSlot effectiveSlot = databaseContext.getUserSelection().getVehicleSlot()
                 .orElseGet(() -> {
                     final String forcedSlotReference = patchProperties.getVehicleSlotReference()
-                            .<InternalStepException>orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Selected vehicle slot not found in properties"));
+                            .orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Selected vehicle slot not found in properties"));
                     return vehicleSlotsHelper.getVehicleSlotFromReference(forcedSlotReference)
-                            .<InternalStepException>orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Selected vehicle slot not found in database: " + forcedSlotReference));
+                            .orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Selected vehicle slot not found in database: " + forcedSlotReference));
                 });
         createPatchPropertiesForVehicleSlot(effectiveSlot, patchProperties);
 
@@ -130,14 +130,14 @@ public class PatchEnhancer {
 
         PatchProperties patchProperties = databaseContext.getPatchProperties();
         int effectiveFieldRank = patchProperties.getDealerSlot()
-                .<InternalStepException>orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Selected dealer slot index not found in properties"))
+                .orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Selected dealer slot index not found in properties"))
                 + DatabaseConstants.DELTA_RANK_DEALER_SLOTS;
 
         DbPatchDto.DbChangeDto changeObject = DbPatchDto.DbChangeDto.builder()
                 .forTopic(CAR_SHOPS)
                 .withType(UPDATE)
                 .asReference(patchProperties.getDealerReference()
-                        .<InternalStepException>orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Selected dealer reference not found in properties")))
+                        .orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Selected dealer reference not found in properties")))
                 .withPartialEntryValues(singletonList(DbFieldValueDto.fromCouple(effectiveFieldRank, vehicleSlotReference)))
                 .build();
 
@@ -185,7 +185,7 @@ public class PatchEnhancer {
 
         patchProperties.setDealerReferenceIfNotExists(userSelection.getDealer()
                 .map(Dealer::getRef)
-                .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("No dealer reference was selected!")));
+                .orElseThrow(() -> new IllegalArgumentException("No dealer reference was selected!")));
         patchProperties.setDealerSlotIfNotExists(userSelection.getDealerSlotRank());
     }
 
@@ -194,7 +194,7 @@ public class PatchEnhancer {
 
         String brandReference = brandHelper.getBrandFromIdentifierOrName(brand)
                 .map(Brand::getRef)
-                .<IllegalArgumentException>orElseThrow(() -> new IllegalArgumentException("Brand not found with identifier or name: " + brand));
+                .orElseThrow(() -> new IllegalArgumentException("Brand not found with identifier or name: " + brand));
 
         patchProperties.setBrandReferenceIfNotExists(brandReference);
     }
@@ -302,7 +302,7 @@ public class PatchEnhancer {
                 .withEntryValues( asList(
                         vehicleSlot.getRef(),
                         patchProperties.getRimSlotReference(rimRank)
-                            .<InternalStepException>orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Rim slot reference not found in properties: for set " + rimRank))
+                            .orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Rim slot reference not found in properties: for set " + rimRank))
                 ))
                 .build();
 

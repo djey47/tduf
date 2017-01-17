@@ -4,7 +4,6 @@ import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
-import fr.tduf.gui.database.plugins.percent.common.FxConstants;
 import fr.tduf.gui.database.plugins.percent.converter.PercentNumberToStringConverter;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.binding.Bindings;

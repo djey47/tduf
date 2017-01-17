@@ -169,6 +169,7 @@ public class VehicleSlotsHelperTest {
                 .addItem(ContentItemDto.builder().ofFieldRank(22).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
                 .build();
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(SLOTREF, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
+        //noinspection unchecked
         when(bulkDatabaseMinerMock.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, SLOTREF), CAR_RIMS)).thenReturn(
                 Stream.of(
                     carRimsEntry1,
@@ -316,6 +317,7 @@ public class VehicleSlotsHelperTest {
                 .addItem(ContentItemDto.builder().ofFieldRank(22).withRawValue(DatabaseConstants.REF_NO_INTERIOR).build())
                 .build();
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(SLOTREF_TDUCP, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
+        //noinspection unchecked
         when(bulkDatabaseMinerMock.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, SLOTREF_TDUCP), CAR_RIMS)).thenReturn(
                 singletonList(carRimsEntry1).stream(),
                 singletonList(carRimsEntry1).stream());
@@ -430,6 +432,7 @@ public class VehicleSlotsHelperTest {
 
         when(bulkDatabaseMinerMock.getDatabaseTopic(CAR_PHYSICS_DATA)).thenReturn(of(topicObject));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(SLOTREF, CAR_PHYSICS_DATA)).thenReturn(of(drivableEntry));
+        //noinspection unchecked
         when(bulkDatabaseMinerMock.getContentEntryStreamMatchingSimpleCondition(any(DbFieldValueDto.class), any(DbDto.Topic.class))).thenReturn(Stream.empty(), Stream.empty());
 
 

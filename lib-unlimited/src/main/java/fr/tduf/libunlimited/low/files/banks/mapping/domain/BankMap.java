@@ -43,11 +43,8 @@ public class BankMap {
      * Makes all entries magic.
      */
     public void magifyAll() {
-
         getEntries().stream().parallel()
-
-                .filter( (entry) -> !entry.isMagic())
-
+                .filter(Entry::isNotMagic)
                 .forEach(Entry::magify);
     }
 
@@ -71,19 +68,14 @@ public class BankMap {
      * @return true if current map is a magic one.
      */
     public boolean isMagic() {
-
         if (entries.isEmpty()) {
             return false;
         }
 
         return getEntries().stream().parallel()
-
-                .filter( (entry) -> !entry.isMagic() )
-
+                .filter(Entry::isNotMagic)
                 .findAny()
-
-                .map( (entry) -> false )
-
+                .map(entry -> false )
                 .orElse(true);
     }
 
@@ -118,10 +110,10 @@ public class BankMap {
         }
 
         /**
-         * @return true if current entry is magic
+         * @return false if current entry is magic
          */
-        public boolean isMagic() {
-            return size1 == 0 && size2 == 0;
+        boolean isNotMagic() {
+            return size1 != 0 || size2 != 0;
         }
 
         /**

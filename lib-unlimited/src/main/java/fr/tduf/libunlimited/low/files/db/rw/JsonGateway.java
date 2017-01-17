@@ -28,7 +28,6 @@ public class JsonGateway {
      * @param missingTopicContents      : a list which will contain topic whose contents can't be found
      * @param integrityErrors           : a list which will contain database aprsing errors.
      * @return list of written file names.
-     * @throws IOException
      */
     public static List<String> dump(String sourceDatabaseDirectory, String targetJsonDirectory, List<DbDto.Topic> missingTopicContents, Set<IntegrityError> integrityErrors) throws IOException {
         requireNonNull(missingTopicContents, "A list for missing topics is required.");
@@ -67,7 +66,6 @@ public class JsonGateway {
      * @param sourceJsonDirectory       : directory where JSON files are located
      * @param targetDatabaseDirectory   : directory where TDU database files will be created
      * @param missingTopicContents      : a list which will contain topic whose contents can't be found.
-     * @throws IOException
      */
     public static List<String> gen(String sourceJsonDirectory, String targetDatabaseDirectory, List<DbDto.Topic> missingTopicContents) throws IOException {
         requireNonNull(missingTopicContents, "A list for missing topics is requried.");
