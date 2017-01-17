@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PluginHandlerTest {
 
@@ -43,6 +44,30 @@ class PluginHandlerTest {
 
         // then
         assertThat(parentNode.getChildren()).hasSize(1);
+    }
+
+    @Test
+    void fetchCss_whenResourceExists_shouldReturnCorrectCss() {
+        // given
+        String resourcePath = "/css/example.css";
+
+        // when
+        String actualCss = PluginHandler.fetchCss(resourcePath);
+
+        // then
+        assertThat(actualCss)
+                .startsWith("file:/")
+                .endsWith("/css/example.css");
+    }
+
+    @Test
+    void fetchCss_whenResourceDoesNotExist_shouldThrowException() {
+        // given
+        String resourcePath = "/css/fail.css";
+
+        // when-then
+        assertThrows(NullPointerException.class,
+                () -> PluginHandler.fetchCss(resourcePath));
     }
 
     private static class TestingParent extends Parent {

@@ -14,7 +14,8 @@ import static java.util.Objects.requireNonNull;
  * Ensures support for database editor plugins.
  */
 public class PluginHandler {
-    private static final String THIS_CLASS_NAME = PluginHandler.class.getSimpleName();
+    private static final Class<PluginHandler> thisClass = PluginHandler.class;
+    private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 
     private final EditorContext context = new EditorContext();
 
@@ -57,6 +58,15 @@ public class PluginHandler {
         } catch(Exception e) {
             Log.error(THIS_CLASS_NAME, "Error occured while rendering plugin: " + pluginName, e);
         }
+    }
+
+    /**
+     * Utility method to extract CSS from given resource
+     * @param cssResource : resource path
+     * @return CSS contents to be provided to FX engine
+     */
+    public static String fetchCss(String cssResource) {
+        return thisClass.getResource(cssResource).toExternalForm();
     }
 
     private void initializePlugin(PluginIndex pluginIndex) {
