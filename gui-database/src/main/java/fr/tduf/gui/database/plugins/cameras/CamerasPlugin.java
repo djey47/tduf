@@ -51,7 +51,8 @@ import static javafx.scene.layout.Priority.ALWAYS;
  * Advanced cameras edition plugin
  */
 public class CamerasPlugin implements DatabasePlugin {
-    private static final String THIS_CLASS_NAME = CamerasPlugin.class.getSimpleName();
+    private static final Class<CamerasPlugin> thisClass = CamerasPlugin.class;
+    private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 
     private final Property<CamerasParser> camerasParserProperty = new SimpleObjectProperty<>();
 
@@ -131,6 +132,11 @@ public class CamerasPlugin implements DatabasePlugin {
         mainRowChildren.add(buttonColumnBox);
 
         return hBox;
+    }
+
+    @Override
+    public Set<String> getCss() {
+        return new HashSet<>(singletonList(thisClass.getResource(PATH_RESOURCE_CSS_CAMERAS).toExternalForm()));
     }
 
     private VBox createMainColumn(EditorContext context) {

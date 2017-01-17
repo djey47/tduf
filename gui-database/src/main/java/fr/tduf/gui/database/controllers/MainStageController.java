@@ -147,7 +147,8 @@ public class MainStageController extends AbstractGuiController {
         fieldsBrowserStageController = FieldsBrowserDesigner.init(this);
 
         dialogsHelper = new DialogsHelper();
-        pluginHandler = new PluginHandler(changeDataController);
+
+        pluginHandler = new PluginHandler(root, changeDataController);
 
         viewDataController.initTopToolbar();
 
@@ -1014,7 +1015,7 @@ public class MainStageController extends AbstractGuiController {
         return viewDataController;
     }
 
-    public MainStageChangeDataController getChangeData() {
+    MainStageChangeDataController getChangeData() {
         return changeDataController;
     }
 

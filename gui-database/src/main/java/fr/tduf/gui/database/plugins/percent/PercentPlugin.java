@@ -13,6 +13,8 @@ import javafx.scene.control.Separator;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
 
+import java.util.Set;
+
 import static javafx.geometry.Orientation.VERTICAL;
 
 /**
@@ -57,6 +59,12 @@ public class PercentPlugin implements DatabasePlugin {
         hBox.getChildren().add(new Separator(VERTICAL));
 
         return hBox;
+    }
+
+    @Override
+    public Set<String> getCss() {
+        // TODO css needed?
+        return null;
     }
 
     private ChangeListener<Boolean> handleSliderValueChange(int fieldRank, DbDto.Topic topic, StringProperty rawValueProperty, MainStageChangeDataController changeDataController) {

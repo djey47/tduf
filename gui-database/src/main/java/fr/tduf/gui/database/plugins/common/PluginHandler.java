@@ -3,7 +3,10 @@ package fr.tduf.gui.database.plugins.common;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
+
+import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
@@ -18,8 +21,10 @@ public class PluginHandler {
     /**
      * Creates plugin handler for specified database editor controller
      */
-    public PluginHandler(MainStageChangeDataController changeDataController) {
+    public PluginHandler(Parent root, MainStageChangeDataController changeDataController) {
         context.setChangeDataController(requireNonNull(changeDataController, "Change data controller instance is required."));
+
+        PluginIndex.allAsStream().forEach(p -> addPluginCss(p, root));
     }
 
     /**
@@ -71,6 +76,19 @@ public class PluginHandler {
             pluginIndex.getPluginInstance().onSave(context);
         } catch (Exception e) {
             Log.error(THIS_CLASS_NAME, "Error occured while triggering onSave for plugin: " + pluginIndex, e);
+        }
+    }
+
+    private void addPluginCss(PluginIndex pluginIndex, Parent root) {
+        Log.debug(THIS_CLASS_NAME, "Now adding CSS for plugin: " + pluginIndex);
+
+        try {
+            Set<String> allCss = pluginIndex.getPluginInstance().getCss();
+            if (allCss != null) {
+                root.getStylesheets().addAll(allCss);
+            }
+        } catch (Exception e) {
+            Log.error(THIS_CLASS_NAME, "Error occured while invoking getCss for plugin: " + pluginIndex, e);
         }
     }
 

@@ -18,6 +18,8 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Set;
+
 import static fr.tduf.gui.database.plugins.bitfield.common.DisplayConstants.LABEL_FORMAT_BITFIELD_CHECKBOX;
 
 /**
@@ -51,6 +53,12 @@ public class BitfieldPlugin implements DatabasePlugin {
                         .forEach(ref -> addBitValueCheckbox(context, vbox, ref)));
 
         return vbox;
+    }
+
+    @Override
+    public Set<String> getCss() {
+        // TODO css needed?
+        return null;
     }
 
     private void addBitValueCheckbox(EditorContext context, VBox vbox, DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto ref) {

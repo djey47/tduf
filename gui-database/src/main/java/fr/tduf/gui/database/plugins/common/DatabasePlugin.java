@@ -3,6 +3,8 @@ package fr.tduf.gui.database.plugins.common;
 import javafx.scene.Node;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
 /**
  * To be implemented by all database editor plugins.
@@ -25,4 +27,9 @@ public interface DatabasePlugin {
      * @return rendered FX controls
      */
     Node renderControls(EditorContext context);
+
+    /**
+     * @return necessary stylesheet(s). Null or empty are allowed.
+     */
+    Set<String> getCss();
 }

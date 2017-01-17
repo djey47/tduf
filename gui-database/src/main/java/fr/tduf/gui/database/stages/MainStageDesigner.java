@@ -33,10 +33,7 @@ public class MainStageDesigner {
         String styledTabContentsCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_TABCONTENTS).toExternalForm();
         String styledPanesCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_PANES).toExternalForm();
 
-        // TODO see to add plugin css at PluginHandler creation (provided by plugin interface)
-        String camerasPluginCss = thisClass.getResource(fr.tduf.gui.database.plugins.cameras.common.FxConstants.PATH_RESOURCE_CSS_CAMERAS).toExternalForm();
-
-        mainRoot.getStylesheets().addAll(styledToolBarCss, styledTabContentsCss, styledPanesCss, camerasPluginCss);
+        mainRoot.getStylesheets().addAll(styledToolBarCss, styledTabContentsCss, styledPanesCss);
 
         primaryStage.setScene(new Scene(mainRoot, 1280, 720));
         primaryStage.setTitle(DisplayConstants.TITLE_APPLICATION);
