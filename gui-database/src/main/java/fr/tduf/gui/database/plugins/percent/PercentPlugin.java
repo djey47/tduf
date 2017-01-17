@@ -3,6 +3,8 @@ package fr.tduf.gui.database.plugins.percent;
 import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
+import fr.tduf.gui.database.plugins.common.PluginHandler;
+import fr.tduf.gui.database.plugins.percent.common.FxConstants;
 import fr.tduf.gui.database.plugins.percent.converter.PercentNumberToStringConverter;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.binding.Bindings;
@@ -13,8 +15,12 @@ import javafx.scene.control.Separator;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
 
+import java.util.HashSet;
 import java.util.Set;
 
+import static fr.tduf.gui.database.plugins.percent.common.FxConstants.CSS_CLASS_PERCENT_SLIDER;
+import static fr.tduf.gui.database.plugins.percent.common.FxConstants.PATH_RESOURCE_CSS_PERCENT;
+import static java.util.Collections.singletonList;
 import static javafx.geometry.Orientation.VERTICAL;
 
 /**
@@ -27,12 +33,10 @@ import static javafx.geometry.Orientation.VERTICAL;
  */
 public class PercentPlugin implements DatabasePlugin {
     @Override
-    public void onInit(EditorContext context) { }
+    public void onInit(EditorContext context) {}
 
     @Override
-    public void onSave(EditorContext context) {
-        // Nothing to do for this plugin
-    }
+    public void onSave(EditorContext context) {}
 
     @Override
     public Node renderControls(EditorContext context) {
@@ -41,12 +45,12 @@ public class PercentPlugin implements DatabasePlugin {
 
         HBox hBox = new HBox();
         Slider slider = new Slider(0.0, 100.0, 0.0);
+        slider.getStyleClass().add(CSS_CLASS_PERCENT_SLIDER);
         slider.setShowTickLabels(true);
         slider.setShowTickMarks(true);
         slider.setMajorTickUnit(10);
         slider.setMinorTickCount(3);
         slider.setBlockIncrement(1);
-        slider.setPrefWidth(450);
         slider.setDisable(fieldReadOnly);
 
         Bindings.bindBidirectional(rawValueProperty, slider.valueProperty(), new PercentNumberToStringConverter());
@@ -63,8 +67,8 @@ public class PercentPlugin implements DatabasePlugin {
 
     @Override
     public Set<String> getCss() {
-        // TODO css needed?
-        return null;
+        String css = PluginHandler.fetchCss(PATH_RESOURCE_CSS_PERCENT);
+        return new HashSet<>(singletonList(css));
     }
 
     private ChangeListener<Boolean> handleSliderValueChange(int fieldRank, DbDto.Topic topic, StringProperty rawValueProperty, MainStageChangeDataController changeDataController) {

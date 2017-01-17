@@ -4,6 +4,7 @@ import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.bitfield.converter.BitfieldToStringConverter;
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
+import fr.tduf.gui.database.plugins.common.PluginHandler;
 import fr.tduf.libunlimited.framework.base.Strings;
 import fr.tduf.libunlimited.high.files.db.common.helper.BitfieldHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
@@ -11,16 +12,19 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import static fr.tduf.gui.database.plugins.bitfield.common.DisplayConstants.LABEL_FORMAT_BITFIELD_CHECKBOX;
+import static fr.tduf.gui.database.plugins.bitfield.common.FxConstants.CSS_CLASS_BITFIELD_CHECKBOX;
+import static fr.tduf.gui.database.plugins.bitfield.common.FxConstants.PATH_RESOURCE_CSS_BITFIELD;
+import static java.util.Collections.singletonList;
 
 /**
  * Pretty prints bitfield values with easy changes.
@@ -29,7 +33,7 @@ import static fr.tduf.gui.database.plugins.bitfield.common.DisplayConstants.LABE
  * - rawValueProperty
  * - fieldReadOnly
  * - fieldRank
- * - mainStageController
+ * - changeDataController
  */
 public class BitfieldPlugin implements DatabasePlugin {
     private BitfieldHelper bitfieldHelper;
@@ -40,9 +44,7 @@ public class BitfieldPlugin implements DatabasePlugin {
     }
 
     @Override
-    public void onSave(EditorContext context) {
-        // Nothing to do for this plugin
-    }
+    public void onSave(EditorContext context) {}
 
     @Override
     public Node renderControls(EditorContext context) {
@@ -57,17 +59,17 @@ public class BitfieldPlugin implements DatabasePlugin {
 
     @Override
     public Set<String> getCss() {
-        // TODO css needed?
-        return null;
+        String css = PluginHandler.fetchCss(PATH_RESOURCE_CSS_BITFIELD);
+        return new HashSet<>(singletonList(css));
     }
 
     private void addBitValueCheckbox(EditorContext context, VBox vbox, DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto ref) {
         int bitIndex = ref.getIndex();
         String displayedIndex = Strings.padStart(Integer.toString(bitIndex), 2, '0');
         String label = String.format(LABEL_FORMAT_BITFIELD_CHECKBOX, displayedIndex, ref.getLabel());
-        CheckBox checkBox = new CheckBox(label);
 
-        checkBox.setPadding(new Insets(0, 5, 0, 5));
+        CheckBox checkBox = new CheckBox(label);
+        checkBox.getStyleClass().add(CSS_CLASS_BITFIELD_CHECKBOX);
         boolean fieldReadOnly = context.isFieldReadOnly();
         checkBox.setDisable(fieldReadOnly);
 
