@@ -7,6 +7,7 @@ import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
+import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -229,7 +230,7 @@ class CamerasHelperTest {
     }
 
     @Test
-    void updateViews_whenCameraExists_andViewExists_shouldUpdateSettings() throws Exception {
+    void updateViews_whenCameraExists_andViewExists_shouldUpdateSettings_andOriginalStore() throws Exception {
         // GIVEN
         CamerasParser readWriteParser = getReadWriteParser();
         EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
@@ -251,6 +252,9 @@ class CamerasHelperTest {
         assertThat(viewsByType.get(Cockpit_Back).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
         assertThat(viewsByType.get(Hood).getSettings().get(BINOCULARS)).isEqualTo(0L);
         assertThat(viewsByType.get(Hood_Back).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
+
+        DataStore originalViewStoreForHood = CamerasHelper.extractViewStores(1000L, readWriteParser).get(2);
+        assertThat(originalViewStoreForHood.getInteger("binoculars")).contains(0L);
     }
 
     @Test

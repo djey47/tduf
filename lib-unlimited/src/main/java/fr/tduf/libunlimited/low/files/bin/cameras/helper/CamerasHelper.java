@@ -139,10 +139,6 @@ public class CamerasHelper {
      */
     public static CameraInfo updateViews(CameraInfo configuration, CamerasParser parser) {
         long cameraIdentifier = validateConfiguration(configuration);
-
-        // Will ensure extracted view stores are the freshest ones
-        parser.flushCaches();
-
         extractViewStores(cameraIdentifier, parser)
                 .forEach(viewStore -> {
                     ViewKind viewKind = (ViewKind) ViewProps.TYPE.retrieveFrom(viewStore)
@@ -153,7 +149,11 @@ public class CamerasHelper {
                             .findAny()
                             .ifPresent(conf -> conf.getSettings().entrySet()
                                     .forEach(entry -> entry.getKey().updateIn(viewStore, entry.getValue())));
+
+                    parser.getDataStore().mergeRepeatedValues(KEY_VIEWS, viewStore.getRepeatIndex(), viewStore);
                 });
+
+        parser.flushCaches();
 
         return fetchInformation(cameraIdentifier, parser);
     }
@@ -194,6 +194,15 @@ public class CamerasHelper {
     public static void saveFile(CamerasParser camerasParser, String cameraFile) throws IOException {
         ByteArrayOutputStream outputStream = CamerasWriter.load(camerasParser.getDataStore()).write();
         Files.write(Paths.get(cameraFile), outputStream.toByteArray(), StandardOpenOption.CREATE);
+    }
+
+    static List<DataStore> extractViewStores(long cameraIdentifier, CamerasParser parser) {
+        List<DataStore> viewStores = requireNonNull(parser, "Parser with cameras contents is required.")
+                .getCameraViews().get(cameraIdentifier);
+        if (viewStores == null) {
+            throw new NoSuchElementException("Requested camera identifier does not exist: " + cameraIdentifier);
+        }
+        return viewStores;
     }
 
     private static CameraInfo mergeCameraInfo(CameraInfo cameraInfoFromTDUF, CameraInfo cameraInfoFromTDUMT) {
@@ -246,9 +255,9 @@ public class CamerasHelper {
                 .map(originalViewStore -> cloneViewStoreForNewCamera(originalViewStore, targetCameraId))
                 .collect(toList());
 
-            AtomicInteger viewIndex = new AtomicInteger(parser.getTotalViewCount());
-            clonedViewStores
-                    .forEach(clonedViewStore -> dataStore.mergeRepeatedValues(KEY_VIEWS, viewIndex.getAndIncrement(), clonedViewStore));
+        AtomicInteger viewIndex = new AtomicInteger(parser.getTotalViewCount());
+        clonedViewStores
+                .forEach(clonedViewStore -> dataStore.mergeRepeatedValues(KEY_VIEWS, viewIndex.getAndIncrement(), clonedViewStore));
     }
 
     private static DataStore cloneViewStoreForNewCamera(DataStore viewStore, long targetCameraId) {
@@ -257,15 +266,6 @@ public class CamerasHelper {
         newStore.addInteger(KEY_CAMERA_ID, targetCameraId);
 
         return newStore;
-    }
-
-    private static List<DataStore> extractViewStores(long cameraIdentifier, CamerasParser parser) {
-        List<DataStore> viewStores = requireNonNull(parser, "Parser with cameras contents is required.")
-                .getCameraViews().get(cameraIdentifier);
-        if (viewStores == null) {
-            throw new NoSuchElementException("Requested camera identifier does not exist: " + cameraIdentifier);
-        }
-        return viewStores;
     }
 
     private static ByteArrayInputStream getCamerasInputStream(String sourceCameraFile) throws IOException {
