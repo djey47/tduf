@@ -12,14 +12,13 @@ import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
 import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -33,10 +32,10 @@ import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind.*;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
-public class AdjustCameraStepTest {
+class AdjustCameraStepTest {
     private static String tduTempDirectory;
 
     private static final String SLOTREF_1 = "999999";
@@ -58,8 +57,8 @@ public class AdjustCameraStepTest {
 
     private AdjustCameraStep adjustCameraStep;
 
-    @BeforeClass
-    public static void globalSetUp() throws IOException, URISyntaxException {
+    @BeforeAll
+    static void globalSetUp() throws IOException, URISyntaxException {
         tduTempDirectory = FilesHelper.createTempDirectoryForInstaller();
         final Path tduDatabasePath = FilesHelper.getTduDatabasePath(tduTempDirectory);
         FilesHelper.createFakeDatabase(tduDatabasePath.toString(), "");
@@ -71,8 +70,10 @@ public class AdjustCameraStepTest {
         databaseContext.setPatch(DbPatchDto.builder().build(), new PatchProperties());
     }
 
-    @Before
-    public void setUp() throws IOException, StepException {
+    @BeforeEach
+    void setUp() throws IOException, StepException {
+        MockitoAnnotations.initMocks(this);
+        
         InstallerConfiguration installerConfiguration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduTempDirectory)
                 .overridingCameraSupport(cameraSupportMock)
@@ -88,7 +89,7 @@ public class AdjustCameraStepTest {
     }
 
     @Test
-    public void perform_whenCameraIdInProperties_andNoCustomization_shouldNotCallBankSupportComponent() throws StepException, IOException {
+    void perform_whenCameraIdInProperties_andNoCustomization_shouldNotCallBankSupportComponent() throws StepException, IOException {
         // GIVEN
         databaseContext.getPatchProperties().register("CAMERA", "200");
 
@@ -99,23 +100,20 @@ public class AdjustCameraStepTest {
         verifyZeroInteractions(cameraSupportMock);
     }
 
-    @Test(expected = StepException.class)
-    public void perform_whenCameraIdInProperties_andInvalidCustomization_shouldThrowException() throws StepException, IOException {
+    @Test
+    void perform_whenCameraIdInProperties_andInvalidCustomization_shouldThrowException() throws StepException, IOException {
         // GIVEN
         databaseContext.getPatchProperties().register("CAMERA", "200");
         databaseContext.getPatchProperties().register("CAMERA.HOOD", "201^25");
 
         // WHEN-THEN
-        try {
-            adjustCameraStep.start();
-        } catch (StepException se) {
-            assertThat(se).hasCauseExactlyInstanceOf(IllegalArgumentException.class);
-            throw se;
-        }
+        Throwable actual = assertThrows(StepException.class,
+                () -> adjustCameraStep.start());
+        assertThat(actual).hasCauseExactlyInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    public void perform_whenCameraIdInProperties_andSingleCustomization_shouldCallBankSupportComponent() throws StepException, IOException {
+    void perform_whenCameraIdInProperties_andSingleCustomization_shouldCallBankSupportComponent() throws StepException, IOException {
         // GIVEN
         databaseContext.getPatchProperties().register("CAMERA", "200");
         databaseContext.getPatchProperties().register("CAMERA.HOOD", "201|HOOD");
@@ -133,7 +131,7 @@ public class AdjustCameraStepTest {
     }
 
     @Test
-    public void perform_whenCameraIdInProperties_andMultipleCustomization_shouldCallBankSupportComponent() throws StepException, IOException {
+    void perform_whenCameraIdInProperties_andMultipleCustomization_shouldCallBankSupportComponent() throws StepException, IOException {
         // GIVEN
         databaseContext.getPatchProperties().register("CAMERA", "200");
         databaseContext.getPatchProperties().register("CAMERA.HOOD", "201|HOOD");
@@ -152,33 +150,27 @@ public class AdjustCameraStepTest {
         assertThat(actualViews).extracting("viewId").containsExactly(24, 44, 23, 43);
     }
 
-    @Test(expected = StepException.class)
-    public void perform_whenCameraIdNotInProperties_andSlotNotInDatabase_shouldThrowException() throws StepException, IOException {
+    @Test
+    void perform_whenCameraIdNotInProperties_andSlotNotInDatabase_shouldThrowException() throws StepException, IOException {
         // GIVEN
         databaseContext.getPatchProperties().register("SLOTREF", SLOTREF_2);
 
         // WHEN-THEN
-        try {
-            adjustCameraStep.start();
-        } catch (StepException se) {
-            assertThat(se).hasCauseExactlyInstanceOf(IllegalStateException.class);
-            throw se;
-        }
-    }
-
-    @Test(expected = StepException.class)
-    public void perform_whenCameraIdAndSlotNotInProperties_shouldThrowException() throws StepException, IOException {
-        // GIVEN-WHEN-THEN
-        try {
-            adjustCameraStep.start();
-        } catch (StepException se) {
-            assertThat(se).hasCauseExactlyInstanceOf(IllegalStateException.class);
-            throw se;
-        }
+        Throwable actual = assertThrows(StepException.class,
+                () -> adjustCameraStep.start());
+        assertThat(actual).hasCauseExactlyInstanceOf(IllegalStateException.class);
     }
 
     @Test
-    public void perform_whenCameraIdNotInProperties_andSingleCustomization_shouldFetchFromDatabase_andCallBankSupportComponent() throws StepException, IOException {
+    void perform_whenCameraIdAndSlotNotInProperties_shouldThrowException() throws StepException, IOException {
+        // GIVEN-WHEN-THEN
+        Throwable actual = assertThrows(StepException.class,
+                () -> adjustCameraStep.start());
+        assertThat(actual).hasCauseExactlyInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void perform_whenCameraIdNotInProperties_andSingleCustomization_shouldFetchFromDatabase_andCallBankSupportComponent() throws StepException, IOException {
         // GIVEN
         databaseContext.getPatchProperties().register("SLOTREF", SLOTREF_1);
         databaseContext.getPatchProperties().register("CAMERA.HOOD", "201|HOOD");
