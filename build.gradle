@@ -5,17 +5,14 @@ buildscript {
         maven { url 'http://dl.bintray.com/content/aalmiray/kordamp' }
     }
     dependencies {
-        classpath 'org.kordamp:markdown-gradle-plugin:1.0.0'
         classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0-M3'
     }
 }
 
 plugins {
     id 'pl.allegro.tech.build.axion-release' version '1.4.1'
+    id 'org.kordamp.markdown.convert' version '1.1.0'
 }
-apply plugin: 'java'
-apply plugin: 'org.kordamp.markdown.convert'
-
 
 // configure version
 scmVersion {
@@ -31,14 +28,21 @@ allprojects {
     project.version = scmVersion.version
 
     // Version for common dependencies
-    ext.assertjVersion = '3.6.1'
-    ext.jsonassertVersion = '1.4.0'
-    ext.junitVersion = '4.12'
-    ext.junitJupiterVersion = '5.0.0-M3'
-    ext.junitPlatformVersion = '1.0.0-M3'
-    ext.mockitoVersion = '2.2.26'
-    ext.minlogVersion = '1.2'
-    ext.commonsLangVersion = '3.5'
+    ext {
+        assertjVersion = '3.6.1'
+        
+        jsonassertVersion = '1.4.0'
+
+        junitVersion = '4.12'
+        junitJupiterVersion = '5.0.0-M3'
+        junitPlatformVersion = '1.0.0-M3'
+        
+        mockitoVersion = '2.2.26'
+
+        minlogVersion = '1.2'
+
+        commonsLangVersion = '3.5'
+    }
 }
 
 subprojects {
@@ -114,7 +118,6 @@ project(':integ-tests') {
     // Unsupported by codeship CI
 //    tasks.test.finalizedBy tasks.integTestReport
 }
-
 
 project(':cli') {
     dependencies {
@@ -369,5 +372,5 @@ task copyVersionInfo(type: Copy) {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '3.2.1'
+    gradleVersion = getGradleVersion()
 }
