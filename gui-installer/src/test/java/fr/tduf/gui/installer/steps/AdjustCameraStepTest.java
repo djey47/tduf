@@ -63,7 +63,7 @@ class AdjustCameraStepTest {
         final Path tduDatabasePath = FilesHelper.getTduDatabasePath(tduTempDirectory);
         FilesHelper.createFakeDatabase(tduDatabasePath.toString(), "");
 
-        byte[] camBytes = fr.tduf.libunlimited.common.helper.FilesHelper.readBytesFromResourceFile("/bin/cameras.bin");
+        byte[] camBytes = fr.tduf.libunlimited.common.helper.FilesHelper.readBytesFromResourceFile("/bin/Cameras.bin");
         Files.write(tduDatabasePath.resolve("cameras.bin"), camBytes);
 
         databaseContext = new DatabaseContext(new ArrayList<>(0), "");
