@@ -30,22 +30,10 @@ TDUF aims at making Test Drive Unlmited modding easier:
 * ...
 
 
-### What's in this version ? (1.10.0)
-* Documentation (WIP):
-    - https://github.com/djey47/tdu-cp/wiki/TDUF-Customizing-Cameras
-    - https://github.com/djey47/tdu-cp/wiki/TDUF-Database-Editor-Cameras
-
-* DatabaseEditor:
-    - camera editing via Vehicle Slots profile!
-    - REF errors now properly displayed next to fields
-    - export selected entries for all topics (to be continued)
-    - application gets its own icon, finally!
+### What's in this version ? (1.11.0)
 
 
 ### Fixed issues
-* CameraTool: view settings now correctly updated
-
-* DatabaseEditor: entry refreshes correctly even though its remote is missing
 
 
 ### Known bugs
