@@ -95,7 +95,8 @@
         },
         {
           "name": "unk1",
-          "type": "UNKNOWN",
+          "type": "INTEGER",
+          "signed": true,
           "size": 2
         },
         {
@@ -116,7 +117,8 @@
         },
         {
           "name": "unk2",
-          "type": "UNKNOWN",
+          "type": "INTEGER",
+          "signed": true,
           "size": 2
         },
         {
@@ -127,7 +129,8 @@
         },
         {
           "name": "unk3",
-          "type": "UNKNOWN",
+          "type": "INTEGER",
+          "signed": true,
           "size": 2
         },
         {
@@ -138,7 +141,8 @@
         },
         {
           "name": "settingsPart3",
-          "type": "UNKNOWN",
+          "type": "INTEGER",
+          "signed": true,
           "size": 6
         },
         {
@@ -149,7 +153,8 @@
         },
         {
           "name": "unk4",
-          "type": "UNKNOWN",
+          "type": "INTEGER",
+          "signed": true,
           "size": 2
         },
         {
@@ -160,7 +165,8 @@
         },
         {
           "name": "unk5",
-          "type": "UNKNOWN",
+          "type": "INTEGER",
+          "signed": true,
           "size": 2
         },
         {

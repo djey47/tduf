@@ -23,7 +23,12 @@ public enum ViewProps implements DataStoreProps {
     VIEW_POSITION_X("viewPositionX", GenericParser::getNumeric, GenericParser::setNumeric),
     VIEW_POSITION_Y("viewPositionY", GenericParser::getNumeric, GenericParser::setNumeric),
     VIEW_POSITION_Z("viewPositionZ", GenericParser::getNumeric, GenericParser::setNumeric),
-    BINOCULARS("binoculars", GenericParser::getNumeric, GenericParser::setNumeric);
+    BINOCULARS("binoculars", GenericParser::getNumeric, GenericParser::setNumeric),
+    UNKNOWN_1("unk1", GenericParser::getNumeric, GenericParser::setNumeric),
+    UNKNOWN_2("unk2", GenericParser::getNumeric, GenericParser::setNumeric),
+    UNKNOWN_3("unk3", GenericParser::getNumeric, GenericParser::setNumeric),
+    UNKNOWN_4("unk4", GenericParser::getNumeric, GenericParser::setNumeric),
+    UNKNOWN_5("unk5", GenericParser::getNumeric, GenericParser::setNumeric);
 
     private String storeFieldName;
     private BiFunction<DataStore, DataStoreProps, Optional<?>> parsingFunction;
