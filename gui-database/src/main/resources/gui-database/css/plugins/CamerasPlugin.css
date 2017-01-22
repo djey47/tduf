@@ -1,3 +1,4 @@
+/** TODO Move to common css **/
 .pluginBox {
     -fx-padding: 5.0;
 }
@@ -10,6 +11,7 @@
     -fx-pref-width: 455.0;
 }
 
+/** TODO Rename to more generic + move to common css **/
 .availableCamerasLabel, .availableViewsLabel {
     -fx-font-weight: bold;
 }
