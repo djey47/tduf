@@ -91,98 +91,98 @@
         {
           "name": "steeringWheelTurn",
           "type": "INTEGER",
-          "size": 1
+          "size": 2
         },
         {
-          "name": "settingsPart2",
+          "name": "unk1",
           "type": "UNKNOWN",
-          "size": 3
+          "size": 2
         },
         {
           "name": "steeringWheelTilt",
           "type": "INTEGER",
-          "size": 1
+          "size": 2
         },
         {
-          "name": "settingsPart3",
+          "name": "settingsPart2",
           "type": "UNKNOWN",
-          "size": 83
+          "size": 82
         },
         {
           "name": "cameraPositionX",
           "type": "INTEGER",
           "signed": true,
-          "size": 1
+          "size": 2
         },
         {
-          "name": "settingsPart4",
+          "name": "unk2",
           "type": "UNKNOWN",
-          "size": 3
+          "size": 2
         },
         {
           "name": "cameraPositionY",
           "type": "INTEGER",
           "signed": true,
-          "size": 1
+          "size": 2
         },
         {
-          "name": "settingsPart5",
+          "name": "unk3",
           "type": "UNKNOWN",
-          "size": 3
+          "size": 2
         },
         {
           "name": "cameraPositionZ",
           "type": "INTEGER",
           "signed": true,
-          "size": 1
+          "size": 2
         },
         {
-          "name": "settingsPart6",
+          "name": "settingsPart3",
           "type": "UNKNOWN",
-          "size": 7
+          "size": 6
         },
         {
           "name": "viewPositionX",
           "type": "INTEGER",
           "signed": true,
-          "size": 1
+          "size": 2
         },
         {
-          "name": "settingsPart7",
+          "name": "unk4",
           "type": "UNKNOWN",
-          "size": 3
+          "size": 2
         },
         {
           "name": "viewPositionY",
           "type": "INTEGER",
           "signed": true,
-          "size": 1
+          "size": 2
         },
         {
-          "name": "settingsPart8",
+          "name": "unk5",
           "type": "UNKNOWN",
-          "size": 3
+          "size": 2
         },
         {
           "name": "viewPositionZ",
           "type": "INTEGER",
           "signed": true,
-          "size": 1
+          "size": 2
         },
         {
-          "name": "settingsPart9",
+          "name": "settingsPart4",
           "type": "UNKNOWN",
-          "size": 59
+          "size": 58
         },
         {
           "name": "binoculars",
           "type": "INTEGER",
-          "size": 1
+          "size": 2
         },
         {
-          "name": "settingsPart10",
+          "name": "settingsPart5",
           "type": "UNKNOWN",
-          "size": 141
+          "size": 140
         }
       ]
     }
