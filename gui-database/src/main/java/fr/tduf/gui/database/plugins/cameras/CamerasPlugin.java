@@ -181,6 +181,10 @@ public class CamerasPlugin implements DatabasePlugin {
         settingColumn.getStyleClass().add(CSS_CLASS_SETTING_TABLECOLUMN);
         settingColumn.setCellValueFactory((cellData) -> new SimpleStringProperty(cellData.getValue().getKey().name()));
 
+        TableColumn<Map.Entry<ViewProps, ?>, String> descriptionColumn = new TableColumn<>(HEADER_PROPTABLE_DESCRIPTION);
+        descriptionColumn.getStyleClass().add(CSS_CLASS_DESCRIPTION_TABLECOLUMN);
+        descriptionColumn.setCellValueFactory((cellData) -> new SimpleStringProperty(cellData.getValue().getKey().getDescription()));
+
         TableColumn<Map.Entry<ViewProps, ?>, String> valueColumn = new TableColumn<>(HEADER_PROPTABLE_VALUE);
         valueColumn.getStyleClass().add(CSS_CLASS_VALUE_TABLECOLUMN);
         valueColumn.setCellValueFactory((cellData) -> new SimpleStringProperty(cellData.getValue().getValue().toString()));
@@ -188,6 +192,7 @@ public class CamerasPlugin implements DatabasePlugin {
         valueColumn.setOnEditCommit(getCellEditEventHandler(context.getRawValueProperty(), currentViewProperty));
 
         setPropertyTableView.getColumns().add(settingColumn);
+        setPropertyTableView.getColumns().add(descriptionColumn);
         setPropertyTableView.getColumns().add(valueColumn);
 
         return setPropertyTableView;

@@ -23,6 +23,10 @@
     -fx-min-width: 175.0;
 }
 
+.descriptionTableColumn {
+    -fx-min-width: 250.0;
+}
+
 .valueTableColumn {
     -fx-min-width: 100.0;
 }

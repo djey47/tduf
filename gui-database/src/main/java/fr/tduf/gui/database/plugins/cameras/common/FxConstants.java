@@ -12,6 +12,7 @@ public class FxConstants {
     public static final String CSS_CLASS_AVAILABLE_VIEWS_LABEL = "availableViewsLabel";
     public static final String CSS_CLASS_SET_PROPERTY_TABLEVIEW = "setPropertyTableView";
     public static final String CSS_CLASS_SETTING_TABLECOLUMN = "settingTableColumn";
+    public static final String CSS_CLASS_DESCRIPTION_TABLECOLUMN = "descriptionTableColumn";
     public static final String CSS_CLASS_VALUE_TABLECOLUMN = "valueTableColumn";
 
     private FxConstants() {}
