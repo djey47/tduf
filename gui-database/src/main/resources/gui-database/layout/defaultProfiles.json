@@ -591,6 +591,7 @@
           "name": "Same_IK",
           "rank": 99,
           "group": "Cameras and IKs",
+          "pluginName": "IKS",
           "label": "Inverse Kinematics"
         },
         {
@@ -2371,7 +2372,8 @@
           "name": "Same_IK",
           "rank": 99,
           "group": "Aesthetic Values",
-          "label": "IK"
+          "label": "IK",
+          "pluginName": "IKS"
         },
         {
           "name": "Secu1",
