@@ -1,0 +1,346 @@
+{
+  "dealers": [
+    {
+      "ref": "541293706",
+      "name": "OAHU CARS",
+      "location": "Honolulu Downtown: Kapalama",
+      "slotCount": 8,
+      "availableSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "ref": "611093710",
+      "name": "OAHU CARS",
+      "location": "Honolulu Airport",
+      "slotCount": 8,
+      "availableSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "ref": "591093708",
+      "name": "OAHU CARS",
+      "location": "Honolulu Airport/Circuit",
+      "slotCount": 8,
+      "availableSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "ref": "540993705",
+      "name": "OAHU CARS",
+      "location": "SW, Barber's point Golf",
+      "slotCount": 8,
+      "availableSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "ref": "592253709",
+      "name": "NISSAN",
+      "location": "Honolulu Downtown: Ala Wai Golf",
+      "slotCount": 15,
+      "availableSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
+    },
+    {
+      "ref": "589863713",
+      "name": "ALFA ROMEO",
+      "location": "SW: Kapolei",
+      "slotCount": 15,
+      "availableSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
+    },
+    {
+      "ref": "555803712",
+      "name": "LEXUS",
+      "location": "North Oahu: Mokule'ia",
+      "slotCount": 6,
+      "availableSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "ref": "570133712",
+      "name": "EUROPEAN CLASSIC",
+      "location": "SMid: Shafter University",
+      "slotCount": 15,
+      "availableSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
+    },
+    {
+      "ref": "611473716",
+      "name": "LAMBORGHINI",
+      "location": "SE: Maunalua",
+      "slotCount": 7,
+      "availableSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "ref": "557973712",
+      "name": "LAMBORGHINI",
+      "location": "Heart: Mililani",
+      "slotCount": 7,
+      "availableSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "ref": "592136824",
+      "name": "GERMAN INDEPENDENTS",
+      "location": "EMid: Ahuimanu",
+      "slotCount": 15,
+      "availableSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
+    },
+    {
+      "ref": "612136821",
+      "name": "GERMAN INDEPENDENTS",
+      "location": "Honolulu Downtown: Kapalama",
+      "slotCount": 15,
+      "availableSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
+    },
+    {
+      "ref": "622186830",
+      "name": "MERCEDES-BENZ",
+      "location": "Honolulu Downtown: Kapahulu",
+      "slotCount": 8,
+      "availableSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "ref": "557186826",
+      "name": "MERCEDES-BENZ",
+      "location": "North Oahu: Mokule'ia",
+      "slotCount": 8,
+      "availableSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "ref": "1214585404",
+      "name": "VOLKSWAGEN",
+      "location": "SE: Hawai'i Kai",
+      "slotCount": 8,
+      "availableSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "ref": "612156838",
+      "name": "CHEVROLET/SATURN",
+      "location": "Honolulu Downtown: Palolo",
+      "slotCount": 10,
+      "availableSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "ref": "609156820",
+      "name": "CHEVROLET/SATURN",
+      "location": "SW: Pu'uloa",
+      "slotCount": 15,
+      "availableSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "ref": "610156881",
+      "name": "PONTIAC",
+      "location": "Honolulu Airport: Hickam Village",
+      "slotCount": 10,
+      "availableSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "ref": "586156881",
+      "name": "CADILLLAC",
+      "location": "West Coast: Wai'anae",
+      "slotCount": 10,
+      "availableSlots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    }
+  ]
+}

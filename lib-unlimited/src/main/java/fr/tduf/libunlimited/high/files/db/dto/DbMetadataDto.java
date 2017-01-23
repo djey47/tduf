@@ -1,7 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.dto;
 
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 
@@ -9,21 +8,21 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Contains all metadata written in databaseMetadata.json file.
+ * Contains all metadata written in metadata/*.json files.
  */
-@JsonTypeName("databaseMetadata")
 public class DbMetadataDto {
 
-    @JsonProperty("topics")
     private List<TopicMetadataDto> topics;
 
-    @JsonProperty("dealers")
     private List<DealerMetadataDto> dealers;
 
-    @JsonIgnore
     private Map<Integer, String> iks;
 
     public DbMetadataDto() {}
+
+    public void setTopics(List<TopicMetadataDto> topics) {
+        this.topics = topics;
+    }
 
     public List<TopicMetadataDto> getTopics() {
         return topics;
@@ -31,6 +30,10 @@ public class DbMetadataDto {
 
     public List<DealerMetadataDto> getDealers() {
         return dealers;
+    }
+
+    public void setDealers(List<DealerMetadataDto> dealers) {
+        this.dealers = dealers;
     }
 
     public void setIKs(Map<Integer, String> iks) {
@@ -41,9 +44,20 @@ public class DbMetadataDto {
         return iks;
     }
 
+    @JsonTypeName("allTopicsMetadata")
+    public static class AllTopicsMetadataDto {
+        @JsonProperty("topics")
+        private List<TopicMetadataDto> topics;
+
+        public List<TopicMetadataDto> getTopics() {
+            return topics;
+        }
+    }
+
     @JsonTypeName("topicMetadata")
     public static class TopicMetadataDto {
 
+        // TODO add IK and CAM field rank constants here
         public static final int FIELD_RANK_ID_CAR = 102;
 
         @JsonProperty("topicName")
@@ -94,6 +108,16 @@ public class DbMetadataDto {
             public String getComment() {
                 return comment;
             }
+        }
+    }
+
+    @JsonTypeName("allDealersMetadata")
+    public static class AllDealersMetadataDto {
+        @JsonProperty("dealers")
+        private List<DealerMetadataDto> dealers;
+
+        public List<DealerMetadataDto> getDealers() {
+            return dealers;
         }
     }
 

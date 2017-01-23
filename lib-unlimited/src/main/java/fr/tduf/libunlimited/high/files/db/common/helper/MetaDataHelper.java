@@ -27,10 +27,20 @@ abstract class MetaDataHelper {
     }
 
     private static void loadDatabaseReference() throws IOException, URISyntaxException {
-        // TODO split into resource files
-        databaseMetadataObject = FilesHelper.readObjectFromJsonResourceFile(DbMetadataDto.class, "/files/db/databaseMetadata.json");
-
+        databaseMetadataObject = new DbMetadataDto();
+        loadTopicsReference();
+        loadDealersReference();
         loadIKReference();
+    }
+
+    private static void loadTopicsReference() throws IOException, URISyntaxException {
+        DbMetadataDto.AllTopicsMetadataDto allTopicsMetadataDto = FilesHelper.readObjectFromJsonResourceFile(DbMetadataDto.AllTopicsMetadataDto.class, "/files/db/metadata/topics.json");
+        databaseMetadataObject.setTopics(allTopicsMetadataDto.getTopics());
+    }
+
+    private static void loadDealersReference() throws IOException, URISyntaxException {
+        DbMetadataDto.AllDealersMetadataDto allDealersMetadataDto = FilesHelper.readObjectFromJsonResourceFile(DbMetadataDto.AllDealersMetadataDto.class, "/files/db/metadata/dealers.json");
+        databaseMetadataObject.setDealers(allDealersMetadataDto.getDealers());
     }
 
     private static void loadIKReference() throws IOException, URISyntaxException {
