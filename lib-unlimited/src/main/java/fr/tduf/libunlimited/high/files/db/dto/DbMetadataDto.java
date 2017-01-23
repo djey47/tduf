@@ -1,10 +1,12 @@
 package fr.tduf.libunlimited.high.files.db.dto;
 
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Contains all metadata written in databaseMetadata.json file.
@@ -18,6 +20,9 @@ public class DbMetadataDto {
     @JsonProperty("dealers")
     private List<DealerMetadataDto> dealers;
 
+    @JsonIgnore
+    private Map<Integer, String> iks;
+
     public DbMetadataDto() {}
 
     public List<TopicMetadataDto> getTopics() {
@@ -26,6 +31,14 @@ public class DbMetadataDto {
 
     public List<DealerMetadataDto> getDealers() {
         return dealers;
+    }
+
+    public void setIKs(Map<Integer, String> iks) {
+        this.iks = iks;
+    }
+
+    public Map<Integer, String> getIKs() {
+        return iks;
     }
 
     @JsonTypeName("topicMetadata")
