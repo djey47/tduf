@@ -31,6 +31,7 @@ abstract class MetaDataHelper {
         loadTopicsReference();
         loadDealersReference();
         loadIKReference();
+        loadCameraReference();
     }
 
     private static void loadTopicsReference() throws IOException, URISyntaxException {
@@ -48,6 +49,14 @@ abstract class MetaDataHelper {
         Map<String, String> iks = FilesHelper.readObjectFromJsonResourceFile(Map.class, "/files/db/metadata/iks.json");
         databaseMetadataObject.setIKs(
                 iks.entrySet().stream()
+                        .collect(toMap(e -> Integer.valueOf(e.getKey()), Map.Entry::getValue)));
+    }
+
+    private static void loadCameraReference() throws IOException, URISyntaxException {
+        //noinspection unchecked
+        Map<String, String> cameras = FilesHelper.readObjectFromJsonResourceFile(Map.class, "/files/db/metadata/cameras.json");
+        databaseMetadataObject.setCameras(
+                cameras.entrySet().stream()
                         .collect(toMap(e -> Integer.valueOf(e.getKey()), Map.Entry::getValue)));
     }
 }

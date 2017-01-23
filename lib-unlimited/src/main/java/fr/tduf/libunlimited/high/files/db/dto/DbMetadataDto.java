@@ -18,7 +18,7 @@ public class DbMetadataDto {
 
     private Map<Integer, String> iks;
 
-    public DbMetadataDto() {}
+    private Map<Integer, String> cameras;
 
     public void setTopics(List<TopicMetadataDto> topics) {
         this.topics = topics;
@@ -42,6 +42,14 @@ public class DbMetadataDto {
 
     public Map<Integer, String> getIKs() {
         return iks;
+    }
+
+    public Map<Integer, String> getCameras() {
+        return cameras;
+    }
+
+    public void setCameras(Map<Integer, String> cameras) {
+        this.cameras = cameras;
     }
 
     @JsonTypeName("allTopicsMetadata")
