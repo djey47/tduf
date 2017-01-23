@@ -11,9 +11,19 @@ public class DisplayConstants {
     public static final String LABEL_AVAILABLE_CAMERAS = "Available cameras:";
     public static final String LABEL_AVAILABLE_VIEWS = "Available views:";
 
+    public static final String LABEL_ADD_BUTTON = "+";
+    public static final String LABEL_REMOVE_BUTTON = "-";
+
     public static final String HEADER_PROPTABLE_SETTING = "Setting";
     public static final String HEADER_PROPTABLE_DESCRIPTION = "?";
     public static final String HEADER_PROPTABLE_VALUE = "Value";
+
+    public static final String TOOLTIP_ADD_BUTTON = "Creates a new camera set, based on current one";
+    public static final String TOOLTIP_REMOVE_BUTTON = "Deletes current camera set";
+
+    public static final String TITLE_ADD_SET = "Add camera set...";
+
+    public static final String MESSAGE_ADD_SET_IDENTIFIER = "Enter a numeric identifier for new camera set:";
 
     private DisplayConstants() {}
 }

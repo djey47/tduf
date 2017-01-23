@@ -1,6 +1,8 @@
 package fr.tduf.gui.database.plugins.cameras;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
+import fr.tduf.gui.common.javafx.helper.ControlHelper;
 import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.cameras.common.FxConstants;
 import fr.tduf.gui.database.plugins.cameras.converter.CameraInfoToItemConverter;
@@ -18,16 +20,19 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -129,8 +134,16 @@ public class CamerasPlugin implements DatabasePlugin {
             return hBox;
         }
 
-        VBox mainColumnBox = createMainColumn(context);
-        VBox buttonColumnBox = createButtonColumn();
+        // TODO convert to field
+        ObservableList<CameraInfo> cameraItems = FXCollections.observableArrayList(getSortedCameraSets());
+        // TODO sort with sorted method of observable list
+        ComboBox<CameraInfo> cameraSelectorComboBox = new ComboBox<>(cameraItems);
+        VBox mainColumnBox = createMainColumn(context, cameraItems, cameraSelectorComboBox);
+
+        StringProperty rawValueProperty = context.getRawValueProperty();
+        VBox buttonColumnBox = createButtonColumn(
+                handleAddSetButtonAction(rawValueProperty, cameraSelectorComboBox),
+                handleRemoveSetButtonAction(rawValueProperty));
 
         ObservableList<Node> mainRowChildren = hBox.getChildren();
         mainRowChildren.add(mainColumnBox);
@@ -145,11 +158,9 @@ public class CamerasPlugin implements DatabasePlugin {
         return new HashSet<>(singletonList(thisClass.getResource(PATH_RESOURCE_CSS_CAMERAS).toExternalForm()));
     }
 
-    private VBox createMainColumn(EditorContext context) {
-        ObservableList<CameraInfo> cameraItems = FXCollections.observableArrayList(getSortedCameraSets());
+    private VBox createMainColumn(EditorContext context, ObservableList<CameraInfo> cameraItems, ComboBox<CameraInfo> cameraSelectorComboBox) {
         ObservableList<Map.Entry<ViewProps, ?>> allViewProps = FXCollections.observableArrayList();
 
-        ComboBox<CameraInfo> cameraSelectorComboBox = new ComboBox<>(cameraItems);
         cameraSelectorComboBox.getStyleClass().add(CSS_CLASS_CAM_SELECTOR_COMBOBOX);
         cameraSelectorComboBox.setConverter(new CameraInfoToItemConverter(cameraRefHelper));
 
@@ -170,12 +181,25 @@ public class CamerasPlugin implements DatabasePlugin {
         return mainColumnBox;
     }
 
-    private VBox createButtonColumn() {
-        return new VBox();
-//        buttonColumnBox.getChildren().add(new Button("+"));
-//        buttonColumnBox.getChildren().add(new Button("-"));
-//        buttonColumnBox.getChildren().add(new Button("C"));
-//        buttonColumnBox.getChildren().add(new Button("P"));
+    private VBox createButtonColumn(EventHandler<ActionEvent> onAddSetAction, EventHandler<ActionEvent> onRemoveSetAction) {
+        VBox buttonColumnBox = new VBox();
+
+        Button addSetButton = new Button(LABEL_ADD_BUTTON);
+        // TODO use stylesheet
+        addSetButton.setPrefWidth(34.0);
+        ControlHelper.setTooltipText(addSetButton, TOOLTIP_ADD_BUTTON);
+        addSetButton.setOnAction(onAddSetAction);
+
+        Button removeSetButton = new Button(LABEL_REMOVE_BUTTON);
+        // TODO use stylesheet
+        removeSetButton.setPrefWidth(34.0);
+        ControlHelper.setTooltipText(removeSetButton, TOOLTIP_REMOVE_BUTTON);
+        removeSetButton.setOnAction(onRemoveSetAction);
+
+        buttonColumnBox.getChildren().add(addSetButton);
+        buttonColumnBox.getChildren().add(removeSetButton);
+
+        return buttonColumnBox;
     }
 
     private TableView<Map.Entry<ViewProps, ?>> createPropertiesTableView(EditorContext context, ObservableList<Map.Entry<ViewProps, ?>> viewProps, Property<CameraInfo.CameraView> currentViewProperty) {
@@ -346,5 +370,40 @@ public class CamerasPlugin implements DatabasePlugin {
 
     private Path resolveCameraFilePath(String databaseLocation) {
         return Paths.get(databaseLocation, CamerasHelper.FILE_CAMERAS_BIN);
+    }
+
+    private EventHandler<ActionEvent> handleRemoveSetButtonAction(StringProperty rawValueProperty) {
+        return event -> {
+            throw new NotImplementedException("handleRemoveSetButtonAction");
+//            long cameraSetIdentifier = Long.valueOf(rawValueProperty.getValue());
+
+            // TODO add helper method to remove set
+
+            // TODO remove set from observable list
+        };
+    }
+
+    private EventHandler<ActionEvent> handleAddSetButtonAction(StringProperty rawValueProperty, ComboBox<CameraInfo> cameraSelectorComboBox) {
+        return event -> {
+            Optional<String> input = CommonDialogsHelper.showInputValueDialog(TITLE_ADD_SET, MESSAGE_ADD_SET_IDENTIFIER, null);
+            if (!input.isPresent()) {
+                return;
+            }
+
+            long newCameraSetIdentifier = input.map(Long::valueOf)
+                    .orElseThrow(() -> new IllegalStateException("Should not happen"));
+            long cameraSetIdentifier = Long.valueOf(rawValueProperty.getValue());
+
+            CamerasParser camerasParser = camerasParserProperty.getValue();
+            CamerasHelper.duplicateCameraSet(cameraSetIdentifier, newCameraSetIdentifier, camerasParser);
+
+            CameraInfo newCameraInfo = CamerasHelper.fetchInformation(newCameraSetIdentifier, camerasParser);
+            ObservableList<CameraInfo> cameraItems = cameraSelectorComboBox.getItems();
+            if (!cameraItems.contains(newCameraInfo)) {
+                cameraItems.add(newCameraInfo);
+            }
+
+            cameraSelectorComboBox.getSelectionModel().select(newCameraInfo);
+        };
     }
 }
