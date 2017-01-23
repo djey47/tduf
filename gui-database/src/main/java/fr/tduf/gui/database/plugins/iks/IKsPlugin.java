@@ -27,6 +27,7 @@ import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_ITEM_LAB
 import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_PLUGIN_BOX;
 import static fr.tduf.gui.database.plugins.iks.common.DisplayConstants.LABEL_AVAILABLE_IKS;
 import static fr.tduf.gui.database.plugins.iks.common.FxConstants.*;
+import static fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto.TopicMetadataDto.FIELD_RANK_IK;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
@@ -36,8 +37,6 @@ import static javafx.scene.layout.Priority.ALWAYS;
 public class IKsPlugin implements DatabasePlugin {
     private static final Class<IKsPlugin> thisClass = IKsPlugin.class;
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
-
-    private static final int FIELD_RANK_CAR_PHYSICS_IK = 99;
 
     private IKHelper ikHelper;
 
@@ -119,7 +118,7 @@ public class IKsPlugin implements DatabasePlugin {
             }
 
             if (newValue != null) {
-                changeDataController.updateContentItem(CAR_PHYSICS_DATA, FIELD_RANK_CAR_PHYSICS_IK, Integer.toString(newValue.getKey()));
+                changeDataController.updateContentItem(CAR_PHYSICS_DATA, FIELD_RANK_IK, Integer.toString(newValue.getKey()));
             }
         };
     }

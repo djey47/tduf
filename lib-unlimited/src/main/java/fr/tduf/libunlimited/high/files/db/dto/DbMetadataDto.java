@@ -57,7 +57,8 @@ public class DbMetadataDto {
     @JsonTypeName("topicMetadata")
     public static class TopicMetadataDto {
 
-        // TODO add IK and CAM field rank constants here
+        public static final int FIELD_RANK_CAMERA = 98;
+        public static final int FIELD_RANK_IK = 99;
         public static final int FIELD_RANK_ID_CAR = 102;
 
         @JsonProperty("topicName")

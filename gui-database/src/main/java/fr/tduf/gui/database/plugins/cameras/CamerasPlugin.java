@@ -38,6 +38,7 @@ import static fr.tduf.gui.database.plugins.cameras.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.cameras.common.FxConstants.*;
 import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_ITEM_LABEL;
 import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_PLUGIN_BOX;
+import static fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto.TopicMetadataDto.FIELD_RANK_CAMERA;
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo.CameraView.fromProps;
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps.TYPE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
@@ -55,8 +56,6 @@ import static javafx.scene.layout.Priority.ALWAYS;
 public class CamerasPlugin implements DatabasePlugin {
     private static final Class<CamerasPlugin> thisClass = CamerasPlugin.class;
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
-
-    private static final int FIELD_RANK_CAR_PHYSICS_CAMERA = 98;
 
     private final Property<CamerasParser> camerasParserProperty = new SimpleObjectProperty<>();
 
@@ -259,7 +258,7 @@ public class CamerasPlugin implements DatabasePlugin {
                     currentCameraViewProperty.setValue(allCameraViews.get(0));
                 }
 
-                changeDataController.updateContentItem(CAR_PHYSICS_DATA, FIELD_RANK_CAR_PHYSICS_CAMERA, Long.toString(newValue.getCameraIdentifier()));
+                changeDataController.updateContentItem(CAR_PHYSICS_DATA, FIELD_RANK_CAMERA, Long.toString(newValue.getCameraIdentifier()));
             }
         };
     }
