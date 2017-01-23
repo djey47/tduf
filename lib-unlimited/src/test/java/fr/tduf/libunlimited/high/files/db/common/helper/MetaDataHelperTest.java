@@ -11,9 +11,9 @@ public class MetaDataHelperTest {
     @Test
     public void newHelper_shouldLoadDatabaseMetadata() throws IOException, URISyntaxException {
         // GIVEN
-        MetaDataHelper helper = new MetaDataHelper() { };
+        new MetaDataHelper() {};
 
         // WHEN-THEN
-        assertThat(helper.databaseMetadataObject).isNotNull();
+        assertThat(MetaDataHelper.databaseMetadataObject).isNotNull();
     }
 }

@@ -13,12 +13,12 @@ import static java.util.stream.Collectors.toMap;
 /**
  * Parent class for all helpers based on metadata resource
  */
-public abstract class MetaDataHelper {
+abstract class MetaDataHelper {
     private static final String THIS_CLASS_NAME = MetaDataHelper.class.getSimpleName();
 
-    protected DbMetadataDto databaseMetadataObject;
+    protected static DbMetadataDto databaseMetadataObject;
 
-    protected MetaDataHelper() {
+    static {
         try {
             loadDatabaseReference();
         } catch (IOException | URISyntaxException e) {
@@ -26,14 +26,14 @@ public abstract class MetaDataHelper {
         }
     }
 
-    private void loadDatabaseReference() throws IOException, URISyntaxException {
+    private static void loadDatabaseReference() throws IOException, URISyntaxException {
         // TODO split into resource files
         databaseMetadataObject = FilesHelper.readObjectFromJsonResourceFile(DbMetadataDto.class, "/files/db/databaseMetadata.json");
 
         loadIKReference();
     }
 
-    private void loadIKReference() throws IOException, URISyntaxException {
+    private static void loadIKReference() throws IOException, URISyntaxException {
         //noinspection unchecked
         Map<String, String> iks = FilesHelper.readObjectFromJsonResourceFile(Map.class, "/files/db/metadata/iks.json");
         databaseMetadataObject.setIKs(
