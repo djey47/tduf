@@ -1,0 +1,10 @@
+/* Common classes to all plugins */
+
+.pluginBox {
+    -fx-padding: 5.0;
+}
+
+.pluginItemLabel {
+    -fx-font-weight: bold;
+}
+

@@ -23,6 +23,8 @@ import javafx.scene.layout.VBox;
 import java.io.IOException;
 import java.util.*;
 
+import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_ITEM_LABEL;
+import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_PLUGIN_BOX;
 import static fr.tduf.gui.database.plugins.iks.common.DisplayConstants.LABEL_AVAILABLE_IKS;
 import static fr.tduf.gui.database.plugins.iks.common.FxConstants.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
@@ -98,7 +100,7 @@ public class IKsPlugin implements DatabasePlugin {
 
         Label availableIKsLabel = new Label(LABEL_AVAILABLE_IKS);
         availableIKsLabel.setLabelFor(ikSelectorComboBox);
-        availableIKsLabel.getStyleClass().add(CSS_CLASS_AVAILABLE_IKS_LABEL);
+        availableIKsLabel.getStyleClass().add(CSS_CLASS_ITEM_LABEL);
 
         Region camRegion = new Region();
         HBox.setHgrow(camRegion, ALWAYS);

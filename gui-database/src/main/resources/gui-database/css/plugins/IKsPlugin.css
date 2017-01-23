@@ -1,17 +1,7 @@
-/** TODO Move to common css **/
-.pluginBox {
-    -fx-padding: 5.0;
-}
-
 .ikSelectorBox {
     -fx-pref-width: 625.0;
 }
 
 .ikSelectorComboBox {
     -fx-pref-width: 455.0;
-}
-
-/** TODO Rename to more generic + move to common css **/
-.availableIKsLabel {
-    -fx-font-weight: bold;
 }

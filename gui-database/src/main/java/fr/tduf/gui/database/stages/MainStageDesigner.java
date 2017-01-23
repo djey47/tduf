@@ -32,8 +32,9 @@ public class MainStageDesigner {
         String styledToolBarCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_TOOLBARS).toExternalForm();
         String styledTabContentsCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_TABCONTENTS).toExternalForm();
         String styledPanesCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_PANES).toExternalForm();
+        String styledPluginsCommonCss = thisClass.getResource(fr.tduf.gui.database.plugins.common.FxConstants.PATH_RESOURCE_CSS_PLUGINS_COMMON).toExternalForm();
 
-        mainRoot.getStylesheets().addAll(styledToolBarCss, styledTabContentsCss, styledPanesCss);
+        mainRoot.getStylesheets().addAll(styledToolBarCss, styledTabContentsCss, styledPanesCss, styledPluginsCommonCss);
 
         primaryStage.setScene(new Scene(mainRoot, 1280, 720));
         primaryStage.setTitle(DisplayConstants.TITLE_APPLICATION);

@@ -36,6 +36,8 @@ import java.util.*;
 
 import static fr.tduf.gui.database.plugins.cameras.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.cameras.common.FxConstants.*;
+import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_ITEM_LABEL;
+import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_PLUGIN_BOX;
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo.CameraView.fromProps;
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps.TYPE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
@@ -209,7 +211,7 @@ public class CamerasPlugin implements DatabasePlugin {
 
         Label availableCamerasLabel = new Label(LABEL_AVAILABLE_CAMERAS);
         availableCamerasLabel.setLabelFor(cameraSelectorComboBox);
-        availableCamerasLabel.getStyleClass().add(CSS_CLASS_AVAILABLE_CAMERAS_LABEL);
+        availableCamerasLabel.getStyleClass().add(CSS_CLASS_ITEM_LABEL);
 
         Region camRegion = new Region();
         HBox.setHgrow(camRegion, ALWAYS);
@@ -230,7 +232,7 @@ public class CamerasPlugin implements DatabasePlugin {
 
         Label availableViewsLabel = new Label(LABEL_AVAILABLE_VIEWS);
         availableViewsLabel.setLabelFor(viewSelectorComboBox);
-        availableViewsLabel.getStyleClass().add(CSS_CLASS_AVAILABLE_VIEWS_LABEL);
+        availableViewsLabel.getStyleClass().add(CSS_CLASS_ITEM_LABEL);
 
         Region viewRegion = new Region();
         HBox.setHgrow(viewRegion, ALWAYS);
