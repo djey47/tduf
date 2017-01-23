@@ -9,7 +9,7 @@ import static fr.tduf.gui.database.plugins.iks.common.DisplayConstants.FORMAT_IK
 public class IKReferenceToItemConverter extends StringConverter<Map.Entry<Integer, String>> {
     @Override
     public String toString(Map.Entry<Integer, String> refEntry) {
-        return String.format(FORMAT_IK_ITEM_LABEL, refEntry.getKey(), refEntry.getValue());
+        return String.format(FORMAT_IK_ITEM_LABEL, refEntry.getValue(), refEntry.getKey());
     }
 
     @Override

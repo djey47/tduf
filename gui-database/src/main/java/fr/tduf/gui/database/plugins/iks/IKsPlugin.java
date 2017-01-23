@@ -70,7 +70,7 @@ public class IKsPlugin implements DatabasePlugin {
     private VBox createMainColumn(EditorContext context) {
         Map<Integer, String> reference = ikHelper.getReference();
         List<Map.Entry<Integer, String>> sortedEntries = reference.entrySet().stream()
-                .sorted(Comparator.comparing(Map.Entry::getKey))
+                .sorted(Comparator.comparing(Map.Entry::getValue))
                 .collect(toList());
         ObservableList<Map.Entry<Integer, String>> ikItems = FXCollections.observableArrayList(sortedEntries);
 
