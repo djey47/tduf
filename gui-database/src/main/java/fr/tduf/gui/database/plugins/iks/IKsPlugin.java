@@ -1,7 +1,15 @@
 package fr.tduf.gui.database.plugins.iks;
 
+import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
+import fr.tduf.gui.database.plugins.iks.converter.IKReferenceToItemConverter;
+import fr.tduf.gui.database.plugins.iks.converter.IKReferenceToRawValueConverter;
+import fr.tduf.libunlimited.high.files.db.common.helper.IKHelper;
+import javafx.beans.binding.Bindings;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -13,20 +21,29 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static fr.tduf.gui.database.plugins.iks.common.DisplayConstants.LABEL_AVAILABLE_IKS;
 import static fr.tduf.gui.database.plugins.iks.common.FxConstants.*;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
 import static javafx.geometry.Orientation.VERTICAL;
 import static javafx.scene.layout.Priority.ALWAYS;
 
 public class IKsPlugin implements DatabasePlugin {
     private static final Class<IKsPlugin> thisClass = IKsPlugin.class;
+    private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
+
+    private static final int FIELD_RANK_CAR_PHYSICS_IK = 99;
+
+    private IKHelper ikHelper;
 
     @Override
-    public void onInit(EditorContext context) throws IOException {}
+    public void onInit(EditorContext context) throws IOException {
+        ikHelper = new IKHelper();
+        Log.info(THIS_CLASS_NAME, "IK reference loaded");
+    }
 
     @Override
     public void onSave(EditorContext context) throws IOException {}
@@ -51,30 +68,33 @@ public class IKsPlugin implements DatabasePlugin {
     }
 
     private VBox createMainColumn(EditorContext context) {
-        ObservableList<String> ikItems = FXCollections.observableArrayList();
+        Map<Integer, String> reference = ikHelper.getReference();
+        List<Map.Entry<Integer, String>> sortedEntries = reference.entrySet().stream()
+                .sorted(Comparator.comparing(Map.Entry::getKey))
+                .collect(toList());
+        ObservableList<Map.Entry<Integer, String>> ikItems = FXCollections.observableArrayList(sortedEntries);
 
-        // TODO use metadata class 'IKInfo' instead of String
-        ComboBox<String> ikSelectorComboBox = new ComboBox<>(ikItems);
+        ComboBox<Map.Entry<Integer, String>> ikSelectorComboBox = new ComboBox<>(ikItems);
         ikSelectorComboBox.getStyleClass().add(CSS_CLASS_IK_SELECTOR_COMBOBOX);
-//        cameraSelectorComboBox.setConverter(new CameraInfoToItemConverter());
+        ikSelectorComboBox.setConverter(new IKReferenceToItemConverter());
 
         VBox mainColumnBox = new VBox();
         ObservableList<Node> mainColumnChildren = mainColumnBox.getChildren();
 
-        HBox ikSelectorBox = createIkSelectorBox(context, ikItems, ikSelectorComboBox);
+        HBox ikSelectorBox = createIkSelectorBox(context, reference, ikSelectorComboBox);
 
         mainColumnChildren.add(ikSelectorBox);
         return mainColumnBox;
     }
 
-    private HBox createIkSelectorBox(EditorContext context, ObservableList<String> ikItems, ComboBox<String> ikSelectorComboBox) {
+    private HBox createIkSelectorBox(EditorContext context, Map<Integer, String> reference, ComboBox<Map.Entry<Integer, String>> ikSelectorComboBox) {
         HBox camSelectorBox = new HBox();
         camSelectorBox.getStyleClass().add(CSS_CLASS_IK_SELECTOR_BOX);
 
-//        ikSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
-//                getCameraSelectorChangeListener(context.getFieldRank(), context.getCurrentTopic(), context.getChangeDataController(), viewSelectorComboBox.valueProperty(), viewSelectorComboBox.itemsProperty().get()));
-//        Bindings.bindBidirectional(
-//                context.getRawValueProperty(), cameraSelectorComboBox.valueProperty(), new CameraInfoToRawValueConverter(cameraItems));
+        ikSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
+                getIKSelectorChangeListener(context.getChangeDataController()));
+        Bindings.bindBidirectional(
+                context.getRawValueProperty(), ikSelectorComboBox.valueProperty(), new IKReferenceToRawValueConverter(reference));
 
         Label availableIKsLabel = new Label(LABEL_AVAILABLE_IKS);
         availableIKsLabel.setLabelFor(ikSelectorComboBox);
@@ -88,5 +108,17 @@ public class IKsPlugin implements DatabasePlugin {
         camSelectorBox.getChildren().add(ikSelectorComboBox);
 
         return camSelectorBox;
+    }
+
+    private ChangeListener<Map.Entry<Integer, String>> getIKSelectorChangeListener(MainStageChangeDataController changeDataController) {
+        return (ObservableValue<? extends Map.Entry<Integer, String>> observable, Map.Entry<Integer, String> oldValue, Map.Entry<Integer, String> newValue) -> {
+            if (Objects.equals(oldValue, newValue)) {
+                return;
+            }
+
+            if (newValue != null) {
+                changeDataController.updateContentItem(CAR_PHYSICS_DATA, FIELD_RANK_CAR_PHYSICS_IK, Integer.toString(newValue.getKey()));
+            }
+        };
     }
 }
