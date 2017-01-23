@@ -8,6 +8,7 @@ import fr.tduf.gui.database.plugins.cameras.converter.CameraInfoToRawValueConver
 import fr.tduf.gui.database.plugins.cameras.converter.CameraViewToItemConverter;
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
+import fr.tduf.libunlimited.high.files.db.common.helper.IKHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
@@ -58,6 +59,7 @@ public class CamerasPlugin implements DatabasePlugin {
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 
     private final Property<CamerasParser> camerasParserProperty = new SimpleObjectProperty<>();
+    private IKHelper cameraRefHelper;
 
     /**
      * Required contextual information:
@@ -86,6 +88,9 @@ public class CamerasPlugin implements DatabasePlugin {
 
         CamerasParser camerasParser = CamerasHelper.loadAndParseFile(cameraFile.toString());
         camerasParserProperty.setValue(camerasParser);
+
+        cameraRefHelper = new IKHelper();
+        Log.info(THIS_CLASS_NAME, "Camera reference loaded");
     }
 
     /**
@@ -146,7 +151,7 @@ public class CamerasPlugin implements DatabasePlugin {
 
         ComboBox<CameraInfo> cameraSelectorComboBox = new ComboBox<>(cameraItems);
         cameraSelectorComboBox.getStyleClass().add(CSS_CLASS_CAM_SELECTOR_COMBOBOX);
-        cameraSelectorComboBox.setConverter(new CameraInfoToItemConverter());
+        cameraSelectorComboBox.setConverter(new CameraInfoToItemConverter(cameraRefHelper));
 
         ComboBox<CameraInfo.CameraView> viewSelectorComboBox = new ComboBox<>(FXCollections.observableArrayList());
         viewSelectorComboBox.getStyleClass().add(CSS_CLASS_VIEW_SELECTOR_COMBOBOX);

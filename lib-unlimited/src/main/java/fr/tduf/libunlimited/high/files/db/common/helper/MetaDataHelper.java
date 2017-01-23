@@ -22,7 +22,7 @@ abstract class MetaDataHelper {
         try {
             loadDatabaseReference();
         } catch (IOException | URISyntaxException e) {
-            Log.error(THIS_CLASS_NAME, "Unable to load database metadata resource", e);
+            Log.error(THIS_CLASS_NAME, "Unable to load database metadata resources", e);
         }
     }
 
@@ -57,6 +57,6 @@ abstract class MetaDataHelper {
         Map<String, String> cameras = FilesHelper.readObjectFromJsonResourceFile(Map.class, "/files/db/metadata/cameras.json");
         databaseMetadataObject.setCameras(
                 cameras.entrySet().stream()
-                        .collect(toMap(e -> Integer.valueOf(e.getKey()), Map.Entry::getValue)));
+                        .collect(toMap(e -> Long.valueOf(e.getKey()), Map.Entry::getValue)));
     }
 }

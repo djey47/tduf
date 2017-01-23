@@ -18,7 +18,7 @@ public class DbMetadataDto {
 
     private Map<Integer, String> iks;
 
-    private Map<Integer, String> cameras;
+    private Map<Long, String> cameras;
 
     public void setTopics(List<TopicMetadataDto> topics) {
         this.topics = topics;
@@ -44,11 +44,11 @@ public class DbMetadataDto {
         return iks;
     }
 
-    public Map<Integer, String> getCameras() {
+    public Map<Long, String> getCameras() {
         return cameras;
     }
 
-    public void setCameras(Map<Integer, String> cameras) {
+    public void setCameras(Map<Long, String> cameras) {
         this.cameras = cameras;
     }
 
