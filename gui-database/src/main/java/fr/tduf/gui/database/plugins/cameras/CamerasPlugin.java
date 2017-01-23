@@ -13,7 +13,6 @@ import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
@@ -39,6 +38,7 @@ import static fr.tduf.gui.database.plugins.cameras.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.cameras.common.FxConstants.*;
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo.CameraView.fromProps;
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps.TYPE;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Collections.singletonList;
 import static java.util.Comparator.comparing;
 import static java.util.Comparator.comparingLong;
@@ -53,6 +53,8 @@ import static javafx.scene.layout.Priority.ALWAYS;
 public class CamerasPlugin implements DatabasePlugin {
     private static final Class<CamerasPlugin> thisClass = CamerasPlugin.class;
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
+
+    private static final int FIELD_RANK_CAR_PHYSICS_CAMERA = 98;
 
     private final Property<CamerasParser> camerasParserProperty = new SimpleObjectProperty<>();
 
@@ -78,7 +80,7 @@ public class CamerasPlugin implements DatabasePlugin {
         }
 
         camerasContext.setBinaryFileLocation(cameraFile.toString());
-        Log.debug(THIS_CLASS_NAME, "Loading camera info from " + cameraFile);
+        Log.info(THIS_CLASS_NAME, "Loading camera info from " + cameraFile);
         camerasContext.setPluginLoaded(true);
 
         CamerasParser camerasParser = CamerasHelper.loadAndParseFile(cameraFile.toString());
@@ -107,8 +109,6 @@ public class CamerasPlugin implements DatabasePlugin {
     /**
      * Required contextual information:
      * - rawValueProperty
-     * - fieldRank
-     * - currentTopic
      * - camerasContext->allCameras
      * - camerasContext->viewTypeProperty
      * @param context : all required information about Database Editor
@@ -203,7 +203,7 @@ public class CamerasPlugin implements DatabasePlugin {
         camSelectorBox.getStyleClass().add(CSS_CLASS_CAM_SELECTOR_BOX);
 
         cameraSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
-                getCameraSelectorChangeListener(context.getFieldRank(), context.getCurrentTopic(), context.getChangeDataController(), viewSelectorComboBox.valueProperty(), viewSelectorComboBox.itemsProperty().get()));
+                getCameraSelectorChangeListener(context.getChangeDataController(), viewSelectorComboBox.valueProperty(), viewSelectorComboBox.itemsProperty().get()));
         Bindings.bindBidirectional(
                 context.getRawValueProperty(), cameraSelectorComboBox.valueProperty(), new CameraInfoToRawValueConverter(cameraItems));
 
@@ -242,7 +242,7 @@ public class CamerasPlugin implements DatabasePlugin {
         return viewSelectorBox;
     }
 
-    private ChangeListener<CameraInfo> getCameraSelectorChangeListener(int fieldRank, DbDto.Topic topic, MainStageChangeDataController changeDataController, Property<CameraInfo.CameraView> currentCameraViewProperty, ObservableList<CameraInfo.CameraView> allCameraViews) {
+    private ChangeListener<CameraInfo> getCameraSelectorChangeListener(MainStageChangeDataController changeDataController, Property<CameraInfo.CameraView> currentCameraViewProperty, ObservableList<CameraInfo.CameraView> allCameraViews) {
         return (ObservableValue<? extends CameraInfo> observable, CameraInfo oldValue, CameraInfo newValue) -> {
             if (Objects.equals(oldValue, newValue)) {
                 return;
@@ -257,7 +257,7 @@ public class CamerasPlugin implements DatabasePlugin {
                     currentCameraViewProperty.setValue(allCameraViews.get(0));
                 }
 
-                changeDataController.updateContentItem(topic, fieldRank, Long.toString(newValue.getCameraIdentifier()));
+                changeDataController.updateContentItem(CAR_PHYSICS_DATA, FIELD_RANK_CAR_PHYSICS_CAMERA, Long.toString(newValue.getCameraIdentifier()));
             }
         };
     }
