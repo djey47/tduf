@@ -6,7 +6,7 @@ import fr.tduf.gui.database.plugins.common.DatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.gui.database.plugins.iks.converter.IKReferenceToItemConverter;
 import fr.tduf.gui.database.plugins.iks.converter.IKReferenceToRawValueConverter;
-import fr.tduf.libunlimited.high.files.db.common.helper.IKHelper;
+import fr.tduf.libunlimited.high.files.db.common.helper.CameraAndIKHelper;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -38,17 +38,28 @@ public class IKsPlugin implements DatabasePlugin {
     private static final Class<IKsPlugin> thisClass = IKsPlugin.class;
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 
-    private IKHelper ikHelper;
+    private CameraAndIKHelper ikRefHelper;
 
+    /**
+     * Required contextual information: none
+     */
     @Override
     public void onInit(EditorContext context) throws IOException {
-        ikHelper = new IKHelper();
+        ikRefHelper = new CameraAndIKHelper();
         Log.info(THIS_CLASS_NAME, "IK reference loaded");
     }
 
+    /**
+     * Required contextual information: none
+     */
     @Override
     public void onSave(EditorContext context) throws IOException {}
 
+    /**
+     * Required contextual information:
+     * - rawValueProperty
+     * @param context : all required information about Database Editor
+     */
     @Override
     public Node renderControls(EditorContext context) {
         HBox hBox = new HBox();
@@ -69,7 +80,7 @@ public class IKsPlugin implements DatabasePlugin {
     }
 
     private VBox createMainColumn(EditorContext context) {
-        Map<Integer, String> reference = ikHelper.getReference();
+        Map<Integer, String> reference = ikRefHelper.getIKReference();
         List<Map.Entry<Integer, String>> sortedEntries = reference.entrySet().stream()
                 .sorted(Comparator.comparing(Map.Entry::getValue))
                 .collect(toList());

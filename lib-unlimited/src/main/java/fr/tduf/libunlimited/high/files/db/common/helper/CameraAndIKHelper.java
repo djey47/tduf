@@ -2,10 +2,11 @@ package fr.tduf.libunlimited.high.files.db.common.helper;
 
 import java.util.Map;
 
-// TODO Rename to CameraAndIKHelper
-public class IKHelper extends MetaDataHelper {
-    // TODO Rename to getIKReference
-    public Map<Integer, String> getReference() {
+/**
+ * Gives access to embedded cameras and inverse kinematics reference
+ */
+public class CameraAndIKHelper extends MetaDataHelper {
+    public Map<Integer, String> getIKReference() {
         return databaseMetadataObject.getIKs();
     }
 

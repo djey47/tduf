@@ -1,16 +1,16 @@
 package fr.tduf.gui.database.plugins.cameras.converter;
 
 import fr.tduf.gui.database.plugins.cameras.common.DisplayConstants;
-import fr.tduf.libunlimited.high.files.db.common.helper.IKHelper;
+import fr.tduf.libunlimited.high.files.db.common.helper.CameraAndIKHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
 import javafx.util.StringConverter;
 
 import static fr.tduf.gui.database.plugins.cameras.common.DisplayConstants.LABEL_FORMAT_CAMERA_ITEM;
 
 public class CameraInfoToItemConverter extends StringConverter<CameraInfo> {
-    private final IKHelper cameraRefHelper;
+    private final CameraAndIKHelper cameraRefHelper;
 
-    public CameraInfoToItemConverter(IKHelper cameraRefHelper) {
+    public CameraInfoToItemConverter(CameraAndIKHelper cameraRefHelper) {
         this.cameraRefHelper = cameraRefHelper;
     }
 

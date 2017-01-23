@@ -8,7 +8,7 @@ import fr.tduf.gui.database.plugins.cameras.converter.CameraInfoToRawValueConver
 import fr.tduf.gui.database.plugins.cameras.converter.CameraViewToItemConverter;
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
-import fr.tduf.libunlimited.high.files.db.common.helper.IKHelper;
+import fr.tduf.libunlimited.high.files.db.common.helper.CameraAndIKHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
@@ -59,14 +59,14 @@ public class CamerasPlugin implements DatabasePlugin {
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 
     private final Property<CamerasParser> camerasParserProperty = new SimpleObjectProperty<>();
-    private IKHelper cameraRefHelper;
+    private CameraAndIKHelper cameraRefHelper;
 
     /**
      * Required contextual information:
      * - databaseLocation
      * - camerasContext->allCameras
      * @param context : all required information about Database Editor
-     * @throws IOException when camars file can't be parsed for some reason
+     * @throws IOException when cameras file can't be parsed for some reason
      */
     @Override
     public void onInit(EditorContext context) throws IOException {
@@ -89,7 +89,7 @@ public class CamerasPlugin implements DatabasePlugin {
         CamerasParser camerasParser = CamerasHelper.loadAndParseFile(cameraFile.toString());
         camerasParserProperty.setValue(camerasParser);
 
-        cameraRefHelper = new IKHelper();
+        cameraRefHelper = new CameraAndIKHelper();
         Log.info(THIS_CLASS_NAME, "Camera reference loaded");
     }
 
