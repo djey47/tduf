@@ -169,7 +169,7 @@ class CamerasHelperTest {
         EnumMap<ViewProps, ?> actualProperties = CamerasHelper.fetchViewProperties(cameraIdentifier, Cockpit, readOnlyParser);
 
         // THEN
-        assertThat(actualProperties).hasSize(10);
+        assertThat(actualProperties).hasSize(15);
         assertThat(actualProperties.keySet()).containsExactlyInAnyOrder(ViewProps.values());
         assertThat(actualProperties.values()).doesNotContainNull();
     }
