@@ -149,6 +149,7 @@ public class CamerasPlugin implements DatabasePlugin {
         mainRowChildren.add(mainColumnBox);
         mainRowChildren.add(new Separator(VERTICAL));
         mainRowChildren.add(buttonColumnBox);
+        mainRowChildren.add(new Separator(VERTICAL));
 
         return hBox;
     }
@@ -182,7 +183,8 @@ public class CamerasPlugin implements DatabasePlugin {
     }
 
     private VBox createButtonColumn(EventHandler<ActionEvent> onAddSetAction, EventHandler<ActionEvent> onRemoveSetAction) {
-        VBox buttonColumnBox = new VBox();
+        // TODO set to common stylesheet
+        VBox buttonColumnBox = new VBox(5.0);
 
         Button addSetButton = new Button(LABEL_ADD_BUTTON);
         // TODO use stylesheet
