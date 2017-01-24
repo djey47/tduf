@@ -32,7 +32,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import org.apache.commons.lang3.NotImplementedException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -143,7 +142,7 @@ public class CamerasPlugin implements DatabasePlugin {
         StringProperty rawValueProperty = context.getRawValueProperty();
         VBox buttonColumnBox = createButtonColumn(
                 handleAddSetButtonAction(rawValueProperty, cameraSelectorComboBox),
-                handleRemoveSetButtonAction(rawValueProperty));
+                handleRemoveSetButtonAction(rawValueProperty, cameraSelectorComboBox));
 
         ObservableList<Node> mainRowChildren = hBox.getChildren();
         mainRowChildren.add(mainColumnBox);
@@ -374,17 +373,6 @@ public class CamerasPlugin implements DatabasePlugin {
         return Paths.get(databaseLocation, CamerasHelper.FILE_CAMERAS_BIN);
     }
 
-    private EventHandler<ActionEvent> handleRemoveSetButtonAction(StringProperty rawValueProperty) {
-        return event -> {
-            throw new NotImplementedException("handleRemoveSetButtonAction");
-//            long cameraSetIdentifier = Long.valueOf(rawValueProperty.getValue());
-
-            // TODO add helper method to remove set
-
-            // TODO remove set from observable list
-        };
-    }
-
     private EventHandler<ActionEvent> handleAddSetButtonAction(StringProperty rawValueProperty, ComboBox<CameraInfo> cameraSelectorComboBox) {
         return event -> {
             Optional<String> input = CommonDialogsHelper.showInputValueDialog(TITLE_ADD_SET, MESSAGE_ADD_SET_IDENTIFIER, null);
@@ -406,6 +394,19 @@ public class CamerasPlugin implements DatabasePlugin {
             }
 
             cameraSelectorComboBox.getSelectionModel().select(newCameraInfo);
+        };
+    }
+
+    private EventHandler<ActionEvent> handleRemoveSetButtonAction(StringProperty rawValueProperty, ComboBox<CameraInfo> cameraSelectorComboBox) {
+        return event -> {
+            long cameraSetIdentifier = Long.valueOf(rawValueProperty.getValue());
+
+            // TODO call helper method to remove set
+
+            CameraInfo currentCameraSet = cameraSelectorComboBox.getSelectionModel().getSelectedItem();
+            if (currentCameraSet != null) {
+                cameraSelectorComboBox.getItems().remove(currentCameraSet);
+            }
         };
     }
 }
