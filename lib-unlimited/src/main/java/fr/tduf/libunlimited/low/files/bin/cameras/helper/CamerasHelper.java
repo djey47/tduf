@@ -47,6 +47,23 @@ public class CamerasHelper {
     private CamerasHelper(){}
 
     /**
+     * Deletes a camera set at cameraId
+     * @param cameraId  : identifier of camera to get views from
+     * @param parser    : parsed cameras contents.
+     */
+    public static void deleteCameraSet(long cameraId, CamerasParser parser) {
+        DataStore dataStore = requireNonNull(parser, "Parser with cameras contents is required.").getDataStore();
+
+        checkCameraSetExists(cameraId, parser);
+
+        removeEntryFromIndexInDatastore(dataStore, cameraId);
+
+        removeViewsFromDatastore(dataStore, cameraId, parser);
+
+        parser.flushCaches();
+    }
+
+    /**
      * Creates a camera set at targetCameraId with all views from set at sourceCameraId
      * @param sourceCameraId    : identifier of camera to get views from
      * @param targetCameraId    : identifier of camera to create views. May not exist already, in that case will add a new set
@@ -56,10 +73,8 @@ public class CamerasHelper {
         DataStore dataStore = requireNonNull(parser, "Parser with cameras contents is required.").getDataStore();
 
         final Map<Long, Short> cameraIndex = parser.getCameraIndex();
-        if (!cameraIndex.containsKey(sourceCameraId)
-                || !parser.getCameraViews().containsKey(sourceCameraId)) {
-            throw new NoSuchElementException("Unknown source camera identifier: " + sourceCameraId);
-        }
+
+        checkCameraSetExists(sourceCameraId, parser);
 
         if (cameraIndex.containsKey(targetCameraId)
                 || parser.getCameraViews().containsKey(targetCameraId)) {
@@ -243,10 +258,24 @@ public class CamerasHelper {
 
     private static void updateIndexInDatastore(DataStore dataStore, long sourceCameraId, long targetCameraId, Map<Long, Short> cameraIndex) {
         short viewCount = cameraIndex.get(sourceCameraId);
-            int currentIndexEntryCount = cameraIndex.size();
-            dataStore.addRepeatedIntegerValue(KEY_INDEX, KEY_CAMERA_ID, currentIndexEntryCount, targetCameraId);
-            dataStore.addRepeatedIntegerValue(KEY_INDEX, KEY_VIEW_COUNT, currentIndexEntryCount, viewCount);
-            dataStore.addInteger(KEY_INDEX_SIZE, currentIndexEntryCount + 1L);
+        int currentIndexEntryCount = cameraIndex.size();
+        dataStore.addRepeatedIntegerValue(KEY_INDEX, KEY_CAMERA_ID, currentIndexEntryCount, targetCameraId);
+        dataStore.addRepeatedIntegerValue(KEY_INDEX, KEY_VIEW_COUNT, currentIndexEntryCount, viewCount);
+        dataStore.addInteger(KEY_INDEX_SIZE, currentIndexEntryCount + 1L);
+    }
+
+    private static void removeEntryFromIndexInDatastore(DataStore dataStore, long cameraId) {
+        int currentIndexEntry = dataStore.getRepeatedValues(KEY_INDEX).stream()
+                .filter(ds -> ds.getInteger(KEY_CAMERA_ID).get().equals(cameraId))
+                .findAny()
+                .map(DataStore::getRepeatIndex)
+                .orElseThrow(() -> new IllegalStateException("No item in index store for cameraId: " + cameraId));
+
+        dataStore.deleteRepeatedValue(KEY_INDEX, KEY_CAMERA_ID, currentIndexEntry);
+        dataStore.deleteRepeatedValue(KEY_INDEX, KEY_VIEW_COUNT, currentIndexEntry);
+        long currentIndexEntryCount = dataStore.getInteger(KEY_INDEX_SIZE)
+                .orElseThrow(() -> new IllegalStateException("No index size in store"));
+        dataStore.addInteger(KEY_INDEX_SIZE, currentIndexEntryCount - 1L);
     }
 
     private static void updateViewsInDatastore(DataStore dataStore, long sourceCameraId, long targetCameraId, CamerasParser parser) {
@@ -260,6 +289,10 @@ public class CamerasHelper {
                 .forEach(clonedViewStore -> dataStore.mergeRepeatedValues(KEY_VIEWS, viewIndex.getAndIncrement(), clonedViewStore));
     }
 
+    private static void removeViewsFromDatastore(DataStore dataStore, long cameraId, CamerasParser parser) {
+        // TODO
+    }
+
     private static DataStore cloneViewStoreForNewCamera(DataStore viewStore, long targetCameraId) {
         DataStore newStore = viewStore.copy();
 
@@ -270,6 +303,14 @@ public class CamerasHelper {
 
     private static ByteArrayInputStream getCamerasInputStream(String sourceCameraFile) throws IOException {
         return new ByteArrayInputStream(readAllBytes(Paths.get(sourceCameraFile)));
+    }
+
+    private static void checkCameraSetExists(long cameraId, CamerasParser parser) {
+        Map<Long, Short> cameraIndex = parser.getCameraIndex() ;
+        if (!cameraIndex.containsKey(cameraId)
+                || !parser.getCameraViews().containsKey(cameraId)) {
+            throw new NoSuchElementException("Unknown source camera identifier: " + cameraId);
+        }
     }
 
     // For testing
