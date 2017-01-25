@@ -141,8 +141,7 @@ public class CamerasPlugin implements DatabasePlugin {
 
         StringProperty rawValueProperty = context.getRawValueProperty();
         VBox buttonColumnBox = createButtonColumn(
-                handleAddSetButtonAction(rawValueProperty, cameraSelectorComboBox),
-                handleRemoveSetButtonAction(rawValueProperty, cameraSelectorComboBox));
+                handleAddSetButtonAction(rawValueProperty, cameraSelectorComboBox));
 
         ObservableList<Node> mainRowChildren = hBox.getChildren();
         mainRowChildren.add(mainColumnBox);
@@ -181,7 +180,7 @@ public class CamerasPlugin implements DatabasePlugin {
         return mainColumnBox;
     }
 
-    private VBox createButtonColumn(EventHandler<ActionEvent> onAddSetAction, EventHandler<ActionEvent> onRemoveSetAction) {
+    private VBox createButtonColumn(EventHandler<ActionEvent> onAddSetAction) {
         // TODO set to common stylesheet
         VBox buttonColumnBox = new VBox(5.0);
 
@@ -191,14 +190,7 @@ public class CamerasPlugin implements DatabasePlugin {
         ControlHelper.setTooltipText(addSetButton, TOOLTIP_ADD_BUTTON);
         addSetButton.setOnAction(onAddSetAction);
 
-        Button removeSetButton = new Button(LABEL_REMOVE_BUTTON);
-        // TODO use stylesheet
-        removeSetButton.setPrefWidth(34.0);
-        ControlHelper.setTooltipText(removeSetButton, TOOLTIP_REMOVE_BUTTON);
-        removeSetButton.setOnAction(onRemoveSetAction);
-
         buttonColumnBox.getChildren().add(addSetButton);
-        buttonColumnBox.getChildren().add(removeSetButton);
 
         return buttonColumnBox;
     }
@@ -394,19 +386,6 @@ public class CamerasPlugin implements DatabasePlugin {
             }
 
             cameraSelectorComboBox.getSelectionModel().select(newCameraInfo);
-        };
-    }
-
-    private EventHandler<ActionEvent> handleRemoveSetButtonAction(StringProperty rawValueProperty, ComboBox<CameraInfo> cameraSelectorComboBox) {
-        return event -> {
-            long cameraSetIdentifier = Long.valueOf(rawValueProperty.getValue());
-
-            // TODO call helper method to remove set
-
-            CameraInfo currentCameraSet = cameraSelectorComboBox.getSelectionModel().getSelectedItem();
-            if (currentCameraSet != null) {
-                cameraSelectorComboBox.getItems().remove(currentCameraSet);
-            }
         };
     }
 }
