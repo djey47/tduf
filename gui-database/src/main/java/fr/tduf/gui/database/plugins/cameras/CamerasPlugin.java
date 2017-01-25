@@ -3,10 +3,12 @@ package fr.tduf.gui.database.plugins.cameras;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.javafx.helper.ControlHelper;
+import fr.tduf.gui.database.plugins.cameras.common.DisplayConstants;
 import fr.tduf.gui.database.plugins.cameras.common.FxConstants;
 import fr.tduf.gui.database.plugins.cameras.converter.CameraInfoToItemConverter;
 import fr.tduf.gui.database.plugins.cameras.converter.CameraInfoToRawValueConverter;
 import fr.tduf.gui.database.plugins.cameras.converter.CameraViewToItemConverter;
+import fr.tduf.gui.database.plugins.cameras.helper.CamerasDialogsHelper;
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.libunlimited.high.files.db.common.helper.CameraAndIKHelper;
@@ -32,6 +34,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -62,6 +65,7 @@ public class CamerasPlugin implements DatabasePlugin {
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 
     private CameraAndIKHelper cameraRefHelper;
+    private CamerasDialogsHelper dialogsHelper;
 
     private final Property<CamerasParser> camerasParserProperty = new SimpleObjectProperty<>();
 
@@ -95,6 +99,8 @@ public class CamerasPlugin implements DatabasePlugin {
 
         cameraRefHelper = new CameraAndIKHelper();
         Log.info(THIS_CLASS_NAME, "Camera reference loaded");
+
+        dialogsHelper = new CamerasDialogsHelper();
     }
 
     /**
@@ -146,7 +152,8 @@ public class CamerasPlugin implements DatabasePlugin {
 
         StringProperty rawValueProperty = context.getRawValueProperty();
         VBox buttonColumnBox = createButtonColumn(
-                handleAddSetButtonAction(rawValueProperty, cameraSelectorComboBox));
+                handleAddSetButtonAction(rawValueProperty, cameraSelectorComboBox),
+                handleImportSetButtonAction());
 
         ObservableList<Node> mainRowChildren = hBox.getChildren();
         mainRowChildren.add(mainColumnBox);
@@ -185,17 +192,25 @@ public class CamerasPlugin implements DatabasePlugin {
         return mainColumnBox;
     }
 
-    private VBox createButtonColumn(EventHandler<ActionEvent> onAddSetAction) {
+    private VBox createButtonColumn(EventHandler<ActionEvent> onAddSetAction, EventHandler<ActionEvent> onImportSetAction) {
         // TODO set to common stylesheet
         VBox buttonColumnBox = new VBox(5.0);
 
         Button addSetButton = new Button(LABEL_ADD_BUTTON);
         // TODO use stylesheet
-        addSetButton.setPrefWidth(34.0);
+        addSetButton.setPrefWidth(80.0);
         ControlHelper.setTooltipText(addSetButton, TOOLTIP_ADD_BUTTON);
         addSetButton.setOnAction(onAddSetAction);
 
-        buttonColumnBox.getChildren().add(addSetButton);
+        Button importSetButton = new Button(LABEL_IMPORT_SET_BUTTON);
+        // TODO use stylesheet
+        importSetButton.setPrefWidth(80.0);
+        ControlHelper.setTooltipText(importSetButton, DisplayConstants.TOOLTIP_IMPORT_SET_BUTTON);
+        importSetButton.setOnAction(onImportSetAction);
+
+        ObservableList<Node> children = buttonColumnBox.getChildren();
+        children.add(addSetButton);
+        children.add(importSetButton);
 
         return buttonColumnBox;
     }
@@ -399,5 +414,15 @@ public class CamerasPlugin implements DatabasePlugin {
 
             cameraSelectorComboBox.getSelectionModel().select(newCameraInfo);
         };
+    }
+
+    private EventHandler<ActionEvent> handleImportSetButtonAction() {
+        return event -> dialogsHelper.askForCameraPatchLocation(null)
+                .map(File::new)
+                .ifPresent(this::importSetFromPatchFile);
+    }
+
+    private void importSetFromPatchFile(File file) {
+
     }
 }
