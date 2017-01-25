@@ -10,6 +10,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Helper class to produce TDU file contents for cameras.
  */
+// TODO see to convert domain object to data store (see CamerasParser TODO)
 public class CamerasWriter extends GenericWriter<String> {
 
     private DataStore sourceStore;

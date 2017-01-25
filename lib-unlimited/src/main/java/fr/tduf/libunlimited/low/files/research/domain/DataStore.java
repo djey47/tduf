@@ -223,19 +223,6 @@ public class DataStore {
     }
 
     /**
-     * Removes a repeated field from the store
-     *
-     * @param repeaterFieldName : identifier of repeater field
-     * @param fieldName         : identifier of field hosting the value
-     * @param index             : rank in repeater
-     */
-    // FIXME will create holes in repeat index sequences. Is it problematic?
-    public void deleteRepeatedValue(String repeaterFieldName, String fieldName, long index) {
-        String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
-        getStore().remove(key);
-    }
-
-    /**
      * @return entry count in store.
      */
     public int size() {

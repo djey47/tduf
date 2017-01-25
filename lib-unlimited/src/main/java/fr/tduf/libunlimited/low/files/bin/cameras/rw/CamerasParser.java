@@ -15,6 +15,8 @@ import static java.util.Objects.requireNonNull;
 /**
  * Allow to read data from cameras.bin file.
  */
+// TODO see to generate domain objects to update, instead of relying on parser (unable to delete sets currently...)
+// (see CamerasParser TODO)
 public class CamerasParser extends GenericParser<String> {
 
     private Map<Long, Short> cachedCameraIndex;
