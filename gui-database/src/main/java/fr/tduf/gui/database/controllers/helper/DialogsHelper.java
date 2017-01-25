@@ -50,7 +50,7 @@ public class DialogsHelper {
     /**
      * All file location kind to be stored
      */
-    private enum FileLocation { TDUF, TDUPK, PCH, TXT }
+    protected enum FileLocation { TDUF, TDUPK, PCH, TXT }
 
     private Map<FileLocation, String> fileLocations = new HashMap<>();
 
@@ -169,7 +169,10 @@ public class DialogsHelper {
         return askForSaveLocation(FileLocation.TDUF, extensionFilters, parent);
     }
 
-    private Optional<String> askForLoadLocation(FileLocation fileLocation, List<FileChooser.ExtensionFilter> extensionFilters, Window parent) {
+    /**
+     * To be used by plugins (by extending this class)
+     */
+    protected Optional<String> askForLoadLocation(FileLocation fileLocation, List<FileChooser.ExtensionFilter> extensionFilters, Window parent) {
         FileBrowsingOptions options = FileBrowsingOptions.builder()
                 .forLoading()
                 .withDialogTitle(String.format(DisplayConstants.TITLE_FORMAT_LOAD, fileLocation))
@@ -183,7 +186,10 @@ public class DialogsHelper {
                 });
     }
 
-    private Optional<String> askForSaveLocation(FileLocation fileLocation, List<FileChooser.ExtensionFilter> extensionFilters, Window parent) {
+    /**
+     * To be used by plugins (by extending this class)
+     */
+    protected Optional<String> askForSaveLocation(FileLocation fileLocation, List<FileChooser.ExtensionFilter> extensionFilters, Window parent) {
         FileBrowsingOptions options = FileBrowsingOptions.builder()
                 .forSaving()
                 .withDialogTitle(String.format(DisplayConstants.TITLE_FORMAT_SAVE, fileLocation))
