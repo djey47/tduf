@@ -3,7 +3,6 @@ package fr.tduf.gui.database.plugins.cameras;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.javafx.helper.ControlHelper;
-import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.cameras.common.FxConstants;
 import fr.tduf.gui.database.plugins.cameras.converter.CameraInfoToItemConverter;
 import fr.tduf.gui.database.plugins.cameras.converter.CameraInfoToRawValueConverter;
@@ -62,8 +61,9 @@ public class CamerasPlugin implements DatabasePlugin {
     private static final Class<CamerasPlugin> thisClass = CamerasPlugin.class;
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 
-    private final Property<CamerasParser> camerasParserProperty = new SimpleObjectProperty<>();
     private CameraAndIKHelper cameraRefHelper;
+
+    private final Property<CamerasParser> camerasParserProperty = new SimpleObjectProperty<>();
 
     /**
      * Required contextual information:
@@ -125,6 +125,11 @@ public class CamerasPlugin implements DatabasePlugin {
      */
     @Override
     public Node renderControls(EditorContext context) {
+        CamerasContext camerasContext = context.getCamerasContext();
+        // TODO see to set them automatically (add get set to interface?)
+        camerasContext.setErrorProperty(context.getErrorProperty());
+        camerasContext.setErrorMessageProperty(context.getErrorMessageProperty());
+
         HBox hBox = new HBox();
         hBox.getStyleClass().add(CSS_CLASS_PLUGIN_BOX);
 
@@ -226,7 +231,7 @@ public class CamerasPlugin implements DatabasePlugin {
         camSelectorBox.getStyleClass().add(CSS_CLASS_CAM_SELECTOR_BOX);
 
         cameraSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
-                getCameraSelectorChangeListener(context.getChangeDataController(), viewSelectorComboBox.valueProperty(), viewSelectorComboBox.itemsProperty().get()));
+                getCameraSelectorChangeListener(context, viewSelectorComboBox.valueProperty(), viewSelectorComboBox.itemsProperty().get()));
         Bindings.bindBidirectional(
                 context.getRawValueProperty(), cameraSelectorComboBox.valueProperty(), new CameraInfoToRawValueConverter(cameraItems));
 
@@ -265,7 +270,7 @@ public class CamerasPlugin implements DatabasePlugin {
         return viewSelectorBox;
     }
 
-    private ChangeListener<CameraInfo> getCameraSelectorChangeListener(MainStageChangeDataController changeDataController, Property<CameraInfo.CameraView> currentCameraViewProperty, ObservableList<CameraInfo.CameraView> allCameraViews) {
+    private ChangeListener<CameraInfo> getCameraSelectorChangeListener(EditorContext context, Property<CameraInfo.CameraView> currentCameraViewProperty, ObservableList<CameraInfo.CameraView> allCameraViews) {
         return (ObservableValue<? extends CameraInfo> observable, CameraInfo oldValue, CameraInfo newValue) -> {
             if (Objects.equals(oldValue, newValue)) {
                 return;
@@ -273,14 +278,21 @@ public class CamerasPlugin implements DatabasePlugin {
 
             allCameraViews.clear();
 
-            if (newValue != null) {
+            CamerasContext camerasContext = context.getCamerasContext();
+            if (newValue == null) {
+                camerasContext.getErrorProperty().setValue(true);
+                camerasContext.getErrorMessageProperty().setValue(LABEL_ERROR_TOOLTIP);
+            } else {
+                camerasContext.getErrorProperty().setValue(false);
+                camerasContext.getErrorMessageProperty().setValue("");
+
                 allCameraViews.addAll(getSortedViews(newValue));
 
                 if (!allCameraViews.isEmpty()) {
                     currentCameraViewProperty.setValue(allCameraViews.get(0));
                 }
 
-                changeDataController.updateContentItem(CAR_PHYSICS_DATA, FIELD_RANK_CAMERA, Long.toString(newValue.getCameraIdentifier()));
+                context.getChangeDataController().updateContentItem(CAR_PHYSICS_DATA, FIELD_RANK_CAMERA, Long.toString(newValue.getCameraIdentifier()));
             }
         };
     }
