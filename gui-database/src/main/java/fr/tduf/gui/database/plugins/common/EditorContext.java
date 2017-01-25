@@ -3,6 +3,7 @@ package fr.tduf.gui.database.plugins.common;
 import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.cameras.CamerasContext;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
 
 /**
@@ -12,11 +13,13 @@ public class EditorContext implements PluginContext {
     private DbDto.Topic currentTopic;
     private int fieldRank;
     private boolean fieldReadOnly;
-    private StringProperty rawValueProperty;
     private String databaseLocation;
     private MainStageChangeDataController changeDataController;
-
     private CamerasContext camerasContext = new CamerasContext();
+
+    private StringProperty rawValueProperty;
+    private StringProperty errorMessageProperty;
+    private BooleanProperty errorProperty;
 
     @Override
     public void reset() {
@@ -73,5 +76,21 @@ public class EditorContext implements PluginContext {
 
     public String getDatabaseLocation() {
         return databaseLocation;
+    }
+
+    public StringProperty getErrorMessageProperty() {
+        return errorMessageProperty;
+    }
+
+    public void setErrorMessageProperty(StringProperty errorMessageProperty) {
+        this.errorMessageProperty = errorMessageProperty;
+    }
+
+    public BooleanProperty getErrorProperty() {
+        return errorProperty;
+    }
+
+    public void setErrorProperty(BooleanProperty errorProperty) {
+        this.errorProperty = errorProperty;
     }
 }
