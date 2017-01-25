@@ -1,5 +1,10 @@
 package fr.tduf.gui.database.plugins.cameras.common;
 
+import javafx.stage.FileChooser;
+
+import static fr.tduf.gui.database.plugins.cameras.common.DisplayConstants.LABEL_EXTENSION_CAM_JSON;
+import static java.util.Arrays.asList;
+
 public class FxConstants {
     public static final String PATH_RESOURCE_CSS_CAMERAS = "/gui-database/css/plugins/CamerasPlugin.css";
 
@@ -11,6 +16,8 @@ public class FxConstants {
     public static final String CSS_CLASS_SETTING_TABLECOLUMN = "settingTableColumn";
     public static final String CSS_CLASS_DESCRIPTION_TABLECOLUMN = "descriptionTableColumn";
     public static final String CSS_CLASS_VALUE_TABLECOLUMN = "valueTableColumn";
+
+    public static final FileChooser.ExtensionFilter EXTENSION_FILTER_TDUF_CAMERA_PATCH = new FileChooser.ExtensionFilter(LABEL_EXTENSION_CAM_JSON, asList("*.cam.json", "*.MINI.JSON"));
 
     private FxConstants() {}
 }

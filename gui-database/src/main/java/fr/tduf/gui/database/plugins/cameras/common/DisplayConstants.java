@@ -12,6 +12,9 @@ public class DisplayConstants {
     public static final String LABEL_AVAILABLE_VIEWS = "Available views:";
 
     public static final String LABEL_ADD_BUTTON = "+";
+    public static final String LABEL_IMPORT_SET_BUTTON = "Import...";
+
+    static final String LABEL_EXTENSION_CAM_JSON = "TDUF camera patch files (.cam.json)";
 
     public static final String LABEL_ERROR_TOOLTIP = "Set identifier is not valid or does not exist in provided cameras.\r\nEither select or create a new one.";
 
@@ -20,6 +23,7 @@ public class DisplayConstants {
     public static final String HEADER_PROPTABLE_VALUE = "Value";
 
     public static final String TOOLTIP_ADD_BUTTON = "Creates a new camera set, based on current one";
+    public static final String TOOLTIP_IMPORT_SET_BUTTON = "Imports one or many camera sets from camera patch";
 
     public static final String TITLE_ADD_SET = "Add camera set...";
 
