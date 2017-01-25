@@ -20,6 +20,7 @@ import javafx.scene.layout.HBox;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.REFERENCE;
 import static javafx.beans.binding.Bindings.not;
 import static javafx.geometry.Orientation.VERTICAL;
 
@@ -53,30 +54,19 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
                 ));
     }
 
-    void addCustomControls(HBox fieldBox, DbStructureDto.Field field, FieldSettingsDto fieldSettings, DbDto.Topic currentTopic, StringProperty property) {
+    void addCustomControls(HBox fieldBox, DbStructureDto.Field field, FieldSettingsDto fieldSettings, DbDto.Topic currentTopic, StringProperty rawValueProperty) {
+        ItemViewModel itemProps = controller.getViewData().getItemPropsByFieldRank();
+        BooleanProperty errorProperty = itemProps.errorPropertyAtFieldRank(field.getRank());
+        StringProperty errorMessageProperty = itemProps.errorMessagePropertyAtFieldRank(field.getRank());
+
         String pluginName = fieldSettings.getPluginName();
-        if (pluginName != null) {
-            BooleanProperty errorProperty = controller.getViewData().getItemPropsByFieldRank().errorPropertyAtFieldRank(field.getRank());
-            StringProperty errorMessageProperty = controller.getViewData().getItemPropsByFieldRank().errorMessagePropertyAtFieldRank(field.getRank());
-            addPluginControls(pluginName, currentTopic, fieldBox, fieldSettings, property, errorMessageProperty, errorProperty);
-            addErrorSign(fieldBox, errorProperty, errorMessageProperty);
-            return;
+        if (pluginName == null) {
+            addSpecialControls(fieldBox, field, fieldSettings, currentTopic);
+        } else {
+            addPluginControls(pluginName, currentTopic, fieldBox, fieldSettings, rawValueProperty, errorMessageProperty, errorProperty);
         }
 
-        boolean fieldReadOnly = fieldSettings.isReadOnly();
-        // TODO replace overkill switch case
-        switch (field.getFieldType()) {
-            case REFERENCE:
-                addReferenceValueControls(fieldBox, fieldReadOnly, field);
-                break;
-            default:
-                if (field.isAResourceField()) {
-                    addResourceValueControls(fieldBox, fieldReadOnly, field, currentTopic);
-                }
-                break;
-        }
-
-        // TODO add error sign here, instead
+        addErrorSign(fieldBox, errorProperty, errorMessageProperty);
     }
 
     private void addFieldControls(DbStructureDto.Field field, DbDto.Topic currentTopic) {
@@ -142,6 +132,15 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
     }
 
+    private void addSpecialControls(HBox fieldBox, DbStructureDto.Field field, FieldSettingsDto fieldSettings, DbDto.Topic currentTopic) {
+        boolean fieldReadOnly = fieldSettings.isReadOnly();
+        if (REFERENCE == field.getFieldType()) {
+            addReferenceValueControls(fieldBox, fieldReadOnly, field);
+        } else if (field.isAResourceField()) {
+            addResourceValueControls(fieldBox, fieldReadOnly, field, currentTopic);
+        }
+    }
+
     private void addPluginControls(String pluginName, DbDto.Topic currentTopic, HBox fieldBox, FieldSettingsDto fieldSettings, StringProperty rawValueProperty, StringProperty errorMessageProperty, BooleanProperty errorProperty) {
         EditorContext editorContext = controller.getPluginHandler().getContext();
         editorContext.setCurrentTopic(currentTopic);
@@ -197,8 +196,6 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
-
-        addErrorSign(fieldBox, errorProperty, itemViewModel.errorMessagePropertyAtFieldRank(fieldRank));
     }
 
     private void addResourceValueControls(HBox fieldBox, boolean fieldReadOnly, DbStructureDto.Field field, DbDto.Topic topic) {
@@ -232,8 +229,6 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
-
-        addErrorSign(fieldBox, itemViewModel.errorPropertyAtFieldRank(fieldRank), itemViewModel.errorMessagePropertyAtFieldRank(fieldRank));
     }
 
     private static void addResourceValueLabel(HBox fieldBox, boolean fieldReadOnly, StringProperty property) {
