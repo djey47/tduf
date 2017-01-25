@@ -56,11 +56,15 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     void addCustomControls(HBox fieldBox, DbStructureDto.Field field, FieldSettingsDto fieldSettings, DbDto.Topic currentTopic, StringProperty property) {
         String pluginName = fieldSettings.getPluginName();
         if (pluginName != null) {
-            addPluginControls(pluginName, currentTopic, fieldBox, fieldSettings, property);
+            BooleanProperty errorProperty = controller.getViewData().getItemPropsByFieldRank().errorPropertyAtFieldRank(field.getRank());
+            StringProperty errorMessageProperty = controller.getViewData().getItemPropsByFieldRank().errorMessagePropertyAtFieldRank(field.getRank());
+            addPluginControls(pluginName, currentTopic, fieldBox, fieldSettings, property, errorMessageProperty, errorProperty);
+            addErrorSign(fieldBox, errorProperty, errorMessageProperty);
             return;
         }
 
         boolean fieldReadOnly = fieldSettings.isReadOnly();
+        // TODO replace overkill switch case
         switch (field.getFieldType()) {
             case REFERENCE:
                 addReferenceValueControls(fieldBox, fieldReadOnly, field);
@@ -71,6 +75,8 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
                 }
                 break;
         }
+
+        // TODO add error sign here, instead
     }
 
     private void addFieldControls(DbStructureDto.Field field, DbDto.Topic currentTopic) {
@@ -136,12 +142,14 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
     }
 
-    private void addPluginControls(String pluginName, DbDto.Topic currentTopic, HBox fieldBox, FieldSettingsDto fieldSettings, StringProperty property) {
+    private void addPluginControls(String pluginName, DbDto.Topic currentTopic, HBox fieldBox, FieldSettingsDto fieldSettings, StringProperty rawValueProperty, StringProperty errorMessageProperty, BooleanProperty errorProperty) {
         EditorContext editorContext = controller.getPluginHandler().getContext();
         editorContext.setCurrentTopic(currentTopic);
         editorContext.setFieldRank(fieldSettings.getRank());
         editorContext.setFieldReadOnly(fieldSettings.isReadOnly());
-        editorContext.setRawValueProperty(property);
+        editorContext.setRawValueProperty(rawValueProperty);
+        editorContext.setErrorMessageProperty(errorMessageProperty);
+        editorContext.setErrorProperty(errorProperty);
 
         controller.getPluginHandler().renderPluginByName(pluginName, fieldBox);
     }
