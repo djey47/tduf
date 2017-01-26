@@ -7,13 +7,14 @@ import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
+import fr.tduf.libtesting.common.helper.javafx.NonApp;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.layout.HBox;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -23,7 +24,6 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.INT
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-// TODO re enable tests
 class DynamicFieldControlsHelperTest {
     @Mock
     private MainStageController controllerMock;
@@ -36,6 +36,11 @@ class DynamicFieldControlsHelperTest {
 
     @InjectMocks
     private DynamicFieldControlsHelper helper;
+
+    @BeforeAll
+    static void globalSetUp() {
+        NonApp.initJavaFX();
+    }
 
     @BeforeEach
     void setUp() {
@@ -70,7 +75,6 @@ class DynamicFieldControlsHelperTest {
         helper.addAllFieldsControls(layout, profileName, CAR_PHYSICS_DATA);
     }
 
-    @Disabled("Need Toolkit init")
     @Test
     void addCustomControls_whenPluginNamePresent_shouldInvokeHandler() {
         // given
@@ -90,7 +94,6 @@ class DynamicFieldControlsHelperTest {
         verify(pluginHandlerMock).renderPluginByName("PLUGIN", fieldBox);
     }
 
-    @Disabled("Need Toolkit init")
     @Test
     void addCustomControls_withoutPluginName_shouldNotInvokeHandler() {
         // given-when
