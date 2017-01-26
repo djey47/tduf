@@ -19,7 +19,7 @@ import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL
 public class SetChangeDto {
 
     @JsonProperty("id")
-    private long id;
+    private String id;
 
     @JsonProperty("changes")
     private List<SetChangeDto> setChanges;
@@ -64,14 +64,14 @@ public class SetChangeDto {
         public SetChangeDto build() {
             SetChangeDto setChangeDto = new SetChangeDto();
 
-            setChangeDto.id = requireNonNull(setIdentifier, "Identifier of camera set is required");
+            setChangeDto.id = Long.toString(requireNonNull(setIdentifier, "Identifier of camera set is required"));
             setChangeDto.setChanges = viewChanges;
 
             return setChangeDto;
         }
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 

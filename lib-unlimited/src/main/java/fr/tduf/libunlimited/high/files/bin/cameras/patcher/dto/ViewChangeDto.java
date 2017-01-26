@@ -22,7 +22,7 @@ public class ViewChangeDto {
     private ViewKind cameraViewKind;
 
     @JsonProperty("properties")
-    private Map<ViewProps, Object> viewProps;
+    private EnumMap<ViewProps, String> viewProps;
 
     @Override
     public boolean equals(Object o) {
@@ -51,9 +51,9 @@ public class ViewChangeDto {
 
     public static class ViewChangeDtoBuilder {
         private ViewKind cameraViewKind;
-        private Map<ViewProps, Object> viewProps = new HashMap<>(ViewProps.values().length);
+        private EnumMap<ViewProps, String> viewProps = new EnumMap<>(ViewProps.class);
 
-        public void addProp(ViewProps prop, Object value) {
+        public void addProp(ViewProps prop, String value) {
             this.viewProps.put(prop, value);
         }
 
@@ -75,5 +75,5 @@ public class ViewChangeDto {
         return cameraViewKind;
     }
 
-    public Map<ViewProps, Object> getViewProps() { return viewProps; }
+    public EnumMap<ViewProps, String> getViewProps() { return viewProps; }
 }
