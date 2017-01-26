@@ -20,8 +20,11 @@ import java.util.concurrent.CountDownLatch;
  * </pre>
  *
  * @author Andy Till
+ * @deprecated Will not work on Junit5+. Use NonApp instead!
  *
  */
+@Deprecated
+// FIXME
 public class JavaFXThreadingRule implements TestRule {
 
     /**
