@@ -13,3 +13,7 @@
 .error {
     -fx-text-fill: red;
 }
+
+.verticalButtonBox {
+    -fx-spacing: 5.0;
+}

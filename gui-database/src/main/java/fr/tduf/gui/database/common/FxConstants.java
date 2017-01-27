@@ -23,6 +23,7 @@ public class FxConstants {
     public static final String CSS_CLASS_FIELD_NAME = "fieldName";
     public static final String CSS_CLASS_READONLY_FIELD = "readonlyField";
     public static final String CSS_CLASS_ERROR = "error";
+    public static final String CSS_CLASS_VERTICAL_BUTTON_BOX = "verticalButtonBox";
 
     public static final FileChooser.ExtensionFilter EXTENSION_FILTER_TDUF_PATCH = new FileChooser.ExtensionFilter(DisplayConstants.LABEL_EXTENSION_MINI_JSON, asList("*.mini.json", "*.MINI.JSON"));
     public static final FileChooser.ExtensionFilter EXTENSION_FILTER_TDUMT_PATCH = new FileChooser.ExtensionFilter(DisplayConstants.LABEL_EXTENSION_PCH, asList("*.pch", "*.PCH"));

@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.controllers.helper;
 
 import fr.tduf.gui.database.common.DisplayConstants;
+import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.controllers.MainStageController;
 import fr.tduf.gui.database.domain.ItemViewModel;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
@@ -117,7 +118,8 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
     }
 
     private void addButtonsForLinkedTopic(HBox fieldBox, String targetProfileName, DbDto.Topic targetTopic, TableView.TableViewSelectionModel<ContentEntryDataItem> tableSelectionModel, TopicLinkDto topicLinkObject) {
-        VBox buttonsBox = new VBox(5);
+        VBox buttonsBox = new VBox();
+        buttonsBox.getStyleClass().add(FxConstants.CSS_CLASS_VERTICAL_BUTTON_BOX);
 
         ofNullable(targetProfileName)
                 .ifPresent(profileName -> buildButtonsForLinkedTopic(targetTopic, tableSelectionModel, topicLinkObject, buttonsBox, profileName));

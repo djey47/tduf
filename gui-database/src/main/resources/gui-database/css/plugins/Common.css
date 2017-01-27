@@ -8,3 +8,7 @@
     -fx-font-weight: bold;
 }
 
+.pluginButtonMedium {
+    -fx-pref-width: 80.0;
+}
+

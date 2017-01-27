@@ -43,6 +43,7 @@ import java.util.*;
 
 import static fr.tduf.gui.database.plugins.cameras.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.cameras.common.FxConstants.*;
+import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_BUTTON_MEDIUM;
 import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_ITEM_LABEL;
 import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_PLUGIN_BOX;
 import static fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto.TopicMetadataDto.FIELD_RANK_CAMERA;
@@ -193,18 +194,16 @@ public class CamerasPlugin implements DatabasePlugin {
     }
 
     private VBox createButtonColumn(EventHandler<ActionEvent> onAddSetAction, EventHandler<ActionEvent> onImportSetAction) {
-        // TODO set to common stylesheet
-        VBox buttonColumnBox = new VBox(5.0);
+        VBox buttonColumnBox = new VBox();
+        buttonColumnBox.getStyleClass().add(fr.tduf.gui.database.common.FxConstants.CSS_CLASS_VERTICAL_BUTTON_BOX);
 
         Button addSetButton = new Button(LABEL_ADD_BUTTON);
-        // TODO use stylesheet
-        addSetButton.setPrefWidth(80.0);
+        addSetButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
         ControlHelper.setTooltipText(addSetButton, TOOLTIP_ADD_BUTTON);
         addSetButton.setOnAction(onAddSetAction);
 
         Button importSetButton = new Button(LABEL_IMPORT_SET_BUTTON);
-        // TODO use stylesheet
-        importSetButton.setPrefWidth(80.0);
+        importSetButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
         ControlHelper.setTooltipText(importSetButton, DisplayConstants.TOOLTIP_IMPORT_SET_BUTTON);
         importSetButton.setOnAction(onImportSetAction);
 
