@@ -22,7 +22,7 @@ public class SetChangeDto {
     private String id;
 
     @JsonProperty("changes")
-    private List<SetChangeDto> setChanges;
+    private List<ViewChangeDto> viewChanges;
 
     @Override
     public boolean equals(Object o) {
@@ -51,21 +51,23 @@ public class SetChangeDto {
 
     public static class SetChangeDtoBuilder {
         private long setIdentifier;
-        private List<SetChangeDto> viewChanges = new ArrayList<>();
+        private List<ViewChangeDto> viewChanges = new ArrayList<>();
 
-        public void addChanges(Collection<SetChangeDto> setChanges) {
-            this.viewChanges.addAll(setChanges);
+        public SetChangeDtoBuilder addChanges(Collection<ViewChangeDto> viewChanges) {
+            this.viewChanges.addAll(viewChanges);
+            return this;
         }
 
-        public void withSetIdentifier(long setIdentifier) {
+        public SetChangeDtoBuilder withSetIdentifier(long setIdentifier) {
             this.setIdentifier = setIdentifier;
+            return this;
         }
 
         public SetChangeDto build() {
             SetChangeDto setChangeDto = new SetChangeDto();
 
             setChangeDto.id = Long.toString(requireNonNull(setIdentifier, "Identifier of camera set is required"));
-            setChangeDto.setChanges = viewChanges;
+            setChangeDto.viewChanges = viewChanges;
 
             return setChangeDto;
         }
@@ -75,7 +77,7 @@ public class SetChangeDto {
         return id;
     }
 
-    public List<SetChangeDto> getChanges() {
-        return setChanges;
+    public List<ViewChangeDto> getChanges() {
+        return viewChanges;
     }
 }

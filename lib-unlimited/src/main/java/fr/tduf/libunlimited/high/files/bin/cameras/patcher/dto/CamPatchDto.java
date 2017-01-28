@@ -55,12 +55,14 @@ public class CamPatchDto {
         private List<SetChangeDto> setChanges = new ArrayList<>();
         private String comment;
 
-        public void addChanges(Collection<SetChangeDto> setChanges) {
+        public CamPatchDtoBuilder addChanges(Collection<SetChangeDto> setChanges) {
             this.setChanges.addAll(setChanges);
+            return this;
         }
 
-        public void withComment(String comment) {
+        public CamPatchDtoBuilder withComment(String comment) {
             this.comment = comment;
+            return this;
         }
 
         public CamPatchDto build() {

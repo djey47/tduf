@@ -53,12 +53,19 @@ public class ViewChangeDto {
         private ViewKind cameraViewKind;
         private EnumMap<ViewProps, String> viewProps = new EnumMap<>(ViewProps.class);
 
-        public void addProp(ViewProps prop, String value) {
+        public ViewChangeDtoBuilder addProp(ViewProps prop, String value) {
             this.viewProps.put(prop, value);
+            return this;
         }
 
-        public void forViewKind(ViewKind viewKind) {
+        public ViewChangeDtoBuilder withProps(EnumMap<ViewProps, String> props) {
+            viewProps.putAll(props);
+            return this;
+        }
+
+        public ViewChangeDtoBuilder forViewKind(ViewKind viewKind) {
             this.cameraViewKind = viewKind;
+            return this;
         }
 
         public ViewChangeDto build() {
