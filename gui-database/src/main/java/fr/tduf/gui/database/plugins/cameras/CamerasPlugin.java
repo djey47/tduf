@@ -18,10 +18,7 @@ import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.Property;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -43,9 +40,7 @@ import java.util.*;
 
 import static fr.tduf.gui.database.plugins.cameras.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.cameras.common.FxConstants.*;
-import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_BUTTON_MEDIUM;
-import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_ITEM_LABEL;
-import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_PLUGIN_BOX;
+import static fr.tduf.gui.database.plugins.common.FxConstants.*;
 import static fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto.TopicMetadataDto.FIELD_RANK_CAMERA;
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo.CameraView.fromProps;
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps.TYPE;
@@ -69,6 +64,8 @@ public class CamerasPlugin implements DatabasePlugin {
     private CamerasDialogsHelper dialogsHelper;
 
     private final Property<CamerasParser> camerasParserProperty = new SimpleObjectProperty<>();
+    private ObservableList<CameraInfo> cameraInfos;
+    private ObservableList<CameraInfo.CameraView> cameraViews;
 
     /**
      * Required contextual information:
@@ -145,15 +142,14 @@ public class CamerasPlugin implements DatabasePlugin {
             return hBox;
         }
 
-        // TODO convert to field
-        ObservableList<CameraInfo> cameraItems = FXCollections.observableArrayList(getSortedCameraSets());
-        // TODO sort with sorted method of observable list
-        ComboBox<CameraInfo> cameraSelectorComboBox = new ComboBox<>(cameraItems);
-        VBox mainColumnBox = createMainColumn(context, cameraItems, cameraSelectorComboBox);
+        cameraInfos = FXCollections.observableArrayList(CamerasHelper.fetchAllInformation(camerasParserProperty.getValue()));
+        cameraViews = FXCollections.observableArrayList();
+        ComboBox<CameraInfo> cameraSelectorComboBox = new ComboBox<>(cameraInfos.sorted(comparingLong(CameraInfo::getCameraIdentifier)));
+        VBox mainColumnBox = createMainColumn(context, cameraSelectorComboBox);
 
         StringProperty rawValueProperty = context.getRawValueProperty();
         VBox buttonColumnBox = createButtonColumn(
-                handleAddSetButtonAction(rawValueProperty, cameraSelectorComboBox),
+                handleAddSetButtonAction(rawValueProperty, cameraSelectorComboBox.getSelectionModel()),
                 handleImportSetButtonAction());
 
         ObservableList<Node> mainRowChildren = hBox.getChildren();
@@ -170,20 +166,20 @@ public class CamerasPlugin implements DatabasePlugin {
         return new HashSet<>(singletonList(thisClass.getResource(PATH_RESOURCE_CSS_CAMERAS).toExternalForm()));
     }
 
-    private VBox createMainColumn(EditorContext context, ObservableList<CameraInfo> cameraItems, ComboBox<CameraInfo> cameraSelectorComboBox) {
+    private VBox createMainColumn(EditorContext context, ComboBox<CameraInfo> cameraSelectorComboBox) {
         ObservableList<Map.Entry<ViewProps, ?>> allViewProps = FXCollections.observableArrayList();
 
         cameraSelectorComboBox.getStyleClass().add(CSS_CLASS_CAM_SELECTOR_COMBOBOX);
         cameraSelectorComboBox.setConverter(new CameraInfoToItemConverter(cameraRefHelper));
 
-        ComboBox<CameraInfo.CameraView> viewSelectorComboBox = new ComboBox<>(FXCollections.observableArrayList());
+        ComboBox<CameraInfo.CameraView> viewSelectorComboBox = new ComboBox<>(cameraViews.sorted(comparing(CameraInfo.CameraView::getType)));
         viewSelectorComboBox.getStyleClass().add(CSS_CLASS_VIEW_SELECTOR_COMBOBOX);
         viewSelectorComboBox.setConverter(new CameraViewToItemConverter());
 
         VBox mainColumnBox = new VBox();
         ObservableList<Node> mainColumnChildren = mainColumnBox.getChildren();
 
-        HBox camSelectorBox = createCamSelectorBox(context, cameraItems, cameraSelectorComboBox, viewSelectorComboBox);
+        HBox camSelectorBox = createCamSelectorBox(context, cameraSelectorComboBox, viewSelectorComboBox.valueProperty());
         HBox viewSelectorBox = createViewSelectorBox(viewSelectorComboBox, cameraSelectorComboBox.valueProperty(), allViewProps);
         TableView<Map.Entry<ViewProps, ?>> setPropertyTableView = createPropertiesTableView(context, allViewProps, viewSelectorComboBox.valueProperty());
 
@@ -240,14 +236,14 @@ public class CamerasPlugin implements DatabasePlugin {
         return setPropertyTableView;
     }
 
-    private HBox createCamSelectorBox(EditorContext context, ObservableList<CameraInfo> cameraItems, ComboBox<CameraInfo> cameraSelectorComboBox, ComboBox<CameraInfo.CameraView> viewSelectorComboBox) {
+    private HBox createCamSelectorBox(EditorContext context, ComboBox<CameraInfo> cameraSelectorComboBox, ObjectProperty<CameraInfo.CameraView> currentCameraViewProperty) {
         HBox camSelectorBox = new HBox();
         camSelectorBox.getStyleClass().add(CSS_CLASS_CAM_SELECTOR_BOX);
 
         cameraSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
-                getCameraSelectorChangeListener(context, viewSelectorComboBox.valueProperty(), viewSelectorComboBox.itemsProperty().get()));
+                getCameraSelectorChangeListener(context, currentCameraViewProperty));
         Bindings.bindBidirectional(
-                context.getRawValueProperty(), cameraSelectorComboBox.valueProperty(), new CameraInfoToRawValueConverter(cameraItems));
+                context.getRawValueProperty(), cameraSelectorComboBox.valueProperty(), new CameraInfoToRawValueConverter(cameraInfos));
 
         Label availableCamerasLabel = new Label(LABEL_AVAILABLE_CAMERAS);
         availableCamerasLabel.setLabelFor(cameraSelectorComboBox);
@@ -284,13 +280,13 @@ public class CamerasPlugin implements DatabasePlugin {
         return viewSelectorBox;
     }
 
-    private ChangeListener<CameraInfo> getCameraSelectorChangeListener(EditorContext context, Property<CameraInfo.CameraView> currentCameraViewProperty, ObservableList<CameraInfo.CameraView> allCameraViews) {
+    private ChangeListener<CameraInfo> getCameraSelectorChangeListener(EditorContext context, Property<CameraInfo.CameraView> currentCameraViewProperty) {
         return (ObservableValue<? extends CameraInfo> observable, CameraInfo oldValue, CameraInfo newValue) -> {
             if (Objects.equals(oldValue, newValue)) {
                 return;
             }
 
-            allCameraViews.clear();
+            cameraViews.clear();
 
             CamerasContext camerasContext = context.getCamerasContext();
             if (newValue == null) {
@@ -300,10 +296,10 @@ public class CamerasPlugin implements DatabasePlugin {
                 camerasContext.getErrorProperty().setValue(false);
                 camerasContext.getErrorMessageProperty().setValue("");
 
-                allCameraViews.addAll(getSortedViews(newValue));
+                cameraViews.addAll(CamerasHelper.fetchInformation(newValue.getCameraIdentifier(), camerasParserProperty.getValue()).getViews());
 
-                if (!allCameraViews.isEmpty()) {
-                    currentCameraViewProperty.setValue(allCameraViews.get(0));
+                if (!cameraViews.isEmpty()) {
+                    currentCameraViewProperty.setValue(cameraViews.get(0));
                 }
 
                 context.getChangeDataController().updateContentItem(CAR_PHYSICS_DATA, FIELD_RANK_CAMERA, Long.toString(newValue.getCameraIdentifier()));
@@ -324,18 +320,6 @@ public class CamerasPlugin implements DatabasePlugin {
                         getSortedAndEditableViewProperties(currentCameraSetProperty.getValue().getCameraIdentifier(), newValue.getType()));
             }
         };
-    }
-
-    private List<CameraInfo> getSortedCameraSets() {
-        return CamerasHelper.fetchAllInformation(camerasParserProperty.getValue()).stream()
-                .sorted(comparingLong(CameraInfo::getCameraIdentifier))
-                .collect(toList());
-    }
-
-    private List<CameraInfo.CameraView> getSortedViews(CameraInfo cameraInfo) {
-        return CamerasHelper.fetchInformation(cameraInfo.getCameraIdentifier(), camerasParserProperty.getValue()).getViews().stream()
-                .sorted(comparing(CameraInfo.CameraView::getType))
-                .collect(toList());
     }
 
     private List<Map.Entry<ViewProps, ?>> getSortedAndEditableViewProperties(long cameraIdentifier, ViewKind viewKind) {
@@ -391,7 +375,7 @@ public class CamerasPlugin implements DatabasePlugin {
         return Paths.get(databaseLocation, CamerasHelper.FILE_CAMERAS_BIN);
     }
 
-    private EventHandler<ActionEvent> handleAddSetButtonAction(StringProperty rawValueProperty, ComboBox<CameraInfo> cameraSelectorComboBox) {
+    private EventHandler<ActionEvent> handleAddSetButtonAction(StringProperty rawValueProperty, SingleSelectionModel<CameraInfo> cameraSelectorComboBoxSelectionModel) {
         return event -> {
             Optional<String> input = CommonDialogsHelper.showInputValueDialog(TITLE_ADD_SET, MESSAGE_ADD_SET_IDENTIFIER, null);
             if (!input.isPresent()) {
@@ -406,12 +390,11 @@ public class CamerasPlugin implements DatabasePlugin {
             CamerasHelper.duplicateCameraSet(cameraSetIdentifier, newCameraSetIdentifier, camerasParser);
 
             CameraInfo newCameraInfo = CamerasHelper.fetchInformation(newCameraSetIdentifier, camerasParser);
-            ObservableList<CameraInfo> cameraItems = cameraSelectorComboBox.getItems();
-            if (!cameraItems.contains(newCameraInfo)) {
-                cameraItems.add(newCameraInfo);
+            if (!cameraInfos.contains(newCameraInfo)) {
+                cameraInfos.add(newCameraInfo);
             }
 
-            cameraSelectorComboBox.getSelectionModel().select(newCameraInfo);
+            cameraSelectorComboBoxSelectionModel.select(newCameraInfo);
         };
     }
 
