@@ -10,7 +10,6 @@ import fr.tduf.libunlimited.high.files.db.common.helper.CameraAndIKHelper;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
@@ -21,7 +20,10 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_ITEM_LABEL;
 import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_PLUGIN_BOX;
@@ -30,7 +32,8 @@ import static fr.tduf.gui.database.plugins.iks.common.FxConstants.*;
 import static fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto.TopicMetadataDto.FIELD_RANK_IK;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Collections.singletonList;
-import static java.util.stream.Collectors.toList;
+import static java.util.Comparator.comparing;
+import static javafx.collections.FXCollections.observableArrayList;
 import static javafx.geometry.Orientation.VERTICAL;
 import static javafx.scene.layout.Priority.ALWAYS;
 
@@ -81,12 +84,9 @@ public class IKsPlugin implements DatabasePlugin {
 
     private VBox createMainColumn(EditorContext context) {
         Map<Integer, String> reference = ikRefHelper.getIKReference();
-        List<Map.Entry<Integer, String>> sortedEntries = reference.entrySet().stream()
-                .sorted(Comparator.comparing(Map.Entry::getValue))
-                .collect(toList());
-        ObservableList<Map.Entry<Integer, String>> ikItems = FXCollections.observableArrayList(sortedEntries);
 
-        ComboBox<Map.Entry<Integer, String>> ikSelectorComboBox = new ComboBox<>(ikItems);
+        ComboBox<Map.Entry<Integer, String>> ikSelectorComboBox = new ComboBox<>(
+                observableArrayList(reference.entrySet()).sorted(comparing(Map.Entry::getValue)));
         ikSelectorComboBox.getStyleClass().add(CSS_CLASS_IK_SELECTOR_COMBOBOX);
         ikSelectorComboBox.setConverter(new IKReferenceToItemConverter());
 
