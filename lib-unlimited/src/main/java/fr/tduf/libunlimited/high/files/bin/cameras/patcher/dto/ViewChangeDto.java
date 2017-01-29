@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto;
 
+import fr.tduf.libunlimited.high.files.common.patcher.helper.PlaceholderResolver;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -8,6 +9,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.*;
 
+import static fr.tduf.libunlimited.high.files.common.patcher.helper.PlaceholderResolver.FORMAT_PLACEHOLDER;
 import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
@@ -55,6 +57,11 @@ public class ViewChangeDto {
 
         public ViewChangeDtoBuilder addProp(ViewProps prop, String value) {
             this.viewProps.put(prop, value);
+            return this;
+        }
+
+        public ViewChangeDtoBuilder addPropForPlaceholder(ViewProps prop, String placeholderValue) {
+            this.viewProps.put(prop, String.format(FORMAT_PLACEHOLDER, placeholderValue));
             return this;
         }
 
