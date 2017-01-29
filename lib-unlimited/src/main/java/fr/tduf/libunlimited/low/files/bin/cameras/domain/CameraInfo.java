@@ -105,7 +105,7 @@ public class CameraInfo {
         private ViewKind type;
         private long sourceCameraIdentifier;
         private ViewKind sourceType;
-        private EnumMap<ViewProps, ?> settings;
+        private EnumMap<ViewProps, Object> settings;
 
         private CameraView() {}
 
@@ -119,10 +119,26 @@ public class CameraInfo {
             return cameraView;
         }
 
-        public static CameraView fromProps(EnumMap<ViewProps, ?> viewProps) {
+        public static CameraView fromProps(EnumMap<ViewProps, Object> viewProps) {
             CameraView cameraView = new CameraView();
 
             cameraView.type = (ViewKind) viewProps.get(ViewProps.TYPE);
+            cameraView.settings = viewProps;
+
+            return cameraView;
+        }
+
+        public static CameraView fromPatchProps(EnumMap<ViewProps, String> patchViewProps) {
+            CameraView cameraView = new CameraView();
+
+            cameraView.type = Enum.valueOf(ViewKind.class, patchViewProps.get(ViewProps.TYPE));
+
+            // TODO Refactor this crap...
+            EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
+            viewProps.put(ViewProps.TYPE, cameraView.type);
+            patchViewProps.entrySet().stream()
+                    .filter(entry -> ViewProps.TYPE != entry.getKey())
+                    .forEach(entry -> viewProps.put(entry.getKey(), Long.valueOf(entry.getValue())));
             cameraView.settings = viewProps;
 
             return cameraView;
@@ -157,7 +173,7 @@ public class CameraInfo {
             return sourceType;
         }
 
-        public EnumMap<ViewProps, ?> getSettings() {
+        public EnumMap<ViewProps, Object> getSettings() {
             return settings;
         }
 

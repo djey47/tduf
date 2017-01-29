@@ -114,7 +114,7 @@ public class CamerasParser extends GenericParser<String> {
     /**
      * @return all handled view properties
      */
-    public EnumMap<ViewProps, ?> getViewProps(DataStore viewStore) {
+    public EnumMap<ViewProps, Object> getViewProps(DataStore viewStore) {
         viewStore.getRawValue(ViewProps.TYPE.getStoreFieldName())
                 .orElseThrow(() -> new IllegalArgumentException("No view data store provided"));
 
