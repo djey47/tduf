@@ -7,6 +7,9 @@ import fr.tduf.libunlimited.high.files.common.patcher.helper.PlaceholderResolver
 import static java.util.Objects.requireNonNull;
 
 
+/**
+ * Component to handle placeholder values in camera patch instructions.
+ */
 public class CamPlaceholderResolver extends PlaceholderResolver {
 
     private final CamPatchDto patchObject;
@@ -29,16 +32,26 @@ public class CamPlaceholderResolver extends PlaceholderResolver {
 
     @Override
     public void resolveAllPlaceholders() {
-        resolveSetIdentifierPlaceholders();
+        resolveAllSetIdentifierPlaceholders();
 
-        resolvePropsValuePlaceholder();
+        resolveAllPropsValuesPlaceholders();
     }
 
-    private void resolvePropsValuePlaceholder() {
-
+    private void resolveAllSetIdentifierPlaceholders() {
+        patchObject.getChanges()
+                .forEach(changeObject -> {
+                    String effectiveIdentifier = resolveSimplePlaceholder(changeObject.getId());
+                    changeObject.overrideId(effectiveIdentifier);
+                });
     }
 
-    private void resolveSetIdentifierPlaceholders() {
-
+    private void resolveAllPropsValuesPlaceholders() {
+        patchObject.getChanges().stream()
+                .flatMap(setChangeObject -> setChangeObject.getChanges().stream())
+                .flatMap(viewChangeDto -> viewChangeDto.getViewProps().entrySet().stream())
+                .forEach(propEntry -> {
+                    String effectiveValue = resolveSimplePlaceholder(propEntry.getValue());
+                    propEntry.setValue(effectiveValue);
+                });
     }
 }
