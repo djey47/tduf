@@ -9,6 +9,7 @@ import fr.tduf.libunlimited.high.files.common.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
 import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
+import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 
 import java.util.List;
 
@@ -58,13 +59,20 @@ public class CamPatcher {
     }
 
     private void applyChange(SetChangeDto setChangeObject) {
-        // TODO if it does not exist, clone set first (which one?)
+        long setIdentifier = Long.valueOf(setChangeObject.getId());
+        if (!camerasParser.getCameraViews().containsKey(setIdentifier)) {
+            // TODO test if reference set exists
+            long referenceSetIdentifier = 10000L;
+            CamerasHelper.duplicateCameraSet(referenceSetIdentifier, setIdentifier, camerasParser);
+        }
+
+
         List<CameraInfo.CameraView> allViews = setChangeObject.getChanges().stream()
                 .map(viewChange -> fromPatchProps(viewChange.getViewProps()))
                 .collect(toList());
 
         CameraInfo updateConf = CameraInfo.builder()
-                .forIdentifierAsString(setChangeObject.getId())
+                .forIdentifier(setIdentifier)
                 .withViews(allViews)
                 .build();
 

@@ -83,7 +83,7 @@ class CamPatcherTest {
     }
 
     @Test
-    // TODO implement
+    // TODO check assertions
     void apply_whenCameraSetDoesNotExist_shouldCloneReferenceSet() {
         // given
         CamPatcher camPatcher = new CamPatcher(camerasParserMock);
@@ -99,7 +99,7 @@ class CamPatcherTest {
 
         DataStore dataStoreMock = mock(DataStore.class);
         Map<Long, List<DataStore>> storeMap = new HashMap<>(1);
-        storeMap.put(125L, singletonList(dataStoreMock));
+        storeMap.put(1250L, singletonList(dataStoreMock));
 
         when(camerasParserMock.getCameraViews()).thenReturn(storeMap);
         when(camerasParserMock.getViewProps(dataStoreMock)).thenReturn(new EnumMap<>(ViewProps.class));
