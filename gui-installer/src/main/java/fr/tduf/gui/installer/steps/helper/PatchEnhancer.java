@@ -8,7 +8,7 @@ import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.domain.*;
 import fr.tduf.gui.installer.domain.exceptions.InternalStepException;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PlaceholderConstants;
 
@@ -54,7 +54,7 @@ public class PatchEnhancer {
      * Put additional instructions to patch template.
      */
     public void enhancePatchObject() {
-        PatchProperties patchProperties = requireNonNull(databaseContext.getPatchProperties(), "Patch properties are required.");
+        DatabasePatchProperties patchProperties = requireNonNull(databaseContext.getPatchProperties(), "Patch properties are required.");
 
         enhancePatchProperties(patchProperties);
 
@@ -75,7 +75,7 @@ public class PatchEnhancer {
                 });
     }
 
-    void enhancePatchProperties(PatchProperties patchProperties) {
+    void enhancePatchProperties(DatabasePatchProperties patchProperties) {
         VehicleSlot effectiveSlot = databaseContext.getUserSelection().getVehicleSlot()
                 .orElseGet(() -> {
                     final String forcedSlotReference = patchProperties.getVehicleSlotReference()
@@ -96,7 +96,7 @@ public class PatchEnhancer {
         }
     }
 
-    void enhancePatchObjectWithPaintJobs(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
+    void enhancePatchObjectWithPaintJobs(VehicleSlot vehicleSlot, DatabasePatchProperties patchProperties) {
         Log.info(THIS_CLASS_NAME, "->Adding paint jobs properties and changes to initial patch");
 
         if (vehicleSlot.getPaintJobs().isEmpty()) {
@@ -110,7 +110,7 @@ public class PatchEnhancer {
         enhancePatchObjectWithInteriors(availableInteriorRefs, patchProperties);
     }
 
-    void enhancePatchObjectWithRims(VehicleSlot vehicleSlot, PatchProperties patchProperties) {
+    void enhancePatchObjectWithRims(VehicleSlot vehicleSlot, DatabasePatchProperties patchProperties) {
         Log.info(THIS_CLASS_NAME, "->Adding rim properties and changes to initial patch");
 
         final List<RimSlot> rims = vehicleSlot.getAllRimCandidatesSorted().isEmpty() ?
@@ -128,7 +128,7 @@ public class PatchEnhancer {
     void enhancePatchObjectWithLocationChange(String vehicleSlotReference) {
         Log.info(THIS_CLASS_NAME, "->Adding dealer slot change to initial patch");
 
-        PatchProperties patchProperties = databaseContext.getPatchProperties();
+        DatabasePatchProperties patchProperties = databaseContext.getPatchProperties();
         int effectiveFieldRank = patchProperties.getDealerSlot()
                 .orElseThrow(() -> new InternalStepException(UPDATE_DATABASE, "Selected dealer slot index not found in properties"))
                 + DatabaseConstants.DELTA_RANK_DEALER_SLOTS;
@@ -158,7 +158,7 @@ public class PatchEnhancer {
         databaseContext.getPatchObject().getChanges().add(changeObject);
     }
 
-    private void createPatchPropertiesForVehicleSlot(VehicleSlot effectiveSlot, PatchProperties patchProperties) {
+    private void createPatchPropertiesForVehicleSlot(VehicleSlot effectiveSlot, DatabasePatchProperties patchProperties) {
         Log.info(THIS_CLASS_NAME, "->Resolving missing properties with slot information");
 
         String slotReference = effectiveSlot.getRef();
@@ -180,7 +180,7 @@ public class PatchEnhancer {
         patchProperties.setResourceBankNameIfNotExists(selectedResourceBankName);
     }
 
-    private void createPatchPropertiesForDealerSlot(UserSelection userSelection, PatchProperties patchProperties) {
+    private void createPatchPropertiesForDealerSlot(UserSelection userSelection, DatabasePatchProperties patchProperties) {
         Log.info(THIS_CLASS_NAME, "->Resolving missing properties with dealer slot information");
 
         patchProperties.setDealerReferenceIfNotExists(userSelection.getDealer()
@@ -189,7 +189,7 @@ public class PatchEnhancer {
         patchProperties.setDealerSlotIfNotExists(userSelection.getDealerSlotRank());
     }
 
-    private void createPatchPropertiesForBrand(String brand, PatchProperties patchProperties) {
+    private void createPatchPropertiesForBrand(String brand, DatabasePatchProperties patchProperties) {
         Log.info(THIS_CLASS_NAME, "->Resolving missing properties with brand information");
 
         String brandReference = brandHelper.getBrandFromIdentifierOrName(brand)
@@ -199,7 +199,7 @@ public class PatchEnhancer {
         patchProperties.setBrandReferenceIfNotExists(brandReference);
     }
 
-    private void enhancePatchObjectWithExteriors(VehicleSlot vehicleSlot, List<String> interiorPatternRefs, PatchProperties patchProperties) {
+    private void enhancePatchObjectWithExteriors(VehicleSlot vehicleSlot, List<String> interiorPatternRefs, DatabasePatchProperties patchProperties) {
         // TODO handle pj at index 0??
         AtomicInteger exteriorIndex = new AtomicInteger(1);
         List<DbPatchDto.DbChangeDto> changeObjectsForPaintJobs = vehicleSlot.getPaintJobs().stream()
@@ -209,7 +209,7 @@ public class PatchEnhancer {
         databaseContext.getPatchObject().getChanges().addAll(changeObjectsForPaintJobs);
     }
 
-    private void enhancePatchObjectWithInteriors(List<String> interiorPatternRefs, PatchProperties patchProperties) {
+    private void enhancePatchObjectWithInteriors(List<String> interiorPatternRefs, DatabasePatchProperties patchProperties) {
         // TODO handle int at index 0??
         AtomicInteger interiorIndex = new AtomicInteger(1);
         List<DbPatchDto.DbChangeDto> changeObjectsForInteriors = interiorPatternRefs.stream()
@@ -220,7 +220,7 @@ public class PatchEnhancer {
         databaseContext.getPatchObject().getChanges().addAll(changeObjectsForInteriors);
     }
 
-    private Stream<DbPatchDto.DbChangeDto> createChangeObjectsAndPropertiesForExterior(PaintJob paintJob, int exteriorRank, List<String> interiorPatternRefs, PatchProperties patchProperties) {
+    private Stream<DbPatchDto.DbChangeDto> createChangeObjectsAndPropertiesForExterior(PaintJob paintJob, int exteriorRank, List<String> interiorPatternRefs, DatabasePatchProperties patchProperties) {
         if (!patchProperties.getExteriorColorName(exteriorRank).isPresent()) {
             return Stream.empty();
         }
@@ -266,7 +266,7 @@ public class PatchEnhancer {
         return Stream.of(entryUpdateChange, resourceUpdateChange);
     }
 
-    private Stream<DbPatchDto.DbChangeDto> createChangeObjectAndPropertiesForInterior(String intRef, int interiorRank, PatchProperties patchProperties) {
+    private Stream<DbPatchDto.DbChangeDto> createChangeObjectAndPropertiesForInterior(String intRef, int interiorRank, DatabasePatchProperties patchProperties) {
         if (!patchProperties.getInteriorMainColorId(interiorRank).isPresent()) {
             return Stream.empty();
         }
@@ -289,7 +289,7 @@ public class PatchEnhancer {
                 .build());
     }
 
-    private Stream<DbPatchDto.DbChangeDto> createChangeObjectsAndPropertiesForRims(VehicleSlot vehicleSlot, RimSlot rimSlot, int rimRank, PatchProperties patchProperties) {
+    private Stream<DbPatchDto.DbChangeDto> createChangeObjectsAndPropertiesForRims(VehicleSlot vehicleSlot, RimSlot rimSlot, int rimRank, DatabasePatchProperties patchProperties) {
         if (!patchProperties.getRimName(rimRank).isPresent()) {
             return Stream.empty();
         }
@@ -354,17 +354,17 @@ public class PatchEnhancer {
         return Stream.of(associationEntryUpdate, slotEntryUpdate, slotNameResourceUpdate, slotFrontFileNameResourceUpdate, slotRearNameResourceUpdate);
     }
 
-    private void createPatchPropertiesForPaintJobAtRank(PaintJob paintJob, int paintJobRank, PatchProperties patchProperties) {
+    private void createPatchPropertiesForPaintJobAtRank(PaintJob paintJob, int paintJobRank, DatabasePatchProperties patchProperties) {
         String nameRef = paintJob.getName().getRef();
 
         patchProperties.setExteriorColorNameResourceIfNotExists(nameRef, paintJobRank);
     }
 
-    private void createPatchPropertiesForInteriorAtRank(String intRef, int interiorRank, PatchProperties patchProperties) {
+    private void createPatchPropertiesForInteriorAtRank(String intRef, int interiorRank, DatabasePatchProperties patchProperties) {
         patchProperties.setInteriorReferenceIfNotExists(intRef, interiorRank);
     }
 
-    private void createPatchPropertiesForRimSetAtRank(VehicleSlot vehicleSlot, RimSlot rimSlot, int rank, PatchProperties patchProperties) {
+    private void createPatchPropertiesForRimSetAtRank(VehicleSlot vehicleSlot, RimSlot rimSlot, int rank, DatabasePatchProperties patchProperties) {
         String selectedRimReference = rimSlot.getRef();
         String selectedResourceRimBrandReference = rimSlot.getParentDirectoryName().getRef();
         String selectedFrontRimBank = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, FRONT_RIM, rimSlot.getRank(), false);
@@ -385,7 +385,7 @@ public class PatchEnhancer {
         patchProperties.setResourceRearRimBankIfNotExists(selectedResourceRearRimBankName, rank);
     }
 
-    static List<String> getEffectiveInteriorReferences(List<String> interiorRefs, PatchProperties patchProperties) {
+    static List<String> getEffectiveInteriorReferences(List<String> interiorRefs, DatabasePatchProperties patchProperties) {
         AtomicInteger interiorRank = new AtomicInteger(1);
         List<String> interiorPatternRefs = interiorRefs.stream()
                 .map(ref -> {

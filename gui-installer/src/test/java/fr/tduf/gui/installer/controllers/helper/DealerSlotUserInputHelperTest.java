@@ -2,7 +2,7 @@ package fr.tduf.gui.installer.controllers.helper;
 
 
 import fr.tduf.gui.installer.domain.DatabaseContext;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import org.junit.Test;
 
@@ -15,7 +15,7 @@ public class DealerSlotUserInputHelperTest {
     @Test
     public void selectAndDefineDealerSlot_whenForcedDealerSlot_shouldNotSelectIt() throws Exception {
         // GIVEN
-        PatchProperties patchProperties = new PatchProperties();
+        DatabasePatchProperties patchProperties = new DatabasePatchProperties();
         patchProperties.setDealerReferenceIfNotExists(DEALERREF);
         patchProperties.setDealerSlotIfNotExists(1);
         DatabaseContext databaseContext = new DatabaseContext(new ArrayList<>(0), "");

@@ -7,7 +7,7 @@ import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
@@ -162,7 +162,7 @@ public class DatabaseToolIntegTest {
 
 
         // THEN: effective property file must exist with right contents
-        final PatchProperties effectiveProperties = new PatchProperties();
+        final DatabasePatchProperties effectiveProperties = new DatabasePatchProperties();
         final File handle = new File(effectivePatchPropertyFile);
         assertThat(handle).exists();
         effectiveProperties.load(new FileInputStream(handle));

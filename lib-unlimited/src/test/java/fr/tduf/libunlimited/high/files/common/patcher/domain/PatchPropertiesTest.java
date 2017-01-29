@@ -1,4 +1,4 @@
-package fr.tduf.libunlimited.high.files.db.patcher.domain;
+package fr.tduf.libunlimited.high.files.common.patcher.domain;
 
 import org.junit.Test;
 

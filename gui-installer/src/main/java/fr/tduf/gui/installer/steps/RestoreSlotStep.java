@@ -11,7 +11,7 @@ import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PlaceholderConstants;
 
@@ -51,7 +51,7 @@ class RestoreSlotStep extends GenericStep {
                 DbPatchDto.class,
                 retrievePatchResourceName(slotReference));
 
-        PatchProperties patchProperties = createPatchProperties(slotReference, carIdentifier);
+        DatabasePatchProperties patchProperties = createPatchProperties(slotReference, carIdentifier);
 
         Log.info(THIS_CLASS_NAME, "->Restoring TDUCP slot...");
         if(databasePatcher == null) {
@@ -94,8 +94,8 @@ class RestoreSlotStep extends GenericStep {
         return carSlotFlag ? InstallerConstants.RESOURCE_NAME_TDUCP_CAR_PATCH : InstallerConstants.RESOURCE_NAME_TDUCP_BIKE_PATCH;
     }
 
-    private static PatchProperties createPatchProperties(String slotReference, String carIdentifier) {
-        PatchProperties patchProperties = new PatchProperties();
+    private static DatabasePatchProperties createPatchProperties(String slotReference, String carIdentifier) {
+        DatabasePatchProperties patchProperties = new DatabasePatchProperties();
 
         patchProperties.setVehicleSlotReferenceIfNotExists(slotReference);
         patchProperties.setCarIdentifierIfNotExists(carIdentifier);
@@ -125,7 +125,7 @@ class RestoreSlotStep extends GenericStep {
         return patchProperties;
     }
 
-    private static void enhancePropertiesForInteriors(String carIdentifier, PatchProperties patchProperties) {
+    private static void enhancePropertiesForInteriors(String carIdentifier, DatabasePatchProperties patchProperties) {
         IntStream.rangeClosed(0, 9)
                 .forEach(intRank -> {
                     patchProperties.setInteriorReferenceIfNotExists(
@@ -139,7 +139,7 @@ class RestoreSlotStep extends GenericStep {
                 });
     }
 
-    private static void enhancePropertiesForPaintJobs(String carIdentifier, PatchProperties patchProperties) {
+    private static void enhancePropertiesForPaintJobs(String carIdentifier, DatabasePatchProperties patchProperties) {
         IntStream.rangeClosed(0, 9)
                 .forEach(pjRank -> {
                     patchProperties.setExteriorMainColorIdIfNotExists(
@@ -155,7 +155,7 @@ class RestoreSlotStep extends GenericStep {
                 });
     }
 
-    private static void enhancePropertiesForRims(String carIdentifier, PatchProperties patchProperties) {
+    private static void enhancePropertiesForRims(String carIdentifier, DatabasePatchProperties patchProperties) {
         IntStream.rangeClosed(0, 9)
                 .forEach(rimRank -> {
                     patchProperties.setRimsSlotReferenceIfNotExists(

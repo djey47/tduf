@@ -1,6 +1,6 @@
 package fr.tduf.libunlimited.high.files.db.patcher;
 
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
@@ -63,7 +63,7 @@ class DatabasePatcher_focusOnPlaceholdersTest {
                 .withEntryValues(asList("{MYREF}", "103"))
                 .build();
         DbPatchDto patchObject = createPatchObjectWithSingleChange(changeObject);
-        PatchProperties patchProperties = new PatchProperties();
+        DatabasePatchProperties patchProperties = new DatabasePatchProperties();
         patchProperties.register(placeholderName, "000000");
 
         // WHEN
@@ -89,7 +89,7 @@ class DatabasePatcher_focusOnPlaceholdersTest {
                 .withPartialEntryValues(singletonList(fromCouple(1, "{MYNEWREF}")))
                 .build();
         DbPatchDto patchObject = createPatchObjectWithSingleChange(changeObject);
-        PatchProperties patchProperties = new PatchProperties();
+        DatabasePatchProperties patchProperties = new DatabasePatchProperties();
         patchProperties.register(placeholderName1, "000000");
         patchProperties.register(placeholderName2, "111111");
 
@@ -128,7 +128,7 @@ class DatabasePatcher_focusOnPlaceholdersTest {
 
 
         // WHEN
-        final PatchProperties actualProperties = databasePatcher.applyWithProperties(patchObject, new PatchProperties());
+        final DatabasePatchProperties actualProperties = databasePatcher.applyWithProperties(patchObject, new DatabasePatchProperties());
 
 
         // THEN
@@ -152,7 +152,7 @@ class DatabasePatcher_focusOnPlaceholdersTest {
                 .asReferencePlaceholder(placeholderName)
                 .build();
         DbPatchDto patchObject = createPatchObjectWithSingleChange(changeObject);
-        PatchProperties patchProperties = new PatchProperties();
+        DatabasePatchProperties patchProperties = new DatabasePatchProperties();
         patchProperties.register(placeholderName, "000000");
 
         databaseObject.getData().addEntryWithItems(asList(
@@ -186,7 +186,7 @@ class DatabasePatcher_focusOnPlaceholdersTest {
                 .withValuePlaceholder(placeholderName2)
                 .build();
         DbPatchDto patchObject = createPatchObjectWithSingleChange(changeObject);
-        PatchProperties patchProperties = new PatchProperties();
+        DatabasePatchProperties patchProperties = new DatabasePatchProperties();
         patchProperties.register(placeholderName1, "000000");
         patchProperties.register(placeholderName2, "Text");
 
@@ -213,12 +213,12 @@ class DatabasePatcher_focusOnPlaceholdersTest {
                 .withValuePlaceholder(placeholderName2)
                 .build();
         DbPatchDto patchObject = createPatchObjectWithSingleChange(changeObject);
-        PatchProperties patchProperties = new PatchProperties();
+        DatabasePatchProperties patchProperties = new DatabasePatchProperties();
         patchProperties.register(placeholderName2, "Text");
 
 
         // WHEN
-        final PatchProperties actualProperties = databasePatcher.applyWithProperties(patchObject, patchProperties);
+        final DatabasePatchProperties actualProperties = databasePatcher.applyWithProperties(patchObject, patchProperties);
 
 
         // THEN
@@ -240,7 +240,7 @@ class DatabasePatcher_focusOnPlaceholdersTest {
                 .asReferencePlaceholder(placeholderName)
                 .build();
         DbPatchDto patchObject = createPatchObjectWithSingleChange(changeObject);
-        PatchProperties patchProperties = new PatchProperties();
+        DatabasePatchProperties patchProperties = new DatabasePatchProperties();
         patchProperties.register(placeholderName, "000000");
 
         databaseObject.getResource()

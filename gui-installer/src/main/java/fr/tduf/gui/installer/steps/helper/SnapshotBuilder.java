@@ -9,7 +9,7 @@ import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
@@ -55,7 +55,7 @@ public class SnapshotBuilder {
      * @param backupDirectory   : directory where to create snapshot file. Must exist.
      */
     public void take(String backupDirectory) throws IOException {
-        final PatchProperties effectiveProperties = requireNonNull(databaseContext.getPatchProperties(), "Patch properties are required.");
+        final DatabasePatchProperties effectiveProperties = requireNonNull(databaseContext.getPatchProperties(), "Patch properties are required.");
         String vehicleSlotRef = effectiveProperties.getVehicleSlotReference()
                 .orElseThrow(() -> new IllegalStateException("Vehicle slot reference not found in properties"));
 
@@ -73,7 +73,7 @@ public class SnapshotBuilder {
         writeSnapshotPatch(Paths.get(backupDirectory), snapshotPatch);
     }
 
-    private List<DbPatchDto.DbChangeDto> generateAdditionalOperationsFromProperties(PatchProperties effectiveProperties) {
+    private List<DbPatchDto.DbChangeDto> generateAdditionalOperationsFromProperties(DatabasePatchProperties effectiveProperties) {
         List<DbPatchDto.DbChangeDto> additionalOps = new ArrayList<>();
         addDealerLocationOperationsIfNecessary(effectiveProperties, additionalOps);
         return additionalOps;
@@ -104,7 +104,7 @@ public class SnapshotBuilder {
         }
     }
 
-    private void addDealerLocationOperationsIfNecessary(PatchProperties effectiveProperties, List<DbPatchDto.DbChangeDto> additionalOps) {
+    private void addDealerLocationOperationsIfNecessary(DatabasePatchProperties effectiveProperties, List<DbPatchDto.DbChangeDto> additionalOps) {
         effectiveProperties.getDealerReference()
                 .ifPresent(dealerRef -> {
                     final int slotRank = DatabaseConstants.FIELD_RANK_DEALER_SLOT_1

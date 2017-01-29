@@ -8,7 +8,7 @@ import fr.tduf.gui.installer.domain.exceptions.StepException;
 import fr.tduf.libtesting.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.GenuineCamGateway;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
 import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
@@ -67,7 +67,7 @@ class AdjustCameraStepTest {
         Files.write(tduDatabasePath.resolve("cameras.bin"), camBytes);
 
         databaseContext = new DatabaseContext(new ArrayList<>(0), "");
-        databaseContext.setPatch(DbPatchDto.builder().build(), new PatchProperties());
+        databaseContext.setPatch(DbPatchDto.builder().build(), new DatabasePatchProperties());
     }
 
     @BeforeEach

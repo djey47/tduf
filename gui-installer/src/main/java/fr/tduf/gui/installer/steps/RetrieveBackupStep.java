@@ -4,7 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.domain.exceptions.InternalStepException;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PatchPropertiesReadWriteHelper;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -57,7 +57,7 @@ class RetrieveBackupStep extends GenericStep {
 
         DbPatchDto patchObject = new ObjectMapper().readValue(snapshotPatchFilePath.toFile(), DbPatchDto.class);
 
-        PatchProperties patchProperties = PatchPropertiesReadWriteHelper.readPatchProperties(effectivePatchFilePath.toFile());
+        DatabasePatchProperties patchProperties = PatchPropertiesReadWriteHelper.readPatchProperties(effectivePatchFilePath.toFile());
         if (patchProperties.isEmpty()) {
             throw new IOException(DisplayConstants.MESSAGE_INVALID_PROPERTIES);
         }

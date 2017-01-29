@@ -1,9 +1,11 @@
 package fr.tduf.libunlimited.high.files.db.patcher.helper;
 
+import fr.tduf.libunlimited.high.files.common.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.common.patcher.helper.PlaceholderResolver;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
@@ -27,17 +29,15 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Component to handle placeholder values in patch instructions.
  */
-public class PlaceholderResolver {
+public class DatabasePlaceholderResolver extends PlaceholderResolver{
 
-    private static final Pattern PATTERN_PLACEHOLDER = Pattern.compile("\\{(.+)}");                         // e.g {FOO}
     private static final Pattern PATTERN_PLACEHOLDER_PSEUDO_REF = Pattern.compile("\\{(.+)}\\|\\{(.+)}");   // e.g {FOO}|{BAR}
 
     private final DbPatchDto patchObject;
-    private final PatchProperties patchProperties;
     private final BulkDatabaseMiner databaseMiner;
     private final Set<String> generatedIdentifiers = new HashSet<>();
 
-    private PlaceholderResolver(DbPatchDto patchObject, PatchProperties patchProperties, BulkDatabaseMiner databaseMiner) {
+    private DatabasePlaceholderResolver(DbPatchDto patchObject, DatabasePatchProperties patchProperties, BulkDatabaseMiner databaseMiner) {
         this.patchObject = patchObject;
         this.patchProperties = patchProperties;
         this.databaseMiner = databaseMiner;
@@ -49,8 +49,8 @@ public class PlaceholderResolver {
      * @param databaseMiner       : miner to perform operations on current database
      * @return resolver instance.
      */
-    public static PlaceholderResolver load(DbPatchDto patchObject, PatchProperties effectiveProperties, BulkDatabaseMiner databaseMiner) {
-        return new PlaceholderResolver(
+    public static DatabasePlaceholderResolver load(DbPatchDto patchObject, DatabasePatchProperties effectiveProperties, BulkDatabaseMiner databaseMiner) {
+        return new DatabasePlaceholderResolver(
                 requireNonNull(patchObject, "Patch contents are required."),
                 requireNonNull(effectiveProperties, "Patch properties are required."),
                 requireNonNull(databaseMiner, "Database miner is required."));

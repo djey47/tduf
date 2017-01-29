@@ -5,7 +5,7 @@ import fr.tduf.gui.installer.common.helper.InstallerTestsHelper;
 import fr.tduf.gui.installer.domain.*;
 import fr.tduf.gui.installer.domain.exceptions.StepException;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +51,7 @@ public class UpdateDatabaseStepTest {
     public void setUp() throws IOException, URISyntaxException {
         Log.set(Log.LEVEL_DEBUG);
 
-        PatchProperties patchProperties = new PatchProperties();
+        DatabasePatchProperties patchProperties = new DatabasePatchProperties();
         patchProperties.setVehicleSlotReferenceIfNotExists(SLOT_REFERENCE);
         patchProperties.setBrandReferenceIfNotExists(BRAND_REFERENCE);
         patchProperties.setInteriorMainColorIdIfNotExists("", 1);

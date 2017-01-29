@@ -1,7 +1,7 @@
 package fr.tduf.libunlimited.high.files.db.patcher.helper;
 
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PlaceholderResolverTest {
+public class DatabasePlaceholderResolverTest {
 
     @Mock
     private BulkDatabaseMiner minerMock;
@@ -58,19 +58,19 @@ public class PlaceholderResolverTest {
     public void resolveValuePlaceholder_whenNoPlaceholder_shouldReturnInitialValue() {
         // GIVEN-WHEN-THEN
         assertThat(
-                PlaceholderResolver.resolveValuePlaceholder("FOO", new PatchProperties(), null)
+                DatabasePlaceholderResolver.resolveValuePlaceholder("FOO", new DatabasePatchProperties(), null)
         ).isEqualTo("FOO");
     }
 
     @Test
     public void resolveValuePlaceholder_whenPlaceholder_withProperty_shouldReturnPropertyValue() {
         // GIVEN
-        final PatchProperties patchProperties = new PatchProperties();
+        final DatabasePatchProperties patchProperties = new DatabasePatchProperties();
         patchProperties.register("FOO", "1");
 
         // WHEN-THEN
         assertThat(
-                PlaceholderResolver.resolveValuePlaceholder("{FOO}", patchProperties, null)
+                DatabasePlaceholderResolver.resolveValuePlaceholder("{FOO}", patchProperties, null)
         ).isEqualTo("1");
     }
 
@@ -78,7 +78,7 @@ public class PlaceholderResolverTest {
     public void resolveValuePlaceholder_whenPlaceholder_withoutProperty_shouldThrowException() {
         // GIVEN-WHEN-THEN
         assertThat(
-                PlaceholderResolver.resolveValuePlaceholder("{FOO}", new PatchProperties(), null)
+                DatabasePlaceholderResolver.resolveValuePlaceholder("{FOO}", new DatabasePatchProperties(), null)
         ).isEqualTo("1");
     }
 
@@ -88,7 +88,7 @@ public class PlaceholderResolverTest {
         when(minerMock.getDatabaseTopic(CAR_PHYSICS_DATA)).thenReturn(Optional.of(databaseObject));
 
         // WHEN
-        final String actual = PlaceholderResolver.resolveValuePlaceholder("{CARID}", new PatchProperties(), minerMock);
+        final String actual = DatabasePlaceholderResolver.resolveValuePlaceholder("{CARID}", new DatabasePatchProperties(), minerMock);
 
         // THEN
         int intValue = Integer.valueOf(actual);
@@ -99,44 +99,44 @@ public class PlaceholderResolverTest {
     public void resolveContentsReferencePlaceholder_whenNoPlaceholder_shouldReturnInitialValue() {
         // GIVEN-WHEN-THEN
         assertThat(
-                PlaceholderResolver.resolveReferencePlaceholder(true, "FOO", new PatchProperties(), databaseObject, new HashSet<>())
+                DatabasePlaceholderResolver.resolveReferencePlaceholder(true, "FOO", new DatabasePatchProperties(), databaseObject, new HashSet<>())
         ).isEqualTo("FOO");
     }
 
     @Test
     public void resolveContentsReferencePlaceholder_whenPlaceholder_withProperty_shouldReturnPropertyValue() {
         // GIVEN
-        final PatchProperties patchProperties = new PatchProperties();
+        final DatabasePatchProperties patchProperties = new DatabasePatchProperties();
         patchProperties.register("FOO", "1");
 
         // WHEN-THEN
         assertThat(
-                PlaceholderResolver.resolveReferencePlaceholder(true, "{FOO}", patchProperties, databaseObject, new HashSet<>())
+                DatabasePlaceholderResolver.resolveReferencePlaceholder(true, "{FOO}", patchProperties, databaseObject, new HashSet<>())
         ).isEqualTo("1");
     }
 
     @Test
     public void resolveContentsReferencePlaceholder_whenPlaceholder_andPseudoRef_withProperties_shouldReturnPropertyValue() {
         // GIVEN
-        final PatchProperties patchProperties = new PatchProperties();
+        final DatabasePatchProperties patchProperties = new DatabasePatchProperties();
         patchProperties.register("FOO1", "1");
         patchProperties.register("FOO2", "2");
 
         // WHEN-THEN
         assertThat(
-                PlaceholderResolver.resolveReferencePlaceholder(true, "{FOO1}|{FOO2}", patchProperties, databaseObject, new HashSet<>())
+                DatabasePlaceholderResolver.resolveReferencePlaceholder(true, "{FOO1}|{FOO2}", patchProperties, databaseObject, new HashSet<>())
         ).isEqualTo("1|2");
     }
 
     @Test
     public void resolveContentsReferencePlaceholder_whenPlaceholder_andPseudoRef_withMissingProperty_shouldReturnPropertyValue() {
         // GIVEN
-        final PatchProperties patchProperties = new PatchProperties();
+        final DatabasePatchProperties patchProperties = new DatabasePatchProperties();
         patchProperties.register("FOO1", "1");
 
         // WHEN-THEN
         assertThat(
-                PlaceholderResolver.resolveReferencePlaceholder(true, "{FOO1}|{FOO2}", patchProperties, databaseObject, new HashSet<>())
+                DatabasePlaceholderResolver.resolveReferencePlaceholder(true, "{FOO1}|{FOO2}", patchProperties, databaseObject, new HashSet<>())
         ).startsWith("1|");
     }
 
@@ -144,7 +144,7 @@ public class PlaceholderResolverTest {
     public void resolveContentsReferencePlaceholder_whenPlaceholder_withMissingProperty_shouldReturnProvidedAndGeneratedValues() {
         // GIVEN-WHEN-THEN
         assertThat(
-                PlaceholderResolver.resolveReferencePlaceholder(true, "{FOO}", new PatchProperties(), databaseObject, new HashSet<>())
+                DatabasePlaceholderResolver.resolveReferencePlaceholder(true, "{FOO}", new DatabasePatchProperties(), databaseObject, new HashSet<>())
         ).isNotNull();
     }
 
@@ -152,19 +152,19 @@ public class PlaceholderResolverTest {
     public void resolveResourceReferencePlaceholder_whenNoPlaceholder_shouldReturnInitialValue() {
         // GIVEN-WHEN-THEN
         assertThat(
-                PlaceholderResolver.resolveReferencePlaceholder(false, "FOO", new PatchProperties(), databaseObject, new HashSet<>())
+                DatabasePlaceholderResolver.resolveReferencePlaceholder(false, "FOO", new DatabasePatchProperties(), databaseObject, new HashSet<>())
         ).isEqualTo("FOO");
     }
 
     @Test
     public void resolveResourceReferencePlaceholder_whenPlaceholder_withProperty_shouldReturnPropertyValue() {
         // GIVEN
-        final PatchProperties patchProperties = new PatchProperties();
+        final DatabasePatchProperties patchProperties = new DatabasePatchProperties();
         patchProperties.register("FOO", "1");
 
         // WHEN-THEN
         assertThat(
-                PlaceholderResolver.resolveReferencePlaceholder(false, "{FOO}", patchProperties, databaseObject, new HashSet<>())
+                DatabasePlaceholderResolver.resolveReferencePlaceholder(false, "{FOO}", patchProperties, databaseObject, new HashSet<>())
         ).isEqualTo("1");
     }
 
@@ -172,7 +172,7 @@ public class PlaceholderResolverTest {
     public void resolveResourceReferencePlaceholder_whenPlaceholder_withoutProperty_shouldReturnGeneratedValue() {
         // GIVEN-WHEN-THEN
         assertThat(
-                PlaceholderResolver.resolveReferencePlaceholder(false, "{FOO}", new PatchProperties(), databaseObject, new HashSet<>())
+                DatabasePlaceholderResolver.resolveReferencePlaceholder(false, "{FOO}", new DatabasePatchProperties(), databaseObject, new HashSet<>())
         ).isNotNull();
     }
 }

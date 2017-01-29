@@ -7,7 +7,7 @@ import fr.tduf.gui.installer.domain.*;
 import fr.tduf.gui.installer.domain.exceptions.InternalStepException;
 import fr.tduf.gui.installer.domain.exceptions.StepException;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +57,7 @@ public class PatchEnhancerTest {
     private static final String INT_MANUFACTURER_ID = "62938337";
 
     private DatabaseContext databaseContext;
-    private PatchProperties patchProperties;
+    private DatabasePatchProperties patchProperties;
 
     @Mock
     private VehicleSlotsHelper vehicleSlotsHelperMock;
@@ -69,7 +69,7 @@ public class PatchEnhancerTest {
     public void setUp() throws IOException, URISyntaxException {
         Log.set(Log.LEVEL_DEBUG);
 
-        patchProperties = new PatchProperties();
+        patchProperties = new DatabasePatchProperties();
         patchProperties.setVehicleSlotReferenceIfNotExists(SLOT_REFERENCE);
         patchProperties.setBrandReferenceIfNotExists(BRAND_REFERENCE);
 

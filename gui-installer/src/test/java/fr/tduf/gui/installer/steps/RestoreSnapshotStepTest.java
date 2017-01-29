@@ -3,7 +3,7 @@ package fr.tduf.gui.installer.steps;
 import fr.tduf.gui.installer.common.helper.InstallerTestsHelper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -27,7 +27,7 @@ class RestoreSnapshotStepTest {
                 .withTestDriveUnlimitedDirectory("")
                 .build();
         DbPatchDto snapshotObject = new ObjectMapper().readValue(THIS_CLASS.getResource("/snapshots/SNAPSHOT-simple.mini.json"), DbPatchDto.class);
-        PatchProperties patchProperties = new PatchProperties();
+        DatabasePatchProperties patchProperties = new DatabasePatchProperties();
         patchProperties.register("RESREF", RESREF);
         final DatabaseContext databaseContext = InstallerTestsHelper.createDatabaseContext();
         databaseContext.setPatch(snapshotObject, patchProperties);

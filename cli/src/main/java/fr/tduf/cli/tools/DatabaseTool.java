@@ -16,7 +16,7 @@ import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.DiffPatchesGenerator;
 import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -441,14 +441,14 @@ public class DatabaseTool extends GenericTool {
         outLine("-> Source database directory: " + sourceJsonDirectory);
         outLine("-> Mini patch file: " + sourcePatchFile);
 
-        PatchProperties patchProperties = readPatchProperties(sourcePatchFile);
+        DatabasePatchProperties patchProperties = readPatchProperties(sourcePatchFile);
 
         outLine("Patching TDU database, please wait...");
 
         DbPatchDto patchObject = jsonMapper.readValue(new File(sourcePatchFile), DbPatchDto.class);
 
         List<DbDto> allTopicObjects = loadDatabaseFromJsonFiles(sourceJsonDirectory);
-        final PatchProperties effectivePatchProperties = AbstractDatabaseHolder.prepare(DatabasePatcher.class, allTopicObjects).applyWithProperties(patchObject, patchProperties);
+        final DatabasePatchProperties effectivePatchProperties = AbstractDatabaseHolder.prepare(DatabasePatcher.class, allTopicObjects).applyWithProperties(patchObject, patchProperties);
 
         outLine("Writing patched database to " + targetDatabaseDirectory + ", please wait...");
 
@@ -473,7 +473,7 @@ public class DatabaseTool extends GenericTool {
 
         List<DbDto> allTopicObjects = loadDatabaseFromJsonFiles(sourceJsonDirectory);
 
-        final Map<DbPatchDto, PatchProperties> patchObjectsAndProps = Files.walk(Paths.get(sourcePatchesDirectory))
+        final Map<DbPatchDto, DatabasePatchProperties> patchObjectsAndProps = Files.walk(Paths.get(sourcePatchesDirectory))
                 .filter(Files::isRegularFile)
                 .filter(path -> EXTENSION_JSON.equalsIgnoreCase(FilesHelper.getExtension(path.toString())))
                 .sorted(Path::compareTo)
@@ -511,10 +511,10 @@ public class DatabaseTool extends GenericTool {
         return resultInfo;
     }
 
-    private PatchProperties readPatchProperties(String patchFile) throws IOException {
+    private DatabasePatchProperties readPatchProperties(String patchFile) throws IOException {
         String propertyFile = patchFile + ".properties";
 
-        final PatchProperties patchProperties = new PatchProperties();
+        final DatabasePatchProperties patchProperties = new DatabasePatchProperties();
         final File propertyFileHandle = new File(propertyFile);
         if (propertyFileHandle.exists()) {
 
@@ -532,7 +532,7 @@ public class DatabaseTool extends GenericTool {
         return patchProperties;
     }
 
-    private String writePatchProperties(PatchProperties patchProperties, String patchFile) throws IOException {
+    private String writePatchProperties(DatabasePatchProperties patchProperties, String patchFile) throws IOException {
         if (patchProperties.isEmpty()) {
             return "N/A";
         }

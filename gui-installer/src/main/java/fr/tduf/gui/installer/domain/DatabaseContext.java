@@ -1,7 +1,7 @@
 package fr.tduf.gui.installer.domain;
 
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 
@@ -21,7 +21,7 @@ public class DatabaseContext {
 
     private DbPatchDto patchObject;
 
-    private PatchProperties patchProperties = new PatchProperties();
+    private DatabasePatchProperties patchProperties = new DatabasePatchProperties();
 
     private String backupDatabaseDirectory;
 
@@ -50,11 +50,11 @@ public class DatabaseContext {
         return patchObject;
     }
 
-    public PatchProperties getPatchProperties() {
+    public DatabasePatchProperties getPatchProperties() {
         return patchProperties;
     }
 
-    public void setPatch(DbPatchDto patchObject, PatchProperties patchProperties) {
+    public void setPatch(DbPatchDto patchObject, DatabasePatchProperties patchProperties) {
         this.patchObject = requireNonNull(patchObject, "A patch object is required.");
         this.patchProperties = requireNonNull(patchProperties, "Patch properties are required");
     }

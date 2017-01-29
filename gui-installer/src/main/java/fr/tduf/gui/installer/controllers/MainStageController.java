@@ -21,7 +21,7 @@ import fr.tduf.gui.installer.services.tasks.TaskType;
 import fr.tduf.gui.installer.steps.GenericStep;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PatchPropertiesReadWriteHelper;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
@@ -564,7 +564,7 @@ public class MainStageController extends AbstractGuiController {
 
         DbPatchDto patchObject = new ObjectMapper().readValue(patchFile, DbPatchDto.class);
 
-        PatchProperties patchProperties = PatchPropertiesReadWriteHelper.readPatchProperties(patchFile);
+        DatabasePatchProperties patchProperties = PatchPropertiesReadWriteHelper.readPatchProperties(patchFile);
         if (patchProperties.isEmpty()) {
             throw new IOException(DisplayConstants.MESSAGE_INVALID_PROPERTIES);
         }

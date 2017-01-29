@@ -12,7 +12,7 @@ import fr.tduf.libunlimited.high.files.db.interop.tdupe.TdupeGateway;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PatchPropertiesReadWriteHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -160,9 +160,9 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
     Optional<String> importPatch(File patchFile) throws IOException, ReflectiveOperationException {
         DbPatchDto patchObject = new ObjectMapper().readValue(patchFile, DbPatchDto.class);
         DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, getDatabaseObjects());
-        PatchProperties patchProperties = PatchPropertiesReadWriteHelper.readPatchProperties(patchFile);
+        DatabasePatchProperties patchProperties = PatchPropertiesReadWriteHelper.readPatchProperties(patchFile);
 
-        final PatchProperties effectiveProperties = patcher.applyWithProperties(patchObject, patchProperties);
+        final DatabasePatchProperties effectiveProperties = patcher.applyWithProperties(patchObject, patchProperties);
 
         return PatchPropertiesReadWriteHelper.writeEffectivePatchProperties(effectiveProperties, patchFile.getAbsolutePath());
     }

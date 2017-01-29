@@ -42,4 +42,13 @@ public class PatchProperties extends Properties {
 
         return patchProperties;
     }
+
+    protected void cloneAllProperties(PatchProperties patchProperties) {
+        entrySet().forEach(property -> {
+            final String placeholder = (String) property.getKey();
+            final String value = (String) property.getValue();
+
+            patchProperties.register(placeholder, value);
+        });
+    }
 }

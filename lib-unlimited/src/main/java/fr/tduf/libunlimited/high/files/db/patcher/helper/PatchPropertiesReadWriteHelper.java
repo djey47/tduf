@@ -1,7 +1,7 @@
 package fr.tduf.libunlimited.high.files.db.patcher.helper;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -21,10 +21,10 @@ public class PatchPropertiesReadWriteHelper {
      * @param patchFile : JSON mini patch file to be applied
      * @return loaded properties if a corresponding property file exists
      */
-    public static PatchProperties readPatchProperties(File patchFile) throws IOException {
+    public static DatabasePatchProperties readPatchProperties(File patchFile) throws IOException {
         String propertyFile = patchFile + ".properties";
 
-        final PatchProperties patchProperties = new PatchProperties();
+        final DatabasePatchProperties patchProperties = new DatabasePatchProperties();
         final File propertyFileHandle = new File(propertyFile);
         if(propertyFileHandle.exists()) {
 
@@ -46,7 +46,7 @@ public class PatchPropertiesReadWriteHelper {
      * @param patchFile : JSON mini patch file which has just been applied
      * @return path of effective property file if any, otherwise empty
      */
-    public static Optional<String> writeEffectivePatchProperties(PatchProperties patchProperties, String patchFile) throws IOException {
+    public static Optional<String> writeEffectivePatchProperties(DatabasePatchProperties patchProperties, String patchFile) throws IOException {
         return writeEffectivePatchPropertiesWithPrefix(patchProperties, patchFile, "effective-");
     }
 
@@ -54,11 +54,11 @@ public class PatchPropertiesReadWriteHelper {
      * @param patchFile : JSON mini patch file which has just been applied
      * @return path of property file if any, otherwise empty
      */
-    public static Optional<String> writePatchProperties(PatchProperties patchProperties, String patchFile) throws IOException {
+    public static Optional<String> writePatchProperties(DatabasePatchProperties patchProperties, String patchFile) throws IOException {
         return writeEffectivePatchPropertiesWithPrefix(patchProperties, patchFile, "");
     }
 
-    private static Optional<String> writeEffectivePatchPropertiesWithPrefix(PatchProperties patchProperties, String patchFile, String prefix) throws IOException {
+    private static Optional<String> writeEffectivePatchPropertiesWithPrefix(DatabasePatchProperties patchProperties, String patchFile, String prefix) throws IOException {
         if (patchProperties.isEmpty()) {
             return empty();
         }

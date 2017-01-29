@@ -9,7 +9,7 @@ import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.interop.tdupe.TdupeGateway;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PatchPropertiesReadWriteHelper;
 
@@ -53,7 +53,7 @@ class UpdateDatabaseStep extends GenericStep {
 
         writeEffectivePatch(getDatabaseContext().getPatchObject(), targetPatchFile);
 
-        PatchProperties effectiveProperties = patcher.applyWithProperties(getDatabaseContext().getPatchObject(), getDatabaseContext().getPatchProperties());
+        DatabasePatchProperties effectiveProperties = patcher.applyWithProperties(getDatabaseContext().getPatchObject(), getDatabaseContext().getPatchProperties());
 
         writeProperties(effectiveProperties, targetPatchFile);
     }
@@ -89,7 +89,7 @@ class UpdateDatabaseStep extends GenericStep {
         FilesHelper.writeJsonObjectToFile(patchObject, targetPatchFile);
     }
 
-    private void writeProperties(PatchProperties patchProperties, String targetPatchFile) throws IOException {
+    private void writeProperties(DatabasePatchProperties patchProperties, String targetPatchFile) throws IOException {
         Log.info(THIS_CLASS_NAME, "->Writing effective properties...");
 
         PatchPropertiesReadWriteHelper.writePatchProperties(patchProperties, targetPatchFile);

@@ -4,7 +4,7 @@ import fr.tduf.gui.installer.common.helper.InstallerTestsHelper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.GenuineCamGateway;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +24,7 @@ public class RevertCameraStepTest {
     @Mock
     private GenuineCamGateway camGatewayMock;
 
-    private final PatchProperties patchProperties = new PatchProperties();
+    private final DatabasePatchProperties patchProperties = new DatabasePatchProperties();
 
     @Before
     public void setUp() {

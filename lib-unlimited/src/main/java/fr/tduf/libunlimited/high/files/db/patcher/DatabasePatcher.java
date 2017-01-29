@@ -5,9 +5,9 @@ import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseChangeHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
-import fr.tduf.libunlimited.high.files.db.patcher.helper.PlaceholderResolver;
+import fr.tduf.libunlimited.high.files.db.patcher.helper.DatabasePlaceholderResolver;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
@@ -40,8 +40,8 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
      *
      * @return effective properties.
      */
-    public PatchProperties apply(DbPatchDto patchObject) {
-        return applyWithProperties(patchObject, new PatchProperties());
+    public DatabasePatchProperties apply(DbPatchDto patchObject) {
+        return applyWithProperties(patchObject, new DatabasePatchProperties());
     }
 
     /**
@@ -49,13 +49,13 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
      *
      * @return effective properties.
      */
-    public PatchProperties applyWithProperties(DbPatchDto patchObject, PatchProperties patchProperties) {
+    public DatabasePatchProperties applyWithProperties(DbPatchDto patchObject, DatabasePatchProperties patchProperties) {
         requireNonNull(patchObject, "A patch object is required.");
         requireNonNull(patchProperties, "Patch properties are required.");
 
-        PatchProperties effectiveProperties = patchProperties.makeCopy();
+        DatabasePatchProperties effectiveProperties = patchProperties.makeCopy();
 
-        PlaceholderResolver
+        DatabasePlaceholderResolver
                 .load(patchObject, effectiveProperties, databaseMiner)
                 .resolveAllPlaceholders();
 
@@ -68,7 +68,7 @@ public class DatabasePatcher extends AbstractDatabaseHolder {
     /**
      * Execute provided patches onto current database, taking properties into account.
      */
-    public void batchApplyWithProperties(Map<DbPatchDto, PatchProperties> patchObjectsAndProperties) {
+    public void batchApplyWithProperties(Map<DbPatchDto, DatabasePatchProperties> patchObjectsAndProperties) {
         requireNonNull(patchObjectsAndProperties, "A list of patch objects and associated properties are required.")
                 .forEach(this::applyWithProperties);
     }

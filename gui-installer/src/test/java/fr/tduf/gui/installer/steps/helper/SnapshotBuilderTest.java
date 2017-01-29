@@ -3,7 +3,7 @@ package fr.tduf.gui.installer.steps.helper;
 import fr.tduf.gui.installer.common.helper.InstallerTestsHelper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.libtesting.common.helper.FilesHelper;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -24,7 +24,7 @@ public class SnapshotBuilderTest {
     @Test
     public void take_shouldWritePatchObject() throws Exception {
         // GIVEN
-        PatchProperties patchProperties = new PatchProperties();
+        DatabasePatchProperties patchProperties = new DatabasePatchProperties();
         patchProperties.setVehicleSlotReferenceIfNotExists(SLOTREF);
         patchProperties.setDealerReferenceIfNotExists(DEALERREF);
         patchProperties.setDealerSlotIfNotExists(DEALERSLOT);

@@ -9,7 +9,7 @@ import fr.tduf.gui.installer.domain.exceptions.StepException;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseChangeHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class RestoreSlotStepTest {
     private ArgumentCaptor<DbPatchDto> patchCaptor;
 
     @Captor
-    private ArgumentCaptor<PatchProperties> patchPropertiesCaptor;
+    private ArgumentCaptor<DatabasePatchProperties> patchPropertiesCaptor;
 
     private  DatabaseContext context;
     private InstallerConfiguration configuration;
@@ -99,7 +99,7 @@ public class RestoreSlotStepTest {
 
         // THEN
         verify(databasePatcher).applyWithProperties(patchCaptor.capture(), patchPropertiesCaptor.capture());
-        final PatchProperties actualProperties = patchPropertiesCaptor.getValue();
+        final DatabasePatchProperties actualProperties = patchPropertiesCaptor.getValue();
         assertThat(actualProperties.getVehicleSlotReference()).contains(vehicleSlotRef);
 
         final DbPatchDto actualPatchObject = patchCaptor.getValue();
