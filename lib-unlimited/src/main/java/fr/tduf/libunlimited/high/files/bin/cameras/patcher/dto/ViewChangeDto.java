@@ -1,13 +1,12 @@
 package fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto;
 
-import fr.tduf.libunlimited.high.files.common.patcher.helper.PlaceholderResolver;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-import java.util.*;
+import java.util.EnumMap;
 
 import static fr.tduf.libunlimited.high.files.common.patcher.helper.PlaceholderResolver.FORMAT_PLACEHOLDER;
 import static java.util.Objects.requireNonNull;
@@ -79,6 +78,8 @@ public class ViewChangeDto {
             ViewChangeDto viewChangeDto = new ViewChangeDto();
 
             viewChangeDto.cameraViewKind = requireNonNull(cameraViewKind, "Camera view kind is required");
+
+            viewProps.putIfAbsent(ViewProps.TYPE, cameraViewKind.name());
             viewChangeDto.viewProps = viewProps;
 
             return viewChangeDto;
