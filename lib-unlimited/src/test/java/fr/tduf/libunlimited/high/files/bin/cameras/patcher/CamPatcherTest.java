@@ -3,13 +3,14 @@ package fr.tduf.libunlimited.high.files.bin.cameras.patcher;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.CamPatchDto;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.SetChangeDto;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.ViewChangeDto;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +51,6 @@ class CamPatcherTest {
     }
 
     @Test
-    @Disabled
     void apply_whenCameraSetExists_shouldInvokeParser() {
         // given
         CamPatcher camPatcher = new CamPatcher(camerasParserMock);
@@ -64,10 +64,12 @@ class CamPatcherTest {
                 .build();
         CamPatchDto camPatchDto = CamPatchDto.builder().addChanges(singletonList(setChangeObject)).build();
 
-        Map<Long, List<DataStore>> storeMap = new HashMap<>(1);
         DataStore dataStoreMock = mock(DataStore.class);
+        Map<Long, List<DataStore>> storeMap = new HashMap<>(1);
         storeMap.put(125L, singletonList(dataStoreMock));
+
         when(camerasParserMock.getCameraViews()).thenReturn(storeMap);
+        when(camerasParserMock.getViewProps(dataStoreMock)).thenReturn(new EnumMap<>(ViewProps.class));
         when(camerasParserMock.getDataStore()).thenReturn(dataStoreMock);
         when(dataStoreMock.getInteger("type")).thenReturn(of(23L));
 

@@ -12,6 +12,7 @@ import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 
 import java.util.List;
 
+import static fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo.CameraView.fromPatchProps;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -59,10 +60,7 @@ public class CamPatcher {
     private void applyChange(SetChangeDto setChangeObject) {
         // TODO if it does not exist, clone set first (which one?)
         List<CameraInfo.CameraView> allViews = setChangeObject.getChanges().stream()
-                .map(viewChange -> {
-                    // TODO transform map <VP,String> to <VP,Object> !!!
-                    return CameraInfo.CameraView.fromProps(viewChange.getViewProps());
-                })
+                .map(viewChange -> fromPatchProps(viewChange.getViewProps()))
                 .collect(toList());
 
         CameraInfo updateConf = CameraInfo.builder()
