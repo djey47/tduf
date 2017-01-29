@@ -81,4 +81,37 @@ class CamPatcherTest {
         verify(dataStoreMock).addInteger("viewPositionX", 1500L);
         verify(camerasParserMock).getDataStore();
     }
+
+    @Test
+    // TODO implement
+    void apply_whenCameraSetDoesNotExist_shouldCloneReferenceSet() {
+        // given
+        CamPatcher camPatcher = new CamPatcher(camerasParserMock);
+        ViewChangeDto viewChangeDto = ViewChangeDto.builder()
+                .forViewKind(Cockpit)
+                .addProp(VIEW_POSITION_X, "1500")
+                .build();
+        SetChangeDto setChangeObject = SetChangeDto.builder()
+                .withSetIdentifier(1250)
+                .addChanges(singletonList(viewChangeDto))
+                .build();
+        CamPatchDto camPatchDto = CamPatchDto.builder().addChanges(singletonList(setChangeObject)).build();
+
+        DataStore dataStoreMock = mock(DataStore.class);
+        Map<Long, List<DataStore>> storeMap = new HashMap<>(1);
+        storeMap.put(125L, singletonList(dataStoreMock));
+
+        when(camerasParserMock.getCameraViews()).thenReturn(storeMap);
+        when(camerasParserMock.getViewProps(dataStoreMock)).thenReturn(new EnumMap<>(ViewProps.class));
+        when(camerasParserMock.getDataStore()).thenReturn(dataStoreMock);
+        when(dataStoreMock.getInteger("type")).thenReturn(of(23L));
+
+
+        // when
+        camPatcher.apply(camPatchDto);
+
+        // then
+        verify(dataStoreMock).addInteger("viewPositionX", 1500L);
+        verify(camerasParserMock).getDataStore();
+    }
 }
