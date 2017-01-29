@@ -62,6 +62,11 @@ public class CameraInfo {
             return this;
         }
 
+        public CameraInfoBuilder forIdentifierAsString(String cameraIdentifierAsString) {
+            this.cameraIdentifier = Long.valueOf(cameraIdentifierAsString);
+            return this;
+        }
+
         public CameraInfoBuilder addView(CameraView view) {
             views.add(view);
             return this;
