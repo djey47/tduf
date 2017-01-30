@@ -3,12 +3,14 @@ package fr.tduf.gui.database.plugins.cameras;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.javafx.helper.ControlHelper;
+import fr.tduf.gui.common.javafx.helper.options.SimpleDialogOptions;
 import fr.tduf.gui.database.plugins.cameras.common.DisplayConstants;
 import fr.tduf.gui.database.plugins.cameras.common.FxConstants;
 import fr.tduf.gui.database.plugins.cameras.converter.CameraInfoToItemConverter;
 import fr.tduf.gui.database.plugins.cameras.converter.CameraInfoToRawValueConverter;
 import fr.tduf.gui.database.plugins.cameras.converter.CameraViewToItemConverter;
 import fr.tduf.gui.database.plugins.cameras.helper.CamerasDialogsHelper;
+import fr.tduf.gui.database.plugins.cameras.helper.ImExHelper;
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.libunlimited.high.files.db.common.helper.CameraAndIKHelper;
@@ -38,6 +40,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static fr.tduf.gui.database.common.DisplayConstants.MESSAGE_SEE_LOGS;
 import static fr.tduf.gui.database.plugins.cameras.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.cameras.common.FxConstants.*;
 import static fr.tduf.gui.database.plugins.common.FxConstants.*;
@@ -50,6 +53,8 @@ import static java.util.Comparator.comparing;
 import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.toList;
 import static javafx.geometry.Orientation.VERTICAL;
+import static javafx.scene.control.Alert.AlertType.ERROR;
+import static javafx.scene.control.Alert.AlertType.INFORMATION;
 import static javafx.scene.control.cell.TextFieldTableCell.forTableColumn;
 import static javafx.scene.layout.Priority.ALWAYS;
 
@@ -62,6 +67,7 @@ public class CamerasPlugin implements DatabasePlugin {
 
     private CameraAndIKHelper cameraRefHelper;
     private CamerasDialogsHelper dialogsHelper;
+    private ImExHelper imExHelper;
 
     private final Property<CamerasParser> camerasParserProperty = new SimpleObjectProperty<>();
     private ObservableList<CameraInfo> cameraInfos;
@@ -99,6 +105,7 @@ public class CamerasPlugin implements DatabasePlugin {
         Log.info(THIS_CLASS_NAME, "Camera reference loaded");
 
         dialogsHelper = new CamerasDialogsHelper();
+        imExHelper = new ImExHelper();
     }
 
     /**
@@ -405,6 +412,37 @@ public class CamerasPlugin implements DatabasePlugin {
     }
 
     private void importSetFromPatchFile(File file) {
+        String dialogTitle = DisplayConstants.TITLE_IMPORT;
+        try {
+            final Optional<String> potentialPropertiesFile = imExHelper.importPatch(file, camerasParserProperty.getValue());
 
+            // TODO refresh UI
+
+            String writtenPropertiesPath = "";
+            if (potentialPropertiesFile.isPresent()) {
+                // Extract to common display constant
+                writtenPropertiesPath = String.format("Written properties file:%s%s", System.lineSeparator(), potentialPropertiesFile.get());
+            }
+
+            final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                    .withContext(INFORMATION)
+                    .withTitle(dialogTitle)
+                    .withMessage(DisplayConstants.MESSAGE_DATA_IMPORTED)
+                    .withDescription(writtenPropertiesPath)
+                    .build();
+            // TODO use parent from editor context
+            CommonDialogsHelper.showDialog(dialogOptions, null);
+        } catch (Exception e) {
+            Log.error(THIS_CLASS_NAME, e);
+
+            final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                    .withContext(ERROR)
+                    .withTitle(dialogTitle)
+                    .withMessage(DisplayConstants.MESSAGE_UNABLE_IMPORT_PATCH)
+                    .withDescription(MESSAGE_SEE_LOGS)
+                    .build();
+            // TODO use parent from editor context
+            CommonDialogsHelper.showDialog(dialogOptions, null);
+        }
     }
 }

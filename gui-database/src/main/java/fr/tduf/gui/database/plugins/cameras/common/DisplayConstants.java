@@ -26,8 +26,11 @@ public class DisplayConstants {
     public static final String TOOLTIP_IMPORT_SET_BUTTON = "Imports one or many camera sets from camera patch";
 
     public static final String TITLE_ADD_SET = "Add camera set...";
+    public static final String TITLE_IMPORT = "Import camera sets...";
 
     public static final String MESSAGE_ADD_SET_IDENTIFIER = "Enter a numeric identifier for new camera set:";
+    public static final String MESSAGE_DATA_IMPORTED = "Camera set data was imported succesfully";
+    public static final String MESSAGE_UNABLE_IMPORT_PATCH = "Camera set could not be imported";
 
     private DisplayConstants() {}
 }
