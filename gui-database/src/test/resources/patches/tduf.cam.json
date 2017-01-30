@@ -1,0 +1,17 @@
+{
+  "comment": "Empty test patch",
+  "changes": [
+    {
+      "id" : "100",
+      "changes": [
+        {
+          "viewKind": "Cockpit",
+          "properties": {
+            "TYPE": "Cockpit",
+            "STEERING_WHEEL_TURN": "10000"
+          }
+        }
+      ]
+    }
+  ]
+}

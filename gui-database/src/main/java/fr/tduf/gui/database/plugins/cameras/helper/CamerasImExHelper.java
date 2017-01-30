@@ -12,12 +12,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
+import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
 /**
  * Performs import/export operations
  */
-public class ImExHelper {
+public class CamerasImExHelper {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -34,6 +35,6 @@ public class ImExHelper {
         final PatchProperties effectiveProperties = patcher.applyWithProperties(patchObject, patchProperties);
 
 //        return PatchPropertiesReadWriteHelper.writeEffectivePatchProperties(effectiveProperties, patchFile.getAbsolutePath());
-        return of("");
+        return empty();
     }
 }
