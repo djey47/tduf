@@ -270,6 +270,7 @@ public class CamerasHelper {
         return new ByteArrayInputStream(readAllBytes(Paths.get(sourceCameraFile)));
     }
 
+    // TODO make it public and use it from patcher as well
     private static void checkCameraSetExists(long cameraId, CamerasParser parser) {
         Map<Long, Short> cameraIndex = parser.getCameraIndex() ;
         if (!cameraIndex.containsKey(cameraId)
