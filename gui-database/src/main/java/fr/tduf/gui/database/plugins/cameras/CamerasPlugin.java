@@ -10,7 +10,7 @@ import fr.tduf.gui.database.plugins.cameras.converter.CameraInfoToItemConverter;
 import fr.tduf.gui.database.plugins.cameras.converter.CameraInfoToRawValueConverter;
 import fr.tduf.gui.database.plugins.cameras.converter.CameraViewToItemConverter;
 import fr.tduf.gui.database.plugins.cameras.helper.CamerasDialogsHelper;
-import fr.tduf.gui.database.plugins.cameras.helper.ImExHelper;
+import fr.tduf.gui.database.plugins.cameras.helper.CamerasImExHelper;
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.libunlimited.high.files.db.common.helper.CameraAndIKHelper;
@@ -67,7 +67,7 @@ public class CamerasPlugin implements DatabasePlugin {
 
     private CameraAndIKHelper cameraRefHelper;
     private CamerasDialogsHelper dialogsHelper;
-    private ImExHelper imExHelper;
+    private CamerasImExHelper imExHelper;
 
     private final Property<CamerasParser> camerasParserProperty = new SimpleObjectProperty<>();
     private ObservableList<CameraInfo> cameraInfos;
@@ -105,7 +105,7 @@ public class CamerasPlugin implements DatabasePlugin {
         Log.info(THIS_CLASS_NAME, "Camera reference loaded");
 
         dialogsHelper = new CamerasDialogsHelper();
-        imExHelper = new ImExHelper();
+        imExHelper = new CamerasImExHelper();
     }
 
     /**
@@ -412,37 +412,33 @@ public class CamerasPlugin implements DatabasePlugin {
     }
 
     private void importSetFromPatchFile(File file) {
-        String dialogTitle = DisplayConstants.TITLE_IMPORT;
+        SimpleDialogOptions dialogOptions;
         try {
-            final Optional<String> potentialPropertiesFile = imExHelper.importPatch(file, camerasParserProperty.getValue());
+            String writtenPropertiesPath = imExHelper.importPatch(file, camerasParserProperty.getValue())
+                    // Extract to common display constant
+                    .map(propertiesPath -> String.format("Written properties file:%s%s", System.lineSeparator(), propertiesPath))
+                    .orElse("");
 
             // TODO refresh UI
 
-            String writtenPropertiesPath = "";
-            if (potentialPropertiesFile.isPresent()) {
-                // Extract to common display constant
-                writtenPropertiesPath = String.format("Written properties file:%s%s", System.lineSeparator(), potentialPropertiesFile.get());
-            }
-
-            final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+            dialogOptions = SimpleDialogOptions.builder()
                     .withContext(INFORMATION)
-                    .withTitle(dialogTitle)
+                    .withTitle(DisplayConstants.TITLE_IMPORT)
                     .withMessage(DisplayConstants.MESSAGE_DATA_IMPORTED)
                     .withDescription(writtenPropertiesPath)
                     .build();
-            // TODO use parent from editor context
-            CommonDialogsHelper.showDialog(dialogOptions, null);
         } catch (Exception e) {
             Log.error(THIS_CLASS_NAME, e);
 
-            final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+            dialogOptions = SimpleDialogOptions.builder()
                     .withContext(ERROR)
-                    .withTitle(dialogTitle)
+                    .withTitle(DisplayConstants.TITLE_IMPORT)
                     .withMessage(DisplayConstants.MESSAGE_UNABLE_IMPORT_PATCH)
                     .withDescription(MESSAGE_SEE_LOGS)
                     .build();
-            // TODO use parent from editor context
-            CommonDialogsHelper.showDialog(dialogOptions, null);
         }
+
+        // TODO use parent from editor context
+        CommonDialogsHelper.showDialog(dialogOptions, null);
     }
 }
