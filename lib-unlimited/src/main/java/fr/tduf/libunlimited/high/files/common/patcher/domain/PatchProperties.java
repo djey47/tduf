@@ -51,4 +51,12 @@ public class PatchProperties extends Properties {
             patchProperties.register(placeholder, value);
         });
     }
+
+    protected void registerIfNotExists(String placeholderName, String value) {
+        if (retrieve(placeholderName).isPresent()) {
+            return;
+        }
+
+        register(placeholderName, value);
+    }
 }

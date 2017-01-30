@@ -217,12 +217,4 @@ public class DatabasePatchProperties extends PatchProperties {
     public Optional<String> getInteriorMainColorId(int interiorSet) {
         return retrieve(format(PLACEHOLDER_NAME_FMT_ID_INT_COLOR, SUFFIX_MAIN_COLOR, interiorSet));
     }
-
-    private void registerIfNotExists(String placeholderName, String value) {
-        if (retrieve(placeholderName).isPresent()) {
-            return;
-        }
-
-        register(placeholderName, value);
-    }
 }
