@@ -9,6 +9,7 @@ import javafx.beans.property.StringProperty;
 /**
  * Contains all information for correct plugin execution
  */
+// TODO add handle to main window and use it
 public class EditorContext implements PluginContext {
     private DbDto.Topic currentTopic;
     private int fieldRank;
