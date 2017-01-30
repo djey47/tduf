@@ -1,7 +1,6 @@
 package fr.tduf.libunlimited.high.files.bin.cameras.patcher;
 
 
-import fr.tduf.libunlimited.high.files.bin.cameras.patcher.domain.CamPatchProperties;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.CamPatchDto;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.SetChangeDto;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.helper.CamPlaceholderResolver;
@@ -34,7 +33,7 @@ public class CamPatcher {
      * @return effective properties.
      */
     public PatchProperties apply(CamPatchDto patchObject) {
-        return applyWithProperties(patchObject, new CamPatchProperties());
+        return applyWithProperties(patchObject, new PatchProperties());
     }
 
     /**
@@ -42,7 +41,7 @@ public class CamPatcher {
      *
      * @return effective properties.
      */
-    public PatchProperties applyWithProperties(CamPatchDto patchObject, CamPatchProperties patchProperties) {
+    public PatchProperties applyWithProperties(CamPatchDto patchObject, PatchProperties patchProperties) {
         requireNonNull(patchObject, "A patch object is required.");
         requireNonNull(patchProperties, "Patch properties are required.");
 
