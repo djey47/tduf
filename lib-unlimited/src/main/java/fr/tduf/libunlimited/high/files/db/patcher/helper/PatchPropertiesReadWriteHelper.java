@@ -14,6 +14,7 @@ import static java.util.Optional.of;
 /**
  * Helper class to open or save patch properties with disk.
  */
+// TODO Use PatchProperties instead
 public class PatchPropertiesReadWriteHelper {
     private static final String THIS_CLASS_NAME = PatchPropertiesReadWriteHelper.class.getSimpleName();
 
