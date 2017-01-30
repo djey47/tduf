@@ -9,7 +9,6 @@ import fr.tduf.libunlimited.high.files.common.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
 import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
-import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 
 import java.util.List;
 
@@ -20,9 +19,10 @@ import static java.util.stream.Collectors.toList;
 /**
  * Used to apply patches to existing cameras information.
  */
+// TODO refactor and do not use parser directly
 public class CamPatcher {
-    // TODO refactor and do not use parser directly
     private final CamerasParser camerasParser;
+    private static final long IDENTIFIER_REFERENCE_SET = 10000L;
 
     public CamPatcher(CamerasParser camerasParser) {
         this.camerasParser = requireNonNull(camerasParser, "Parser with loaded cameras is required");
@@ -60,12 +60,10 @@ public class CamPatcher {
 
     private void applyChange(SetChangeDto setChangeObject) {
         long setIdentifier = Long.valueOf(setChangeObject.getId());
+        // TODO use helper method to check
         if (!camerasParser.getCameraViews().containsKey(setIdentifier)) {
-            // TODO test if reference set exists
-            long referenceSetIdentifier = 10000L;
-            CamerasHelper.duplicateCameraSet(referenceSetIdentifier, setIdentifier, camerasParser);
+            createCameraSetFromReference(setIdentifier);
         }
-
 
         List<CameraInfo.CameraView> allViews = setChangeObject.getChanges().stream()
                 .map(viewChange -> fromPatchProps(viewChange.getViewProps()))
@@ -77,5 +75,12 @@ public class CamPatcher {
                 .build();
 
         CamerasHelper.updateViews(updateConf, camerasParser);
+    }
+
+    private void createCameraSetFromReference(long newSetIdentifier) {
+        if (!camerasParser.getCameraViews().containsKey(IDENTIFIER_REFERENCE_SET)) {
+            throw new IllegalStateException("Reference camera set is unavailable: " + IDENTIFIER_REFERENCE_SET);
+        }
+        CamerasHelper.duplicateCameraSet(IDENTIFIER_REFERENCE_SET, newSetIdentifier, camerasParser);
     }
 }

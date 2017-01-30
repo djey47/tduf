@@ -67,7 +67,10 @@ class CamPatcherTest {
         DataStore dataStoreMock = mock(DataStore.class);
         Map<Long, List<DataStore>> storeMap = new HashMap<>(1);
         storeMap.put(125L, singletonList(dataStoreMock));
+        Map<Long, Short> indexMap = new HashMap<>(1);
+        indexMap.put(125L, (short) 4);
 
+        when(camerasParserMock.getCameraIndex()).thenReturn(indexMap);
         when(camerasParserMock.getCameraViews()).thenReturn(storeMap);
         when(camerasParserMock.getViewProps(dataStoreMock)).thenReturn(new EnumMap<>(ViewProps.class));
         when(camerasParserMock.getDataStore()).thenReturn(dataStoreMock);
@@ -79,11 +82,30 @@ class CamPatcherTest {
 
         // then
         verify(dataStoreMock).addInteger("viewPositionX", 1500L);
-        verify(camerasParserMock).getDataStore();
     }
 
     @Test
-    // TODO check assertions
+    void apply_whenCameraSetDoesNotExist_andReferenceSetDoesNotExist_shouldThrowException() {
+        // given
+        CamPatcher camPatcher = new CamPatcher(camerasParserMock);
+        ViewChangeDto viewChangeDto = ViewChangeDto.builder()
+                .forViewKind(Cockpit)
+                .addProp(VIEW_POSITION_X, "1500")
+                .build();
+        SetChangeDto setChangeObject = SetChangeDto.builder()
+                .withSetIdentifier(1250)
+                .addChanges(singletonList(viewChangeDto))
+                .build();
+        CamPatchDto camPatchDto = CamPatchDto.builder().addChanges(singletonList(setChangeObject)).build();
+
+        when(camerasParserMock.getCameraViews()).thenReturn(new HashMap<>(0));
+
+        // when-then
+        assertThrows(IllegalStateException.class,
+                () -> camPatcher.apply(camPatchDto));
+    }
+
+    @Test
     void apply_whenCameraSetDoesNotExist_shouldCloneReferenceSet() {
         // given
         CamPatcher camPatcher = new CamPatcher(camerasParserMock);
@@ -97,21 +119,29 @@ class CamPatcherTest {
                 .build();
         CamPatchDto camPatchDto = CamPatchDto.builder().addChanges(singletonList(setChangeObject)).build();
 
-        DataStore dataStoreMock = mock(DataStore.class);
-        Map<Long, List<DataStore>> storeMap = new HashMap<>(1);
-        storeMap.put(1250L, singletonList(dataStoreMock));
+        DataStore refDataStoreMock = mock(DataStore.class);
+        DataStore clonedDataStoreMock = mock(DataStore.class);
+        Map<Long, List<DataStore>> storeMapBeforeCloning = new HashMap<>(1);
+        storeMapBeforeCloning.put(10000L, singletonList(refDataStoreMock));
+        Map<Long, List<DataStore>> storeMapAfterCloning = new HashMap<>(1);
+        storeMapAfterCloning.put(10000L, singletonList(refDataStoreMock));
+        storeMapAfterCloning.put(1250L, singletonList(clonedDataStoreMock));
+        Map<Long, Short> indexMap = new HashMap<>(1);
+        indexMap.put(10000L, (short) 12);
 
-        when(camerasParserMock.getCameraViews()).thenReturn(storeMap);
-        when(camerasParserMock.getViewProps(dataStoreMock)).thenReturn(new EnumMap<>(ViewProps.class));
-        when(camerasParserMock.getDataStore()).thenReturn(dataStoreMock);
-        when(dataStoreMock.getInteger("type")).thenReturn(of(23L));
+        when(camerasParserMock.getCameraIndex()).thenReturn(indexMap);
+        //noinspection unchecked
+        when(camerasParserMock.getCameraViews()).thenReturn(storeMapBeforeCloning, storeMapAfterCloning);
+        when(camerasParserMock.getViewProps(clonedDataStoreMock)).thenReturn(new EnumMap<>(ViewProps.class));
+        when(camerasParserMock.getDataStore()).thenReturn(refDataStoreMock);
+        when(refDataStoreMock.copy()).thenReturn(clonedDataStoreMock);
+        when(clonedDataStoreMock.getInteger("type")).thenReturn(of(23L));
 
 
         // when
         camPatcher.apply(camPatchDto);
 
         // then
-        verify(dataStoreMock).addInteger("viewPositionX", 1500L);
-        verify(camerasParserMock).getDataStore();
+        verify(clonedDataStoreMock).addInteger("viewPositionX", 1500L);
     }
 }
