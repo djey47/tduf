@@ -31,7 +31,7 @@ class CamPatchGeneratorTest {
 
         // when-then
         assertThrows(NullPointerException.class,
-            () -> camPatchGenerator.makePatch(null));
+            () -> camPatchGenerator.makePatch(null, null));
     }
 
     @Test
@@ -40,7 +40,7 @@ class CamPatchGeneratorTest {
         CamPatchGenerator camPatchGenerator = new CamPatchGenerator(new ArrayList<>(0));
 
         // when
-        CamPatchDto actualPatchObject = camPatchGenerator.makePatch(ItemRange.ALL);
+        CamPatchDto actualPatchObject = camPatchGenerator.makePatch(ItemRange.ALL, ItemRange.ALL);
 
         // then
         assertThat(actualPatchObject.getComment()).isNotEmpty();
@@ -56,7 +56,7 @@ class CamPatchGeneratorTest {
         CamPatchGenerator camPatchGenerator = new CamPatchGenerator(singletonList(cameraInfo));
 
         // when
-        CamPatchDto actualPatchObject = camPatchGenerator.makePatch(ItemRange.fromSingleValue("10"));
+        CamPatchDto actualPatchObject = camPatchGenerator.makePatch(ItemRange.fromSingleValue("10"), ItemRange.ALL);
 
         // then
         assertThat(actualPatchObject.getChanges()).isEmpty();
@@ -75,7 +75,7 @@ class CamPatchGeneratorTest {
         CamPatchGenerator camPatchGenerator = new CamPatchGenerator(singletonList(cameraInfo));
 
         // when
-        CamPatchDto actualPatchObject = camPatchGenerator.makePatch(ItemRange.fromSingleValue("1"));
+        CamPatchDto actualPatchObject = camPatchGenerator.makePatch(ItemRange.fromSingleValue("1"), ItemRange.ALL);
 
         // then
         assertThat(actualPatchObject.getChanges()).hasSize(1);
@@ -85,5 +85,25 @@ class CamPatchGeneratorTest {
         assertThat(viewChange.getCameraViewKind()).isEqualTo(ViewKind.Cockpit_Back);
         assertThat(viewChange.getViewProps()).containsKeys(ViewProps.TYPE, ViewProps.BINOCULARS);
         assertThat(viewChange.getViewProps()).containsValues("Cockpit_Back", "50");
+    }
+
+    @Test
+    void makePatch_whenSetIdentifierInRange_butViewNotInRange_shouldReturnPatchWithoutViewChanges() {
+        // given
+        EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
+        viewProps.put(ViewProps.TYPE, ViewKind.Cockpit_Back);
+        viewProps.put(ViewProps.BINOCULARS, 50L);
+        CameraInfo cameraInfo = CameraInfo.builder()
+                .forIdentifier(1L)
+                .addView(CameraInfo.CameraView.fromProps(viewProps))
+                .build();
+        CamPatchGenerator camPatchGenerator = new CamPatchGenerator(singletonList(cameraInfo));
+
+        // when
+        CamPatchDto actualPatchObject = camPatchGenerator.makePatch(ItemRange.fromSingleValue("1"), ItemRange.fromSingleValue(ViewKind.Bumper.name()));
+
+        // then
+        assertThat(actualPatchObject.getChanges()).hasSize(1);
+        assertThat(actualPatchObject.getChanges().get(0).getChanges()).isEmpty();
     }
 }

@@ -152,12 +152,15 @@ public class CamerasPlugin implements DatabasePlugin {
         cameraInfos = FXCollections.observableArrayList(CamerasHelper.fetchAllInformation(camerasParserProperty.getValue()));
         cameraViews = FXCollections.observableArrayList();
         ComboBox<CameraInfo> cameraSelectorComboBox = new ComboBox<>(cameraInfos.sorted(comparingLong(CameraInfo::getCameraIdentifier)));
-        VBox mainColumnBox = createMainColumn(context, cameraSelectorComboBox);
+        ComboBox<CameraInfo.CameraView> viewSelectorComboBox = new ComboBox<>(cameraViews.sorted(comparing(CameraInfo.CameraView::getType)));
+        VBox mainColumnBox = createMainColumn(context, cameraSelectorComboBox, viewSelectorComboBox);
 
         StringProperty rawValueProperty = context.getRawValueProperty();
         VBox buttonColumnBox = createButtonColumn(
                 handleAddSetButtonAction(rawValueProperty, cameraSelectorComboBox.getSelectionModel()),
-                handleImportSetButtonAction(rawValueProperty));
+                handleImportSetButtonAction(rawValueProperty),
+                handleExportCurrentViewAction(rawValueProperty, viewSelectorComboBox.getValue()),
+                handleExportAllViewsAction(rawValueProperty));
 
         ObservableList<Node> mainRowChildren = hBox.getChildren();
         mainRowChildren.add(mainColumnBox);
@@ -173,13 +176,12 @@ public class CamerasPlugin implements DatabasePlugin {
         return new HashSet<>(singletonList(thisClass.getResource(PATH_RESOURCE_CSS_CAMERAS).toExternalForm()));
     }
 
-    private VBox createMainColumn(EditorContext context, ComboBox<CameraInfo> cameraSelectorComboBox) {
+    private VBox createMainColumn(EditorContext context, ComboBox<CameraInfo> cameraSelectorComboBox, ComboBox<CameraInfo.CameraView> viewSelectorComboBox) {
         ObservableList<Map.Entry<ViewProps, ?>> allViewProps = FXCollections.observableArrayList();
 
         cameraSelectorComboBox.getStyleClass().add(CSS_CLASS_CAM_SELECTOR_COMBOBOX);
         cameraSelectorComboBox.setConverter(new CameraInfoToItemConverter(cameraRefHelper));
 
-        ComboBox<CameraInfo.CameraView> viewSelectorComboBox = new ComboBox<>(cameraViews.sorted(comparing(CameraInfo.CameraView::getType)));
         viewSelectorComboBox.getStyleClass().add(CSS_CLASS_VIEW_SELECTOR_COMBOBOX);
         viewSelectorComboBox.setConverter(new CameraViewToItemConverter());
 
@@ -196,7 +198,7 @@ public class CamerasPlugin implements DatabasePlugin {
         return mainColumnBox;
     }
 
-    private VBox createButtonColumn(EventHandler<ActionEvent> onAddSetAction, EventHandler<ActionEvent> onImportSetAction) {
+    private VBox createButtonColumn(EventHandler<ActionEvent> onAddSetAction, EventHandler<ActionEvent> onImportSetAction, EventHandler<ActionEvent> onExportCurrentViewAction, EventHandler<ActionEvent> onExportAllViewsAction) {
         VBox buttonColumnBox = new VBox();
         buttonColumnBox.getStyleClass().add(fr.tduf.gui.database.common.FxConstants.CSS_CLASS_VERTICAL_BUTTON_BOX);
 
@@ -207,12 +209,24 @@ public class CamerasPlugin implements DatabasePlugin {
 
         Button importSetButton = new Button(LABEL_IMPORT_SET_BUTTON);
         importSetButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
-        ControlHelper.setTooltipText(importSetButton, DisplayConstants.TOOLTIP_IMPORT_SET_BUTTON);
+        ControlHelper.setTooltipText(importSetButton, TOOLTIP_IMPORT_SET_BUTTON);
         importSetButton.setOnAction(onImportSetAction);
+
+        MenuButton exportSetMenuButton = new MenuButton(LABEL_EXPORT_SET_BUTTON);
+        exportSetMenuButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
+        ControlHelper.setTooltipText(exportSetMenuButton, DisplayConstants.TOOLTIP_EXPORT_SET_BUTTON);
+        MenuItem exportCurrentViewMenuItem = new MenuItem(LABEL_EXPORT_CURRENT_BUTTON);
+        exportCurrentViewMenuItem.setOnAction(onExportCurrentViewAction);
+        MenuItem exportAllViewsMenuItem = new MenuItem(LABEL_EXPORT_ALL_BUTTON);
+        exportAllViewsMenuItem.setOnAction(onExportAllViewsAction);
+
+        exportSetMenuButton.getItems().add(exportCurrentViewMenuItem);
+        exportSetMenuButton.getItems().add(exportAllViewsMenuItem);
 
         ObservableList<Node> children = buttonColumnBox.getChildren();
         children.add(addSetButton);
         children.add(importSetButton);
+        children.add(exportSetMenuButton);
 
         return buttonColumnBox;
     }
@@ -406,9 +420,22 @@ public class CamerasPlugin implements DatabasePlugin {
     }
 
     private EventHandler<ActionEvent> handleImportSetButtonAction(StringProperty rawValueProperty) {
+        // TODO get window from context
         return event -> dialogsHelper.askForCameraPatchLocation(null)
                 .map(File::new)
-                .ifPresent((file) -> importSetFromPatchFile(file, Long.valueOf(rawValueProperty.get())));
+                .ifPresent(file -> importSetFromPatchFile(file, Long.valueOf(rawValueProperty.get())));
+    }
+
+    private EventHandler<ActionEvent> handleExportAllViewsAction(StringProperty rawValueProperty) {
+        return event -> dialogsHelper.askForCameraPatchSaveLocation(null)
+                .map(File::new)
+                .ifPresent(file -> exportFullSetToPatchFile(file, Long.valueOf(rawValueProperty.get())));
+    }
+
+    private EventHandler<ActionEvent> handleExportCurrentViewAction(StringProperty rawValueProperty, CameraInfo.CameraView currentView) {
+        return event -> dialogsHelper.askForCameraPatchSaveLocation(null)
+                .map(File::new)
+                .ifPresent(file -> exportViewToPatchFile(file, Long.valueOf(rawValueProperty.get()), currentView));
     }
 
     private void importSetFromPatchFile(File file, long targetSetIdentifier) {
@@ -432,6 +459,58 @@ public class CamerasPlugin implements DatabasePlugin {
                     .withContext(ERROR)
                     .withTitle(DisplayConstants.TITLE_IMPORT)
                     .withMessage(DisplayConstants.MESSAGE_UNABLE_IMPORT_PATCH)
+                    .withDescription(MESSAGE_SEE_LOGS)
+                    .build();
+        }
+
+        // TODO use parent from editor context
+        CommonDialogsHelper.showDialog(dialogOptions, null);
+    }
+
+    private void exportViewToPatchFile(File patchFile, long setIdentifier, CameraInfo.CameraView cameraView) {
+        SimpleDialogOptions dialogOptions;
+        try {
+            imExHelper.exportToPatch(patchFile, camerasParserProperty.getValue(), setIdentifier, cameraView.getType());
+
+            dialogOptions = SimpleDialogOptions.builder()
+                    .withContext(INFORMATION)
+                    .withTitle(DisplayConstants.TITLE_EXPORT)
+                    .withMessage(DisplayConstants.MESSAGE_DATA_EXPORTED)
+                    .withDescription(patchFile.getPath())
+                    .build();
+        } catch (Exception e) {
+            Log.error(THIS_CLASS_NAME, e);
+
+            dialogOptions = SimpleDialogOptions.builder()
+                    .withContext(ERROR)
+                    .withTitle(DisplayConstants.TITLE_EXPORT)
+                    .withMessage(DisplayConstants.MESSAGE_UNABLE_EXPORT_PATCH)
+                    .withDescription(MESSAGE_SEE_LOGS)
+                    .build();
+        }
+
+        // TODO use parent from editor context
+        CommonDialogsHelper.showDialog(dialogOptions, null);
+    }
+
+    private void exportFullSetToPatchFile(File patchFile, long setIdentifier) {
+        SimpleDialogOptions dialogOptions;
+        try {
+            imExHelper.exportToPatch(patchFile, camerasParserProperty.getValue(), setIdentifier, null);
+
+            dialogOptions = SimpleDialogOptions.builder()
+                    .withContext(INFORMATION)
+                    .withTitle(DisplayConstants.TITLE_EXPORT)
+                    .withMessage(DisplayConstants.MESSAGE_DATA_EXPORTED)
+                    .withDescription(patchFile.getPath())
+                    .build();
+        } catch (Exception e) {
+            Log.error(THIS_CLASS_NAME, e);
+
+            dialogOptions = SimpleDialogOptions.builder()
+                    .withContext(ERROR)
+                    .withTitle(DisplayConstants.TITLE_EXPORT)
+                    .withMessage(DisplayConstants.MESSAGE_UNABLE_EXPORT_PATCH)
                     .withDescription(MESSAGE_SEE_LOGS)
                     .build();
         }

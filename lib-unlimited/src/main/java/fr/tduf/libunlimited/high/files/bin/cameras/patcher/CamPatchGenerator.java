@@ -33,34 +33,37 @@ public class CamPatchGenerator {
      * Will export all view properties.
      *
      * @param identifierRange   : range of camera set identifier values
+     * @param viewRange         : range of views to be exported
      * @return a patch object with all necessary instructions.
      */
-    public CamPatchDto makePatch(ItemRange identifierRange) {
+    public CamPatchDto makePatch(ItemRange identifierRange, ItemRange viewRange) {
         requireNonNull(identifierRange, "An identifier range is required.");
+        requireNonNull(viewRange, "An view range is required.");
 
         String currentDateTime = LocalDateTime.now().format(ISO_LOCAL_DATE_TIME);
         return CamPatchDto.builder()
                 .withComment("Camera patch built on " + currentDateTime)
-                .addChanges(makeChangesObjectsForSetsWithIdentifiers(identifierRange))
+                .addChanges(makeChangesObjectsForSetsWithIdentifiers(identifierRange, viewRange))
                 .build();
     }
 
-    private Collection<SetChangeDto> makeChangesObjectsForSetsWithIdentifiers(ItemRange identifierRange) {
+    private Collection<SetChangeDto> makeChangesObjectsForSetsWithIdentifiers(ItemRange identifierRange, ItemRange viewRange) {
         return camerasInformation.stream()
                 .filter(setEntry -> isInIdRange(setEntry, identifierRange))
-                .map(this::makeChangeObjectForEntry)
+                .map(cameraInfo -> makeChangeObjectForEntry(cameraInfo, viewRange))
                 .collect(toList());
     }
 
-    private SetChangeDto makeChangeObjectForEntry(CameraInfo cameraInfo) {
+    private SetChangeDto makeChangeObjectForEntry(CameraInfo cameraInfo, ItemRange viewRange) {
         return SetChangeDto.builder()
                 .withSetIdentifier(cameraInfo.getCameraIdentifier())
-                .addChanges(makeViewChangeObjectsForSet(cameraInfo))
+                .addChanges(makeViewChangeObjectsForSet(cameraInfo, viewRange))
                 .build();
     }
 
-    private Collection<ViewChangeDto> makeViewChangeObjectsForSet(CameraInfo cameraInfo) {
+    private Collection<ViewChangeDto> makeViewChangeObjectsForSet(CameraInfo cameraInfo, ItemRange viewRange) {
         return cameraInfo.getViews().stream()
+                .filter(view -> isInViewRange(view, viewRange))
                 .map(this::makeViewChangeObject)
                 .collect(toList());
     }
@@ -84,4 +87,7 @@ public class CamPatchGenerator {
         return identifierRange.accepts(Long.toString(setEntry.getCameraIdentifier()));
     }
 
+    private boolean isInViewRange(CameraInfo.CameraView view, ItemRange identifierRange) {
+        return identifierRange.accepts(view.getType().name());
+    }
 }

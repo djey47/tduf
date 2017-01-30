@@ -1,10 +1,15 @@
 package fr.tduf.gui.database.plugins.cameras.helper;
 
+import fr.tduf.libunlimited.high.files.bin.cameras.patcher.CamPatchGenerator;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.CamPatcher;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.CamPatchDto;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.SetChangeDto;
 import fr.tduf.libunlimited.high.files.common.patcher.domain.PatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PatchPropertiesReadWriteHelper;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
+import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -37,6 +42,23 @@ public class CamerasImExHelper {
         final PatchProperties effectiveProperties = patcher.applyWithProperties(patchObject, patchProperties);
 
         return PatchPropertiesReadWriteHelper.writeEffectivePatchProperties(effectiveProperties, patchFile.getAbsolutePath());
+    }
+
+    /**
+     * @param patchFile     : applied cameras patch file
+     * @param camerasParser : loaded cameras contents
+     * @param setIdentifier : set identifier to use
+     * @param viewKind      : can be null, to export all views
+     */
+    public void exportToPatch(File patchFile, CamerasParser camerasParser, long setIdentifier, ViewKind viewKind) throws IOException {
+        List<CameraInfo> cameraInfos = CamerasHelper.fetchAllInformation(camerasParser);
+        CamPatchGenerator generator = new CamPatchGenerator(cameraInfos);
+
+        ItemRange identifierRange = ItemRange.fromSingleValue(Long.toString(setIdentifier));
+        ItemRange viewRange = viewKind == null ? ItemRange.ALL : ItemRange.fromSingleValue(viewKind.name());
+        CamPatchDto camPatchObject = generator.makePatch(identifierRange, viewRange);
+
+        objectMapper.writerWithDefaultPrettyPrinter().writeValue(patchFile, camPatchObject);
     }
 
     private void overrideSetIdentifierIfNecessary(Long targetSetIdentifier, List<SetChangeDto> changes) {

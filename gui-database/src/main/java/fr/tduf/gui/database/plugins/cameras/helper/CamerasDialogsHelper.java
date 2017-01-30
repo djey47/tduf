@@ -21,4 +21,14 @@ public class CamerasDialogsHelper extends DialogsHelper {
 
         return askForLoadLocation(FileLocation.TDUF, extensionFilters, parent);
     }
+
+    /**
+     * Displays file save dialog for TDUF camera patch
+     * @return empty if no selection was made (dismissed)
+     */
+    public Optional<String> askForCameraPatchSaveLocation(Window parent) {
+        List<FileChooser.ExtensionFilter> extensionFilters = asList(EXTENSION_FILTER_TDUF_CAMERA_PATCH, FxConstants.EXTENSION_FILTER_ALL);
+
+        return askForSaveLocation(FileLocation.TDUF, extensionFilters, parent);
+    }
 }
