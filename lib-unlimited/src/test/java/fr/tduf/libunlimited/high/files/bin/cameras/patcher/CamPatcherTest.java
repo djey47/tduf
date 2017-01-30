@@ -123,15 +123,19 @@ class CamPatcherTest {
         DataStore clonedDataStoreMock = mock(DataStore.class);
         Map<Long, List<DataStore>> storeMapBeforeCloning = new HashMap<>(1);
         storeMapBeforeCloning.put(10000L, singletonList(refDataStoreMock));
-        Map<Long, List<DataStore>> storeMapAfterCloning = new HashMap<>(1);
+        Map<Long, List<DataStore>> storeMapAfterCloning = new HashMap<>(2);
         storeMapAfterCloning.put(10000L, singletonList(refDataStoreMock));
         storeMapAfterCloning.put(1250L, singletonList(clonedDataStoreMock));
-        Map<Long, Short> indexMap = new HashMap<>(1);
-        indexMap.put(10000L, (short) 12);
+        Map<Long, Short> indexMapBeforeCloning = new HashMap<>(1);
+        indexMapBeforeCloning.put(10000L, (short) 12);
+        Map<Long, Short> indexMapAfterCloning = new HashMap<>(2);
+        indexMapAfterCloning.put(10000L, (short) 12);
+        indexMapAfterCloning.put(1250L, (short) 4);
 
-        when(camerasParserMock.getCameraIndex()).thenReturn(indexMap);
         //noinspection unchecked
-        when(camerasParserMock.getCameraViews()).thenReturn(storeMapBeforeCloning, storeMapAfterCloning);
+        when(camerasParserMock.getCameraIndex()).thenReturn(indexMapBeforeCloning, indexMapAfterCloning);
+        //noinspection unchecked
+        when(camerasParserMock.getCameraViews()).thenReturn(storeMapBeforeCloning, storeMapBeforeCloning, storeMapBeforeCloning, storeMapBeforeCloning, storeMapAfterCloning);
         when(camerasParserMock.getViewProps(clonedDataStoreMock)).thenReturn(new EnumMap<>(ViewProps.class));
         when(camerasParserMock.getDataStore()).thenReturn(refDataStoreMock);
         when(refDataStoreMock.copy()).thenReturn(clonedDataStoreMock);
