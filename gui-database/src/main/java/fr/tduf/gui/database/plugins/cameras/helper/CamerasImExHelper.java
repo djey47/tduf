@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static java.util.Optional.empty;
-import static java.util.Optional.of;
 
 /**
  * Performs import/export operations
@@ -30,7 +29,7 @@ public class CamerasImExHelper {
     public Optional<String> importPatch(File patchFile, CamerasParser camerasParser) throws IOException {
         CamPatchDto patchObject = objectMapper.readValue(patchFile, CamPatchDto.class);
         CamPatcher patcher = new CamPatcher(camerasParser);
-        DatabasePatchProperties patchProperties = PatchPropertiesReadWriteHelper.readPatchProperties(patchFile);
+        DatabasePatchProperties patchProperties = PatchPropertiesReadWriteHelper.readDatabasePatchProperties(patchFile);
 
         final PatchProperties effectiveProperties = patcher.applyWithProperties(patchObject, patchProperties);
 

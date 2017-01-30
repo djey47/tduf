@@ -57,7 +57,7 @@ class RetrieveBackupStep extends GenericStep {
 
         DbPatchDto patchObject = new ObjectMapper().readValue(snapshotPatchFilePath.toFile(), DbPatchDto.class);
 
-        DatabasePatchProperties patchProperties = PatchPropertiesReadWriteHelper.readPatchProperties(effectivePatchFilePath.toFile());
+        DatabasePatchProperties patchProperties = PatchPropertiesReadWriteHelper.readDatabasePatchProperties(effectivePatchFilePath.toFile());
         if (patchProperties.isEmpty()) {
             throw new IOException(DisplayConstants.MESSAGE_INVALID_PROPERTIES);
         }

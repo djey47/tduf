@@ -160,7 +160,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
     Optional<String> importPatch(File patchFile) throws IOException, ReflectiveOperationException {
         DbPatchDto patchObject = new ObjectMapper().readValue(patchFile, DbPatchDto.class);
         DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, getDatabaseObjects());
-        DatabasePatchProperties patchProperties = PatchPropertiesReadWriteHelper.readPatchProperties(patchFile);
+        DatabasePatchProperties patchProperties = PatchPropertiesReadWriteHelper.readDatabasePatchProperties(patchFile);
 
         final DatabasePatchProperties effectiveProperties = patcher.applyWithProperties(patchObject, patchProperties);
 

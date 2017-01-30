@@ -564,7 +564,7 @@ public class MainStageController extends AbstractGuiController {
 
         DbPatchDto patchObject = new ObjectMapper().readValue(patchFile, DbPatchDto.class);
 
-        DatabasePatchProperties patchProperties = PatchPropertiesReadWriteHelper.readPatchProperties(patchFile);
+        DatabasePatchProperties patchProperties = PatchPropertiesReadWriteHelper.readDatabasePatchProperties(patchFile);
         if (patchProperties.isEmpty()) {
             throw new IOException(DisplayConstants.MESSAGE_INVALID_PROPERTIES);
         }
