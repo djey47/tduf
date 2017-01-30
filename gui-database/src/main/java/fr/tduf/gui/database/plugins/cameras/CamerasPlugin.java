@@ -157,7 +157,7 @@ public class CamerasPlugin implements DatabasePlugin {
         StringProperty rawValueProperty = context.getRawValueProperty();
         VBox buttonColumnBox = createButtonColumn(
                 handleAddSetButtonAction(rawValueProperty, cameraSelectorComboBox.getSelectionModel()),
-                handleImportSetButtonAction());
+                handleImportSetButtonAction(rawValueProperty));
 
         ObservableList<Node> mainRowChildren = hBox.getChildren();
         mainRowChildren.add(mainColumnBox);
@@ -405,21 +405,19 @@ public class CamerasPlugin implements DatabasePlugin {
         };
     }
 
-    private EventHandler<ActionEvent> handleImportSetButtonAction() {
+    private EventHandler<ActionEvent> handleImportSetButtonAction(StringProperty rawValueProperty) {
         return event -> dialogsHelper.askForCameraPatchLocation(null)
                 .map(File::new)
-                .ifPresent(this::importSetFromPatchFile);
+                .ifPresent((file) -> importSetFromPatchFile(file, Long.valueOf(rawValueProperty.get())));
     }
 
-    private void importSetFromPatchFile(File file) {
+    private void importSetFromPatchFile(File file, long targetSetIdentifier) {
         SimpleDialogOptions dialogOptions;
         try {
-            String writtenPropertiesPath = imExHelper.importPatch(file, camerasParserProperty.getValue())
+            String writtenPropertiesPath = imExHelper.importPatch(file, camerasParserProperty.getValue(), targetSetIdentifier)
                     // Extract to common display constant
                     .map(propertiesPath -> String.format("Written properties file:%s%s", System.lineSeparator(), propertiesPath))
                     .orElse("");
-
-            // TODO refresh UI
 
             dialogOptions = SimpleDialogOptions.builder()
                     .withContext(INFORMATION)

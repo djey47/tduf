@@ -31,6 +31,6 @@ class CamerasImExHelperTest {
 
         // when-then
         assertThrows(IllegalStateException.class,
-                () -> imExHelper.importPatch(patchFile, camerasParser));
+                () -> imExHelper.importPatch(patchFile, camerasParser, null));
     }
 }
