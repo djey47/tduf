@@ -139,7 +139,6 @@ public class CamerasPlugin implements DatabasePlugin {
     @Override
     public Node renderControls(EditorContext context) {
         CamerasContext camerasContext = context.getCamerasContext();
-        // TODO see to set them automatically (add get set to interface?)
         camerasContext.setErrorProperty(context.getErrorProperty());
         camerasContext.setErrorMessageProperty(context.getErrorMessageProperty());
 
