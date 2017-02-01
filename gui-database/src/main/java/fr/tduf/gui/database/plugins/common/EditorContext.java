@@ -5,22 +5,24 @@ import fr.tduf.gui.database.plugins.cameras.CamerasContext;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
+import javafx.stage.Window;
 
 /**
  * Contains all information for correct plugin execution
  */
-// TODO add handle to main window and use it
 public class EditorContext implements PluginContext {
     private DbDto.Topic currentTopic;
     private int fieldRank;
     private boolean fieldReadOnly;
     private String databaseLocation;
     private MainStageChangeDataController changeDataController;
-    private CamerasContext camerasContext = new CamerasContext();
+    private Window mainWindow;
 
     private StringProperty rawValueProperty;
     private StringProperty errorMessageProperty;
     private BooleanProperty errorProperty;
+
+    private CamerasContext camerasContext = new CamerasContext();
 
     @Override
     public void reset() {
@@ -93,5 +95,13 @@ public class EditorContext implements PluginContext {
 
     public void setErrorProperty(BooleanProperty errorProperty) {
         this.errorProperty = errorProperty;
+    }
+
+    public void setMainWindow(Window mainWindow) {
+        this.mainWindow = mainWindow;
+    }
+
+    public Window getMainWindow() {
+        return mainWindow;
     }
 }

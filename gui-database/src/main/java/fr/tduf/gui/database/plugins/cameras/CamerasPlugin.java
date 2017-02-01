@@ -32,6 +32,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.stage.Window;
 
 import java.io.File;
 import java.io.IOException;
@@ -130,6 +131,7 @@ public class CamerasPlugin implements DatabasePlugin {
     /**
      * Required contextual information:
      * - rawValueProperty
+     * - mainWindow
      * - camerasContext->allCameras
      * - camerasContext->viewTypeProperty
      * @param context : all required information about Database Editor
@@ -156,11 +158,12 @@ public class CamerasPlugin implements DatabasePlugin {
         VBox mainColumnBox = createMainColumn(context, cameraSelectorComboBox, viewSelectorComboBox);
 
         StringProperty rawValueProperty = context.getRawValueProperty();
+        Window mainWindow = context.getMainWindow();
         VBox buttonColumnBox = createButtonColumn(
-                handleAddSetButtonAction(rawValueProperty, cameraSelectorComboBox.getSelectionModel()),
-                handleImportSetButtonAction(rawValueProperty),
-                handleExportCurrentViewAction(rawValueProperty, viewSelectorComboBox.getSelectionModel()),
-                handleExportAllViewsAction(rawValueProperty));
+                handleAddSetButtonAction(rawValueProperty, cameraSelectorComboBox.getSelectionModel(), mainWindow),
+                handleImportSetButtonAction(rawValueProperty, mainWindow),
+                handleExportCurrentViewAction(rawValueProperty, viewSelectorComboBox.getSelectionModel(), mainWindow),
+                handleExportAllViewsAction(rawValueProperty, mainWindow));
 
         ObservableList<Node> mainRowChildren = hBox.getChildren();
         mainRowChildren.add(mainColumnBox);
@@ -396,9 +399,9 @@ public class CamerasPlugin implements DatabasePlugin {
         return Paths.get(databaseLocation, CamerasHelper.FILE_CAMERAS_BIN);
     }
 
-    private EventHandler<ActionEvent> handleAddSetButtonAction(StringProperty rawValueProperty, SingleSelectionModel<CameraInfo> cameraSelectorSelectionModel) {
+    private EventHandler<ActionEvent> handleAddSetButtonAction(StringProperty rawValueProperty, SingleSelectionModel<CameraInfo> cameraSelectorSelectionModel, Window mainWindow) {
         return event -> {
-            Optional<String> input = CommonDialogsHelper.showInputValueDialog(TITLE_ADD_SET, MESSAGE_ADD_SET_IDENTIFIER, null);
+            Optional<String> input = CommonDialogsHelper.showInputValueDialog(TITLE_ADD_SET, MESSAGE_ADD_SET_IDENTIFIER, mainWindow);
             if (!input.isPresent()) {
                 return;
             }
@@ -419,26 +422,25 @@ public class CamerasPlugin implements DatabasePlugin {
         };
     }
 
-    private EventHandler<ActionEvent> handleImportSetButtonAction(StringProperty rawValueProperty) {
-        // TODO get window from context
-        return event -> dialogsHelper.askForCameraPatchLocation(null)
+    private EventHandler<ActionEvent> handleImportSetButtonAction(StringProperty rawValueProperty, Window mainWindow) {
+        return event -> dialogsHelper.askForCameraPatchLocation(mainWindow)
                 .map(File::new)
-                .ifPresent(file -> importSetFromPatchFile(file, Long.valueOf(rawValueProperty.get())));
+                .ifPresent(file -> importSetFromPatchFile(file, Long.valueOf(rawValueProperty.get()), mainWindow));
     }
 
-    private EventHandler<ActionEvent> handleExportAllViewsAction(StringProperty rawValueProperty) {
-        return event -> dialogsHelper.askForCameraPatchSaveLocation(null)
+    private EventHandler<ActionEvent> handleExportAllViewsAction(StringProperty rawValueProperty, Window mainWindow) {
+        return event -> dialogsHelper.askForCameraPatchSaveLocation(mainWindow)
                 .map(File::new)
-                .ifPresent(file -> exportSetToPatchFile(file, Long.valueOf(rawValueProperty.get()), null));
+                .ifPresent(file -> exportSetToPatchFile(file, Long.valueOf(rawValueProperty.get()), null, mainWindow));
     }
 
-    private EventHandler<ActionEvent> handleExportCurrentViewAction(StringProperty rawValueProperty, SingleSelectionModel<CameraInfo.CameraView> viewSelectorSelectionModel) {
-        return event -> dialogsHelper.askForCameraPatchSaveLocation(null)
+    private EventHandler<ActionEvent> handleExportCurrentViewAction(StringProperty rawValueProperty, SingleSelectionModel<CameraInfo.CameraView> viewSelectorSelectionModel, Window mainWindow) {
+        return event -> dialogsHelper.askForCameraPatchSaveLocation(mainWindow)
                 .map(File::new)
-                .ifPresent(file -> exportSetToPatchFile(file, Long.valueOf(rawValueProperty.get()), viewSelectorSelectionModel.getSelectedItem().getType()));
+                .ifPresent(file -> exportSetToPatchFile(file, Long.valueOf(rawValueProperty.get()), viewSelectorSelectionModel.getSelectedItem().getType(), mainWindow));
     }
 
-    private void importSetFromPatchFile(File file, long targetSetIdentifier) {
+    private void importSetFromPatchFile(File file, long targetSetIdentifier, Window mainWindow) {
         SimpleDialogOptions dialogOptions;
         try {
             String writtenPropertiesPath = imExHelper.importPatch(file, camerasParserProperty.getValue(), targetSetIdentifier)
@@ -463,11 +465,10 @@ public class CamerasPlugin implements DatabasePlugin {
                     .build();
         }
 
-        // TODO use parent from editor context
-        CommonDialogsHelper.showDialog(dialogOptions, null);
+        CommonDialogsHelper.showDialog(dialogOptions, mainWindow);
     }
 
-    private void exportSetToPatchFile(File patchFile, long setIdentifier, ViewKind type) {
+    private void exportSetToPatchFile(File patchFile, long setIdentifier, ViewKind type, Window mainWindow) {
         SimpleDialogOptions dialogOptions;
         try {
             imExHelper.exportToPatch(patchFile, camerasParserProperty.getValue(), setIdentifier, type);
@@ -489,7 +490,6 @@ public class CamerasPlugin implements DatabasePlugin {
                     .build();
         }
 
-        // TODO use parent from editor context
-        CommonDialogsHelper.showDialog(dialogOptions, null);
+        CommonDialogsHelper.showDialog(dialogOptions, mainWindow);
     }
 }

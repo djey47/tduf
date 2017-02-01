@@ -4,6 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 
 import java.util.Set;
@@ -24,6 +25,11 @@ public class PluginHandler {
      */
     public PluginHandler(Parent root, MainStageChangeDataController changeDataController) {
         context.setChangeDataController(requireNonNull(changeDataController, "Change data controller instance is required."));
+
+        Scene scene = requireNonNull(root, "Root FX component instance is required.").getScene();
+        if (scene != null) {
+            context.setMainWindow(scene.getWindow());
+        }
 
         PluginIndex.allAsStream().forEach(p -> addPluginCss(p, root));
     }
