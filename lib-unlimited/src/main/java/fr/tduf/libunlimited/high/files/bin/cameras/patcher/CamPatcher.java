@@ -59,8 +59,7 @@ public class CamPatcher {
 
     private void applyChange(SetChangeDto setChangeObject) {
         long setIdentifier = Long.valueOf(setChangeObject.getId());
-        // TODO use helper method to check
-        if (!camerasParser.getCameraViews().containsKey(setIdentifier)) {
+        if (!CamerasHelper.cameraSetExists(setIdentifier, camerasParser)) {
             createCameraSetFromReference(setIdentifier);
         }
 

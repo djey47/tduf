@@ -135,7 +135,7 @@ class CamPatcherTest {
         //noinspection unchecked
         when(camerasParserMock.getCameraIndex()).thenReturn(indexMapBeforeCloning, indexMapAfterCloning);
         //noinspection unchecked
-        when(camerasParserMock.getCameraViews()).thenReturn(storeMapBeforeCloning, storeMapBeforeCloning, storeMapBeforeCloning, storeMapBeforeCloning, storeMapAfterCloning);
+        when(camerasParserMock.getCameraViews()).thenReturn(storeMapBeforeCloning, storeMapBeforeCloning, storeMapAfterCloning, storeMapAfterCloning);
         when(camerasParserMock.getViewProps(clonedDataStoreMock)).thenReturn(new EnumMap<>(ViewProps.class));
         when(camerasParserMock.getDataStore()).thenReturn(refDataStoreMock);
         when(refDataStoreMock.copy()).thenReturn(clonedDataStoreMock);
@@ -146,6 +146,7 @@ class CamPatcherTest {
         camPatcher.apply(camPatchDto);
 
         // then
+        verify(camerasParserMock, times(4)).getCameraViews();
         verify(clonedDataStoreMock).addInteger("viewPositionX", 1500L);
     }
 }

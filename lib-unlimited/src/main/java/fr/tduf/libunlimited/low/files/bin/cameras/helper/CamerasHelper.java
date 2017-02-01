@@ -194,6 +194,17 @@ public class CamerasHelper {
         Files.write(Paths.get(cameraFile), outputStream.toByteArray(), StandardOpenOption.CREATE);
     }
 
+    /**
+     * @param camerasParser : parsed camera contents
+     * @return true if a set with provded id exists in index and in settings
+     */
+    // TODO unit test
+    public static boolean cameraSetExists(long cameraId, CamerasParser camerasParser) {
+        Map<Long, Short> cameraIndex = camerasParser.getCameraIndex() ;
+        return cameraIndex.containsKey(cameraId)
+                && camerasParser.getCameraViews().containsKey(cameraId);
+    }
+
     static List<DataStore> extractViewStores(long cameraIdentifier, CamerasParser parser) {
         List<DataStore> viewStores = requireNonNull(parser, "Parser with cameras contents is required.")
                 .getCameraViews().get(cameraIdentifier);
@@ -270,15 +281,11 @@ public class CamerasHelper {
         return new ByteArrayInputStream(readAllBytes(Paths.get(sourceCameraFile)));
     }
 
-    // TODO make it public and use it from patcher as well
-    private static void checkCameraSetExists(long cameraId, CamerasParser parser) {
-        Map<Long, Short> cameraIndex = parser.getCameraIndex() ;
-        if (!cameraIndex.containsKey(cameraId)
-                || !parser.getCameraViews().containsKey(cameraId)) {
+    private static void checkCameraSetExists(long cameraId, CamerasParser camerasParser) {
+        if (!cameraSetExists(cameraId, camerasParser)) {
             throw new NoSuchElementException("Unknown source camera identifier: " + cameraId);
         }
     }
-
     // For testing
     public static void setCameraSupport(GenuineCamGateway genuineCamGateway) {
         cameraSupport = genuineCamGateway;
