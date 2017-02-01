@@ -1,13 +1,18 @@
 package fr.tduf.gui.database.plugins.cameras.helper;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.CamPatchDto;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,6 +21,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 class CamerasImExHelperTest {
     private static final Class<CamerasImExHelperTest> thisClass = CamerasImExHelperTest.class;
+    private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 
     @Mock
     private CamerasParser camerasParser;
@@ -28,19 +34,29 @@ class CamerasImExHelperTest {
     }
 
     @Test
-    void importPatch_withEmptyParser_shouldReturnEmptyPropertiesPath() throws IOException {
+    void importPatch_withEmptyPatch_shouldReturnEmpty() throws IOException {
         // given
-        File patchFile = new File(thisClass.getResource("/patches/tduf.cam.json").getFile());
+        File patchFile = new File(thisClass.getResource("/patches/cameras/tduf-empty.cam.json").getFile());
 
         // when
-        Optional<String> actualProperties = imExHelper.importPatch(patchFile, camerasParser, null);
+        Optional<String> actualPropertyPath = imExHelper.importPatch(patchFile, camerasParser, null);
 
         // then
-        assertThat(actualProperties).isEmpty();
+        assertThat(actualPropertyPath).isEmpty();
     }
 
     @Test
-    void exportToPatch_withEmptyParser_shouldReturnEmptyPatch() throws IOException {
+    void importPatch_withEmptyParser_shouldThrowException() throws IOException {
+        // given
+        File patchFile = new File(thisClass.getResource("/patches/cameras/tduf-simple.cam.json").getFile());
+
+        // when-then
+        assertThrows(IllegalStateException.class,
+                () -> imExHelper.importPatch(patchFile, camerasParser, null));
+    }
+
+    @Test
+    void exportToPatch_withEmptyParser_shouldReturnEmptyPatch() throws IOException, URISyntaxException, JSONException {
         // given
         File patchFile = new File(FilesHelper.createTempDirectoryForDatabaseEditor(), "tduf-export.cam.json");
 
@@ -48,7 +64,10 @@ class CamerasImExHelperTest {
         imExHelper.exportToPatch(patchFile, camerasParser, 1L, null);
 
         // then
+        Log.info(THIS_CLASS_NAME, "Written patch file: " + patchFile.getPath());
         assertThat(patchFile).exists();
-        // TODO assert file has empty patch contents
+        CamPatchDto actualPatchObject = new ObjectMapper().readValue(patchFile, CamPatchDto.class);
+        assertThat(actualPatchObject.getComment()).startsWith("Camera patch built");
+        assertThat(actualPatchObject.getChanges()).isEmpty();
     }
 }
