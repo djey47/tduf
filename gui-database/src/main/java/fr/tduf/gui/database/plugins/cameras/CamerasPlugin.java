@@ -159,7 +159,7 @@ public class CamerasPlugin implements DatabasePlugin {
         VBox buttonColumnBox = createButtonColumn(
                 handleAddSetButtonAction(rawValueProperty, cameraSelectorComboBox.getSelectionModel()),
                 handleImportSetButtonAction(rawValueProperty),
-                handleExportCurrentViewAction(rawValueProperty, viewSelectorComboBox.getValue().getType()),
+                handleExportCurrentViewAction(rawValueProperty, viewSelectorComboBox.getSelectionModel()),
                 handleExportAllViewsAction(rawValueProperty));
 
         ObservableList<Node> mainRowChildren = hBox.getChildren();
@@ -396,7 +396,7 @@ public class CamerasPlugin implements DatabasePlugin {
         return Paths.get(databaseLocation, CamerasHelper.FILE_CAMERAS_BIN);
     }
 
-    private EventHandler<ActionEvent> handleAddSetButtonAction(StringProperty rawValueProperty, SingleSelectionModel<CameraInfo> cameraSelectorComboBoxSelectionModel) {
+    private EventHandler<ActionEvent> handleAddSetButtonAction(StringProperty rawValueProperty, SingleSelectionModel<CameraInfo> cameraSelectorSelectionModel) {
         return event -> {
             Optional<String> input = CommonDialogsHelper.showInputValueDialog(TITLE_ADD_SET, MESSAGE_ADD_SET_IDENTIFIER, null);
             if (!input.isPresent()) {
@@ -415,7 +415,7 @@ public class CamerasPlugin implements DatabasePlugin {
                 cameraInfos.add(newCameraInfo);
             }
 
-            cameraSelectorComboBoxSelectionModel.select(newCameraInfo);
+            cameraSelectorSelectionModel.select(newCameraInfo);
         };
     }
 
@@ -432,10 +432,10 @@ public class CamerasPlugin implements DatabasePlugin {
                 .ifPresent(file -> exportSetToPatchFile(file, Long.valueOf(rawValueProperty.get()), null));
     }
 
-    private EventHandler<ActionEvent> handleExportCurrentViewAction(StringProperty rawValueProperty, ViewKind currentViewType) {
+    private EventHandler<ActionEvent> handleExportCurrentViewAction(StringProperty rawValueProperty, SingleSelectionModel<CameraInfo.CameraView> viewSelectorSelectionModel) {
         return event -> dialogsHelper.askForCameraPatchSaveLocation(null)
                 .map(File::new)
-                .ifPresent(file -> exportSetToPatchFile(file, Long.valueOf(rawValueProperty.get()), currentViewType));
+                .ifPresent(file -> exportSetToPatchFile(file, Long.valueOf(rawValueProperty.get()), viewSelectorSelectionModel.getSelectedItem().getType()));
     }
 
     private void importSetFromPatchFile(File file, long targetSetIdentifier) {
