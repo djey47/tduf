@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange.ALL;
+import static fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange.fromSingleValue;
+
 /**
  * Performs import/export operations
  */
@@ -33,13 +36,10 @@ public class CamerasImExHelper {
      */
     public Optional<String> importPatch(File patchFile, CamerasParser camerasParser, Long targetSetIdentifier) throws IOException {
         CamPatchDto patchObject = objectMapper.readValue(patchFile, CamPatchDto.class);
-
         overrideSetIdentifierIfNecessary(targetSetIdentifier, patchObject.getChanges());
 
-        CamPatcher patcher = new CamPatcher(camerasParser);
         PatchProperties patchProperties = PatchPropertiesReadWriteHelper.readPatchProperties(patchFile);
-
-        final PatchProperties effectiveProperties = patcher.applyWithProperties(patchObject, patchProperties);
+        final PatchProperties effectiveProperties = new CamPatcher(camerasParser).applyWithProperties(patchObject, patchProperties);
 
         return PatchPropertiesReadWriteHelper.writeEffectivePatchProperties(effectiveProperties, patchFile.getAbsolutePath());
     }
@@ -52,11 +52,10 @@ public class CamerasImExHelper {
      */
     public void exportToPatch(File patchFile, CamerasParser camerasParser, long setIdentifier, ViewKind viewKind) throws IOException {
         List<CameraInfo> cameraInfos = CamerasHelper.fetchAllInformation(camerasParser);
-        CamPatchGenerator generator = new CamPatchGenerator(cameraInfos);
 
-        ItemRange identifierRange = ItemRange.fromSingleValue(Long.toString(setIdentifier));
-        ItemRange viewRange = viewKind == null ? ItemRange.ALL : ItemRange.fromSingleValue(viewKind.name());
-        CamPatchDto camPatchObject = generator.makePatch(identifierRange, viewRange);
+        ItemRange identifierRange = fromSingleValue(Long.toString(setIdentifier));
+        ItemRange viewRange = viewKind == null ? ALL : fromSingleValue(viewKind.name());
+        CamPatchDto camPatchObject = new CamPatchGenerator(cameraInfos).makePatch(identifierRange, viewRange);
 
         objectMapper.writerWithDefaultPrettyPrinter().writeValue(patchFile, camPatchObject);
     }

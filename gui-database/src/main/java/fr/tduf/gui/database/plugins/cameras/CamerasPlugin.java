@@ -159,7 +159,7 @@ public class CamerasPlugin implements DatabasePlugin {
         VBox buttonColumnBox = createButtonColumn(
                 handleAddSetButtonAction(rawValueProperty, cameraSelectorComboBox.getSelectionModel()),
                 handleImportSetButtonAction(rawValueProperty),
-                handleExportCurrentViewAction(rawValueProperty, viewSelectorComboBox.getValue()),
+                handleExportCurrentViewAction(rawValueProperty, viewSelectorComboBox.getValue().getType()),
                 handleExportAllViewsAction(rawValueProperty));
 
         ObservableList<Node> mainRowChildren = hBox.getChildren();
@@ -429,13 +429,13 @@ public class CamerasPlugin implements DatabasePlugin {
     private EventHandler<ActionEvent> handleExportAllViewsAction(StringProperty rawValueProperty) {
         return event -> dialogsHelper.askForCameraPatchSaveLocation(null)
                 .map(File::new)
-                .ifPresent(file -> exportFullSetToPatchFile(file, Long.valueOf(rawValueProperty.get())));
+                .ifPresent(file -> exportSetToPatchFile(file, Long.valueOf(rawValueProperty.get()), null));
     }
 
-    private EventHandler<ActionEvent> handleExportCurrentViewAction(StringProperty rawValueProperty, CameraInfo.CameraView currentView) {
+    private EventHandler<ActionEvent> handleExportCurrentViewAction(StringProperty rawValueProperty, ViewKind currentViewType) {
         return event -> dialogsHelper.askForCameraPatchSaveLocation(null)
                 .map(File::new)
-                .ifPresent(file -> exportViewToPatchFile(file, Long.valueOf(rawValueProperty.get()), currentView));
+                .ifPresent(file -> exportSetToPatchFile(file, Long.valueOf(rawValueProperty.get()), currentViewType));
     }
 
     private void importSetFromPatchFile(File file, long targetSetIdentifier) {
@@ -467,36 +467,10 @@ public class CamerasPlugin implements DatabasePlugin {
         CommonDialogsHelper.showDialog(dialogOptions, null);
     }
 
-    private void exportViewToPatchFile(File patchFile, long setIdentifier, CameraInfo.CameraView cameraView) {
+    private void exportSetToPatchFile(File patchFile, long setIdentifier, ViewKind type) {
         SimpleDialogOptions dialogOptions;
         try {
-            imExHelper.exportToPatch(patchFile, camerasParserProperty.getValue(), setIdentifier, cameraView.getType());
-
-            dialogOptions = SimpleDialogOptions.builder()
-                    .withContext(INFORMATION)
-                    .withTitle(DisplayConstants.TITLE_EXPORT)
-                    .withMessage(DisplayConstants.MESSAGE_DATA_EXPORTED)
-                    .withDescription(patchFile.getPath())
-                    .build();
-        } catch (Exception e) {
-            Log.error(THIS_CLASS_NAME, e);
-
-            dialogOptions = SimpleDialogOptions.builder()
-                    .withContext(ERROR)
-                    .withTitle(DisplayConstants.TITLE_EXPORT)
-                    .withMessage(DisplayConstants.MESSAGE_UNABLE_EXPORT_PATCH)
-                    .withDescription(MESSAGE_SEE_LOGS)
-                    .build();
-        }
-
-        // TODO use parent from editor context
-        CommonDialogsHelper.showDialog(dialogOptions, null);
-    }
-
-    private void exportFullSetToPatchFile(File patchFile, long setIdentifier) {
-        SimpleDialogOptions dialogOptions;
-        try {
-            imExHelper.exportToPatch(patchFile, camerasParserProperty.getValue(), setIdentifier, null);
+            imExHelper.exportToPatch(patchFile, camerasParserProperty.getValue(), setIdentifier, type);
 
             dialogOptions = SimpleDialogOptions.builder()
                     .withContext(INFORMATION)
