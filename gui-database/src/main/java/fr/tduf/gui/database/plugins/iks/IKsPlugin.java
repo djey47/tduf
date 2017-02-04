@@ -1,7 +1,6 @@
 package fr.tduf.gui.database.plugins.iks;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.gui.database.plugins.iks.converter.IKReferenceToItemConverter;
@@ -28,6 +27,7 @@ import java.util.Set;
 import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_ITEM_LABEL;
 import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_PLUGIN_BOX;
 import static fr.tduf.gui.database.plugins.iks.common.DisplayConstants.LABEL_AVAILABLE_IKS;
+import static fr.tduf.gui.database.plugins.iks.common.DisplayConstants.LABEL_ERROR_TOOLTIP;
 import static fr.tduf.gui.database.plugins.iks.common.FxConstants.*;
 import static fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto.TopicMetadataDto.FIELD_RANK_IK;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
@@ -61,10 +61,16 @@ public class IKsPlugin implements DatabasePlugin {
     /**
      * Required contextual information:
      * - rawValueProperty
+     * - errorProperty
+     * - errorMessageProperty
      * @param context : all required information about Database Editor
      */
     @Override
     public Node renderControls(EditorContext context) {
+        IKsContext iksContext = context.getIKsContext();
+        iksContext.setErrorProperty(context.getErrorProperty());
+        iksContext.setErrorMessageProperty(context.getErrorMessageProperty());
+
         HBox hBox = new HBox();
         hBox.getStyleClass().add(CSS_CLASS_PLUGIN_BOX);
 
@@ -104,7 +110,7 @@ public class IKsPlugin implements DatabasePlugin {
         camSelectorBox.getStyleClass().add(CSS_CLASS_IK_SELECTOR_BOX);
 
         ikSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
-                getIKSelectorChangeListener(context.getChangeDataController()));
+                getIKSelectorChangeListener(context));
         Bindings.bindBidirectional(
                 context.getRawValueProperty(), ikSelectorComboBox.valueProperty(), new IKReferenceToRawValueConverter(reference));
 
@@ -122,14 +128,21 @@ public class IKsPlugin implements DatabasePlugin {
         return camSelectorBox;
     }
 
-    private ChangeListener<Map.Entry<Integer, String>> getIKSelectorChangeListener(MainStageChangeDataController changeDataController) {
+    private ChangeListener<Map.Entry<Integer, String>> getIKSelectorChangeListener(EditorContext context) {
         return (ObservableValue<? extends Map.Entry<Integer, String>> observable, Map.Entry<Integer, String> oldValue, Map.Entry<Integer, String> newValue) -> {
             if (Objects.equals(oldValue, newValue)) {
                 return;
             }
 
-            if (newValue != null) {
-                changeDataController.updateContentItem(CAR_PHYSICS_DATA, FIELD_RANK_IK, Integer.toString(newValue.getKey()));
+            IKsContext iKsContext = context.getIKsContext();
+            if (newValue == null) {
+                iKsContext.getErrorProperty().setValue(true);
+                iKsContext.getErrorMessageProperty().setValue(LABEL_ERROR_TOOLTIP);
+            } else {
+                iKsContext.getErrorProperty().setValue(false);
+                iKsContext.getErrorMessageProperty().setValue("");
+
+                context.getChangeDataController().updateContentItem(CAR_PHYSICS_DATA, FIELD_RANK_IK, Integer.toString(newValue.getKey()));
             }
         };
     }
