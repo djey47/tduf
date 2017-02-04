@@ -2,6 +2,7 @@ package fr.tduf.gui.database.plugins.common;
 
 import fr.tduf.gui.database.plugins.bitfield.BitfieldPlugin;
 import fr.tduf.gui.database.plugins.cameras.CamerasPlugin;
+import fr.tduf.gui.database.plugins.contentRef.ContentRefPlugin;
 import fr.tduf.gui.database.plugins.iks.IKsPlugin;
 import fr.tduf.gui.database.plugins.nope.NopePlugin;
 import fr.tduf.gui.database.plugins.percent.PercentPlugin;
@@ -16,7 +17,8 @@ enum PluginIndex {
     BITFIELD("Allows to display known bitfield labels and checkboxes for easier changes", new BitfieldPlugin()),
     CAMERAS("Allows to select over available cameras and view/modify properties", new CamerasPlugin()),
     IKS("Allows to select over available Inverse Kinematics sets", new IKsPlugin()),
-    PERCENT("Allows to make percent value changes easier", new PercentPlugin());
+    PERCENT("Allows to make percent value changes easier", new PercentPlugin()),
+    CONTENT_REF("Displays warning image and label", new ContentRefPlugin());
 
     private final String description;
     private final DatabasePlugin pluginInstance;
@@ -28,10 +30,6 @@ enum PluginIndex {
 
     static Stream<PluginIndex> allAsStream() {
         return Stream.of(values());
-    }
-
-    String getDescription() {
-        return description;
     }
 
     DatabasePlugin getPluginInstance() {

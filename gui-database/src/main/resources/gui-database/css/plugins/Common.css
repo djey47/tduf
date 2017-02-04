@@ -2,6 +2,7 @@
 
 .pluginBox {
     -fx-padding: 5.0;
+    -fx-spacing: 5.0;
 }
 
 .pluginItemLabel {

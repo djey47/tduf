@@ -43,7 +43,7 @@
           "rank": 1,
           "name": "REF",
           "priority": 10000,
-          "readOnly": "true",
+          "pluginName": "CONTENT_REF",
           "label": "(REF) Slot #",
           "toolTip": "Unique slot number"
         },
@@ -628,7 +628,7 @@
         {
           "rank": 1,
           "name": "REF",
-          "readOnly": "true",
+          "pluginName": "CONTENT_REF",
           "label": "(REF) Shop #"
         },
         {
@@ -756,7 +756,7 @@
         {
           "rank": 1,
           "name": "REF",
-          "readOnly": "true",
+          "pluginName": "CONTENT_REF",
           "label": "(REF) Brand #"
         }, {
           "name" : "Manufacturer_ID",
@@ -795,7 +795,7 @@
           "rank": 1,
           "name": "REF",
           "readOnly": "true",
-          "label": "(REF) Rim set #",
+          "pluginName": "CONTENT_REF",
           "toolTip": "Unique rim set number"
         },
         {
@@ -1023,7 +1023,7 @@
         {
           "rank": 1,
           "name": "REF",
-          "readOnly": "true",
+          "pluginName": "CONTENT_REF",
           "label": "(REF) Interior set #"
         },
         {
@@ -1242,7 +1242,7 @@
           "rank": 1,
           "name": "REF",
           "readOnly": "true",
-          "label": "(REF) AfterMarket Pack #",
+          "pluginName": "CONTENT_REF",
           "toolTip": "Unique pack number"
         },
         {
@@ -1341,7 +1341,7 @@
         {
           "rank": 1,
           "name": "REF",
-          "readOnly": "true",
+          "pluginName": "CONTENT_REF",
           "label": "(REF) NPC #"
         },
         {
@@ -1437,7 +1437,7 @@
         {
           "rank": 1,
           "name": "REF",
-          "readOnly": "true",
+          "pluginName": "CONTENT_REF",
           "label": "(REF) Haircut #"
         },
         {
@@ -1474,7 +1474,7 @@
         {
           "rank": 1,
           "name": "REF",
-          "readOnly": "true",
+          "pluginName": "CONTENT_REF",
           "label": "(REF) Piece of cloth #"
         },
         {
@@ -1537,7 +1537,7 @@
         {
           "rank": 1,
           "name": "REF",
-          "readOnly": "true",
+          "pluginName": "CONTENT_REF",
           "label": "(REF) House  #"
         },
         {
