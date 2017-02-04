@@ -12,7 +12,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -21,10 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind.*;
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps.BINOCULARS;
@@ -33,15 +29,14 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class CamerasHelperTest {
 
     private static byte[] camContents;
     private static CamerasParser readOnlyParser;
 
-    private GenuineCamGateway cameraSupportMock = Mockito.mock(GenuineCamGateway.class);
+    private GenuineCamGateway cameraSupportMock = mock(GenuineCamGateway.class);
 
     @BeforeAll
     static void globalSetUp() throws IOException, URISyntaxException {
@@ -307,6 +302,60 @@ class CamerasHelperTest {
         CameraInfo.CameraView cockpitBackView = viewsByType.get(Cockpit_Back);
         assertThat(cockpitBackView.getSourceCameraIdentifier()).isEqualTo(101L);
         assertThat(cockpitBackView.getSourceType()).isEqualTo(Cockpit_Back);
+    }
+
+    @Test
+    void cameraSetExists_whenIdNotInIndexNorInSettings_shouldReturnFalse() {
+        // given
+        CamerasParser parserMock = mock(CamerasParser.class);
+        Map<Long, Short> index = new HashMap<>(0);
+        Map<Long, List<DataStore>> views = new HashMap<>(0);
+        when(parserMock.getCameraIndex()).thenReturn(index);
+        when(parserMock.getCameraViews()).thenReturn(views);
+
+        // when-then
+        assertThat(CamerasHelper.cameraSetExists(100L, parserMock)).isFalse();
+    }
+
+    @Test
+    void cameraSetExists_whenIdInIndexAndInSettings_shouldReturnTrue() {
+        // given
+        CamerasParser parserMock = mock(CamerasParser.class);
+        Map<Long, Short> index = new HashMap<>(1);
+        index.put(100L, (short) 4);
+        Map<Long, List<DataStore>> views = new HashMap<>(1);
+        views.put(100L, new ArrayList<>(0));
+        when(parserMock.getCameraIndex()).thenReturn(index);
+        when(parserMock.getCameraViews()).thenReturn(views);
+
+        // when-then
+        assertThat(CamerasHelper.cameraSetExists(100L, parserMock)).isTrue();
+    }
+
+    @Test
+    void cameraSetExists_whenIdInSettingsOnly_shouldReturnFalse() {
+        // given
+        CamerasParser parserMock = mock(CamerasParser.class);
+        Map<Long, List<DataStore>> views = new HashMap<>(1);
+        views.put(100L, new ArrayList<>(0));
+        when(parserMock.getCameraIndex()).thenReturn(new HashMap<>(0));
+        when(parserMock.getCameraViews()).thenReturn(views);
+
+        // when-then
+        assertThat(CamerasHelper.cameraSetExists(100L, parserMock)).isFalse();
+    }
+
+    @Test
+    void cameraSetExists_whenIdInIndexOnly_shouldReturnFalse() {
+        // given
+        CamerasParser parserMock = mock(CamerasParser.class);
+        Map<Long, Short> index = new HashMap<>(1);
+        index.put(100L, (short) 4);
+        when(parserMock.getCameraIndex()).thenReturn(index);
+        when(parserMock.getCameraViews()).thenReturn(new HashMap<>(0));
+
+        // when-then
+        assertThat(CamerasHelper.cameraSetExists(100L, parserMock)).isFalse();
     }
 
     private static CamerasParser getReadWriteParser() throws IOException {

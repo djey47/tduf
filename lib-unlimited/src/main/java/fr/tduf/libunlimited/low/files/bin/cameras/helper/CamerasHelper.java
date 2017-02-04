@@ -198,7 +198,6 @@ public class CamerasHelper {
      * @param camerasParser : parsed camera contents
      * @return true if a set with provded id exists in index and in settings
      */
-    // TODO unit test
     public static boolean cameraSetExists(long cameraId, CamerasParser camerasParser) {
         Map<Long, Short> cameraIndex = camerasParser.getCameraIndex() ;
         return cameraIndex.containsKey(cameraId)
