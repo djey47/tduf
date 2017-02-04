@@ -1,3 +1,7 @@
+.camMainColumn {
+    -fx-spacing: 5.0;
+}
+
 .camSelectorBox, .viewSelectorBox {
     -fx-pref-width: 625.0;
 }

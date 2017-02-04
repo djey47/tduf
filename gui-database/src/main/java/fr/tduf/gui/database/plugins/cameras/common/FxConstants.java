@@ -8,6 +8,7 @@ import static java.util.Arrays.asList;
 public class FxConstants {
     public static final String PATH_RESOURCE_CSS_CAMERAS = "/gui-database/css/plugins/CamerasPlugin.css";
 
+    public static final String CSS_CLASS_MAIN_COLUMN = "camMainColumn";
     public static final String CSS_CLASS_CAM_SELECTOR_BOX = "camSelectorBox";
     public static final String CSS_CLASS_VIEW_SELECTOR_BOX = "viewSelectorBox";
     public static final String CSS_CLASS_CAM_SELECTOR_COMBOBOX = "camSelectorComboBox";

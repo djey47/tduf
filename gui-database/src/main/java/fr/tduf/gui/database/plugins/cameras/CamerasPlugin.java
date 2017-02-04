@@ -188,6 +188,7 @@ public class CamerasPlugin implements DatabasePlugin {
         viewSelectorComboBox.setConverter(new CameraViewToItemConverter());
 
         VBox mainColumnBox = new VBox();
+        mainColumnBox.getStyleClass().add(FxConstants.CSS_CLASS_MAIN_COLUMN);
         ObservableList<Node> mainColumnChildren = mainColumnBox.getChildren();
 
         HBox camSelectorBox = createCamSelectorBox(context, cameraSelectorComboBox, viewSelectorComboBox.valueProperty());

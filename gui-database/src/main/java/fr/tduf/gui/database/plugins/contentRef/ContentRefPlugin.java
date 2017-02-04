@@ -16,6 +16,7 @@ import java.util.Set;
 
 import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_PLUGIN_BOX;
 import static fr.tduf.gui.database.plugins.contentRef.common.DisplayConstants.TOOLTIP_WARNING;
+import static fr.tduf.gui.database.plugins.contentRef.common.FxConstants.CSS_CLASS_CONTENT_REF_PLUGIN_BOX;
 import static fr.tduf.gui.database.plugins.contentRef.common.FxConstants.PATH_RESOURCE_CSS_CONTENT_REF;
 import static java.util.Collections.singletonList;
 
@@ -51,7 +52,7 @@ public class ContentRefPlugin implements DatabasePlugin {
     @Override
     public Node renderControls(EditorContext context) {
         HBox hBox = new HBox();
-        hBox.getStyleClass().add(CSS_CLASS_PLUGIN_BOX);
+        hBox.getStyleClass().addAll(CSS_CLASS_PLUGIN_BOX, CSS_CLASS_CONTENT_REF_PLUGIN_BOX);
 
         Image warnSignImage = new Image(ImageConstants.RESOURCE_WARN, 24.0, 24.0, true, true);
         ImageView imageView = new ImageView(warnSignImage);
