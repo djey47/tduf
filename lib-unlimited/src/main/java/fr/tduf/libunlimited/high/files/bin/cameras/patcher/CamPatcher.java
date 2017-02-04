@@ -18,7 +18,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Used to apply patches to existing cameras information.
  */
-// TODO refactor and do not use parser directly
+// TODO refactor and do not use parser directly (see Parser and Writer)
 public class CamPatcher {
     private final CamerasParser camerasParser;
     private static final long IDENTIFIER_REFERENCE_SET = 10000L;

@@ -5,6 +5,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 import java.util.*;
 
+import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps.TYPE;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
@@ -59,11 +60,6 @@ public class CameraInfo {
 
         public CameraInfoBuilder forIdentifier(long cameraIdentifier) {
             this.cameraIdentifier = cameraIdentifier;
-            return this;
-        }
-
-        public CameraInfoBuilder forIdentifierAsString(String cameraIdentifierAsString) {
-            this.cameraIdentifier = Long.valueOf(cameraIdentifierAsString);
             return this;
         }
 
@@ -122,24 +118,26 @@ public class CameraInfo {
         public static CameraView fromProps(EnumMap<ViewProps, Object> viewProps) {
             CameraView cameraView = new CameraView();
 
-            cameraView.type = (ViewKind) viewProps.get(ViewProps.TYPE);
+            cameraView.type = (ViewKind) viewProps.get(TYPE);
             cameraView.settings = viewProps;
 
             return cameraView;
         }
 
+        // FIXME Must be rewritten with correct parser/writer use
         public static CameraView fromPatchProps(EnumMap<ViewProps, String> patchViewProps) {
             CameraView cameraView = new CameraView();
 
-            cameraView.type = Enum.valueOf(ViewKind.class, patchViewProps.get(ViewProps.TYPE));
-
-            // TODO Refactor this crap...
-            EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
-            viewProps.put(ViewProps.TYPE, cameraView.type);
-            patchViewProps.entrySet().stream()
-                    .filter(entry -> ViewProps.TYPE != entry.getKey())
-                    .forEach(entry -> viewProps.put(entry.getKey(), Long.valueOf(entry.getValue())));
-            cameraView.settings = viewProps;
+            cameraView.type = Enum.valueOf(ViewKind.class, patchViewProps.get(TYPE));
+            //noinspection Convert2Diamond (type args needed by compiler)
+            cameraView.settings = new EnumMap<ViewProps, Object>(
+                    patchViewProps.entrySet().stream()
+                            .collect(toMap(
+                                    Map.Entry::getKey,
+                                    entry -> TYPE == entry.getKey() ? cameraView.type : Long.valueOf(entry.getValue())
+                                    )
+                            )
+            );
 
             return cameraView;
         }
