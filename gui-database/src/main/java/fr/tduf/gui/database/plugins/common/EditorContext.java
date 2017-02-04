@@ -2,6 +2,7 @@ package fr.tduf.gui.database.plugins.common;
 
 import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.cameras.CamerasContext;
+import fr.tduf.gui.database.plugins.iks.IKsContext;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
@@ -23,6 +24,7 @@ public class EditorContext implements PluginContext {
     private BooleanProperty errorProperty;
 
     private CamerasContext camerasContext = new CamerasContext();
+    private IKsContext iksContext = new IKsContext();
 
     @Override
     public void reset() {
@@ -103,5 +105,9 @@ public class EditorContext implements PluginContext {
 
     public Window getMainWindow() {
         return mainWindow;
+    }
+
+    public IKsContext getIKsContext() {
+        return iksContext;
     }
 }
