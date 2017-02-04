@@ -291,9 +291,9 @@ task fullJar( type: Jar , dependsOn: 'gatherAllContentsForJar' ) {
 }
 
 task packFull(dependsOn: [  'cleanTempJarDir', 'cleanPackDir',
-                            'copyMainScripts',
+                            'copyMainScripts', 'copyUserScripts', 'copyUtilScripts',
                             'markdownToHtml',
-                            'copyDoc', 'copyExternalTools', 'copyUtilScripts', 'copyVersionInfo',
+                            'copyDoc', 'copyExternalTools', 'copyVersionInfo',
                             ':lib-unlimited:copyStructures',
                             ':gui-database:copyProfiles',
                             'fullJar'], type: Zip) {
@@ -343,6 +343,15 @@ task copyMainScripts(type: Copy) {
     from 'src/main/shell/'
     include '*.cmd'
     into 'pack/'
+}
+
+task copyUserScripts(type: Copy) {
+    description 'Copies CLI main scripts to pack/user-scripts directory.'
+    mustRunAfter ':cleanPackDir'
+
+    from 'src/main/shell/user-scripts'
+    include '*.cmd'
+    into 'pack/user-scripts'
 }
 
 task copyUtilScripts(type: Copy) {
