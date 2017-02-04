@@ -19,7 +19,8 @@ public class DisplayConstants {
 
     static final String LABEL_EXTENSION_CAM_JSON = "TDUF camera patch files (.cam.json)";
 
-    public static final String LABEL_ERROR_TOOLTIP = "Set identifier is not valid or does not exist in provided cameras.\r\nEither select or create a new one.";
+    public static final String LABEL_ERROR_TOOLTIP = "Set identifier is not valid or does not exist in provided cameras.\r\n" +
+            "Either select or create a new one.";
 
     public static final String HEADER_PROPTABLE_SETTING = "Setting";
     public static final String HEADER_PROPTABLE_DESCRIPTION = "?";

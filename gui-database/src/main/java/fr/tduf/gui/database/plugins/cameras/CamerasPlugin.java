@@ -132,6 +132,8 @@ public class CamerasPlugin implements DatabasePlugin {
      * Required contextual information:
      * - rawValueProperty
      * - mainWindow
+     * - errorProperty
+     * - errorMessageProperty
      * - camerasContext->allCameras
      * - camerasContext->viewTypeProperty
      * @param context : all required information about Database Editor
