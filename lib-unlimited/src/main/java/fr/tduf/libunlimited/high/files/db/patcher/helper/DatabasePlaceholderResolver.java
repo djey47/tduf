@@ -29,7 +29,6 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Component to handle placeholder values in patch instructions.
  */
-// TODO use parent methods to resolve values
 public class DatabasePlaceholderResolver extends PlaceholderResolver{
 
     private static final Pattern PATTERN_PLACEHOLDER_PSEUDO_REF = Pattern.compile("\\{(.+)}\\|\\{(.+)}");   // e.g {FOO}|{BAR}
