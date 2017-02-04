@@ -1,0 +1,8 @@
+alias CameraTool="./CameraTool.sh"
+alias CheckJava="./CheckJava.sh"
+alias SetVersion="./SetVersion.sh"
+alias DatabaseEditor="./DatabaseEditor.sh"
+alias DatabaseTool="./DatabaseTool.sh"
+alias FileTool="./FileTool.sh"
+alias Intro="./Intro.sh"
+alias MappingTool="./MappingTool.sh"
