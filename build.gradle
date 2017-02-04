@@ -293,7 +293,7 @@ task fullJar( type: Jar , dependsOn: 'gatherAllContentsForJar' ) {
 task packFull(dependsOn: [  'cleanTempJarDir', 'cleanPackDir',
                             'copyMainScripts', 'copyUserScripts', 'copyUtilScripts',
                             'markdownToHtml',
-                            'copyDoc', 'copyExternalTools', 'copyVersionInfo',
+                            'copyDoc', 'copyExternalTools', 'copyVersionInfo', 'copyIcons',
                             ':lib-unlimited:copyStructures',
                             ':gui-database:copyProfiles',
                             'fullJar'], type: Zip) {
@@ -378,6 +378,15 @@ task copyVersionInfo(type: Copy) {
     from 'dist/'
     include 'version.info'
     into 'pack/tools/lib/'
+}
+
+task copyIcons(type: Copy) {
+    description 'Copies common GUI icon to packs/icons directory.'
+    mustRunAfter 'cleanPackDir'
+
+    from 'gui-common/src/main/resources/gui-common/img/icons'
+    include 'TDU-256px.png'
+    into 'pack/icons'
 }
 
 task wrapper(type: Wrapper) {
