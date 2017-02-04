@@ -342,6 +342,7 @@ task copyMainScripts(type: Copy) {
 
     from 'src/main/shell/'
     include '*.cmd'
+    include '*.sh'
     into 'pack/'
 }
 
@@ -351,6 +352,7 @@ task copyUserScripts(type: Copy) {
 
     from 'src/main/shell/user-scripts'
     include '*.cmd'
+    include '*.sh'
     into 'pack/user-scripts'
 }
 
@@ -360,6 +362,8 @@ task copyUtilScripts(type: Copy) {
 
     from 'src/main/shell/cli-util/'
     include '*.cmd'
+    include '*.sh'
+    include 'linux-aliases'
     into 'pack/tools/cli'
 }
 
