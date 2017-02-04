@@ -1,0 +1,57 @@
+{
+  "name": "Spots on TDU MAP",
+  "littleEndian": false,
+  "fields": [
+    {
+      "name": "header",
+      "type": "UNKNOWN",
+      "size": 10
+    },    
+    {
+      "name": "headerTag",
+      "type": "TEXT",
+      "size": 6
+    },    
+    {
+      "name": "spotCount",
+      "type": "INTEGER",
+      "size": 4
+    },
+    {
+      "name": "headerPad",
+      "type": "TEXT",
+      "size": 12
+    },
+    {
+      "name": "spots",
+      "type": "REPEATER",
+      "subFields": [
+        {
+          "name": "flag1",
+          "type": "NUMERIC",
+          "size": 4
+        },        
+        {
+          "name": "zeroes1",
+          "type": "GAP",
+          "size": 12
+        },
+        {
+          "name": "file",
+          "type": "TEXT",
+          "size": 64
+        },
+        {
+          "name": "unk2",
+          "type": "UNKNOWN",
+          "size": 76
+        },
+        {
+          "name": "zeroes2",
+          "type": "GAP",
+          "size": 4
+        }
+      ]
+    }
+  ]
+}
