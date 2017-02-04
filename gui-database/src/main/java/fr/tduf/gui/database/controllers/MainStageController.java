@@ -113,9 +113,6 @@ public class MainStageController extends AbstractGuiController {
     Label currentTopicLabel;
 
     @FXML
-    Label currentEntryLabel;
-
-    @FXML
     ComboBox<ContentEntryDataItem> entryNumberComboBox;
 
     @FXML

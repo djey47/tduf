@@ -39,10 +39,6 @@ abstract class AbstractMainStageSubController {
         return mainStageController.getViewData();
     }
 
-    protected MainStageChangeDataController getChangeDataController() {
-        return mainStageController.getChangeData();
-    }
-
     protected FieldsBrowserStageController getFieldsBrowserStageController() {
         return mainStageController.getFieldsBrowserStageController();
     }
@@ -134,10 +130,6 @@ abstract class AbstractMainStageSubController {
 
     protected  Label getCurrentTopicLabel() {
         return mainStageController.currentTopicLabel;
-    }
-
-    protected  Label getCurrentEntryLabel() {
-        return mainStageController.currentEntryLabel;
     }
 
     protected TextField getEntryNumberTextField() {

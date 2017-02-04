@@ -9,6 +9,7 @@ import fr.tduf.gui.database.common.helper.DatabaseQueryHelper;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
 import fr.tduf.gui.database.controllers.helper.DynamicFieldControlsHelper;
 import fr.tduf.gui.database.controllers.helper.DynamicLinkControlsHelper;
+import fr.tduf.gui.database.converter.ContentEntryToStringConverter;
 import fr.tduf.gui.database.converter.CurrentEntryIndexToStringConverter;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.domain.EditorLocation;
@@ -48,6 +49,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
+import static javafx.beans.binding.Bindings.bindBidirectional;
 import static javafx.beans.binding.Bindings.size;
 
 /**
@@ -95,12 +97,14 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     void initTopicEntryHeaderPane(ChangeListener<ContentEntryDataItem> entryChangeListener) {
         getCurrentTopicLabel().textProperty().bindBidirectional(currentTopicProperty(), new DatabaseTopicToStringConverter());
-        getCurrentEntryLabel().textProperty().bindBidirectional(currentEntryLabelProperty());
 
         getEntryNumberComboBox().setItems(browsableEntries);
-        getEntryNumberComboBox().setCellFactory(new EntryCellFactory());
+        ContentEntryToStringConverter converter = new ContentEntryToStringConverter(browsableEntries, currentEntryIndexProperty(), currentEntryLabelProperty());
+        getEntryNumberComboBox().setConverter(converter);
+        bindBidirectional(currentEntryLabelProperty(), getEntryNumberComboBox().valueProperty(), converter);
         getEntryNumberComboBox().getSelectionModel().selectedItemProperty()
                 .addListener(entryChangeListener);
+        getEntryNumberComboBox().setCellFactory(new EntryCellFactory());
     }
 
     void initStatusBar() {

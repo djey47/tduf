@@ -20,80 +20,66 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.101"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.controllers.MainStageController">
-    <VBox id="mainVbox" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <ToolBar fx:id="checkDatabaseButton" prefHeight="40.0" prefWidth="1280.0" styleClass="locationToolbar"
-                 VBox.vgrow="NEVER">
+<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.controllers.MainStageController">
+    <VBox id="mainVbox" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <ToolBar fx:id="checkDatabaseButton" prefHeight="40.0" prefWidth="1280.0" styleClass="locationToolbar" VBox.vgrow="NEVER">
             <Label text="TDU database:">
                 <font>
-                    <Font name="System Bold" size="13.0"/>
+                    <Font name="System Bold" size="13.0" />
                 </font>
             </Label>
-            <TextField fx:id="databaseLocationTextField" prefHeight="26.0" prefWidth="350.0"/>
-            <Button mnemonicParsing="false" onAction="#handleBrowseDirectoryButtonMouseClick" prefWidth="34.0"
-                    text="...">
+            <TextField fx:id="databaseLocationTextField" prefHeight="26.0" prefWidth="350.0" />
+            <Button mnemonicParsing="false" onAction="#handleBrowseDirectoryButtonMouseClick" prefWidth="34.0" text="...">
                 <tooltip>
-                    <Tooltip text="Selects a directory for JSON/BNK database files."/>
+                    <Tooltip text="Selects a directory for JSON/BNK database files." />
                 </tooltip>
             </Button>
-            <Button fx:id="loadDatabaseButton" mnemonicParsing="false" onAction="#handleLoadButtonMouseClick"
-                    prefWidth="60.0" text="Load">
+            <Button fx:id="loadDatabaseButton" mnemonicParsing="false" onAction="#handleLoadButtonMouseClick" prefWidth="60.0" text="Load">
                 <tooltip>
-                    <Tooltip text="Opens database files from selected directory."/>
+                    <Tooltip text="Opens database files from selected directory." />
                 </tooltip>
             </Button>
-            <Button layoutX="10.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleSaveButtonMouseClick"
-                    prefWidth="60.0" text="Save">
+            <Button layoutX="10.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleSaveButtonMouseClick" prefWidth="60.0" text="Save">
                 <tooltip>
-                    <Tooltip text="Saves current database to selected directory."/>
+                    <Tooltip text="Saves current database to selected directory." />
                 </tooltip>
             </Button>
-            <Button layoutX="399.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleCheckButtonAction"
-                    text="Check...">
+            <Button layoutX="399.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleCheckButtonAction" text="Check...">
                 <tooltip>
-                    <Tooltip text="Saves current database to selected directory."/>
+                    <Tooltip text="Saves current database to selected directory." />
                 </tooltip>
             </Button>
-            <Separator layoutX="463.0" layoutY="10.0" orientation="VERTICAL"/>
+            <Separator layoutX="463.0" layoutY="10.0" orientation="VERTICAL" />
             <Label fx:id="creditsLabel">
                 <font>
-                    <Font name="System Italic" size="13.0"/>
+                    <Font name="System Italic" size="13.0" />
                 </font>
             </Label>
         </ToolBar>
 
-        <TitledPane fx:id="settingsPane" prefWidth="1280.0" styleClass="settingsPane" text="Settings"
-                    VBox.vgrow="SOMETIMES">
+        <TitledPane fx:id="settingsPane" prefWidth="1280.0" styleClass="settingsPane" text="Settings" VBox.vgrow="SOMETIMES">
             <AnchorPane styleClass="settingsPane">
                 <padding>
-                    <Insets bottom="-1.0" left="-1.0" right="-1.0" top="-1.0"/>
+                    <Insets bottom="-1.0" left="-1.0" right="-1.0" top="-1.0" />
                 </padding>
-                <ToolBar styleClass="settingsToolbar" AnchorPane.bottomAnchor="0.0"
-                         AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                         AnchorPane.topAnchor="0.0">
+                <ToolBar styleClass="settingsToolbar" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <Label text="Profile:">
                         <font>
-                            <Font name="System Bold" size="13.0"/>
+                            <Font name="System Bold" size="13.0" />
                         </font>
                     </Label>
-                    <ChoiceBox fx:id="profilesChoiceBox" prefWidth="175.0"/>
+                    <ChoiceBox fx:id="profilesChoiceBox" prefWidth="175.0" />
                     <Label text="Locale:">
                         <font>
-                            <Font name="System Bold" size="13.0"/>
+                            <Font name="System Bold" size="13.0" />
                         </font>
                     </Label>
-                    <ChoiceBox fx:id="localesChoiceBox" prefWidth="175.0"/>
-                    <Separator orientation="VERTICAL"/>
+                    <ChoiceBox fx:id="localesChoiceBox" prefWidth="175.0" />
+                    <Separator orientation="VERTICAL" />
                     <MenuButton mnemonicParsing="false" text="Advanced...">
                         <items>
-                            <MenuItem mnemonicParsing="false"
-                                      onAction="#handleResetDatabaseCacheMenuItemAction"
-                                      text="Reset database cache"/>
-                            <MenuItem mnemonicParsing="false"
-                                      onAction="#handleResetSettingsMenuItemAction"
-                                      text="Reset settings"/>
+                            <MenuItem mnemonicParsing="false" onAction="#handleResetDatabaseCacheMenuItemAction" text="Reset database cache" />
+                            <MenuItem mnemonicParsing="false" onAction="#handleResetSettingsMenuItemAction" text="Reset settings" />
                         </items>
                     </MenuButton>
                 </ToolBar>
@@ -103,129 +89,110 @@
         <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar" VBox.vgrow="NEVER">
             <Button mnemonicParsing="false" onAction="#handleBackButtonMouseClick" prefWidth="34.0" text="◀">
                 <tooltip>
-                    <Tooltip text="Goes back to previous topic location."/>
+                    <Tooltip text="Goes back to previous topic location." />
                 </tooltip>
             </Button>
             <Label fx:id="currentTopicLabel" alignment="TOP_CENTER" prefWidth="175.0" text="&lt;TOPIC&gt;">
                 <font>
-                    <Font name="System Bold Italic" size="13.0"/>
+                    <Font name="System Bold Italic" size="13.0" />
                 </font>
             </Label>
-            <Separator orientation="VERTICAL"/>
-            <Button layoutX="237.0" layoutY="12.0" mnemonicParsing="false"
-                    onAction="#handleDuplicateEntryButtonAction" prefWidth="34.0" text="C">
+            <Separator orientation="VERTICAL" />
+            <Button layoutX="237.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleDuplicateEntryButtonAction" prefWidth="34.0" text="C">
                 <tooltip>
-                    <Tooltip text="Adds a new entry in current topic, based on displayed one."/>
+                    <Tooltip text="Adds a new entry in current topic, based on displayed one." />
                 </tooltip>
             </Button>
-            <Button layoutX="199.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleAddEntryButtonAction"
-                    prefWidth="34.0" text="+">
+            <Button layoutX="199.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleAddEntryButtonAction" prefWidth="34.0" text="+">
                 <tooltip>
-                    <Tooltip text="Adds a new entry in current topic."/>
+                    <Tooltip text="Adds a new entry in current topic." />
                 </tooltip>
             </Button>
-            <Button layoutX="237.0" layoutY="12.0" mnemonicParsing="false"
-                    onAction="#handleRemoveEntryButtonAction" prefWidth="34.0" text="-">
+            <Button layoutX="237.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleRemoveEntryButtonAction" prefWidth="34.0" text="-">
                 <tooltip>
-                    <Tooltip text="Removes current entry in topic."/>
+                    <Tooltip text="Removes current entry in topic." />
                 </tooltip>
             </Button>
-            <Separator layoutX="189.0" layoutY="10.0" orientation="VERTICAL"/>
+            <Separator layoutX="189.0" layoutY="10.0" orientation="VERTICAL" />
             <MenuButton layoutX="361.0" layoutY="10.0" mnemonicParsing="false" prefWidth="80.0" text="Import">
                 <items>
-                    <MenuItem mnemonicParsing="false" onAction="#handleImportEntryTdufPatchMenuAction"
-                              text="TDUF patch..."/>
-                    <SeparatorMenuItem mnemonicParsing="false"/>
-                    <MenuItem mnemonicParsing="false" onAction="#handleImportPerformancePackMenuAction"
-                              text="TDUPE Performance Pack..."/>
-                    <MenuItem mnemonicParsing="false" onAction="#handleImportPchMenuAction"
-                              text="TDUMT patch..."/>
+                    <MenuItem mnemonicParsing="false" onAction="#handleImportEntryTdufPatchMenuAction" text="TDUF patch..." />
+                    <SeparatorMenuItem mnemonicParsing="false" />
+                    <MenuItem mnemonicParsing="false" onAction="#handleImportPerformancePackMenuAction" text="TDUPE Performance Pack..." />
+                    <MenuItem mnemonicParsing="false" onAction="#handleImportPchMenuAction" text="TDUMT patch..." />
                 </items>
                 <tooltip>
-                    <Tooltip text="Imports to current database."/>
+                    <Tooltip text="Imports to current database." />
                 </tooltip>
             </MenuButton>
             <MenuButton mnemonicParsing="false" prefWidth="80.0" text="Export">
                 <items>
-                    <MenuItem mnemonicParsing="false" onAction="#handleExportEntryTdufPatchMenuAction"
-                              text="TDUF patch..."/>
-                    <SeparatorMenuItem mnemonicParsing="false"/>
-                    <MenuItem mnemonicParsing="false" onAction="#handleExportEntryLineMenuAction"
-                              text="Line / TDUPE Performance Pack..."/>
-                    <MenuItem mnemonicParsing="false" onAction="#handleExportEntryPchMenuAction"
-                              text="TDUMT patch instruction..."/>
+                    <MenuItem mnemonicParsing="false" onAction="#handleExportEntryTdufPatchMenuAction" text="TDUF patch..." />
+                    <SeparatorMenuItem mnemonicParsing="false" />
+                    <MenuItem mnemonicParsing="false" onAction="#handleExportEntryLineMenuAction" text="Line / TDUPE Performance Pack..." />
+                    <MenuItem mnemonicParsing="false" onAction="#handleExportEntryPchMenuAction" text="TDUMT patch instruction..." />
                 </items>
                 <tooltip>
-                    <Tooltip text="Exports one or more entries."/>
+                    <Tooltip text="Exports one or more entries." />
                 </tooltip>
             </MenuButton>
-            <Separator layoutX="418.0" layoutY="10.0" orientation="VERTICAL"/>
-            <ComboBox fx:id="entryNumberComboBox" prefWidth="60.0" promptText="..." visibleRowCount="25">
+            <Separator layoutX="418.0" layoutY="10.0" orientation="VERTICAL" />
+            <ComboBox fx:id="entryNumberComboBox" prefHeight="26.0" prefWidth="400.0" promptText="" visibleRowCount="25">
                 <tooltip>
-                    <Tooltip text="Quick-selects an entry in current topic."/>
+                    <Tooltip text="Quick-selects an entry in current topic." />
                 </tooltip>
             </ComboBox>
-            <Label fx:id="currentEntryLabel" text="&lt;current&gt;">
-                <font>
-                    <Font name="System Italic" size="13.0"/>
-                </font>
-            </Label>
         </ToolBar>
-        <TabPane fx:id="tabPane" prefHeight="626.0" prefWidth="1303.0" tabClosingPolicy="UNAVAILABLE"
-                 VBox.vgrow="ALWAYS">
+        <TabPane fx:id="tabPane" prefHeight="626.0" prefWidth="1303.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
             <Tab text="Default">
                 <ScrollPane prefViewportHeight="167.0" prefViewportWidth="1303.0">
-                    <VBox fx:id="defaultTab" minHeight="0.0" minWidth="0.0"/>
+                    <VBox fx:id="defaultTab" minHeight="0.0" minWidth="0.0" />
                 </ScrollPane>
             </Tab>
         </TabPane>
-        <ToolBar layoutX="10.0" layoutY="112.0" prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar"
-                 VBox.vgrow="NEVER">
-            <Button mnemonicParsing="false" onAction="#handleSearchEntryButtonAction" prefWidth="80.0"
-                    text="REF...">
+        <ToolBar layoutX="10.0" layoutY="112.0" prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar" VBox.vgrow="NEVER">
+            <Button mnemonicParsing="false" onAction="#handleSearchEntryButtonAction" prefWidth="80.0" text="REF...">
                 <tooltip>
-                    <Tooltip text="Searches entry with REF."/>
+                    <Tooltip text="Searches entry with REF." />
                 </tooltip>
             </Button>
-            <Separator orientation="VERTICAL"/>
+            <Separator orientation="VERTICAL" />
             <Button mnemonicParsing="false" onAction="#handleFirstButtonMouseClick" prefWidth="40.0" text="|◀">
                 <tooltip>
-                    <Tooltip text="Goes to first entry."/>
+                    <Tooltip text="Goes to first entry." />
                 </tooltip>
             </Button>
-            <Button mnemonicParsing="false" onAction="#handleFastPreviousButtonMouseClick" prefWidth="40.0"
-                    text="◀◀">
+            <Button mnemonicParsing="false" onAction="#handleFastPreviousButtonMouseClick" prefWidth="40.0" text="◀◀">
                 <tooltip>
-                    <Tooltip text="Goes back up to 10 entries."/>
+                    <Tooltip text="Goes back up to 10 entries." />
                 </tooltip>
             </Button>
             <Button mnemonicParsing="false" onAction="#handlePreviousButtonMouseClick" prefWidth="40.0" text="◀">
                 <tooltip>
-                    <Tooltip text="Goes to previous entry."/>
+                    <Tooltip text="Goes to previous entry." />
                 </tooltip>
             </Button>
-            <TextField fx:id="entryNumberTextField" alignment="CENTER"
-                       onKeyPressed="#handleEntryNumberTextFieldKeyPressed" prefWidth="50.0"/>
-            <Label fx:id="entryItemsCountLabel" prefWidth="50.0"/>
+            <TextField fx:id="entryNumberTextField" alignment="CENTER" onKeyPressed="#handleEntryNumberTextFieldKeyPressed" prefWidth="50.0" />
+            <Label fx:id="entryItemsCountLabel" prefWidth="50.0" />
             <Button mnemonicParsing="false" onAction="#handleNextButtonMouseClick" prefWidth="40.0" text="▶">
                 <tooltip>
-                    <Tooltip text="Goes to next entry."/>
+                    <Tooltip text="Goes to next entry." />
                 </tooltip>
             </Button>
             <Button mnemonicParsing="false" onAction="#handleFastNextButtonMouseClick" prefWidth="40.0" text="▶▶">
                 <tooltip>
-                    <Tooltip text="Goes forward up to 10 entries."/>
+                    <Tooltip text="Goes forward up to 10 entries." />
                 </tooltip>
             </Button>
             <Button mnemonicParsing="false" onAction="#handleLastButtonMouseClick" prefWidth="40.0" text="▶|">
                 <tooltip>
-                    <Tooltip text="Goes to very last entry."/>
+                    <Tooltip text="Goes to very last entry." />
                 </tooltip>
             </Button>
-            <Separator layoutX="382.0" layoutY="10.0" orientation="VERTICAL"/>
+            <Separator layoutX="382.0" layoutY="10.0" orientation="VERTICAL" />
             <Label fx:id="statusLabel">
                 <font>
-                    <Font name="System Italic" size="13.0"/>
+                    <Font name="System Italic" size="13.0" />
                 </font>
             </Label>
         </ToolBar>
