@@ -28,24 +28,22 @@ public class DatabaseChecker extends AbstractDatabaseService {
             @Override
             protected Void call() throws Exception {
 
-                List<DbDto> databaseObjects = loadedDatabaseObjects.getValue();
-                if (databaseObjects == null) {
+                if (loadedDatabaseObjects.getValue() == null) {
                     updateMessage(String.format(DisplayConstants.STATUS_FMT_CHECK_IN_PROGRESS, "1/3"));
                     String jsonDirectory = resolveJsonDatabaseLocationAndUnpack(databaseLocation.get(), bankSupport.get());
+                    jsonDatabaseLocation.setValue(jsonDirectory);
 
                     updateMessage(String.format(DisplayConstants.STATUS_FMT_CHECK_IN_PROGRESS, "2/3"));
-                    databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDirectory);
-
-                    jsonDatabaseLocation.setValue(jsonDirectory);
+                    List<DbDto> fullDatabase = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDatabaseLocation.getValue());
+                    loadedDatabaseObjects.setValue(fullDatabase);
                 } else {
                     jsonDatabaseLocation.setValue(databaseLocation.get());
                 }
 
                 updateMessage(String.format(DisplayConstants.STATUS_FMT_CHECK_IN_PROGRESS, "3/3"));
-                final DatabaseIntegrityChecker checkerComponent = AbstractDatabaseHolder.prepare(DatabaseIntegrityChecker.class, databaseObjects);
+                final DatabaseIntegrityChecker checkerComponent = AbstractDatabaseHolder.prepare(DatabaseIntegrityChecker.class, loadedDatabaseObjects.getValue());
                 final Set<IntegrityError> integrityErrorsFromExtensiveCheck = checkerComponent.checkAllContentsObjects();
 
-                loadedDatabaseObjects.setValue(databaseObjects);
                 integrityErrors.setValue(integrityErrorsFromExtensiveCheck);
 
                 updateMessage(String.format(DisplayConstants.STATUS_FMT_CHECK_DONE, integrityErrorsFromExtensiveCheck.size()));
