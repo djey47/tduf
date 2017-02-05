@@ -414,10 +414,7 @@ public class DatabaseToolIntegTest {
 
     @Test
     public void diffPatches_shouldGenerateMiniPatchFiles() throws IOException, URISyntaxException, JSONException {
-        // GIVEN
-
-
-        // WHEN: compute diff between 2 database files and reference
+        // GIVEN-WHEN: compute diff between 2 database files and reference
         System.out.println("-> DiffPatches!");
         OutputStream outputStream = ConsoleHelper.hijackStandardOutput();
         DatabaseTool.main(new String[]{"diff-patches", "-n", "-j", DIRECTORY_DIFF_JSON_DATABASE, "-J", DIRECTORY_ERR_JSON_DATABASE, "-p", DIRECTORY_PATCH_OUTPUT});
