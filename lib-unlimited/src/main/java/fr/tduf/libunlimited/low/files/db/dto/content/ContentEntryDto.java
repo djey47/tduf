@@ -75,18 +75,23 @@ public class ContentEntryDto {
     }
 
     public Optional<ContentItemDto> updateItemValueAtRank(String newValue, int fieldRank) {
-        ContentItemDto i = getItemAtRank(fieldRank)
+        ContentItemDto itemObject = getItemAtRank(fieldRank)
                 .orElseThrow(() -> new IllegalArgumentException("No item at field rank: " + fieldRank));
 
-        if (newValue.equals(i.getRawValue())) {
+        String oldValue = itemObject.getRawValue();
+        if (newValue.equals(oldValue)) {
             return empty();
         }
 
-        i.setRawValue(newValue);
+        itemObject.setRawValue(newValue);
 
         computeValuesHash();
 
-        return of(i);
+        if (dataHost != null) {
+            dataHost.updateEntryIndexByReferenceWithChangedReference(this, oldValue, newValue, fieldRank);
+        }
+
+        return of(itemObject);
     }
 
     @JsonIgnore

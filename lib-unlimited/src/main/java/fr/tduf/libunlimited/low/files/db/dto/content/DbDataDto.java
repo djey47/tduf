@@ -138,6 +138,16 @@ public class DbDataDto implements Serializable {
         });
     }
 
+    void updateEntryIndexByReferenceWithChangedReference(ContentEntryDto entry, String oldItemValue, String newItemValue, int fieldRank) {
+        // TODO handle pseudo reference?
+        if (fieldRank == 1
+                && DatabaseStructureQueryHelper.isUidSupportForTopic(topic)
+                && entriesByReference != null) {
+            entriesByReference.remove(oldItemValue);
+            entriesByReference.put(newItemValue, entry);
+        }
+    }
+
     private void updateEntryIndexByReferenceWithNewEntry(ContentEntryDto entry) {
         if (entriesByReference != null) {
             entriesByReference.put(getEffectiveRef(entry), entry);

@@ -163,6 +163,22 @@ class ContentEntryDtoTest {
     }
 
     @Test
+    void updateItemValueAtRank_whenREFItemAtThisRank_shouldReturnModifiedItem_andUpdateReferenceIndex() {
+        // GIVEN
+        DbDataDto dataObject = DbDataDto.builder().forTopic(CAR_PHYSICS_DATA).build();
+        dataObject.addEntry(contentEntry);
+
+        // WHEN
+        Optional<ContentItemDto> actualResult = contentEntry.updateItemValueAtRank("V2", 1);
+
+        // THEN
+        assertThat(actualResult.get().getRawValue()).isEqualTo("V2");
+        assertThat(dataObject.getEntriesByReference()).doesNotContainKey("V1");
+        assertThat(dataObject.getEntriesByReference()).containsKey("V2");
+        assertThat(dataObject.getEntriesByReference().get("V2")).isSameAs(contentEntry);
+    }
+
+    @Test
     void getId_whenUnattachedEntry_shouldReturnMinusOne() {
         // GIVEN-WHEN-THEN
         assertThat(contentEntry.getId()).isEqualTo(-1);
