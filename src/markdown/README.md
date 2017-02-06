@@ -11,29 +11,62 @@ TDUF aims at making Test Drive Unlmited modding easier:
 
 ### Database Editor Main features
 * Opens and saves a database from/to either regular BNK or JSON form
-* Opens and saves cameras.bin file in database directory above
 * Provides profiles to address different modding use cases (car editing, tuning kits, rims ...)
-* Displays all fields within a topic, in an ordered manner
-* Makes changes easier for special values (percent, bitfields, links etc.)
-* Enables navigation over entries in same or different topics
-* Displays all resources within a topic, for all game languages
-* Adds / changes / deletes a particular entry
-* Duplicates a particular content entry
-* Searches particular entry given its REF
-* Imports data from TDUF (.json mini-patch file) with additional properties file
-* Imports data from TDUPE (.tdupk Performance Pack)
-* Imports data from TDUMT (.pch patches)
-* Exports current entry to following forms: EDEN-classic/TDUPE, TDUMT, TDUF mini-patch
 * Checks database and proposes to fix errors (advanced feature)
-* Display available camera sets and views
-* Changes some camera view settings
+* CONTENTS
+    * Displays all fields within a topic, in an ordered manner
+    * Displays missing reference errors
+    * Displays shared data among topics (paintjobs, tuning kits, rims)
+    * Makes changes easier for special values (percent, bitfields, links etc.)
+    * Enables navigation over entries in same or different topics
+    * Searches particular entry given its REF
+    * Duplicates a particular content entry
+    * Deletes a particular content entry
+    * Adds new content entry
+* RESOURCES
+    * Displays all resources within a topic, for all game languages
+    * Displays missing reference errors
+    * Searches particular entry given its REF
+    * Deletes/edits particular entry
+    * Adds new entry
+* IMPORT/EXPORT
+    * From TDUF (.json mini-patch file) with additional properties file
+    * From TDUPE (.tdupk Performance Pack)
+    * From TDUMT (.pch patches)
+    * To following forms: EDEN-classic/TDUPE, TDUMT, TDUF mini-patch
+* CAMERAS
+    * Opens and saves cameras.bin file in database directory above
+    * Displays available camera sets and views
+    * Displays reference errors
+    * Changes some camera view settings
+    * Duplicates existing camera set
+    * Imports/exports camera set settings with additional properties file
+* IKS
+    * Display available IK sets
+    * Displays reference errors
 * ...
 
 
 ### What's in this version ? (1.11.0)
+* Global: brings bash scripts to use CLI and GUI in Linux environments, as well
+* Global: brings example CLI scripts under **user-scripts** directory (for Windows & Linux), to show how to create your own TDUF scripts
+* Global: brings application icon to make your shortcuts prettier
+
+* Editor: obsolete entry label was replaced
+* Editor: content entry REFs can be modified now (warn sign has been added)
+* Editor: displays available IK sets
+* Editor: shows error when missing/wrong IK set
+* Editor: displays available camera sets
+* Editor: displays help about some view settings
+* Editor: shows error when missing/wrong camera set
+* Editor: duplicates existing camera set to identifier of your choice
+* Editor: imports/exports cameras and view settings (with property file support)
+
+* Library/files: add preliminary structure for spot files support
 
 
 ### Fixed issues
+* Editor: checking needed to reload database to find some errors
 
 
 ### Known bugs
@@ -43,25 +76,25 @@ TDUF aims at making Test Drive Unlmited modding easier:
 ### What you will need to run TDUF
 * Please uninstall any Java Runtime < 8
 * [Update / Install Java 8 Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)
-* Make sure .net apps can be run
+* Make sure .net apps can be run, as well:
     - Windows users: check if .net Framework 2.0 is installed (if TDUMT/TDUPE actually run, you're ok)
-    - Linux users: check if Mono 2.0 is installed.
+    - Linux users: check if Mono 2.0 is installed, otherwise you will have to install **mono-complete** package.
 
 
 ### Running Database Editor!
-    - Launch TDUF-database-gui.cmd from Windows explorer
-    - In DatabaseEditor, browse location of TDU database BNK or JSON files. Load (may take a while)
-    - Make your changes. Save (may take a while)
-    - Database is repacked automatically.
+- Launch TDUF-database-gui.cmd from Windows explorer / TDUF-database-gui.sh from Linux
+- In DatabaseEditor, browse location of TDU database BNK or JSON files. Load (may take a while)
+- Make your changes. Save (may take a while)
+- Database is repacked automatically.
 
 
 ### Running Advanced tools!
-    - Launch TDUF-cli.cmd from Windows explorer
-    - Follow instructions.
+- Launch TDUF-cli.cmd from Windows explorer / TDUF-cli.sh from Linux
+- Follow instructions.
 
 
 ### Troubleshooting
-If you encounter some issues to run tools, launch -noadmin.cmd files instead.
+If you encounter some issues to run tools under Windows, launch -noadmin.cmd files instead.
 
 
 ### Using JAR library and/or CLI Tools in your projects
