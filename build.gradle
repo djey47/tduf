@@ -390,6 +390,7 @@ task copyIcons(type: Copy) {
 
     from 'gui-common/src/main/resources/gui-common/img/icons'
     include 'TDU-256px.png'
+    include 'TDU-256px.ico'
     into 'pack/icons'
 }
 
