@@ -1,0 +1,72 @@
+{
+  "name": "Spots database on Hawaii map",
+  "littleEndian": false,
+  "fields": [
+    {
+      "name": "headerExtension",
+      "type": "TEXT",
+      "size": 4
+    },
+    {
+      "name": "headerUnknown1",
+      "type": "UNKNOWN",
+      "size": 12
+    },
+    {
+      "name": "headerTag",
+      "type": "TEXT",
+      "size": 4
+    },
+    {
+      "name": "headerEntryZoneSizePlus16",
+      "type": "NUMERIC",
+      "size": 4
+    },
+    {
+      "name": "headerUnknown2",
+      "type": "UNKNOWN",
+      "size": 8
+    },
+    {
+      "name": "spots",
+      "type": "REPEATER",
+      "subFields": [
+        {
+          "name": "spotName",
+          "type": "TEXT",
+          "size": 16
+        },
+        {
+          "name": "spotUnknown1",
+          "type": "UNKNOWN",
+          "size": 28
+        },
+        {
+          "name": "spotZero1",
+          "type": "GAP",
+          "size": 4
+        },
+        {
+          "name": "spotUnknown2",
+          "type": "UNKNOWN",
+          "size": 4
+        },
+        {
+          "name": "spotPad2",
+          "type": "TEXT",
+          "size": 4
+        },
+        {
+          "name": "spotUnknown3",
+          "type": "UNKNOWN",
+          "size": 4
+        },
+        {
+          "name": "spotZero2",
+          "type": "GAP",
+          "size": 4
+        }
+      ]
+    }
+  ]
+}
