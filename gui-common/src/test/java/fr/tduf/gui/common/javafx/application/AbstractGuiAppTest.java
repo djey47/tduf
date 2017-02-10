@@ -10,10 +10,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -24,8 +22,9 @@ import java.util.Map;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
 
-@RunWith(MockitoJUnitRunner.class)
+// FIXME not compatible with NonApp as @Rule replacement. Must change TestApp implementation?
 public class AbstractGuiAppTest {
     private static final String[] ARGS = new String[]{"arg1", "arg2", "arg3"};
     private static final String[] ARGS_VERBOSE = new String[]{"arg1", "-v", "arg3"};
@@ -43,6 +42,8 @@ public class AbstractGuiAppTest {
 
     @Before
     public void setUp() {
+        initMocks(this);
+
         consoleOutputStream = ConsoleHelper.hijackStandardOutput();
     }
 
