@@ -19,7 +19,7 @@
     },
     {
       "name": "headerEntryZoneSizePlus16",
-      "type": "NUMERIC",
+      "type": "INTEGER",
       "size": 4
     },
     {
