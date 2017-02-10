@@ -139,13 +139,30 @@ public class DbDataDto implements Serializable {
     }
 
     void updateEntryIndexByReferenceWithChangedReference(ContentEntryDto entry, String oldItemValue, String newItemValue, int fieldRank) {
-        // TODO handle pseudo reference?
-        if (fieldRank == 1
-                && DatabaseStructureQueryHelper.isUidSupportForTopic(topic)
-                && entriesByReference != null) {
-            entriesByReference.remove(oldItemValue);
-            entriesByReference.put(newItemValue, entry);
+        if (entriesByReference == null) {
+            return;
         }
+
+        if (DatabaseStructureQueryHelper.isUidSupportForTopic(topic)) {
+            if (fieldRank == 1) {
+                entriesByReference.remove(oldItemValue);
+                entriesByReference.put(newItemValue, entry);
+            }
+        } else {
+            if (fieldRank == 1 || fieldRank == 2) {
+                String oldPseudoRef = (fieldRank == 1) ?
+                                ContentEntryDto.getPseudoRef(oldItemValue, getRefPart(entry, fieldRank))
+                                :
+                                ContentEntryDto.getPseudoRef(getRefPart(entry, fieldRank), oldItemValue);
+                String newPseudoRef = entry.getPseudoRef();
+                entriesByReference.remove(oldPseudoRef);
+                entriesByReference.put(newPseudoRef, entry);
+            }
+        }
+    }
+
+    private String getRefPart(ContentEntryDto entry, int fieldRank) {
+        return entry.getItemAtRank(fieldRank).map(ContentItemDto::getRawValue).orElseThrow(() -> new IllegalStateException("No item at field rank: " + fieldRank));
     }
 
     private void updateEntryIndexByReferenceWithNewEntry(ContentEntryDto entry) {

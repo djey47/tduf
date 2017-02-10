@@ -420,13 +420,58 @@ class DbDataDtoTest {
     }
 
     @Test
-    void updateEntryIndexByReferenceWithChangedReference_andNoRefSupport_shoudDoNothing() {
+    void updateEntryIndexByReferenceWithChangedReference_forOtherFieldRank_andNoRefSupport_shoudDoNothing() {
         // given
         final ContentEntryDto contentEntry = createContentEntryWithPseudoReference("REF1", "REF2");
         dataObjectWithoutREFSupport.addEntry(contentEntry);
 
         // when
-        dataObjectWithoutREFSupport.updateEntryIndexByReferenceWithChangedReference(contentEntry, "OLD", "NEW", 1);
+        dataObjectWithoutREFSupport.updateEntryIndexByReferenceWithChangedReference(contentEntry, "OLD", "NEW", 5);
+
+        // then
+        assertThat(dataObjectWithoutREFSupport.getEntriesByReference())
+                .containsOnlyKeys("REF1|REF2")
+                .containsValues(contentEntry);
+    }
+
+    @Test
+    void updateEntryIndexByReferenceWithChangedReference_forFieldRankAt1_andNoRefSupport_shoudUpdateReference() {
+        // given
+        final ContentEntryDto contentEntry = createContentEntryWithPseudoReference("REF10", "REF2");
+        dataObjectWithoutREFSupport.addEntry(contentEntry);
+
+        // when
+        dataObjectWithoutREFSupport.updateEntryIndexByReferenceWithChangedReference(contentEntry, "REF1", "REF10", 1);
+
+        // then
+        assertThat(dataObjectWithoutREFSupport.getEntriesByReference())
+                .containsOnlyKeys("REF10|REF2")
+                .containsValues(contentEntry);
+    }
+
+    @Test
+    void updateEntryIndexByReferenceWithChangedReference_forFieldRankAt2_andNoRefSupport_shoudUpdateReference() {
+        // given
+        final ContentEntryDto contentEntry = createContentEntryWithPseudoReference("REF1", "REF20");
+        dataObjectWithoutREFSupport.addEntry(contentEntry);
+
+        // when
+        dataObjectWithoutREFSupport.updateEntryIndexByReferenceWithChangedReference(contentEntry, "REF2", "REF20", 2);
+
+        // then
+        assertThat(dataObjectWithoutREFSupport.getEntriesByReference())
+                .containsOnlyKeys("REF1|REF20")
+                .containsValues(contentEntry);
+    }
+
+    @Test
+    void updateEntryIndexByReferenceWithChangedReference_andNoRefSupport_andUpdatedAtRank1_shoudUpdateIndex() {
+        // given
+        final ContentEntryDto contentEntry = createContentEntryWithPseudoReference("REF1", "REF2");
+        dataObjectWithoutREFSupport.addEntry(contentEntry);
+
+        // when
+        dataObjectWithoutREFSupport.updateEntryIndexByReferenceWithChangedReference(contentEntry, "OLD", "NEW", 5);
 
         // then
         assertThat(dataObjectWithREFSupport.getEntriesByReference()).isEmpty();
@@ -443,8 +488,8 @@ class DbDataDtoTest {
 
         // then
         assertThat(dataObjectWithREFSupport.getEntriesByReference())
-                .hasSize(1)
-                .containsKey("REF");
+                .containsOnlyKeys("REF")
+                .containsValues(contentEntry);
     }
 
     @Test
@@ -458,8 +503,7 @@ class DbDataDtoTest {
 
         // then
         assertThat(dataObjectWithREFSupport.getEntriesByReference())
-                .hasSize(1)
-                .containsKey("REF2")
+                .containsOnlyKeys("REF2")
                 .containsValue(contentEntry);
     }
 

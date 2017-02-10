@@ -137,6 +137,10 @@ public class ContentEntryDto {
         return reflectionToString(this);
     }
 
+    static String getPseudoRef(String refPart1, String refPart2) {
+        return String.format(FORMAT_PSEUDO_REF, refPart1, refPart2);
+    }
+
     String getNativeRef() {
         return getItemAtRank(1)
                 .orElseThrow(() -> new IllegalArgumentException("Entry has no item at field rank 1"))
@@ -147,7 +151,7 @@ public class ContentEntryDto {
         String secondValue = getItemAtRank(2)
                 .orElseThrow(() -> new IllegalArgumentException("Entry has no item at field rank 2"))
                 .getRawValue();
-        return String.format(FORMAT_PSEUDO_REF, getNativeRef(), secondValue);
+        return getPseudoRef(getNativeRef(), secondValue);
     }
 
     void computeValuesHash() {
