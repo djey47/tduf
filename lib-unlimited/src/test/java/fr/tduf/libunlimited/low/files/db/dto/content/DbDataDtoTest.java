@@ -419,6 +419,50 @@ class DbDataDtoTest {
         assertThat(actualEntries).extracting("id").containsExactly(0, 1, 2);
     }
 
+    @Test
+    void updateEntryIndexByReferenceWithChangedReference_andNoRefSupport_shoudDoNothing() {
+        // given
+        final ContentEntryDto contentEntry = createContentEntryWithPseudoReference("REF1", "REF2");
+        dataObjectWithoutREFSupport.addEntry(contentEntry);
+
+        // when
+        dataObjectWithoutREFSupport.updateEntryIndexByReferenceWithChangedReference(contentEntry, "OLD", "NEW", 1);
+
+        // then
+        assertThat(dataObjectWithREFSupport.getEntriesByReference()).isEmpty();
+    }
+
+    @Test
+    void updateEntryIndexByReferenceWithChangedReference_forNonRefField_shoudNotUpdateIndex() {
+        // given
+        final ContentEntryDto contentEntry = createContentEntry();
+        dataObjectWithREFSupport.addEntry(contentEntry);
+
+        // when
+        dataObjectWithREFSupport.updateEntryIndexByReferenceWithChangedReference(contentEntry, "OLD", "NEW", 5);
+
+        // then
+        assertThat(dataObjectWithREFSupport.getEntriesByReference())
+                .hasSize(1)
+                .containsKey("REF");
+    }
+
+    @Test
+    void updateEntryIndexByReferenceWithChangedReference_forRefField_shoudUpdateIndex() {
+        // given
+        final ContentEntryDto contentEntry = createContentEntry();
+        dataObjectWithREFSupport.addEntry(contentEntry);
+
+        // when
+        dataObjectWithREFSupport.updateEntryIndexByReferenceWithChangedReference(contentEntry, "REF", "REF2", 1);
+
+        // then
+        assertThat(dataObjectWithREFSupport.getEntriesByReference())
+                .hasSize(1)
+                .containsKey("REF2")
+                .containsValue(contentEntry);
+    }
+
     private DbDataDto createDataWithRefSupport() {
         return DbDataDto.builder()
                     .forTopic(CAR_PHYSICS_DATA)
