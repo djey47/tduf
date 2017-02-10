@@ -89,8 +89,9 @@ subprojects {
     }
 
     task fatJar(type: Jar) {
-        mustRunAfter 'jar'
         description 'Generates jar with all dependencies bundled into it.'
+        group 'build'
+        mustRunAfter 'jar'
 
         baseName = 'tduf-' + project.name + '-all'
         from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
@@ -110,6 +111,8 @@ project(':integ-tests') {
     }
 
     task integTestReport() {
+        group 'verification'
+
         doLast {
             def reportFileAbsolutePath = file('./build/reports/tests/test/index.html').toString().replaceAll('\\\\', '/')
             Desktop.desktop.browse(('file://' + reportFileAbsolutePath).toURI())
@@ -149,6 +152,7 @@ project('lib-unlimited') {
 
     task copyStructures(type: Copy) {
         description 'Copies structures to release directory.'
+        group 'packaging'
 
         from 'src/main/resources/files/structures/'
         include '*'
@@ -171,12 +175,15 @@ project(':gui-database') {
     }
 
     task execute(type:JavaExec) {
+        group 'binaries'
+
         main 'fr.tduf.gui.database.DatabaseEditor'
         classpath sourceSets.main.runtimeClasspath
     }
 
     task copyProfiles(type: Copy) {
         description 'Copies all default profiles to release directory.'
+        group 'packaging'
         mustRunAfter ':cleanPackDir'
 
         from 'editorProfiles/'
@@ -191,6 +198,8 @@ project(':gui-savegame') {
     }
 
     task execute(type:JavaExec) {
+        group 'binaries'
+
         main 'fr.tduf.gui.savegame.SaveGameEditor'
         classpath sourceSets.main.runtimeClasspath
     }
@@ -276,6 +285,7 @@ def tempJarDirectory = './tmp-jarContents'
 
 task gatherAllContentsForJar(type: Copy, dependsOn: fullProjects.collect{ it+":compileJava"}) {
     description 'Copies contents to temp directory.'
+    group 'build'
 
     from files(fullProjects.collect{ project(it).sourceSets.main.output })
     from files(fullProjects.collect{ project(it).configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } } )
@@ -284,6 +294,7 @@ task gatherAllContentsForJar(type: Copy, dependsOn: fullProjects.collect{ it+":c
 
 task fullJar( type: Jar , dependsOn: 'gatherAllContentsForJar' ) {
     description 'Creates jar with all contents from temp directory.'
+    group 'build'
 
     destinationDir = file('./pack/tools/lib/')
     baseName = 'tduf'
@@ -298,6 +309,7 @@ task packFull(dependsOn: [  'cleanTempJarDir', 'cleanPackDir',
                             ':gui-database:copyProfiles',
                             'fullJar'], type: Zip) {
     description 'Create single release Zip with ALL components except InstallerKit in releases directory.'
+    group 'packaging'
 
     archiveName  "tduf-" + project.version + ".zip"
     destinationDir new File('releases/')
@@ -311,6 +323,7 @@ task packInstallerKit(dependsOn: [  'cleanPackDir',
                                     ':gui-installer:copyAssets', ':gui-installer:copyTemplates',
                                     ':gui-installer:copyJar'], type: Zip) {
     description 'Zips only IK, LIB files from pack folder.'
+    group 'packaging'
 
     archiveName "tduf-IK-" + project.version + ".zip"
     destinationDir new File('releases/')
@@ -319,16 +332,21 @@ task packInstallerKit(dependsOn: [  'cleanPackDir',
 
 task cleanPackDir(type: Delete) {
     description 'Prepares new package by removing all files in pack directory.'
+    group 'packaging'
+
     delete 'pack/'
 }
 
 task cleanTempJarDir(type: Delete) {
     description 'Prepares new package by removing all files in tmp-jarContents directory.'
+    group 'packaging'
+
     delete tempJarDirectory
 }
 
 task copyDoc(type: Copy) {
     description 'Copies formatted README to release directory.'
+    group 'packaging'
     mustRunAfter 'markdownToHtml'
 
     from "$buildDir/gen-html"
@@ -338,6 +356,7 @@ task copyDoc(type: Copy) {
 
 task copyMainScripts(type: Copy) {
     description 'Copies CLI main scripts to release directory.'
+    group 'packaging'
     mustRunAfter ':cleanPackDir'
 
     from 'src/main/shell/'
@@ -348,6 +367,7 @@ task copyMainScripts(type: Copy) {
 
 task copyUserScripts(type: Copy) {
     description 'Copies CLI main scripts to pack/user-scripts directory.'
+    group 'packaging'
     mustRunAfter ':cleanPackDir'
 
     from 'src/main/shell/user-scripts'
@@ -358,6 +378,7 @@ task copyUserScripts(type: Copy) {
 
 task copyUtilScripts(type: Copy) {
     description 'Copies CLI utility scripts to release/tools/cli directory.'
+    group 'packaging'
     mustRunAfter 'cleanPackDir'
 
     from 'src/main/shell/cli-util/'
@@ -369,6 +390,7 @@ task copyUtilScripts(type: Copy) {
 
 task copyExternalTools(type: Copy) {
     description 'Copies all external tools to release directory.'
+    group 'packaging'
     mustRunAfter 'cleanPackDir'
 
     from 'tools'
@@ -377,6 +399,7 @@ task copyExternalTools(type: Copy) {
 
 task copyVersionInfo(type: Copy) {
     description 'Copies version.info file to release libs directory.'
+    group 'packaging'
     mustRunAfter 'cleanPackDir'
 
     from 'dist/'
@@ -386,6 +409,7 @@ task copyVersionInfo(type: Copy) {
 
 task copyIcons(type: Copy) {
     description 'Copies common GUI icon to packs/icons directory.'
+    group 'packaging'
     mustRunAfter 'cleanPackDir'
 
     from 'gui-common/src/main/resources/gui-common/img/icons'
