@@ -1,7 +1,9 @@
 package fr.tduf.gui.database.controllers;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.common.AppConstants;
 import fr.tduf.gui.common.controllers.helper.DatabaseOpsHelper;
+import fr.tduf.gui.common.javafx.application.AbstractGuiApp;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.javafx.helper.TableViewHelper;
@@ -235,6 +237,13 @@ public class MainStageController extends AbstractGuiController {
         }
 
         checkDatabase(databaseLocation);
+    }
+
+    @FXML
+    public void handleHelpButtonAction() {
+        Log.trace(THIS_CLASS_NAME, "->handleHelpButtonAction");
+
+        AbstractGuiApp.getHostServicesInstance().showDocument(AppConstants.URL_WIKI_TOOLS_REF);
     }
 
     @FXML
