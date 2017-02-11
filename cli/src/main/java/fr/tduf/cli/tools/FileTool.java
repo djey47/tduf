@@ -90,7 +90,7 @@ public class FileTool extends GenericTool {
         new FileTool().doMain(args);
     }
 
-    public FileTool() {
+    FileTool() {
         bankSupport = new GenuineBnkGateway(new CommandLineHelper());
     }
 
@@ -258,9 +258,11 @@ public class FileTool extends GenericTool {
         GenericParser<String> genericParser = getFileParser(sourceFile, structureFile);
         genericParser.parse();
 
-        outLine("\t-> Provided file dump:\n" + genericParser.dump());
+        outLine("\t-> Dump of provided file:\n" + genericParser.dump());
 
         parserToJsonFile(targetJsonFile, genericParser);
+
+        outLine("\t-> Written JSON file:\n" + targetJsonFile);
 
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("tduFile", sourceFile);
