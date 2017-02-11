@@ -1,6 +1,6 @@
 {
   "name": "Spots database for cruising mode",
-  "littleEndian": false,
+  "littleEndian": true,
   "fields": [
     {
       "name": "headerExtension",

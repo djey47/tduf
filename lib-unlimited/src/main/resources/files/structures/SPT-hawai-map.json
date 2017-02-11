@@ -1,6 +1,6 @@
 {
   "name": "Spots database on Hawaii map",
-  "littleEndian": false,
+  "littleEndian": true,
   "fields": [
     {
       "name": "headerExtension",
@@ -32,9 +32,14 @@
       "type": "REPEATER",
       "subFields": [
         {
-          "name": "spotName",
+          "name": "spotIdentifier",
           "type": "TEXT",
-          "size": 16
+          "size": 8
+        },
+        {
+          "name": "spotBankFileName",
+          "type": "TEXT",
+          "size": 8
         },
         {
           "name": "spotUnknown1",
@@ -52,7 +57,7 @@
           "size": 4
         },
         {
-          "name": "spotPad2",
+          "name": "spotPad1",
           "type": "TEXT",
           "size": 4
         },

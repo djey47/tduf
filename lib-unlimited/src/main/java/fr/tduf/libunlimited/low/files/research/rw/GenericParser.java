@@ -42,7 +42,6 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
         FileStructureDto fileStructure = StructureHelper.retrieveStructureFromLocation(getStructureResource());
         this.dataStore = new DataStore(fileStructure);
         this.inputStream = StructureHelper.decryptIfNeeded(inputStream, fileStructure.getCryptoMode());
-
     }
 
     /**
