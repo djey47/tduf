@@ -74,11 +74,13 @@ TDUF aims at making Test Drive Unlmited modding easier:
 
 
 ### What you will need to run TDUF
-* Please uninstall any Java Runtime < 8
-* [Update / Install Java 8 Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)
-* Make sure .net apps can be run, as well:
-    - Windows users: check if .net Framework 2.0 is installed (if TDUMT/TDUPE actually run, you're ok)
-    - Linux users: check if Mono 2.0 is installed, otherwise you will have to install **mono-complete** package.
+* Make sure Java apps can be run:
+    - Please uninstall any Java Runtime < 8
+    - [Update / Install Java 8 Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)
+    - Linux users with OpenJDK8: you'll need to get **openjfx** package.
+* Make sure .net apps can be run, as well (if TDUMT/TDUPE actually run, you're fine):
+    - Windows: check if .net Framework 2.0 is installed
+    - Linux: check if Mono 2.0 is installed, otherwise you will have to get **mono-complete** package.
 
 
 ### Running Database Editor!
