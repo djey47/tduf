@@ -1,6 +1,6 @@
 alias CameraTool="./CameraTool.sh"
 alias CheckJava="./CheckJava.sh"
-alias SetVersion="./SetVersion.sh"
+alias SetVersion="source ./SetVersion.sh"
 alias DatabaseEditor="./DatabaseEditor.sh"
 alias DatabaseTool="./DatabaseTool.sh"
 alias FileTool="./FileTool.sh"
