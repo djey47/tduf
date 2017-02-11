@@ -1,0 +1,3849 @@
+{
+  "headerExtension": ".SPT",
+  "headerUnknown1": "0x[01 00 00 00 07 00 00 00 F4 00 F5 00]",
+  "headerTag": "SPTA",
+  "headerEntryZoneSizePlus16": 30736,
+  "headerUnknown2": "0x[FA 00 FB 00 FC 00 FD 00]",
+  "spots": [
+    {
+      "spotIdentifier": "RACE10\u0000\u0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[29 1A 56 47 12 83 AB 41 BF 68 43 47 07 31 00 01 54 08 00 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 06 06 05]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[27 A8 C5 03]"
+    },
+    {
+      "spotIdentifier": "RACE01\u0000\u0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[11 4E 79 47 6A 3C 8F 42 DF C5 33 47 07 31 00 01 8F 08 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[A7 1A 6A 03]"
+    },
+    {
+      "spotIdentifier": "TIME01\u0000\u0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[71 B9 59 47 D9 CE DB 41 31 0E 1A 47 07 00 02 01 36 09 03 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 05 03]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[C7 78 91 03]"
+    },
+    {
+      "spotIdentifier": "RACE11\u0000\u0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[E7 3B 53 47 2F DD C9 41 31 7C 41 47 07 30 02 01 94 08 07 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 04 05 04]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[C7 17 B6 03]"
+    },
+    {
+      "spotIdentifier": "RACE02\u0000\u0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[11 8D 5D 47 5E BA 58 42 C5 EB 19 47 07 30 05 01 33 09 01 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[04 00 02 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[37 10 53 03]"
+    },
+    {
+      "spotIdentifier": "TIME02\u0000\u0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[D5 50 56 47 D5 B8 86 42 CE 0F 19 47 07 00 02 01 0D 09 01 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 04 05 03]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[87 6B 8E 03]"
+    },
+    {
+      "spotIdentifier": "RACE12\u0000\u0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[4F 93 43 47 73 E8 2F 42 CB 4F 45 47 07 30 01 01 58 07 02 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 05 06 04]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[17 43 7C 03]"
+    },
+    {
+      "spotIdentifier": "RACE03\u0000\u0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[B8 02 67 47 73 68 CD 41 94 47 2A 47 07 30 03 01 B4 08 00 00 65 00 00 00 25 BA 82 00]",
+      "spotUnknown2": "0x[01 02 04 02]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[D7 2C 3C 03]"
+    },
+    {
+      "spotIdentifier": "TIME03\u0000\u0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[E2 31 5C 47 58 39 15 42 C9 C6 20 47 07 00 04 01 2E 09 07 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[04 00 03 01]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[37 45 5F 03]"
+    },
+    {
+      "spotIdentifier": "RACE13\u0000\u0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[33 B7 37 47 5C 8F D4 41 16 6F 45 47 07 31 00 01 1B 08 02 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[17 86 5C 03]"
+    },
+    {
+      "spotIdentifier": "RACE04\u0000\u0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[DC FE 73 47 BC 74 CB C0 D9 3F 30 47 07 31 00 01 8E 08 03 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[67 D8 5A 03]"
+    },
+    {
+      "spotIdentifier": "TIME04\u0000\u0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[59 DD 66 47 C5 60 D7 42 BD 4C 23 47 07 00 02 01 A8 08 01 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 04 05 03]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[A7 AB BA 03]"
+    },
+    {
+      "spotIdentifier": "RACE05\u0000\u0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[E6 6B 7A 47 AA 71 76 42 AF 6D 39 47 07 30 02 01 8D 08 06 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 04 06 05]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[47 20 42 03]"
+    },
+    {
+      "spotIdentifier": "TIME05\u0000\u0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[DA C4 66 47 BC 74 A2 41 E0 21 40 47 07 00 02 01 48 08 03 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 04 05 04]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[C7 43 85 03]"
+    },
+    {
+      "spotIdentifier": "RACE06\u0000\u0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[68 7B 6E 47 AE 47 B3 41 87 CD 3A 47 07 30 03 01 61 08 00 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[04 03 04 03]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[67 C1 49 03]"
+    },
+    {
+      "spotIdentifier": "RACE07\u0000\u0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[F2 8B 6E 47 14 2E B1 42 F2 60 45 47 07 31 00 01 8C 08 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[E7 65 B6 03]"
+    },
+    {
+      "spotIdentifier": "RACE08\u0000\u0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[B7 66 67 47 9C 44 23 42 27 C1 47 47 07 30 05 01 84 08 01 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 02 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[67 57 31 03]"
+    },
+    {
+      "spotIdentifier": "RACE09\u0000\u0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[2D 10 65 47 62 10 E0 41 90 BB 41 47 07 30 02 01 5C 08 00 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[04 03 05 04]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[67 F6 55 03]"
+    },
+    {
+      "spotIdentifier": "SPEED01\u0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[9D B4 60 47 77 FE BE 42 32 28 1C 47 07 10 02 01 21 09 04 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 06 05]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[C7 AD 9D 03]"
+    },
+    {
+      "spotIdentifier": "SPEED02\u0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[C7 BC 63 47 12 83 D4 40 64 35 26 47 07 10 04 01 B8 08 04 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[97 66 BF 03]"
+    },
+    {
+      "spotIdentifier": "SPEED03\u0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[B7 E0 74 47 BC F4 56 42 FF 79 3C 47 07 10 05 01 69 08 02 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 02 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[77 9E 7F 03]"
+    },
+    {
+      "spotIdentifier": "SPEED04\u0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[32 3E 65 47 BA 49 F8 40 76 FE 3D 47 07 10 04 01 44 08 02 01 67 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[87 0A B3 03]"
+    },
+    {
+      "spotIdentifier": "SPEED05\u0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[F4 83 64 47 98 6E 8A 40 8A E1 40 47 07 10 02 01 48 08 00 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[04 00 05 04]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[27 91 B4 03]"
+    },
+    {
+      "spotIdentifier": "SPEED06\u0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[9A 85 3F 47 A6 9B 6C 42 C4 37 4D 47 07 10 04 01 24 08 03 01 67 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 02 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[27 BD 83 03]"
+    },
+    {
+      "spotIdentifier": "RCFE0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[9B C0 A6 46 58 79 8C 43 AF 85 C7 46 07 32 00 01 44 01 0C 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[77 0D 2F 03]"
+    },
+    {
+      "spotIdentifier": "SCFE0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[6B B0 0A 47 EE 7C FF 3F D7 0B 19 47 07 12 00 01 AF 02 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[87 5B 67 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[CA A2 95 46 C7 0B A6 43 42 F3 D2 46 07 31 00 01 71 01 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[A7 4F 76 03]"
+    },
+    {
+      "spotIdentifier": "SMFE0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[7F 07 6B 46 25 C6 99 42 99 D0 EC 46 07 11 00 01 BE 02 01 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[67 77 7F 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0000",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[CD 33 B3 46 C9 76 43 42 2E D8 1F 47 07 30 02 01 48 03 00 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 03 05 04]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[A7 6D 71 03]"
+    },
+    {
+      "spotIdentifier": "RCFE0010",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[06 5C 0C 47 17 D9 6C 41 59 95 20 47 07 32 00 01 5A 04 03 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[67 2D B5 03]"
+    },
+    {
+      "spotIdentifier": "SCFE0010",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[F5 7B 43 46 54 E3 BD 40 68 7D 13 47 07 12 00 01 FC 02 04 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[C7 C9 45 03]"
+    },
+    {
+      "spotIdentifier": "SMFE0010",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[18 8E 46 47 71 3D CF 41 C9 75 0C 47 07 11 00 01 8A 00 01 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[47 40 90 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0010",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[62 29 D1 45 54 E3 4F C1 8F B9 E9 46 07 30 02 01 0E 00 0D 01 01 00 00 00 AF 36 0D 00]",
+      "spotUnknown2": "0x[03 06 05 04]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[87 F8 38 03]"
+    },
+    {
+      "spotIdentifier": "SSFE0010",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[AD F6 2E 47 9A 99 99 3F EC 49 3C 47 07 10 01 01 6E 06 01 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 06 04]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[87 97 5D 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0010",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[A3 48 89 46 AE 87 C3 43 41 D9 D4 46 07 00 04 01 71 01 04 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[67 60 6E 03]"
+    },
+    {
+      "spotIdentifier": "|u~_A_10",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[6D 99 75 47 6F 12 C1 41 D2 BC 37 47 06 00 00 00 5F 08 06 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|t�_A_10",
+      "spotBankFileName": "ECR_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[BB B6 74 47 E1 7A BB 41 1F 8D 3B 47 08 02 00 00 64 08 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|r�_A_10",
+      "spotBankFileName": "EAS_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[6B 1E 76 47 1D 5A B0 40 ED 34 3F 47 03 01 00 00 8C 08 05 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|r�_I_10",
+      "spotBankFileName": "EAS_I\u0000\u0000\u0000",
+      "spotUnknown1": "0x[DA DB 74 47 0E 2D BB 41 16 AA 39 47 03 0D 00 00 5F 08 15 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RCFE0020",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[63 75 00 47 56 0E FD 40 81 EF 25 47 07 32 00 01 34 04 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[B7 58 7B 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0020",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[B4 9C 0D 47 31 08 8E 41 2C 55 27 47 07 31 00 01 13 04 03 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[57 D1 A8 03]"
+    },
+    {
+      "spotIdentifier": "SMFE0020",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[95 F3 12 47 3B DF AD 41 C5 90 1B 47 07 11 00 01 D1 04 09 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[67 2B 62 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0020",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[0D 47 21 46 CD CC 4C 40 5A A3 07 47 07 30 03 01 FF 02 06 00 65 00 00 00 87 02 0F 00]",
+      "spotUnknown2": "0x[01 00 04 02]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[37 91 7C 03]"
+    },
+    {
+      "spotIdentifier": "SSFE0020",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[77 6E 6F 47 9E EF 0F 40 6E 7D 2E 47 07 10 02 01 BC 08 00 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 06 05 04]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[57 32 84 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0020",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[88 1C 05 47 2B 87 C6 40 7F C4 26 47 07 00 04 01 25 04 01 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 02 03 01]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[D7 09 AA 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0030",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[5B C0 B3 46 48 81 65 43 FC 6C 8A 46 07 31 00 01 F5 00 07 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[67 16 A4 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0030",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[64 73 2C 47 23 DB CE C1 8F CE 99 46 07 30 02 01 D9 00 00 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 03 04 03]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[07 25 B9 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0030",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[99 42 30 47 02 0B 3A 43 C4 8D 1D 47 07 30 03 01 12 00 08 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 06 04 02]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[67 CA 86 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0040",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[18 5A 13 47 2F DD F1 41 37 B0 4E 46 07 31 00 01 B1 00 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[87 0F 4A 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0040",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[62 39 41 47 AC 9C 49 42 CA 2D 48 47 07 30 03 01 41 08 02 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 06 06 04]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[67 69 AB 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0040",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[09 A3 20 47 9A 99 99 3F 66 26 87 46 07 00 03 01 B8 00 07 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 04 02]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[47 55 4E 03]"
+    },
+    {
+      "spotIdentifier": "|yI_A_40",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[3A 7F F1 46 33 33 13 41 02 B9 86 45 06 00 00 00 94 00 02 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RMFE0050",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[97 E0 BD 46 39 74 DA 42 46 52 16 46 07 31 00 01 E3 00 07 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[D7 F7 2F 03]"
+    },
+    {
+      "spotIdentifier": "x{I_A_50",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[9C DC 03 47 9C C4 90 3F 12 EB B9 45 06 00 00 00 C0 00 13 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RMFE0060",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[E5 B2 0B 46 C7 4B 57 BF E6 D2 83 46 07 31 00 01 0C 00 11 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[E7 A6 43 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0070",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[C9 2D 93 46 DD E4 AE 42 7A A5 A4 46 07 31 00 01 34 01 01 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[27 B4 46 03]"
+    },
+    {
+      "spotIdentifier": "RCFE0001",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[68 DF 4B 47 9A 99 99 3F C4 7A EF 46 07 32 00 01 A1 09 02 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[F7 91 4D 03]"
+    },
+    {
+      "spotIdentifier": "SCFE0001",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[14 2C CE 46 77 0E B6 43 4E 29 8F 46 07 12 00 01 02 01 05 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[47 83 70 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0001",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[EA 6D 42 47 A6 1B 68 42 9A 5E 41 47 07 31 00 01 7D 07 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[87 2D 45 03]"
+    },
+    {
+      "spotIdentifier": "SMFE0001",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[70 BD 11 47 C3 F5 62 41 47 56 10 46 07 11 00 01 9C 00 01 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[47 37 53 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0001",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[02 F2 9A 46 AA F1 A6 40 90 1B 38 47 07 30 04 01 69 03 04 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 01 03 02]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[E7 83 B1 03]"
+    },
+    {
+      "spotIdentifier": "SSFE0001",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[A4 D6 32 47 DF 4F 86 41 4E 31 F7 46 07 10 03 01 49 00 00 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 03 04 03]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[27 88 77 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0001",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[C5 EA 31 47 FC 89 45 C3 E8 BF B7 46 07 00 03 01 DB 00 00 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 04 04 02]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[B7 D2 BA 03]"
+    },
+    {
+      "spotIdentifier": "RCFE0011",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[42 22 0A 47 23 DB 59 C1 8A EC 30 47 07 32 00 01 55 04 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[B7 4F 3E 03]"
+    },
+    {
+      "spotIdentifier": "SCFE0011",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[56 4F 31 47 7F EA 6F 42 3B C3 00 47 07 12 00 01 57 00 02 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[E7 09 72 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0011",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[2B 21 1D 45 66 66 8A 40 60 5F 98 46 07 31 00 01 0C 00 02 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[E7 88 48 03]"
+    },
+    {
+      "spotIdentifier": "SMFE0011",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[6A 93 F4 46 9A 99 99 3F 7B D8 38 45 07 11 00 01 CD 00 01 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[07 F5 43 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0011",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[22 DF 6B 46 35 1E C9 42 7D DC E9 46 07 30 04 01 71 01 0C 01 65 00 00 00 6A 1A 0E 00]",
+      "spotUnknown2": "0x[03 01 03 01]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[27 1E 5F 03]"
+    },
+    {
+      "spotIdentifier": "SSFE0011",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[AC 3F 74 46 68 71 59 43 96 D6 E1 46 07 10 05 01 71 01 06 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 00 01 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[B7 A2 45 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0011",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[EE 13 CC 46 FC E9 2C 43 C3 95 00 47 07 00 03 01 B2 01 00 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 03 04 02]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[D7 D4 9D 03]"
+    },
+    {
+      "spotIdentifier": "RCFE0021",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[31 D4 53 47 2D B2 55 40 A9 AE F8 46 07 32 00 01 76 09 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[77 16 6C 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0021",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[BA 1E 15 47 3D CA B3 42 39 7B 1E 47 07 31 00 01 17 05 08 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[97 C7 9A 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0021",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[D9 E3 02 47 35 5E 52 41 B8 81 C4 45 07 30 02 01 C3 00 02 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 05 03]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[07 1C 7C 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0021",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[C0 07 3B 47 B4 C8 C5 C1 B8 88 46 47 07 00 01 01 26 08 00 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 05 06 05]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[A7 64 34 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0031",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[23 A2 1C 47 2B 87 B6 3F 8D 8C 83 46 07 30 02 01 AF 00 01 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 04 05 03]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[E7 6A 4D 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0031",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[2C DA 28 47 19 04 A6 3F AF 07 3C 47 07 00 05 01 1E 07 00 01 65 00 00 00 E0 51 E2 04]",
+      "spotUnknown2": "0x[01 00 02 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[E7 27 6D 03]"
+    },
+    {
+      "spotIdentifier": "w{I_A_31",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[3E FD A1 46 7D 3F 81 40 A2 C5 39 46 06 00 00 00 E9 00 03 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RMFE0041",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[98 23 1C 47 F2 D2 C5 40 7D C8 7D 46 07 31 00 01 AB 00 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[F7 02 50 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0041",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[35 A2 40 47 02 AB 3E 42 81 EB 40 47 07 30 01 01 74 07 01 00 66 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[77 C5 B7 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0041",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[E0 FA 68 47 BC 74 37 41 C8 C2 44 47 07 00 04 01 8B 08 01 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[04 00 02 01]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[C7 D0 2F 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0051",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[24 CC 8D 46 14 4E 3E C3 FC 96 39 47 07 31 00 01 62 03 02 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[57 24 B0 03]"
+    },
+    {
+      "spotIdentifier": "{�E_A_51",
+      "spotBankFileName": "ERE_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[A8 27 0B 47 2D B2 85 40 D3 A3 FF 45 08 04 00 00 B5 00 02 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "ztR_A_51",
+      "spotBankFileName": "ECR_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[F9 3B 09 47 A0 1A 67 40 54 87 E8 45 08 02 00 00 B5 00 05 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "ysW_A_51",
+      "spotBankFileName": "ECW_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[37 A1 05 47 AE 47 D1 3F DF D4 CC 45 08 00 00 00 C5 00 07 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|vS_B_51",
+      "spotBankFileName": "EAS_B\u0000\u0000\u0000",
+      "spotUnknown1": "0x[BF 14 10 47 E9 26 B1 3E 3F DA 1C 46 03 07 00 00 B6 00 24 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "xsH_C_51",
+      "spotBankFileName": "ECH_C\u0000\u0000\u0000",
+      "spotUnknown1": "0x[3C C2 01 47 33 33 97 41 54 29 C4 45 05 00 00 00 C3 00 0B 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|uS_C_51",
+      "spotBankFileName": "EAS_C\u0000\u0000\u0000",
+      "spotUnknown1": "0x[3E E0 0D 47 D1 22 CB 3F DC D4 17 46 03 08 00 00 B0 00 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "{tS_D_51",
+      "spotBankFileName": "EAS_D\u0000\u0000\u0000",
+      "spotUnknown1": "0x[EF B4 0B 47 48 E1 8A 3F 26 0F 0B 46 03 09 00 00 99 00 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RMFE0061",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[D9 43 D1 46 E9 26 C7 41 D9 2B 83 45 07 31 00 01 95 00 06 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[87 CC 69 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0071",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[1B 0D 9B 45 8D 97 F6 C2 C5 23 C0 46 07 31 00 01 0A 00 02 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[27 35 70 03]"
+    },
+    {
+      "spotIdentifier": "ux}�G2_1",
+      "spotBankFileName": "EAM_G2\u0000\u0000",
+      "spotUnknown1": "0x[DE 34 71 47 D3 4D 86 40 A2 D8 2E 47 04 11 00 00 8E 08 05 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RCFE0002",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[DA 31 23 47 8F C2 85 3F EC 64 98 46 07 32 00 01 B8 00 0F 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[27 0E 38 03]"
+    },
+    {
+      "spotIdentifier": "SCFE0002",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[49 E0 DE 46 FE 54 9A 42 04 45 0D 47 07 12 00 01 EA 01 02 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[87 C5 7F 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0002",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[4E 76 36 47 C9 76 53 42 FE 04 38 47 07 31 00 01 43 07 03 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[57 C8 6B 03]"
+    },
+    {
+      "spotIdentifier": "SMFE0002",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[A2 B0 38 47 D1 82 71 43 33 E2 23 47 07 11 00 01 01 09 00 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[87 4D 93 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0002",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[AE 8B D3 46 2B 87 B6 40 83 53 31 47 07 30 05 01 9D 03 07 01 65 00 00 00 90 1E 00 00]",
+      "spotUnknown2": "0x[01 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[C7 1C 4D 03]"
+    },
+    {
+      "spotIdentifier": "SSFE0002",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[07 5E 3B 47 60 65 8F 43 D3 1F 23 47 07 10 04 01 01 09 01 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 02 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[07 5A C5 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0002",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[22 4C 9C 46 B2 9D AF 41 FF 2B 46 46 07 00 04 01 E4 00 02 02 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[77 7E 31 03]"
+    },
+    {
+      "spotIdentifier": "RCFE0012",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[9C E3 0C 47 7F 6A 90 40 E2 CF 17 47 07 32 00 01 A4 02 01 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[A7 9B 93 03]"
+    },
+    {
+      "spotIdentifier": "SCFE0012",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[18 62 76 47 33 33 95 42 8A 50 32 47 07 12 00 01 8E 08 01 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[A7 D0 9F 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0012",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[83 AC A1 46 FA 7E 72 40 41 A3 39 46 07 31 00 01 E9 00 03 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[A7 58 B3 03]"
+    },
+    {
+      "spotIdentifier": "SMFE0012",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[4D 34 A3 46 66 46 34 43 61 13 95 46 07 11 00 01 35 01 00 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[27 3E AD 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0012",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[D2 67 12 47 0C 02 2F 42 A4 C2 1E 47 07 30 05 01 17 05 04 02 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 00 01 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[C7 4C C2 03]"
+    },
+    {
+      "spotIdentifier": "SSFE0012",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[BE 75 9B 46 85 6B 9A 43 11 6D D1 46 07 10 05 01 72 01 05 00 47 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 00 02 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[97 6B 56 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0012",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[62 0D 2B 47 33 33 93 40 37 63 97 46 07 00 04 01 D8 00 03 00 65 00 00 00 6A 1A 0E 00]",
+      "spotUnknown2": "0x[01 02 03 01]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[37 9A B9 03]"
+    },
+    {
+      "spotIdentifier": "RCFE0022",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[C1 7E 46 47 9E AF 8B 42 F3 83 16 47 07 32 00 01 CB 08 01 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[07 D7 48 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0022",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[C8 9A EC 46 7B 14 DB 41 EE FE 10 47 07 31 00 01 F8 01 02 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[A7 46 39 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0022",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[0E 4A F0 46 9A 99 99 3F 08 F0 35 45 07 30 05 01 CD 00 00 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 01 02 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[27 E9 52 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0022",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[7B F1 FF 46 CF F7 53 40 11 E6 20 47 07 00 05 01 AA 04 00 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 00 02 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[37 CF C5 03]"
+    },
+    {
+      "spotIdentifier": "yyH_C_22",
+      "spotBankFileName": "ECH_C\u0000\u0000\u0000",
+      "spotUnknown1": "0x[75 37 74 46 66 66 A6 40 69 9D 86 46 05 00 00 00 15 01 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|wS_E_22",
+      "spotBankFileName": "EAS_E\u0000\u0000\u0000",
+      "spotUnknown1": "0x[C8 6A 8C 46 EE 7C 1F 3F 28 57 85 46 03 0A 00 00 F6 00 02 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|rS_F_22",
+      "spotBankFileName": "EAS_F\u0000\u0000\u0000",
+      "spotUnknown1": "0x[DE C1 91 46 89 41 20 40 B9 10 57 46 03 0B 00 00 EB 00 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RMFE0032",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[D1 FF EE 45 3D 0A 57 BF 72 DD 83 46 07 31 00 01 0C 00 0C 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[E7 91 85 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0032",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[37 43 1F 47 D7 83 23 43 7E F8 C6 46 07 30 05 01 DD 00 04 01 73 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 01 02 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[07 13 3F 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0042",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[2D 01 0F 47 D1 22 5B 40 F5 A9 17 46 07 31 00 01 9F 00 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[97 54 45 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0042",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[C6 5D 3A 47 8F C2 75 BC 52 FD 4B 47 07 30 01 01 25 08 00 00 66 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 05 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[17 17 AD 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0042",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[DF 8F 4B 46 54 E3 35 40 94 00 15 47 07 00 03 01 F8 02 01 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 03 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[C7 D9 6C 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0052",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[0B A6 A5 46 8B EC 5E C2 03 63 35 47 07 31 00 01 58 03 05 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[57 47 42 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0062",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[79 3A 97 45 2F BD 75 C3 DF C8 CB 46 07 31 00 01 0B 00 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[47 8A 5A 03]"
+    },
+    {
+      "spotIdentifier": "vwI_A_62",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[7A 49 16 47 5C 8F CA 40 96 BA 68 46 06 00 00 00 AA 00 04 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RMFE0072",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[95 0B B3 46 23 DB D9 3F AF ED 32 47 07 31 00 01 4C 03 06 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[27 D4 94 03]"
+    },
+    {
+      "spotIdentifier": "�||�b0A2",
+      "spotBankFileName": "ECD_10A2",
+      "spotUnknown1": "0x[98 8E 69 47 EC 51 F4 41 33 3A 45 47 01 11 00 00 7D 08 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "�yz�f2A2",
+      "spotBankFileName": "ECD_12A2",
+      "spotUnknown1": "0x[94 16 12 47 F6 28 B4 41 6C B9 1F 47 01 03 00 00 AB 04 02 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "��}�3A2",
+      "spotBankFileName": "EPH_L3A2",
+      "spotUnknown1": "0x[06 E1 08 47 27 A1 92 43 D0 5B 02 47 00 02 00 00 92 02 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "����3A2",
+      "spotBankFileName": "EPH_L3A2",
+      "spotUnknown1": "0x[FC CB 3C 47 CD CC 57 43 B9 85 4B 47 00 02 00 00 42 08 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "�ty�e2B2",
+      "spotBankFileName": "ECD_12B2",
+      "spotUnknown1": "0x[7E E3 20 46 F8 53 4B 40 2D 28 06 47 01 16 00 00 00 03 04 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "�||�a2E2",
+      "spotBankFileName": "ECD_12E2",
+      "spotUnknown1": "0x[06 95 69 47 EE 7C 83 40 51 EC 41 47 01 14 00 00 77 08 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "{sw_5A_2",
+      "spotBankFileName": "EBD_5A\u0000\u0000",
+      "spotUnknown1": "0x[07 81 59 46 77 BE DF 3F 33 46 19 47 02 03 00 00 07 03 07 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "wxz_8I_2",
+      "spotBankFileName": "ECD_8I\u0000\u0000",
+      "spotUnknown1": "0x[F9 79 81 46 9A 99 79 3F 84 91 87 46 01 17 00 00 FE 00 05 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "wu{_8J_2",
+      "spotBankFileName": "ECD_8J\u0000\u0000",
+      "spotUnknown1": "0x[2A 11 65 46 9A 99 35 41 AD B9 8C 46 01 1A 00 00 13 01 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RCFE0003",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[23 69 A4 46 EE DC 1C 43 7F 32 8A 46 07 32 00 01 DE 00 02 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[E7 35 41 03]"
+    },
+    {
+      "spotIdentifier": "SCFE0003",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[76 04 5A 47 62 10 D9 41 7A 81 F0 46 07 12 00 01 8D 09 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[C7 07 8F 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0003",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[CF 28 66 47 BA 49 BC 40 6E FB 21 47 07 31 00 01 A8 08 01 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[B7 8B 34 03]"
+    },
+    {
+      "spotIdentifier": "SMFE0003",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[B3 8D 74 46 C9 76 3E 41 A9 B8 26 47 07 11 00 01 07 03 16 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[E7 C6 91 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0003",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[C7 AC B2 46 9A 99 99 3F CF 8F 3A 47 07 30 05 01 6C 03 00 02 02 01 00 00 B9 22 01 00]",
+      "spotUnknown2": "0x[01 00 01 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[97 DE AB 03]"
+    },
+    {
+      "spotIdentifier": "SSFE0003",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[0A 09 36 47 C5 80 7F 43 C0 76 1B 47 07 10 02 01 12 00 08 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 04 05 04]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[67 34 9F 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0003",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[25 C4 B0 46 23 5B DB 42 47 4A 15 46 07 30 03 01 E3 00 04 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[A7 0C 96 03]"
+    },
+    {
+      "spotIdentifier": "RCFE0013",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[A3 D0 27 47 19 04 5E 40 E1 56 39 47 07 32 00 01 8D 06 01 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[E7 9F 59 03]"
+    },
+    {
+      "spotIdentifier": "SCFE0013",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[01 B3 A7 46 5C 8F C7 42 60 B3 28 46 07 12 00 01 E9 00 0A 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[67 8E 90 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0013",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[BD C9 0B 47 0A D7 51 41 0E 32 23 47 07 31 00 01 5A 04 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[97 13 B8 03]"
+    },
+    {
+      "spotIdentifier": "SMFE0013",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[62 54 3D 47 1D 5A 9F 42 27 F7 13 47 07 11 00 01 8E 00 02 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[37 7A 6B 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0013",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[10 6C 6E 45 AE 47 53 41 5E 55 A1 46 07 00 04 01 06 00 00 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 02 03 02]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[A7 3A B8 03]"
+    },
+    {
+      "spotIdentifier": "SSFE0013",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[56 52 AB 46 3B 9F 5F 43 E4 73 98 46 07 10 05 01 29 01 05 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 01 02 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[37 65 AD 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0013",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[8B E3 3B 47 44 CB D0 42 5C 0F 14 47 07 00 04 01 2B 00 14 01 65 00 00 00 92 BA 0B 00]",
+      "spotUnknown2": "0x[01 00 03 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[F7 6C 68 03]"
+    },
+    {
+      "spotIdentifier": "RCFE0023",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[5A F0 59 47 1F 85 E3 C0 96 D8 11 47 07 32 00 01 58 09 02 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[F7 9A 8A 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0023",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[29 E8 0F 47 9A 99 99 3F 04 B8 35 47 07 31 00 01 52 05 0D 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[17 8F 99 03]"
+    },
+    {
+      "spotIdentifier": "ytI_A_23",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[74 1C 79 46 10 58 A5 40 4C F2 90 46 06 00 00 00 1D 01 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "zsR_A_23",
+      "spotBankFileName": "ECR_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[AE 4B 80 46 4E 62 B0 3F B3 C8 91 46 08 02 00 00 1D 01 03 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RSFE0033",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[6C BD 57 47 00 00 00 3F D4 1E 0E 47 07 30 03 01 65 09 00 01 65 00 00 00 6A 1A 0E 00]",
+      "spotUnknown2": "0x[01 01 06 02]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[B7 33 96 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0033",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[A5 8F 6B 47 6F 12 31 42 D1 15 45 47 07 00 05 01 82 08 00 00 E8 03 00 00 87 02 0F 00]",
+      "spotUnknown2": "0x[01 00 02 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[E7 30 AA 03]"
+    },
+    {
+      "spotIdentifier": "wtI_A_33",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[9D 04 A0 46 E1 7A 27 43 D6 AE 93 46 06 00 00 00 35 01 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "uwI_A_33",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[86 7D 94 46 7B 54 44 43 E2 A3 A5 46 06 00 00 00 34 01 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RMFE0043",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[14 0B 07 47 F8 B3 87 43 A6 57 2F 47 07 31 00 01 55 04 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[57 12 36 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0043",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[59 32 2C 47 D1 22 63 40 16 A1 D0 46 07 00 03 01 DD 00 00 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[04 00 04 03]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[27 7F 3A 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0053",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[D0 A5 9B 46 35 DE 21 C2 1B 7B 2C 47 07 31 00 01 31 03 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[87 D5 A6 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0063",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[8C E5 20 46 C5 20 74 41 14 02 F3 46 07 31 00 01 10 00 0A 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[F7 DF BD 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0073",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[F4 42 B7 46 29 5C 6F 3F D0 66 3A 47 07 31 00 01 6A 03 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[F7 D6 80 03]"
+    },
+    {
+      "spotIdentifier": "uuI_A_73",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[D8 E5 2B 47 4A 0C 4A 40 69 39 99 46 06 00 00 00 D3 00 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "wzH_E_73",
+      "spotBankFileName": "ECH_E\u0000\u0000\u0000",
+      "spotUnknown1": "0x[43 FA 30 47 1B 2F 7D 3F 88 46 BF 46 05 00 00 00 D7 00 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "�x{�b2B3",
+      "spotBankFileName": "ECD_12B3",
+      "spotUnknown1": "0x[4F 72 0C 47 3D 0A 97 3F C1 B3 2C 47 01 19 00 00 EC 03 05 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "{xy_8F_3",
+      "spotBankFileName": "ECD_8F\u0000\u0000",
+      "spotUnknown1": "0x[35 12 B4 46 14 AE 3C 42 E0 88 1F 47 01 0D 00 00 32 03 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|tv_8I_3",
+      "spotBankFileName": "ECD_8I\u0000\u0000",
+      "spotUnknown1": "0x[3D CB 98 46 37 89 96 41 42 7E 2F 47 01 17 00 00 52 03 02 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RCFE0004",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[7B BA E0 46 7F EA FA 42 58 5D 06 47 07 32 00 01 3B 02 01 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[37 DD 99 03]"
+    },
+    {
+      "spotIdentifier": "SCFE0004",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[E3 0D 1A 44 42 C0 1B 43 61 58 8C 46 07 12 00 01 0C 00 04 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[87 64 A4 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0004",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[E5 63 C0 45 0C 02 BB 40 91 01 E2 46 07 31 00 01 0E 00 04 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[67 0D 67 03]"
+    },
+    {
+      "spotIdentifier": "SMFE0004",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[68 AF 5D 47 F6 28 1C 3F 7B 1D 10 47 07 11 00 01 45 09 00 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[C7 C4 AE 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0004",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[6C 27 D9 46 23 DB 99 3F 17 2F 35 47 07 00 04 01 95 03 01 01 6F 00 00 00 E0 51 E2 04]",
+      "spotUnknown2": "0x[01 00 03 01]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[97 31 B3 03]"
+    },
+    {
+      "spotIdentifier": "SSFE0004",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[EE 96 53 47 F0 27 1E 42 03 CA 17 47 07 10 03 01 0C 09 00 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[04 00 04 03]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[87 01 76 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0004",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[2F 65 81 46 87 96 4A 42 2D 5E 92 46 07 30 03 01 1D 01 03 02 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 01 04 02]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[47 F4 72 03]"
+    },
+    {
+      "spotIdentifier": "RCFE0014",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[FB B1 4F 47 48 E1 42 40 B8 10 20 47 07 32 00 01 DF 08 01 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[A7 05 AC 03]"
+    },
+    {
+      "spotIdentifier": "SCFE0014",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[0B 07 28 47 08 AC B4 40 E0 45 38 47 07 12 00 01 8D 06 01 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[B7 FE 89 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0014",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[DB C5 C2 46 E3 55 85 43 1E CB CC 46 07 31 00 01 6B 01 08 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[F7 CD 43 03]"
+    },
+    {
+      "spotIdentifier": "SMFE0014",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[11 5A 49 47 5C 8F 52 40 9E 37 46 47 07 11 00 01 E4 07 03 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[07 C0 37 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0014",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[B5 61 AA 46 CF 77 90 43 7F 6D 9A 46 07 30 05 01 29 01 05 01 65 00 00 00 6A 1A 0E 00]",
+      "spotUnknown2": "0x[03 00 01 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[E7 45 68 03]"
+    },
+    {
+      "spotIdentifier": "SSFE0014",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[DE 01 24 47 9A 99 99 3F 73 D3 39 47 07 10 05 01 AA 05 05 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 01 01 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[17 F9 B1 03]"
+    },
+    {
+      "spotIdentifier": "RCFE0024",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[8B F1 F0 45 DD 24 EE 40 0B BB E7 46 07 32 00 01 0D 00 14 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[27 4C 81 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0024",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[A9 42 3A 47 8B 6C 97 3F 24 45 45 47 07 31 00 01 15 08 01 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 05 06 04]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[C7 86 65 03]"
+    },
+    {
+      "spotIdentifier": "SMFE0024",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[AF 84 37 47 F2 D2 4B 42 07 BF 00 47 07 11 00 01 62 00 01 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[77 5B 9F 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0024",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[03 35 3A 47 39 B4 10 40 A9 DF 4A 47 07 30 01 01 F1 07 00 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 05 06 04]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[A7 76 AE 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0024",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[7C 9B 5D 47 9A 99 99 3F 96 C7 14 47 07 00 04 01 43 09 01 01 65 00 00 00 04 2D 01 00]",
+      "spotUnknown2": "0x[01 00 03 01]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[A7 EE 9A 03]"
+    },
+    {
+      "spotIdentifier": "|wI_A_24",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[01 65 8F 46 D9 1E B3 43 2A 4B D3 46 06 00 00 00 71 01 02 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "uzI_A_24",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[6A DB 44 46 8F C2 B8 42 09 40 E8 46 06 00 00 00 10 00 19 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RMFE0034",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[3E A0 2A 47 7F 6A 81 41 68 37 E8 46 07 31 00 01 37 00 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[A7 B0 51 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0034",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[8A F7 3E 47 F4 FD 0D 42 E0 C7 45 47 07 30 05 01 F7 07 01 02 DC 05 00 00 E4 DF D1 04]",
+      "spotUnknown2": "0x[01 00 06 03]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[D7 35 79 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0044",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[75 0E 07 47 9E A7 07 44 3A F8 30 47 07 31 00 01 55 04 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[97 BE 5D 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0044",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[15 A1 3E 47 08 8C 30 43 49 52 44 47 07 00 01 01 10 08 02 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 05 06 04]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[07 BB A0 03]"
+    },
+    {
+      "spotIdentifier": "xyR_A_44",
+      "spotBankFileName": "ECR_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[19 4F D7 46 FC E9 5E 43 DA 08 E9 46 08 02 00 00 83 01 04 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "vzW_A_44",
+      "spotBankFileName": "ECW_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[F9 61 CE 46 33 F3 53 43 6E A8 EF 46 08 00 00 00 91 01 03 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RMFE0054",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[39 E2 9F 46 79 69 9D 42 91 6D 27 47 07 31 00 01 49 03 01 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[47 5E 8B 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0064",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[50 F9 47 46 7B B4 4D C3 2C EA 03 47 07 31 00 01 E0 02 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[07 B2 63 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0074",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[BA 3D 46 47 3D 6A 4E 43 49 40 41 47 07 31 00 01 73 07 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[C7 A4 60 03]"
+    },
+    {
+      "spotIdentifier": "wwS_G_74",
+      "spotBankFileName": "EAS_G\u0000\u0000\u0000",
+      "spotUnknown1": "0x[A2 38 2F 47 00 00 00 3F 40 81 E6 46 03 0C 00 00 3E 00 06 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "yu{_8G_4",
+      "spotBankFileName": "ECD_8G\u0000\u0000",
+      "spotUnknown1": "0x[F8 73 D3 46 33 33 4F 43 33 3E EE 46 01 0F 00 00 89 01 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|sv_8I_4",
+      "spotBankFileName": "ECD_8I\u0000\u0000",
+      "spotUnknown1": "0x[A0 E9 C1 46 3B DF 1D 41 6E 52 2F 47 01 17 00 00 50 03 02 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RCFE0005",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[03 F2 E4 46 AE 47 A1 40 5A 5E 2E 47 07 32 00 01 95 03 11 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[A7 92 56 03]"
+    },
+    {
+      "spotIdentifier": "SCFE0005",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[EE D9 F4 46 C3 F5 89 41 C1 F4 12 47 07 12 00 01 0A 02 07 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[A7 6F C4 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0005",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[8B 60 9A 45 9A 99 99 3F 36 1A AF 46 07 31 00 01 02 00 05 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[27 CB 57 03]"
+    },
+    {
+      "spotIdentifier": "SMFE0005",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[BF 6C 3E 47 3F 35 13 42 E3 B9 41 47 07 11 00 01 90 07 04 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[87 44 56 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0005",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[A9 D2 A2 46 1D DA 38 42 1D CC 28 47 07 30 04 01 11 03 00 00 0D 01 00 00 FE 66 7C 00]",
+      "spotUnknown2": "0x[01 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[37 B8 B4 03]"
+    },
+    {
+      "spotIdentifier": "SSFE0005",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[5B B6 54 47 50 8D D7 3F B7 AC F6 46 07 10 04 01 93 09 03 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 06 03 01]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[57 50 7F 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0005",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[E4 DD 51 46 73 68 F5 40 04 4A 8C 46 07 00 03 01 23 01 05 02 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 01 04 02]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[77 87 6E 03]"
+    },
+    {
+      "spotIdentifier": "RCFE0015",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[23 55 D5 46 8D 97 0A 42 8F 9A 7F 45 07 32 00 01 95 00 03 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[67 C3 9C 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0015",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[C7 A6 CD 46 9C 64 54 43 9A 34 F0 46 07 31 00 01 91 01 05 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[B7 9D AE 03]"
+    },
+    {
+      "spotIdentifier": "SMFE0015",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[91 37 22 46 75 93 D8 3F 6F 44 0C 47 07 11 00 01 FE 02 04 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[67 42 73 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0015",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[E9 1A CF 46 C7 2B 56 43 58 E8 F2 46 07 30 04 01 91 01 0A 01 65 00 00 00 04 2D 01 00]",
+      "spotUnknown2": "0x[01 01 03 01]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[B7 F5 4C 03]"
+    },
+    {
+      "spotIdentifier": "SSFE0015",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[B9 D0 00 47 08 2C 31 42 D5 91 B0 45 07 10 04 01 CF 00 02 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[04 01 02 01]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[57 3B C1 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0015",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[FD 22 41 47 6A BC 8D 41 AD 97 09 47 07 00 05 01 74 00 00 02 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 00 02 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[67 F8 A8 03]"
+    },
+    {
+      "spotIdentifier": "{�E_A_15",
+      "spotBankFileName": "ERE_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[0C E5 2E 46 66 66 3A 41 EF BD 04 47 08 04 00 00 DC 02 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "z{I_A_15",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[29 71 25 46 A4 70 C5 40 CF AB 0D 47 06 00 00 00 C6 02 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "{yR_A_15",
+      "spotBankFileName": "ECR_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[D2 49 2A 46 06 81 5D 40 52 91 0C 47 08 02 00 00 CE 02 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "zvS_A_15",
+      "spotBankFileName": "EAS_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[E6 28 28 46 1F 85 EB 3E 0E D4 08 47 03 01 00 00 D3 02 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "zwS_B_15",
+      "spotBankFileName": "EAS_B\u0000\u0000\u0000",
+      "spotUnknown1": "0x[97 7D 22 46 58 39 5C 40 57 8E 0A 47 03 07 00 00 FE 02 06 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "zuS_C_15",
+      "spotBankFileName": "EAS_C\u0000\u0000\u0000",
+      "spotUnknown1": "0x[96 DE 26 46 5C 8F 02 3F 0A CB 04 47 03 08 00 00 EC 02 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "{uH_E_15",
+      "spotBankFileName": "ECH_E\u0000\u0000\u0000",
+      "spotUnknown1": "0x[C4 A8 2F 46 60 E5 BC 40 3E C3 FD 46 05 00 00 00 F7 02 10 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RCFE0025",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[6E F1 D6 46 B0 72 50 40 E5 2D 34 47 07 32 00 01 9D 03 02 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[47 19 58 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0025",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[8F E5 42 47 7D 3F A9 41 C5 3B 4B 47 07 31 00 01 0C 08 01 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[97 01 3E 03]"
+    },
+    {
+      "spotIdentifier": "SMFE0025",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[C8 88 CB 46 33 33 13 41 19 7B 2E 47 07 11 00 01 96 03 02 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[57 7C 4E 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0025",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[E6 76 01 47 9A 99 99 3F 61 01 33 47 07 30 05 01 2B 04 01 01 65 00 00 00 04 2D 01 00]",
+      "spotUnknown2": "0x[01 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[77 E8 49 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0025",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[0F B5 4E 47 98 6E 93 41 FD 87 18 47 07 00 05 01 D3 08 00 01 65 00 00 00 C7 3F 0D 00]",
+      "spotUnknown2": "0x[01 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[C7 E7 40 03]"
+    },
+    {
+      "spotIdentifier": "wwI_A_25",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[5C 12 68 46 D7 A3 4D 42 D6 1B 03 47 06 00 00 00 F9 02 08 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RMFE0035",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[CF 11 2F 47 00 00 AB 41 C2 1E E3 46 07 31 00 01 3E 00 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[47 32 BC 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0035",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[DF 39 39 47 DF EF 58 C3 A1 83 46 47 07 30 02 01 1C 08 00 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 04 05 04]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[77 90 AB 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0035",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[5D 15 3C 47 9C 34 E4 43 7D 3B 2D 47 07 00 05 01 C2 05 07 01 65 00 00 00 E0 51 E2 04]",
+      "spotUnknown2": "0x[04 00 01 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[47 EB 35 03]"
+    },
+    {
+      "spotIdentifier": "{xI_A_35",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[2A 9A B6 46 1F C5 4F 43 E5 E3 05 47 06 00 00 00 4C 01 07 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RMFE0045",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[78 88 00 47 4C 37 9D 40 2A 67 27 47 07 31 00 01 26 04 01 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[E7 4E A5 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0045",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[8E 65 34 47 BA 49 30 41 34 70 3B 47 07 00 01 01 3E 07 03 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 05 06 04]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[27 C6 C0 03]"
+    },
+    {
+      "spotIdentifier": "wuH_A_45",
+      "spotBankFileName": "ECH_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[E8 0B CD 46 A4 F0 29 43 28 5F 00 47 05 00 00 00 B1 01 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "wtI_A_45",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[96 F7 CE 46 D7 23 56 43 4C 78 F2 46 06 00 00 00 91 01 0A 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "yqS_D_45",
+      "spotBankFileName": "EAS_D\u0000\u0000\u0000",
+      "spotUnknown1": "0x[0A F1 DB 46 71 DD 59 43 75 B8 F2 46 03 09 00 00 DA 01 03 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RMFE0055",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[AC 82 E4 46 D9 CE 59 42 56 B2 71 45 07 31 00 01 96 00 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[B7 C0 40 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0065",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[5F D7 D8 46 BC 74 C3 43 8B 84 8C 46 07 31 00 01 02 01 05 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[A7 F3 31 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0075",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[5D 1E 66 47 F8 D3 27 42 B4 9E 37 47 07 31 00 01 6A 08 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[27 F2 8F 03]"
+    },
+    {
+      "spotIdentifier": "{�E_A_75",
+      "spotBankFileName": "ERE_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[F9 14 3E 47 E5 D0 D8 41 69 12 03 47 08 04 00 00 48 00 0E 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "{xI_A_75",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[D0 2B 3C 47 71 3D DD 41 CB 08 06 47 06 00 00 00 69 00 03 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "{yI_A_75",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[88 15 3D 47 75 13 4D 42 A4 1B 09 47 06 00 00 00 6F 00 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|uS_E_75",
+      "spotBankFileName": "EAS_E\u0000\u0000\u0000",
+      "spotUnknown1": "0x[F1 4A 3F 47 33 33 DB 41 16 35 05 47 03 0A 00 00 6E 00 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|yu_5A_5",
+      "spotBankFileName": "EBD_5A\u0000\u0000",
+      "spotUnknown1": "0x[56 82 10 47 AE 47 AD 40 B4 3A 2B 47 02 03 00 00 E7 03 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "vyy_8C_5",
+      "spotBankFileName": "ECD_8C\u0000\u0000",
+      "spotUnknown1": "0x[8B 48 0D 47 F6 28 00 41 32 13 21 46 01 08 00 00 A6 00 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|xt_8I_5",
+      "spotBankFileName": "ECD_8I\u0000\u0000",
+      "spotUnknown1": "0x[A1 26 08 47 33 33 43 40 77 44 2A 47 01 17 00 00 F2 03 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|zt_8I_5",
+      "spotBankFileName": "ECD_8I\u0000\u0000",
+      "spotUnknown1": "0x[5F 29 0D 47 64 3B CF 40 40 E7 29 47 01 17 00 00 05 04 02 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RCFE0006",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[20 19 2F 47 81 D5 92 42 FF CF 2D 47 07 32 00 01 17 06 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[27 17 75 03]"
+    },
+    {
+      "spotIdentifier": "SCFE0006",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[E0 01 9E 46 77 3E 4B 43 75 03 9F 46 07 12 00 01 2A 01 02 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[47 8C AD 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0006",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[B4 57 02 47 58 39 C8 40 32 78 1D 47 07 31 00 01 A8 04 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[17 D9 63 03]"
+    },
+    {
+      "spotIdentifier": "SMFE0006",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[35 9F F6 46 89 41 10 40 98 FF 16 47 07 11 00 01 97 02 03 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[37 71 2E 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0006",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[A3 4E FA 46 C3 F5 D7 41 2E 63 10 47 07 30 04 01 8E 02 00 01 01 00 00 00 C7 3F 0D 00]",
+      "spotUnknown2": "0x[01 00 03 02]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[77 F1 86 03]"
+    },
+    {
+      "spotIdentifier": "SSFE0006",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[1A 2F 6D 46 7F 6A 42 41 4C A6 8C 46 07 10 05 01 0A 01 00 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 01 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[97 A9 9F 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0006",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[8B 42 61 46 21 B0 46 41 1C 0A 8D 46 07 00 05 01 22 01 00 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 04 02 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[B7 4A A7 03]"
+    },
+    {
+      "spotIdentifier": "RCFE0016",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[00 BE 06 47 00 00 00 00 00 69 32 47 07 32 00 01 2C 04 04 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[67 62 C1 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0016",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[BC 81 2A 46 0E 2D EA 40 DB 74 0D 47 07 31 00 01 C4 02 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[27 9F 88 03]"
+    },
+    {
+      "spotIdentifier": "SMFE0016",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[26 62 64 47 23 DB B9 40 F7 D9 14 47 07 11 00 01 4A 09 01 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[07 07 BE 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0016",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[80 F3 83 46 9A 99 99 3F 91 D4 82 46 07 30 04 01 EC 00 00 01 65 00 00 00 6A 1A 0E 00]",
+      "spotUnknown2": "0x[03 02 03 01]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[07 51 88 03]"
+    },
+    {
+      "spotIdentifier": "SSFE0016",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[08 E1 27 47 9A 99 99 3F 77 73 3A 47 07 10 05 01 19 07 00 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 01 02 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[37 27 64 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0016",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[BA 2F DF 46 CF 37 68 43 45 FB E4 46 07 30 03 01 81 01 01 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 03 04 02]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[E7 DB 4F 03]"
+    },
+    {
+      "spotIdentifier": "|sW_A_16",
+      "spotBankFileName": "ECW_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[BD 74 37 46 44 8B 04 40 44 69 11 47 08 00 00 00 02 03 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "{qS_G_16",
+      "spotBankFileName": "EAS_G\u0000\u0000\u0000",
+      "spotUnknown1": "0x[D4 D1 2A 46 9A 99 F9 3F 3D 9E 10 47 03 0C 00 00 02 03 05 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RMFE0026",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[69 71 65 47 29 5C 17 40 37 8B 15 47 07 31 00 01 4B 09 03 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[87 21 C4 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0026",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[DF BF 06 47 17 D9 92 40 69 32 29 47 07 30 04 01 41 04 00 00 65 00 00 00 AF 36 0D 00]",
+      "spotUnknown2": "0x[01 00 03 01]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[F7 37 5C 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0026",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[0C A6 5F 47 46 36 5E 42 1F 0A EB 46 07 00 04 01 8A 09 00 01 65 00 00 00 EB B3 0D 00]",
+      "spotUnknown2": "0x[01 00 03 01]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[17 51 50 03]"
+    },
+    {
+      "spotIdentifier": "usP_A_26",
+      "spotBankFileName": "ECP_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[6C 92 46 46 71 3D 86 40 4F 06 12 47 08 01 00 00 E8 02 02 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RMFE0036",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[02 96 2C 47 F4 7D 7C 42 B4 73 FE 46 07 31 00 01 51 00 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[C7 05 3C 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0036",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[81 14 31 47 CD CC 6A 41 9B 0B 38 47 07 30 05 01 CE 05 06 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[04 00 01 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[A7 CE 4C 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0036",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[04 7C 43 47 4A 0C 70 41 B6 A5 06 47 07 00 03 01 77 00 04 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 03 03 02]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[67 9E B7 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0046",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[4D BA F6 46 23 DB 7F 41 29 92 13 47 07 31 00 01 0D 02 05 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[47 14 C1 03]"
+    },
+    {
+      "spotIdentifier": "|xM_I_56",
+      "spotBankFileName": "EAM_I\u0000\u0000\u0000",
+      "spotUnknown1": "0x[C2 77 10 47 00 00 F6 41 C9 9C 26 47 04 08 00 00 11 05 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RMFE0066",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[FC BA C2 46 C9 B6 A4 43 4D 71 12 47 07 31 00 01 4C 01 0B 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[17 4C B9 03]"
+    },
+    {
+      "spotIdentifier": "w�E_A_66",
+      "spotBankFileName": "ERE_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[28 C7 19 47 FE D4 D0 40 EC 90 26 47 08 04 00 00 7D 05 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "w{I_A_66",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[C8 1E 18 47 C3 F5 C8 41 DC 6F 27 47 06 00 00 00 2E 05 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "wyH_E_66",
+      "spotBankFileName": "ECH_E\u0000\u0000\u0000",
+      "spotUnknown1": "0x[AB 39 18 47 66 66 26 41 99 CB 22 47 05 00 00 00 25 05 09 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "uwM_G_66",
+      "spotBankFileName": "EAM_G\u0000\u0000\u0000",
+      "spotUnknown1": "0x[BD D7 11 47 A0 1A E9 41 EC B5 23 47 04 07 00 00 B6 04 03 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "uyI_A_76",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[1F DD 2A 47 0A D7 10 43 CA 1C 20 47 06 00 00 00 12 00 0B 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "x{I_A_76",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[14 76 34 47 27 11 24 43 1B F5 26 47 06 00 00 00 C4 08 03 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "v{I_A_96",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[2E EA 5D 47 7B 14 6C 41 46 AD 25 47 06 00 00 00 AC 08 02 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "xsP_A_96",
+      "spotBankFileName": "ECP_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[AA 50 63 47 F8 53 93 3F F9 4A 12 47 08 01 00 00 48 09 02 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "ywH_C_96",
+      "spotBankFileName": "ECH_C\u0000\u0000\u0000",
+      "spotUnknown1": "0x[34 48 65 47 08 AC 8C 3F 37 A1 1D 47 05 00 00 00 A8 08 06 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "wzH_E_96",
+      "spotBankFileName": "ECH_E\u0000\u0000\u0000",
+      "spotUnknown1": "0x[4A AC 61 47 66 66 FA 40 E9 9D 25 47 05 00 00 00 B8 08 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "{vz_8C_6",
+      "spotBankFileName": "ECD_8C\u0000\u0000",
+      "spotUnknown1": "0x[91 42 1B 47 71 3D C2 40 EF BE 24 47 01 08 00 00 72 05 03 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RCFE0007",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[70 8E 21 47 0A D7 DF 40 40 71 2E 47 07 32 00 01 B5 05 05 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[E7 D4 65 03]"
+    },
+    {
+      "spotIdentifier": "SCFE0007",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[19 C9 0C 47 D1 22 35 41 AB 75 1F 47 07 12 00 01 5A 04 05 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[87 CE BC 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0007",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[17 5A D8 46 4A 8C 5E 43 47 FC F1 46 07 31 00 01 D5 01 01 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[F7 45 30 03]"
+    },
+    {
+      "spotIdentifier": "SMFE0007",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[21 64 66 47 62 50 D2 C2 4C 3E 2C 47 07 11 00 01 B4 08 02 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[A7 7B 45 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0007",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[16 D3 FF 46 17 19 13 43 5C AA 05 47 07 30 05 01 91 02 08 02 02 01 00 00 A9 03 00 00]",
+      "spotUnknown2": "0x[01 00 01 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[17 5A 8D 03]"
+    },
+    {
+      "spotIdentifier": "SSFE0007",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[7E 06 20 46 A4 70 55 40 31 94 05 47 07 10 05 01 01 03 00 02 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 01 01 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[D7 EB AE 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0007",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[B5 AE A1 46 FA 7E 13 43 1A 3C 91 46 07 00 03 01 F8 00 04 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 06 04 02]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[F7 40 99 03]"
+    },
+    {
+      "spotIdentifier": "RCFE0017",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[85 48 03 47 27 31 02 41 63 88 1E 47 07 32 00 01 A9 04 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[77 1F A9 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0017",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[C0 4F B3 46 E1 7A 98 40 23 FC F4 45 07 31 00 01 95 00 2E 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[E7 9A C2 03]"
+    },
+    {
+      "spotIdentifier": "SMFE0017",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[8E 27 53 47 9A 99 99 3F 16 C7 FA 46 07 11 00 01 77 09 00 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[07 FE 80 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0017",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[CB 90 0D 47 A8 C6 13 40 3F D9 19 46 07 30 05 01 A0 00 00 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 00 01 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[C7 E2 A9 03]"
+    },
+    {
+      "spotIdentifier": "SSFE0017",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[0C 6E 4E 47 79 E9 46 40 C5 65 44 47 07 10 03 01 E9 07 05 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 01 02 01]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[B7 E0 8E 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0017",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[CF 74 28 47 33 B3 9E 42 F7 7E 24 47 07 00 02 01 12 00 10 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 04 01 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[07 48 4B 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0027",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[DD 76 52 45 7D FF ED 43 1E 7E 86 46 07 31 00 01 0C 00 08 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[A7 B0 51 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0027",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[A2 60 44 47 21 B0 51 C2 1D 65 47 47 07 30 01 01 EF 07 03 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 05 05 04]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[37 4E 9C 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0027",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[9F 8A 66 47 54 E3 C7 41 A0 3F 17 47 07 00 04 01 4F 09 00 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[04 00 02 01]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[57 59 BC 03]"
+    },
+    {
+      "spotIdentifier": "|tI_A_27",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[12 8B 8D 46 3D 0A 28 42 59 5C 29 47 06 00 00 00 38 03 04 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RMFE0037",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[56 E1 2B 47 4A 0C 0A 41 59 A7 CB 46 07 31 00 01 DC 00 08 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[B7 94 71 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0037",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[EE 26 40 47 02 2B 5D 42 BA 14 42 47 07 30 05 01 87 07 00 01 65 00 00 00 79 1C 01 00]",
+      "spotUnknown2": "0x[01 04 01 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[F7 75 A5 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0037",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[31 9A 0C 47 D7 A3 A8 40 0D 3C 1C 47 07 00 03 01 DE 04 00 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 03 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[17 05 33 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0047",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[82 05 10 47 31 30 07 44 A2 A3 2C 47 07 31 00 01 0F 04 01 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[37 19 90 03]"
+    },
+    {
+      "spotIdentifier": "|vI_A_47",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[95 36 EC 46 1B 2F 3D 40 CF F9 2F 47 06 00 00 00 9E 03 1E 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "uwI_A_47",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[3F 7D C5 46 29 5C CF 40 6B D5 32 47 06 00 00 00 50 03 06 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RMFE0057",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[D1 40 0C 47 73 68 D1 C1 14 1D 19 47 07 31 00 01 7B 02 0F 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[47 C8 A3 03]"
+    },
+    {
+      "spotIdentifier": "uvR_A_67",
+      "spotBankFileName": "ECR_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[87 95 12 47 F8 53 A3 3F 0E 20 33 47 08 02 00 00 52 05 09 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|xH_B_67",
+      "spotBankFileName": "ECH_B\u0000\u0000\u0000",
+      "spotUnknown1": "0x[6C DA 27 47 62 10 A8 3F CD 68 38 47 05 00 00 00 8D 06 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "y�E_A_77",
+      "spotBankFileName": "ERE_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[05 40 38 47 3F 35 AE 3F 00 E1 3D 47 08 04 00 00 B9 07 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "wxH_A_77",
+      "spotBankFileName": "ECH_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[15 AF 31 47 48 E1 86 41 7F BF 37 47 05 00 00 00 CE 05 03 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "uzI_A_77",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[73 49 28 47 C5 20 A0 3F 8A 3D 3A 47 06 00 00 00 9E 06 02 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "uyP_A_77",
+      "spotBankFileName": "ECP_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[23 0D 2A 47 62 10 B8 3F DE 6E 3B 47 08 01 00 00 C7 06 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "vyR_A_77",
+      "spotBankFileName": "ECR_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[DC F7 2C 47 E7 FB B9 3F E1 48 3C 47 08 02 00 00 DF 06 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "vxS_B_77",
+      "spotBankFileName": "EAS_B\u0000\u0000\u0000",
+      "spotUnknown1": "0x[AE 9B 2D 47 98 6E 32 3F B3 FD 3D 47 03 07 00 00 25 07 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "wwS_C_77",
+      "spotBankFileName": "EAS_C\u0000\u0000\u0000",
+      "spotUnknown1": "0x[2A B9 2E 47 6F 12 23 40 74 50 3A 47 03 08 00 00 6B 06 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "vwS_D_77",
+      "spotBankFileName": "EAS_D\u0000\u0000\u0000",
+      "spotUnknown1": "0x[1D 57 2B 47 C5 20 10 3F 1F B9 3C 47 03 09 00 00 BF 06 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "yxM_E_77",
+      "spotBankFileName": "EAM_E\u0000\u0000\u0000",
+      "spotUnknown1": "0x[31 F4 36 47 02 2B A7 3F 28 56 3F 47 04 04 00 00 B7 07 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "vvS_J_77",
+      "spotBankFileName": "EAS_J\u0000\u0000\u0000",
+      "spotUnknown1": "0x[80 C9 2C 47 5C 8F E2 40 C5 74 38 47 03 0E 00 00 23 06 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "vyH_A_87",
+      "spotBankFileName": "ECH_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[18 3B 44 47 83 00 9D 42 0E C0 3A 47 05 00 00 00 77 07 1B 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "uzI_A_87",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[BD AF 41 47 EC 51 4A 42 41 08 3C 47 06 00 00 00 77 07 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "{{I_A_87",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[47 5E 54 47 52 38 3F 42 AC 3C 3E 47 06 00 00 00 93 08 04 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "uxM_A_87",
+      "spotBankFileName": "EAM_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[48 73 42 47 4C 37 2D 42 6D C8 3E 47 04 00 00 00 79 07 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "z�E_A_97",
+      "spotBankFileName": "ERE_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[5D 28 6B 47 F0 A7 CA 40 88 2C 2C 47 08 04 00 00 BA 08 07 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "zsR_A_97",
+      "spotBankFileName": "ECR_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[D5 B7 68 47 23 DB 59 40 9C 60 29 47 08 02 00 00 B9 08 05 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "vsW_A_97",
+      "spotBankFileName": "ECW_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[A7 50 5C 47 4E E2 27 42 C5 C4 29 47 08 00 00 00 B2 08 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|yW_A_97",
+      "spotBankFileName": "ECW_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[C8 7B 6D 47 C9 76 66 40 89 AD 3C 47 08 00 00 00 71 08 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "{yH_C_97",
+      "spotBankFileName": "ECH_C\u0000\u0000\u0000",
+      "spotUnknown1": "0x[13 3D 6A 47 71 3D 82 40 33 B5 3C 47 05 00 00 00 62 08 0C 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "ywM_F_97",
+      "spotBankFileName": "EAM_F\u0000\u0000\u0000",
+      "spotUnknown1": "0x[F0 34 66 47 7B 14 E6 40 32 FD 3A 47 04 05 00 00 6E 08 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "{sS_F_97",
+      "spotBankFileName": "EAS_F\u0000\u0000\u0000",
+      "spotUnknown1": "0x[56 6C 6B 47 42 60 2D 41 39 3C 2E 47 03 0B 00 00 BB 08 06 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|uz_8C_7",
+      "spotBankFileName": "ECD_8C\u0000\u0000",
+      "spotUnknown1": "0x[8B 7E 30 47 BA 49 14 40 B5 15 3C 47 01 08 00 00 58 06 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "yu{_8C_7",
+      "spotBankFileName": "ECD_8C\u0000\u0000",
+      "spotUnknown1": "0x[91 0A 30 47 3D 0A 97 3F C8 82 EA 46 01 08 00 00 3C 00 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "zwv_8D_7",
+      "spotBankFileName": "ECD_8D\u0000\u0000",
+      "spotUnknown1": "0x[9E 10 36 47 52 B8 02 42 86 2B FF 46 01 09 00 00 61 00 02 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "}xu_8E_7",
+      "spotBankFileName": "ECD_8E\u0000\u0000",
+      "spotUnknown1": "0x[66 E6 3A 47 E1 7A 24 40 53 2A 45 47 01 0B 00 00 18 08 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|xz_8F_7",
+      "spotBankFileName": "ECD_8F\u0000\u0000",
+      "spotUnknown1": "0x[20 00 38 47 E1 7A B9 41 40 68 3A 47 01 0D 00 00 9E 07 0D 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|sw_8I_7",
+      "spotBankFileName": "ECD_8I\u0000\u0000",
+      "spotUnknown1": "0x[D4 F4 29 47 3D 0A 8F 40 D7 CE 33 47 01 17 00 00 33 06 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RCFE0008",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[7E A3 46 47 B0 62 8E 43 D8 5F 3B 47 07 32 00 01 73 07 10 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[E7 3E 7E 03]"
+    },
+    {
+      "spotIdentifier": "SCFE0008",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[A3 BB 0C 47 D3 4D C6 40 BB AF 29 47 07 12 00 01 05 04 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[67 1B 3B 03]"
+    },
+    {
+      "spotIdentifier": "SMFE0008",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[96 BB B7 46 AC CC 8E 43 C5 30 BC 46 07 11 00 01 32 01 02 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[87 A0 9A 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0008",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[12 8B 14 46 F6 28 D4 40 73 2F FC 46 07 30 04 01 F7 02 02 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 06 03 01]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[07 86 94 03]"
+    },
+    {
+      "spotIdentifier": "SSFE0008",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[D7 87 9A 45 F4 FD 9C 40 47 6E AB 46 07 10 05 01 08 00 01 02 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 00 01 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[B7 7F B3 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0008",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[25 B6 5B 45 21 20 B1 43 D6 3E 95 46 07 00 05 01 06 00 00 00 67 00 00 00 79 1C 01 00]",
+      "spotUnknown2": "0x[00 00 02 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[07 76 6D 03]"
+    },
+    {
+      "spotIdentifier": "RCFE0018",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[00 5A 93 46 00 00 00 80 00 86 31 47 07 32 00 01 25 03 02 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[C7 94 39 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0018",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[9F 14 BF 46 BE 8F 95 43 5D 32 BD 46 07 31 00 01 46 01 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[E7 71 37 03]"
+    },
+    {
+      "spotIdentifier": "SMFE0018",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[B9 2D 68 46 BE FF B4 43 EE 54 84 46 07 11 00 01 1A 01 00 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[E7 FB 9D 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0018",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[87 27 9F 46 1F 85 55 41 E3 F0 3C 46 07 30 05 01 E9 00 01 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 00 02 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[A7 03 59 03]"
+    },
+    {
+      "spotIdentifier": "SSFE0018",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[DE 5B 2D 47 F2 D2 65 42 79 36 36 47 07 10 05 01 C1 05 13 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 06 01 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[17 F0 74 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0018",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[00 9D 7B 47 A8 C6 71 41 48 85 37 47 07 00 04 01 83 08 04 01 65 00 00 00 25 BA 82 00]",
+      "spotUnknown2": "0x[01 06 03 01]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[47 AA A8 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0028",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[7A 00 32 47 F0 A7 74 42 8B 2E 00 47 07 31 00 01 58 00 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[C7 51 59 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0028",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[73 94 3B 47 8B 6C A3 40 34 B3 47 47 07 30 01 01 22 08 01 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 05 06 04]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[07 DE 32 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0028",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[98 E3 38 47 4E 62 DC 40 E9 4B F1 46 07 00 05 01 3D 00 0A 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 01 02 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[27 AD 5C 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0038",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[CC 9F 31 47 3D 0A BF 41 3B B4 BC 46 07 31 00 01 D7 00 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[37 83 A8 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0038",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[48 24 0A 47 5E BA 99 3F 23 63 2C 47 07 00 05 01 F4 03 00 01 66 00 00 00 AA 30 0D 00]",
+      "spotUnknown2": "0x[01 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[67 AC 8B 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0048",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[EF BB 09 47 96 A3 1D 43 14 A2 21 47 07 31 00 01 5C 04 03 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[07 F0 AC 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0048",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[17 94 6C 47 3B DF 83 40 6C 93 2D 47 07 00 02 01 BE 08 02 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[77 08 98 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0058",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[3D AB CB 46 35 7E 42 43 C5 22 18 47 07 31 00 01 61 02 14 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[17 3A 3F 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0068",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[61 B3 48 47 E1 7A 99 C1 80 5F 1A 47 07 31 00 01 F8 08 01 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[D7 9F 91 03]"
+    },
+    {
+      "spotIdentifier": "ztI_A_78",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[9A AC 38 47 23 DB 19 40 00 9F 40 47 06 00 00 00 92 07 0A 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "{vI_A_78",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[53 64 3B 47 FC A9 59 40 14 92 47 47 06 00 00 00 22 08 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|tR_A_78",
+      "spotBankFileName": "ECR_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[65 5E 40 47 E9 26 6D 42 50 95 44 47 08 02 00 00 89 07 04 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|vR_A_78",
+      "spotBankFileName": "ECR_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[CB 98 3F 47 6A 7C B2 42 28 1F 4A 47 08 02 00 00 43 08 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "zrS_A_78",
+      "spotBankFileName": "EAS_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[51 08 39 47 0A D7 03 3F 26 50 44 47 03 01 00 00 14 08 02 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "yrS_E_78",
+      "spotBankFileName": "EAS_E\u0000\u0000\u0000",
+      "spotUnknown1": "0x[25 E3 35 47 C5 20 10 3F 5F 53 43 47 03 0A 00 00 2F 08 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "yqS_G_78",
+      "spotBankFileName": "EAS_G\u0000\u0000\u0000",
+      "spotUnknown1": "0x[5D 48 34 47 96 43 4B 3F 45 FF 40 47 03 0C 00 00 31 08 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "v�E_A_88",
+      "spotBankFileName": "ERE_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[30 BF 45 47 83 C0 12 41 35 82 47 47 08 04 00 00 5E 07 04 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "wwI_A_88",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[1C F4 47 47 3D 0A 97 3F 59 FF 49 47 06 00 00 00 E5 07 03 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "usW_A_88",
+      "spotBankFileName": "ECW_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[6C 1B 41 47 E1 7A 2E 42 A0 74 41 47 08 00 00 00 8A 07 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "wsW_A_88",
+      "spotBankFileName": "ECW_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[E1 D8 47 47 39 B4 E4 41 58 88 41 47 08 00 00 00 6C 07 03 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "uwH_B_88",
+      "spotBankFileName": "ECH_B\u0000\u0000\u0000",
+      "spotUnknown1": "0x[FF 1F 42 47 66 66 96 41 42 27 4C 47 05 00 00 00 24 08 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "uuP_B_88",
+      "spotBankFileName": "ECP_B\u0000\u0000\u0000",
+      "spotUnknown1": "0x[33 A3 40 47 8F C2 5B 42 86 E2 47 47 08 09 00 00 41 08 02 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "z�E_A_98",
+      "spotBankFileName": "ERE_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[9D B2 67 47 58 39 B7 41 7E 64 47 47 08 04 00 00 84 08 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "zuI_A_98",
+      "spotBankFileName": "EDI_A\u0000\u0000\u0000",
+      "spotUnknown1": "0x[D6 FD 68 47 79 E9 A2 40 17 4B 43 47 06 00 00 00 77 08 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "{qM_H_98",
+      "spotBankFileName": "EAM_H\u0000\u0000\u0000",
+      "spotUnknown1": "0x[80 62 6A 47 FA 7E 4A 40 9A A0 40 47 04 06 00 00 74 08 03 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "}tu_5A_8",
+      "spotBankFileName": "EBD_5A\u0000\u0000",
+      "spotUnknown1": "0x[11 0A 49 47 C3 F5 90 40 39 93 45 47 02 03 00 00 E4 07 04 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "zy{_8C_8",
+      "spotBankFileName": "ECD_8C\u0000\u0000",
+      "spotUnknown1": "0x[48 88 54 47 E1 7A D4 3E B2 ED 0E 47 01 08 00 00 50 09 08 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RCFE0009",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[AB 39 F9 46 9A 99 99 3F E7 B2 86 45 07 32 00 01 BF 00 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[37 D4 5C 03]"
+    },
+    {
+      "spotIdentifier": "SCFE0009",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[A4 58 D7 45 0C 42 77 43 98 F2 C4 46 07 12 00 01 05 00 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[27 43 44 03]"
+    },
+    {
+      "spotIdentifier": "SMFE0009",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[BC BB 0D 47 C1 CA 81 41 9E A0 29 47 07 11 00 01 FB 03 01 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[07 D2 B1 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0009",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[F6 35 E7 45 29 5C 83 40 6E 00 EB 46 07 00 04 01 0D 00 16 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 00 03 01]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[17 E2 A0 03]"
+    },
+    {
+      "spotIdentifier": "SSFE0009",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[9A 31 C8 45 5E BA 99 40 DF BF E5 46 07 10 05 01 0E 00 09 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 00 02 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[F7 AF 48 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0009",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[8E E8 BE 46 D3 4D 60 41 E9 FC 2B 47 07 00 05 01 75 03 01 02 02 01 00 00 E4 DF D1 04]",
+      "spotUnknown2": "0x[01 01 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[27 2C 33 03]"
+    },
+    {
+      "spotIdentifier": "RCFE0019",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[3E 42 6C 46 B0 B2 CD 42 14 9E E7 46 07 32 00 01 71 01 0B 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[27 E2 68 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0019",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[C5 48 34 47 B6 F3 03 42 9F 51 37 47 07 31 00 01 CF 05 04 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[97 0A 7B 03]"
+    },
+    {
+      "spotIdentifier": "SMFE0019",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[34 08 8C 46 12 83 58 40 D2 E8 79 46 07 11 00 01 FA 00 01 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[47 BF 66 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0019",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[AE F1 CA 46 9C E4 AB 43 13 0F 73 46 07 30 05 01 02 01 00 01 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[03 00 01 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[D7 00 6D 03]"
+    },
+    {
+      "spotIdentifier": "SSFE0019",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[8E 8D B7 46 62 30 77 43 E7 93 DB 46 07 10 05 01 4B 01 00 01 02 01 00 00 EA EC 0D 00]",
+      "spotUnknown2": "0x[04 00 01 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[F7 22 9E 03]"
+    },
+    {
+      "spotIdentifier": "TSFE0019",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[3B BF 44 47 2B 87 8E 42 1B D2 15 47 07 30 04 01 D4 08 00 01 65 00 00 00 E0 51 E2 04]",
+      "spotUnknown2": "0x[04 02 02 01]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[97 92 8E 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0029",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[30 D5 40 47 E9 66 B2 42 90 76 4A 47 07 31 00 01 3B 08 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[47 93 97 03]"
+    },
+    {
+      "spotIdentifier": "RSFE0029",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[51 CB 24 47 2D B2 6D 43 5F DF 2E 47 07 30 04 01 B4 05 05 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 03 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[67 8C 3D 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0039",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[BF 16 22 47 77 BE 2D 41 57 C9 8E 46 07 31 00 01 B8 00 08 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[17 0E 70 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0049",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[EC 5D 15 47 04 56 C7 41 66 01 1A 47 07 31 00 01 2A 00 04 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[D7 96 54 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0059",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[EA CF 2A 46 77 BE 87 41 AA 0B 07 47 07 31 00 01 DB 02 00 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[27 96 4B 03]"
+    },
+    {
+      "spotIdentifier": "RMFE0069",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[FA CD FD 46 B4 20 05 44 87 ED F8 46 07 31 00 01 BC 01 01 00 FF FF FF FF 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 06 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[C7 0E 79 03]"
+    },
+    {
+      "spotIdentifier": "{tt_8A_9",
+      "spotBankFileName": "ECD_8A\u0000\u0000",
+      "spotUnknown1": "0x[82 25 5C 47 31 08 EC 3E 7E 34 11 47 01 04 00 00 57 09 02 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "{sx_8B_9",
+      "spotBankFileName": "ECD_8B\u0000\u0000",
+      "spotUnknown1": "0x[2A 7F 59 47 52 B8 10 42 A0 84 1C 47 01 06 00 00 3A 09 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "}ww_8C_9",
+      "spotBankFileName": "ECD_8C\u0000\u0000",
+      "spotUnknown1": "0x[F0 B9 65 47 9A 99 59 41 C0 4E 49 47 01 08 00 00 86 08 02 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|zz_8G_9",
+      "spotBankFileName": "ECD_8G\u0000\u0000",
+      "spotUnknown1": "0x[64 87 6D 47 54 E3 95 3F 75 C7 3A 47 01 0F 00 00 62 08 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "{sv_8H_9",
+      "spotBankFileName": "ECD_8H\u0000\u0000",
+      "spotUnknown1": "0x[6A F5 58 47 5C 8F 02 40 90 CD 17 47 01 18 00 00 36 09 06 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "RACESOLO",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[C6 7B 42 47 C3 75 69 42 18 1C 06 47 07 00 05 01 6B 00 01 02 02 01 00 00 EA EC 0D 00]",
+      "spotUnknown2": "0x[01 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[57 B1 5A 03]"
+    },
+    {
+      "spotIdentifier": "RACEMULT",
+      "spotBankFileName": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "spotUnknown1": "0x[2A A7 3F 47 AA F1 4C 42 BF 4E 05 47 07 31 00 01 76 00 03 00 65 00 00 00 DF 02 00 00]",
+      "spotUnknown2": "0x[00 00 03 01]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[57 1B 73 03]"
+    },
+    {
+      "spotIdentifier": "}x{�8B2_",
+      "spotBankFileName": "ECD_8B2\u0000",
+      "spotUnknown1": "0x[6A 23 57 47 48 E1 FA 3E F3 49 09 47 01 12 00 00 6B 09 02 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|zz�10A_",
+      "spotBankFileName": "ECD_10A\u0000",
+      "spotUnknown1": "0x[F4 AA 3C 47 46 B6 45 41 32 F6 3E 47 01 02 00 00 95 07 04 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "}�x�L1A_",
+      "spotBankFileName": "EPH_L1A\u0000",
+      "spotUnknown1": "0x[9C 9D 43 47 CD CC 39 42 7D FB 44 47 00 00 00 00 58 07 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "z�z�L1A_",
+      "spotBankFileName": "EPH_L1A\u0000",
+      "spotUnknown1": "0x[7F B2 FF 46 5E 1A 79 43 94 A9 F8 46 00 00 00 00 BC 01 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "z�~�L1A_",
+      "spotBankFileName": "EPH_L1A\u0000",
+      "spotUnknown1": "0x[59 4A 0D 47 25 06 91 3F 72 EE 0B 46 00 00 00 00 BA 00 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "x�y�L1A_",
+      "spotBankFileName": "EPH_L1A\u0000",
+      "spotUnknown1": "0x[D7 80 98 46 52 B8 63 43 3F 44 AA 46 00 00 00 00 34 01 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "~�y�L1A_",
+      "spotBankFileName": "EPH_L1A\u0000",
+      "spotUnknown1": "0x[F5 E0 5B 47 14 AE 4B 42 68 60 1C 47 00 00 00 00 28 09 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "y�}�L1A_",
+      "spotBankFileName": "EPH_L1A\u0000",
+      "spotUnknown1": "0x[20 9A E1 46 EC 51 98 3F 81 41 49 45 00 00 00 00 92 00 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "z�}�L1A_",
+      "spotBankFileName": "EPH_L1A\u0000",
+      "spotUnknown1": "0x[83 FE 07 47 CD 0C 6A 43 20 13 06 47 00 00 00 00 95 02 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "v��L1A_",
+      "spotBankFileName": "EPH_L1A\u0000",
+      "spotUnknown1": "0x[0B 5D 37 46 A4 70 89 41 32 5E 06 47 00 00 00 00 DC 02 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "}�y�L1A_",
+      "spotBankFileName": "EPH_L1A\u0000",
+      "spotUnknown1": "0x[83 81 45 47 71 3D CA 41 DC 6B 0D 47 00 00 00 00 18 00 0D 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "w�~�L1A_",
+      "spotBankFileName": "EPH_L1A\u0000",
+      "spotUnknown1": "0x[0D C5 87 46 14 AE 9B 41 1C BF 8D 46 00 00 00 00 FD 00 03 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "{yt�12A_",
+      "spotBankFileName": "ECD_12A\u0000",
+      "spotUnknown1": "0x[83 76 13 47 D7 A3 A8 40 2F 89 25 47 01 13 00 00 BA 04 02 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "wtw�12A_",
+      "spotBankFileName": "EBD_12A\u0000",
+      "spotUnknown1": "0x[EE 4C 75 46 3D 0A 37 41 58 9D 8D 46 02 01 00 00 05 01 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|�|�L2A_",
+      "spotBankFileName": "EPH_L2A\u0000",
+      "spotUnknown1": "0x[72 8C 36 47 AE 47 A1 3F 72 D1 40 47 00 01 00 00 BE 07 04 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "}�~�L2A_",
+      "spotBankFileName": "EPH_L2A\u0000",
+      "spotUnknown1": "0x[A2 E2 54 47 52 B8 8E 3F 87 D2 43 47 00 01 00 00 A5 08 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "u�~�L2A_",
+      "spotBankFileName": "EPH_L2A\u0000",
+      "spotUnknown1": "0x[6A B9 98 45 F2 D2 C5 40 40 10 D1 46 00 01 00 00 0B 00 03 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "y��L2A_",
+      "spotBankFileName": "EPH_L2A\u0000",
+      "spotUnknown1": "0x[24 AB EE 46 48 E1 8A 3F 46 3E 37 45 00 01 00 00 CD 00 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "x�{�L2A_",
+      "spotBankFileName": "EPH_L2A\u0000",
+      "spotUnknown1": "0x[6E 2F A8 46 E1 7A 3C 41 F7 33 25 46 00 01 00 00 E9 00 0B 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "}�|�L2A_",
+      "spotBankFileName": "EPH_L2A\u0000",
+      "spotUnknown1": "0x[C8 04 4F 47 96 C3 01 42 6B 4B 20 47 00 01 00 00 E3 08 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "{��L2A_",
+      "spotBankFileName": "EPH_L2A\u0000",
+      "spotUnknown1": "0x[10 87 28 47 3D 0A 8A 42 6C 47 EA 46 00 01 00 00 3B 00 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "v�y�L3A_",
+      "spotBankFileName": "EPH_L3A\u0000",
+      "spotUnknown1": "0x[81 14 DA 45 D3 0D 7C 43 69 E6 C4 46 00 02 00 00 05 00 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "}�|�L3A_",
+      "spotBankFileName": "EPH_L3A\u0000",
+      "spotUnknown1": "0x[7C CD 4E 47 68 51 F5 42 F3 03 24 47 00 02 00 00 E4 08 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "v���3A_",
+      "spotBankFileName": "EPH_L3A\u0000",
+      "spotUnknown1": "0x[90 C6 7D 47 85 4B 1B 43 F6 DF 35 47 00 02 00 00 83 08 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "u�|�L4A_",
+      "spotBankFileName": "EPH_L4A\u0000",
+      "spotUnknown1": "0x[46 94 59 45 4C 97 BA 43 10 AC 93 46 00 03 00 00 06 00 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "z�}�L4A_",
+      "spotBankFileName": "EPH_L4A\u0000",
+      "spotUnknown1": "0x[08 54 08 47 0A D7 B3 3F 8B 86 C8 45 00 03 00 00 C6 00 05 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "~�|�L4A_",
+      "spotBankFileName": "EPH_L4A\u0000",
+      "spotUnknown1": "0x[1A AB 65 47 4E 62 B0 3F 9A 4E 16 47 00 03 00 00 4C 09 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "~�|�L4A_",
+      "spotBankFileName": "EPH_L4A\u0000",
+      "spotUnknown1": "0x[31 63 66 47 66 66 DC 41 A4 F7 4A 47 00 03 00 00 87 08 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "}�y�L4A_",
+      "spotBankFileName": "EPH_L4A\u0000",
+      "spotUnknown1": "0x[30 40 44 47 64 3B AD 41 E5 4A 06 47 00 03 00 00 75 00 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "v�x�L4A_",
+      "spotBankFileName": "EPH_L4A\u0000",
+      "spotUnknown1": "0x[F2 0B E2 45 14 EE F6 42 90 0C B2 46 00 03 00 00 03 00 03 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "{��L4A_",
+      "spotBankFileName": "EPH_L4A\u0000",
+      "spotUnknown1": "0x[D8 5A 28 47 6D E7 AB 3F 5A 9C 3D 47 00 03 00 00 BD 06 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|{w�15A_",
+      "spotBankFileName": "ECD_15A\u0000",
+      "spotUnknown1": "0x[18 0E 32 47 3D 0A B7 3F D9 2D 41 47 01 00 00 00 73 06 04 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|{x�15A_",
+      "spotBankFileName": "ECD_15A\u0000",
+      "spotUnknown1": "0x[92 9E 37 47 1F 85 AB 3F AF CC 43 47 01 00 00 00 2C 08 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "{z{�15A_",
+      "spotBankFileName": "ECD_15A\u0000",
+      "spotUnknown1": "0x[DB 51 27 47 9A 99 09 40 A2 60 32 47 01 00 00 00 38 07 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|xw�10B_",
+      "spotBankFileName": "ECD_10B\u0000",
+      "spotUnknown1": "0x[8A B5 33 47 9A 99 E9 40 86 9F F6 46 01 10 00 00 5F 00 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|zt�10B_",
+      "spotBankFileName": "ECD_10B\u0000",
+      "spotUnknown1": "0x[70 CE 28 47 D7 A3 D8 40 A4 3F 35 47 01 10 00 00 8C 06 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "y�y�L1B_",
+      "spotBankFileName": "EPH_L1B\u0000",
+      "spotUnknown1": "0x[D5 17 CB 46 F6 E8 32 43 93 C9 FD 46 00 00 00 00 AE 01 0C 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|�}�L1B_",
+      "spotBankFileName": "EPH_L1B\u0000",
+      "spotUnknown1": "0x[1C 87 39 47 5A 64 AB 3F 42 4D 46 47 00 00 00 00 FD 07 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "x��L1B_",
+      "spotBankFileName": "EPH_L1B\u0000",
+      "spotUnknown1": "0x[7C 23 BE 46 00 00 98 43 5E 34 AB 46 00 00 00 00 2C 01 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "~�|�L1B_",
+      "spotBankFileName": "EPH_L1B\u0000",
+      "spotUnknown1": "0x[8F AD 66 47 93 18 15 42 C0 68 38 47 00 00 00 00 6D 08 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|�|�L1B_",
+      "spotBankFileName": "EPH_L1B\u0000",
+      "spotUnknown1": "0x[E0 18 35 47 35 5E CA 40 D0 8D 3B 47 00 00 00 00 3E 07 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "v�x�L1B_",
+      "spotBankFileName": "EPH_L1B\u0000",
+      "spotUnknown1": "0x[19 9D DE 45 F6 28 FC 3F AC 41 EB 46 00 00 00 00 0E 00 11 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|�y�L1B_",
+      "spotBankFileName": "EPH_L1B\u0000",
+      "spotUnknown1": "0x[29 DB 2E 47 D5 78 A9 3F E9 47 3F 47 00 00 00 00 70 06 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|�z�L1B_",
+      "spotBankFileName": "EPH_L1B\u0000",
+      "spotUnknown1": "0x[AA F9 30 47 CD CC AC 3F A4 4B 3E 47 00 00 00 00 CC 06 03 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "~�~�L1B_",
+      "spotBankFileName": "EPH_L1B\u0000",
+      "spotUnknown1": "0x[47 60 6C 47 52 B8 4E 40 91 D9 3D 47 00 00 00 00 71 08 03 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "yzu�12B_",
+      "spotBankFileName": "ECD_12B\u0000",
+      "spotUnknown1": "0x[D6 8E CB 46 66 66 22 41 54 00 2D 47 01 05 00 00 C3 03 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|yv�12B_",
+      "spotBankFileName": "EBD_12B\u0000",
+      "spotUnknown1": "0x[0D 29 30 47 4A 0C CA 40 8E AB 39 47 02 00 00 00 39 06 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|z{�12B_",
+      "spotBankFileName": "ECD_12B\u0000",
+      "spotUnknown1": "0x[DA 74 3F 47 C3 F5 FC 41 43 56 3F 47 01 05 00 00 98 07 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|�y�L2B_",
+      "spotBankFileName": "EPH_L2B\u0000",
+      "spotUnknown1": "0x[EE A7 2C 47 F0 67 E2 42 B7 80 FC 46 00 01 00 00 51 00 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "z�y�L2B_",
+      "spotBankFileName": "EPH_L2B\u0000",
+      "spotUnknown1": "0x[15 19 F7 46 BE 9F 8A 3F 9A 63 63 45 00 01 00 00 BF 00 02 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "y��L2B_",
+      "spotBankFileName": "EPH_L2B\u0000",
+      "spotUnknown1": "0x[40 A9 EA 46 F4 BD 95 43 E6 07 DA 46 00 01 00 00 81 01 0D 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "w�y�L2B_",
+      "spotBankFileName": "EPH_L2B\u0000",
+      "spotUnknown1": "0x[20 5A 59 46 02 2B 87 3F 4E 0E 83 46 00 01 00 00 21 01 04 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|�~�L3B_",
+      "spotBankFileName": "EPH_L3B\u0000",
+      "spotUnknown1": "0x[B2 22 3B 47 3D 0A 1F 40 B7 6A F5 46 00 02 00 00 48 00 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "}�{�L3B_",
+      "spotBankFileName": "EPH_L3B\u0000",
+      "spotUnknown1": "0x[56 18 4A 47 25 06 D1 3F 95 B1 47 47 00 02 00 00 E4 07 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "v�}�L3B_",
+      "spotBankFileName": "EPH_L3B\u0000",
+      "spotUnknown1": "0x[EE D8 21 46 85 EB 01 40 94 FA 0B 47 00 02 00 00 FE 02 06 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "z��L3B_",
+      "spotBankFileName": "EPH_L3B\u0000",
+      "spotUnknown1": "0x[29 6D 0F 47 48 E1 DA 3F 04 34 2C 46 00 02 00 00 B6 00 14 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "~�x�L3B_",
+      "spotBankFileName": "EPH_L3B\u0000",
+      "spotUnknown1": "0x[15 EC 5A 47 12 83 60 3F C4 C8 0E 47 00 02 00 00 70 09 05 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "w�}�L4B_",
+      "spotBankFileName": "EPH_L4B\u0000",
+      "spotUnknown1": "0x[75 E4 82 46 8F C2 05 40 BC 7A 32 47 00 03 00 00 5F 03 02 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "}��L4B_",
+      "spotBankFileName": "EPH_L4B\u0000",
+      "spotUnknown1": "0x[EE F0 58 47 A8 C6 AB 3F 23 3E 03 47 00 03 00 00 D1 09 03 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "}�y�L4B_",
+      "spotBankFileName": "EPH_L4B\u0000",
+      "spotUnknown1": "0x[88 CD 43 47 A4 70 3D 41 47 E3 4C 47 00 03 00 00 06 08 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "w�~�L4B_",
+      "spotBankFileName": "EPH_L4B\u0000",
+      "spotUnknown1": "0x[6B F0 85 46 93 18 04 40 E3 1E 78 46 00 03 00 00 00 01 0A 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "z�{�L4B_",
+      "spotBankFileName": "EPH_L4B\u0000",
+      "spotUnknown1": "0x[4B C1 02 47 D3 4D F2 3F 50 E9 AA 45 00 03 00 00 C0 00 06 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|{z�15B_",
+      "spotBankFileName": "ECD_15B\u0000",
+      "spotUnknown1": "0x[64 6E 3C 47 B6 F3 B1 40 B3 88 44 47 01 01 00 00 F3 07 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "wuu�15B_",
+      "spotBankFileName": "ECD_15B\u0000",
+      "spotUnknown1": "0x[E2 AF 56 46 33 33 DB 40 0A 6A 8B 46 01 01 00 00 22 01 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "xuu�12C_",
+      "spotBankFileName": "ECD_12C\u0000",
+      "spotUnknown1": "0x[DC 77 9B 46 7F 6A 4C 41 93 61 4A 46 01 07 00 00 E4 00 02 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|{y�12C_",
+      "spotBankFileName": "ECD_12C\u0000",
+      "spotUnknown1": "0x[8C 08 3A 47 73 68 B1 3F 2A 9A 4A 47 01 07 00 00 F1 07 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "wuw�12C_",
+      "spotBankFileName": "ECD_12C\u0000",
+      "spotUnknown1": "0x[C8 54 71 46 E1 7A 94 3F 78 43 83 46 01 07 00 00 20 01 03 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "vwy�12C_",
+      "spotBankFileName": "EBD_12C\u0000",
+      "spotUnknown1": "0x[53 6E 24 46 66 66 8E 40 D3 5F 0F 47 02 02 00 00 02 03 05 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "~�z�L2C_",
+      "spotBankFileName": "EPH_L2C\u0000",
+      "spotUnknown1": "0x[CA 62 61 47 25 86 22 42 A0 CE 1A 47 00 01 00 00 21 09 03 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "~�{�L2C_",
+      "spotBankFileName": "EPH_L2C\u0000",
+      "spotUnknown1": "0x[BC 62 64 47 FA 7E 8A 3F B7 26 3F 47 00 01 00 00 46 08 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|�|�L3C_",
+      "spotBankFileName": "EPH_L3C\u0000",
+      "spotUnknown1": "0x[B6 7B 36 47 C7 4B 29 41 CC DD F0 46 00 02 00 00 43 00 04 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "v��L3C_",
+      "spotBankFileName": "EPH_L3C\u0000",
+      "spotUnknown1": "0x[14 3E 41 46 E3 A5 13 40 89 3E 13 47 00 02 00 00 FC 02 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "w�~�L3C_",
+      "spotBankFileName": "EPH_L3C\u0000",
+      "spotUnknown1": "0x[B8 52 8C 46 FC A9 91 3F FB 7B 6A 46 00 02 00 00 EB 00 03 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "z��L3C_",
+      "spotBankFileName": "EPH_L3C\u0000",
+      "spotUnknown1": "0x[C8 A7 0E 47 C1 CA A1 3F 68 69 0F 46 00 02 00 00 BB 00 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "x�y�L3C_",
+      "spotBankFileName": "EPH_L3C\u0000",
+      "spotUnknown1": "0x[26 CF 9B 46 0A 97 8C 43 A0 5D 1E 47 00 02 00 00 48 03 0B 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|�~�L3C_",
+      "spotBankFileName": "EPH_L3C\u0000",
+      "spotUnknown1": "0x[9B 68 3B 47 E5 D0 8A 40 BA C6 4C 47 00 02 00 00 24 08 08 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "v�}�L3C_",
+      "spotBankFileName": "EPH_L3C\u0000",
+      "spotUnknown1": "0x[6A F7 26 46 F2 DA 50 44 10 07 B8 46 00 02 00 00 23 01 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "v���|3C_",
+      "spotBankFileName": "EPH_L3C\u0000",
+      "spotUnknown1": "0x[41 72 73 47 E3 A5 49 41 FF 60 41 47 00 02 00 00 8C 08 03 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "yzy�15C_",
+      "spotBankFileName": "ECD_15C\u0000",
+      "spotUnknown1": "0x[B9 F7 E0 46 E1 7A 94 3F A6 40 35 47 01 0A 00 00 9E 03 08 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "wuy�15C_",
+      "spotBankFileName": "ECD_15C\u0000",
+      "spotUnknown1": "0x[3C 8D 83 46 E1 7A 94 3F 79 3D 82 46 01 0A 00 00 FF 00 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "zy{�15C_",
+      "spotBankFileName": "ECD_15C\u0000",
+      "spotUnknown1": "0x[CE CD 0F 47 00 00 46 42 93 78 20 47 01 0A 00 00 14 05 07 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "yxv�12D_",
+      "spotBankFileName": "ECD_12D\u0000",
+      "spotUnknown1": "0x[7A F8 D3 46 E1 7A 38 43 7A 52 FA 46 01 0C 00 00 DF 01 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "~�|�L4D_",
+      "spotBankFileName": "EPH_L4D\u0000",
+      "spotUnknown1": "0x[BE 39 66 47 14 AE B7 3F 76 9C 19 47 00 03 00 00 A8 08 09 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "v��L4D_",
+      "spotBankFileName": "EPH_L4D\u0000",
+      "spotUnknown1": "0x[84 82 38 46 BE 9F A6 40 DC 1D 87 46 00 03 00 00 0C 00 1A 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "v���4D_",
+      "spotBankFileName": "EPH_L4D\u0000",
+      "spotUnknown1": "0x[BA C6 79 47 CF F7 13 40 4C D5 3B 47 00 03 00 00 8D 08 02 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "wut�12E_",
+      "spotBankFileName": "ECD_12E\u0000",
+      "spotUnknown1": "0x[5A 7F 48 46 E1 7A 94 3F D4 E5 86 46 01 0E 00 00 26 01 00 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    },
+    {
+      "spotIdentifier": "|zy�12E_",
+      "spotBankFileName": "ECD_12E\u0000",
+      "spotUnknown1": "0x[50 D7 39 47 CD CC FC 40 BE 79 3E 47 01 0E 00 00 D1 07 01 00 00 00 00 00 00 00 00 00]",
+      "spotUnknown2": "0x[00 00 00 00]",
+      "spotPad1": "����",
+      "spotUnknown3": "0x[00 00 00 00]"
+    }
+  ]
+}
