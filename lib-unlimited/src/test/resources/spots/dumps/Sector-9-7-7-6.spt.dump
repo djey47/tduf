@@ -4,16 +4,70 @@ headerTag	<TEXT: 4 bytes>	0x[53 50 54 41]	"SPTA"
 headerEntryZoneSizePlus16	<unsigned INTEGER: 4 bytes>	0x[00 00 02 E0]	736
 headerUnknown2	<UNKNOWN: 8 bytes>	0x[A8 E6 80 7C FF FF FF FF]
 spots	<REPEATER>	>>
-spots[0].spotIdentifier	<TEXT: 8 bytes>	0x[52 41 43 45 30 36 00 00]	"RACE06"
-spots[0].spotBankFileName	<TEXT: 8 bytes>	0x[00 00 00 00 00 00 00 00]	""
-spots[0].spotUnknown1	<UNKNOWN: 220 bytes>	0x[00 00 00 00 00 00 00 80 00 00 00 00 10 02 10 02 47 89 6E 47 E5 D0 82 3F BA DA 3A 47 B0 72 18 40 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 00 00 C8 41 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C8 41 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C8 41 00 00 00 00 68 7B 6E 47 AE 47 B3 41 87 CD 3A 47 00 00 80 3F 00 00 C8 41 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C8 41 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C8 41 00 00 00 00 68 7B 6E 47 AE 47 B3 41 87 CD 3A 47]
-spots[0].spotUnknown2	<UNKNOWN: 4 bytes>	0x[00 00 80 3F]
+spots[0].spotIdentifier	<TEXT: 8 bytes>	0x[52 41 43 45 30 36 00 00]	"RACE06  "
+spots[0].spotBankFileName	<TEXT: 8 bytes>	0x[00 00 00 00 00 00 00 00]	"        "
+spots[0].spotZero1	<GAP: 4 bytes>	0x[00 00 00 00]
+spots[0].spotUnknown1	<UNKNOWN: 4 bytes>	0x[00 00 00 80]
+spots[0].spotStaticBlock	<UNKNOWN: 8 bytes>	0x[00 00 00 00 10 02 10 02]
+spots[0].spotUnknown2	<UNKNOWN: 80 bytes>	0x[47 89 6E 47 E5 D0 82 3F BA DA 3A 47 B0 72 18 40 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF]
+spots[0].spotSettings	<REPEATER>	>>
+spotSettings[0].header1	<UNKNOWN: 4 bytes>	0x[00 00 C8 41]
+spotSettings[0].unknown1	<UNKNOWN: 16 bytes>	0x[00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00]
+spotSettings[0].header2	<UNKNOWN: 4 bytes>	0x[00 00 C8 41]
+spotSettings[0].unknown2	<UNKNOWN: 16 bytes>	0x[00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00]
+spotSettings[0].header3	<UNKNOWN: 4 bytes>	0x[00 00 C8 41]
+spotSettings[0].unknown3	<UNKNOWN: 16 bytes>	0x[00 00 00 00 68 7B 6E 47 AE 47 B3 41 87 CD 3A 47]
+spotSettings[0].staticDelimiter	<UNKNOWN: 4 bytes>	0x[00 00 80 3F]
+spotSettings[1].header1	<UNKNOWN: 4 bytes>	0x[00 00 C8 41]
+spotSettings[1].unknown1	<UNKNOWN: 16 bytes>	0x[00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00]
+spotSettings[1].header2	<UNKNOWN: 4 bytes>	0x[00 00 C8 41]
+spotSettings[1].unknown2	<UNKNOWN: 16 bytes>	0x[00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00]
+spotSettings[1].header3	<UNKNOWN: 4 bytes>	0x[00 00 C8 41]
+spotSettings[1].unknown3	<UNKNOWN: 16 bytes>	0x[00 00 00 00 68 7B 6E 47 AE 47 B3 41 87 CD 3A 47]
+spotSettings[1].staticDelimiter	<UNKNOWN: 4 bytes>	0x[00 00 80 3F]
+<< spots[0].spotSettings	<REPEATER: 2 items>
 spots[1].spotIdentifier	<TEXT: 8 bytes>	0x[7C 79 57 5F 41 5F 39 37]	"|yW_A_97"
-spots[1].spotBankFileName	<TEXT: 8 bytes>	0x[45 43 57 5F 41 00 00 00]	"ECW_A"
-spots[1].spotUnknown1	<UNKNOWN: 220 bytes>	0x[00 00 00 00 CF F7 13 40 00 00 00 00 10 02 10 02 DE 68 6D 47 6F 12 53 40 78 95 3C 47 58 39 54 BF FF 00 10 01 11 01 12 01 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 4C 37 BD 41 00 00 00 00 66 66 CE 41 00 00 00 00 00 00 00 00 A0 1A 9F 40 00 00 00 00 00 00 00 00 66 66 9D C1 00 00 00 00 C7 4B 90 41 00 00 00 00 C9 79 6D 47 37 89 BD 40 22 AF 3C 47 00 00 80 3F 00 00 C8 41 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C8 41 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C8 41 00 00 00 00 C8 7B 6D 47 C9 76 66 40 89 AD 3C 47]
-spots[1].spotUnknown2	<UNKNOWN: 4 bytes>	0x[00 00 80 3F]
+spots[1].spotBankFileName	<TEXT: 8 bytes>	0x[45 43 57 5F 41 00 00 00]	"ECW_A   "
+spots[1].spotZero1	<GAP: 4 bytes>	0x[00 00 00 00]
+spots[1].spotUnknown1	<UNKNOWN: 4 bytes>	0x[CF F7 13 40]
+spots[1].spotStaticBlock	<UNKNOWN: 8 bytes>	0x[00 00 00 00 10 02 10 02]
+spots[1].spotUnknown2	<UNKNOWN: 80 bytes>	0x[DE 68 6D 47 6F 12 53 40 78 95 3C 47 58 39 54 BF FF 00 10 01 11 01 12 01 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF]
+spots[1].spotSettings	<REPEATER>	>>
+spotSettings[0].header1	<UNKNOWN: 4 bytes>	0x[4C 37 BD 41]
+spotSettings[0].unknown1	<UNKNOWN: 16 bytes>	0x[00 00 00 00 66 66 CE 41 00 00 00 00 00 00 00 00]
+spotSettings[0].header2	<UNKNOWN: 4 bytes>	0x[A0 1A 9F 40]
+spotSettings[0].unknown2	<UNKNOWN: 16 bytes>	0x[00 00 00 00 00 00 00 00 66 66 9D C1 00 00 00 00]
+spotSettings[0].header3	<UNKNOWN: 4 bytes>	0x[C7 4B 90 41]
+spotSettings[0].unknown3	<UNKNOWN: 16 bytes>	0x[00 00 00 00 C9 79 6D 47 37 89 BD 40 22 AF 3C 47]
+spotSettings[0].staticDelimiter	<UNKNOWN: 4 bytes>	0x[00 00 80 3F]
+spotSettings[1].header1	<UNKNOWN: 4 bytes>	0x[00 00 C8 41]
+spotSettings[1].unknown1	<UNKNOWN: 16 bytes>	0x[00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00]
+spotSettings[1].header2	<UNKNOWN: 4 bytes>	0x[00 00 C8 41]
+spotSettings[1].unknown2	<UNKNOWN: 16 bytes>	0x[00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00]
+spotSettings[1].header3	<UNKNOWN: 4 bytes>	0x[00 00 C8 41]
+spotSettings[1].unknown3	<UNKNOWN: 16 bytes>	0x[00 00 00 00 C8 7B 6D 47 C9 76 66 40 89 AD 3C 47]
+spotSettings[1].staticDelimiter	<UNKNOWN: 4 bytes>	0x[00 00 80 3F]
+<< spots[1].spotSettings	<REPEATER: 2 items>
 spots[2].spotIdentifier	<TEXT: 8 bytes>	0x[7C 7A 7A 5F 38 47 5F 39]	"|zz_8G_9"
-spots[2].spotBankFileName	<TEXT: 8 bytes>	0x[45 43 44 5F 38 47 00 00]	"ECD_8G"
-spots[2].spotUnknown1	<UNKNOWN: 220 bytes>	0x[00 00 00 80 A2 45 B6 BD 00 00 00 00 10 02 10 02 F0 B1 6D 47 29 5C 8F 3F C6 B4 3A 47 81 95 43 40 4B 00 4C 00 5D 00 5E 00 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF DD 24 54 C2 00 00 00 00 79 E9 96 C0 00 00 00 00 00 00 00 00 C3 F5 0E 41 00 00 00 00 00 00 00 00 91 ED 14 40 00 00 00 00 1D 5A D1 C1 00 00 00 00 5D 89 6D 47 75 93 88 40 23 B2 3A 47 00 00 80 3F 00 00 C8 41 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C8 41 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 C8 41 00 00 00 00 64 87 6D 47 54 E3 95 3F 75 C7 3A 47]
-spots[2].spotUnknown2	<UNKNOWN: 4 bytes>	0x[00 00 80 3F]
+spots[2].spotBankFileName	<TEXT: 8 bytes>	0x[45 43 44 5F 38 47 00 00]	"ECD_8G  "
+spots[2].spotZero1	<GAP: 4 bytes>	0x[00 00 00 00]
+spots[2].spotUnknown1	<UNKNOWN: 4 bytes>	0x[A2 45 B6 BD]
+spots[2].spotStaticBlock	<UNKNOWN: 8 bytes>	0x[00 00 00 00 10 02 10 02]
+spots[2].spotUnknown2	<UNKNOWN: 80 bytes>	0x[F0 B1 6D 47 29 5C 8F 3F C6 B4 3A 47 81 95 43 40 4B 00 4C 00 5D 00 5E 00 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF]
+spots[2].spotSettings	<REPEATER>	>>
+spotSettings[0].header1	<UNKNOWN: 4 bytes>	0x[DD 24 54 C2]
+spotSettings[0].unknown1	<UNKNOWN: 16 bytes>	0x[00 00 00 00 79 E9 96 C0 00 00 00 00 00 00 00 00]
+spotSettings[0].header2	<UNKNOWN: 4 bytes>	0x[C3 F5 0E 41]
+spotSettings[0].unknown2	<UNKNOWN: 16 bytes>	0x[00 00 00 00 00 00 00 00 91 ED 14 40 00 00 00 00]
+spotSettings[0].header3	<UNKNOWN: 4 bytes>	0x[1D 5A D1 C1]
+spotSettings[0].unknown3	<UNKNOWN: 16 bytes>	0x[00 00 00 00 5D 89 6D 47 75 93 88 40 23 B2 3A 47]
+spotSettings[0].staticDelimiter	<UNKNOWN: 4 bytes>	0x[00 00 80 3F]
+spotSettings[1].header1	<UNKNOWN: 4 bytes>	0x[00 00 C8 41]
+spotSettings[1].unknown1	<UNKNOWN: 16 bytes>	0x[00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00]
+spotSettings[1].header2	<UNKNOWN: 4 bytes>	0x[00 00 C8 41]
+spotSettings[1].unknown2	<UNKNOWN: 16 bytes>	0x[00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00]
+spotSettings[1].header3	<UNKNOWN: 4 bytes>	0x[00 00 C8 41]
+spotSettings[1].unknown3	<UNKNOWN: 16 bytes>	0x[00 00 00 00 64 87 6D 47 54 E3 95 3F 75 C7 3A 47]
+spotSettings[1].staticDelimiter	<UNKNOWN: 4 bytes>	0x[00 00 80 3F]
+<< spots[2].spotSettings	<REPEATER: 2 items>
 << spots	<REPEATER: 3 items>
