@@ -18,6 +18,7 @@ public class DisplayConstants {
     public static final String LABEL_FMT_ERROR_CPL = "(%d)";
     public static final String LABEL_BUTTON_OK = "OK";
     public static final String LABEL_BUTTON_CANCEL = "Cancel";
+    public static final String LABEL_BUTTON_CLOSE = "Close";
 
     public static final String STATUS_FMT_CHECK_IN_PROGRESS = "Performing database check %s, please wait...";
     public static final String STATUS_FMT_CHECK_DONE = "Done checking database, %d error(s).";
