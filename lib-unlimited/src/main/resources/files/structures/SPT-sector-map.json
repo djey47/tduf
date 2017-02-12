@@ -57,9 +57,29 @@
           "size": 8
         },
         {
-          "name": "spotUnknown2",
+          "name": "spotCoordinatesX",
+          "type": "FPOINT",
+          "size": 4
+        },
+        {
+          "name": "spotDimension1",
+          "type": "FPOINT",
+          "size": 4
+        },
+        {
+          "name": "spotCoordinatesZ",
+          "type": "FPOINT",
+          "size": 4
+        },
+        {
+          "name": "spotDimension2",
+          "type": "FPOINT",
+          "size": 4
+        },
+        {
+          "name": "spotFlags",
           "type": "UNKNOWN",
-          "size": 80
+          "size": 64
         },
         {
           "name": "spotSettings",

@@ -40,8 +40,17 @@ public class SectorSpotsParser extends GenericParser<SectorSpotsInfo> {
 
                     String spotIdentifier = subStore.getText("spotIdentifier").orElse("");
                     String spotBankFileName = subStore.getText("spotBankFileName").orElse("");
+                    float spotCoordinatesX = subStore.getFloatingPoint("spotCoordinatesX").orElse(0.0f);
+                    float spotCoordinatesZ = subStore.getFloatingPoint("spotCoordinatesZ").orElse(0.0f);
+                    float spotDimension1 = subStore.getFloatingPoint("spotDimension1").orElse(0.0f);
+                    float spotDimension2 = subStore.getFloatingPoint("spotDimension2").orElse(0.0f);
+
                     mapSpotInfo.setId(spotIdentifier);
                     mapSpotInfo.setBnkFileName(spotBankFileName);
+                    mapSpotInfo.setXCoordinate(spotCoordinatesX);
+                    mapSpotInfo.setZCoordinate(spotCoordinatesZ);
+                    mapSpotInfo.setDimension1(spotDimension1);
+                    mapSpotInfo.setDimension2(spotDimension2);
 
                     return mapSpotInfo;
                 })
