@@ -40,8 +40,20 @@ public class MapSpotsParser extends GenericParser<MapSpotsInfo> {
 
                     String spotIdentifier = subStore.getText("spotIdentifier").orElse("");
                     String spotBankFileName = subStore.getText("spotBankFileName").orElse("");
+                    float spotXCoordinate = subStore.getFloatingPoint("spotCoordinatesX").orElse(0.0f);
+                    float spotYCoordinate = subStore.getFloatingPoint("spotCoordinatesY").orElse(0.0f);
+                    float spotZCoordinate = subStore.getFloatingPoint("spotCoordinatesZ").orElse(0.0f);
+                    Long spotType = subStore.getInteger("spotType").orElse(0L);
+                    Long spotSubType = subStore.getInteger("spotSubType").orElse(0L);
+                    Long challengeDisplayCondition = subStore.getInteger("challengeOption").orElse(0L);
                     mapSpotInfo.setId(spotIdentifier);
                     mapSpotInfo.setBnkFileName(spotBankFileName);
+                    mapSpotInfo.setXCoordinate(spotXCoordinate);
+                    mapSpotInfo.setYCoordinate(spotYCoordinate);
+                    mapSpotInfo.setZCoordinate(spotZCoordinate);
+                    mapSpotInfo.setType(spotType.intValue());
+                    mapSpotInfo.setSubType(spotSubType.intValue());
+                    mapSpotInfo.setChallengeOption(challengeDisplayCondition.intValue());
 
                     return mapSpotInfo;
                 })

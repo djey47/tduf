@@ -42,9 +42,39 @@
           "size": 8
         },
         {
+          "name": "spotCoordinatesX",
+          "type": "FPOINT",
+          "size": 4
+        },
+        {
+          "name": "spotCoordinatesY",
+          "type": "FPOINT",
+          "size": 4
+        },
+        {
+          "name": "spotCoordinatesZ",
+          "type": "FPOINT",
+          "size": 4
+        },
+        {
+          "name": "spotType",
+          "type": "INTEGER",
+          "size": 1
+        },
+        {
+          "name": "spotSubType",
+          "type": "INTEGER",
+          "size": 1
+        },
+        {
+          "name": "challengeOption",
+          "type": "INTEGER",
+          "size": 2
+        },
+        {
           "name": "spotUnknown1",
           "type": "UNKNOWN",
-          "size": 28
+          "size": 12
         },
         {
           "name": "spotZero1",
