@@ -14,20 +14,6 @@ public enum SpotCategory {
     CHALLENGE(7),       // RSFE, TSFE, SSFE, RMFE, SMFE, RCFE, SCFE
     SERVICE(8);         // ECW, ECP, ECR, ERE
 
-    // TODO Enums?
-    public static int SERVICE_CAR_WASH = 0;
-    public static int SERVICE_CAR_PAINT = 1;
-    public static int SERVICE_REALTOR = 4;
-    public static int SERVICE_CAR_PAINT_LUXE = 9;
-
-    public static int CHALLENGE_TIME_SOLO = 0;
-    public static int CHALLENGE_SPEED_SOLO = 10;
-    public static int CHALLENGE_SPEED_MULTI = 11;
-    public static int CHALLENGE_SPEED_CLUB = 12;
-    public static int CHALLENGE_RACE_SOLO = 30;
-    public static int CHALLENGE_RACE_MULTI = 31;
-    public static int CHALLENGE_RACE_CLUB = 32;
-
     private int categoryIdentifier;
 
     SpotCategory(int categoryIdentifier) {
