@@ -294,7 +294,8 @@ public class DataStore {
         }
 
         Entry entry = this.store.get(fieldName);
-        assertSimpleCondition(() -> FPOINT == entry.getType());
+        FileStructureDto.Type entryType = entry.getType();
+        assertSimpleCondition(() -> FPOINT == entryType, "Wrong entry type: " + entryType + ", expected: " + FPOINT);
 
         return of(
                 rawToFloatingPoint(entry.getRawValue()));
