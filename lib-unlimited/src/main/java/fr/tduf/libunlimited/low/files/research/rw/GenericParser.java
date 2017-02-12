@@ -103,7 +103,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
             Integer length = FormulaHelper.resolveToInteger(field.getSizeFormula(), Optional.of(repeaterKey), dataStore);
             ReadResult readResult = readAndDumpValue(key, field, length);
 
-            assertSimpleCondition(() -> length == null || readResult.parsedCount == length);
+            assertSimpleCondition(() -> length == null || readResult.parsedCount == length, "Structure mismatch for field key: " + key);
 
             this.dataStore.addValue(key, field.getType(), field.isSigned(), readResult.readValueAsBytes);
         }
