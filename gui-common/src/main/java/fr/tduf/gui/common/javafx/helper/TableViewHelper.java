@@ -7,9 +7,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 
 import java.util.Optional;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 
 /**
  * Helper class to make TableView controls handling easier.
@@ -27,7 +29,7 @@ public class TableViewHelper {
 
         Node node = ((Node) mouseEvent.getTarget()).getParent();
         if (node == null) {
-            return Optional.empty();
+            return empty();
         }
 
         T selectedItem = null;
@@ -54,7 +56,7 @@ public class TableViewHelper {
         requireNonNull(tableView, "A TableView is required.");
 
         if (tableView.getItems().isEmpty()) {
-            return Optional.empty();
+            return empty();
         }
 
         int rowIndex = 0;
@@ -65,7 +67,34 @@ public class TableViewHelper {
             rowIndex++;
         }
 
-        return Optional.empty();
+        return empty();
+    }
+
+    // TODO Only keep BiPredicate version
+    /**
+     * Selects and scrolls to first item matching a search criteria
+     * @param searchPredicate   : predicate specifying search criteria. Current row index is also provided.
+     * @param tableView         : table view to be processed
+     * @param <T>               : Type of items in TableView
+     * @return selected item, if any, at given row. Absent otherwise.
+     */
+    public static <T> Optional<T> selectItemAndScroll(BiPredicate<T, Integer> searchPredicate, TableView<T> tableView) {
+        requireNonNull(searchPredicate, "A search predicate is required.");
+        requireNonNull(tableView, "A TableView is required.");
+
+        if (tableView.getItems().isEmpty()) {
+            return empty();
+        }
+
+        int rowIndex = 0;
+        for (T item : tableView.getItems()) {
+            if (searchPredicate.test(item, rowIndex)) {
+                return selectRowAndScroll(rowIndex, tableView);
+            }
+            rowIndex++;
+        }
+
+        return empty();
     }
 
     /**
@@ -78,7 +107,7 @@ public class TableViewHelper {
         requireNonNull(tableView, "A TableView is required.");
 
         if (rowIndex < 0 || rowIndex >= tableView.getItems().size()) {
-            return Optional.empty();
+            return empty();
         }
 
         tableView.getSelectionModel().select(rowIndex);
@@ -97,7 +126,7 @@ public class TableViewHelper {
 
         ObservableList<T> items = tableView.getItems();
         if (items.isEmpty()) {
-            return Optional.empty();
+            return empty();
         }
 
         return selectRowAndScroll(items.size() - 1, tableView);

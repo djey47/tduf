@@ -12,6 +12,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -48,7 +49,7 @@ public class TableViewHelperTest {
     @Test(expected=NullPointerException.class)
     public void selectItemAndScroll_whenNullPredicate_shouldThrowException() {
         // GIVEN-WHEN
-        TableViewHelper.selectItemAndScroll(null, new TableView<>());
+        TableViewHelper.selectItemAndScroll((Predicate)null, new TableView<>());
 
         // THEN: NPE
     }
