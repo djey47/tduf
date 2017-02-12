@@ -618,7 +618,44 @@
       ]
     },
     {
-      "name": "Points of sale",
+      "name": "Brands",
+      "topic": "BRANDS",
+      "entryLabelFieldRanks": [3],
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "pluginName": "CONTENT_REF",
+          "label": "(REF) Brand #"
+        }, {
+          "name" : "Manufacturer_ID",
+          "label": "Manufacturer identifier",
+          "rank" : 2
+        }, {
+          "name" : "Manufacturer_Name",
+          "label": "Name",
+          "rank" : 3
+        }, {
+          "name" : "Logo_HUD_File",
+          "label": "HUD Logo file name",
+          "rank" : 4
+        }, {
+          "name" : "Logo_Global_Index",
+          "label": "Rank in logo textures",
+          "rank" : 5
+        }, {
+          "name" : "Brand_special_param",
+          "label" : "Special parameter",
+          "rank" : 6
+        }, {
+          "name" : "BitField",
+          "rank" : 7,
+          "pluginName": "BITFIELD"
+        }
+      ]
+    },
+    {
+      "name": "Dealers And Shops",
       "topic": "CAR_SHOPS",
       "entryLabelFieldRanks": [3,2],
       "groups": [
@@ -749,39 +786,402 @@
       ]
     },
     {
-      "name": "Brands",
-      "topic": "BRANDS",
-      "entryLabelFieldRanks": [3],
+      "name": "Vehicle Paintjobs",
+      "topic": "CAR_COLORS",
+      "entryLabelFieldRanks": [1,3,2],
+      "groups": ["Interior Sets"],
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "Car",
+          "label": "Car slot #",
+          "remoteReferenceProfile": "Vehicle slots"
+        },
+        {
+          "name": "Color_ID_1",
+          "rank": 2
+        },
+        {
+          "name": "Color_Name",
+          "rank": 3
+        },
+        {
+          "name": "Color_ID_2",
+          "rank": 4
+        },
+        {
+          "name": "Callipers",
+          "rank": 5
+        },
+        {
+          "name": "Price_dollar",
+          "rank": 6
+        },
+        {
+          "name": "Pad",
+          "rank": 7
+        },
+        {
+          "rank": 8,
+          "group": "Interior Sets",
+          "label": "(1)",
+          "remoteReferenceProfile": "Vehicle Interiors"
+        },
+        {
+          "rank": 9,
+          "group": "Interior Sets",
+          "label": "(2)",
+          "remoteReferenceProfile": "Vehicle Interiors"
+        },
+        {
+          "rank": 10,
+          "group": "Interior Sets",
+          "label": "(3)",
+          "remoteReferenceProfile": "Vehicle Interiors"
+        },
+        {
+          "rank": 11,
+          "group": "Interior Sets",
+          "label": "(4)",
+          "remoteReferenceProfile": "Vehicle Interiors"
+        },
+        {
+          "rank": 12,
+          "group": "Interior Sets",
+          "label": "(5)",
+          "remoteReferenceProfile": "Vehicle Interiors"
+        },
+        {
+          "rank": 13,
+          "group": "Interior Sets",
+          "label": "(6)",
+          "remoteReferenceProfile": "Vehicle Interiors"
+        },
+        {
+          "rank": 14,
+          "group": "Interior Sets",
+          "label": "(7)",
+          "remoteReferenceProfile": "Vehicle Interiors"
+        },
+        {
+          "rank": 15,
+          "group": "Interior Sets",
+          "label": "(8)",
+          "remoteReferenceProfile": "Vehicle Interiors"
+        },
+        {
+          "rank": 16,
+          "group": "Interior Sets",
+          "label": "(9)",
+          "remoteReferenceProfile": "Vehicle Interiors"
+        },
+        {
+          "rank": 17,
+          "group": "Interior Sets",
+          "label": "(10)",
+          "remoteReferenceProfile": "Vehicle Interiors"
+        },
+        {
+          "rank": 18,
+          "group": "Interior Sets",
+          "label": "(11)",
+          "remoteReferenceProfile": "Vehicle Interiors"
+        },
+        {
+          "rank": 19,
+          "group": "Interior Sets",
+          "label": "(12)",
+          "remoteReferenceProfile": "Vehicle Interiors"
+        },
+        {
+          "rank": 20,
+          "group": "Interior Sets",
+          "label": "(13)",
+          "remoteReferenceProfile": "Vehicle Interiors"
+        },
+        {
+          "rank": 21,
+          "group": "Interior Sets",
+          "label": "(14)",
+          "remoteReferenceProfile": "Vehicle Interiors"
+        },
+        {
+          "rank": 22,
+          "group": "Interior Sets",
+          "label": "(15)",
+          "remoteReferenceProfile": "Vehicle Interiors"
+        }
+      ]
+    },
+    {
+      "name":  "Vehicle Interiors",
+      "topic": "INTERIOR",
+      "entryLabelFieldRanks": [2,3,4],
       "fieldSettings": [
         {
           "rank": 1,
           "name": "REF",
           "pluginName": "CONTENT_REF",
-          "label": "(REF) Brand #"
-        }, {
-          "name" : "Manufacturer_ID",
-          "label": "Manufacturer identifier",
-          "rank" : 2
-        }, {
-          "name" : "Manufacturer_Name",
-          "label": "Name",
-          "rank" : 3
-        }, {
-          "name" : "Logo_HUD_File",
-          "label": "HUD Logo file name",
-          "rank" : 4
-        }, {
-          "name" : "Logo_Global_Index",
-          "label": "Rank in logo textures",
-          "rank" : 5
-        }, {
-          "name" : "Brand_special_param",
-          "label" : "Special parameter",
-          "rank" : 6
-        }, {
-          "name" : "BitField",
-          "rank" : 7,
-          "pluginName": "BITFIELD"
+          "label": "(REF) Interior set #"
+        },
+        {
+          "name": "Manufacturer_ID",
+          "rank": 2
+        },
+        {
+          "name": "Interior_Name",
+          "rank": 3
+        },
+        {
+          "name": "Interior_Color_1",
+          "rank": 4
+        },
+        {
+          "name": "Interior_Color_2",
+          "rank": 5
+        },
+        {
+          "name": "Material",
+          "rank": 6
+        },
+        {
+          "name": "Price_dollar",
+          "rank": 7
+        }
+      ]
+    },
+    {
+      "name": "Vehicle Tuning",
+      "topic": "CAR_PACKS",
+      "entryLabelFieldRanks": [4,2,1],
+      "groups": ["Pack 1", "Pack 2", "Pack 3"],
+      "fieldSettings": [
+        {
+          "name": "Car",
+          "rank": 1,
+          "remoteReferenceProfile": "Vehicle slots",
+          "priority": 10000
+        },
+        {
+          "name": "Brand",
+          "rank": 2,
+          "remoteReferenceProfile": "Brands",
+          "priority": 9980
+        },
+        {
+          "name": "Car_File_Name_Swap",
+          "rank": 3,
+          "priority": 0
+        },
+        {
+          "name": "Libelle",
+          "rank": 4,
+          "label": "Tuning Shop",
+          "priority": 9990
+        },
+        {
+          "name": "Pack_1",
+          "rank": 5,
+          "group": "Pack 1",
+          "remoteReferenceProfile": "Tuning Packages",
+          "label": "Tuning Pack",
+          "priority": 9970
+        },
+        {
+          "name": "Group_1",
+          "rank": 6,
+          "group": "Pack 1",
+          "label": "Category"
+        },
+        {
+          "name": "Car_1",
+          "rank": 7,
+          "group": "Pack 1",
+          "label": "Model change",
+          "remoteReferenceProfile": "Vehicle slots",
+          "priority": 9960
+        },
+        {
+          "name": "Price_1",
+          "rank": 8,
+          "group": "Pack 1",
+          "label": "Price ($)",
+          "priority": 9950
+        },
+        {
+          "name": "Accel_0_100_1",
+          "rank": 9,
+          "group": "Pack 1",
+          "label": "Acceleration (0...60mph)",
+          "priority": 9940
+        },
+        {
+          "name": "BrakingDist_1",
+          "rank": 10,
+          "group": "Pack 1",
+          "label": "Braking distance",
+          "priority": 9930
+        },
+        {
+          "name": "Handling_1",
+          "rank": 11,
+          "group": "Pack 1",
+          "label": "Handling",
+          "priority": 9920
+        },
+        {
+          "name": "Pack_2",
+          "rank": 12,
+          "group": "Pack 2",
+          "remoteReferenceProfile": "Tuning Packages",
+          "label": "Tuning Pack",
+          "priority": 9910
+        },
+        {
+          "name": "Group_2",
+          "rank": 13,
+          "group": "Pack 2",
+          "label": "Category"
+        },
+        {
+          "name": "Car_2",
+          "rank": 14,
+          "group": "Pack 2",
+          "remoteReferenceProfile": "Vehicle slots",
+          "label": "Model change",
+          "priority": 9900
+        },
+        {
+          "name": "Price_2",
+          "rank": 15,
+          "group": "Pack 2",
+          "label": "Price ($)",
+          "priority": 9890
+        },
+        {
+          "name": "Accel_0_100_2",
+          "rank": 16,
+          "group": "Pack 2",
+          "label": "Acceleration (0...60mph)",
+          "priority": 9880
+        },
+        {
+          "name": "BrakingDist_2",
+          "rank": 17,
+          "group": "Pack 2",
+          "label": "Braking distance",
+          "priority": 9870
+        },
+        {
+          "name": "Handling_2",
+          "rank": 18,
+          "group": "Pack 2",
+          "label": "Handling",
+          "priority": 9860
+        },
+        {
+          "name": "Pack_3",
+          "rank": 19,
+          "group": "Pack 3",
+          "remoteReferenceProfile": "Tuning Packages",
+          "label": "Tuning Pack",
+          "priority": 9850
+        },
+        {
+          "name": "Group_3",
+          "rank": 20,
+          "group": "Pack 3",
+          "label": "Category"
+        },
+        {
+          "name": "Car_3",
+          "rank": 21,
+          "group": "Pack 3",
+          "remoteReferenceProfile": "Vehicle slots",
+          "label": "Model change",
+          "priority": 9840
+        },
+        {
+          "name": "Price_3",
+          "rank": 22,
+          "group": "Pack 3",
+          "label": "Price ($)",
+          "priority": 9830
+        },
+        {
+          "name": "Accel_0_100_3",
+          "rank": 23,
+          "group": "Pack 3",
+          "label": "Acceleration (0...60mph)",
+          "priority": 9820
+        },
+        {
+          "name": "BrakingDist_3",
+          "rank": 24,
+          "group": "Pack 3",
+          "label": "Braking distance",
+          "priority": 9810
+        },
+        {
+          "name": "Handling_3",
+          "rank": 25,
+          "group": "Pack 3",
+          "label": "Handling",
+          "priority": 9800
+        }
+      ]
+    },
+    {
+      "name": "Tuning Packages",
+      "topic": "AFTER_MARKET_PACKS",
+      "entryLabelFieldRanks": [2,3],
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "readOnly": "true",
+          "pluginName": "CONTENT_REF",
+          "toolTip": "Unique pack number"
+        },
+        {
+          "name": "Pack_ID",
+          "rank": 2
+        },
+        {
+          "name": "Pack_Name",
+          "rank": 3
+        },
+        {
+          "name": "Speed_ratio",
+          "rank": 4
+        },
+        {
+          "name": "Power_ratio",
+          "rank": 5
+        },
+        {
+          "name": "Acceleration_ratio",
+          "rank": 6
+        },
+        {
+          "name": "Free_ratio",
+          "rank": 7
+        },
+        {
+          "name": "CX_ratio",
+          "rank": 8
+        },
+        {
+          "name": "Weight_ratio",
+          "rank": 9
+        },
+        {
+          "name": "Suspension_ratio",
+          "rank": 10
+        },
+        {
+          "name": "Braking_ratio",
+          "rank": 11
         }
       ]
     },
@@ -888,406 +1288,6 @@
       ]
     },
     {
-      "name": "Paints",
-      "topic": "CAR_COLORS",
-      "entryLabelFieldRanks": [1,3,2],
-      "groups": ["Interior Sets"],
-      "fieldSettings": [
-        {
-          "rank": 1,
-          "name": "Car",
-          "label": "Car slot #",
-          "remoteReferenceProfile": "Vehicle slots"
-        },
-        {
-          "name": "Color_ID_1",
-          "rank": 2
-        },
-        {
-          "name": "Color_Name",
-          "rank": 3
-        },
-        {
-          "name": "Color_ID_2",
-          "rank": 4
-        },
-        {
-          "name": "Callipers",
-          "rank": 5
-        },
-        {
-          "name": "Price_dollar",
-          "rank": 6
-        },
-        {
-          "name": "Pad",
-          "rank": 7
-        },
-        {
-          "rank": 8,
-          "group": "Interior Sets",
-          "label": "(1)",
-          "remoteReferenceProfile": "Interiors"
-        },
-        {
-          "rank": 9,
-          "group": "Interior Sets",
-          "label": "(2)",
-          "remoteReferenceProfile": "Interiors"
-        },
-        {
-          "rank": 10,
-          "group": "Interior Sets",
-          "label": "(3)",
-          "remoteReferenceProfile": "Interiors"
-        },
-        {
-          "rank": 11,
-          "group": "Interior Sets",
-          "label": "(4)",
-          "remoteReferenceProfile": "Interiors"
-        },
-        {
-          "rank": 12,
-          "group": "Interior Sets",
-          "label": "(5)",
-          "remoteReferenceProfile": "Interiors"
-        },
-        {
-          "rank": 13,
-          "group": "Interior Sets",
-          "label": "(6)",
-          "remoteReferenceProfile": "Interiors"
-        },
-        {
-          "rank": 14,
-          "group": "Interior Sets",
-          "label": "(7)",
-          "remoteReferenceProfile": "Interiors"
-        },
-        {
-          "rank": 15,
-          "group": "Interior Sets",
-          "label": "(8)",
-          "remoteReferenceProfile": "Interiors"
-        },
-        {
-          "rank": 16,
-          "group": "Interior Sets",
-          "label": "(9)",
-          "remoteReferenceProfile": "Interiors"
-        },
-        {
-          "rank": 17,
-          "group": "Interior Sets",
-          "label": "(10)",
-          "remoteReferenceProfile": "Interiors"
-        },
-        {
-          "rank": 18,
-          "group": "Interior Sets",
-          "label": "(11)",
-          "remoteReferenceProfile": "Interiors"
-        },
-        {
-          "rank": 19,
-          "group": "Interior Sets",
-          "label": "(12)",
-          "remoteReferenceProfile": "Interiors"
-        },
-        {
-          "rank": 20,
-          "group": "Interior Sets",
-          "label": "(13)",
-          "remoteReferenceProfile": "Interiors"
-        },
-        {
-          "rank": 21,
-          "group": "Interior Sets",
-          "label": "(14)",
-          "remoteReferenceProfile": "Interiors"
-        },
-        {
-          "rank": 22,
-          "group": "Interior Sets",
-          "label": "(15)",
-          "remoteReferenceProfile": "Interiors"
-        }
-      ]
-    },
-    {
-      "name":  "Interiors",
-      "topic": "INTERIOR",
-      "entryLabelFieldRanks": [2,3,4],
-      "fieldSettings": [
-        {
-          "rank": 1,
-          "name": "REF",
-          "pluginName": "CONTENT_REF",
-          "label": "(REF) Interior set #"
-        },
-        {
-          "name": "Manufacturer_ID",
-          "rank": 2
-        },
-        {
-          "name": "Interior_Name",
-          "rank": 3
-        },
-        {
-          "name": "Interior_Color_1",
-          "rank": 4
-        },
-        {
-          "name": "Interior_Color_2",
-          "rank": 5
-        },
-        {
-          "name": "Material",
-          "rank": 6
-        },
-        {
-          "name": "Price_dollar",
-          "rank": 7
-        }
-      ]
-    },
-    {
-      "name": "Packs",
-      "topic": "CAR_PACKS",
-      "entryLabelFieldRanks": [4,2,1],
-      "groups": ["Pack 1", "Pack 2", "Pack 3"],
-      "fieldSettings": [
-        {
-          "name": "Car",
-          "rank": 1,
-          "remoteReferenceProfile": "Vehicle slots",
-          "priority": 10000
-        },
-        {
-          "name": "Brand",
-          "rank": 2,
-          "remoteReferenceProfile": "Brands",
-          "priority": 9980
-        },
-        {
-          "name": "Car_File_Name_Swap",
-          "rank": 3,
-          "priority": 0
-        },
-        {
-          "name": "Libelle",
-          "rank": 4,
-          "label": "Tuning Shop",
-          "priority": 9990
-        },
-        {
-          "name": "Pack_1",
-          "rank": 5,
-          "group": "Pack 1",
-          "remoteReferenceProfile": "AMPacks",
-          "label": "Tuning Pack",
-          "priority": 9970
-        },
-        {
-          "name": "Group_1",
-          "rank": 6,
-          "group": "Pack 1",
-          "label": "Category"
-        },
-        {
-          "name": "Car_1",
-          "rank": 7,
-          "group": "Pack 1",
-          "label": "Model change",
-          "remoteReferenceProfile": "Vehicle slots",
-          "priority": 9960
-        },
-        {
-          "name": "Price_1",
-          "rank": 8,
-          "group": "Pack 1",
-          "label": "Price ($)",
-          "priority": 9950
-        },
-        {
-          "name": "Accel_0_100_1",
-          "rank": 9,
-          "group": "Pack 1",
-          "label": "Acceleration (0...60mph)",
-          "priority": 9940
-        },
-        {
-          "name": "BrakingDist_1",
-          "rank": 10,
-          "group": "Pack 1",
-          "label": "Braking distance",
-          "priority": 9930
-        },
-        {
-          "name": "Handling_1",
-          "rank": 11,
-          "group": "Pack 1",
-          "label": "Handling",
-          "priority": 9920
-        },
-        {
-          "name": "Pack_2",
-          "rank": 12,
-          "group": "Pack 2",
-          "remoteReferenceProfile": "AMPacks",
-          "label": "Tuning Pack",
-          "priority": 9910
-        },
-        {
-          "name": "Group_2",
-          "rank": 13,
-          "group": "Pack 2",
-          "label": "Category"
-        },
-        {
-          "name": "Car_2",
-          "rank": 14,
-          "group": "Pack 2",
-          "remoteReferenceProfile": "Vehicle slots",
-          "label": "Model change",
-          "priority": 9900
-        },
-        {
-          "name": "Price_2",
-          "rank": 15,
-          "group": "Pack 2",
-          "label": "Price ($)",
-          "priority": 9890
-        },
-        {
-          "name": "Accel_0_100_2",
-          "rank": 16,
-          "group": "Pack 2",
-          "label": "Acceleration (0...60mph)",
-          "priority": 9880
-        },
-        {
-          "name": "BrakingDist_2",
-          "rank": 17,
-          "group": "Pack 2",
-          "label": "Braking distance",
-          "priority": 9870
-        },
-        {
-          "name": "Handling_2",
-          "rank": 18,
-          "group": "Pack 2",
-          "label": "Handling",
-          "priority": 9860
-        },
-        {
-          "name": "Pack_3",
-          "rank": 19,
-          "group": "Pack 3",
-          "remoteReferenceProfile": "AMPacks",
-          "label": "Tuning Pack",
-          "priority": 9850
-        },
-        {
-          "name": "Group_3",
-          "rank": 20,
-          "group": "Pack 3",
-          "label": "Category"
-        },
-        {
-          "name": "Car_3",
-          "rank": 21,
-          "group": "Pack 3",
-          "remoteReferenceProfile": "Vehicle slots",
-          "label": "Model change",
-          "priority": 9840
-        },
-        {
-          "name": "Price_3",
-          "rank": 22,
-          "group": "Pack 3",
-          "label": "Price ($)",
-          "priority": 9830
-        },
-        {
-          "name": "Accel_0_100_3",
-          "rank": 23,
-          "group": "Pack 3",
-          "label": "Acceleration (0...60mph)",
-          "priority": 9820
-        },
-        {
-          "name": "BrakingDist_3",
-          "rank": 24,
-          "group": "Pack 3",
-          "label": "Braking distance",
-          "priority": 9810
-        },
-        {
-          "name": "Handling_3",
-          "rank": 25,
-          "group": "Pack 3",
-          "label": "Handling",
-          "priority": 9800
-        }
-      ]
-    },
-    {
-      "name": "AMPacks",
-      "topic": "AFTER_MARKET_PACKS",
-      "entryLabelFieldRanks": [2,3],
-      "fieldSettings": [
-        {
-          "rank": 1,
-          "name": "REF",
-          "readOnly": "true",
-          "pluginName": "CONTENT_REF",
-          "toolTip": "Unique pack number"
-        },
-        {
-          "name": "Pack_ID",
-          "rank": 2
-        },
-        {
-          "name": "Pack_Name",
-          "rank": 3
-        },
-        {
-          "name": "Speed_ratio",
-          "rank": 4
-        },
-        {
-          "name": "Power_ratio",
-          "rank": 5
-        },
-        {
-          "name": "Acceleration_ratio",
-          "rank": 6
-        },
-        {
-          "name": "Free_ratio",
-          "rank": 7
-        },
-        {
-          "name": "CX_ratio",
-          "rank": 8
-        },
-        {
-          "name": "Weight_ratio",
-          "rank": 9
-        },
-        {
-          "name": "Suspension_ratio",
-          "rank": 10
-        },
-        {
-          "name": "Braking_ratio",
-          "rank": 11
-        }
-      ]
-    },
-    {
       "name": "Bots",
       "topic": "BOTS",
       "entryLabelFieldRanks": [1, 2, 6],
@@ -1335,7 +1335,7 @@
     {
       "name": "NPCs",
       "topic": "PNJ",
-      "entryLabelFieldRanks": [2,3],
+      "entryLabelFieldRanks": [2,3,17],
       "groups": ["Items"],
       "fieldSettings": [
         {
@@ -1361,42 +1361,42 @@
           "label": "(1)",
           "group": "Items",
           "rank": 5,
-          "remoteReferenceProfile": "Clothes"
+          "remoteReferenceProfile": "Avatar Customization"
         },
         {
           "name": "Clothe",
           "label": "(2)",
           "group": "Items",
           "rank": 6,
-          "remoteReferenceProfile": "Clothes"
+          "remoteReferenceProfile": "Avatar Customization"
         },
         {
           "name": "Clothe",
           "label": "(3)",
           "group": "Items",
           "rank": 7,
-          "remoteReferenceProfile": "Clothes"
+          "remoteReferenceProfile": "Avatar Customization"
         },
         {
           "name": "Clothe",
           "label": "(4)",
           "group": "Items",
           "rank": 8,
-          "remoteReferenceProfile": "Clothes"
+          "remoteReferenceProfile": "Avatar Customization"
         },
         {
           "name": "Clothe",
           "label": "(5)",
           "group": "Items",
           "rank": 9,
-          "remoteReferenceProfile": "Clothes"
+          "remoteReferenceProfile": "Avatar Customization"
         },
         {
           "name": "Clothe",
           "label": "(6)",
           "group": "Items",
           "rank": 10,
-          "remoteReferenceProfile": "Clothes"
+          "remoteReferenceProfile": "Avatar Customization"
         },
         {
           "name": "Top",
@@ -1430,44 +1430,7 @@
       ]
     },
     {
-      "name": "Haircuts",
-      "topic": "HAIR",
-      "entryLabelFieldRanks": [3,4],
-      "fieldSettings": [
-        {
-          "rank": 1,
-          "name": "REF",
-          "pluginName": "CONTENT_REF",
-          "label": "(REF) Haircut #"
-        },
-        {
-          "name": "ID_HAIR",
-          "rank": 2
-        },
-        {
-          "name": "HairName",
-          "rank": 3
-        },
-        {
-          "name": "Sex",
-          "rank": 4
-        },
-        {
-          "name": "File",
-          "rank": 5
-        },
-        {
-          "name": "Mesh",
-          "rank": 6
-        },
-        {
-          "name": "Material",
-          "rank": 7
-        }
-      ]
-    },
-    {
-      "name": "Clothes",
+      "name": "Avatar Customization",
       "topic": "CLOTHES",
       "entryLabelFieldRanks": [5,6,7],
       "fieldSettings": [
@@ -1530,7 +1493,7 @@
       ]
     },
     {
-      "name": "Houses",
+      "name": "Player and Club Houses",
       "topic": "HOUSES",
       "entryLabelFieldRanks": [4,2,3],
       "fieldSettings": [
@@ -1571,6 +1534,43 @@
         {
           "name": "Sell_Price_",
           "rank": 9
+        }
+      ]
+    },
+    {
+      "name": "Haircuts (incomplete feature)",
+      "topic": "HAIR",
+      "entryLabelFieldRanks": [3,4],
+      "fieldSettings": [
+        {
+          "rank": 1,
+          "name": "REF",
+          "pluginName": "CONTENT_REF",
+          "label": "(REF) Haircut #"
+        },
+        {
+          "name": "ID_HAIR",
+          "rank": 2
+        },
+        {
+          "name": "HairName",
+          "rank": 3
+        },
+        {
+          "name": "Sex",
+          "rank": 4
+        },
+        {
+          "name": "File",
+          "rank": 5
+        },
+        {
+          "name": "Mesh",
+          "rank": 6
+        },
+        {
+          "name": "Material",
+          "rank": 7
         }
       ]
     },
@@ -1618,7 +1618,7 @@
       ]
     },
     {
-      "name": "Menus",
+      "name": "Game Menus Labels",
       "topic": "MENUS",
       "entryLabelFieldRanks": [2,1],
       "fieldSettings": [
