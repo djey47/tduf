@@ -1,64 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="fr.tduf.gui.database.controllers.ResourcesStageController">
-   <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-         AnchorPane.topAnchor="0.0">
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.controllers.ResourcesStageController">
+   <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <ToolBar prefHeight="40.0" styleClass="navigationToolbar" VBox.vgrow="NEVER">
-         <ChoiceBox fx:id="topicsChoiceBox" prefHeight="25.0" prefWidth="180.0"/>
-         <Separator orientation="VERTICAL" prefHeight="30.0"/>
-         <Button mnemonicParsing="false" onAction="#handleEditResourceButtonMouseClick" prefHeight="25.0"
-                 text="Edit...">
+         <ChoiceBox fx:id="topicsChoiceBox" prefHeight="25.0" prefWidth="180.0" />
+         <Separator orientation="VERTICAL" prefHeight="30.0" />
+         <Button mnemonicParsing="false" onAction="#handleEditResourceButtonMouseClick" prefHeight="25.0" text="Edit...">
             <tooltip>
-               <Tooltip text="Modifies selected resource."/>
+               <Tooltip text="Modifies selected resource." />
             </tooltip>
          </Button>
-         <Button mnemonicParsing="false" onAction="#handleAddResourceButtonMouseClick" prefHeight="25.0"
-                 prefWidth="28.0" text="+">
+         <Button mnemonicParsing="false" onAction="#handleAddResourceButtonMouseClick" prefHeight="25.0" prefWidth="28.0" text="+">
             <tooltip>
-               <Tooltip text="Adds a new resource to current topic and locale."/>
+               <Tooltip text="Adds a new resource to current topic and locale." />
             </tooltip>
          </Button>
-         <Button mnemonicParsing="false" onAction="#handleRemoveResourceButtonMouseClick" prefWidth="28.0"
-                 text="-">
+         <Button mnemonicParsing="false" onAction="#handleRemoveResourceButtonMouseClick" prefWidth="28.0" text="-">
             <tooltip>
-               <Tooltip text="Removes selected resource from current topic."/>
+               <Tooltip text="Removes selected resource from current topic." />
             </tooltip>
          </Button>
-         <Separator orientation="VERTICAL" prefHeight="30.0"/>
+         <Separator orientation="VERTICAL" prefHeight="30.0" />
          <Button mnemonicParsing="false" onAction="#handleSelectResourceButtonMouseClick" text="Select">
             <tooltip>
-               <Tooltip text="Uses selected resource in database field."/>
+               <Tooltip text="Uses selected resource in database field." />
             </tooltip>
          </Button>
       </ToolBar>
       <AnchorPane VBox.vgrow="ALWAYS">
-         <TableView fx:id="resourcesTableView" onMouseClicked="#handleResourceTableMouseClick"
-                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                    AnchorPane.topAnchor="0.0">
+         <TableView fx:id="resourcesTableView" onMouseClicked="#handleResourceTableMouseClick" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <columns>
-               <TableColumn prefWidth="100.0" text="#"/>
-               <TableColumn prefWidth="200.0" text="fr"/>
-               <TableColumn prefWidth="200.0" text="ge"/>
-               <TableColumn prefWidth="200.0" text="us"/>
-               <TableColumn prefWidth="200.0" text="ko"/>
-               <TableColumn prefWidth="200.0" text="ch"/>
-               <TableColumn prefWidth="200.0" text="ja"/>
-               <TableColumn prefWidth="200.0" text="it"/>
-               <TableColumn prefWidth="200.0" text="sp"/>
+               <TableColumn prefWidth="100.0" text="#" />
+               <TableColumn prefWidth="200.0" text="fr" />
+               <TableColumn prefWidth="200.0" text="ge" />
+               <TableColumn prefWidth="200.0" text="us" />
+               <TableColumn prefWidth="200.0" text="ko" />
+               <TableColumn prefWidth="200.0" text="ch" />
+               <TableColumn prefWidth="200.0" text="ja" />
+               <TableColumn prefWidth="200.0" text="it" />
+               <TableColumn prefWidth="200.0" text="sp" />
             </columns>
          </TableView>
       </AnchorPane>
       <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar">
-         <Button mnemonicParsing="false" onAction="#handleSearchEntryButtonAction" prefWidth="80.0" text="REF...">
+         <Button mnemonicParsing="false" onAction="#handleSearchEntryByREFAction" prefWidth="80.0" text="REF...">
             <tooltip>
-               <Tooltip text="Searches entry with REF."/>
+               <Tooltip text="Searches entry with REF." />
             </tooltip>
          </Button>
-         <Separator orientation="VERTICAL"/>
+         <Button layoutX="10.0" layoutY="11.0" mnemonicParsing="false" onAction="#handleSearchEntryByValueAction" prefWidth="80.0" text="Value...">
+            <tooltip>
+               <Tooltip text="Searches entry with value." />
+            </tooltip>
+         </Button>
+         <Separator orientation="VERTICAL" />
+         <Label fx:id="resourceEntryCountLabel" text="10">
+            <font>
+               <Font name="System Bold" size="13.0" />
+            </font></Label>
+         <Label text="resource entries available in current topic" />
       </ToolBar>
    </VBox>
 </AnchorPane>

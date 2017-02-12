@@ -70,11 +70,11 @@ public class DisplayConstants {
     public static final String TITLE_SUB_IMPORT_PERFORMANCE_PACK = " : Import TDUPE Performance Pack";
     public static final String TITLE_SUB_IMPORT_TDUMT_PATCH = " : Import TDUMT Patch";
     public static final String TITLE_SUB_SEARCH_ENTRY = " : Search for entry";
-    public static final String TITLE_SUB_SEARCH_RESOURCE_ENTRY = " : Search for resource entry";
     public static final String TITLE_SUB_RESET_DB_CACHE = " : Reset database cache";
     public static final String TITLE_SUB_RESET_SETTINGS = " : Reset settings";
     public static final String TITLE_FORMAT_LOAD = "Load %s file...";
     public static final String TITLE_FORMAT_SAVE = "Save to %s file...";
+    public static final String TITLE_SEARCH_RESOURCE_ENTRY = "Search for resource entry";
 
     public static final String MESSAGE_ADDED_RESOURCE = "Add resource in topic: ";
     public static final String MESSAGE_DATABASE_SAVED = "Current database was saved.";

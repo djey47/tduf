@@ -5,6 +5,7 @@ import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.javafx.helper.TableViewHelper;
 import fr.tduf.gui.common.javafx.helper.options.SimpleDialogOptions;
+import fr.tduf.gui.common.javafx.scene.control.SearchValueDialog;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.controllers.helper.DialogsHelper;
 import fr.tduf.gui.database.domain.LocalizedResource;
@@ -12,6 +13,7 @@ import fr.tduf.gui.database.domain.javafx.ResourceEntryDataItem;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import javafx.beans.binding.StringExpression;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
@@ -20,20 +22,24 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Pair;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import static fr.tduf.libunlimited.common.game.domain.Locale.DEFAULT;
 import static fr.tduf.libunlimited.common.game.domain.Locale.fromOrder;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static javafx.beans.binding.Bindings.size;
 import static javafx.scene.control.Alert.AlertType.ERROR;
 
 /**
@@ -44,11 +50,16 @@ public class ResourcesStageController extends AbstractGuiController {
 
     private DialogsHelper dialogsHelper = new DialogsHelper();
 
+    private SearchValueDialog searchValueDialog;
+
     @FXML
     private ChoiceBox<DbDto.Topic> topicsChoiceBox;
 
     @FXML
     private TableView<ResourceEntryDataItem> resourcesTableView;
+
+    @FXML
+    private Label resourceEntryCountLabel;
 
     private MainStageController mainStageController;
 
@@ -64,12 +75,15 @@ public class ResourcesStageController extends AbstractGuiController {
 
     @Override
     public void init() {
+        searchValueDialog = new SearchValueDialog(DisplayConstants.TITLE_SEARCH_RESOURCE_ENTRY);
         browsedResourceProperty
                 .addListener((observable, oldValue, newValue) -> handleBrowseToResource(newValue));
 
         initTopicPane();
 
         initTablePane();
+
+        initStatusBar();
     }
 
     @FXML
@@ -128,10 +142,13 @@ public class ResourcesStageController extends AbstractGuiController {
     }
 
     @FXML
-    private void handleSearchEntryButtonAction() {
-        Log.trace(THIS_CLASS_NAME, "->handleSearchEntryButtonAction");
-
+    private void handleSearchEntryByREFAction() {
         askForReferenceAndSelectItem();
+    }
+
+    @FXML
+    private void handleSearchEntryByValueAction() {
+        openSearchValueDialog();
     }
 
     private void handleTopicChoiceChanged(DbDto.Topic newTopic) {
@@ -204,6 +221,10 @@ public class ResourcesStageController extends AbstractGuiController {
         }
 
         resourcesTableView.setItems(resourceData);
+    }
+
+    private void initStatusBar() {
+        resourceEntryCountLabel.textProperty().bind(size(resourceData).asString());
     }
 
     private void fillTopics() {
@@ -304,11 +325,30 @@ public class ResourcesStageController extends AbstractGuiController {
 
     private void askForReferenceAndSelectItem() {
         CommonDialogsHelper.showInputValueDialog(
-                DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SEARCH_RESOURCE_ENTRY,
+                DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SEARCH_RESOURCE_ENTRY,
                 DisplayConstants.LABEL_SEARCH_ENTRY, getWindow())
                 .ifPresent(entryReference -> TableViewHelper.selectItemAndScroll(
                         oneItem -> oneItem.referenceProperty().getValue().equals(entryReference),
                         resourcesTableView));
+    }
+
+    private void openSearchValueDialog() {
+        Consumer<String> nextResult = pattern -> TableViewHelper.selectItemAndScroll((resource, rowIndex) -> {
+            int currentRowIndex = resourcesTableView.getSelectionModel().getSelectedIndex();
+            return (rowIndex > currentRowIndex)
+                    &&
+                    Locale.valuesAsStream()
+                            .map(resource::valuePropertyForLocale)
+                            .map(StringExpression::getValue)
+                            .anyMatch(resourceValue -> StringUtils.containsIgnoreCase(resourceValue, pattern));
+        }, resourcesTableView);
+        Consumer<String> firstResult = pattern -> TableViewHelper.selectItemAndScroll(resource -> Locale.valuesAsStream()
+                .map(resource::valuePropertyForLocale)
+                .map(StringExpression::getValue)
+                .anyMatch(resourceValue -> StringUtils.containsIgnoreCase(resourceValue, pattern)), resourcesTableView);
+
+        searchValueDialog.setCallbacks(firstResult, nextResult);
+        searchValueDialog.show(getWindow());
     }
 
     private void showResourceErrorDialog(IllegalArgumentException iae) {
