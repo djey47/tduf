@@ -85,6 +85,7 @@ public class CommonDialogsHelper {
      * @return resulting value, or absent if dialog was dismissed.
      */
     public static Optional<String> showInputValueDialog(String title, String label, Window parent) {
+        // TODO use FX's TextInputDialog
         Dialog<String> inputValueDialog = new Dialog<>();
         inputValueDialog.initOwner(parent);
         inputValueDialog.setTitle(title);
@@ -93,6 +94,7 @@ public class CommonDialogsHelper {
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
+        // TODO Normalize padding
         grid.setPadding(new Insets(20, 150, 10, 10));
 
         TextField valueTextField = new TextField();
