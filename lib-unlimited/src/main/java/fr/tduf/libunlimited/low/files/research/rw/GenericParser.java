@@ -140,9 +140,9 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
                 break;
 
             case REPEATER:
-                dumpRepeater(key, Optional.empty());
+                dumpRepeaterStart(key);
                 readResult = readRepeatedValues(field, length);
-                dumpRepeater(key, Optional.of(readResult));
+                dumpRepeaterFinish(key, readResult);
                 break;
 
             default:
@@ -246,13 +246,14 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
     }
 
     private void dumpDelimiterOrTextValue(byte[] readValueAsBytes, Integer length, String key, FileStructureDto.Type type) {
+        int effectiveLength = length == null ? readValueAsBytes.length : length;
         dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT,
                 key,
                 "",
                 type.name(),
-                length == null ? readValueAsBytes.length : length,
+                effectiveLength,
                 TypeHelper.byteArrayToHexRepresentation(readValueAsBytes),
-                "\"" + TypeHelper.rawToText(readValueAsBytes, length) + "\""));
+                "\"" + TypeHelper.rawToText(readValueAsBytes, effectiveLength) + "\""));
     }
 
     private void dumpRawValue(byte[] readValueAsBytes, Integer length, String key) {
@@ -265,17 +266,22 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
                 ""));
     }
 
-    private void dumpRepeater(String key, Optional<ReadResult> readResult) {
-        if (readResult.isPresent()) {
-            dumpBuilder.append(String.format(DUMP_REPEATER_FINISH_ENTRY_FORMAT,
-                    key,
-                    REPEATER.name(),
-                    readResult.get().parsedCount));
-        } else {
-            dumpBuilder.append(String.format(DUMP_REPEATER_START_ENTRY_FORMAT,
-                    key,
-                    REPEATER.name()));
+    private void dumpRepeaterStart(String key) {
+        dumpBuilder.append(String.format(DUMP_REPEATER_START_ENTRY_FORMAT,
+                key,
+                REPEATER.name()));
+    }
+
+    private void dumpRepeaterFinish(String key, ReadResult readResult) {
+        if (readResult == null) {
+            dumpRepeaterStart(key);
+            return;
         }
+
+        dumpBuilder.append(String.format(DUMP_REPEATER_FINISH_ENTRY_FORMAT,
+                key,
+                REPEATER.name(),
+                readResult.parsedCount));
     }
 
     public DataStore getDataStore() {
