@@ -27,7 +27,7 @@
           "topic": "CAR_COLORS",
           "group": "Exterior",
           "label": "Selectable Paintjobs",
-          "remoteReferenceProfile": "Paints",
+          "remoteReferenceProfile": "Vehicle Paintjobs",
           "toolTip": "List of applicable exterior paints in car shop to current vehicle"
         },
         {
