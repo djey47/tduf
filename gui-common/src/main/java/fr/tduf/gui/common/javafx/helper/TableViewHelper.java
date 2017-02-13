@@ -7,6 +7,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiPredicate;
 
 import static java.util.Objects.requireNonNull;
@@ -54,20 +55,15 @@ public class TableViewHelper {
         requireNonNull(searchPredicate, "A search predicate is required.");
         requireNonNull(tableView, "A TableView is required.");
 
-        if (tableView.getItems().isEmpty()) {
-            return empty();
-        }
-
-        // TODO use Stream instead
-        int rowIndex = 0;
-        for (T item : tableView.getItems()) {
-            if (searchPredicate.test(item, rowIndex)) {
-                return selectRowAndScroll(rowIndex, tableView);
-            }
-            rowIndex++;
-        }
-
-        return empty();
+        AtomicInteger rowIndex = new AtomicInteger(0);
+        return tableView.getItems().stream()
+                .filter(item -> searchPredicate.test(item, rowIndex.getAndIncrement()))
+                .findFirst()
+                .map(item -> {
+                    tableView.getSelectionModel().select(item);
+                    tableView.scrollTo(item);
+                    return item;
+                });
     }
 
     /**
