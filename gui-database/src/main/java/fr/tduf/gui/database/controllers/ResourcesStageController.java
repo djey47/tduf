@@ -77,9 +77,10 @@ public class ResourcesStageController extends AbstractGuiController {
 
     @Override
     public void init() {
-        searchValueDialog = new SearchValueDialog(TITLE_SEARCH_RESOURCE_ENTRY, LABEL_HEADER_SEARCH_VALUE);
         browsedResourceProperty
                 .addListener((observable, oldValue, newValue) -> handleBrowseToResource(newValue));
+
+        initSearchValueDialog();
 
         initTopicPane();
 
@@ -204,6 +205,28 @@ public class ResourcesStageController extends AbstractGuiController {
         } finally {
             updateAllStagesWithResourceReference(newLocalizedResource.getReferenceValuePair().getKey());
         }
+    }
+
+    private void initSearchValueDialog() {
+        searchValueDialog = new SearchValueDialog(TITLE_SEARCH_RESOURCE_ENTRY, LABEL_HEADER_SEARCH_VALUE);
+
+        Predicate<String> nextResult = pattern -> TableViewHelper.selectItemAndScroll((resource, rowIndex) -> {
+            int selectedRowIndex = resourcesTableView.getSelectionModel().getSelectedIndex();
+            return (rowIndex > selectedRowIndex)
+                    &&
+                    Locale.valuesAsStream()
+                            .map(resource::valuePropertyForLocale)
+                            .map(StringExpression::getValue)
+                            .anyMatch(resourceValue -> StringUtils.containsIgnoreCase(resourceValue, pattern));
+        }, resourcesTableView).isPresent();
+
+        Predicate<String> firstResult = pattern -> TableViewHelper.selectItemAndScroll((resource, row) -> Locale.valuesAsStream()
+                .map(resource::valuePropertyForLocale)
+                .map(StringExpression::getValue)
+                .anyMatch(resourceValue -> StringUtils.containsIgnoreCase(resourceValue, pattern)), resourcesTableView)
+                .isPresent();
+
+        searchValueDialog.setCallbacks(firstResult, nextResult);
     }
 
     private void initTopicPane() {
@@ -335,23 +358,6 @@ public class ResourcesStageController extends AbstractGuiController {
     }
 
     private void openSearchValueDialog() {
-        // TODO Move callbacks to init
-        Predicate<String> nextResult = pattern -> TableViewHelper.selectItemAndScroll((resource, rowIndex) -> {
-            int selectedRowIndex = resourcesTableView.getSelectionModel().getSelectedIndex();
-            return (rowIndex > selectedRowIndex)
-                    &&
-                    Locale.valuesAsStream()
-                            .map(resource::valuePropertyForLocale)
-                            .map(StringExpression::getValue)
-                            .anyMatch(resourceValue -> StringUtils.containsIgnoreCase(resourceValue, pattern));
-        }, resourcesTableView).isPresent();
-        Predicate<String> firstResult = pattern -> TableViewHelper.selectItemAndScroll((resource, row) -> Locale.valuesAsStream()
-                .map(resource::valuePropertyForLocale)
-                .map(StringExpression::getValue)
-                .anyMatch(resourceValue -> StringUtils.containsIgnoreCase(resourceValue, pattern)), resourcesTableView)
-                .isPresent();
-
-        searchValueDialog.setCallbacks(firstResult, nextResult);
         searchValueDialog.show(getWindow());
     }
 
