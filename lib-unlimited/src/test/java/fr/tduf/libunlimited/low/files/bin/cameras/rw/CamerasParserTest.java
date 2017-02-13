@@ -119,10 +119,10 @@ class CamerasParserTest {
 
         // THEN
         assertThat(actualInfo).isNotNull();
-        assertThat(actualInfo.getIndex()).hasSize(150);
-        assertThat(actualInfo.getViews()).hasSize(148);
+        assertThat(actualInfo.getIndexSize()).isEqualTo(150);
+        assertThat(actualInfo.getSetsCount()).isEqualTo(148);
 
-        List<CameraViewEnhanced> views = actualInfo.getViews().get(1);
+        List<CameraViewEnhanced> views = actualInfo.getViewsForCameraSet(1);
         assertThat(views).hasSize(4);
         assertThat(views).extracting("kind").contains(Cockpit, Hood, Cockpit_Back, Hood_Back);
         assertThat(views).extracting("cameraSetId").containsOnly(1);

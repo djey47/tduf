@@ -4,9 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.GenuineCamGateway;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.*;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasWriter;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
@@ -17,10 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.Long.valueOf;
@@ -32,15 +27,17 @@ import static java.util.stream.Collectors.toList;
  * Static methods tho access or modify camera information in datastore.
  */
 public class CamerasHelper {
-    public static final String FILE_CAMERAS_BIN = "cameras.bin";
-
     private static final String THIS_CLASS_NAME = CamerasHelper.class.getSimpleName();
+
+    public static final String FILE_CAMERAS_BIN = "cameras.bin";
 
     private static final String KEY_INDEX = "index";
     private static final String KEY_VIEWS = "views";
     private static final String KEY_CAMERA_ID = "cameraId";
     private static final String KEY_VIEW_COUNT = "viewCount";
     private static final String KEY_INDEX_SIZE = "indexSize";
+
+    private static final String INSTRUCTION_SEPARATOR = ";";
 
     private static GenuineCamGateway cameraSupport = new GenuineCamGateway(new CommandLineHelper());
 
@@ -52,6 +49,7 @@ public class CamerasHelper {
      * @param targetCameraId    : identifier of camera to create views. May not exist already, in that case will add a new set
      * @param parser            : parsed cameras contents.
      */
+    @Deprecated
     public static void duplicateCameraSet(long sourceCameraId, long targetCameraId, CamerasParser parser) {
         DataStore dataStore = requireNonNull(parser, "Parser with cameras contents is required.").getDataStore();
 
@@ -73,10 +71,35 @@ public class CamerasHelper {
     }
 
     /**
+     * Creates a camera set at targetCameraId with all views from set at sourceCameraId
+     * @param sourceCameraId    : identifier of camera to get views from
+     * @param targetCameraId    : identifier of camera to create views. May not exist already, in that case will add a new set
+     * @param cameraInfo        : loaded cameras contents.
+     */
+    public static void duplicateCameraSet(int sourceCameraId, int targetCameraId, CameraInfoEnhanced cameraInfo) {
+        requireNonNull(cameraInfo, "Loaded camera information is required.");
+
+        checkCameraSetExists(sourceCameraId, cameraInfo);
+
+        if(cameraInfo.cameraSetExists(targetCameraId)) {
+            Log.warn(THIS_CLASS_NAME, "Unable to overwrite existing camera set: " + targetCameraId);
+            return;
+        }
+
+        Integer viewCount = cameraInfo.getViewsForCameraSet(sourceCameraId).size();
+        cameraInfo.updateIndex(targetCameraId, viewCount.shortValue());
+
+        List<CameraViewEnhanced> clonedViews = new ArrayList<>(0);
+        // TODO clone views
+        cameraInfo.updateViews(targetCameraId, clonedViews);
+    }
+
+    /**
      * Creates all camera sets at targetId with all views from sourceId
      * @param instructions      : list of <sourceCameraId>;<targetCameraId>
      * @param parser            : parsed cameras contents.
      */
+    @Deprecated
     public static void batchDuplicateCameraSets(List<String> instructions, CamerasParser parser) {
         requireNonNull(instructions, "A list of instructions is required.");
 
@@ -87,10 +110,25 @@ public class CamerasHelper {
     }
 
     /**
+     * Creates all camera sets at targetId with all views from sourceId
+     * @param instructions      : list of <sourceCameraId>;<targetCameraId>
+     * @param cameraInfo        : loaded cameras contents.
+     */
+    public static void batchDuplicateCameraSets(List<String> instructions, CameraInfoEnhanced cameraInfo) {
+        requireNonNull(instructions, "A list of instructions is required.");
+
+        instructions.forEach(instruction -> {
+            String[] compounds = instruction.split(INSTRUCTION_SEPARATOR);
+            duplicateCameraSet(Integer.valueOf(compounds[0]), Integer.valueOf(compounds[1]), cameraInfo);
+        });
+    }
+
+    /**
      * @param cameraIdentifier  : identifier of camera
      * @param parser            : parsed cameras contents
      * @return view properties for requested camera.
      */
+    @Deprecated
     public static CameraInfo fetchInformation(long cameraIdentifier, CamerasParser parser) {
         List<DataStore> viewStores = extractViewStores(cameraIdentifier, parser);
 
@@ -106,13 +144,45 @@ public class CamerasHelper {
     }
 
     /**
+     * Kept for compatibility reasons
+     * @param cameraIdentifier      : identifier of camera
+     * @param cameraInfoEnhanced    : parsed cameras contents
+     * @return view properties for requested camera set.
+     */
+    // TODO To be replaced with enhanced objects
+    public static CameraInfo fetchInformation(int cameraIdentifier, CameraInfoEnhanced cameraInfoEnhanced) {
+        CameraInfo.CameraInfoBuilder cameraInfoBuilder = CameraInfo.builder()
+                .forIdentifier(cameraIdentifier);
+
+        List<CameraViewEnhanced> allViews = cameraInfoEnhanced.getViewsForCameraSet(cameraIdentifier);
+        allViews.stream()
+                .map(CameraViewEnhanced::getSettings)
+                .map(CameraInfo.CameraView::fromProps)
+                .forEach(cameraInfoBuilder::addView);
+
+        return cameraInfoBuilder.build();
+    }
+
+    /**
      * @param parser : parsed cameras contents
      * @return all cameras and their view properties.
      */
+    @Deprecated
     public static List<CameraInfo> fetchAllInformation(CamerasParser parser) {
         return parser.getCameraViews().entrySet().stream()
                 .map(Map.Entry::getKey)
                 .map(cameraId -> CamerasHelper.fetchInformation(cameraId, parser))
+                .collect(toList());
+    }
+
+    /**
+     * @param cameraInfoEnhanced : loaded cameras contents
+     * @return all cameras and their view properties.
+     */
+    // TODO To be replaced with enhanced objects
+    public static List<CameraInfo> fetchAllInformation(CameraInfoEnhanced cameraInfoEnhanced) {
+        return cameraInfoEnhanced.getAllSetIdentifiers().stream()
+                .map(setIdentifier -> fetchInformation(setIdentifier, cameraInfoEnhanced))
                 .collect(toList());
     }
 
@@ -122,8 +192,23 @@ public class CamerasHelper {
      * @param parser            : parsed cameras contents
      * @return view properties for requested camera.
      */
+    @Deprecated
     public static EnumMap<ViewProps, ?> fetchViewProperties(long cameraIdentifier, ViewKind viewKind, CamerasParser parser) {
         return fetchInformation(cameraIdentifier, parser).getViews().stream()
+                .filter(cv -> viewKind == cv.getType())
+                .findAny()
+                .map(CameraInfo.CameraView::getSettings)
+                .orElseThrow(() -> new NoSuchElementException("Camera view not found: (" + cameraIdentifier + ", " + viewKind + ")"));
+    }
+
+    /**
+     * @param cameraIdentifier      : identifier of camera
+     * @param viewKind              : existing view in set
+     * @param cameraInfoEnhanced    : loaded cameras contents
+     * @return view properties for requested camera.
+     */
+    public static EnumMap<ViewProps, ?> fetchViewProperties(int cameraIdentifier, ViewKind viewKind, CameraInfoEnhanced cameraInfoEnhanced) {
+        return fetchInformation(cameraIdentifier, cameraInfoEnhanced).getViews().stream()
                 .filter(cv -> viewKind == cv.getType())
                 .findAny()
                 .map(CameraInfo.CameraView::getSettings)
@@ -280,11 +365,19 @@ public class CamerasHelper {
         return new ByteArrayInputStream(readAllBytes(Paths.get(sourceCameraFile)));
     }
 
+    @Deprecated
     private static void checkCameraSetExists(long cameraId, CamerasParser camerasParser) {
         if (!cameraSetExists(cameraId, camerasParser)) {
             throw new NoSuchElementException("Unknown source camera identifier: " + cameraId);
         }
     }
+
+    private static void checkCameraSetExists(int cameraSetId, CameraInfoEnhanced cameraInfo) {
+        if (!cameraInfo.cameraSetExistsInSettings(cameraSetId)) {
+            throw new NoSuchElementException("Unknown source camera identifier: " + cameraSetId);
+        }
+    }
+
     // For testing
     public static void setCameraSupport(GenuineCamGateway genuineCamGateway) {
         cameraSupport = genuineCamGateway;

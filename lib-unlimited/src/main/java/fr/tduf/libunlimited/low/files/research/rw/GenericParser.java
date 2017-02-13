@@ -48,8 +48,9 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
      * Extracts file contents according to provided structure.
      */
     public T parse() {
-        this.dataStore.clearAll();
-        this.dumpBuilder.setLength(0);
+        dataStore.clearAll();
+        dumpBuilder.setLength(0);
+        inputStream.reset();
 
         readFields(getFileStructure().getFields(), "");
 

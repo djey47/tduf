@@ -2,6 +2,8 @@ package fr.tduf.libunlimited.low.files.bin.cameras.domain;
 
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 
+import java.util.EnumMap;
+
 /**
  * Parsed views settings from cameras database
  */
@@ -15,10 +17,16 @@ public class CameraViewEnhanced {
     private String label;
     private String name;
 
+    private EnumMap<ViewProps, Object> settings;
+
     private CameraViewEnhanced() {}
 
     public static CameraViewEnhancedBuilder builder() {
         return new CameraViewEnhancedBuilder();
+    }
+
+    public EnumMap<ViewProps, Object> getSettings() {
+        return settings;
     }
 
     public static class CameraViewEnhancedBuilder {

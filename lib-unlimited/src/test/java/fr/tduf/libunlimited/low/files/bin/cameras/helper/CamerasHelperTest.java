@@ -57,7 +57,7 @@ class CamerasHelperTest {
     void duplicateCameraSet_whenNullParser_shouldThrowNullPointerException() throws Exception {
         // GIVEN-WHEN-THEN
         assertThrows(NullPointerException.class,
-                () -> CamerasHelper.duplicateCameraSet(1, 1001, null));
+                () -> CamerasHelper.duplicateCameraSet(1L, 1001L, null));
     }
 
     @Test
