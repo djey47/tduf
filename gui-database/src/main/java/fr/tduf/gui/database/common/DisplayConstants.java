@@ -30,7 +30,7 @@ public class DisplayConstants {
     public static final String LABEL_ITEM_PERCENT_DEFAULT = "";
     public static final String LABEL_ITEM_REFERENCE = "Reference to another topic.";
     public static final String LABEL_ITEM_TOPIC_DEFAULT = "";
-    public static final String LABEL_SEARCH_ENTRY = "With REF?";
+    public static final String LABEL_SEARCH_ENTRY = "Enter an entry REF";
     public static final String LABEL_HEADER_SEARCH_VALUE = "Enter a resource value";
     public static final String LABEL_STATUS_VERSION = "TDUF Database Editor by Djey.";
     public static final String LABEL_TEXTFIELD_REFERENCE = "Reference:";
@@ -70,11 +70,11 @@ public class DisplayConstants {
     public static final String TITLE_SUB_IMPORT = " : Import entry";
     public static final String TITLE_SUB_IMPORT_PERFORMANCE_PACK = " : Import TDUPE Performance Pack";
     public static final String TITLE_SUB_IMPORT_TDUMT_PATCH = " : Import TDUMT Patch";
-    public static final String TITLE_SUB_SEARCH_ENTRY = " : Search for entry";
     public static final String TITLE_SUB_RESET_DB_CACHE = " : Reset database cache";
     public static final String TITLE_SUB_RESET_SETTINGS = " : Reset settings";
     public static final String TITLE_FORMAT_LOAD = "Load %s file...";
     public static final String TITLE_FORMAT_SAVE = "Save to %s file...";
+    public static final String TITLE_SEARCH_CONTENTS_ENTRY = "Search for contents entry";
     public static final String TITLE_SEARCH_RESOURCE_ENTRY = "Search for resource entry";
 
     public static final String MESSAGE_ADDED_RESOURCE = "Add resource in topic: ";

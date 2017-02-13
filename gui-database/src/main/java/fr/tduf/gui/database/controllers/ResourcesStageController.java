@@ -36,6 +36,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 import static fr.tduf.gui.database.common.DisplayConstants.LABEL_HEADER_SEARCH_VALUE;
+import static fr.tduf.gui.database.common.DisplayConstants.LABEL_SEARCH_ENTRY;
 import static fr.tduf.gui.database.common.DisplayConstants.TITLE_SEARCH_RESOURCE_ENTRY;
 import static fr.tduf.libunlimited.common.game.domain.Locale.DEFAULT;
 import static fr.tduf.libunlimited.common.game.domain.Locale.fromOrder;
@@ -349,9 +350,7 @@ public class ResourcesStageController extends AbstractGuiController {
     }
 
     private void askForReferenceAndSelectItem() {
-        CommonDialogsHelper.showInputValueDialog(
-                DisplayConstants.TITLE_APPLICATION + TITLE_SEARCH_RESOURCE_ENTRY,
-                DisplayConstants.LABEL_SEARCH_ENTRY, getWindow())
+        CommonDialogsHelper.showInputValueDialog(TITLE_SEARCH_RESOURCE_ENTRY, LABEL_SEARCH_ENTRY, getWindow())
                 .ifPresent(entryReference -> TableViewHelper.selectItemAndScroll(
                         (oneItem, row) -> oneItem.referenceProperty().getValue().equals(entryReference),
                         resourcesTableView));
