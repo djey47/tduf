@@ -30,6 +30,7 @@ public class CamerasWriter extends GenericWriter<String> {
 
     @Override
     protected void fillStore() {
+        // TODO Update indexSize as required by formulas
         this.getDataStore().mergeAll(this.sourceStore);
     }
 

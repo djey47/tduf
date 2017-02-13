@@ -1,6 +1,8 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.rw;
 
 import fr.tduf.libunlimited.common.helper.FilesHelper;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfoEnhanced;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraViewEnhanced;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
@@ -12,7 +14,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.EnumMap;
+import java.util.List;
 
+import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -102,5 +106,27 @@ class CamerasParserTest {
         assertThat(viewProps.get(ViewProps.BINOCULARS)).isEqualTo(0L);
         assertThat(viewProps.get(ViewProps.CAMERA_POSITION_X)).isEqualTo(-100L);
         assertThat(viewProps.get(ViewProps.VIEW_POSITION_Z)).isEqualTo(100L);
+    }
+
+    @Test
+    void generate_whenRealFiles_shouldReturnDomainObject() throws IOException {
+        // GIVEN
+        CamerasParser camerasParser = CamerasParser.load(new ByteArrayInputStream(camContents));
+        camerasParser.parse();
+
+        // WHEN
+        CameraInfoEnhanced actualInfo = camerasParser.generate();
+
+        // THEN
+        assertThat(actualInfo).isNotNull();
+        assertThat(actualInfo.getIndex()).hasSize(150);
+        assertThat(actualInfo.getViews()).hasSize(148);
+
+        List<CameraViewEnhanced> views = actualInfo.getViews().get(1);
+        assertThat(views).hasSize(4);
+        assertThat(views).extracting("kind").contains(Cockpit, Hood, Cockpit_Back, Hood_Back);
+        assertThat(views).extracting("cameraSetId").containsOnly(1);
+
+        assertThat(actualInfo.getTotalViewCount()).isEqualTo(591);
     }
 }
