@@ -31,6 +31,7 @@ public class DisplayConstants {
     public static final String LABEL_ITEM_REFERENCE = "Reference to another topic.";
     public static final String LABEL_ITEM_TOPIC_DEFAULT = "";
     public static final String LABEL_SEARCH_ENTRY = "With REF?";
+    public static final String LABEL_HEADER_SEARCH_VALUE = "Enter a resource value";
     public static final String LABEL_STATUS_VERSION = "TDUF Database Editor by Djey.";
     public static final String LABEL_TEXTFIELD_REFERENCE = "Reference:";
     public static final String LABEL_TEXTFIELD_VALUE = "Value@Locale:";

@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static fr.tduf.gui.database.common.DisplayConstants.LABEL_HEADER_SEARCH_VALUE;
+import static fr.tduf.gui.database.common.DisplayConstants.TITLE_SEARCH_RESOURCE_ENTRY;
 import static fr.tduf.libunlimited.common.game.domain.Locale.DEFAULT;
 import static fr.tduf.libunlimited.common.game.domain.Locale.fromOrder;
 import static java.util.Optional.ofNullable;
@@ -75,7 +77,7 @@ public class ResourcesStageController extends AbstractGuiController {
 
     @Override
     public void init() {
-        searchValueDialog = new SearchValueDialog(DisplayConstants.TITLE_SEARCH_RESOURCE_ENTRY);
+        searchValueDialog = new SearchValueDialog(TITLE_SEARCH_RESOURCE_ENTRY, LABEL_HEADER_SEARCH_VALUE);
         browsedResourceProperty
                 .addListener((observable, oldValue, newValue) -> handleBrowseToResource(newValue));
 
@@ -325,7 +327,7 @@ public class ResourcesStageController extends AbstractGuiController {
 
     private void askForReferenceAndSelectItem() {
         CommonDialogsHelper.showInputValueDialog(
-                DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SEARCH_RESOURCE_ENTRY,
+                DisplayConstants.TITLE_APPLICATION + TITLE_SEARCH_RESOURCE_ENTRY,
                 DisplayConstants.LABEL_SEARCH_ENTRY, getWindow())
                 .ifPresent(entryReference -> TableViewHelper.selectItemAndScroll(
                         oneItem -> oneItem.referenceProperty().getValue().equals(entryReference),
