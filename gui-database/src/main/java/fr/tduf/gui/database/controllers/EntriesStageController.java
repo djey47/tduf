@@ -45,7 +45,7 @@ public class EntriesStageController extends AbstractGuiController {
     private Button selectMultiButton;
 
     @FXML
-    TableView<ContentEntryDataItem> entriesTableView;
+    private TableView<ContentEntryDataItem> entriesTableView;
 
     private MainStageController mainStageController;
 
@@ -229,7 +229,7 @@ public class EntriesStageController extends AbstractGuiController {
                 DisplayConstants.LABEL_SEARCH_ENTRY, getWindow())
 
                 .ifPresent(entryReference -> TableViewHelper.selectItemAndScroll(
-                        oneItem -> oneItem.referenceProperty().getValue().equals(entryReference),
+                        (oneItem, row) -> oneItem.referenceProperty().getValue().equals(entryReference),
                         entriesTableView));
     }
 

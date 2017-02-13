@@ -152,7 +152,7 @@ public class QuickVehicleSlotsStageController extends AbstractGuiController {
                 DisplayConstants.LABEL_SEARCH_SLOT, getWindow())
 
                 .ifPresent(entryReference -> TableViewHelper.selectItemAndScroll(
-                        oneItem -> oneItem.referenceProperty().getValue().equals(entryReference),
+                        (oneItem, row) -> oneItem.referenceProperty().getValue().equals(entryReference),
                         slotsTableView));
     }
 
@@ -160,7 +160,7 @@ public class QuickVehicleSlotsStageController extends AbstractGuiController {
         return slotKindProperty;
     }
 
-    public Property<VehicleSlotDataItem> selectedSlotProperty() {
+    Property<VehicleSlotDataItem> selectedSlotProperty() {
         return selectedSlotProperty;
     }
 }

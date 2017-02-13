@@ -1,6 +1,6 @@
 package fr.tduf.gui.common.javafx.helper;
 
-import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
+import fr.tduf.libtesting.common.helper.javafx.NonApp;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventTarget;
@@ -8,29 +8,32 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
-import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class TableViewHelperTest {
+class TableViewHelperTest {
 
-    @Rule
-    public JavaFXThreadingRule javaFXRule = new JavaFXThreadingRule();
+    @BeforeAll
+    static void globalSetUp() {
+        NonApp.initJavaFX();
+    }
 
-    @Test(expected=NullPointerException.class)
-    public void getMouseSelectedItem_whenNullEvent_shouldThrowException() throws Exception {
-        // GIVEN-WHEN
-        TableViewHelper.getMouseSelectedItem(null, String.class);
+    @Test
+    void getMouseSelectedItem_whenNullEvent_shouldThrowException() throws Exception {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> TableViewHelper.getMouseSelectedItem(null, String.class));
 
         // THEN: NPE
     }
 
     @Test
-    public void getMouseSelectedItem_andNoItemSelected_shouldReturnAbsent() {
+    void getMouseSelectedItem_andNoItemSelected_shouldReturnEmpty() {
         // GIVEN-WHEN
         Optional<String> potentialItem = TableViewHelper.getMouseSelectedItem(createDefaultMouseEvent(new TableRow<>()), String.class);
 
@@ -38,56 +41,53 @@ public class TableViewHelperTest {
         assertThat(potentialItem).isEmpty();
     }
 
-    @Test(expected=NullPointerException.class)
-    public void selectItemAndScroll_whenNullTableView_shouldThrowException() {
-        // GIVEN-WHEN
-        TableViewHelper.selectItemAndScroll(item -> false, null);
-
-        // THEN: NPE
-    }
-
-    @Test(expected=NullPointerException.class)
-    public void selectItemAndScroll_whenNullPredicate_shouldThrowException() {
-        // GIVEN-WHEN
-        TableViewHelper.selectItemAndScroll((Predicate)null, new TableView<>());
-
-        // THEN: NPE
+    @Test
+    void selectItemAndScroll_whenNullTableView_shouldThrowException() {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> TableViewHelper.selectItemAndScroll((item, row) -> false, null));
     }
 
     @Test
-    public void selectItemAndScroll_whenFound_shouldReturnIt() {
+    void selectItemAndScroll_whenNullPredicate_shouldThrowException() {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> TableViewHelper.selectItemAndScroll(null, new TableView<>()));
+    }
+
+    @Test
+    void selectItemAndScroll_whenFound_shouldReturnIt() {
         // GIVEN
         TableView<String> tableView = createTableViewWithThreeItems();
 
         // WHEN
-        Optional<String> potentialItem = TableViewHelper.selectItemAndScroll("2"::equals, tableView);
+        Optional<String> potentialItem = TableViewHelper.selectItemAndScroll((item, row) -> "2".equals(item), tableView);
 
         // THEN
         assertThat(potentialItem).contains("2");
     }
 
     @Test
-    public void selectItemAndScroll_whenNotFound_shouldReturnIt() {
+    void selectItemAndScroll_whenNotFound_shouldReturnIt() {
         // GIVEN
         TableView<String> tableView = createTableViewWithThreeItems();
 
         // WHEN
-        Optional<String> potentialItem = TableViewHelper.selectItemAndScroll("SHOULD_NOT_BE_THERE"::equals, tableView);
+        Optional<String> potentialItem = TableViewHelper.selectItemAndScroll((item, row) -> "SHOULD_NOT_BE_THERE".equals(item), tableView);
 
         // THEN
         assertThat(potentialItem).isEmpty();
     }
 
-    @Test(expected=NullPointerException.class)
-    public void selectRowAndScroll_whenNullTableView_shouldThrowException() {
-        // GIVEN-WHEN
-        TableViewHelper.selectRowAndScroll(0, null);
-
-        // THEN: NPE
+    @Test
+    void selectRowAndScroll_whenNullTableView_shouldThrowException() {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> TableViewHelper.selectRowAndScroll(0, null));
     }
 
     @Test
-    public void selectRowAndScroll_whenIndexNotAvailable_shouldReturnAbsent() {
+    void selectRowAndScroll_whenIndexNotAvailable_shouldReturnAbsent() {
         // GIVEN
         TableView<String> tableView = new TableView<>();
 
@@ -96,7 +96,7 @@ public class TableViewHelperTest {
     }
 
     @Test
-    public void selectRowAndScroll_whenIndexAvailable_shouldReturnCorrectItem() {
+    void selectRowAndScroll_whenIndexAvailable_shouldReturnCorrectItem() {
         // GIVEN
         TableView<String> tableView = createTableViewWithThreeItems();
 
@@ -107,16 +107,15 @@ public class TableViewHelperTest {
         assertThat(potentialItem).contains("2");
     }
 
-    @Test(expected=NullPointerException.class)
-    public void selectLastRowAndScroll_whenNullTableView_shouldThrowException() {
-        // GIVEN-WHEN
-        TableViewHelper.selectLastRowAndScroll(null);
-
-        // THEN: NPE
+    @Test
+    void selectLastRowAndScroll_whenNullTableView_shouldThrowException() {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> TableViewHelper.selectLastRowAndScroll(null));
     }
 
     @Test
-    public void selectLastRowAndScroll_whenNoItems_shouldReturnAbsent() {
+    void selectLastRowAndScroll_whenNoItems_shouldReturnAbsent() {
         // GIVEN
         TableView<String> tableView = new TableView<>();
 
@@ -125,7 +124,7 @@ public class TableViewHelperTest {
     }
 
     @Test
-    public void selectLastRowAndScroll_whenManyItems_shouldReturnLastOne() {
+    void selectLastRowAndScroll_whenManyItems_shouldReturnLastOne() {
         // GIVEN
         TableView<String> tableView = createTableViewWithThreeItems();
 

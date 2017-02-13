@@ -330,12 +330,13 @@ public class ResourcesStageController extends AbstractGuiController {
                 DisplayConstants.TITLE_APPLICATION + TITLE_SEARCH_RESOURCE_ENTRY,
                 DisplayConstants.LABEL_SEARCH_ENTRY, getWindow())
                 .ifPresent(entryReference -> TableViewHelper.selectItemAndScroll(
-                        oneItem -> oneItem.referenceProperty().getValue().equals(entryReference),
+                        (oneItem, row) -> oneItem.referenceProperty().getValue().equals(entryReference),
                         resourcesTableView));
     }
 
     private void openSearchValueDialog() {
         // TODO Move callbacks to init
+        // TODO Change to predicate
         Function<String, Boolean> nextResult = pattern -> TableViewHelper.selectItemAndScroll((resource, rowIndex) -> {
             int currentRowIndex = resourcesTableView.getSelectionModel().getSelectedIndex();
             return (rowIndex > currentRowIndex)
@@ -345,7 +346,8 @@ public class ResourcesStageController extends AbstractGuiController {
                             .map(StringExpression::getValue)
                             .anyMatch(resourceValue -> StringUtils.containsIgnoreCase(resourceValue, pattern));
         }, resourcesTableView).isPresent();
-        Function<String, Boolean> firstResult = pattern -> TableViewHelper.selectItemAndScroll(resource -> Locale.valuesAsStream()
+        // TODO Change to predicate
+        Function<String, Boolean> firstResult = pattern -> TableViewHelper.selectItemAndScroll((resource, row) -> Locale.valuesAsStream()
                 .map(resource::valuePropertyForLocale)
                 .map(StringExpression::getValue)
                 .anyMatch(resourceValue -> StringUtils.containsIgnoreCase(resourceValue, pattern)), resourcesTableView)
