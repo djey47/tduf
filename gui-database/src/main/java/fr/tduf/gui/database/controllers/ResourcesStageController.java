@@ -33,7 +33,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static fr.tduf.gui.database.common.DisplayConstants.LABEL_HEADER_SEARCH_VALUE;
 import static fr.tduf.gui.database.common.DisplayConstants.TITLE_SEARCH_RESOURCE_ENTRY;
@@ -336,18 +336,16 @@ public class ResourcesStageController extends AbstractGuiController {
 
     private void openSearchValueDialog() {
         // TODO Move callbacks to init
-        // TODO Change to predicate
-        Function<String, Boolean> nextResult = pattern -> TableViewHelper.selectItemAndScroll((resource, rowIndex) -> {
-            int currentRowIndex = resourcesTableView.getSelectionModel().getSelectedIndex();
-            return (rowIndex > currentRowIndex)
+        Predicate<String> nextResult = pattern -> TableViewHelper.selectItemAndScroll((resource, rowIndex) -> {
+            int selectedRowIndex = resourcesTableView.getSelectionModel().getSelectedIndex();
+            return (rowIndex > selectedRowIndex)
                     &&
                     Locale.valuesAsStream()
                             .map(resource::valuePropertyForLocale)
                             .map(StringExpression::getValue)
                             .anyMatch(resourceValue -> StringUtils.containsIgnoreCase(resourceValue, pattern));
         }, resourcesTableView).isPresent();
-        // TODO Change to predicate
-        Function<String, Boolean> firstResult = pattern -> TableViewHelper.selectItemAndScroll((resource, row) -> Locale.valuesAsStream()
+        Predicate<String> firstResult = pattern -> TableViewHelper.selectItemAndScroll((resource, row) -> Locale.valuesAsStream()
                 .map(resource::valuePropertyForLocale)
                 .map(StringExpression::getValue)
                 .anyMatch(resourceValue -> StringUtils.containsIgnoreCase(resourceValue, pattern)), resourcesTableView)

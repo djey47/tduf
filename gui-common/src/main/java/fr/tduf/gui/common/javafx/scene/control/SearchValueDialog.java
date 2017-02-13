@@ -13,7 +13,7 @@ import javafx.stage.Modality;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static fr.tduf.gui.common.DisplayConstants.*;
 import static fr.tduf.gui.common.FxConstants.CSS_CLASS_ERROR_PATTERN_TEXT_FIELD;
@@ -23,7 +23,6 @@ import static fr.tduf.gui.common.FxConstants.PATH_RESOURCE_CSS_DIALOGS;
  * Simple dialog allowing to enter a search pattern and perform search, then moving to next result.
  * Does not have any intelligence, must be provided via callbacks.
  */
-// TODO set error style to input
 public class SearchValueDialog  {
     private static final Class<SearchValueDialog> thisClass = SearchValueDialog.class;
 
@@ -31,8 +30,8 @@ public class SearchValueDialog  {
 
     private TextField patternTextField = new TextField();
 
-    private Function<String, Boolean> next = p -> false;
-    private Function<String, Boolean> first = p -> false;
+    private Predicate<String> next = p -> false;
+    private Predicate<String> first = p -> false;
 
     private BooleanProperty errorProperty = new SimpleBooleanProperty(false);
 
@@ -65,7 +64,7 @@ public class SearchValueDialog  {
      * @param first : action to perform when typing in pattern text field, or acting on first |< button
      * @param next  : action to perform when acting on next > button
      */
-    public void setCallbacks(Function<String, Boolean> first, Function<String, Boolean> next) {
+    public void setCallbacks(Predicate<String> first, Predicate<String> next) {
         this.first = first;
         this.next = next;
     }
@@ -94,7 +93,7 @@ public class SearchValueDialog  {
             if (newValue.equals(oldValue)) {
                 return;
             }
-            boolean result = first.apply(newValue);
+            boolean result = first.test(newValue);
             errorProperty.set(!result);
         });
 
@@ -104,7 +103,7 @@ public class SearchValueDialog  {
             if (value.isEmpty()) {
                 return;
             }
-            boolean result = first.apply(value);
+            boolean result = first.test(value);
             errorProperty.set(!result);
         });
         ControlHelper.setTooltipText(firstButton, LABEL_TOOLTIP_FIRST_RESULT);
@@ -115,10 +114,10 @@ public class SearchValueDialog  {
             if (value.isEmpty()) {
                 return;
             }
-            boolean result = next.apply(value);
-            if (result) {
+            boolean result = next.test(value);
+            if (!result) {
                 Log.debug("No more matches, back to first result...");
-                result = first.apply(value);
+                result = first.test(value);
             }
             errorProperty.set(!result);
         });
