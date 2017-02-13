@@ -17,6 +17,7 @@ CALL DatabaseEditor >> ..\..\logs\DatabaseEditor.log 2>>&1
 IF ERRORLEVEL 1 GOTO handleEditorError
 
 ECHO All done!
+ECHO Please check DatabaseEditor.log in logs directory for details.
 ECHO.
 PAUSE
 EXIT /B 0

@@ -7,11 +7,13 @@ source ./linux-aliases
 CheckJava
 
 echo "...Starting Database Editor..."
-DatabaseEditor >> ../../logs/DatabaseEditor.log 2>&1
+LOGS_PATH=../../logs/DatabaseEditor.log
+DatabaseEditor >> ${LOGS_PATH} 2>&1
 
 if [ $? -eq 0 ]
 then
     echo "All done!"
+    echo "Please check DatabaseEditor.log in logs directory for details."
     echo
     read -p "Press ENTER to continue..."
 else
