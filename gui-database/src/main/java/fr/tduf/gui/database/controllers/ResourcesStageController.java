@@ -33,7 +33,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static fr.tduf.libunlimited.common.game.domain.Locale.DEFAULT;
 import static fr.tduf.libunlimited.common.game.domain.Locale.fromOrder;
@@ -333,7 +333,8 @@ public class ResourcesStageController extends AbstractGuiController {
     }
 
     private void openSearchValueDialog() {
-        Consumer<String> nextResult = pattern -> TableViewHelper.selectItemAndScroll((resource, rowIndex) -> {
+        // TODO Move callbacks to init
+        Function<String, Boolean> nextResult = pattern -> TableViewHelper.selectItemAndScroll((resource, rowIndex) -> {
             int currentRowIndex = resourcesTableView.getSelectionModel().getSelectedIndex();
             return (rowIndex > currentRowIndex)
                     &&
@@ -341,11 +342,12 @@ public class ResourcesStageController extends AbstractGuiController {
                             .map(resource::valuePropertyForLocale)
                             .map(StringExpression::getValue)
                             .anyMatch(resourceValue -> StringUtils.containsIgnoreCase(resourceValue, pattern));
-        }, resourcesTableView);
-        Consumer<String> firstResult = pattern -> TableViewHelper.selectItemAndScroll(resource -> Locale.valuesAsStream()
+        }, resourcesTableView).isPresent();
+        Function<String, Boolean> firstResult = pattern -> TableViewHelper.selectItemAndScroll(resource -> Locale.valuesAsStream()
                 .map(resource::valuePropertyForLocale)
                 .map(StringExpression::getValue)
-                .anyMatch(resourceValue -> StringUtils.containsIgnoreCase(resourceValue, pattern)), resourcesTableView);
+                .anyMatch(resourceValue -> StringUtils.containsIgnoreCase(resourceValue, pattern)), resourcesTableView)
+                .isPresent();
 
         searchValueDialog.setCallbacks(firstResult, nextResult);
         searchValueDialog.show(getWindow());

@@ -19,6 +19,12 @@ public class DisplayConstants {
     public static final String LABEL_BUTTON_OK = "OK";
     public static final String LABEL_BUTTON_CANCEL = "Cancel";
     public static final String LABEL_BUTTON_CLOSE = "Close";
+    public static final String LABEL_BUTTON_FIRST_RESULT = "|◀";
+    public static final String LABEL_BUTTON_NEXT_RESULT = "▶";
+    public static final String LABEL_TOOLTIP_FIRST_RESULT = "First result";
+    public static final String LABEL_TOOLTIP_NEXT_RESULT = "Next result";
+
+    public static final String PLACEHOLDER_SEARCH_PATTERN = "288 GTO...";
 
     public static final String STATUS_FMT_CHECK_IN_PROGRESS = "Performing database check %s, please wait...";
     public static final String STATUS_FMT_CHECK_DONE = "Done checking database, %d error(s).";
