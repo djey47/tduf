@@ -2,7 +2,7 @@
     -fx-font-weight: bold;
 }
 
-.error-label {
+.integrityErrorLabel {
     -fx-text-fill: orangered ;
     -fx-font-weight: bold;
 }

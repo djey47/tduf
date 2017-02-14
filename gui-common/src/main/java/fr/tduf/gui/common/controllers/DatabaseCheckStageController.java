@@ -107,7 +107,7 @@ public class DatabaseCheckStageController extends AbstractGuiController {
         String complement = String.format(complementFormat, errors.size());
         String errorMessage = String.format(errorType.getErrorMessageFormat(), complement);
         Label errorLabel = new Label(errorMessage);
-        errorLabel.getStyleClass().add(FxConstants.CSS_CLASS_ERROR_LABEL);
+        errorLabel.getStyleClass().add(FxConstants.CSS_CLASS_INTEGRITY_ERROR_LABEL);
         return errorLabel;
     }
 

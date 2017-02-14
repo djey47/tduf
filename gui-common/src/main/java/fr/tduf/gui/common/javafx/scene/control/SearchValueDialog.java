@@ -16,7 +16,8 @@ import javafx.stage.Window;
 import java.util.function.Predicate;
 
 import static fr.tduf.gui.common.DisplayConstants.*;
-import static fr.tduf.gui.common.FxConstants.CSS_CLASS_ERROR_PATTERN_TEXT_FIELD;
+import static fr.tduf.gui.common.FxConstants.CSS_CLASS_TEXT_FIELD;
+import static fr.tduf.gui.common.FxConstants.CSS_PSEUDO_CLASS_ERROR;
 import static fr.tduf.gui.common.FxConstants.PATH_RESOURCE_CSS_DIALOGS;
 
 /**
@@ -88,6 +89,7 @@ public class SearchValueDialog  {
         grid.setPadding(new Insets(10, 10, 10, 10));
 
         patternTextField.setPromptText(PLACEHOLDER_SEARCH_PATTERN);
+        patternTextField.getStyleClass().add(CSS_CLASS_TEXT_FIELD);
         StringProperty patternValueProperty = patternTextField.textProperty();
         patternValueProperty.addListener((observable, oldValue, newValue) -> {
             if (newValue.equals(oldValue)) {
@@ -134,12 +136,7 @@ public class SearchValueDialog  {
             if (oldValue == newValue) {
                 return;
             }
-            // TODO use pseudo classes
-            if (newValue) {
-                patternTextField.getStyleClass().add(CSS_CLASS_ERROR_PATTERN_TEXT_FIELD);
-            } else {
-                patternTextField.getStyleClass().remove(CSS_CLASS_ERROR_PATTERN_TEXT_FIELD);
-            }
+            patternTextField.pseudoClassStateChanged(CSS_PSEUDO_CLASS_ERROR, newValue);
         });
     }
 }
