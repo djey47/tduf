@@ -2,19 +2,23 @@ package fr.tduf.libunlimited.low.files.bin.cameras.helper;
 
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.GenuineCamGateway;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfoEnhanced;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind.*;
+import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind.Hood_Back;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -58,7 +62,6 @@ class CamerasHelper_focusOnEnhancedCamerasTest {
     }
 
     @Test
-    @Disabled
     void duplicateCameraSet_whenSourceExists_shouldAddSet() throws Exception {
         // GIVEN-WHEN
         CamerasHelper.duplicateCameraSet(1, 401, cameraInfoEnhanced);
@@ -83,7 +86,6 @@ class CamerasHelper_focusOnEnhancedCamerasTest {
     }
 
     @Test
-    @Disabled
     void batchDuplicateCameraSets_whenSourceExist_shouldAddSets() throws Exception {
         // GIVEN-WHEN
         List<String> instructions = asList ("1;401", "1;402", "1;403");
@@ -100,4 +102,59 @@ class CamerasHelper_focusOnEnhancedCamerasTest {
         assertThat(cameraInfoEnhanced.getViewsForCameraSet(403)).hasSize(4);
         assertThat(cameraInfoEnhanced.getTotalViewCount()).isEqualTo(603);
     }
+
+    @Test
+    void fetchInformation_whenCameraDoesNotExist_shouldThrowException() throws Exception {
+        // GIVEN-WHEN-THEN
+        assertThrows(NoSuchElementException.class,
+                () -> CamerasHelper.fetchInformation(0, cameraInfoEnhanced));
+    }
+
+    @Test
+    void fetchInformation_whenCameraExists_shouldReturnViews() {
+        // GIVEN
+        int cameraIdentifier = 1000;
+
+        // WHEN
+        CameraInfo cameraInfo = CamerasHelper.fetchInformation(cameraIdentifier, cameraInfoEnhanced);
+
+        // THEN
+        assertThat(cameraInfo.getCameraIdentifier()).isEqualTo((int)cameraIdentifier);
+        assertThat(cameraInfo.getViews()).hasSize(4);
+        assertThat(cameraInfo.getViews())
+                .extracting("type")
+                .contains(
+                        Cockpit,
+                        Cockpit_Back,
+                        Hood,
+                        Hood_Back);
+    }
+
+    @Test
+    void fetchAllInformation_shouldReturnAllCameras() {
+        // GIVEN-WHEN
+        List<CameraInfo> cameraInfos = CamerasHelper.fetchAllInformation(cameraInfoEnhanced);
+
+        // THEN
+        assertThat(cameraInfos).hasSize(148);
+    }
+
+    @Test
+    void fetchViewProperties_whenViewDoesNotExist_shouldThrowException() throws Exception {
+        // GIVEN-WHEN-THEN
+        assertThrows(NoSuchElementException.class,
+                () -> CamerasHelper.fetchViewProperties(1000, Follow_Large_Back, cameraInfoEnhanced));
+    }
+
+    @Test
+    void fetchViewProperties_whenViewExists_shouldReturnProps() {
+        // GIVEN-WHEN
+        EnumMap<ViewProps, ?> actualProperties = CamerasHelper.fetchViewProperties(1000, Cockpit, cameraInfoEnhanced);
+
+        // THEN
+        assertThat(actualProperties).hasSize(15);
+        assertThat(actualProperties.keySet()).containsExactlyInAnyOrder(ViewProps.values());
+        assertThat(actualProperties.values()).doesNotContainNull();
+    }
+
 }

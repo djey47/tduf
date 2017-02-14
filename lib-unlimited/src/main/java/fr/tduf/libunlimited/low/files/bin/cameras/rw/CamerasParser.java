@@ -77,6 +77,7 @@ public class CamerasParser extends GenericParser<CameraInfoEnhanced> {
                     .ofKind(ViewKind.fromInternalId(kind))
                     .withLabel(label)
                     .withName(name)
+                    .withSettings(getViewProps(store))
                     .build());
 
             views.put(cameraId, currentViews);

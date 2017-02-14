@@ -89,8 +89,9 @@ public class CamerasHelper {
         Integer viewCount = cameraInfo.getViewsForCameraSet(sourceCameraId).size();
         cameraInfo.updateIndex(targetCameraId, viewCount.shortValue());
 
-        List<CameraViewEnhanced> clonedViews = new ArrayList<>(0);
-        // TODO clone views
+        List<CameraViewEnhanced> clonedViews = cameraInfo.getViewsForCameraSet(sourceCameraId).stream()
+                .map(sourceView -> sourceView.cloneForNewViewSet(targetCameraId))
+                .collect(toList());
         cameraInfo.updateViews(targetCameraId, clonedViews);
     }
 
@@ -220,6 +221,7 @@ public class CamerasHelper {
      * @param parser        : parsed cameras contents
      * @return updated view properties.
      */
+    @Deprecated
     public static CameraInfo updateViews(CameraInfo configuration, CamerasParser parser) {
         long cameraIdentifier = validateConfiguration(configuration);
         extractViewStores(cameraIdentifier, parser)

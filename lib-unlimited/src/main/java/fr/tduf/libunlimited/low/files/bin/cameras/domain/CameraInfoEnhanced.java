@@ -52,10 +52,14 @@ public class CameraInfoEnhanced {
     }
 
     /**
-     * @return all views for specified set identifier, or empty list if such a set does not exists
+     * @return all views for specified set identifier
+     * @throws NoSuchElementException if such a set does not exists
      */
-    public List<CameraViewEnhanced> getViewsForCameraSet(int sourceCameraId) {
-        return views.getOrDefault(sourceCameraId, new ArrayList<>(0));
+    public List<CameraViewEnhanced> getViewsForCameraSet(int setIdentifier) {
+        if (!views.containsKey(setIdentifier)) {
+            throw new NoSuchElementException("No camera set with id=" + setIdentifier);
+        }
+        return views.get(setIdentifier);
     }
 
     /**
