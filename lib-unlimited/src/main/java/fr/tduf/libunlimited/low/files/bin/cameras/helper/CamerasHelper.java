@@ -244,19 +244,42 @@ public class CamerasHelper {
     }
 
     /**
+     * @param configuration         : view properties to be updated
+     * @param cameraInfoEnhanced    : parsed cameras contents
+     * @return updated view properties.
+     */
+    // TODO create dedicated object for configuration
+    public static CameraInfo updateViews(CameraInfo configuration, CameraInfoEnhanced cameraInfoEnhanced) {
+        Long cameraIdentifier = validateConfiguration(configuration);
+        cameraInfoEnhanced.getViewsForCameraSet(cameraIdentifier.intValue())
+                .forEach(view -> {
+                    ViewKind viewKind = view.getKind();
+
+                    configuration.getViews().stream()
+                            .filter(v -> viewKind == v.getType())
+                            .findAny()
+                            .ifPresent(conf -> conf.getSettings().entrySet()
+                                    .forEach(entry -> view.getSettings().put(entry.getKey(), entry.getValue())));
+                });
+
+        return fetchInformation(cameraIdentifier.intValue(), cameraInfoEnhanced);
+    }
+
+    /**
      * Applies view properties from other camera set.
      * @param configuration     : views to use
      * @param sourceCamerasFile : camera contents to be modified
      * @return updated view properties.
      */
+    // TODO create dedicated object for configuration
     public static CameraInfo useViews(CameraInfo configuration, String sourceCamerasFile) throws IOException {
-        long cameraIdentifier = validateConfiguration(configuration);
+        Long cameraIdentifier = validateConfiguration(configuration);
 
         GenuineCamViewsDto customizeInput = mapCameraInfoToGenuineCamViews(configuration);
         cameraSupport.customizeCamera(sourceCamerasFile, cameraIdentifier, customizeInput);
 
         CameraInfo cameraInfoFromTDUMT = cameraSupport.getCameraInfo(sourceCamerasFile, cameraIdentifier);
-        CameraInfo cameraInfoFromTDUF = fetchInformation(cameraIdentifier, loadAndParseFile(sourceCamerasFile));
+        CameraInfo cameraInfoFromTDUF = fetchInformation(cameraIdentifier.intValue(), loadAndParseCamerasDatabase(sourceCamerasFile));
 
         return mergeCameraInfo(cameraInfoFromTDUF, cameraInfoFromTDUMT);
     }
@@ -264,10 +287,19 @@ public class CamerasHelper {
     /**
      * @return parsed camera contents.
      */
+    @Deprecated
     public static CamerasParser loadAndParseFile(String cameraFile) throws IOException {
         CamerasParser parser = CamerasParser.load(getCamerasInputStream(cameraFile));
         parser.parse();
         return parser;
+    }
+
+    /**
+     * @return parsed camera contents.
+     */
+    public static CameraInfoEnhanced loadAndParseCamerasDatabase(String cameraFile) throws IOException {
+        CamerasParser parser = CamerasParser.load(getCamerasInputStream(cameraFile));
+        return parser.parse();
     }
 
     /**
@@ -276,21 +308,44 @@ public class CamerasHelper {
      * @param cameraFile    : file to be written. Existing file will be replaced.
      * @throws IOException when a file system error occurs
      */
+    @Deprecated
     public static void saveFile(CamerasParser camerasParser, String cameraFile) throws IOException {
         ByteArrayOutputStream outputStream = CamerasWriter.load(camerasParser.getDataStore()).write();
         Files.write(Paths.get(cameraFile), outputStream.toByteArray(), StandardOpenOption.CREATE);
     }
 
     /**
+     * Write file according to cameras.bin file format
+     * @param cameraInfoEnhanced    : parsed camera contents
+     * @param cameraFile            : file to be written. Existing file will be replaced.
+     * @throws IOException when a file system error occurs
+     */
+    public static void saveCamerasDatabase(CameraInfoEnhanced cameraInfoEnhanced, String cameraFile) throws IOException {
+        // TODO use writer
+    }
+
+    /**
      * @param camerasParser : parsed camera contents
      * @return true if a set with provded id exists in index and in settings
      */
+    @Deprecated
     public static boolean cameraSetExists(long cameraId, CamerasParser camerasParser) {
         Map<Long, Short> cameraIndex = camerasParser.getCameraIndex() ;
         return cameraIndex.containsKey(cameraId)
                 && camerasParser.getCameraViews().containsKey(cameraId);
     }
 
+    /**
+     * @param cameraId              : identifier of camera set to use
+     * @param cameraInfoEnhanced    : parsed camera contents
+     * @return true if a set with provded id exists in index and in settings
+     */
+    public static boolean cameraSetExists(int cameraId, CameraInfoEnhanced cameraInfoEnhanced) {
+        return cameraInfoEnhanced.cameraSetExistsInIndex(cameraId)
+                && cameraInfoEnhanced.cameraSetExistsInSettings(cameraId);
+    }
+
+    @Deprecated
     static List<DataStore> extractViewStores(long cameraIdentifier, CamerasParser parser) {
         List<DataStore> viewStores = requireNonNull(parser, "Parser with cameras contents is required.")
                 .getCameraViews().get(cameraIdentifier);

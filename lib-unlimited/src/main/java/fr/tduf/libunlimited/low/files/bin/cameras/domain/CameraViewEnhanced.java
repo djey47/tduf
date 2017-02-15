@@ -66,6 +66,10 @@ public class CameraViewEnhanced {
         return cameraSetId;
     }
 
+    public ViewKind getKind() {
+        return kind;
+    }
+
     public static class CameraViewEnhancedBuilder {
         private DataStore originalDataStore;
         private int setId;
