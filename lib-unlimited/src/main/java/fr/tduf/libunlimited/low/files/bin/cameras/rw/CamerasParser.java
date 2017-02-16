@@ -32,7 +32,7 @@ public class CamerasParser extends GenericParser<CameraInfoEnhanced> {
      */
     public static CamerasParser load(ByteArrayInputStream inputStream) throws IOException {
         return new CamerasParser(
-                requireNonNull(inputStream, "A stream containing map contents is required"));
+                requireNonNull(inputStream, "A stream containing cameras contents is required"));
     }
 
     @Override
