@@ -36,7 +36,6 @@ public class CameraViewEnhanced {
     /**
      * @return a real copy of current view, for specified set identifier
      */
-    // TODO Add unit test
     public CameraViewEnhanced cloneForNewViewSet(int setIdentifier) {
         return builder()
                 .forCameraSetId(setIdentifier)
@@ -68,6 +67,18 @@ public class CameraViewEnhanced {
 
     public ViewKind getKind() {
         return kind;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public DataStore getOriginalDataStore() {
+        return originalDataStore;
     }
 
     public static class CameraViewEnhancedBuilder {
