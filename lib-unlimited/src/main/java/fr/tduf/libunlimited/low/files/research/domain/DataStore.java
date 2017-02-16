@@ -451,7 +451,7 @@ public class DataStore {
                             computeValueLengthWithParentKey(fieldDefinition.getSizeFormula(), potentialParentKey.get()) :
                             computeValueLengthWithoutParentKey(fieldDefinition.getSizeFormula());
                     rawValue = TypeHelper.textToRaw(stringValue, length);
-                    Log.info(THIS_CLASS_NAME, "Unable to parse hexadecimal representation", iae);
+                    Log.info(THIS_CLASS_NAME, "Unable to parse hex: '" + stringValue + "', will be considered as text");
                 }
             }
         }
