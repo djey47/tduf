@@ -3,6 +3,7 @@ package fr.tduf.cli.tools;
 import fr.tduf.cli.common.helper.CommandHelper;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
+import fr.tduf.libunlimited.common.helper.JsonHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
@@ -342,10 +343,11 @@ public class FileTool extends GenericTool {
     }
 
     private void parserToJsonFile(String targetJsonFile, GenericParser<String> genericParser) throws IOException {
-        String jsonOutput = genericParser.getDataStore().toJsonString();
+        String rawJsonOutput = genericParser.getDataStore().toJsonString();
+        String formattedJsonOutput = JsonHelper.prettify(rawJsonOutput);
 
         try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(targetJsonFile), StandardCharsets.UTF_8)) {
-            bufferedWriter.write(jsonOutput);
+            bufferedWriter.write(formattedJsonOutput);
         }
     }
 
