@@ -1,22 +1,24 @@
 package fr.tduf.libunlimited.low.files.research.common.helper;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class TypeHelperTest {
+class TypeHelperTest {
 
     @Test
-    public void rawToText_shouldReturnText() {
+    void rawToText_shouldReturnText() {
         //GIVEN
-        byte[] bytes = { 0x4d, 0x41, 0x50, 0x34,  0x00};
+        byte[] bytes = {(byte) 0xcd, 0x4d, 0x41, 0x50, 0x34,  0x00};
 
         // WHEN-THEN
-        assertThat(TypeHelper.rawToText(bytes, 5)).isEqualTo("MAP4\0");
+        assertThat(TypeHelper.rawToText(bytes, 6)).isEqualTo("\u00cdMAP4\0");
     }
 
     @Test
-    public void rawToText_whenGreaterLength_shouldReturnTextFilledWithZeros() {
+    void rawToText_whenGreaterLength_shouldReturnTextFilledWithZeros() {
         //GIVEN
         byte[] bytes = { 0x4d, 0x41, 0x50, 0x34 };
 
@@ -25,7 +27,7 @@ public class TypeHelperTest {
     }
 
     @Test
-    public void rawToText_whenLowerLength_shouldReturnTruncatedText() {
+    void rawToText_whenLowerLength_shouldReturnTruncatedText() {
         //GIVEN
         byte[] bytes = { 0x4d, 0x41, 0x50, 0x34, 0x00 };
 
@@ -34,7 +36,7 @@ public class TypeHelperTest {
     }
 
     @Test
-    public void rawToInteger_whenArrayHasCorrectSize_andUnsignedValue_shouldReturnNumeric() {
+    void rawToInteger_whenArrayHasCorrectSize_andUnsignedValue_shouldReturnNumeric() {
         //GIVEN
         byte[] bytes = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x0d, 0x18, (byte)0x81 };
 
@@ -43,7 +45,7 @@ public class TypeHelperTest {
     }
 
     @Test
-    public void rawToInteger_whenArrayHasCorrectSize_andSignedIntegerValue_shouldReturnNumeric() {
+    void rawToInteger_whenArrayHasCorrectSize_andSignedIntegerValue_shouldReturnNumeric() {
         //GIVEN
         byte[] bytes = { 0x00, 0x00, 0x00, 0x00, (byte)0xFF, (byte)0xF2, (byte)0xE7, 0x7F };
 
@@ -52,7 +54,7 @@ public class TypeHelperTest {
     }
 
     @Test
-    public void rawToInteger_whenArrayHasCorrectSize_andSignedShortValue_shouldReturnNumeric() {
+    void rawToInteger_whenArrayHasCorrectSize_andSignedShortValue_shouldReturnNumeric() {
         //GIVEN
         byte[] bytes = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte)0xE7, 0x7F };
 
@@ -61,7 +63,7 @@ public class TypeHelperTest {
     }
 
     @Test
-    public void rawToInteger_whenArrayHasCorrectSize_andSignedByteValue_shouldReturnNumeric() {
+    void rawToInteger_whenArrayHasCorrectSize_andSignedByteValue_shouldReturnNumeric() {
         //GIVEN
         byte[] bytes = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte)0xFF };
 
@@ -70,7 +72,7 @@ public class TypeHelperTest {
     }
 
     @Test
-    public void rawToInteger_whenArrayHasCorrectSize_andZeroValue_shouldReturnNumeric() {
+    void rawToInteger_whenArrayHasCorrectSize_andZeroValue_shouldReturnNumeric() {
         //GIVEN
         byte[] bytes = new byte[8];
 
@@ -78,17 +80,18 @@ public class TypeHelperTest {
         assertThat(TypeHelper.rawToInteger(bytes, true)).isZero();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void rawToInteger_whenArrayHasIncorrectSize_shouldThrowException() {
+    @Test
+    void rawToInteger_whenArrayHasIncorrectSize_shouldThrowException() {
         //GIVEN
         byte[] bytes = { 0x00, 0x0d, 0x18, (byte)0x81 };
 
         // WHEN-THEN
-        TypeHelper.rawToInteger(bytes, false);
+        assertThrows(IllegalArgumentException.class,
+                () -> TypeHelper.rawToInteger(bytes, false));
     }
 
     @Test
-    public void rawToFloatingPoint_when32BitValue_shouldReturnNumeric() {
+    void rawToFloatingPoint_when32BitValue_shouldReturnNumeric() {
         //GIVEN
         byte[] bytes = { 0x43, (byte)0x90, (byte)0xb8, 0x04 };
 
@@ -97,7 +100,7 @@ public class TypeHelperTest {
     }
 
     @Test
-    public void rawToFloatingPoint_when16BitValue_shouldReturnNumeric() {
+    void rawToFloatingPoint_when16BitValue_shouldReturnNumeric() {
         //GIVEN
         byte[] bytes = { 0x43, (byte)0x90 };
 
@@ -105,17 +108,18 @@ public class TypeHelperTest {
         assertThat(TypeHelper.rawToFloatingPoint(bytes)).isEqualTo(3.78125f);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void rawToFloatingPoint_whenArrayHasIncorrectSize_shouldThrowException() {
+    @Test
+    void rawToFloatingPoint_whenArrayHasIncorrectSize_shouldThrowException() {
         //GIVEN
         byte[] bytes = { 0x00, 0x00, 0x00, 0x00, 0x04, (byte)0xB8, (byte)0x90, 0x43 };
 
         // WHEN-THEN
-        TypeHelper.rawToFloatingPoint(bytes);
+        assertThrows(IllegalArgumentException.class,
+                () -> TypeHelper.rawToFloatingPoint(bytes));
     }
 
     @Test
-    public void textToRaw_shouldReturnByteArray() {
+    void textToRaw_shouldReturnByteArray() {
         //GIVEN
         byte[] expectedBytes = { 0x4d, 0x41, 0x50, 0x34,  0x00};
 
@@ -124,7 +128,16 @@ public class TypeHelperTest {
     }
 
     @Test
-    public void textToRaw_whenGreaterLength_shouldReturnByteArrayFilledByZeros() {
+    void textToRaw_whenExtendedCharacter_shouldReturnByteArray() {
+        //GIVEN
+        byte[] expectedBytes = {(byte) 0xcd, 0x4d, 0x41, 0x50, 0x34,  0x00};
+
+        // WHEN-THEN
+        assertThat(TypeHelper.textToRaw("\u00cdMAP4\0", 6)).isEqualTo(expectedBytes);
+    }
+
+    @Test
+    void textToRaw_whenGreaterLength_shouldReturnByteArrayFilledByZeros() {
         //GIVEN
         byte[] expectedBytes = { 0x4d, 0x41, 0x50, 0x34,  0x00, 0x00, 0x00, 0x00};
 
@@ -133,7 +146,7 @@ public class TypeHelperTest {
     }
 
     @Test
-    public void textToRaw_whenLowerLength_shouldReturnTruncatedByteArray() {
+    void textToRaw_whenLowerLength_shouldReturnTruncatedByteArray() {
         //GIVEN
         byte[] expectedBytes = { 0x4d, 0x41, 0x50, 0x34};
 
@@ -142,7 +155,7 @@ public class TypeHelperTest {
     }
 
     @Test
-    public void integerToRaw_shouldReturnByteArray() {
+    void integerToRaw_shouldReturnByteArray() {
         //GIVEN
         byte[] expectedBytes = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x0d, 0x18, (byte)0x81 };
 
@@ -151,7 +164,7 @@ public class TypeHelperTest {
     }
 
     @Test
-    public void floatingPoint32ToRaw_shouldReturnByteArray() {
+    void floatingPoint32ToRaw_shouldReturnByteArray() {
         //GIVEN
         byte[] expectedBytes = { 0x43, (byte)0x90, (byte)0xb8, 0x04 };
 
@@ -160,7 +173,7 @@ public class TypeHelperTest {
     }
 
     @Test
-    public void floatingPoint16ToRaw_shouldReturnByteArray() {
+    void floatingPoint16ToRaw_shouldReturnByteArray() {
         //GIVEN
         byte[] expectedBytes = { 0x43, (byte)0x90 };
 
@@ -169,7 +182,7 @@ public class TypeHelperTest {
     }
 
     @Test
-    public void changeEndianType_shouldReverseBytes() {
+    void changeEndianType_shouldReverseBytes() {
         // GIVEN
         byte[] valueBytes = {(byte)0xF4, 0x01, 0x00, 0x00};
         byte[] expectedBytes = {0x00, 0x00, 0x01, (byte)0xF4};
@@ -179,7 +192,7 @@ public class TypeHelperTest {
     }
 
     @Test
-    public void changeEndianType_whenSingleByte_shouldReturnIt() {
+    void changeEndianType_whenSingleByte_shouldReturnIt() {
         // GIVEN
         byte[] valueBytes = {(byte)0xF4};
         byte[] expectedBytes = {(byte)0xF4};
@@ -189,13 +202,13 @@ public class TypeHelperTest {
     }
 
     @Test
-    public void fitToSize_whenNullArray_shouldReturnNull() {
+    void fitToSize_whenNullArray_shouldReturnNull() {
         // GIVEN-WHEN-THEN
         assertThat(TypeHelper.fitToSize(null, null)).isNull();
     }
 
     @Test
-    public void fitToSize_whenNullLength_shouldReturnNewIdenticalArray() {
+    void fitToSize_whenNullLength_shouldReturnNewIdenticalArray() {
         // GIVEN
         byte[] byteArray = {0x1, 0x2, 0x3, 0x4};
 
@@ -208,7 +221,7 @@ public class TypeHelperTest {
     }
 
     @Test
-    public void fitToSize_whenWantedItBigger_shouldReturnNewFilledArray() {
+    void fitToSize_whenWantedItBigger_shouldReturnNewFilledArray() {
         // GIVEN
         byte[] byteArray = {0x1, 0x2, 0x3, 0x4};
         byte[] expectedByteArray = {0x1, 0x2, 0x3, 0x4, 0x0, 0x0};
@@ -221,7 +234,7 @@ public class TypeHelperTest {
     }
 
     @Test
-    public void fitToSize_whenWantedItSmaller_shouldReturnNewTruncatedArray() {
+    void fitToSize_whenWantedItSmaller_shouldReturnNewTruncatedArray() {
         // GIVEN
         byte[] byteArray = {0x1, 0x2, 0x3, 0x4};
         byte[] expectedByteArray = {0x1, 0x2};
@@ -234,7 +247,7 @@ public class TypeHelperTest {
     }
 
     @Test
-    public void fitToSize_whenWantedSameSize_shouldReturnClonedArray() {
+    void fitToSize_whenWantedSameSize_shouldReturnClonedArray() {
         // GIVEN
         byte[] byteArray = {0x1, 0x2, 0x3, 0x4};
 
@@ -247,13 +260,13 @@ public class TypeHelperTest {
     }
 
     @Test
-    public void byteArrayToHexRepresentation_whenNullArray_shouldReturnNull(){
+    void byteArrayToHexRepresentation_whenNullArray_shouldReturnNull(){
         // GIVEN-WHEN-THEN
         assertThat(TypeHelper.byteArrayToHexRepresentation(null)).isNull();
     }
 
     @Test
-    public void byteArrayToHexRepresentation_whenEmptyArray_shouldReturnString(){
+    void byteArrayToHexRepresentation_whenEmptyArray_shouldReturnString(){
         // GIVEN
         byte[] byteArray = new byte[0];
 
@@ -262,7 +275,7 @@ public class TypeHelperTest {
     }
 
     @Test
-    public void byteArrayToHexRepresentation_shouldReturnString(){
+    void byteArrayToHexRepresentation_shouldReturnString(){
         // GIVEN
         byte[] byteArray = new byte[] { 0x0, (byte)0xAA, (byte)0xFF};
 
@@ -271,19 +284,20 @@ public class TypeHelperTest {
     }
 
     @Test
-    public void hexRepresentationToByteArray_whenNull_shouldReturnNull(){
+    void hexRepresentationToByteArray_whenNull_shouldReturnNull(){
         // GIVEN-WHEN-THEN
         assertThat(TypeHelper.hexRepresentationToByteArray(null)).isNull();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void hexRepresentationToByteArray_whenInvalid_shouldThrowIllegalArgumentException(){
+    @Test
+    void hexRepresentationToByteArray_whenInvalid_shouldThrowIllegalArgumentException(){
         // GIVEN-WHEN-THEN
-        TypeHelper.hexRepresentationToByteArray("xxx");
+        assertThrows(IllegalArgumentException.class,
+                () -> TypeHelper.hexRepresentationToByteArray("xxx"));
     }
 
     @Test
-    public void hexRepresentationToByteArray_shouldReturnArray(){
+    void hexRepresentationToByteArray_shouldReturnArray(){
         // GIVEN-WHEN-THEN
         assertThat(TypeHelper.hexRepresentationToByteArray("0x[00 AA ff]")).containsExactly((byte)0x0, (byte)0xAA, (byte)0xFF);
     }

@@ -1,8 +1,10 @@
 package fr.tduf.libunlimited.low.files.research.common.helper;
 
+import com.esotericsoftware.minlog.Log;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.xml.bind.DatatypeConverter;
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.regex.Pattern;
 
@@ -10,6 +12,9 @@ import java.util.regex.Pattern;
  * Helper to class to handle differences between value representations.
  */
 public class TypeHelper {
+    private static final String THIS_CLASS_NAME = TypeHelper.class.getSimpleName();
+
+    private static final String CHARSET = "ISO-8859-1";
 
     /**
      * Converts a raw value to TEXT.
@@ -19,7 +24,12 @@ public class TypeHelper {
      * @return corresponding value as String
      */
     public static String rawToText(byte[] rawValueBytes, int length) {
-        String valueAsString = new String(rawValueBytes);
+        String valueAsString = "";
+        try {
+            valueAsString = new String(rawValueBytes, CHARSET);
+        } catch (UnsupportedEncodingException uee) {
+            Log.warn(THIS_CLASS_NAME, "Unsupported encoding, resolved value will be empty", uee);
+        }
 
         if (valueAsString.length() < length) {
             byte[] zeroBytes = new byte[length - valueAsString.length()];
@@ -96,10 +106,14 @@ public class TypeHelper {
      * @return corresponding value with default encoding as byte array.
      */
     public static byte[] textToRaw(String textValue, int length) {
+        byte[] valueBytes = new byte[0];
+        try {
+            valueBytes = textValue.getBytes(CHARSET);
+        } catch (UnsupportedEncodingException e) {
+            Log.warn(THIS_CLASS_NAME, "Unsupported encoding, resolved value will be of 0 size");
+        }
 
-        byte[] valueBytes = textValue.getBytes();
         byte[] targetByteArray = new byte[length];
-
         System.arraycopy(valueBytes, 0, targetByteArray, 0, valueBytes.length <= length ? valueBytes.length : length);
 
         return targetByteArray;
