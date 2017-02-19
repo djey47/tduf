@@ -14,7 +14,7 @@ import java.util.stream.Stream;
  * All handled view properties
  */
 public enum ViewProps implements DataStoreProps {
-    TYPE("type", "", CamerasParser::getViewType, CamerasParser::setViewType),
+    TYPE("type", "", CamerasParser::getViewType, CamerasParser::setViewType),   // TODO remove from props?
     STEERING_WHEEL_TURN("steeringWheelTurn", "", GenericParser::getNumeric, GenericParser::setNumeric),
     STEERING_WHEEL_TILT("steeringWheelTilt", "Wheel vertical adjustment", GenericParser::getNumeric, GenericParser::setNumeric),
     CAMERA_POSITION_X("cameraPositionX", "Left/Right", GenericParser::getNumeric, GenericParser::setNumeric),

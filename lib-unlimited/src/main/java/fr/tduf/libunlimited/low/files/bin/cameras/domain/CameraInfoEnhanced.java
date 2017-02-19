@@ -3,6 +3,7 @@ package fr.tduf.libunlimited.low.files.bin.cameras.domain;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
@@ -19,6 +20,20 @@ public class CameraInfoEnhanced {
 
     public static CameraInfoEnhancedBuilder builder() {
         return new CameraInfoEnhancedBuilder();
+    }
+
+    /**
+     * @return all index entries, as stream
+     */
+    public Stream<Map.Entry<Integer, Short>> getIndexEntriesAsStream() {
+        return index.entrySet().stream();
+    }
+
+    /**
+     * @return all view entries, as stream
+     */
+    public Stream<Map.Entry<Integer, List<CameraViewEnhanced>>> getViewEntriesAsStream() {
+        return views.entrySet().stream();
     }
 
     /**
@@ -86,6 +101,10 @@ public class CameraInfoEnhanced {
 
     public int getSetsCount() {
         return views.size();
+    }
+
+    public DataStore getOriginalDataStore() {
+        return originalDataStore;
     }
 
     public static class CameraInfoEnhancedBuilder {
