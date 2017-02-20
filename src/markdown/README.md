@@ -47,39 +47,16 @@ TDUF aims at making Test Drive Unlmited modding easier:
 * ...
 
 
-### What's in this version ? (1.11.0)
-* Global: brings bash scripts to use CLI and GUI in Linux environments, as well
-* Global: brings example CLI scripts under **user-scripts** directory (for Windows & Linux), to show how to create your own TDUF scripts
-* Global: brings application icon to make your shortcuts prettier
-
-* Editor (general): obsolete entry label was replaced
-* Editor (general): content entry REFs can be modified now (warn sign has been added)
-* Editor (general): new help (?) button opens default browser to TDUCP Wiki for tools reference
-* Editor (general): misc. UI improvements
-* Editor (ResourceEditor): resource entries can be found via new full-text search, as well
-* Editor (ik): displays available IK sets
-* Editor (ik): shows error when missing/wrong IK set
-* Editor (cameras): displays available camera sets
-* Editor (cameras): displays help about some view settings
-* Editor (cameras): shows error when missing/wrong camera set
-* Editor (cameras): duplicates existing camera set to identifier of your choice
-* Editor (cameras): imports/exports cameras and view settings (with property file support)
-
-* CLI (FileTool): generated JSON files are now prettified
-
-* Library/files: add preliminary structure for spot files support (Hawaii global and sectors)
-* Library/database: bitfield referencefor CLOTHES topic was updated
-* Library: misc. internal improvements.
+### What's in this version ? (1.12.0)
+*
 
 
 ### Fixed issues
-* Editor: checking feature needed to reload database to find some errors
-
-* Library/files: some character encoding issue was fixed.
+*
 
 
 ### Known bugs
-* Editor(cameras): updating some camera settings would make rear view not to function. Some fixes are planned for next release.
+*
 
 
 ### What you will need to run TDUF
