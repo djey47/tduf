@@ -43,7 +43,7 @@ public class TdupeGateway extends AbstractDatabaseHolder {
         checkCarPhysicsDataLine(packLine);
 
         DbDto carPhysicsDataTopicObject = databaseMiner.getDatabaseTopic(CAR_PHYSICS_DATA)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("Car physics topic absent from database"));
+                .orElseThrow(() -> new IllegalStateException("Car physics topic absent from database"));
         DbPatchDto patchObject = TdupePerformancePackConverter.tdupkToJson(packLine, potentialCarPhysicsRef, carPhysicsDataTopicObject);
 
         databasePatcher.apply(patchObject);

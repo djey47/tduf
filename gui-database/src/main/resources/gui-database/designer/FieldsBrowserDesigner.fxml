@@ -14,7 +14,7 @@
                     <Font name="System Bold Italic" size="13.0"/>
                 </font>
             </Label>
-            <Label fx:id="instructionsLabel" alignment="TOP_CENTER" layoutX="10.0" layoutY="16.0"
+            <Label alignment="TOP_CENTER" layoutX="10.0" layoutY="16.0"
                    text="CTRL-Pick/unpick fields below">
                 <font>
                     <Font name="System Italic" size="13.0"/>

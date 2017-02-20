@@ -27,11 +27,11 @@
                 </font>
             </Label>
             <TextField fx:id="tduLocationTextField" prefWidth="300.0"/>
-            <Button fx:id="browseTduLocationButton" mnemonicParsing="false"
+            <Button mnemonicParsing="false"
                     onAction="#handleBrowseTduLocationButtonAction" text="..."/>
-            <Button fx:id="installButton" mnemonicParsing="false" onAction="#handleInstallButtonAction"
+            <Button mnemonicParsing="false" onAction="#handleInstallButtonAction"
                     prefWidth="75.0" text="Install"/>
-            <Button fx:id="uninstallButton" layoutX="288.0" layoutY="12.0" mnemonicParsing="false"
+            <Button layoutX="288.0" layoutY="12.0" mnemonicParsing="false"
                     onAction="#handleUninstallButtonAction" prefWidth="75.0" text="Uninstall"/>
             <Separator orientation="VERTICAL"/>
             <MenuButton mnemonicParsing="false" text="Advanced...">

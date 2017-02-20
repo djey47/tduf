@@ -35,4 +35,8 @@ enum PluginIndex {
     DatabasePlugin getPluginInstance() {
         return pluginInstance;
     }
+
+    public String getDescription() {
+        return description;
+    }
 }

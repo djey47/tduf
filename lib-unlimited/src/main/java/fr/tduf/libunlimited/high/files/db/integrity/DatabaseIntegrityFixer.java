@@ -173,7 +173,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
     private void fixAllResourceEntryValues(String resourceReference, Map<String, Integer> perValueCount, DbDto.Topic topic) {
         String mostFrequentValue = perValueCount.entrySet().stream()
                 .max(comparing(Map.Entry::getValue))
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No maximum per-value entry count in topic: " + topic))
+                .orElseThrow(() -> new IllegalStateException("No maximum per-value entry count in topic: " + topic))
                 .getKey();
 
         databaseMiner.getResourcesFromTopic(topic)
@@ -212,7 +212,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
 
     private void addContentsEntryWithDefaultItems(Optional<String> reference, DbDto.Topic topic) {
         DbDto topicObject = databaseMiner.getDatabaseTopic(topic)
-                .<IllegalStateException>orElseThrow(() -> new IllegalStateException("No contents for topic: " + topic));
+                .orElseThrow(() -> new IllegalStateException("No contents for topic: " + topic));
 
         DbDataDto dataDto = topicObject.getData();
 

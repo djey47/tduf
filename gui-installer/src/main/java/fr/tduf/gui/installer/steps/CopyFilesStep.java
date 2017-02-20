@@ -15,7 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
@@ -124,7 +123,7 @@ class CopyFilesStep extends GenericStep {
                 throw new IllegalArgumentException("Unhandled asset type: " + assetDirectoryName);
         }
 
-        if (!targetFileNames.isEmpty()) {
+        if (targetFileNames != null && !targetFileNames.isEmpty()) {
             copySingleAssetWithBackup(assetPath, effectiveTargetPath, targetFileNames);
         }
     }
