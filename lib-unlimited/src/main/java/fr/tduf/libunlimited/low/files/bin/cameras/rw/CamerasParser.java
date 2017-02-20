@@ -8,6 +8,7 @@ import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -36,23 +37,21 @@ public class CamerasParser extends GenericParser<CameraInfoEnhanced> {
 
     @Override
     protected CameraInfoEnhanced generate() {
-        // TODO extract methods
-        int indexSize = getDataStore().getInteger("indexSize")
-                .orElseThrow(() -> new IllegalStateException("indexSize attribute not found in store"))
-                .intValue();
-        Map<Integer, Short> index = new LinkedHashMap<>(indexSize);
-        getDataStore().getRepeatedValues("index").forEach(store -> {
-            int cameraId = store.getInteger("cameraId")
-                    .orElseThrow(() -> new IllegalStateException("cameraId attribute not found in store"))
-                    .intValue();
-            short viewCount = store.getInteger("viewCount")
-                    .orElseThrow(() -> new IllegalStateException("viewCount attribute not found in store"))
-                    .shortValue();
-            index.put(cameraId, viewCount);
-        });
+        return CameraInfoEnhanced.builder()
+                .fromDatastore(getDataStore())
+                .withIndex(generateCamerasIndex())
+                .withViews(generateCamerasViews())
+                .build();
+    }
 
+    private Map<Integer, List<CameraViewEnhanced>> generateCamerasViews() {
         Map<Integer, List<CameraViewEnhanced>> views = new LinkedHashMap<>();
-        getDataStore().getRepeatedValues("views").forEach(store -> {
+        getDataStore().getRepeatedValues("views").forEach(updateViews(views));
+        return views;
+    }
+
+    private Consumer<DataStore> updateViews(Map<Integer, List<CameraViewEnhanced>> views) {
+        return store -> {
             int cameraId = store.getInteger("cameraId")
                     .orElseThrow(() -> new IllegalStateException("cameraId attribute not found in store"))
                     .intValue();
@@ -80,14 +79,29 @@ public class CamerasParser extends GenericParser<CameraInfoEnhanced> {
                     .build());
 
             views.put(cameraId, currentViews);
-        });
+        };
+    }
 
+    private Map<Integer, Short> generateCamerasIndex() {
+        int indexSize = getDataStore().getInteger("indexSize")
+                .orElseThrow(() -> new IllegalStateException("indexSize attribute not found in store"))
+                .intValue();
+        Map<Integer, Short> index = new LinkedHashMap<>(indexSize);
+        getDataStore().getRepeatedValues("index")
+                .forEach(updateIndex(index));
+        return index;
+    }
 
-        return CameraInfoEnhanced.builder()
-                .fromDatastore(getDataStore())
-                .withIndex(index)
-                .withViews(views)
-                .build();
+    private Consumer<DataStore> updateIndex(Map<Integer, Short> index) {
+        return store -> {
+            int cameraId = store.getInteger("cameraId")
+                    .orElseThrow(() -> new IllegalStateException("cameraId attribute not found in store"))
+                    .intValue();
+            short viewCount = store.getInteger("viewCount")
+                    .orElseThrow(() -> new IllegalStateException("viewCount attribute not found in store"))
+                    .shortValue();
+            index.put(cameraId, viewCount);
+        };
     }
 
     @Override
@@ -177,6 +191,7 @@ public class CamerasParser extends GenericParser<CameraInfoEnhanced> {
      * Resets all caches to reload data from store.
      * Should be used after modifying store contents.
      */
+    @Deprecated
     public void flushCaches() {
         cachedCameraViews = null;
         cachedCameraIndex = null;
