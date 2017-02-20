@@ -10,9 +10,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,6 +28,7 @@ class CamerasWriter_focusOnEnhancedTest {
     }
 
     @Test
+    @Disabled
     void write_shouldReturnOriginalContentsBack() throws IOException, URISyntaxException {
         // GIVEN
         String camerasContentsFromJSONFile = FilesHelper.readTextFromResourceFile("/bin/Cameras.bin.json");
