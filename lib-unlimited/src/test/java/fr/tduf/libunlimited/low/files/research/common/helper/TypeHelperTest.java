@@ -36,48 +36,57 @@ class TypeHelperTest {
     }
 
     @Test
-    void rawToInteger_whenArrayHasCorrectSize_andUnsignedValue_shouldReturnNumeric() {
+    void rawToInteger_whenUnsignedValue_shouldReturnNumeric() {
         //GIVEN
         byte[] bytes = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x0d, 0x18, (byte)0x81 };
 
         // WHEN-THEN
-        assertThat(TypeHelper.rawToInteger(bytes, false)).isEqualTo(858241L);
+        assertThat(TypeHelper.rawToInteger(bytes, false, 4)).isEqualTo(858241L);
     }
 
     @Test
-    void rawToInteger_whenArrayHasCorrectSize_andSignedIntegerValue_shouldReturnNumeric() {
+    void rawToInteger_whenSignedIntegerValue_shouldReturnNumeric() {
         //GIVEN
         byte[] bytes = { 0x00, 0x00, 0x00, 0x00, (byte)0xFF, (byte)0xF2, (byte)0xE7, 0x7F };
 
         // WHEN-THEN
-        assertThat(TypeHelper.rawToInteger(bytes, true)).isEqualTo(-858241L);
+        assertThat(TypeHelper.rawToInteger(bytes, true, 4)).isEqualTo(-858241L);
     }
 
     @Test
-    void rawToInteger_whenArrayHasCorrectSize_andSignedShortValue_shouldReturnNumeric() {
+    void rawToInteger_whenSignedNegativeShortValue_shouldReturnNumeric() {
         //GIVEN
         byte[] bytes = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte)0xE7, 0x7F };
 
         // WHEN-THEN
-        assertThat(TypeHelper.rawToInteger(bytes, true)).isEqualTo(-6273);
+        assertThat(TypeHelper.rawToInteger(bytes, true, 2)).isEqualTo(-6273);
     }
 
     @Test
-    void rawToInteger_whenArrayHasCorrectSize_andSignedByteValue_shouldReturnNumeric() {
+    void rawToInteger_whenSignedPositiveShortValue_shouldReturnNumeric() {
+        //GIVEN
+        byte[] bytes = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0xE5};
+
+        // WHEN-THEN
+        assertThat(TypeHelper.rawToInteger(bytes, true, 2)).isEqualTo(229);
+    }
+
+    @Test
+    void rawToInteger_whenSignedByteValue_shouldReturnNumeric() {
         //GIVEN
         byte[] bytes = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte)0xFF };
 
         // WHEN-THEN
-        assertThat(TypeHelper.rawToInteger(bytes, true)).isEqualTo(-1L);
+        assertThat(TypeHelper.rawToInteger(bytes, true, 1)).isEqualTo(-1L);
     }
 
     @Test
-    void rawToInteger_whenArrayHasCorrectSize_andZeroValue_shouldReturnNumeric() {
+    void rawToInteger_whenZeroValue_shouldReturnNumeric() {
         //GIVEN
         byte[] bytes = new byte[8];
 
         // WHEN-THEN
-        assertThat(TypeHelper.rawToInteger(bytes, true)).isZero();
+        assertThat(TypeHelper.rawToInteger(bytes, true, 8)).isZero();
     }
 
     @Test
@@ -87,7 +96,7 @@ class TypeHelperTest {
 
         // WHEN-THEN
         assertThrows(IllegalArgumentException.class,
-                () -> TypeHelper.rawToInteger(bytes, false));
+                () -> TypeHelper.rawToInteger(bytes, false, 4));
     }
 
     @Test

@@ -8,6 +8,8 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.regex.Pattern;
 
+import static fr.tduf.libunlimited.framework.primitives.Ints.asList;
+
 /**
  * Helper to class to handle differences between value representations.
  */
@@ -44,34 +46,32 @@ public class TypeHelper {
      *
      * @param rawValueBytes : raw value to convert
      * @param signed        : indicates if specified value is signed or not
+     * @param size          : value size, in bytes
      * @return corresponding value as 64-bit integer
      * @throws IllegalArgumentException when provided Array is not 64-bit (8 bytes)
      */
-    public static long rawToInteger(byte[] rawValueBytes, boolean signed) throws IllegalArgumentException {
+    public static long rawToInteger(byte[] rawValueBytes, boolean signed, int size) throws IllegalArgumentException {
         check64BitRawValue(rawValueBytes);
-
-        long integerValue = ByteBuffer
-                .wrap(rawValueBytes)
-                .getLong();
+        checkRegularSize(size);
 
         if (signed) {
-            int zeroCount = getPrependingZeroCount(rawValueBytes);
-            if (zeroCount >= 7) {
-                integerValue = ByteBuffer
-                        .wrap(rawValueBytes, 7, 1)
-                        .get();
-            } else if (zeroCount >= 6) {
-                integerValue = ByteBuffer
-                        .wrap(rawValueBytes, 6, 2)
-                        .getShort();
-            } else if (zeroCount >= 4) {
-                integerValue = ByteBuffer
-                        .wrap(rawValueBytes, 4, 4)
-                        .getInt();
+            ByteBuffer wrappedBytes = ByteBuffer
+                    .wrap(rawValueBytes, 8 - size, size);
+
+            if (size == 1) {
+                return wrappedBytes.get();
+            } else if (size == 2) {
+                return wrappedBytes.getShort();
+            } else if (size == 4) {
+                return wrappedBytes.getInt();
+            } else {
+                return wrappedBytes.getLong();
             }
         }
 
-        return integerValue;
+        return ByteBuffer
+                .wrap(rawValueBytes)
+                .getLong();
     }
 
     /**
@@ -236,14 +236,10 @@ public class TypeHelper {
         return DatatypeConverter.parseHexBinary(extractedBytes);
     }
 
-    private static int getPrependingZeroCount(byte[] rawValueBytes) {
-        int zeroCount = 0;
-
-        ByteBuffer wrap = ByteBuffer.wrap(rawValueBytes);
-        while (wrap.remaining() > 0 && wrap.get() == 0) {
-            zeroCount++;
+    private static void checkRegularSize(int size) {
+        if (!asList(1, 2, 4, 8).contains(size)) {
+            throw new IllegalArgumentException("Provided size is not any of BYTE(1), SHORT(2), INTEGER(4) or LONG(8).");
         }
-        return zeroCount;
     }
 
     private static void check64BitRawValue(byte[] rawValueBytes) {
