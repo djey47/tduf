@@ -238,7 +238,7 @@ public class TypeHelper {
 
     private static void checkRegularSize(int size) {
         if (!asList(1, 2, 4, 8).contains(size)) {
-            throw new IllegalArgumentException("Provided size is not any of BYTE(1), SHORT(2), INTEGER(4) or LONG(8).");
+            throw new IllegalArgumentException("Provided size is not any of BYTE(1), SHORT(2), INTEGER(4) or LONG(8): " + size);
         }
     }
 

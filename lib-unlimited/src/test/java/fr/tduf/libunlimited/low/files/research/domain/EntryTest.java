@@ -9,7 +9,7 @@ public class EntryTest {
     @Test
     public void copy_shouldMakeFullEntryCopy() {
         // GIVEN
-        Entry entry = new Entry(FileStructureDto.Type.GAP, true, new byte[] { 0x0 });
+        Entry entry = new Entry(FileStructureDto.Type.GAP, true, 1, new byte[] { 0x0 });
 
         // WHEN
         Entry actualCopy = entry.copy();

@@ -54,7 +54,7 @@ public class DataStoreFixture {
                 .allocate(8)
                 .putLong(value)
                 .array();
-        dataStore.addValue(key, INTEGER, signed, bytes);
+        dataStore.addValue(key, INTEGER, signed, 8, bytes);
     }
 
     public static void putFloatInStore(String key, float value, DataStore dataStore) {
@@ -62,12 +62,12 @@ public class DataStoreFixture {
                 .allocate(4)
                 .putFloat(value)
                 .array();
-        dataStore.addValue(key, FPOINT, bytes);
+        dataStore.addValue(key, FPOINT, 4, bytes);
     }
 
     public static void putHalfFloatInStore(String key, float value, DataStore dataStore) {
         byte[] bytes = TypeHelper.floatingPoint16ToRaw(value);
-        dataStore.addValue(key, FPOINT, bytes);
+        dataStore.addValue(key, FPOINT, 2, bytes);
     }
 
     public static FileStructureDto getFileStructure(String resourcePath) throws IOException {

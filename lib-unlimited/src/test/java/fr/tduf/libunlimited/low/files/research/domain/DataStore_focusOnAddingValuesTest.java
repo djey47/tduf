@@ -90,7 +90,7 @@ public class DataStore_focusOnAddingValuesTest {
         dataStore.addInteger("f1", 500L);
 
         // THEN
-        Entry expectedEntry = new Entry(FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(500L));
+        Entry expectedEntry = new Entry(FileStructureDto.Type.INTEGER, false, 4, TypeHelper.integerToRaw(500L));
         assertThat(dataStore.getStore()).containsOnly(MapEntry.entry("f1", expectedEntry));
     }
 
@@ -110,7 +110,7 @@ public class DataStore_focusOnAddingValuesTest {
         dataStore.addHalfFloatingPoint("f1", 83.67f);
 
         // THEN
-        Entry expectedEntry = new Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint16ToRaw(83.67f));
+        Entry expectedEntry = new Entry(FileStructureDto.Type.FPOINT, false, 2, TypeHelper.floatingPoint16ToRaw(83.67f));
         assertThat(dataStore.getStore()).containsOnly(MapEntry.entry("f1", expectedEntry));
     }
 

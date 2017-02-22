@@ -106,7 +106,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
 
             assertSimpleCondition(() -> length == null || readResult.parsedCount == length, "Structure mismatch for field key: " + key);
 
-            this.dataStore.addValue(key, field.getType(), field.isSigned(), readResult.readValueAsBytes);
+            this.dataStore.addValue(key, field.getType(), field.isSigned(), length, readResult.readValueAsBytes);
         }
     }
 
@@ -233,7 +233,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
                 INTEGER.name(),
                 length,
                 TypeHelper.byteArrayToHexRepresentation(displayedBytes),
-                TypeHelper.rawToInteger(readValueAsBytes, signedValue)));
+                TypeHelper.rawToInteger(readValueAsBytes, signedValue, length)));
     }
 
     private void dumpFloatingPointValue(byte[] readValueAsBytes, Integer length,  String key) {

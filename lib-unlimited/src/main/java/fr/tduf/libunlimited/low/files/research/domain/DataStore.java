@@ -22,6 +22,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Place to store and extract data with {@link fr.tduf.libunlimited.low.files.research.rw.GenericParser}
@@ -89,30 +90,40 @@ public class DataStore {
     }
 
     /**
-     * Adds provided bytes to the store, if type is stor-able.
-     *
+     * Adds provided bytes to the store, if type is stor-able. Length is automatically determined by raw value length.
      * @param fieldName : identifier of field hosting the value, should not exist already
      * @param type      : value type
      * @param rawValue  : value to store
      */
     public void addValue(String fieldName, FileStructureDto.Type type, byte[] rawValue) {
-        addValue(fieldName, type, false, rawValue);
+        addValue(fieldName, type, false, rawValue.length, rawValue);
     }
 
     /**
      * Adds provided bytes to the store, if type is stor-able.
-     *
+     * @param fieldName : identifier of field hosting the value, should not exist already
+     * @param type      : value type
+     * @param length    : value length
+     * @param rawValue  : value to store
+     */
+    public void addValue(String fieldName, FileStructureDto.Type type, int length, byte[] rawValue) {
+        addValue(fieldName, type, false, length, rawValue);
+    }
+
+    /**
+     * Adds provided bytes to the store, if type is stor-able.
      * @param fieldName : identifier of field hosting the value, should not exist already
      * @param type      : value type
      * @param signed    : indicates if value is signed or not (only applicable to integer data type)
+     * @param length    : size of value, in bytes (can be null)
      * @param rawValue  : value to store
      */
-    public void addValue(String fieldName, FileStructureDto.Type type, boolean signed, byte[] rawValue) {
+    public void addValue(String fieldName, FileStructureDto.Type type, boolean signed, Integer length, byte[] rawValue) {
         if (!type.isValueToBeStored()) {
             return;
         }
 
-        putEntry(fieldName, type, signed, rawValue);
+        putEntry(fieldName, type, signed, length, rawValue);
     }
 
     /**
@@ -126,13 +137,24 @@ public class DataStore {
     }
 
     /**
-     * Adds an Integer value to the store.
+     * Adds an 4byte Integer value to the store.
      *
      * @param fieldName : identifier of field hosting the value, should not exist already
      * @param value     : value to store
      */
     public void addInteger(String fieldName, long value) {
-        addValue(fieldName, INTEGER, TypeHelper.integerToRaw(value));
+        addValue(fieldName, INTEGER, 4, TypeHelper.integerToRaw(value));
+    }
+
+    /**
+     * Adds an Integer value to the store.
+     *
+     * @param fieldName : identifier of field hosting the value, should not exist already
+     * @param value     : value to store
+     * @param length    : length of this numeric value (1, 2, 4 or 8 bytes)
+     */
+    public void addInteger(String fieldName, long value, int length) {
+        addValue(fieldName, INTEGER, length, TypeHelper.integerToRaw(value));
     }
 
     /**
@@ -142,7 +164,7 @@ public class DataStore {
      * @param value     : value to store
      */
     public void addFloatingPoint(String fieldName, float value) {
-        addValue(fieldName, FPOINT, TypeHelper.floatingPoint32ToRaw(value));
+        addValue(fieldName, FPOINT, 4, TypeHelper.floatingPoint32ToRaw(value));
     }
 
     /**
@@ -152,7 +174,7 @@ public class DataStore {
      * @param value     : value to store
      */
     public void addHalfFloatingPoint(String fieldName, float value) {
-        addValue(fieldName, FPOINT, TypeHelper.floatingPoint16ToRaw(value));
+        addValue(fieldName, FPOINT, 2, TypeHelper.floatingPoint16ToRaw(value));
     }
 
     /**
@@ -182,7 +204,7 @@ public class DataStore {
     }
 
     /**
-     * Adds a repeated field to the store.
+     * Adds a repeated field (32bit unsigned numeric) to the store.
      *
      * @param repeaterFieldName : identifier of repeater field
      * @param fieldName         : identifier of field hosting the value
@@ -191,7 +213,21 @@ public class DataStore {
      */
     public void addRepeatedIntegerValue(String repeaterFieldName, String fieldName, long index, long value) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
-        addValue(key, INTEGER, TypeHelper.integerToRaw(value));
+        addValue(key, INTEGER, 4, TypeHelper.integerToRaw(value));
+    }
+
+    /**
+     * Adds a repeated field (8bit to 64bit signed or unsigned numeric) to the store.
+     *
+     * @param repeaterFieldName : identifier of repeater field
+     * @param fieldName         : identifier of field hosting the value
+     * @param index             : rank in repeater
+     * @param value             : value to store
+     * @param length            : length of this numeric value (1, 2, 4 or 8 bytes)
+     */
+    public void addRepeatedIntegerValue(String repeaterFieldName, String fieldName, long index, long value, int length) {
+        String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
+        addValue(key, INTEGER, length, TypeHelper.integerToRaw(value));
     }
 
     /**
@@ -204,7 +240,7 @@ public class DataStore {
      */
     public void addRepeatedFloatingPointValue(String repeaterFieldName, String fieldName, int index, float value) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
-        addValue(key, FPOINT, TypeHelper.floatingPoint32ToRaw(value));
+        addValue(key, FPOINT, 4, TypeHelper.floatingPoint32ToRaw(value));
     }
 
     /**
@@ -216,10 +252,9 @@ public class DataStore {
      */
     public void mergeRepeatedValues(String repeaterFieldName, int index, DataStore subStore) {
         requireNonNull(subStore, "A sub data store is required.").getStore().entrySet().forEach(entry -> {
-                    String newKey = generateKeyForRepeatedField(repeaterFieldName, entry.getKey(), index);
-                    Entry currentStoreEntry = entry.getValue();
-                    this.putEntry(newKey, currentStoreEntry.getType(), currentStoreEntry.isSigned(), currentStoreEntry.getRawValue());
-                });
+            String newKey = generateKeyForRepeatedField(repeaterFieldName, entry.getKey(), index);
+            putEntryFromExisting(newKey, entry.getValue());
+        });
     }
 
     /**
@@ -279,7 +314,7 @@ public class DataStore {
         assertSimpleCondition(() -> INTEGER == entry.getType());
 
         return of(
-                rawToInteger(entry.getRawValue(), entry.isSigned()));
+                rawToInteger(entry.getRawValue(), entry.isSigned(), entry.getSize()));
     }
 
     /**
@@ -315,8 +350,8 @@ public class DataStore {
                     return matcher.matches() && matcher.group(1).equals(fieldName);
                 })
                 .map(this.store::get)
-                .map(storeEntry -> TypeHelper.rawToInteger(storeEntry.getRawValue(), storeEntry.isSigned()))
-                .collect(Collectors.toList());
+                .map(storeEntry -> TypeHelper.rawToInteger(storeEntry.getRawValue(), storeEntry.isSigned(), storeEntry.getSize()))
+                .collect(toList());
     }
 
     /**
@@ -333,7 +368,7 @@ public class DataStore {
                 })
                 .map(key -> this.store.get(key).getRawValue())
                 .map(TypeHelper::rawToFloatingPoint)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     /**
@@ -414,6 +449,7 @@ public class DataStore {
         FileStructureDto.Type type = FileStructureDto.Type.GAP;
         byte[] rawValue = new byte[0];
         boolean signed = false;
+        Integer size = null;
 
         if (jsonNode instanceof ObjectNode) {
 
@@ -437,6 +473,7 @@ public class DataStore {
                 type = INTEGER;
                 rawValue = TypeHelper.integerToRaw(jsonNode.getLongValue());
                 signed = fieldDefinition.isSigned();
+                size = computeValueLengthWithoutParentKey(fieldDefinition.getSizeFormula());
 
             } else if (jsonNode instanceof TextNode) {
 
@@ -457,7 +494,7 @@ public class DataStore {
         }
 
         if (type.isValueToBeStored()) {
-            putEntry(parentKey, type, signed, rawValue);
+            putEntry(parentKey, type, signed, size, rawValue);
         }
     }
 
@@ -527,8 +564,13 @@ public class DataStore {
         }
     }
 
-    private void putEntry(String key, FileStructureDto.Type type, boolean signed, byte[] rawValue) {
-        Entry entry = new Entry(type, signed, rawValue);
+    private void putEntry(String key, FileStructureDto.Type type, boolean signed, Integer size, byte[] rawValue) {
+        Entry entry = new Entry(type, signed, size, rawValue);
+        this.getStore().put(key, entry);
+    }
+
+    private void putEntryFromExisting(String key, Entry existingEntry) {
+        Entry entry = new Entry(existingEntry.getType(), existingEntry.isSigned(), existingEntry.getSize(), existingEntry.getRawValue());
         this.getStore().put(key, entry);
     }
 
@@ -545,7 +587,7 @@ public class DataStore {
                 currentObjectNode.put(fieldName, rawToFloatingPoint(rawValue));
                 break;
             case INTEGER:
-                currentObjectNode.put(fieldName, rawToInteger(rawValue, storeEntry.isSigned()));
+                currentObjectNode.put(fieldName, rawToInteger(rawValue, storeEntry.isSigned(), storeEntry.getSize()));
                 break;
             default:
                 currentObjectNode.put(fieldName, byteArrayToHexRepresentation(rawValue));

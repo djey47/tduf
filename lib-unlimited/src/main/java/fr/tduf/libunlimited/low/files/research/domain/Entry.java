@@ -13,13 +13,15 @@ class Entry {
     private final FileStructureDto.Type type;
     private final boolean signed;
     private final byte[] rawValue;
+    private final Integer size;
 
     Entry(FileStructureDto.Type type, byte[] rawValue) {
-        this(type, false, rawValue);
+        this(type, false, rawValue.length, rawValue);
     }
 
-    Entry(FileStructureDto.Type type, boolean signed, byte[] rawValue) {
+    Entry(FileStructureDto.Type type, boolean signed, Integer size, byte[] rawValue) {
         this.type = type;
+        this.size = size;
         this.rawValue = rawValue;
         this.signed = signed;
     }
@@ -38,7 +40,7 @@ class Entry {
     public Entry copy() {
         byte[] rawValueCopy = new byte[rawValue.length];
         System.arraycopy(rawValue, 0, rawValueCopy, 0, rawValue.length);
-        return new Entry(type, signed, rawValueCopy);
+        return new Entry(type, signed, size, rawValueCopy);
     }
 
     @Override
@@ -58,5 +60,9 @@ class Entry {
 
     public boolean isSigned() {
         return signed;
+    }
+
+    public Integer getSize() {
+        return size;
     }
 }
