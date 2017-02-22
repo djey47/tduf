@@ -141,8 +141,7 @@
         },
         {
           "name": "settingsPart3",
-          "type": "INTEGER",
-          "signed": true,
+          "type": "UNKNOWN",
           "size": 6
         },
         {
