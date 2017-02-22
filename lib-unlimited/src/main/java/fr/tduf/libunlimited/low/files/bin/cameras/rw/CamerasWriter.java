@@ -61,7 +61,7 @@ public class CamerasWriter extends GenericWriter<CameraInfoEnhanced> {
         // Next gen
         dataStore.addValue("header", UNKNOWN, data.getOriginalDataStore().getRawValue("header")
                 .orElseThrow(() -> new IllegalStateException("header entry not found in store")));
-        dataStore.addInteger("indexSize", data.getIndexSize());
+        dataStore.addInteger32("indexSize", data.getIndexSize());
         dataStore.addValue("magicForty", UNKNOWN, data.getOriginalDataStore().getRawValue("magicForty")
                 .orElseThrow(() -> new IllegalStateException("magicForty entry not found in store")));
 
@@ -70,8 +70,8 @@ public class CamerasWriter extends GenericWriter<CameraInfoEnhanced> {
                 .forEach(indexEntry -> {
                     long currentIndexAsLong = currentIndex.get();
 
-                    dataStore.addRepeatedIntegerValue("index", "cameraId", currentIndexAsLong, indexEntry.getKey());
-                    dataStore.addRepeatedIntegerValue("index", "viewCount", currentIndexAsLong, indexEntry.getValue());
+                    dataStore.addRepeatedInteger32("index", "cameraId", currentIndexAsLong, indexEntry.getKey());
+                    dataStore.addRepeatedInteger32("index", "viewCount", currentIndexAsLong, indexEntry.getValue());
                     currentIndex.incrementAndGet();
                 });
 
@@ -83,33 +83,33 @@ public class CamerasWriter extends GenericWriter<CameraInfoEnhanced> {
                             DataStore sourceViewStore = viewEnhanced.getOriginalDataStore();
 
                             // From domain object
-                            dataStore.addRepeatedIntegerValue("views", "cameraId", currentViewIndexAsLong, viewEnhanced.getCameraSetId());
-                            dataStore.addRepeatedTextValue("views", "label", currentViewIndexAsLong, viewEnhanced.getLabel());
-                            dataStore.addRepeatedIntegerValue("views", "type", currentViewIndexAsLong, viewEnhanced.getKind().getInternalId());
-                            dataStore.addRepeatedTextValue("views", "name", currentViewIndexAsLong, viewEnhanced.getName());
+                            dataStore.addRepeatedInteger32("views", "cameraId", currentViewIndexAsLong, viewEnhanced.getCameraSetId());
+                            dataStore.addRepeatedText("views", "label", currentViewIndexAsLong, viewEnhanced.getLabel());
+                            dataStore.addRepeatedInteger32("views", "type", currentViewIndexAsLong, viewEnhanced.getKind().getInternalId());
+                            dataStore.addRepeatedText("views", "name", currentViewIndexAsLong, viewEnhanced.getName());
 
                             // From attached view props
                             viewEnhanced.getSettings().entrySet().stream()
                                     .filter(propsEntry -> TYPE != propsEntry.getKey())
                                     .forEach(propsEntry -> {
                                         ViewProps props = propsEntry.getKey();
-                                        dataStore.addRepeatedIntegerValue("views", props.getStoreFieldName(), currentViewIndexAsLong, (Long) propsEntry.getValue());
+                                        dataStore.addRepeatedInteger32("views", props.getStoreFieldName(), currentViewIndexAsLong, (Long) propsEntry.getValue());
                                     });
 
                             // From original store (unaltered values)
-                            dataStore.addRepeatedRawValue("views", "properties", currentViewIndexAsLong, sourceViewStore.getRawValue("properties")
+                            dataStore.addRepeatedValue("views", "properties", currentViewIndexAsLong, sourceViewStore.getRawValue("properties")
                                     .orElseThrow(() -> new IllegalStateException("properties entry not found in view store")));
-                            dataStore.addRepeatedIntegerValue("views", "tag", currentViewIndexAsLong, sourceViewStore.getInteger("tag")
+                            dataStore.addRepeatedInteger32("views", "tag", currentViewIndexAsLong, sourceViewStore.getInteger("tag")
                                     .orElseThrow(() -> new IllegalStateException("tag entry not found in view store")));
-                            dataStore.addRepeatedRawValue("views", "settingsPart1", currentViewIndexAsLong, sourceViewStore.getRawValue("settingsPart1")
+                            dataStore.addRepeatedValue("views", "settingsPart1", currentViewIndexAsLong, sourceViewStore.getRawValue("settingsPart1")
                                     .orElseThrow(() -> new IllegalStateException("settingsPart1 entry not found in view store")));
-                            dataStore.addRepeatedRawValue("views", "settingsPart2", currentViewIndexAsLong, sourceViewStore.getRawValue("settingsPart2")
+                            dataStore.addRepeatedValue("views", "settingsPart2", currentViewIndexAsLong, sourceViewStore.getRawValue("settingsPart2")
                                     .orElseThrow(() -> new IllegalStateException("settingsPart2 entry not found in view store")));
-                            dataStore.addRepeatedRawValue("views", "settingsPart3", currentViewIndexAsLong, sourceViewStore.getRawValue("settingsPart3")
+                            dataStore.addRepeatedValue("views", "settingsPart3", currentViewIndexAsLong, sourceViewStore.getRawValue("settingsPart3")
                                     .orElseThrow(() -> new IllegalStateException("settingsPart3 entry not found in view store")));
-                            dataStore.addRepeatedRawValue("views", "settingsPart4", currentViewIndexAsLong, sourceViewStore.getRawValue("settingsPart4")
+                            dataStore.addRepeatedValue("views", "settingsPart4", currentViewIndexAsLong, sourceViewStore.getRawValue("settingsPart4")
                                     .orElseThrow(() -> new IllegalStateException("settingsPart4 entry not found in view store")));
-                            dataStore.addRepeatedRawValue("views", "settingsPart5", currentViewIndexAsLong, sourceViewStore.getRawValue("settingsPart5")
+                            dataStore.addRepeatedValue("views", "settingsPart5", currentViewIndexAsLong, sourceViewStore.getRawValue("settingsPart5")
                                     .orElseThrow(() -> new IllegalStateException("settingsPart5 entry not found in view store")));
 
                             currentViewIndex.incrementAndGet();

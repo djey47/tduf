@@ -233,16 +233,16 @@ public class GenericWriterTest {
                 getDataStore().addValue("unknown", UNKNOWN, new byte[]{0x1, 0x2, 0x3, 0x4, 0x5});
 
                 // Field 3 - sub items, rank 0
-                getDataStore().addRepeatedIntegerValue("repeater", "number", 0, 500L);
-                getDataStore().addRepeatedFloatingPointValue("repeater", "numberF", 0, 257.45166f);
-                getDataStore().addRepeatedTextValue("repeater", "text", 0, "ABCD");
-                getDataStore().addRepeatedRawValue("repeater", "delimiter", 0, new byte[] {0xA});
+                getDataStore().addRepeatedInteger32("repeater", "number", 0, 500L);
+                getDataStore().addRepeatedFloatingPoint("repeater", "numberF", 0, 257.45166f);
+                getDataStore().addRepeatedText("repeater", "text", 0, "ABCD");
+                getDataStore().addRepeatedValue("repeater", "delimiter", 0, new byte[] {0xA});
 
                 // Field 3 - sub items, rank 1
-                getDataStore().addRepeatedIntegerValue("repeater", "number", 1, 1000L);
-                getDataStore().addRepeatedFloatingPointValue("repeater", "numberF", 1, 86.714584f);
-                getDataStore().addRepeatedTextValue("repeater", "text", 1, "EFGH");
-                getDataStore().addRepeatedRawValue("repeater", "delimiter", 1, new byte[] {0xB});
+                getDataStore().addRepeatedInteger32("repeater", "number", 1, 1000L);
+                getDataStore().addRepeatedFloatingPoint("repeater", "numberF", 1, 86.714584f);
+                getDataStore().addRepeatedText("repeater", "text", 1, "EFGH");
+                getDataStore().addRepeatedValue("repeater", "delimiter", 1, new byte[] {0xB});
             }
 
             @Override
@@ -263,17 +263,17 @@ public class GenericWriterTest {
                 getDataStore().addValue("unknown", UNKNOWN, new byte[]{0x1, 0x2, 0x3, 0x4, 0x5});
 
                 // Field 3 - sub items, rank 0
-                getDataStore().addRepeatedIntegerValue("repeater", "number", 0, 500L);
-                getDataStore().addRepeatedFloatingPointValue("repeater", "numberF", 0, 257.45166f);
+                getDataStore().addRepeatedInteger32("repeater", "number", 0, 500L);
+                getDataStore().addRepeatedFloatingPoint("repeater", "numberF", 0, 257.45166f);
                 // text length 4 to 2 (will be filled to fit)
-                getDataStore().addRepeatedTextValue("repeater", "text", 0, "AB");
-                getDataStore().addRepeatedRawValue("repeater", "delimiter", 0, new byte[] {0xA});
+                getDataStore().addRepeatedText("repeater", "text", 0, "AB");
+                getDataStore().addRepeatedValue("repeater", "delimiter", 0, new byte[] {0xA});
 
                 // Field 3 - sub items, rank 1
-                getDataStore().addRepeatedIntegerValue("repeater", "number", 1, 1000L);
-                getDataStore().addRepeatedFloatingPointValue("repeater", "numberF", 1, 86.714584f);
-                getDataStore().addRepeatedTextValue("repeater", "text", 1, "EFGH");
-                getDataStore().addRepeatedRawValue("repeater", "delimiter", 1, new byte[] {0xB});
+                getDataStore().addRepeatedInteger32("repeater", "number", 1, 1000L);
+                getDataStore().addRepeatedFloatingPoint("repeater", "numberF", 1, 86.714584f);
+                getDataStore().addRepeatedText("repeater", "text", 1, "EFGH");
+                getDataStore().addRepeatedValue("repeater", "delimiter", 1, new byte[] {0xB});
             }
 
             @Override
@@ -294,16 +294,16 @@ public class GenericWriterTest {
                 getDataStore().addValue("unknown", UNKNOWN, new byte[]{0x1, 0x2, 0x3, 0x4, 0x5});
 
                 // Field 3 - sub items, rank 0
-                getDataStore().addRepeatedIntegerValue("repeater", "number", 0, 500L);
-                getDataStore().addRepeatedFloatingPointValue("repeater", "numberF", 0, 257.45166f);
-                getDataStore().addRepeatedTextValue("repeater", "text", 0, "ABCD");
-                getDataStore().addRepeatedRawValue("repeater", "delimiter", 0, new byte[] {0xA});
+                getDataStore().addRepeatedInteger32("repeater", "number", 0, 500L);
+                getDataStore().addRepeatedFloatingPoint("repeater", "numberF", 0, 257.45166f);
+                getDataStore().addRepeatedText("repeater", "text", 0, "ABCD");
+                getDataStore().addRepeatedValue("repeater", "delimiter", 0, new byte[] {0xA});
 
                 // Field 3 - sub items, rank 1
-                getDataStore().addRepeatedIntegerValue("repeater", "number", 1, 1000L);
-                getDataStore().addRepeatedFloatingPointValue("repeater", "numberF", 1, 86.714584f);
-                getDataStore().addRepeatedTextValue("repeater", "text", 1, "EFGH");
-                getDataStore().addRepeatedRawValue("repeater", "delimiter", 1, new byte[] {0xB});
+                getDataStore().addRepeatedInteger32("repeater", "number", 1, 1000L);
+                getDataStore().addRepeatedFloatingPoint("repeater", "numberF", 1, 86.714584f);
+                getDataStore().addRepeatedText("repeater", "text", 1, "EFGH");
+                getDataStore().addRepeatedValue("repeater", "delimiter", 1, new byte[] {0xB});
             }
 
             @Override
@@ -339,13 +339,13 @@ public class GenericWriterTest {
             @Override
             protected void fillStore() {
                 // Field 1
-                getDataStore().addInteger("vsi1", 67);
+                getDataStore().addInteger32("vsi1", 67);
 
                 // Field 2
-                getDataStore().addInteger("vsi2", 68);
+                getDataStore().addInteger32("vsi2", 68);
 
                 // Field 3
-                getDataStore().addInteger("vsi3", 69);
+                getDataStore().addInteger32("vsi3", 69);
             }
 
             @Override
@@ -359,8 +359,8 @@ public class GenericWriterTest {
         return new GenericWriter<String>(DATA) {
             @Override
             protected void fillStore() {
-                getDataStore().addInteger("my_int_field", 1000);
-                getDataStore().addInteger("my_long_field", 4125000000L);
+                getDataStore().addInteger32("my_int_field", 1000);
+                getDataStore().addInteger32("my_long_field", 4125000000L);
             }
 
             @Override
@@ -381,16 +381,16 @@ public class GenericWriterTest {
                 getDataStore().addValue("unknown", UNKNOWN, new byte[]{0x1, 0x2, 0x3, 0x4, 0x5});
 
                 // Field 3 - sub items, rank 0
-                getDataStore().addRepeatedIntegerValue("repeater", "number", 0, 500L);
-                getDataStore().addRepeatedFloatingPointValue("repeater", "numberF", 0, 257.45166f);
-                getDataStore().addRepeatedTextValue("repeater", "text", 0, "ABCD");
-                getDataStore().addRepeatedRawValue("repeater", "delimiter", 0, new byte[] {0xA});
+                getDataStore().addRepeatedInteger32("repeater", "number", 0, 500L);
+                getDataStore().addRepeatedFloatingPoint("repeater", "numberF", 0, 257.45166f);
+                getDataStore().addRepeatedText("repeater", "text", 0, "ABCD");
+                getDataStore().addRepeatedValue("repeater", "delimiter", 0, new byte[] {0xA});
 
                 // Field 3 - sub items, rank 1
-                getDataStore().addRepeatedIntegerValue("repeater", "number", 1, 1000L);
-                getDataStore().addRepeatedFloatingPointValue("repeater", "numberF", 1, 86.714584f);
-                getDataStore().addRepeatedTextValue("repeater", "text", 1, "EFGH");
-                getDataStore().addRepeatedRawValue("repeater", "delimiter", 1, new byte[] {0xB});
+                getDataStore().addRepeatedInteger32("repeater", "number", 1, 1000L);
+                getDataStore().addRepeatedFloatingPoint("repeater", "numberF", 1, 86.714584f);
+                getDataStore().addRepeatedText("repeater", "text", 1, "EFGH");
+                getDataStore().addRepeatedValue("repeater", "delimiter", 1, new byte[] {0xB});
 
                 // Field 4 - size not specified in structure
                 getDataStore().addValue("unknown2", UNKNOWN, new byte[]{0x1, 0x2, 0x3, 0x4, 0x5, 0x6});
@@ -426,16 +426,16 @@ public class GenericWriterTest {
                 getDataStore().addValue("unknown", UNKNOWN, new byte[]{0x1, 0x2, 0x3, 0x4, 0x5});
 
                 // Field 3 - sub items, rank 0
-                getDataStore().addRepeatedIntegerValue("repeater", "number", 0, 500L);
-                getDataStore().addRepeatedFloatingPointValue("repeater", "numberF", 0, 257.45166f);
-                getDataStore().addRepeatedTextValue("repeater", "text", 0, "ABCD");
-                getDataStore().addRepeatedRawValue("repeater", "delimiter", 0, new byte[] {0xA});
+                getDataStore().addRepeatedInteger32("repeater", "number", 0, 500L);
+                getDataStore().addRepeatedFloatingPoint("repeater", "numberF", 0, 257.45166f);
+                getDataStore().addRepeatedText("repeater", "text", 0, "ABCD");
+                getDataStore().addRepeatedValue("repeater", "delimiter", 0, new byte[] {0xA});
 
                 // Field 3 - sub items, rank 1
-                getDataStore().addRepeatedIntegerValue("repeater", "number", 1, 1000L);
-                getDataStore().addRepeatedFloatingPointValue("repeater", "numberF", 1, 86.714584f);
-                getDataStore().addRepeatedTextValue("repeater", "text", 1, "EFGH");
-                getDataStore().addRepeatedRawValue("repeater", "delimiter", 1, new byte[] {0xB});
+                getDataStore().addRepeatedInteger32("repeater", "number", 1, 1000L);
+                getDataStore().addRepeatedFloatingPoint("repeater", "numberF", 1, 86.714584f);
+                getDataStore().addRepeatedText("repeater", "text", 1, "EFGH");
+                getDataStore().addRepeatedValue("repeater", "delimiter", 1, new byte[] {0xB});
             }
 
             @Override
@@ -450,14 +450,14 @@ public class GenericWriterTest {
             @Override
             protected void fillStore() {
                 // Field 1
-                getDataStore().addInteger("sizeIndicator", 3);
+                getDataStore().addInteger32("sizeIndicator", 3);
 
                 // Field 2 - sub items, rank 0
-                getDataStore().addRepeatedIntegerValue("repeater", "number", 0, 1L);
+                getDataStore().addRepeatedInteger32("repeater", "number", 0, 1L);
                 // Field 2 - sub items, rank 1
-                getDataStore().addRepeatedIntegerValue("repeater", "number", 1, 2L);
+                getDataStore().addRepeatedInteger32("repeater", "number", 1, 2L);
                 // Field 2 - sub items, rank 2
-                getDataStore().addRepeatedIntegerValue("repeater", "number", 2, 3L);
+                getDataStore().addRepeatedInteger32("repeater", "number", 2, 3L);
 
                 // Field 3
                 getDataStore().addText("aValue", "ABCDEFGHIJ");

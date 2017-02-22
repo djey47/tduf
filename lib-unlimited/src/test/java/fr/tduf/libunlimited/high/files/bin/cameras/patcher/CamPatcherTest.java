@@ -81,7 +81,7 @@ class CamPatcherTest {
         camPatcher.apply(camPatchDto);
 
         // then
-        verify(dataStoreMock).addInteger("viewPositionX", 1500L);
+        verify(dataStoreMock).addInteger32("viewPositionX", 1500L);
     }
 
     @Test
@@ -147,6 +147,6 @@ class CamPatcherTest {
 
         // then
         verify(camerasParserMock, times(4)).getCameraViews();
-        verify(clonedDataStoreMock).addInteger("viewPositionX", 1500L);
+        verify(clonedDataStoreMock).addInteger32("viewPositionX", 1500L);
     }
 }

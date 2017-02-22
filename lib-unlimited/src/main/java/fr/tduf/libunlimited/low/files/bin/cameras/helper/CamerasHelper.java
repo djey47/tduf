@@ -394,9 +394,9 @@ public class CamerasHelper {
     private static void updateIndexInDatastore(DataStore dataStore, long sourceCameraId, long targetCameraId, Map<Long, Short> cameraIndex) {
         short viewCount = cameraIndex.get(sourceCameraId);
         int currentIndexEntryCount = cameraIndex.size();
-        dataStore.addRepeatedIntegerValue(KEY_INDEX, KEY_CAMERA_ID, currentIndexEntryCount, targetCameraId);
-        dataStore.addRepeatedIntegerValue(KEY_INDEX, KEY_VIEW_COUNT, currentIndexEntryCount, viewCount);
-        dataStore.addInteger(KEY_INDEX_SIZE, currentIndexEntryCount + 1L);
+        dataStore.addRepeatedInteger32(KEY_INDEX, KEY_CAMERA_ID, currentIndexEntryCount, targetCameraId);
+        dataStore.addRepeatedInteger32(KEY_INDEX, KEY_VIEW_COUNT, currentIndexEntryCount, viewCount);
+        dataStore.addInteger32(KEY_INDEX_SIZE, currentIndexEntryCount + 1L);
     }
 
     private static void updateViewsInDatastore(DataStore dataStore, long sourceCameraId, long targetCameraId, CamerasParser parser) {
@@ -413,7 +413,7 @@ public class CamerasHelper {
     private static DataStore cloneViewStoreForNewCamera(DataStore viewStore, long targetCameraId) {
         DataStore newStore = viewStore.copy();
 
-        newStore.addInteger(KEY_CAMERA_ID, targetCameraId);
+        newStore.addInteger32(KEY_CAMERA_ID, targetCameraId);
 
         return newStore;
     }

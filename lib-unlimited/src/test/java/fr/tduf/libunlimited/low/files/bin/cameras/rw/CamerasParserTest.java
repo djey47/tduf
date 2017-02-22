@@ -90,11 +90,11 @@ class CamerasParserTest {
         CamerasParser camerasParser = CamerasParser.load(camInputStream);
         camerasParser.parse();
         DataStore dataStore = new DataStore(FileStructureDto.builder().build());
-        dataStore.addInteger("type", 45L);
-        dataStore.addInteger("steeringWheelTurn", 30L);
-        dataStore.addInteger("binoculars", 0L);
-        dataStore.addInteger("cameraPositionX", -100L);
-        dataStore.addInteger("viewPositionZ", 100L);
+        dataStore.addInteger32("type", 45L);
+        dataStore.addInteger32("steeringWheelTurn", 30L);
+        dataStore.addInteger32("binoculars", 0L);
+        dataStore.addInteger32("cameraPositionX", -100L);
+        dataStore.addInteger32("viewPositionZ", 100L);
 
         // WHEN
         EnumMap<ViewProps, ?> viewProps = camerasParser.getViewProps(dataStore);

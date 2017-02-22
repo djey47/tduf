@@ -38,7 +38,7 @@ public class FormulaHelperTest {
     public void resolveToInteger_whenVerySimpleFormulaWithPointer_shouldReturnValue() {
         // GIVEN
         DataStore dataStore = createDefaultDataStore();
-        dataStore.addInteger("sizeIndicator", 500L);
+        dataStore.addInteger32("sizeIndicator", 500L);
 
         // WHEN-THEN
         assertThat(FormulaHelper.resolveToInteger("=?sizeIndicator?", Optional.empty(), dataStore)).isEqualTo(500);
@@ -48,7 +48,7 @@ public class FormulaHelperTest {
     public void resolveToInteger_whenVerySimpleFormulaWithPointerFromRepeatedField_shouldReturnValue() {
         // GIVEN
         DataStore dataStore = createDefaultDataStore();
-        dataStore.addInteger("fileList[5].sizeIndicator", 500);
+        dataStore.addInteger32("fileList[5].sizeIndicator", 500);
 
         // WHEN-THEN
         assertThat(FormulaHelper.resolveToInteger("=?sizeIndicator?", Optional.of("fileList[5]."), dataStore)).isEqualTo(500);
@@ -58,7 +58,7 @@ public class FormulaHelperTest {
     public void resolveToInteger_whenSimpleFormulaWithPointer_shouldReturnValue() {
         // GIVEN
         DataStore dataStore = createDefaultDataStore();
-        dataStore.addInteger("sizeIndicator", 500);
+        dataStore.addInteger32("sizeIndicator", 500);
 
         // WHEN-THEN
         assertThat(FormulaHelper.resolveToInteger("=?sizeIndicator?*4", Optional.empty(), dataStore)).isEqualTo(2000);

@@ -137,12 +137,12 @@ public class DataStore {
     }
 
     /**
-     * Adds an 4byte Integer value to the store.
+     * Adds an 32bit Integer value to the store.
      *
      * @param fieldName : identifier of field hosting the value, should not exist already
      * @param value     : value to store
      */
-    public void addInteger(String fieldName, long value) {
+    public void addInteger32(String fieldName, long value) {
         addValue(fieldName, INTEGER, 4, TypeHelper.integerToRaw(value));
     }
 
@@ -185,7 +185,7 @@ public class DataStore {
      * @param index             : rank in repeater
      * @param valueBytes        : value to store
      */
-    public void addRepeatedRawValue(String repeaterFieldName, String fieldName, long index, byte[] valueBytes) {
+    public void addRepeatedValue(String repeaterFieldName, String fieldName, long index, byte[] valueBytes) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
         addValue(key, UNKNOWN, valueBytes);
     }
@@ -198,7 +198,7 @@ public class DataStore {
      * @param index             : rank in repeater
      * @param value             : value to store
      */
-    public void addRepeatedTextValue(String repeaterFieldName, String fieldName, long index, String value) {
+    public void addRepeatedText(String repeaterFieldName, String fieldName, long index, String value) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
         addValue(key, TEXT, TypeHelper.textToRaw(value, value.length()));
     }
@@ -211,7 +211,7 @@ public class DataStore {
      * @param index             : rank in repeater
      * @param value             : value to store
      */
-    public void addRepeatedIntegerValue(String repeaterFieldName, String fieldName, long index, long value) {
+    public void addRepeatedInteger32(String repeaterFieldName, String fieldName, long index, long value) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
         addValue(key, INTEGER, 4, TypeHelper.integerToRaw(value));
     }
@@ -225,22 +225,35 @@ public class DataStore {
      * @param value             : value to store
      * @param length            : length of this numeric value (1, 2, 4 or 8 bytes)
      */
-    public void addRepeatedIntegerValue(String repeaterFieldName, String fieldName, long index, long value, int length) {
+    public void addRepeatedInteger(String repeaterFieldName, String fieldName, long index, long value, int length) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
         addValue(key, INTEGER, length, TypeHelper.integerToRaw(value));
     }
 
     /**
-     * Adds a repeated field to the store.
+     * Adds a repeated field (32bit) to the store.
      *
      * @param repeaterFieldName : identifier of repeater field
      * @param fieldName         : identifier of field hosting the value
      * @param index             : rank in repeater
      * @param value             : value to store
      */
-    public void addRepeatedFloatingPointValue(String repeaterFieldName, String fieldName, int index, float value) {
+    public void addRepeatedFloatingPoint(String repeaterFieldName, String fieldName, int index, float value) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
         addValue(key, FPOINT, 4, TypeHelper.floatingPoint32ToRaw(value));
+    }
+
+    /**
+     * Adds a repeated field (16bit) to the store.
+     *
+     * @param repeaterFieldName : identifier of repeater field
+     * @param fieldName         : identifier of field hosting the value
+     * @param index             : rank in repeater
+     * @param value             : value to store
+     */
+    public void addRepeatedHalfFloatingPoint(String repeaterFieldName, String fieldName, int index, float value) {
+        String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
+        addValue(key, FPOINT, 2, TypeHelper.floatingPoint16ToRaw(value));
     }
 
     /**
@@ -565,7 +578,7 @@ public class DataStore {
     }
 
     private void putEntry(String key, Type type, boolean signed, Integer size, byte[] rawValue) {
-        Entry entry = new Entry(type, signed, size, rawValue);
+        Entry entry = new Entry(type, signed, size == null ? rawValue.length : size, rawValue);
         this.getStore().put(key, entry);
     }
 

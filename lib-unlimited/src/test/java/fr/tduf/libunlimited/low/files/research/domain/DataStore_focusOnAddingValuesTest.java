@@ -86,7 +86,7 @@ public class DataStore_focusOnAddingValuesTest {
     @Test
     public void addInteger_shouldCreateNewEntryInStore() throws Exception {
         // GIVEN - WHEN
-        dataStore.addInteger("f1", 500L);
+        dataStore.addInteger32("f1", 500L);
 
         // THEN
         Entry expectedEntry = new Entry(Type.INTEGER, false, 4, TypeHelper.integerToRaw(500L));
@@ -119,7 +119,7 @@ public class DataStore_focusOnAddingValuesTest {
         byte[] expectedRawValue = { 0x0, 0x1, 0x2, 0x3 };
 
         // WHEN
-        dataStore.addRepeatedRawValue("repeater", "f1", 0, expectedRawValue);
+        dataStore.addRepeatedValue("repeater", "f1", 0, expectedRawValue);
 
         // THEN
         Entry actualEntry = dataStore.getStore().get("repeater[0].f1");
@@ -130,7 +130,7 @@ public class DataStore_focusOnAddingValuesTest {
     @Test
     public void addRepeatedTextValue_shouldCreateNewEntryInStore() {
         // GIVEN - WHEN
-        dataStore.addRepeatedTextValue("repeater", "f1", 0, "v1");
+        dataStore.addRepeatedText("repeater", "f1", 0, "v1");
 
         // THEN
         Entry actualEntry = dataStore.getStore().get("repeater[0].f1");
@@ -144,7 +144,7 @@ public class DataStore_focusOnAddingValuesTest {
         byte[] expectedBytes = { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, (byte)0xFF, (byte)0xFF};
 
         // WHEN
-        dataStore.addRepeatedIntegerValue("repeater", "f1", 0, 0xFFFFL);
+        dataStore.addRepeatedInteger32("repeater", "f1", 0, 0xFFFFL);
 
         // THEN
         Entry actualEntry = dataStore.getStore().get("repeater[0].f1");
@@ -158,7 +158,7 @@ public class DataStore_focusOnAddingValuesTest {
         byte[] expectedBytes = { 0x44, 0x21, (byte)0x9D, (byte)0xD6 };
 
         // WHEN
-        dataStore.addRepeatedFloatingPointValue("repeater", "f1", 0, 646.46619f);
+        dataStore.addRepeatedFloatingPoint("repeater", "f1", 0, 646.46619f);
 
         // THEN
         Entry actualEntry = dataStore.getStore().get("repeater[0].f1");

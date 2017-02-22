@@ -89,7 +89,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
             effectiveValue = (long) value;
         }
 
-        dataStore.addInteger(dataProp.getStoreFieldName(), effectiveValue);
+        dataStore.addInteger32(dataProp.getStoreFieldName(), effectiveValue);
     }
 
     /**

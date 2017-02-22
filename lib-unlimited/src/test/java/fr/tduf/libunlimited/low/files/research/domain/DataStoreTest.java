@@ -209,12 +209,12 @@ public class DataStoreTest {
     private static DataStore createDataStoreToMerge() throws IOException {
         DataStore sourceStore = new DataStore(DataStoreFixture.getFileStructure("/files/structures/TEST-datastore-map.json"));
         // Already existing entries
-        sourceStore.addInteger("entry_list[2].my_field", 30L);
+        sourceStore.addInteger32("entry_list[2].my_field", 30L);
         sourceStore.addFloatingPoint("entry_list[2].my_fp_field", 435.666667f);
         sourceStore.addText("entry_list[2].a_field", "cz");
         sourceStore.addValue("entry_list[2].another_field", UNKNOWN, new byte [] {0x9, 0xA, 0xB, 0xC});
         // New entries
-        sourceStore.addInteger("entry_list[3].my_field", 30L);
+        sourceStore.addInteger32("entry_list[3].my_field", 30L);
         sourceStore.addFloatingPoint("entry_list[3].my_fp_field", 435.666667f);
         sourceStore.addText("entry_list[3].a_field", "cz");
         sourceStore.addValue("entry_list[3].another_field", UNKNOWN, new byte[]{0x9, 0xA, 0xB, 0xC});

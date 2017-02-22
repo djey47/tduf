@@ -227,7 +227,7 @@ class GenericParserTest {
         GenericParser.setNumeric(450, dataStoreMock, TestingProps.PROP);
 
         // THEN
-        verify(dataStoreMock).addInteger(FIELD_NAME, 450L);
+        verify(dataStoreMock).addInteger32(FIELD_NAME, 450L);
     }
 
     @Test
@@ -239,7 +239,7 @@ class GenericParserTest {
         GenericParser.setNumeric(450L, dataStoreMock, TestingProps.PROP);
 
         // THEN
-        verify(dataStoreMock).addInteger(FIELD_NAME, 450L);
+        verify(dataStoreMock).addInteger32(FIELD_NAME, 450L);
     }
 
 

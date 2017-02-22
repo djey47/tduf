@@ -11,7 +11,7 @@ class Entry {
     private final Type type;
     private final boolean signed;
     private final byte[] rawValue;
-    private final Integer size;
+    private final int size;
 
     Entry(Type type, byte[] rawValue) {
         this(type, false, rawValue.length, rawValue);
@@ -22,14 +22,6 @@ class Entry {
         this.size = size;
         this.rawValue = rawValue;
         this.signed = signed;
-    }
-
-    byte[] getRawValue() {
-        return rawValue;
-    }
-
-    Type getType() {
-        return type;
     }
 
     /**
@@ -60,7 +52,15 @@ class Entry {
         return signed;
     }
 
-    public Integer getSize() {
+    public int getSize() {
         return size;
+    }
+
+    byte[] getRawValue() {
+        return rawValue;
+    }
+
+    FileStructureDto.Type getType() {
+        return type;
     }
 }
