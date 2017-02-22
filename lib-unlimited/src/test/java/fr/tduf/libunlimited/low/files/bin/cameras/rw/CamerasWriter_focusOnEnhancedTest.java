@@ -3,7 +3,6 @@ package fr.tduf.libunlimited.low.files.bin.cameras.rw;
 
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfoEnhanced;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -28,7 +27,6 @@ class CamerasWriter_focusOnEnhancedTest {
     }
 
     @Test
-    @Disabled
     void write_shouldReturnOriginalContentsBack() throws IOException, URISyntaxException {
         // GIVEN
         String camerasContentsFromJSONFile = FilesHelper.readTextFromResourceFile("/bin/Cameras.bin.json");
