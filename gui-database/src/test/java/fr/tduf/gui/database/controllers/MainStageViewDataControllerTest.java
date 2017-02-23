@@ -113,9 +113,9 @@ public class MainStageViewDataControllerTest {
         profilesChoiceBox.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (TEST_PROFILE_NAME.equals(newValue)) {
-                        controller.currentProfile().setValue(getFirstLayoutProfile());
-                    } else if (TEST_REMOTE_PROFILE_NAME.equals(newValue)) {
                         controller.currentProfile().setValue(getSecondLayoutProfile());
+                    } else if (TEST_REMOTE_PROFILE_NAME.equals(newValue)) {
+                        controller.currentProfile().setValue(getThirdLayoutProfile());
                     } else {
                         throw new IllegalArgumentException("Unknwown profile name!");
                     }
@@ -137,10 +137,6 @@ public class MainStageViewDataControllerTest {
         when(applicationConfigurationMock.getEditorProfile()).thenReturn(empty());
 
         controller.currentLocaleProperty.setValue(LOCALE);
-    }
-
-    private EditorLayoutDto.EditorProfileDto getSecondLayoutProfile() {
-        return layoutObject.getProfiles().get(1);
     }
 
     @Test
@@ -249,12 +245,15 @@ public class MainStageViewDataControllerTest {
         assertThat(actualDirectory).contains("/tdu/euro/bnk/database");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void applyProfile_whenProfileDoesNotExist_shouldThrowException() {
-        // GIVEN-WHEN
-        controller.applyProfile("myProfile");
+    @Test
+    public void applyProfile_whenProfileDoesNotExist_shouldApplyDefaultProfile() {
+        // GIVEN
+        when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(topicObject));
+        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>());
+        when(mainStageControllerMock.getViewData()).thenReturn(controller);
 
-        // THEN: IAE
+        // WHEN-THEN
+        controller.applyProfile("myProfile");
     }
 
     @Test
@@ -264,7 +263,7 @@ public class MainStageViewDataControllerTest {
         Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>();
         when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
         when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>());
-        final EditorLayoutDto.EditorProfileDto profileObject = getFirstLayoutProfile();
+        final EditorLayoutDto.EditorProfileDto profileObject = getSecondLayoutProfile();
         when(minerMock.getContentEntryFromTopicWithInternalIdentifier(0, TOPIC2)).thenReturn(empty());
 
 
@@ -284,7 +283,7 @@ public class MainStageViewDataControllerTest {
     @Test
     public void applySelectedLocale_shouldUpdateConfiguration() throws IOException {
         // GIVEN
-        controller.currentProfile().setValue(getFirstLayoutProfile());
+        controller.currentProfile().setValue(getSecondLayoutProfile());
         when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0));
         when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(TOPIC1));
         when(minerMock.getContentEntryFromTopicWithInternalIdentifier(anyInt(), any(DbDto.Topic.class))).thenReturn(empty());
@@ -311,10 +310,10 @@ public class MainStageViewDataControllerTest {
 
 
         // THEN
-        final String profileName = getFirstLayoutProfile().getName();
+        final String profileName = getSecondLayoutProfile().getName();
         assertThat(navigationHistory).isEmpty();
         assertThat(profilesChoiceBox.getSelectionModel().getSelectedItem()).isEqualTo(profileName);
-        assertThat(controller.currentProfile().getValue()).isEqualTo(getFirstLayoutProfile());
+        assertThat(controller.currentProfile().getValue()).isEqualTo(getSecondLayoutProfile());
 
         verify(applicationConfigurationMock).setDatabasePath("location");
         verify(applicationConfigurationMock).setEditorProfile(profileName);
@@ -324,7 +323,7 @@ public class MainStageViewDataControllerTest {
     @Test
     public void updateDisplayWithLoadedObjects_whenProfileInProperties_shouldUseRightProfile() throws IOException {
         // GIVEN
-        final String profileName = getSecondLayoutProfile().getName();
+        final String profileName = getThirdLayoutProfile().getName();
         when(applicationConfigurationMock.getEditorProfile()).thenReturn(of(profileName));
         when(mainStageControllerMock.getDatabaseObjects()).thenReturn(singletonList(createTopicObject(TOPIC2)));
         when(mainStageControllerMock.getNavigationHistory()).thenReturn(new ArrayDeque<>());
@@ -336,7 +335,7 @@ public class MainStageViewDataControllerTest {
 
         // THEN
         assertThat(profilesChoiceBox.getSelectionModel().getSelectedItem()).isEqualTo(profileName);
-        assertThat(controller.currentProfile().getValue()).isEqualTo(getSecondLayoutProfile());
+        assertThat(controller.currentProfile().getValue()).isEqualTo(getThirdLayoutProfile());
 
         verify(applicationConfigurationMock).setEditorProfile(profileName);
         verify(applicationConfigurationMock).store();
@@ -360,7 +359,7 @@ public class MainStageViewDataControllerTest {
     @Test
     public void updateEntriesAndSwitchTo_whenNoEntry_shouldSetEmptyList() {
         // GIVEN
-        controller.currentProfile().setValue(getFirstLayoutProfile());
+        controller.currentProfile().setValue(getSecondLayoutProfile());
         controller.getBrowsableEntries().add(new ContentEntryDataItem());
 
         // WHEN
@@ -373,7 +372,7 @@ public class MainStageViewDataControllerTest {
     @Test
     public void updateEntriesAndSwitchTo_whenEntries_shouldPopulateEntryList() {
         // GIVEN
-        controller.currentProfile().setValue(getFirstLayoutProfile());
+        controller.currentProfile().setValue(getSecondLayoutProfile());
         controller.getBrowsableEntries().add(new ContentEntryDataItem());
 
         when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(createTopicObjectWithDataEntryAndRef()));
@@ -397,7 +396,7 @@ public class MainStageViewDataControllerTest {
         // GIVEN
         final DbDto topicObjectWithDataEntry = createTopicObjectWithDataEntry();
 
-        controller.currentProfile().setValue(getFirstLayoutProfile());
+        controller.currentProfile().setValue(getSecondLayoutProfile());
         controller.getBrowsableEntries().add(new ContentEntryDataItem());
 
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(topicObjectWithDataEntry);
@@ -422,7 +421,7 @@ public class MainStageViewDataControllerTest {
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(createTopicObjectWithoutStructureFields());
         final Property<Integer> currentEntryIndexProperty = new SimpleObjectProperty<>();
         when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(currentEntryIndexProperty);
-        final EditorLayoutDto.EditorProfileDto profileObject = layoutObject.getProfiles().get(2);
+        final EditorLayoutDto.EditorProfileDto profileObject = getFourthLayoutProfile();
         controller.currentProfile().setValue(profileObject);
         final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>(TOPIC2);
         when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
@@ -440,7 +439,7 @@ public class MainStageViewDataControllerTest {
     @Test
     public void updateAllPropertiesWithItemValues_whenEntryNotFound_shouldNotCrash() {
         // GIVEN
-        final EditorLayoutDto.EditorProfileDto profileObject = getFirstLayoutProfile();
+        final EditorLayoutDto.EditorProfileDto profileObject = getSecondLayoutProfile();
         controller.currentProfile().setValue(profileObject);
         final Property<Integer> currentEntryIndexProperty = new SimpleObjectProperty<>(0);
         when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(currentEntryIndexProperty);
@@ -460,7 +459,7 @@ public class MainStageViewDataControllerTest {
                 .addItem(item)
                 .build();
 
-        controller.currentProfile().setValue(getFirstLayoutProfile());
+        controller.currentProfile().setValue(getSecondLayoutProfile());
         controller.getItemPropsByFieldRank()
                 .rawValuePropertyAtFieldRank(1)
                 .set("VAL1");
@@ -481,7 +480,7 @@ public class MainStageViewDataControllerTest {
     @Test
     public void updateCurrentEntryLabelProperty_whenNoFieldRank_shouldReturnDefaultLabel() {
         // GIVEN
-        final EditorLayoutDto.EditorProfileDto profileObject = getFirstLayoutProfile();
+        final EditorLayoutDto.EditorProfileDto profileObject = getSecondLayoutProfile();
         controller.currentProfile().setValue(profileObject);
         final Property<Integer> currentEntryIndexProperty = new SimpleObjectProperty<>(0);
         when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(currentEntryIndexProperty);
@@ -498,7 +497,7 @@ public class MainStageViewDataControllerTest {
     @Test
     public void updateCurrentEntryLabelProperty_whenSingleFieldRank_shouldRetrieveLabel() {
         // GIVEN
-        final EditorLayoutDto.EditorProfileDto profileObject = getFirstLayoutProfile();
+        final EditorLayoutDto.EditorProfileDto profileObject = getSecondLayoutProfile();
         profileObject.addDefaultEntryLabelFieldRank();
         controller.currentProfile().setValue(profileObject);
         final Property<Integer> currentEntryIndexProperty = new SimpleObjectProperty<>(0);
@@ -726,7 +725,8 @@ public class MainStageViewDataControllerTest {
         Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> remoteEntries = new HashMap<>();
         ObservableList<ContentEntryDataItem> entries = FXCollections.observableArrayList();
         remoteEntries.put(createTopicLinkObjectForAssociation(), entries);
-        Map.Entry<TopicLinkDto, ObservableList<ContentEntryDataItem>> remoteEntry = remoteEntries.entrySet().stream().findAny().get();
+        Map.Entry<TopicLinkDto, ObservableList<ContentEntryDataItem>> remoteEntry = remoteEntries.entrySet().stream().findAny()
+                .orElseThrow(IllegalStateException::new);
 
         when(minerMock.getDatabaseTopic(TOPIC3)).thenReturn(of(createTopicObject(TOPIC3)));
         when(minerMock.getContentEntryReferenceWithInternalIdentifier(-1, TOPIC1)).thenReturn(of("000000"));
@@ -798,13 +798,18 @@ public class MainStageViewDataControllerTest {
     }
 
     private EditorLayoutDto createLayoutObject() {
+        EditorLayoutDto layoutObject = new EditorLayoutDto();
+
+        EditorLayoutDto.EditorProfileDto defaultProfileObject = new EditorLayoutDto.EditorProfileDto("Vehicle slots");
+        defaultProfileObject.setTopic(TOPIC2);
+        layoutObject.getProfiles().add(defaultProfileObject);
+
         EditorLayoutDto.EditorProfileDto profileObject = new EditorLayoutDto.EditorProfileDto(TEST_PROFILE_NAME);
         profileObject.setTopic(TOPIC2);
         FieldSettingsDto fieldSettings = new FieldSettingsDto();
         fieldSettings.setRank(1);
         fieldSettings.setRemoteReferenceProfile(TEST_REMOTE_PROFILE_NAME);
         profileObject.getFieldSettings().add(fieldSettings);
-        EditorLayoutDto layoutObject = new EditorLayoutDto();
         layoutObject.getProfiles().add(profileObject);
 
         EditorLayoutDto.EditorProfileDto remoteProfileObject = new EditorLayoutDto.EditorProfileDto(TEST_REMOTE_PROFILE_NAME);
@@ -984,7 +989,19 @@ public class MainStageViewDataControllerTest {
                 .build();
     }
 
-    private EditorLayoutDto.EditorProfileDto getFirstLayoutProfile() {
+    private EditorLayoutDto.EditorProfileDto getDefaultLayoutProfile() {
         return layoutObject.getProfiles().get(0);
+    }
+
+    private EditorLayoutDto.EditorProfileDto getSecondLayoutProfile() {
+        return layoutObject.getProfiles().get(1);
+    }
+
+    private EditorLayoutDto.EditorProfileDto getThirdLayoutProfile() {
+        return layoutObject.getProfiles().get(2);
+    }
+
+    private EditorLayoutDto.EditorProfileDto getFourthLayoutProfile() {
+        return layoutObject.getProfiles().get(3);
     }
 }

@@ -138,7 +138,13 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     }
 
     void applyProfile(String profileName) {
-        final EditorLayoutDto.EditorProfileDto profileObject = EditorLayoutHelper.getAvailableProfileByName(profileName, getLayoutObject());
+        EditorLayoutDto.EditorProfileDto profileObject;
+        try {
+            profileObject = EditorLayoutHelper.getAvailableProfileByName(profileName, getLayoutObject());
+        } catch (IllegalArgumentException iae) {
+            Log.warn(THIS_CLASS_NAME, "Profile not found: " + profileName + ", using defaults.");
+            profileObject = EditorLayoutHelper.getDefaultProfile(getLayoutObject());
+        }
         final DbDto.Topic topic = profileObject.getTopic();
         final DbDto currentTopicObject = getMiner().getDatabaseTopic(topic)
                 .orElseThrow(() -> new IllegalStateException(MESSAGE_NO_DATABASE_OBJECT_FOR_TOPIC + topic));
