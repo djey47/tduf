@@ -15,10 +15,10 @@ import fr.tduf.gui.database.plugins.common.DatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.libunlimited.high.files.db.common.helper.CameraAndIKHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfoEnhanced;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
-import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
@@ -70,7 +70,7 @@ public class CamerasPlugin implements DatabasePlugin {
     private CamerasDialogsHelper dialogsHelper;
     private CamerasImExHelper imExHelper;
 
-    private final Property<CamerasParser> camerasParserProperty = new SimpleObjectProperty<>();
+    private final Property<CameraInfoEnhanced> cameraInfoEnhancedProperty = new SimpleObjectProperty<>();
     private ObservableList<CameraInfo> cameraInfos;
     private ObservableList<CameraInfo.CameraView> cameraViews;
 
@@ -86,7 +86,7 @@ public class CamerasPlugin implements DatabasePlugin {
         CamerasContext camerasContext = context.getCamerasContext();
         camerasContext.reset();
 
-        camerasParserProperty.setValue(null);
+        cameraInfoEnhancedProperty.setValue(null);
 
         String databaseLocation = context.getDatabaseLocation();
         Path cameraFile = resolveCameraFilePath(databaseLocation);
@@ -99,8 +99,8 @@ public class CamerasPlugin implements DatabasePlugin {
         Log.info(THIS_CLASS_NAME, "Loading camera info from " + cameraFile);
         camerasContext.setPluginLoaded(true);
 
-        CamerasParser camerasParser = CamerasHelper.loadAndParseFile(cameraFile.toString());
-        camerasParserProperty.setValue(camerasParser);
+        CameraInfoEnhanced cameraInfoEnhanced = CamerasHelper.loadAndParseCamerasDatabase(cameraFile.toString());
+        cameraInfoEnhancedProperty.setValue(cameraInfoEnhanced);
 
         cameraRefHelper = new CameraAndIKHelper();
         Log.info(THIS_CLASS_NAME, "Camera reference loaded");
@@ -125,7 +125,7 @@ public class CamerasPlugin implements DatabasePlugin {
 
         String cameraFile = camerasContext.getBinaryFileLocation();
         Log.info(THIS_CLASS_NAME, "Saving camera info to " + cameraFile);
-        CamerasHelper.saveFile(camerasParserProperty.getValue(), cameraFile);
+        CamerasHelper.saveCamerasDatabase(cameraInfoEnhancedProperty.getValue(), cameraFile);
     }
 
     /**
@@ -152,7 +152,7 @@ public class CamerasPlugin implements DatabasePlugin {
             return hBox;
         }
 
-        cameraInfos = FXCollections.observableArrayList(CamerasHelper.fetchAllInformation(camerasParserProperty.getValue()));
+        cameraInfos = FXCollections.observableArrayList(CamerasHelper.fetchAllInformation(cameraInfoEnhancedProperty.getValue()));
         cameraViews = FXCollections.observableArrayList();
         ComboBox<CameraInfo> cameraSelectorComboBox = new ComboBox<>(cameraInfos.sorted(comparingLong(CameraInfo::getCameraIdentifier)));
         ComboBox<CameraInfo.CameraView> viewSelectorComboBox = new ComboBox<>(cameraViews.sorted(comparing(CameraInfo.CameraView::getType)));
@@ -322,7 +322,7 @@ public class CamerasPlugin implements DatabasePlugin {
                 camerasContext.getErrorProperty().setValue(false);
                 camerasContext.getErrorMessageProperty().setValue("");
 
-                cameraViews.addAll(CamerasHelper.fetchInformation(newValue.getCameraIdentifier(), camerasParserProperty.getValue()).getViews());
+                cameraViews.addAll(CamerasHelper.fetchInformation(Long.valueOf(newValue.getCameraIdentifier()).intValue(), cameraInfoEnhancedProperty.getValue()).getViews());
 
                 if (!cameraViews.isEmpty()) {
                     currentCameraViewProperty.setValue(cameraViews.get(0));
@@ -351,7 +351,7 @@ public class CamerasPlugin implements DatabasePlugin {
     private List<Map.Entry<ViewProps, ?>> getSortedAndEditableViewProperties(long cameraIdentifier, ViewKind viewKind) {
         final Set<ViewProps> nonEditableProps = new HashSet<>(singletonList(TYPE));
 
-        return CamerasHelper.fetchViewProperties(cameraIdentifier, viewKind, camerasParserProperty.getValue()).entrySet().stream()
+        return CamerasHelper.fetchViewProperties(Long.valueOf(cameraIdentifier).intValue(), viewKind, cameraInfoEnhancedProperty.getValue()).entrySet().stream()
                 .filter(propsEntry -> !nonEditableProps.contains(propsEntry.getKey()))
                 .sorted(comparing(Map.Entry::getKey))
                 .collect(toList());
@@ -385,7 +385,7 @@ public class CamerasPlugin implements DatabasePlugin {
 
         Log.debug(THIS_CLASS_NAME, "Will update camera: " + cameraIdentifier);
 
-        return CamerasHelper.updateViews(updatedConfiguration, camerasParserProperty.getValue());
+        return CamerasHelper.updateViews(updatedConfiguration, cameraInfoEnhancedProperty.getValue());
     }
 
     private int validateCellInput(String value) {
@@ -408,14 +408,14 @@ public class CamerasPlugin implements DatabasePlugin {
                 return;
             }
 
-            long newCameraSetIdentifier = input.map(Long::valueOf)
+            int newCameraSetIdentifier = input.map(Integer::valueOf)
                     .orElseThrow(() -> new IllegalStateException("Should not happen"));
-            long cameraSetIdentifier = Long.valueOf(rawValueProperty.getValue());
+            int cameraSetIdentifier = Integer.valueOf(rawValueProperty.getValue());
 
-            CamerasParser camerasParser = camerasParserProperty.getValue();
-            CamerasHelper.duplicateCameraSet(cameraSetIdentifier, newCameraSetIdentifier, camerasParser);
+            CameraInfoEnhanced cameraInfoEnhanced = cameraInfoEnhancedProperty.getValue();
+            CamerasHelper.duplicateCameraSet(cameraSetIdentifier, newCameraSetIdentifier, cameraInfoEnhanced);
 
-            CameraInfo newCameraInfo = CamerasHelper.fetchInformation(newCameraSetIdentifier, camerasParser);
+            CameraInfo newCameraInfo = CamerasHelper.fetchInformation(newCameraSetIdentifier, cameraInfoEnhanced);
             if (!cameraInfos.contains(newCameraInfo)) {
                 cameraInfos.add(newCameraInfo);
             }
@@ -445,7 +445,7 @@ public class CamerasPlugin implements DatabasePlugin {
     private void importSetFromPatchFile(File file, long targetSetIdentifier, Window mainWindow) {
         SimpleDialogOptions dialogOptions;
         try {
-            String writtenPropertiesPath = imExHelper.importPatch(file, camerasParserProperty.getValue(), targetSetIdentifier)
+            String writtenPropertiesPath = imExHelper.importPatch(file, cameraInfoEnhancedProperty.getValue(), targetSetIdentifier)
                     // Extract to common display constant
                     .map(propertiesPath -> String.format("Written properties file:%s%s", System.lineSeparator(), propertiesPath))
                     .orElse("");
@@ -473,7 +473,7 @@ public class CamerasPlugin implements DatabasePlugin {
     private void exportSetToPatchFile(File patchFile, long setIdentifier, ViewKind type, Window mainWindow) {
         SimpleDialogOptions dialogOptions;
         try {
-            imExHelper.exportToPatch(patchFile, camerasParserProperty.getValue(), setIdentifier, type);
+            imExHelper.exportToPatch(patchFile, cameraInfoEnhancedProperty.getValue(), setIdentifier, type);
 
             dialogOptions = SimpleDialogOptions.builder()
                     .withContext(INFORMATION)

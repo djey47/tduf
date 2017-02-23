@@ -23,6 +23,7 @@ public class CameraInfo {
         return new CameraInfoBuilder();
     }
 
+    // TODO set to int
     public long getCameraIdentifier() {
         return cameraIdentifier;
     }

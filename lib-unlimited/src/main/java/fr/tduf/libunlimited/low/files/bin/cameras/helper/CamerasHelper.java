@@ -321,7 +321,8 @@ public class CamerasHelper {
      * @throws IOException when a file system error occurs
      */
     public static void saveCamerasDatabase(CameraInfoEnhanced cameraInfoEnhanced, String cameraFile) throws IOException {
-        // TODO use writer
+        ByteArrayOutputStream outputStream = CamerasWriter.load(cameraInfoEnhanced).write();
+        Files.write(Paths.get(cameraFile), outputStream.toByteArray(), StandardOpenOption.CREATE);
     }
 
     /**

@@ -3,7 +3,7 @@ package fr.tduf.gui.database.plugins.cameras.helper;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libtesting.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.CamPatchDto;
-import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfoEnhanced;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +24,7 @@ class CamerasImExHelperTest {
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 
     @Mock
-    private CamerasParser camerasParser;
+    private CameraInfoEnhanced cameraInfoEnhancedMock;
 
     private CamerasImExHelper imExHelper = new CamerasImExHelper();
 
@@ -39,7 +39,7 @@ class CamerasImExHelperTest {
         File patchFile = new File(thisClass.getResource("/patches/cameras/tduf-empty.cam.json").getFile());
 
         // when
-        Optional<String> actualPropertyPath = imExHelper.importPatch(patchFile, camerasParser, null);
+        Optional<String> actualPropertyPath = imExHelper.importPatch(patchFile, cameraInfoEnhancedMock, null);
 
         // then
         assertThat(actualPropertyPath).isEmpty();
@@ -52,7 +52,7 @@ class CamerasImExHelperTest {
 
         // when-then
         assertThrows(IllegalStateException.class,
-                () -> imExHelper.importPatch(patchFile, camerasParser, null));
+                () -> imExHelper.importPatch(patchFile, cameraInfoEnhancedMock, null));
     }
 
     @Test
@@ -61,7 +61,7 @@ class CamerasImExHelperTest {
         File patchFile = new File(FilesHelper.createTempDirectoryForDatabaseEditor(), "tduf-export.cam.json");
 
         // when
-        imExHelper.exportToPatch(patchFile, camerasParser, 1L, null);
+        imExHelper.exportToPatch(patchFile, cameraInfoEnhancedMock, 1L, null);
 
         // then
         Log.info(THIS_CLASS_NAME, "Written patch file: " + patchFile.getPath());

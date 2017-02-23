@@ -8,9 +8,9 @@ import fr.tduf.libunlimited.high.files.common.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PatchPropertiesReadWriteHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfoEnhanced;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
-import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.File;
@@ -30,28 +30,28 @@ public class CamerasImExHelper {
 
     /**
      * @param patchFile             : applied cameras patch file
-     * @param camerasParser         : loaded cameras contents
+     * @param cameraInfoEnhanced    : loaded cameras contents
      * @param targetSetIdentifier   : set identifier to use, can be null to use pre-existing identifier
      * @return potential path of written properties file
      */
-    public Optional<String> importPatch(File patchFile, CamerasParser camerasParser, Long targetSetIdentifier) throws IOException {
+    public Optional<String> importPatch(File patchFile, CameraInfoEnhanced cameraInfoEnhanced, Long targetSetIdentifier) throws IOException {
         CamPatchDto patchObject = objectMapper.readValue(patchFile, CamPatchDto.class);
         overrideSetIdentifierIfNecessary(targetSetIdentifier, patchObject.getChanges());
 
         PatchProperties patchProperties = PatchPropertiesReadWriteHelper.readPatchProperties(patchFile);
-        final PatchProperties effectiveProperties = new CamPatcher(camerasParser).applyWithProperties(patchObject, patchProperties);
+        final PatchProperties effectiveProperties = new CamPatcher(cameraInfoEnhanced).applyWithProperties(patchObject, patchProperties);
 
         return PatchPropertiesReadWriteHelper.writeEffectivePatchProperties(effectiveProperties, patchFile.getAbsolutePath());
     }
 
     /**
-     * @param patchFile     : applied cameras patch file
-     * @param camerasParser : loaded cameras contents
-     * @param setIdentifier : set identifier to use
-     * @param viewKind      : can be null, to export all views
+     * @param patchFile             : applied cameras patch file
+     * @param cameraInfoEnhanced    : loaded cameras contents
+     * @param setIdentifier         : set identifier to use
+     * @param viewKind              : can be null, to export all views
      */
-    public void exportToPatch(File patchFile, CamerasParser camerasParser, long setIdentifier, ViewKind viewKind) throws IOException {
-        List<CameraInfo> cameraInfos = CamerasHelper.fetchAllInformation(camerasParser);
+    public void exportToPatch(File patchFile, CameraInfoEnhanced cameraInfoEnhanced, long setIdentifier, ViewKind viewKind) throws IOException {
+        List<CameraInfo> cameraInfos = CamerasHelper.fetchAllInformation(cameraInfoEnhanced);
 
         ItemRange identifierRange = fromSingleValue(Long.toString(setIdentifier));
         ItemRange viewRange = viewKind == null ? ALL : fromSingleValue(viewKind.name());

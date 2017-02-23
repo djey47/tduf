@@ -2,6 +2,7 @@ package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.helper.CommandHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfoEnhanced;
 import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import org.kohsuke.args4j.CmdLineException;
@@ -32,10 +33,10 @@ public class CameraTool extends GenericTool {
     private String outputCameraFile;
 
     @Option(name="-t", aliases = "--targetId", usage = "Base value of new camera identifier (required for copy-set operation).")
-    private Long targetIdentifier;
+    private Integer targetIdentifier;
 
     @Option(name="-s", aliases = "--sourceId", usage = "Identifier of camera set to copy (required for copy-set operation).")
-    private Long sourceIdentifier;
+    private Integer sourceIdentifier;
 
     @Option(name="-b", aliases = "--batchFile", usage = "CSV File containing all identifiers of camera sets to copy (required for copy-sets operation).")
     private String batchIdentifiersFile;
@@ -211,13 +212,13 @@ public class CameraTool extends GenericTool {
     }
 
     private Map<String, ?> copySet(String sourceCameraFile, String targetCameraFile) throws IOException {
-        CamerasParser parser = loadAndParseCameras(sourceCameraFile);
+        CameraInfoEnhanced cameraInfoEnhanced = loadCameras(sourceCameraFile);
 
-        CamerasHelper.duplicateCameraSet(sourceIdentifier, targetIdentifier, parser);
+        CamerasHelper.duplicateCameraSet(sourceIdentifier, targetIdentifier, cameraInfoEnhanced);
 
         outLine("> Done copying camera set.");
 
-        CamerasHelper.saveFile(parser, targetCameraFile);
+        CamerasHelper.saveCamerasDatabase(cameraInfoEnhanced, targetCameraFile);
 
         return makeCommandResultForCopy(targetCameraFile);
     }
@@ -255,6 +256,17 @@ public class CameraTool extends GenericTool {
         return readInfo;
     }
 
+    private CameraInfoEnhanced loadCameras(String cameraFile) throws IOException {
+        outLine("> Will use Cameras file: " + cameraFile);
+
+        CameraInfoEnhanced cameraInfoEnhanced = CamerasHelper.loadAndParseCamerasDatabase(cameraFile);
+
+        outLine("> Done reading cameras.");
+
+        return cameraInfoEnhanced;
+    }
+
+    @Deprecated
     private CamerasParser loadAndParseCameras(String cameraFile) throws IOException {
         outLine("> Will use Cameras file: " + cameraFile);
 

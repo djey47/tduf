@@ -1,13 +1,12 @@
 package fr.tduf.libunlimited.high.files.bin.cameras.patcher;
 
-
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.CamPatchDto;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.SetChangeDto;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.helper.CamPlaceholderResolver;
 import fr.tduf.libunlimited.high.files.common.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfoEnhanced;
 import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
-import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 
 import java.util.List;
 
@@ -18,13 +17,12 @@ import static java.util.stream.Collectors.toList;
 /**
  * Used to apply patches to existing cameras information.
  */
-// TODO refactor and do not use parser directly (see Parser and Writer)
 public class CamPatcher {
-    private final CamerasParser camerasParser;
-    private static final long IDENTIFIER_REFERENCE_SET = 10000L;
+    private final CameraInfoEnhanced cameraInfoEnhanced;
+    private static final int IDENTIFIER_REFERENCE_SET = 10000;
 
-    public CamPatcher(CamerasParser camerasParser) {
-        this.camerasParser = requireNonNull(camerasParser, "Parser with loaded cameras is required");
+    public CamPatcher(CameraInfoEnhanced cameraInfoEnhanced) {
+        this.cameraInfoEnhanced = requireNonNull(cameraInfoEnhanced, "Loaded cameras info is required");
     }
 
     /**
@@ -58,8 +56,8 @@ public class CamPatcher {
     }
 
     private void applyChange(SetChangeDto setChangeObject) {
-        long setIdentifier = Long.valueOf(setChangeObject.getId());
-        if (!CamerasHelper.cameraSetExists(setIdentifier, camerasParser)) {
+        int setIdentifier = Integer.valueOf(setChangeObject.getId());
+        if (!CamerasHelper.cameraSetExists(setIdentifier, cameraInfoEnhanced)) {
             createCameraSetFromReference(setIdentifier);
         }
 
@@ -72,13 +70,13 @@ public class CamPatcher {
                 .withViews(allViews)
                 .build();
 
-        CamerasHelper.updateViews(updateConf, camerasParser);
+        CamerasHelper.updateViews(updateConf, cameraInfoEnhanced);
     }
 
-    private void createCameraSetFromReference(long newSetIdentifier) {
-        if (!camerasParser.getCameraViews().containsKey(IDENTIFIER_REFERENCE_SET)) {
+    private void createCameraSetFromReference(int newSetIdentifier) {
+        if (!cameraInfoEnhanced.cameraSetExistsInSettings(IDENTIFIER_REFERENCE_SET)) {
             throw new IllegalStateException("Reference camera set is unavailable: " + IDENTIFIER_REFERENCE_SET);
         }
-        CamerasHelper.duplicateCameraSet(IDENTIFIER_REFERENCE_SET, newSetIdentifier, camerasParser);
+        CamerasHelper.duplicateCameraSet(IDENTIFIER_REFERENCE_SET, newSetIdentifier, cameraInfoEnhanced);
     }
 }
