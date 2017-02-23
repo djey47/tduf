@@ -316,14 +316,14 @@ class CamerasHelper_focusOnEnhancedCamerasTest {
                 .build();
 
         // WHEN
-        CameraInfo actualCameraInfo = CamerasHelper.updateViews(configuration, cameraInfoEnhanced);
+        CamerasHelper.updateViews(configuration, cameraInfoEnhanced);
 
         // THEN
-        Map<ViewKind, CameraInfo.CameraView> viewsByType = actualCameraInfo.getViewsByKind();
-        assertThat(viewsByType.get(Cockpit).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
-        assertThat(viewsByType.get(Cockpit_Back).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
-        assertThat(viewsByType.get(Hood).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
-        assertThat(viewsByType.get(Hood_Back).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
+        Map<ViewKind, CameraViewEnhanced> viewsByKind = cameraInfoEnhanced.getViewsByKindForCameraSet(1000);
+        assertThat(viewsByKind.get(Cockpit).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
+        assertThat(viewsByKind.get(Cockpit_Back).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
+        assertThat(viewsByKind.get(Hood).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
+        assertThat(viewsByKind.get(Hood_Back).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
     }
 
     @Test
@@ -340,10 +340,10 @@ class CamerasHelper_focusOnEnhancedCamerasTest {
                 .build();
 
         // WHEN
-        CameraInfo actualCameraInfo = CamerasHelper.updateViews(configuration, cameraInfoEnhanced);
+        CamerasHelper.updateViews(configuration, cameraInfoEnhanced);
 
         // THEN
-        Map<ViewKind, CameraInfo.CameraView> viewsByType = actualCameraInfo.getViewsByKind();
+        Map<ViewKind, CameraViewEnhanced> viewsByType = cameraInfoEnhanced.getViewsByKindForCameraSet(1000);
         assertThat(viewsByType.get(Cockpit).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
         assertThat(viewsByType.get(Cockpit_Back).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
         assertThat(viewsByType.get(Hood).getSettings().get(BINOCULARS)).isEqualTo(0L);

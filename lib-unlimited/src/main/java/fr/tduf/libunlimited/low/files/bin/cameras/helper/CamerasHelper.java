@@ -249,7 +249,7 @@ public class CamerasHelper {
      * @return updated view properties.
      */
     // TODO create dedicated object for configuration
-    public static CameraInfo updateViews(CameraInfo configuration, CameraInfoEnhanced cameraInfoEnhanced) {
+    public static void updateViews(CameraInfo configuration, CameraInfoEnhanced cameraInfoEnhanced) {
         Long cameraIdentifier = validateConfiguration(configuration);
         cameraInfoEnhanced.getViewsForCameraSet(cameraIdentifier.intValue())
                 .forEach(view -> {
@@ -261,8 +261,6 @@ public class CamerasHelper {
                             .ifPresent(conf -> conf.getSettings().entrySet()
                                     .forEach(entry -> view.getSettings().put(entry.getKey(), entry.getValue())));
                 });
-
-        return fetchInformation(cameraIdentifier.intValue(), cameraInfoEnhanced);
     }
 
     /**

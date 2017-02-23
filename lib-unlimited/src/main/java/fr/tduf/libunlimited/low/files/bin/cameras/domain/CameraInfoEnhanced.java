@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * Parsed cameras database contents
@@ -68,13 +69,22 @@ public class CameraInfoEnhanced {
 
     /**
      * @return all views for specified set identifier
-     * @throws NoSuchElementException if such a set does not exists
+     * @throws NoSuchElementException if such a set does not exist
      */
     public List<CameraViewEnhanced> getViewsForCameraSet(int setIdentifier) {
         if (!views.containsKey(setIdentifier)) {
             throw new NoSuchElementException("No camera set with id=" + setIdentifier);
         }
         return views.get(setIdentifier);
+    }
+
+    /**
+     * @return all available views, indexed by kind, for specified set identifier
+     * @throws NoSuchElementException if such a set does not exist
+     */
+    public Map<ViewKind, CameraViewEnhanced> getViewsByKindForCameraSet(int setIdentifier) {
+        return getViewsForCameraSet(setIdentifier).stream()
+                .collect(toMap(CameraViewEnhanced::getKind, v -> v));
     }
 
     /**

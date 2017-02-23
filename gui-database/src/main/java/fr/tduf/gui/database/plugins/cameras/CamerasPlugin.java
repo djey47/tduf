@@ -369,11 +369,11 @@ public class CamerasPlugin implements DatabasePlugin {
 
             ViewKind currentViewKind = currentViewProperty.getValue().getType();
             long cameraIdentifier = Long.valueOf(rawValueProperty.getValue());
-            updateViewPropertiesInParser(cameraIdentifier, currentViewKind, editedEntry);
+            updateViewProperties(cameraIdentifier, currentViewKind, editedEntry);
         };
     }
 
-    private CameraInfo updateViewPropertiesInParser(long cameraIdentifier, ViewKind currentViewKind, Map.Entry<ViewProps, Object> editedProp) {
+    private void updateViewProperties(long cameraIdentifier, ViewKind currentViewKind, Map.Entry<ViewProps, Object> editedProp) {
         EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
         viewProps.put(TYPE, currentViewKind);
         viewProps.put(editedProp.getKey(), editedProp.getValue());
@@ -385,7 +385,7 @@ public class CamerasPlugin implements DatabasePlugin {
 
         Log.debug(THIS_CLASS_NAME, "Will update camera: " + cameraIdentifier);
 
-        return CamerasHelper.updateViews(updatedConfiguration, cameraInfoEnhancedProperty.getValue());
+        CamerasHelper.updateViews(updatedConfiguration, cameraInfoEnhancedProperty.getValue());
     }
 
     private int validateCellInput(String value) {
