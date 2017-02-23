@@ -5,6 +5,7 @@ import fr.tduf.libunlimited.low.files.research.common.helper.FormulaHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.StructureHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
+import fr.tduf.libunlimited.low.files.research.domain.Type;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 
 import java.io.ByteArrayOutputStream;
@@ -59,7 +60,7 @@ public abstract class GenericWriter<T> implements StructureBasedProcessor {
             byte[] valueBytes = retrieveValueFromStore(field, repeaterKey);
             Integer length = FormulaHelper.resolveToInteger(field.getSizeFormula(), Optional.of(repeaterKey), this.dataStore);
 
-            FileStructureDto.Type type = field.getType();
+            Type type = field.getType();
             switch (type) {
                 case GAP:
                     writeGapField(length, outputStream);

@@ -12,7 +12,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.UNKNOWN;
+import static fr.tduf.libunlimited.low.files.research.domain.Type.UNKNOWN;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;

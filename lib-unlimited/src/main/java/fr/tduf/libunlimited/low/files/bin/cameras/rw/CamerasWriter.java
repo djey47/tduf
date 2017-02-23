@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps.TYPE;
-import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.UNKNOWN;
+import static fr.tduf.libunlimited.low.files.research.domain.Type.UNKNOWN;
 import static java.util.Objects.requireNonNull;
 
 /**

@@ -8,7 +8,7 @@ import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.*;
+import static fr.tduf.libunlimited.low.files.research.domain.Type.*;
 
 /**
  * Provides data for data store tests.

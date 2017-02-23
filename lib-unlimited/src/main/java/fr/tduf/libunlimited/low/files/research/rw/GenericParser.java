@@ -5,6 +5,7 @@ import fr.tduf.libunlimited.low.files.research.common.helper.FormulaHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.StructureHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
+import fr.tduf.libunlimited.low.files.research.domain.Type;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 
 import java.io.ByteArrayInputStream;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static fr.tduf.libunlimited.common.helper.AssertorHelper.assertSimpleCondition;
-import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.*;
+import static fr.tduf.libunlimited.low.files.research.domain.Type.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -112,7 +113,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
 
     private ReadResult readAndDumpValue(String key, FileStructureDto.Field field, Integer length) {
         ReadResult readResult;
-        FileStructureDto.Type type = field.getType();
+        Type type = field.getType();
         switch(type) {
             case GAP:
                 readResult = jumpGap(length);
@@ -246,7 +247,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
                 TypeHelper.rawToFloatingPoint(readValueAsBytes)));
     }
 
-    private void dumpDelimiterOrTextValue(byte[] readValueAsBytes, Integer length, String key, FileStructureDto.Type type) {
+    private void dumpDelimiterOrTextValue(byte[] readValueAsBytes, Integer length, String key, Type type) {
         int effectiveLength = length == null ? readValueAsBytes.length : length;
         dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT,
                 key,

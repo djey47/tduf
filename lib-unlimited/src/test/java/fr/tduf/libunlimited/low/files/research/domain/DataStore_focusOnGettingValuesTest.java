@@ -2,7 +2,6 @@ package fr.tduf.libunlimited.low.files.research.domain;
 
 import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.domain.fixture.DataStoreFixture;
-import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -10,7 +9,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.UNKNOWN;
+import static fr.tduf.libunlimited.low.files.research.domain.Type.UNKNOWN;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -183,9 +182,9 @@ public class DataStore_focusOnGettingValuesTest {
         assertThat(subStore2.getRepeatIndex()).isEqualTo(2);
 
         Map<String, Entry> subStore = subStore0.getStore();
-        assertThat(subStore.get("my_field")).isEqualTo(new Entry(FileStructureDto.Type.INTEGER, TypeHelper.integerToRaw(10L)));
-        assertThat(subStore.get("my_fp_field")).isEqualTo(new Entry(FileStructureDto.Type.FPOINT, TypeHelper.floatingPoint32ToRaw(235.666667f)));
-        assertThat(subStore.get("a_field")).isEqualTo(new Entry(FileStructureDto.Type.TEXT, TypeHelper.textToRaw("az", 2)));
+        assertThat(subStore.get("my_field")).isEqualTo(new Entry(Type.INTEGER, TypeHelper.integerToRaw(10L)));
+        assertThat(subStore.get("my_fp_field")).isEqualTo(new Entry(Type.FPOINT, TypeHelper.floatingPoint32ToRaw(235.666667f)));
+        assertThat(subStore.get("a_field")).isEqualTo(new Entry(Type.TEXT, TypeHelper.textToRaw("az", 2)));
         assertThat(subStore.get("another_field")).isEqualTo(new Entry(UNKNOWN, new byte[] {0x1, 0x2, 0x3, 0x4}));
     }
 }

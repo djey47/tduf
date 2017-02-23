@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 import static fr.tduf.libunlimited.common.helper.AssertorHelper.assertSimpleCondition;
 import static fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper.*;
-import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.*;
+import static fr.tduf.libunlimited.low.files.research.domain.Type.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -95,7 +95,7 @@ public class DataStore {
      * @param type      : value type
      * @param rawValue  : value to store
      */
-    public void addValue(String fieldName, FileStructureDto.Type type, byte[] rawValue) {
+    public void addValue(String fieldName, Type type, byte[] rawValue) {
         addValue(fieldName, type, false, rawValue.length, rawValue);
     }
 
@@ -106,7 +106,7 @@ public class DataStore {
      * @param length    : value length
      * @param rawValue  : value to store
      */
-    public void addValue(String fieldName, FileStructureDto.Type type, int length, byte[] rawValue) {
+    public void addValue(String fieldName, Type type, int length, byte[] rawValue) {
         addValue(fieldName, type, false, length, rawValue);
     }
 
@@ -118,7 +118,7 @@ public class DataStore {
      * @param length    : size of value, in bytes (can be null)
      * @param rawValue  : value to store
      */
-    public void addValue(String fieldName, FileStructureDto.Type type, boolean signed, Integer length, byte[] rawValue) {
+    public void addValue(String fieldName, Type type, boolean signed, Integer length, byte[] rawValue) {
         if (!type.isValueToBeStored()) {
             return;
         }
@@ -329,7 +329,7 @@ public class DataStore {
         }
 
         Entry entry = this.store.get(fieldName);
-        FileStructureDto.Type entryType = entry.getType();
+        Type entryType = entry.getType();
         assertSimpleCondition(() -> FPOINT == entryType, "Wrong entry type: " + entryType + ", expected: " + FPOINT);
 
         return of(
@@ -446,7 +446,7 @@ public class DataStore {
 
     private void readJsonNode(JsonNode jsonNode, String parentKey) {
 
-        FileStructureDto.Type type = FileStructureDto.Type.GAP;
+        Type type = Type.GAP;
         byte[] rawValue = new byte[0];
         boolean signed = false;
         Integer size = null;
@@ -527,7 +527,7 @@ public class DataStore {
         for (FileStructureDto.Field field : fields) {
 
             String fieldName = field.getName();
-            FileStructureDto.Type fieldType = field.getType();
+            Type fieldType = field.getType();
 
             if (REPEATER == fieldType) {
 
@@ -564,7 +564,7 @@ public class DataStore {
         }
     }
 
-    private void putEntry(String key, FileStructureDto.Type type, boolean signed, Integer size, byte[] rawValue) {
+    private void putEntry(String key, Type type, boolean signed, Integer size, byte[] rawValue) {
         Entry entry = new Entry(type, signed, size, rawValue);
         this.getStore().put(key, entry);
     }
@@ -575,7 +575,7 @@ public class DataStore {
     }
 
     private void readRegularField(FileStructureDto.Field currentField, ObjectNode currentObjectNode, Entry storeEntry) {
-        FileStructureDto.Type fieldType = currentField.getType();
+        Type fieldType = currentField.getType();
         String fieldName = currentField.getName();
         byte[] rawValue = storeEntry.getRawValue();
 

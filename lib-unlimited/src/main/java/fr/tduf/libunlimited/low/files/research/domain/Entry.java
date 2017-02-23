@@ -1,7 +1,5 @@
 package fr.tduf.libunlimited.low.files.research.domain;
 
-import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
-
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
@@ -10,16 +8,16 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
  * Represents a store entry to bring more information.
  */
 class Entry {
-    private final FileStructureDto.Type type;
+    private final Type type;
     private final boolean signed;
     private final byte[] rawValue;
     private final Integer size;
 
-    Entry(FileStructureDto.Type type, byte[] rawValue) {
+    Entry(Type type, byte[] rawValue) {
         this(type, false, rawValue.length, rawValue);
     }
 
-    Entry(FileStructureDto.Type type, boolean signed, Integer size, byte[] rawValue) {
+    Entry(Type type, boolean signed, Integer size, byte[] rawValue) {
         this.type = type;
         this.size = size;
         this.rawValue = rawValue;
@@ -30,7 +28,7 @@ class Entry {
         return rawValue;
     }
 
-    FileStructureDto.Type getType() {
+    Type getType() {
         return type;
     }
 

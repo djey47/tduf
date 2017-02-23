@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.NoSuchElementException;
 
-import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.UNKNOWN;
+import static fr.tduf.libunlimited.low.files.research.domain.Type.UNKNOWN;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GenericWriterTest {

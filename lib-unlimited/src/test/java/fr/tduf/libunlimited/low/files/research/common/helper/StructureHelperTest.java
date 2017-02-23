@@ -8,8 +8,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Optional;
 
-import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.INTEGER;
-import static fr.tduf.libunlimited.low.files.research.dto.FileStructureDto.Type.REPEATER;
+import static fr.tduf.libunlimited.low.files.research.domain.Type.INTEGER;
+import static fr.tduf.libunlimited.low.files.research.domain.Type.REPEATER;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
