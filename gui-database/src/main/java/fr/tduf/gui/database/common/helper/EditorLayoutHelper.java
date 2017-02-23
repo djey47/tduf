@@ -13,6 +13,7 @@ import static java.util.Objects.requireNonNull;
  * Provides static methods to handle layout objects.
  */
 public class EditorLayoutHelper {
+    private static final String LAYOUT_DEFAULT = "Vehicle slots";
     private static final String MESSAGE_LAYOUT_OBJECT_REQUIRED = "Editor layout object is required.";
 
     private EditorLayoutHelper() {}
@@ -27,6 +28,13 @@ public class EditorLayoutHelper {
                 .filter(profile -> profile.getName().equals(profileName))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("Unknown profile name: " + profileName));
+    }
+
+    /**
+     * @return the defaullt layout profile. Should exist.
+     */
+    public static EditorLayoutDto.EditorProfileDto getDefaultProfile(EditorLayoutDto layoutObject) {
+        return getAvailableProfileByName(LAYOUT_DEFAULT, layoutObject);
     }
 
     /**

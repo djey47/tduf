@@ -3,33 +3,31 @@ package fr.tduf.gui.database.common.helper;
 
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class EditorLayoutHelperTest {
-
-    @Test(expected = NullPointerException.class)
-    public void getAvailableProfileByName_whenLayoutObjectNull_shouldThrowException() throws Exception {
-        // GIVEN-WHEN
-        EditorLayoutHelper.getAvailableProfileByName(null, null);
-
-        // THEN: NPE
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void getAvailableProfileByName_whenProfileNotFound_shouldThrowException() {
-        // GIVEN-WHEN
-        EditorLayoutHelper.getAvailableProfileByName("", new EditorLayoutDto());
-
-        // THEN: NSEE
+class EditorLayoutHelperTest {
+    @Test
+    void getAvailableProfileByName_whenLayoutObjectNull_shouldThrowException() throws Exception {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> EditorLayoutHelper.getAvailableProfileByName(null, null));
     }
 
     @Test
-    public void getAvailableProfileByName_whenProfileFound_shouldReturnIt() {
+    void getAvailableProfileByName_whenProfileNotFound_shouldThrowException() {
+        // GIVEN-WHEN-THEN
+        assertThrows(IllegalArgumentException.class,
+                () -> EditorLayoutHelper.getAvailableProfileByName("", new EditorLayoutDto()));
+    }
+
+    @Test
+    void getAvailableProfileByName_whenProfileFound_shouldReturnIt() {
         // GIVEN
         EditorLayoutDto.EditorProfileDto profileObject = createProfileObject();
         EditorLayoutDto layoutObject = createLayoutWithOneProfile(profileObject);
@@ -41,22 +39,45 @@ public class EditorLayoutHelperTest {
         assertThat(actualProfile).isEqualTo(profileObject);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void getFieldSettingsByRank_whenLayoutObjectNull_shouldThrowException() throws Exception {
-        // GIVEN-WHEN
-        EditorLayoutHelper.getFieldSettingsByRank(0, null);
+    @Test
+    void getDefaultProfile_shouldReturnIt() {
+        // GIVEN
+        EditorLayoutDto.EditorProfileDto profileObject = createDefaultProfileObject();
+        EditorLayoutDto layoutObject = createLayoutWithOneProfile(profileObject);
 
-        // THEN: NPE
+        // WHEN
+        EditorLayoutDto.EditorProfileDto actualProfile = EditorLayoutHelper.getDefaultProfile(layoutObject);
+
+        // THEN
+        assertThat(actualProfile).isEqualTo(profileObject);
     }
 
     @Test
-    public void getFieldSettingsByRank_whenSettingsNotFound_shouldReturnAbsent() {
+    void getDefaultProfile_whenNoDefaultProfile_shouldThrowException() {
+        // GIVEN
+        EditorLayoutDto.EditorProfileDto profileObject = createProfileObject();
+        EditorLayoutDto layoutObject = createLayoutWithOneProfile(profileObject);
+
+        // WHEN-THEN
+        assertThrows(IllegalArgumentException.class,
+                () -> EditorLayoutHelper.getDefaultProfile(layoutObject));
+    }
+
+    @Test
+    void getFieldSettingsByRank_whenLayoutObjectNull_shouldThrowException() throws Exception {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> EditorLayoutHelper.getFieldSettingsByRank(0, null));
+    }
+
+    @Test
+    void getFieldSettingsByRank_whenSettingsNotFound_shouldReturnAbsent() {
         // GIVEN-WHEN-THEN
         assertThat(EditorLayoutHelper.getFieldSettingsByRank(0, new EditorLayoutDto.EditorProfileDto())).isEmpty();
     }
 
     @Test
-    public void getFieldSettingsByRank_whenSettingsFound_shouldReturnThem() {
+    void getFieldSettingsByRank_whenSettingsFound_shouldReturnThem() {
         // GIVEN
         EditorLayoutDto.EditorProfileDto profileObject = createProfileObject();
         FieldSettingsDto fieldSettingsObject = new FieldSettingsDto(1);
@@ -71,24 +92,22 @@ public class EditorLayoutHelperTest {
                 .contains(fieldSettingsObject);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void getEntryLabelFieldRanksSetting_whenLayoutObjectNull_shouldThrowException() {
-        // GIVEN-WHEN
-        EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile("", null);
-
-        // THEN: NPE
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void getEntryLabelFieldRanksSetting_whenProfileNameNull_shouldThrowException() {
-        // GIVEN-WHEN
-        EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(null, new EditorLayoutDto());
-
-        // THEN: NPE
+    @Test
+    void getEntryLabelFieldRanksSetting_whenLayoutObjectNull_shouldThrowException() {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile("", null));
     }
 
     @Test
-    public void getEntryLabelFieldRanksSetting_whenSettingFound_shouldReturnIt() {
+    void getEntryLabelFieldRanksSetting_whenProfileNameNull_shouldThrowException() {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(null, new EditorLayoutDto()));
+    }
+
+    @Test
+    void getEntryLabelFieldRanksSetting_whenSettingFound_shouldReturnIt() {
         // GIVEN
         EditorLayoutDto.EditorProfileDto profileObject = createProfileObject();
         profileObject.getEntryLabelFieldRanks().add(1);
@@ -103,6 +122,10 @@ public class EditorLayoutHelperTest {
 
     private static EditorLayoutDto.EditorProfileDto createProfileObject() {
         return new EditorLayoutDto.EditorProfileDto("profile name");
+    }
+
+    private static EditorLayoutDto.EditorProfileDto createDefaultProfileObject() {
+        return new EditorLayoutDto.EditorProfileDto("Vehicle slots");
     }
 
     private static EditorLayoutDto createLayoutWithOneProfile(EditorLayoutDto.EditorProfileDto profileObject) {
