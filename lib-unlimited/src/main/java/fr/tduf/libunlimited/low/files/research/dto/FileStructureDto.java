@@ -37,24 +37,7 @@ public class FileStructureDto implements Serializable {
      * @return builder, used to generate custom values.
      */
     public static FileStructureDtoBuilder builder() {
-        return new FileStructureDtoBuilder() {
-            private List<Field> fields = new ArrayList<>();
-
-            @Override
-            public FileStructureDtoBuilder addFields(List<Field> fields) {
-                this.fields.addAll(fields);
-                return this;
-            }
-
-            @Override
-            public FileStructureDto build() {
-                FileStructureDto fileStructureDto = new FileStructureDto();
-
-                fileStructureDto.fields = this.fields;
-
-                return fileStructureDto;
-            }
-        };
+        return new FileStructureDtoBuilder();
     }
 
     @Override
@@ -81,14 +64,21 @@ public class FileStructureDto implements Serializable {
         return cryptoMode;
     }
 
-    /**
-     * Represents a field in structure.
-     */
-    public interface FileStructureDtoBuilder {
+    public static class FileStructureDtoBuilder {
+        private List<Field> fields = new ArrayList<>();
 
-        FileStructureDtoBuilder addFields(List<Field> fields);
+        public FileStructureDtoBuilder addFields(List<Field> fields) {
+            this.fields.addAll(fields);
+            return this;
+        }
 
-        FileStructureDto build();
+        public FileStructureDto build() {
+            FileStructureDto fileStructureDto = new FileStructureDto();
+
+            fileStructureDto.fields = this.fields;
+
+            return fileStructureDto;
+        }
     }
 
     @JsonTypeName("fileStructureField")
@@ -115,72 +105,7 @@ public class FileStructureDto implements Serializable {
         private Field() {}
 
         public static FieldBuilder builder() {
-            return new FieldBuilder() {
-                private byte[] constantValueAsByteArray;
-                private boolean signed;
-                private List<Field> subFields;
-                private Type type;
-                private String sizeFormula;
-                private String name;
-
-                @Override
-                public FieldBuilder forName(String name) {
-                    this.name = name;
-                    return this;
-                }
-
-                @Override
-                public FieldBuilder withType(Type type) {
-                    this.type = type;
-                    return this;
-                }
-
-                @Override
-                public FieldBuilder withConstantValue(byte[] value) {
-                    this.type = CONSTANT;
-                    this.constantValueAsByteArray = value;
-                    this.sizeFormula = Integer.toString(value.length);
-                    return this;
-                }
-
-                @Override
-                public FieldBuilder signed(boolean isSigned) {
-                    this.signed = isSigned;
-                    return this;
-                }
-
-                @Override
-                public FieldBuilder ofSize(String sizeFormula) {
-                    this.sizeFormula = sizeFormula;
-                    return this;
-                }
-
-                @Override
-                public FieldBuilder withSubFields(List<Field> subFields) {
-                    this.subFields = subFields;
-                    return this;
-                }
-
-                @Override
-                public FieldBuilder ofSubItemCount(String countFormula) {
-                    this.sizeFormula = countFormula;
-                    return this;
-                }
-
-                @Override
-                public Field build() {
-                    Field field = new Field();
-
-                    field.name = this.name;
-                    field.sizeFormula = this.sizeFormula;
-                    field.type = this.type;
-                    field.subFields = this.subFields;
-                    field.signed = this.signed;
-                    field.constantValue = TypeHelper.byteArrayToHexRepresentation(constantValueAsByteArray);
-
-                    return field;
-                }
-            };
+            return new FieldBuilder();
         }
 
         @Override
@@ -226,25 +151,63 @@ public class FileStructureDto implements Serializable {
             return constantValue;
         }
 
-        // TODO get rid of it!
-        public interface FieldBuilder {
+        public static class FieldBuilder {
+            private byte[] constantValueAsByteArray;
+            private boolean signed;
+            private List<Field> subFields;
+            private Type type;
+            private String sizeFormula;
+            private String name;
 
-            FieldBuilder forName(String name_hash);
+            public FieldBuilder forName(String name) {
+                this.name = name;
+                return this;
+            }
 
-            FieldBuilder withType(Type type);
+            public FieldBuilder withType(Type type) {
+                this.type = type;
+                return this;
+            }
 
-            FieldBuilder withConstantValue(byte[] value);
+            public FieldBuilder withConstantValue(byte[] value) {
+                this.type = CONSTANT;
+                this.constantValueAsByteArray = value;
+                this.sizeFormula = Integer.toString(value.length);
+                return this;
+            }
 
-            FieldBuilder signed(boolean isSigned);
+            public FieldBuilder signed(boolean isSigned) {
+                this.signed = isSigned;
+                return this;
+            }
 
-            FieldBuilder ofSize(String sizeFormula);
+            public FieldBuilder ofSize(String sizeFormula) {
+                this.sizeFormula = sizeFormula;
+                return this;
+            }
 
-            FieldBuilder withSubFields(List<Field> subFields);
+            public FieldBuilder withSubFields(List<Field> subFields) {
+                this.subFields = subFields;
+                return this;
+            }
 
-            FieldBuilder ofSubItemCount(String countFormula);
+            public FieldBuilder ofSubItemCount(String countFormula) {
+                this.sizeFormula = countFormula;
+                return this;
+            }
 
-            Field build();
+            public Field build() {
+                Field field = new Field();
+
+                field.name = this.name;
+                field.sizeFormula = this.sizeFormula;
+                field.type = this.type;
+                field.subFields = this.subFields;
+                field.signed = this.signed;
+                field.constantValue = TypeHelper.byteArrayToHexRepresentation(constantValueAsByteArray);
+
+                return field;
+            }
         }
     }
-
 }
