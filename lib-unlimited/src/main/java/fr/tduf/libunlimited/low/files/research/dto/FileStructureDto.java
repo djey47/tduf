@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.research.dto;
 
+import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.domain.Type;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
@@ -9,6 +10,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static fr.tduf.libunlimited.low.files.research.domain.Type.CONSTANT;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 
@@ -104,6 +106,9 @@ public class FileStructureDto implements Serializable {
         @JsonProperty("size")
         private String sizeFormula;
 
+        @JsonProperty("constantValue")
+        private String constantValue;
+
         @JsonProperty("subFields")
         private List<Field> subFields;
 
@@ -111,7 +116,8 @@ public class FileStructureDto implements Serializable {
 
         public static FieldBuilder builder() {
             return new FieldBuilder() {
-                public boolean signed;
+                private byte[] constantValueAsByteArray;
+                private boolean signed;
                 private List<Field> subFields;
                 private Type type;
                 private String sizeFormula;
@@ -126,6 +132,14 @@ public class FileStructureDto implements Serializable {
                 @Override
                 public FieldBuilder withType(Type type) {
                     this.type = type;
+                    return this;
+                }
+
+                @Override
+                public FieldBuilder withConstantValue(byte[] value) {
+                    this.type = CONSTANT;
+                    this.constantValueAsByteArray = value;
+                    this.sizeFormula = Integer.toString(value.length);
                     return this;
                 }
 
@@ -162,6 +176,7 @@ public class FileStructureDto implements Serializable {
                     field.type = this.type;
                     field.subFields = this.subFields;
                     field.signed = this.signed;
+                    field.constantValue = TypeHelper.byteArrayToHexRepresentation(constantValueAsByteArray);
 
                     return field;
                 }
@@ -207,11 +222,18 @@ public class FileStructureDto implements Serializable {
             return signed != null && signed;
         }
 
+        public String getConstantValue() {
+            return constantValue;
+        }
+
+        // TODO get rid of it!
         public interface FieldBuilder {
 
             FieldBuilder forName(String name_hash);
 
             FieldBuilder withType(Type type);
+
+            FieldBuilder withConstantValue(byte[] value);
 
             FieldBuilder signed(boolean isSigned);
 
