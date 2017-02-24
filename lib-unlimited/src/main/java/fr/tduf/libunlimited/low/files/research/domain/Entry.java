@@ -60,7 +60,7 @@ class Entry {
         return rawValue;
     }
 
-    FileStructureDto.Type getType() {
+    Type getType() {
         return type;
     }
 }
