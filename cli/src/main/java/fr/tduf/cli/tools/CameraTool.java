@@ -179,32 +179,30 @@ public class CameraTool extends GenericTool {
     }
 
     private Map<String, ?> customizeCameraSet(String sourceCameraFile, String targetCameraFile, String configurationFile) throws IOException {
-        CamerasParser parser = loadAndParseCameras(sourceCameraFile);
+        CameraInfoEnhanced cameraInfoEnhanced = loadCameras(sourceCameraFile);
         CameraInfo configurationObject = readConfiguration(configurationFile);
-        CameraInfo updatedCameraInfo = CamerasHelper.updateViews(configurationObject, parser);
+        CamerasHelper.updateViews(configurationObject, cameraInfoEnhanced);
 
         outLine("> Done customizing camera set.");
 
-        CamerasHelper.saveFile(parser, targetCameraFile);
+        CamerasHelper.saveCamerasDatabase(cameraInfoEnhanced, targetCameraFile);
 
-        return makeCommandResultForViewDetails(updatedCameraInfo);
+        return makeCommandResultForViewDetails(cameraInfoEnhanced, Long.valueOf(configurationObject.getCameraIdentifier()).intValue());
     }
 
-    private Map<String, ?> viewCameraSet(String cameraFile, long cameraIdentifier) throws IOException {
-        CamerasParser parser = loadAndParseCameras(cameraFile);
-        CameraInfo cameraInfo = CamerasHelper.fetchInformation(cameraIdentifier, parser);
-
-        return makeCommandResultForViewDetails(cameraInfo);
+    private Map<String, ?> viewCameraSet(String cameraFile, int cameraIdentifier) throws IOException {
+        CameraInfoEnhanced cameraInfoEnhanced = loadCameras(cameraFile);
+        return makeCommandResultForViewDetails(cameraInfoEnhanced, cameraIdentifier);
     }
 
     private Map<String, ?> listCameras(String cameraFile) throws IOException {
-        CamerasParser parser = loadAndParseCameras(cameraFile);
+        CameraInfoEnhanced cameraInfoEnhanced = loadCameras(cameraFile);
 
-        HashMap<String, Object> resultInfo = new HashMap<>();
-        List<Long> cameraIdentifiers = parser.getCameraIndex().keySet().stream()
-                .sorted()
+        Map<String, Object> resultInfo = new HashMap<>();
+
+        List<Integer> cameraIdentifiers = cameraInfoEnhanced.getAllSetIdentifiers().stream()
+                .sorted(Integer::compareTo)
                 .collect(toList());
-
         resultInfo.put("cameraCount", cameraIdentifiers.size());
         resultInfo.put("cameraIdentifiers", cameraIdentifiers);
 
@@ -224,14 +222,14 @@ public class CameraTool extends GenericTool {
     }
 
     private Map<String, ?> copySets(String sourceCameraFile, String targetCameraFile) throws IOException {
-        CamerasParser parser = loadAndParseCameras(sourceCameraFile);
+        CameraInfoEnhanced cameraInfoEnhanced = loadCameras(sourceCameraFile);
 
         List<String> instructions = readInstructions(batchIdentifiersFile);
-        CamerasHelper.batchDuplicateCameraSets(instructions, parser);
+        CamerasHelper.batchDuplicateCameraSets(instructions, cameraInfoEnhanced);
 
         outLine("> Done copying camera sets.");
 
-        CamerasHelper.saveFile(parser, targetCameraFile);
+        CamerasHelper.saveCamerasDatabase(cameraInfoEnhanced, targetCameraFile);
 
         return makeCommandResultForCopy(targetCameraFile);
     }
@@ -266,17 +264,6 @@ public class CameraTool extends GenericTool {
         return cameraInfoEnhanced;
     }
 
-    @Deprecated
-    private CamerasParser loadAndParseCameras(String cameraFile) throws IOException {
-        outLine("> Will use Cameras file: " + cameraFile);
-
-        CamerasParser parser = CamerasHelper.loadAndParseFile(cameraFile);
-
-        outLine("> Done reading cameras.");
-
-        return parser;
-    }
-
     private Map<String, Object> makeCommandResultForCopy(String fileName) {
         String absolutePath = new File(fileName).getAbsolutePath();
 
@@ -286,9 +273,19 @@ public class CameraTool extends GenericTool {
         return resultInfo;
     }
 
+    @Deprecated
+    // TODO Delete once info enhanced brings source and target info
     private Map<String, ?> makeCommandResultForViewDetails(CameraInfo cameraInfo) {
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("cameraSet", cameraInfo);
+
+        return resultInfo;
+    }
+
+    private Map<String, ?> makeCommandResultForViewDetails(CameraInfoEnhanced cameraInfoEnhanced, int setIdentifier) {
+        Map<String, Object> resultInfo = new HashMap<>();
+        resultInfo.put("cameraIdentifier", setIdentifier);
+        resultInfo.put("views", cameraInfoEnhanced.getViewsForCameraSet(setIdentifier));
 
         return resultInfo;
     }

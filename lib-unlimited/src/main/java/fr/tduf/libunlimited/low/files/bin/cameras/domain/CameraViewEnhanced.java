@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.low.files.bin.cameras.domain;
 
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import org.apache.commons.lang3.SerializationUtils;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 import java.io.Serializable;
 import java.util.EnumMap;
@@ -12,6 +13,7 @@ import static java.util.Objects.requireNonNull;
  * Parsed views settings from cameras database
  */
 public class CameraViewEnhanced {
+    @JsonIgnore
     private DataStore originalDataStore;
 
     private ViewKind kind;

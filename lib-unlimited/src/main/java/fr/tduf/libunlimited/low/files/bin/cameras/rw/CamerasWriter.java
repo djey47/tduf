@@ -1,7 +1,6 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.rw;
 
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfoEnhanced;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.rw.GenericWriter;
 
@@ -90,8 +89,15 @@ public class CamerasWriter extends GenericWriter<CameraInfoEnhanced> {
                             // From attached view props
                             viewEnhanced.getSettings().entrySet()
                                     .forEach(propsEntry -> {
-                                        ViewProps props = propsEntry.getKey();
-                                        dataStore.addRepeatedInteger32("views", props.getStoreFieldName(), currentViewIndexAsLong, (Long) propsEntry.getValue());
+                                        Object value = propsEntry.getValue();
+                                        long effectiveValue;
+                                        if (value instanceof Integer) {
+                                            effectiveValue = ((Integer)value).longValue();
+                                        } else {
+                                            effectiveValue = (long) value;
+                                        }
+
+                                        dataStore.addRepeatedInteger32("views", propsEntry.getKey().getStoreFieldName(), currentViewIndexAsLong, effectiveValue);
                                     });
 
                             // From original store (unaltered values)

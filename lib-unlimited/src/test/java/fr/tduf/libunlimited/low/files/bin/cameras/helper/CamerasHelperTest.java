@@ -23,7 +23,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind.*;
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -48,65 +47,6 @@ class CamerasHelperTest {
     @BeforeEach
     void setUp() {
         CamerasHelper.setCameraSupport(cameraSupportMock);
-    }
-
-    @Test
-    void duplicateCameraSet_whenNullParser_shouldThrowNullPointerException() throws Exception {
-        // GIVEN-WHEN-THEN
-        assertThrows(NullPointerException.class,
-                () -> CamerasHelper.duplicateCameraSet(1L, 1001L, null));
-    }
-
-    @Test
-    void duplicateCameraSet_whenSourceDoesNotExist_shouldThrowException() throws Exception {
-        // GIVEN-WHEN-THEN
-        assertThrows(NoSuchElementException.class,
-                () -> CamerasHelper.duplicateCameraSet(0, 401, readOnlyParser));
-    }
-
-    @Test
-    void duplicateCameraSet_whenSourceExists_shouldAddSet() throws Exception {
-        // GIVEN-WHEN
-        CamerasParser readWriteParser = getReadWriteParser();
-        CamerasHelper.duplicateCameraSet(1, 401, readWriteParser);
-
-        // THEN
-        assertThat(readWriteParser.getCameraIndex()).hasSize(151);   // 150 -> 151
-        assertThat(readWriteParser.getCameraIndex()).containsKey(401L);
-        assertThat(readWriteParser.getCameraViews()).hasSize(149);   // 148 -> 149 : 2 camera entries are genuinely missing (9997 and ?!)
-        assertThat(readWriteParser.getCameraViews().get(401L)).hasSize(4);
-        assertThat(readWriteParser.getTotalViewCount()).isEqualTo(595); // 591 -> 595
-    }
-
-    @Test
-    void duplicateCameraSet_whenSourceAndTargetExist_shouldDoNothing() throws Exception {
-        // GIVEN-WHEN
-        CamerasParser readWriteParser = getReadWriteParser();
-        CamerasHelper.duplicateCameraSet(1, 15, readWriteParser);
-
-        // THEN
-        assertThat(readWriteParser.getCameraIndex()).hasSize(150);
-        assertThat(readWriteParser.getCameraViews()).hasSize(148);
-        assertThat(readWriteParser.getTotalViewCount()).isEqualTo(591);
-    }
-
-    @Test
-    void batchDuplicateCameraSets_whenSourceExist_shouldAddSets() throws Exception {
-        // GIVEN-WHEN
-        List<String> instructions = asList ("1;401", "1;402", "1;403");
-        CamerasParser readWriteParser = getReadWriteParser();
-        CamerasHelper.batchDuplicateCameraSets(instructions, readWriteParser);
-
-        // THEN
-        assertThat(readWriteParser.getCameraIndex()).hasSize(153);
-        assertThat(readWriteParser.getCameraIndex()).containsKey(401L);
-        assertThat(readWriteParser.getCameraIndex()).containsKey(402L);
-        assertThat(readWriteParser.getCameraIndex()).containsKey(403L);
-        assertThat(readWriteParser.getCameraViews()).hasSize(151);
-        assertThat(readWriteParser.getCameraViews().get(401L)).hasSize(4);
-        assertThat(readWriteParser.getCameraViews().get(402L)).hasSize(4);
-        assertThat(readWriteParser.getCameraViews().get(403L)).hasSize(4);
-        assertThat(readWriteParser.getTotalViewCount()).isEqualTo(603);
     }
 
     @Test

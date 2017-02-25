@@ -135,6 +135,7 @@ public class CamerasParser extends GenericParser<CameraInfoEnhanced> {
     /**
      * Returns camera views per camera id.
      */
+    @Deprecated
     public Map<Long, List<DataStore>> getCameraViews() {
         if (cachedCameraViews != null) {
             return cachedCameraViews;

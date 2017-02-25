@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.domain;
 
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -11,7 +12,9 @@ import static java.util.stream.Collectors.toMap;
 /**
  * Parsed cameras database contents
  */
+// TODO add use sets info (source and target)
 public class CameraInfoEnhanced {
+    @JsonIgnore
     private DataStore originalDataStore;
 
     private Map<Integer, Short> index;

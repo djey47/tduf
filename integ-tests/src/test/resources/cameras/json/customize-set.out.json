@@ -1,86 +1,88 @@
 {
-  "cameraSet" : {
-    "cameraIdentifier" : 1000,
-    "views" : [ {
-      "type" : "Cockpit",
-      "sourceCameraIdentifier" : 0,
-      "sourceType" : null,
-      "settings" : {
-        "STEERING_WHEEL_TURN" : 0,
-        "STEERING_WHEEL_TILT" : 0,
-        "CAMERA_POSITION_X" : 0,
-        "CAMERA_POSITION_Y" : 0,
-        "CAMERA_POSITION_Z" : 0,
-        "VIEW_POSITION_X" : 0,
-        "VIEW_POSITION_Y" : 0,
-        "VIEW_POSITION_Z" : 0,
-        "BINOCULARS" : 0,
-        "UNKNOWN_1" : 14682,
-        "UNKNOWN_2" : 28614,
-        "UNKNOWN_3" : -29896,
-        "UNKNOWN_4" : 14135,
-        "UNKNOWN_5" : -27024
-      }
-    }, {
-      "type" : "Cockpit_Back",
-      "sourceCameraIdentifier" : 0,
-      "sourceType" : null,
-      "settings" : {
-        "STEERING_WHEEL_TURN" : 3870,
-        "STEERING_WHEEL_TILT" : 39191,
-        "CAMERA_POSITION_X" : 15174,
-        "CAMERA_POSITION_Y" : 16269,
-        "CAMERA_POSITION_Z" : -16634,
-        "VIEW_POSITION_X" : 15128,
-        "VIEW_POSITION_Y" : 16267,
-        "VIEW_POSITION_Z" : -16301,
-        "BINOCULARS" : 0,
-        "UNKNOWN_1" : 14682,
-        "UNKNOWN_2" : 13521,
-        "UNKNOWN_3" : -16251,
-        "UNKNOWN_4" : 31137,
-        "UNKNOWN_5" : 10403
-      }
-    }, {
-      "type" : "Hood",
-      "sourceCameraIdentifier" : 0,
-      "sourceType" : null,
-      "settings" : {
-        "STEERING_WHEEL_TURN" : 12333,
-        "STEERING_WHEEL_TILT" : 32556,
-        "CAMERA_POSITION_X" : 15236,
-        "CAMERA_POSITION_Y" : 16254,
-        "CAMERA_POSITION_Z" : 16249,
-        "VIEW_POSITION_X" : 15225,
-        "VIEW_POSITION_Y" : 16248,
-        "VIEW_POSITION_Z" : 16470,
-        "BINOCULARS" : 17980,
-        "UNKNOWN_1" : 15450,
-        "UNKNOWN_2" : -29683,
-        "UNKNOWN_3" : 16665,
-        "UNKNOWN_4" : 25945,
-        "UNKNOWN_5" : 19949
-      }
-    }, {
-      "type" : "Hood_Back",
-      "sourceCameraIdentifier" : 0,
-      "sourceType" : null,
-      "settings" : {
-        "STEERING_WHEEL_TURN" : 11565,
-        "STEERING_WHEEL_TILT" : 32536,
-        "CAMERA_POSITION_X" : 15442,
-        "CAMERA_POSITION_Y" : 16292,
-        "CAMERA_POSITION_Z" : -16506,
-        "VIEW_POSITION_X" : 15422,
-        "VIEW_POSITION_Y" : 16290,
-        "VIEW_POSITION_Z" : -16311,
-        "BINOCULARS" : 17980,
-        "UNKNOWN_1" : 15450,
-        "UNKNOWN_2" : -19168,
-        "UNKNOWN_3" : -732,
-        "UNKNOWN_4" : -19398,
-        "UNKNOWN_5" : -30809
-      }
-    } ]
-  }
+  "cameraIdentifier" : 1000,
+  "views" : [ {
+    "kind" : "Cockpit",
+    "cameraSetId" : 1000,
+    "label" : "ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ",
+    "name" : "Cockpit\u0000ÍÍÍÍÍÍÍÍ",
+    "settings" : {
+      "STEERING_WHEEL_TURN" : 0,
+      "STEERING_WHEEL_TILT" : 0,
+      "CAMERA_POSITION_X" : 0,
+      "CAMERA_POSITION_Y" : 0,
+      "CAMERA_POSITION_Z" : 0,
+      "VIEW_POSITION_X" : 0,
+      "VIEW_POSITION_Y" : 0,
+      "VIEW_POSITION_Z" : 0,
+      "BINOCULARS" : 0,
+      "UNKNOWN_1" : 14682,
+      "UNKNOWN_2" : 28614,
+      "UNKNOWN_3" : -29896,
+      "UNKNOWN_4" : 14135,
+      "UNKNOWN_5" : -27024
+    }
+  }, {
+    "kind" : "Cockpit_Back",
+    "cameraSetId" : 1000,
+    "label" : "ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ",
+    "name" : "CockpitBack\u0000ÍÍÍÍ",
+    "settings" : {
+      "STEERING_WHEEL_TURN" : 3870,
+      "STEERING_WHEEL_TILT" : 39191,
+      "CAMERA_POSITION_X" : 15174,
+      "CAMERA_POSITION_Y" : 16269,
+      "CAMERA_POSITION_Z" : -16634,
+      "VIEW_POSITION_X" : 15128,
+      "VIEW_POSITION_Y" : 16267,
+      "VIEW_POSITION_Z" : -16301,
+      "BINOCULARS" : 0,
+      "UNKNOWN_1" : 14682,
+      "UNKNOWN_2" : 13521,
+      "UNKNOWN_3" : -16251,
+      "UNKNOWN_4" : 31137,
+      "UNKNOWN_5" : 10403
+    }
+  }, {
+    "kind" : "Hood",
+    "cameraSetId" : 1000,
+    "label" : "ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ",
+    "name" : "NewCamera\u0000ÍÍÍÍÍÍ",
+    "settings" : {
+      "STEERING_WHEEL_TURN" : 12333,
+      "STEERING_WHEEL_TILT" : 32556,
+      "CAMERA_POSITION_X" : 15236,
+      "CAMERA_POSITION_Y" : 16254,
+      "CAMERA_POSITION_Z" : 16249,
+      "VIEW_POSITION_X" : 15225,
+      "VIEW_POSITION_Y" : 16248,
+      "VIEW_POSITION_Z" : 16470,
+      "BINOCULARS" : 17980,
+      "UNKNOWN_1" : 15450,
+      "UNKNOWN_2" : -29683,
+      "UNKNOWN_3" : 16665,
+      "UNKNOWN_4" : 25945,
+      "UNKNOWN_5" : 19949
+    }
+  }, {
+    "kind" : "Hood_Back",
+    "cameraSetId" : 1000,
+    "label" : "ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ",
+    "name" : "HoodBAck\u0000ÍÍÍÍÍÍÍ",
+    "settings" : {
+      "STEERING_WHEEL_TURN" : 11565,
+      "STEERING_WHEEL_TILT" : 32536,
+      "CAMERA_POSITION_X" : 15442,
+      "CAMERA_POSITION_Y" : 16292,
+      "CAMERA_POSITION_Z" : -16506,
+      "VIEW_POSITION_X" : 15422,
+      "VIEW_POSITION_Y" : 16290,
+      "VIEW_POSITION_Z" : -16311,
+      "BINOCULARS" : 17980,
+      "UNKNOWN_1" : 15450,
+      "UNKNOWN_2" : -19168,
+      "UNKNOWN_3" : -732,
+      "UNKNOWN_4" : -19398,
+      "UNKNOWN_5" : -30809
+    }
+  } ]
 }

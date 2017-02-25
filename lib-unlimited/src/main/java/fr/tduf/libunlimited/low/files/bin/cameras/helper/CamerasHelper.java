@@ -15,11 +15,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.*;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo.CameraView.fromProps;
-import static java.lang.Long.valueOf;
 import static java.nio.file.Files.readAllBytes;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -48,33 +50,6 @@ public class CamerasHelper {
      * Creates a camera set at targetCameraId with all views from set at sourceCameraId
      * @param sourceCameraId    : identifier of camera to get views from
      * @param targetCameraId    : identifier of camera to create views. May not exist already, in that case will add a new set
-     * @param parser            : parsed cameras contents.
-     */
-    @Deprecated
-    public static void duplicateCameraSet(long sourceCameraId, long targetCameraId, CamerasParser parser) {
-        DataStore dataStore = requireNonNull(parser, "Parser with cameras contents is required.").getDataStore();
-
-        final Map<Long, Short> cameraIndex = parser.getCameraIndex();
-
-        checkCameraSetExists(sourceCameraId, parser);
-
-        if (cameraIndex.containsKey(targetCameraId)
-                || parser.getCameraViews().containsKey(targetCameraId)) {
-            Log.warn(THIS_CLASS_NAME, "Unable to overwrite existing camera set: " + targetCameraId);
-            return;
-        }
-
-        updateIndexInDatastore(dataStore, sourceCameraId, targetCameraId, cameraIndex);
-
-        updateViewsInDatastore(dataStore, sourceCameraId, targetCameraId, parser);
-
-        parser.flushCaches();
-    }
-
-    /**
-     * Creates a camera set at targetCameraId with all views from set at sourceCameraId
-     * @param sourceCameraId    : identifier of camera to get views from
-     * @param targetCameraId    : identifier of camera to create views. May not exist already, in that case will add a new set
      * @param cameraInfo        : loaded cameras contents.
      */
     public static void duplicateCameraSet(int sourceCameraId, int targetCameraId, CameraInfoEnhanced cameraInfo) {
@@ -94,21 +69,6 @@ public class CamerasHelper {
                 .map(sourceView -> sourceView.cloneForNewViewSet(targetCameraId))
                 .collect(toList());
         cameraInfo.updateViews(targetCameraId, clonedViews);
-    }
-
-    /**
-     * Creates all camera sets at targetId with all views from sourceId
-     * @param instructions      : list of <sourceCameraId>;<targetCameraId>
-     * @param parser            : parsed cameras contents.
-     */
-    @Deprecated
-    public static void batchDuplicateCameraSets(List<String> instructions, CamerasParser parser) {
-        requireNonNull(instructions, "A list of instructions is required.");
-
-        instructions.forEach(instruction -> {
-            String[] compounds = instruction.split(";");
-            duplicateCameraSet(valueOf(compounds[0]), valueOf(compounds[1]), requireNonNull(parser, "Parser with cameras contents is required."));
-        });
     }
 
     /**
@@ -241,8 +201,7 @@ public class CamerasHelper {
 
     /**
      * @param configuration         : view properties to be updated
-     * @param cameraInfoEnhanced    : parsed cameras contents
-     * @return updated view properties.
+     * @param cameraInfoEnhanced    : cameras contents to be updated
      */
     // TODO create dedicated object for configuration
     public static void updateViews(CameraInfo configuration, CameraInfoEnhanced cameraInfoEnhanced) {
@@ -266,6 +225,7 @@ public class CamerasHelper {
      * @return updated view properties.
      */
     // TODO create dedicated object for configuration
+    // TODO return enhanced object
     public static CameraInfo useViews(CameraInfo configuration, String sourceCamerasFile) throws IOException {
         Long cameraIdentifier = validateConfiguration(configuration);
 

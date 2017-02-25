@@ -11,7 +11,6 @@ import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -25,7 +24,8 @@ import java.nio.file.Paths;
 
 import static fr.tduf.tests.IntegTestsConstants.RESOURCES_PATH;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 class CameraToolIntegTest {
@@ -90,9 +90,7 @@ class CameraToolIntegTest {
         AssertionsHelper.assertFileMatchesReference(new File(outputCameraFile), new File(referenceCameraFile));
     }
 
-    // TODO enable
     @Test
-    @Disabled
     void viewSet_shouldReturnAllViewProperties() throws IOException, JSONException {
         // GIVEN
         byte[] jsonContents = Files.readAllBytes(jsonPath.resolve("view-set.out.json"));
@@ -107,9 +105,7 @@ class CameraToolIntegTest {
         AssertionsHelper.assertOutputStreamContainsJsonExactly(outputStream, expectedJson);
     }
 
-    // TODO enable
     @Test
-    @Disabled
     void customizeSet_shouldSetProperties_andReturnAllViewProperties() throws IOException, JSONException {
         // GIVEN
         byte[] jsonContents = Files.readAllBytes(jsonPath.resolve("customize-set.out.json"));
