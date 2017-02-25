@@ -78,8 +78,6 @@ public class ViewChangeDto {
             ViewChangeDto viewChangeDto = new ViewChangeDto();
 
             viewChangeDto.cameraViewKind = requireNonNull(cameraViewKind, "Camera view kind is required");
-
-            viewProps.putIfAbsent(ViewProps.TYPE, cameraViewKind.name());
             viewChangeDto.viewProps = viewProps;
 
             return viewChangeDto;

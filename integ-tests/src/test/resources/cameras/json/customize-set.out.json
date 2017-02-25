@@ -6,7 +6,6 @@
       "sourceCameraIdentifier" : 0,
       "sourceType" : null,
       "settings" : {
-        "TYPE" : "Cockpit",
         "STEERING_WHEEL_TURN" : 0,
         "STEERING_WHEEL_TILT" : 0,
         "CAMERA_POSITION_X" : 0,
@@ -27,7 +26,6 @@
       "sourceCameraIdentifier" : 0,
       "sourceType" : null,
       "settings" : {
-        "TYPE" : "Cockpit_Back",
         "STEERING_WHEEL_TURN" : 3870,
         "STEERING_WHEEL_TILT" : 39191,
         "CAMERA_POSITION_X" : 15174,
@@ -48,7 +46,6 @@
       "sourceCameraIdentifier" : 0,
       "sourceType" : null,
       "settings" : {
-        "TYPE" : "Hood",
         "STEERING_WHEEL_TURN" : 12333,
         "STEERING_WHEEL_TILT" : 32556,
         "CAMERA_POSITION_X" : 15236,
@@ -69,7 +66,6 @@
       "sourceCameraIdentifier" : 0,
       "sourceType" : null,
       "settings" : {
-        "TYPE" : "Hood_Back",
         "STEERING_WHEEL_TURN" : 11565,
         "STEERING_WHEEL_TILT" : 32536,
         "CAMERA_POSITION_X" : 15442,

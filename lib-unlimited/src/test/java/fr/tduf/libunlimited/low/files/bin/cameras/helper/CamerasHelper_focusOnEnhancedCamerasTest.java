@@ -21,7 +21,6 @@ import java.util.*;
 
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind.*;
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps.BINOCULARS;
-import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps.TYPE;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -156,7 +155,7 @@ class CamerasHelper_focusOnEnhancedCamerasTest {
         EnumMap<ViewProps, ?> actualProperties = CamerasHelper.fetchViewProperties(1000, Cockpit, cameraInfoEnhanced);
 
         // THEN
-        assertThat(actualProperties).hasSize(15);
+        assertThat(actualProperties).hasSize(ViewProps.values().length);
         assertThat(actualProperties.keySet()).containsExactlyInAnyOrder(ViewProps.values());
         assertThat(actualProperties.values()).doesNotContainNull();
     }
@@ -306,10 +305,9 @@ class CamerasHelper_focusOnEnhancedCamerasTest {
     void updateViews_whenCameraExists_butViewDoesNot_shouldDoNothing() throws Exception {
         // GIVEN
         EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
-        viewProps.put(TYPE, Follow_Far);
         viewProps.put(BINOCULARS, 0L);
 
-        CameraInfo.CameraView cameraView = CameraInfo.CameraView.fromProps(viewProps);
+        CameraInfo.CameraView cameraView = CameraInfo.CameraView.fromProps(viewProps, Follow_Far);
         CameraInfo configuration = CameraInfo.builder()
                 .forIdentifier(1000)
                 .addView(cameraView)
@@ -330,10 +328,9 @@ class CamerasHelper_focusOnEnhancedCamerasTest {
     void updateViews_whenCameraExists_andViewExists_shouldUpdateSettings_andOriginalStore() throws Exception {
         // GIVEN
         EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
-        viewProps.put(TYPE, Hood);
         viewProps.put(BINOCULARS, 0L);
 
-        CameraInfo.CameraView cameraView = CameraInfo.CameraView.fromProps(viewProps);
+        CameraInfo.CameraView cameraView = CameraInfo.CameraView.fromProps(viewProps, Hood);
         CameraInfo configuration = CameraInfo.builder()
                 .forIdentifier(1000)
                 .addView(cameraView)

@@ -3,9 +3,11 @@ package fr.tduf.libunlimited.low.files.bin.cameras.domain;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
-import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps.TYPE;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
@@ -116,26 +118,26 @@ public class CameraInfo {
             return cameraView;
         }
 
-        public static CameraView fromProps(EnumMap<ViewProps, Object> viewProps) {
+        public static CameraView fromProps(EnumMap<ViewProps, Object> viewProps, ViewKind viewKind) {
             CameraView cameraView = new CameraView();
 
-            cameraView.type = (ViewKind) viewProps.get(TYPE);
+            cameraView.type = viewKind;
             cameraView.settings = viewProps;
 
             return cameraView;
         }
 
         // FIXME Must be rewritten with correct parser/writer use
-        public static CameraView fromPatchProps(EnumMap<ViewProps, String> patchViewProps) {
+        public static CameraView fromPatchProps(EnumMap<ViewProps, String> patchViewProps, ViewKind cameraViewKind) {
             CameraView cameraView = new CameraView();
 
-            cameraView.type = Enum.valueOf(ViewKind.class, patchViewProps.get(TYPE));
+            cameraView.type = cameraViewKind;
             //noinspection Convert2Diamond (type args needed by compiler)
             cameraView.settings = new EnumMap<ViewProps, Object>(
                     patchViewProps.entrySet().stream()
                             .collect(toMap(
                                     Map.Entry::getKey,
-                                    entry -> TYPE == entry.getKey() ? cameraView.type : Long.valueOf(entry.getValue())
+                                    entry -> Long.valueOf(entry.getValue())
                                     )
                             )
             );

@@ -23,8 +23,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind.*;
-import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps.BINOCULARS;
-import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps.TYPE;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -119,26 +117,6 @@ class CamerasHelperTest {
     }
 
     @Test
-    void fetchInformation_whenCameraExists_shouldReturnViews() {
-        // GIVEN
-        long cameraIdentifier = 1000;
-
-        // WHEN
-        CameraInfo cameraInfo = CamerasHelper.fetchInformation(cameraIdentifier, readOnlyParser);
-
-        // THEN
-        assertThat(cameraInfo.getCameraIdentifier()).isEqualTo((int)cameraIdentifier);
-        assertThat(cameraInfo.getViews()).hasSize(4);
-        assertThat(cameraInfo.getViews())
-                .extracting("type")
-                .contains(
-                    Cockpit,
-                    Cockpit_Back,
-                    Hood,
-                    Hood_Back);
-    }
-
-    @Test
     void fetchAllInformation_shouldReturnAllCameras() {
         // GIVEN-WHEN
         List<CameraInfo> cameraInfos = CamerasHelper.fetchAllInformation(readOnlyParser);
@@ -163,7 +141,7 @@ class CamerasHelperTest {
         EnumMap<ViewProps, ?> actualProperties = CamerasHelper.fetchViewProperties(cameraIdentifier, Cockpit, readOnlyParser);
 
         // THEN
-        assertThat(actualProperties).hasSize(15);
+        assertThat(actualProperties).hasSize(ViewProps.values().length);
         assertThat(actualProperties.keySet()).containsExactlyInAnyOrder(ViewProps.values());
         assertThat(actualProperties.values()).doesNotContainNull();
     }
@@ -197,58 +175,6 @@ class CamerasHelperTest {
         // WHEN-THEN
         assertThrows(NoSuchElementException.class,
                 () -> CamerasHelper.updateViews(configuration, readOnlyParser));
-    }
-
-    @Test
-    void updateViews_whenCameraExists_butViewDoesNot_shouldDoNothing() throws Exception {
-        // GIVEN
-        EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
-        viewProps.put(TYPE, Follow_Far);
-        viewProps.put(BINOCULARS, 0L);
-
-        CameraInfo.CameraView cameraView = CameraInfo.CameraView.fromProps(viewProps);
-        CameraInfo configuration = CameraInfo.builder()
-                .forIdentifier(1000)
-                .addView(cameraView)
-                .build();
-
-        // WHEN
-        CameraInfo actualCameraInfo = CamerasHelper.updateViews(configuration, readOnlyParser);
-
-        // THEN
-        Map<ViewKind, CameraInfo.CameraView> viewsByType = actualCameraInfo.getViewsByKind();
-        assertThat(viewsByType.get(Cockpit).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
-        assertThat(viewsByType.get(Cockpit_Back).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
-        assertThat(viewsByType.get(Hood).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
-        assertThat(viewsByType.get(Hood_Back).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
-    }
-
-    @Test
-    void updateViews_whenCameraExists_andViewExists_shouldUpdateSettings_andOriginalStore() throws Exception {
-        // GIVEN
-        CamerasParser readWriteParser = getReadWriteParser();
-        EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
-        viewProps.put(TYPE, Hood);
-        viewProps.put(BINOCULARS, 0L);
-
-        CameraInfo.CameraView cameraView = CameraInfo.CameraView.fromProps(viewProps);
-        CameraInfo configuration = CameraInfo.builder()
-                .forIdentifier(1000)
-                .addView(cameraView)
-                .build();
-
-        // WHEN
-        CameraInfo actualCameraInfo = CamerasHelper.updateViews(configuration, readWriteParser);
-
-        // THEN
-        Map<ViewKind, CameraInfo.CameraView> viewsByType = actualCameraInfo.getViewsByKind();
-        assertThat(viewsByType.get(Cockpit).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
-        assertThat(viewsByType.get(Cockpit_Back).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
-        assertThat(viewsByType.get(Hood).getSettings().get(BINOCULARS)).isEqualTo(0L);
-        assertThat(viewsByType.get(Hood_Back).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
-
-        DataStore originalViewStoreForHood = CamerasHelper.extractViewStores(1000L, readWriteParser).get(2);
-        assertThat(originalViewStoreForHood.getInteger("binoculars")).contains(0L);
     }
 
     @Test

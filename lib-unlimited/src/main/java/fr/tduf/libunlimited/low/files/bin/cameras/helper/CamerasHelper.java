@@ -18,6 +18,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo.CameraView.fromProps;
 import static java.lang.Long.valueOf;
 import static java.nio.file.Files.readAllBytes;
 import static java.util.Objects.requireNonNull;
@@ -138,7 +139,7 @@ public class CamerasHelper {
 
         viewStores.stream()
                 .map(parser::getViewProps)
-                .map(CameraInfo.CameraView::fromProps)
+                .map((viewProps) -> fromProps(viewProps, ViewKind.Cockpit))
                 .forEach(cameraInfoBuilder::addView);
 
         return cameraInfoBuilder.build();
@@ -150,15 +151,13 @@ public class CamerasHelper {
      * @param cameraInfoEnhanced    : parsed cameras contents
      * @return view properties for requested camera set.
      */
-    // TODO To be replaced with enhanced objects
+    // TODO return type to be replaced with enhanced objects
     public static CameraInfo fetchInformation(int cameraIdentifier, CameraInfoEnhanced cameraInfoEnhanced) {
         CameraInfo.CameraInfoBuilder cameraInfoBuilder = CameraInfo.builder()
                 .forIdentifier(cameraIdentifier);
 
-        List<CameraViewEnhanced> allViews = cameraInfoEnhanced.getViewsForCameraSet(cameraIdentifier);
-        allViews.stream()
-                .map(CameraViewEnhanced::getSettings)
-                .map(CameraInfo.CameraView::fromProps)
+        cameraInfoEnhanced.getViewsForCameraSet(cameraIdentifier).stream()
+                .map(cameraViewEnhanced -> fromProps(cameraViewEnhanced.getSettings(), cameraViewEnhanced.getKind()))
                 .forEach(cameraInfoBuilder::addView);
 
         return cameraInfoBuilder.build();
@@ -180,7 +179,7 @@ public class CamerasHelper {
      * @param cameraInfoEnhanced : loaded cameras contents
      * @return all cameras and their view properties.
      */
-    // TODO To be replaced with enhanced objects
+    // TODO return type to be replaced with enhanced objects
     public static List<CameraInfo> fetchAllInformation(CameraInfoEnhanced cameraInfoEnhanced) {
         return cameraInfoEnhanced.getAllSetIdentifiers().stream()
                 .map(setIdentifier -> fetchInformation(setIdentifier, cameraInfoEnhanced))
@@ -226,11 +225,8 @@ public class CamerasHelper {
         long cameraIdentifier = validateConfiguration(configuration);
         extractViewStores(cameraIdentifier, parser)
                 .forEach(viewStore -> {
-                    ViewKind viewKind = (ViewKind) ViewProps.TYPE.retrieveFrom(viewStore)
-                            .orElseThrow(() -> new IllegalStateException("No view type in store"));
-
                     configuration.getViews().stream()
-                            .filter(view -> viewKind == view.getType())
+                            .filter(view -> ViewKind.Cockpit == view.getType())
                             .findAny()
                             .ifPresent(conf -> conf.getSettings().entrySet()
                                     .forEach(entry -> entry.getKey().updateIn(viewStore, entry.getValue())));

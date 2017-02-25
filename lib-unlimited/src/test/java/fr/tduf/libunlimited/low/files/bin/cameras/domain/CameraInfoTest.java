@@ -17,13 +17,11 @@ class CameraInfoTest {
     void buildCameraInfo_whenUsedViews_shouldMergeThem() {
         // GIVEN
         EnumMap<ViewProps, Object> view1Props = new EnumMap<>(ViewProps.class);
-        view1Props.put(ViewProps.TYPE, Cockpit);
         view1Props.put(BINOCULARS, 20L);
-        CameraInfo.CameraView view1 = CameraInfo.CameraView.fromProps(view1Props);
+        CameraInfo.CameraView view1 = CameraInfo.CameraView.fromProps(view1Props, Cockpit);
         EnumMap<ViewProps, Object> view2Props = new EnumMap<>(ViewProps.class);
-        view2Props.put(ViewProps.TYPE, Cockpit_Back);
         view2Props.put(BINOCULARS, 30L);
-        CameraInfo.CameraView view2 = CameraInfo.CameraView.fromProps(view2Props);
+        CameraInfo.CameraView view2 = CameraInfo.CameraView.fromProps(view2Props, Cockpit_Back);
         CameraInfo.CameraView view3 = CameraInfo.CameraView.from(Cockpit, 101L, Cockpit);
         CameraInfo.CameraView view4 = CameraInfo.CameraView.from(Cockpit_Back, 0, ViewKind.Unknown);
         List<CameraInfo.CameraView> allViews = asList(view1, view2);

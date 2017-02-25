@@ -3,7 +3,6 @@ package fr.tduf.libunlimited.low.files.bin.cameras.rw;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfoEnhanced;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraViewEnhanced;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
@@ -53,34 +52,15 @@ class CamerasParserTest {
     }
 
     @Test
-    void flushCaches_shouldNullifyAllCaches() throws IOException, URISyntaxException {
+    void getViewProps_whenNullDataStore_shouldThrowException() throws IOException {
         // GIVEN
         ByteArrayInputStream camInputStream = new ByteArrayInputStream(camContents);
         CamerasParser camerasParser = CamerasParser.load(camInputStream);
         camerasParser.parse();
-        camerasParser.getCameraViews();
-        camerasParser.getCameraIndex();
-
-        // WHEN
-        camerasParser.flushCaches();
-
-        // THEN
-        assertThat(camerasParser.getCachedCameraViews()).isNull();
-        assertThat(camerasParser.getCachedCameraIndex()).isNull();
-        assertThat(camerasParser.getCachedTotalViewCount()).isNull();
-    }
-
-    @Test
-    void getViewProps_whenIncorrectDataStore_shouldThrowException() throws IOException {
-        // GIVEN
-        ByteArrayInputStream camInputStream = new ByteArrayInputStream(camContents);
-        CamerasParser camerasParser = CamerasParser.load(camInputStream);
-        camerasParser.parse();
-        DataStore dataStore = new DataStore(FileStructureDto.builder().build());
 
         // WHEN-THEN
-        assertThrows(IllegalArgumentException.class,
-                () -> camerasParser.getViewProps(dataStore));
+        assertThrows(NullPointerException.class,
+                () -> camerasParser.getViewProps(null));
     }
 
     @Test
@@ -100,8 +80,7 @@ class CamerasParserTest {
         EnumMap<ViewProps, ?> viewProps = camerasParser.getViewProps(dataStore);
 
         // THEN
-        assertThat(viewProps).hasSize(5);
-        assertThat(viewProps.get(ViewProps.TYPE)).isEqualTo(ViewKind.Follow_Large_Back);
+        assertThat(viewProps).hasSize(4);
         assertThat(viewProps.get(ViewProps.STEERING_WHEEL_TURN)).isEqualTo(30L);
         assertThat(viewProps.get(ViewProps.BINOCULARS)).isEqualTo(0L);
         assertThat(viewProps.get(ViewProps.CAMERA_POSITION_X)).isEqualTo(-100L);

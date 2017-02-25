@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.EnumMap;
 
+import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind.Cockpit_Back;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -66,11 +67,10 @@ class CamPatchGeneratorTest {
     void makePatch_whenSetIdentifierInRange_andSingleView_shouldReturnPatchWithSingleChange() {
         // given
         EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
-        viewProps.put(ViewProps.TYPE, ViewKind.Cockpit_Back);
         viewProps.put(ViewProps.BINOCULARS, 50L);
         CameraInfo cameraInfo = CameraInfo.builder()
                 .forIdentifier(1L)
-                .addView(CameraInfo.CameraView.fromProps(viewProps))
+                .addView(CameraInfo.CameraView.fromProps(viewProps, Cockpit_Back))
                 .build();
         CamPatchGenerator camPatchGenerator = new CamPatchGenerator(singletonList(cameraInfo));
 
@@ -82,20 +82,19 @@ class CamPatchGeneratorTest {
         SetChangeDto singleChange = actualPatchObject.getChanges().get(0);
         assertThat(singleChange.getChanges()).hasSize(1);
         ViewChangeDto viewChange = singleChange.getChanges().get(0);
-        assertThat(viewChange.getCameraViewKind()).isEqualTo(ViewKind.Cockpit_Back);
-        assertThat(viewChange.getViewProps()).containsKeys(ViewProps.TYPE, ViewProps.BINOCULARS);
-        assertThat(viewChange.getViewProps()).containsValues("Cockpit_Back", "50");
+        assertThat(viewChange.getCameraViewKind()).isEqualTo(Cockpit_Back);
+        assertThat(viewChange.getViewProps()).containsKey(ViewProps.BINOCULARS);
+        assertThat(viewChange.getViewProps()).containsValue("50");
     }
 
     @Test
     void makePatch_whenSetIdentifierInRange_butViewNotInRange_shouldReturnPatchWithoutViewChanges() {
         // given
         EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
-        viewProps.put(ViewProps.TYPE, ViewKind.Cockpit_Back);
         viewProps.put(ViewProps.BINOCULARS, 50L);
         CameraInfo cameraInfo = CameraInfo.builder()
                 .forIdentifier(1L)
-                .addView(CameraInfo.CameraView.fromProps(viewProps))
+                .addView(CameraInfo.CameraView.fromProps(viewProps, Cockpit_Back))
                 .build();
         CamPatchGenerator camPatchGenerator = new CamPatchGenerator(singletonList(cameraInfo));
 

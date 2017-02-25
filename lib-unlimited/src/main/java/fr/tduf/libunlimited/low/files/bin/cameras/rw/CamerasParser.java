@@ -1,7 +1,9 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.rw;
 
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.*;
-import fr.tduf.libunlimited.low.files.common.domain.DataStoreProps;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfoEnhanced;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraViewEnhanced;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
 
@@ -176,8 +178,7 @@ public class CamerasParser extends GenericParser<CameraInfoEnhanced> {
      * @return all handled view properties
      */
     public EnumMap<ViewProps, Object> getViewProps(DataStore viewStore) {
-        viewStore.getRawValue(ViewProps.TYPE.getStoreFieldName())
-                .orElseThrow(() -> new IllegalArgumentException("No view data store provided"));
+        requireNonNull(viewStore, "View data store is required");
 
         EnumMap<ViewProps, Object> props = new EnumMap<>(ViewProps.class);
         ViewProps.valuesStream()
@@ -196,21 +197,6 @@ public class CamerasParser extends GenericParser<CameraInfoEnhanced> {
         cachedCameraViews = null;
         cachedCameraIndex = null;
         cachedTotalViewCount = null;
-    }
-
-    /**
-     * @return genuine view type from prop info
-     */
-    public static Optional<ViewKind> getViewType(DataStore viewStore, DataStoreProps viewProp) {
-        return getNumeric(viewStore, viewProp)
-                .map(v -> ViewKind.fromInternalId(v.intValue()));
-    }
-
-    /**
-     * Update view type to prop
-     */
-    public static void setViewType(Object viewKind, DataStore viewStore, DataStoreProps viewProp) {
-        setNumeric(((ViewKind)viewKind).getInternalId(), viewStore, viewProp);
     }
 
     Map<Long, List<DataStore>> getCachedCameraViews() {

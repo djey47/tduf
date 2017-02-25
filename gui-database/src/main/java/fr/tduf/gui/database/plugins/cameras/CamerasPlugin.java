@@ -47,7 +47,6 @@ import static fr.tduf.gui.database.plugins.cameras.common.FxConstants.*;
 import static fr.tduf.gui.database.plugins.common.FxConstants.*;
 import static fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto.TopicMetadataDto.FIELD_RANK_CAMERA;
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo.CameraView.fromProps;
-import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps.TYPE;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Collections.singletonList;
 import static java.util.Comparator.comparing;
@@ -349,7 +348,7 @@ public class CamerasPlugin implements DatabasePlugin {
     }
 
     private List<Map.Entry<ViewProps, ?>> getSortedAndEditableViewProperties(long cameraIdentifier, ViewKind viewKind) {
-        final Set<ViewProps> nonEditableProps = new HashSet<>(singletonList(TYPE));
+        final Set<ViewProps> nonEditableProps = new HashSet<>();
 
         return CamerasHelper.fetchViewProperties(Long.valueOf(cameraIdentifier).intValue(), viewKind, cameraInfoEnhancedProperty.getValue()).entrySet().stream()
                 .filter(propsEntry -> !nonEditableProps.contains(propsEntry.getKey()))
@@ -375,12 +374,11 @@ public class CamerasPlugin implements DatabasePlugin {
 
     private void updateViewProperties(long cameraIdentifier, ViewKind currentViewKind, Map.Entry<ViewProps, Object> editedProp) {
         EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
-        viewProps.put(TYPE, currentViewKind);
         viewProps.put(editedProp.getKey(), editedProp.getValue());
 
         CameraInfo updatedConfiguration = CameraInfo.builder()
                 .forIdentifier(cameraIdentifier)
-                .addView(fromProps(viewProps))
+                .addView(fromProps(viewProps, currentViewKind))
                 .build();
 
         Log.debug(THIS_CLASS_NAME, "Will update camera: " + cameraIdentifier);

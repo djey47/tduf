@@ -1,7 +1,6 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.domain;
 
 import fr.tduf.libunlimited.framework.function.TriConsumer;
-import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import fr.tduf.libunlimited.low.files.common.domain.DataStoreProps;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
@@ -14,7 +13,6 @@ import java.util.stream.Stream;
  * All handled view properties
  */
 public enum ViewProps implements DataStoreProps {
-    TYPE("type", "", CamerasParser::getViewType, CamerasParser::setViewType),   // TODO remove from props?
     STEERING_WHEEL_TURN("steeringWheelTurn", "", GenericParser::getNumeric, GenericParser::setNumeric),
     STEERING_WHEEL_TILT("steeringWheelTilt", "Wheel vertical adjustment", GenericParser::getNumeric, GenericParser::setNumeric),
     CAMERA_POSITION_X("cameraPositionX", "Left/Right", GenericParser::getNumeric, GenericParser::setNumeric),

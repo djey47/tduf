@@ -8,7 +8,6 @@ import fr.tduf.libunlimited.low.files.research.rw.GenericWriter;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps.TYPE;
 import static fr.tduf.libunlimited.low.files.research.domain.Type.UNKNOWN;
 import static java.util.Objects.requireNonNull;
 
@@ -51,7 +50,7 @@ public class CamerasWriter extends GenericWriter<CameraInfoEnhanced> {
         DataStore dataStore = getDataStore();
         CameraInfoEnhanced data = getData();
 
-        // TODO remove sourceStore and merge later
+        // TODO remove this block once refactoring done
         if (sourceStore != null) {
             dataStore.mergeAll(this.sourceStore);
             return;
@@ -89,8 +88,7 @@ public class CamerasWriter extends GenericWriter<CameraInfoEnhanced> {
                             dataStore.addRepeatedText("views", "name", currentViewIndexAsLong, viewEnhanced.getName());
 
                             // From attached view props
-                            viewEnhanced.getSettings().entrySet().stream()
-                                    .filter(propsEntry -> TYPE != propsEntry.getKey())
+                            viewEnhanced.getSettings().entrySet()
                                     .forEach(propsEntry -> {
                                         ViewProps props = propsEntry.getKey();
                                         dataStore.addRepeatedInteger32("views", props.getStoreFieldName(), currentViewIndexAsLong, (Long) propsEntry.getValue());

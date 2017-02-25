@@ -7,7 +7,6 @@
         {
           "viewKind": "Cockpit",
           "properties": {
-            "TYPE": "Cockpit",
             "STEERING_WHEEL_TURN": "10000"
           }
         }

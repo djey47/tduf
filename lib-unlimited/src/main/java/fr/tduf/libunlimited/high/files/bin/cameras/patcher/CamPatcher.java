@@ -62,7 +62,7 @@ public class CamPatcher {
         }
 
         List<CameraInfo.CameraView> allViews = setChangeObject.getChanges().stream()
-                .map(viewChange -> fromPatchProps(viewChange.getViewProps()))
+                .map(viewChange -> fromPatchProps(viewChange.getViewProps(), viewChange.getCameraViewKind()))
                 .collect(toList());
 
         CameraInfo updateConf = CameraInfo.builder()
