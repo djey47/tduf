@@ -13,7 +13,6 @@ import java.net.URISyntaxException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class CamerasWriter_focusOnEnhancedTest {
-
     @Test
     void load_shouldReturnWriterInstance() throws IOException {
         // GIVEN
@@ -39,9 +38,9 @@ class CamerasWriter_focusOnEnhancedTest {
         ByteArrayOutputStream actualOutputStream = actualWriter.write();
 
         // THEN
-        byte[] camerasContentsFromFile = FilesHelper.readBytesFromResourceFile("/bin/Cameras.bin");
+        byte[] expectedcamerasContents = FilesHelper.readBytesFromResourceFile("/bin/Cameras.bin");
         assertThat(actualOutputStream).isNotNull();
-        assertThat(actualOutputStream.toByteArray()).isEqualTo(camerasContentsFromFile);
+        assertThat(actualOutputStream.toByteArray()).isEqualTo(expectedcamerasContents);
 //        Files.write(Paths.get("./Cameras.written.bin"), actualOutputStream.toByteArray(), StandardOpenOption.CREATE);
     }
 }
