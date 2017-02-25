@@ -179,6 +179,19 @@ public class DataStore {
      * @param repeaterFieldName : identifier of repeater field
      * @param fieldName         : identifier of field hosting the value
      * @param index             : rank in repeater
+     * @param valueBytes        : value to store
+     */
+    public void addRepeatedValue(String repeaterFieldName, String fieldName, Type fieldType, long index, byte[] valueBytes) {
+        String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
+        addValue(key, fieldType, valueBytes);
+    }
+
+    /**
+     * Adds a repeated field to the store.
+     *
+     * @param repeaterFieldName : identifier of repeater field
+     * @param fieldName         : identifier of field hosting the value
+     * @param index             : rank in repeater
      * @param value             : value to store
      */
     public void addRepeatedText(String repeaterFieldName, String fieldName, long index, String value) {
@@ -413,6 +426,33 @@ public class DataStore {
         DataStore clone = new DataStore(fileStructure, repeatIndex);
         clone.getStore().putAll(copyAllEntries(store));
         return clone;
+    }
+
+    /**
+     * Creates repeated values to target store, within repeated field eventually
+     * @param fieldNames                : set of field names whose values will be copied
+     * @param targetStore               : can be null (will use current one if so)
+     * @param repeaterTargetFieldName   : can be null (will not use repeater if so)
+     * @param repeaterTargetIndex       : can be null (will not use repeater if so)
+     */
+    public void copyFields(Set<String> fieldNames, DataStore targetStore, String repeaterTargetFieldName, Long repeaterTargetIndex) {
+        requireNonNull(fieldNames, "A set of field names is required");
+
+        DataStore effectiveTargetStore = targetStore == null ? this : targetStore;
+
+        fieldNames
+                .forEach(fieldName -> {
+                    Entry sourceEntry = Optional.ofNullable(store.get(fieldName))
+                            .orElseThrow(() -> new IllegalStateException("Entry not found in current store: " + fieldName));
+                    byte[] sourceRawValue = sourceEntry.getRawValue();
+                    Type sourceType = sourceEntry.getType();
+
+                    if (repeaterTargetFieldName == null || repeaterTargetIndex == null) {
+                        effectiveTargetStore.addValue(fieldName, sourceType, sourceRawValue);
+                    } else {
+                        effectiveTargetStore.addRepeatedValue(repeaterTargetFieldName, fieldName, sourceType, repeaterTargetIndex, sourceRawValue);
+                    }
+                });
     }
 
     /**

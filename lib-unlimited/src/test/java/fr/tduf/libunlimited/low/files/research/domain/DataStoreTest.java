@@ -10,8 +10,11 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.HashSet;
+import java.util.Set;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
@@ -25,7 +28,7 @@ public class DataStoreTest {
     public void setUp() throws IOException {
         Log.set(Log.LEVEL_INFO);
 
-        dataStore = new DataStore(DataStoreFixture.getFileStructure("/files/structures/TEST-datastore-map.json"));
+        dataStore = createEmptyStore();
     }
 
     @Test
@@ -163,7 +166,85 @@ public class DataStoreTest {
                 .isNotSameAs(pickedOneSourceEntry);
     }
 
+    @Test
+    public void copyFields_toSameStore_withoutRepeater_shouldNotChangeValue() {
+        // GIVEN
+        DataStoreFixture.createStoreEntries(dataStore);
+        DataStore subStore = dataStore.getRepeatedValues("entry_list").get(0);
+        Set<String> fieldNames = new HashSet<>(singletonList("my_field"));
+
+        // WHEN
+        subStore.copyFields(fieldNames, null, null, null);
+
+        // THEN
+        Entry pickedActualEntry = subStore.getStore().get("my_field");
+        Entry pickedOriginalEntry = dataStore.getStore().get("entry_list[0].my_field");
+        assertThat(pickedActualEntry)
+                .isEqualTo(pickedOriginalEntry)
+                .isNotSameAs(pickedOriginalEntry);
+    }
+
+    @Test
+    public void copyFields_toSameStore_withRepeater_shouldAddValue() {
+        // GIVEN
+        DataStoreFixture.createStoreEntries(dataStore);
+        DataStore subStore = dataStore.getRepeatedValues("entry_list").get(0);
+        Set<String> fieldNames = new HashSet<>(singletonList("my_field"));
+
+        // WHEN
+        subStore.copyFields(fieldNames, null, "entry_list", 3L);
+
+        // THEN
+        Entry pickedActualEntry = subStore.getStore().get("entry_list[3].my_field");
+        Entry pickedOriginalEntry = dataStore.getStore().get("entry_list[0].my_field");
+        assertThat(pickedActualEntry)
+                .isEqualTo(pickedOriginalEntry)
+                .isNotSameAs(pickedOriginalEntry);
+    }
+
+    @Test
+    public void copyFields_toAnotherStore_withoutRepeater_shouldAddValue() throws IOException {
+        // GIVEN
+        DataStore targetStore = createEmptyStore();
+        DataStoreFixture.createStoreEntries(dataStore);
+        DataStore subStore = dataStore.getRepeatedValues("entry_list").get(0);
+        Set<String> fieldNames = new HashSet<>(singletonList("my_field"));
+
+        // WHEN
+        subStore.copyFields(fieldNames, targetStore, null, null);
+
+        // THEN
+        Entry pickedActualEntry = targetStore.getStore().get("my_field");
+        Entry pickedOriginalEntry = subStore.getStore().get("my_field");
+        assertThat(pickedActualEntry)
+                .isEqualTo(pickedOriginalEntry)
+                .isNotSameAs(pickedOriginalEntry);
+    }
+
+    @Test
+    public void copyFields_toAnotherStore_withRepeater_shouldAddValue() throws IOException {
+        // GIVEN
+        DataStore targetStore = createEmptyStore();
+        DataStoreFixture.createStoreEntries(dataStore);
+        DataStore subStore = dataStore.getRepeatedValues("entry_list").get(0);
+        Set<String> fieldNames = new HashSet<>(singletonList("my_field"));
+
+        // WHEN
+        subStore.copyFields(fieldNames, targetStore, "entry_list", 0L);
+
+        // THEN
+        Entry pickedActualEntry = targetStore.getStore().get("entry_list[0].my_field");
+        Entry pickedOriginalEntry = subStore.getStore().get("my_field");
+        assertThat(pickedActualEntry)
+                .isEqualTo(pickedOriginalEntry)
+                .isNotSameAs(pickedOriginalEntry);
+    }
+
     private static String getStoreContentsAsJson(String resourcePath) throws URISyntaxException, IOException {
         return FilesHelper.readTextFromResourceFile(resourcePath);
+    }
+
+    private static DataStore createEmptyStore() throws IOException {
+        return new DataStore(DataStoreFixture.getFileStructure("/files/structures/TEST-datastore-map.json"));
     }
 }
