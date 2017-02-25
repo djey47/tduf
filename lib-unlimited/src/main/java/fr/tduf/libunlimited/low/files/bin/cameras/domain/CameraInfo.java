@@ -15,6 +15,7 @@ import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCod
 /**
  * Brings all information about a camera (view set)
  */
+// TODO Use as configuration parameter only
 public class CameraInfo {
     private long cameraIdentifier;
     private List<CameraView> views;

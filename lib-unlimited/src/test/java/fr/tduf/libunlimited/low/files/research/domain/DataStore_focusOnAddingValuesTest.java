@@ -165,32 +165,4 @@ public class DataStore_focusOnAddingValuesTest {
         assertThat(actualEntry.getRawValue()).containsExactly(expectedBytes);
         assertThat(actualEntry.getType()).isEqualTo(Type.FPOINT);
     }
-
-    @Test(expected = NullPointerException.class)
-    public void mergeRepeatedValues_whenNullSubStore_shouldThrowException() {
-        // GIVEN-WHEN
-        dataStore.mergeRepeatedValues("", 0, null);
-
-        // THEN: NPE
-    }
-
-    @Test
-    public void mergeRepeatedValues_shouldAddEntriesAtRightIndex() {
-        // GIVEN
-        DataStoreFixture.createStoreEntries(dataStore);
-        DataStore subStore = dataStore.getRepeatedValues("entry_list").get(0);
-
-        // WHEN
-        dataStore.mergeRepeatedValues("entry_list", 3, subStore);
-
-        // THEN
-        assertThat(dataStore.getStore()).hasSize(16);
-
-        DataStore actualSubDataStore = dataStore.getRepeatedValues("entry_list").get(3);
-        assertThat(actualSubDataStore.size()).isEqualTo(4);
-        assertThat(actualSubDataStore.getInteger("my_field").get()).isEqualTo(10L);
-        assertThat(actualSubDataStore.getFloatingPoint("my_fp_field").get()).isEqualTo(235.666667f);
-        assertThat(actualSubDataStore.getText("a_field").get()).isEqualTo("az");
-        assertThat(actualSubDataStore.getRawValue("another_field").get()).isEqualTo(new byte[]{0x1, 0x2, 0x3, 0x4});
-    }
 }

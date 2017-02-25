@@ -34,8 +34,8 @@ public class DataStore {
     private static final String REPEATER_FIELD_SEPARATOR = ".";
 
     private static final Pattern FIELD_NAME_PATTERN = Pattern.compile("^(?:.*\\.)?(.+)$");              // e.g 'entry_list[1].my_field', 'my_field'
-
     private static final Pattern SUB_FIELD_NAME_PATTERN = Pattern.compile("^(.+)\\[(\\d+)]\\.(.+)$"); // e.g 'entry_list[1].my_field'
+
     private static final String SUB_FIELD_PREFIX_FORMAT = "%s[%d]" + REPEATER_FIELD_SEPARATOR;
 
     private final Map<String, Entry> store = new HashMap<>();
@@ -70,23 +70,6 @@ public class DataStore {
      */
     public void clearAll() {
         this.store.clear();
-    }
-
-    /**
-     * Adds all entries from provided data store to current one.
-     * If entries with the same key already exist, values will be replaced.
-     * @param sourceStore   : pre-filled data store.
-     */
-    public void mergeAll(DataStore sourceStore) {
-        if (sourceStore == null) {
-            return;
-        }
-
-        if(!this.getFileStructure().equals(sourceStore.getFileStructure())) {
-            throw new IllegalArgumentException("File structure differ between data stores to be merged.");
-        }
-
-        this.getStore().putAll(sourceStore.store);
     }
 
     /**
@@ -254,20 +237,6 @@ public class DataStore {
     public void addRepeatedHalfFloatingPoint(String repeaterFieldName, String fieldName, int index, float value) {
         String key = generateKeyForRepeatedField(repeaterFieldName, fieldName, index);
         addValue(key, FPOINT, 2, TypeHelper.floatingPoint16ToRaw(value));
-    }
-
-    /**
-     * Integrates a sub data store (produced by {@link #getRepeatedValues} method to current store, under a repater field, at a given index.
-     *
-     * @param repeaterFieldName : identifier of repeater field
-     * @param index             : rank in repeater
-     * @param subStore          : sub data store to merge into existing one
-     */
-    public void mergeRepeatedValues(String repeaterFieldName, int index, DataStore subStore) {
-        requireNonNull(subStore, "A sub data store is required.").getStore().entrySet().forEach(entry -> {
-            String newKey = generateKeyForRepeatedField(repeaterFieldName, entry.getKey(), index);
-            putEntryFromExisting(newKey, entry.getValue());
-        });
     }
 
     /**
@@ -582,11 +551,6 @@ public class DataStore {
         this.getStore().put(key, entry);
     }
 
-    private void putEntryFromExisting(String key, Entry existingEntry) {
-        Entry entry = new Entry(existingEntry.getType(), existingEntry.isSigned(), existingEntry.getSize(), existingEntry.getRawValue());
-        this.getStore().put(key, entry);
-    }
-
     private void readRegularField(FileStructureDto.Field currentField, ObjectNode currentObjectNode, Entry storeEntry) {
         Type fieldType = currentField.getType();
         String fieldName = currentField.getName();
@@ -638,9 +602,5 @@ public class DataStore {
 
     public FileStructureDto getFileStructure() {
         return fileStructure;
-    }
-
-    public int getRepeatIndex() {
-        return repeatIndex;
     }
 }

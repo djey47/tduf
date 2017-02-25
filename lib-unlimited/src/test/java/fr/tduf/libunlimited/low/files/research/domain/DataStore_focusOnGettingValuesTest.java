@@ -173,13 +173,10 @@ public class DataStore_focusOnGettingValuesTest {
                 .hasSize(3);
         final DataStore subStore0 = actualValues.get(0);
         assertThat(subStore0.getStore()).hasSize(4);
-        assertThat(subStore0.getRepeatIndex()).isZero();
         final DataStore subStore1 = actualValues.get(1);
         assertThat(subStore1.getStore()).hasSize(4);
-        assertThat(subStore1.getRepeatIndex()).isEqualTo(1);
         final DataStore subStore2 = actualValues.get(2);
         assertThat(subStore2.getStore()).hasSize(4);
-        assertThat(subStore2.getRepeatIndex()).isEqualTo(2);
 
         Map<String, Entry> subStore = subStore0.getStore();
         assertThat(subStore.get("my_field")).isEqualTo(new Entry(Type.INTEGER, TypeHelper.integerToRaw(10L)));

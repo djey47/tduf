@@ -3,7 +3,6 @@ package fr.tduf.libunlimited.low.files.research.domain;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.research.domain.fixture.DataStoreFixture;
-import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +11,6 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import static fr.tduf.libunlimited.low.files.research.domain.Type.UNKNOWN;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
@@ -155,7 +153,6 @@ public class DataStoreTest {
         assertThat(actualCopy.size()).isEqualTo(dataStore.size());
 
         assertThat(actualCopy.getFileStructure()).isEqualTo(dataStore.getFileStructure());
-        assertThat(actualCopy.getRepeatIndex()).isEqualTo(dataStore.getRepeatIndex());
 
         assertThat(actualCopy.getStore()).isNotSameAs(dataStore.getStore());
 
@@ -166,58 +163,7 @@ public class DataStoreTest {
                 .isNotSameAs(pickedOneSourceEntry);
     }
 
-    @Test
-    public void mergeAll_whenNullSourceStore_shouldDoNothing() {
-        // GIVEN
-        DataStoreFixture.createStoreEntries(dataStore);
-
-        // WHEN
-        dataStore.mergeAll(null);
-
-        // THEN
-        assertThat(dataStore.size()).isEqualTo(12);
-    }
-
-    @Test
-    public void mergeAll_shouldAddNewEntries() throws IOException {
-        // GIVEN
-        DataStoreFixture.createStoreEntries(dataStore);
-        DataStore sourceStore = createDataStoreToMerge();
-
-        // WHEN
-        dataStore.mergeAll(sourceStore);
-
-        // THEN
-        assertThat(dataStore.size()).isEqualTo(16);
-    }
-
-    @Test (expected = IllegalArgumentException.class)
-    public void mergeAll_whenDifferentStructures_shouldThrowIllegalArgumentException() throws IOException {
-        // GIVEN
-        DataStore sourceStore = new DataStore(FileStructureDto.builder().build());
-
-        // WHEN
-        dataStore.mergeAll(sourceStore);
-
-        // THEN: IAE
-    }
-
     private static String getStoreContentsAsJson(String resourcePath) throws URISyntaxException, IOException {
         return FilesHelper.readTextFromResourceFile(resourcePath);
-    }
-
-    private static DataStore createDataStoreToMerge() throws IOException {
-        DataStore sourceStore = new DataStore(DataStoreFixture.getFileStructure("/files/structures/TEST-datastore-map.json"));
-        // Already existing entries
-        sourceStore.addInteger32("entry_list[2].my_field", 30L);
-        sourceStore.addFloatingPoint("entry_list[2].my_fp_field", 435.666667f);
-        sourceStore.addText("entry_list[2].a_field", "cz");
-        sourceStore.addValue("entry_list[2].another_field", UNKNOWN, new byte [] {0x9, 0xA, 0xB, 0xC});
-        // New entries
-        sourceStore.addInteger32("entry_list[3].my_field", 30L);
-        sourceStore.addFloatingPoint("entry_list[3].my_fp_field", 435.666667f);
-        sourceStore.addText("entry_list[3].a_field", "cz");
-        sourceStore.addValue("entry_list[3].another_field", UNKNOWN, new byte[]{0x9, 0xA, 0xB, 0xC});
-        return sourceStore;
     }
 }
