@@ -34,7 +34,7 @@
           "topic": "CAR_PACKS",
           "group": "Tuning",
           "label": "Selectable tuning packs",
-          "remoteReferenceProfile": "Packs",
+          "remoteReferenceProfile": "Vehicle Tuning",
           "toolTip": "List of applicable tuning packs to current vehicle"
         }
       ],
