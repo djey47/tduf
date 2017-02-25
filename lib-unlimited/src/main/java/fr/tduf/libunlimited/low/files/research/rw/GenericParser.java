@@ -74,26 +74,6 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
     }
 
     /**
-     * Update numeric value to prop
-     * @param value : Integer or Long value
-     */
-    // TODO unused ?
-    public static void setNumeric(Object value, DataStore dataStore, DataStoreProps dataProp) {
-        if (!(value instanceof Long) && !(value instanceof Integer)) {
-            throw new IllegalArgumentException("Value type is not supported: " + value.getClass());
-        }
-
-        long effectiveValue;
-        if (value instanceof Integer) {
-            effectiveValue = ((Integer)value).longValue();
-        } else {
-            effectiveValue = (long) value;
-        }
-
-        dataStore.addInteger32(dataProp.getStoreFieldName(), effectiveValue);
-    }
-
-    /**
      * @return a parsed object instance from provided data.
      */
     protected abstract T generate();

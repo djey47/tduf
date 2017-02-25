@@ -12,7 +12,6 @@ import static java.util.stream.Collectors.toMap;
 /**
  * Parsed cameras database contents
  */
-// TODO add use sets info (source and target)
 public class CameraInfoEnhanced {
     @JsonIgnore
     private DataStore originalDataStore;

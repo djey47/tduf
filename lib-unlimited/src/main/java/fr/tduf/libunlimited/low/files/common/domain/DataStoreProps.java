@@ -13,8 +13,6 @@ public interface DataStoreProps {
      */
     Optional<?> retrieveFrom(DataStore dataStore);
 
-    void updateIn(DataStore dataStore, Object value);
-
     String getStoreFieldName();
 
     @Override

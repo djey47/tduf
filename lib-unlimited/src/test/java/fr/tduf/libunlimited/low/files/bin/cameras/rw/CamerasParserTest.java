@@ -34,21 +34,14 @@ class CamerasParserTest {
         // GIVEN
         ByteArrayInputStream camInputStream = new ByteArrayInputStream(camContents);
 
-
         // WHEN
         CamerasParser camerasParser = CamerasParser.load(camInputStream);
-        camerasParser.parse();
-
+        CameraInfoEnhanced parsedContents = camerasParser.parse();
 
         // THEN
-        assertThat(camerasParser).isNotNull();
-        assertThat(camerasParser.getCameraIndex()).hasSize(150);
-        assertThat(camerasParser.getCameraViews()).hasSize(148);
-        assertThat(camerasParser.getTotalViewCount()).isEqualTo(591);
-
-        assertThat(camerasParser.getCachedCameraIndex()).isNotEmpty();
-        assertThat(camerasParser.getCachedCameraViews()).isNotEmpty();
-        assertThat(camerasParser.getCachedTotalViewCount()).isNotNull();
+        assertThat(parsedContents.getIndexSize()).isEqualTo(150);
+        assertThat(parsedContents.getSetsCount()).isEqualTo(148);
+        assertThat(parsedContents.getTotalViewCount()).isEqualTo(591);
     }
 
     @Test

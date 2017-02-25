@@ -16,8 +16,8 @@ import java.util.Optional;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class GenericParserTest {
 
@@ -32,11 +32,6 @@ class GenericParserTest {
         @Override
         public Optional<?> retrieveFrom(DataStore dataStore) {
             return null;
-        }
-
-        @Override
-        public void updateIn(DataStore dataStore, Object value) {
-
         }
 
         @Override
@@ -210,38 +205,6 @@ class GenericParserTest {
         // THEN
         assertThat(actualValue).isEmpty();
     }
-
-    @Test
-    void setNumeric_whenNonInteger_norLongValue_shouldThrowException() {
-        // GIVEN-WHEN-THEN
-        assertThrows(IllegalArgumentException.class,
-                ()-> GenericParser.setNumeric(450.54, mock(DataStore.class), TestingProps.PROP));
-    }
-
-    @Test
-    void setNumeric_whenIntegerValue_shouldUpdateDataStore() {
-        // GIVEN
-        DataStore dataStoreMock = mock(DataStore.class);
-
-        // WHEN
-        GenericParser.setNumeric(450, dataStoreMock, TestingProps.PROP);
-
-        // THEN
-        verify(dataStoreMock).addInteger32(FIELD_NAME, 450L);
-    }
-
-    @Test
-    void setNumeric_whenLongValue_shouldUpdateDataStore() {
-        // GIVEN
-        DataStore dataStoreMock = mock(DataStore.class);
-
-        // WHEN
-        GenericParser.setNumeric(450L, dataStoreMock, TestingProps.PROP);
-
-        // THEN
-        verify(dataStoreMock).addInteger32(FIELD_NAME, 450L);
-    }
-
 
     private String getExpectedDump() throws IOException, URISyntaxException {
         return FilesHelper.readTextFromResourceFile("/files/dumps/TEST-basicFields.txt");

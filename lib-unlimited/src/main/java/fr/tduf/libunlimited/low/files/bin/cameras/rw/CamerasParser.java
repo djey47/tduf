@@ -19,12 +19,6 @@ import static java.util.Objects.requireNonNull;
  */
 public class CamerasParser extends GenericParser<CameraInfoEnhanced> {
 
-    private Map<Long, Short> cachedCameraIndex;
-
-    private Map<Long, List<DataStore>> cachedCameraViews;
-
-    private Integer cachedTotalViewCount;
-
     private CamerasParser(ByteArrayInputStream inputStream) throws IOException {
         super(inputStream);
     }
@@ -44,6 +38,17 @@ public class CamerasParser extends GenericParser<CameraInfoEnhanced> {
                 .withIndex(generateCamerasIndex())
                 .withViews(generateCamerasViews())
                 .build();
+    }
+
+    EnumMap<ViewProps, Object> getViewProps(DataStore viewStore) {
+        requireNonNull(viewStore, "View data store is required");
+
+        EnumMap<ViewProps, Object> props = new EnumMap<>(ViewProps.class);
+        ViewProps.valuesStream()
+                .forEach(prop -> prop.retrieveFrom(viewStore)
+                        .ifPresent(val -> props.put(prop, val)));
+
+        return props;
     }
 
     private Map<Integer, List<CameraViewEnhanced>> generateCamerasViews() {
@@ -109,106 +114,5 @@ public class CamerasParser extends GenericParser<CameraInfoEnhanced> {
     @Override
     public String getStructureResource() {
         return "/files/structures/BIN-cameras-map.json";
-    }
-
-    /**
-     * Returns index: view count per camera id.
-     */
-    public Map<Long, Short> getCameraIndex() {
-        if (cachedCameraIndex != null) {
-            return cachedCameraIndex;
-        }
-
-        cachedCameraIndex = new LinkedHashMap<>();
-        getDataStore().getRepeatedValues("index").forEach((store) -> {
-                    long cameraId = store.getInteger("cameraId")
-                            .orElseThrow(() -> new IllegalStateException("cameraId attribute not found in store"));
-                    short viewCount = store.getInteger("viewCount")
-                            .orElseThrow(() -> new IllegalStateException("viewCount attribute not found in store"))
-                            .shortValue();
-                    cachedCameraIndex.put(cameraId, viewCount);
-                });
-
-        return cachedCameraIndex;
-    }
-
-    /**
-     * Returns camera views per camera id.
-     */
-    @Deprecated
-    public Map<Long, List<DataStore>> getCameraViews() {
-        if (cachedCameraViews != null) {
-            return cachedCameraViews;
-        }
-
-        cachedCameraViews = new LinkedHashMap<>();
-        getDataStore().getRepeatedValues("views").forEach(store -> {
-                    long cameraId = store.getInteger("cameraId")
-                            .orElseThrow(() -> new IllegalStateException("cameraId attribute not found in store"));
-
-                    List<DataStore> currentViews;
-                    if (cachedCameraViews.containsKey(cameraId)) {
-                        currentViews = cachedCameraViews.get(cameraId);
-                    } else {
-                        currentViews = new ArrayList<>();
-                        cachedCameraViews.put(cameraId, currentViews);
-                    }
-
-                    currentViews.add(store);
-                });
-
-        return cachedCameraViews;
-    }
-
-    /**
-     * Returns count of all registered views.
-     */
-    public int getTotalViewCount() {
-        if (cachedTotalViewCount != null) {
-            return cachedTotalViewCount;
-        }
-
-        cachedTotalViewCount = getCameraViews().values().stream()
-                .mapToInt(List::size)
-                .reduce(0, (size1, size2) -> size1 + size2);
-
-        return cachedTotalViewCount;
-    }
-
-    /**
-     * @return all handled view properties
-     */
-    public EnumMap<ViewProps, Object> getViewProps(DataStore viewStore) {
-        requireNonNull(viewStore, "View data store is required");
-
-        EnumMap<ViewProps, Object> props = new EnumMap<>(ViewProps.class);
-        ViewProps.valuesStream()
-                .forEach(prop -> prop.retrieveFrom(viewStore)
-                        .ifPresent(val -> props.put(prop, val)));
-
-        return props;
-    }
-
-    /**
-     * Resets all caches to reload data from store.
-     * Should be used after modifying store contents.
-     */
-    @Deprecated
-    public void flushCaches() {
-        cachedCameraViews = null;
-        cachedCameraIndex = null;
-        cachedTotalViewCount = null;
-    }
-
-    Map<Long, List<DataStore>> getCachedCameraViews() {
-        return cachedCameraViews;
-    }
-
-    Map<Long, Short> getCachedCameraIndex() {
-        return cachedCameraIndex;
-    }
-
-    Integer getCachedTotalViewCount() {
-        return cachedTotalViewCount;
     }
 }

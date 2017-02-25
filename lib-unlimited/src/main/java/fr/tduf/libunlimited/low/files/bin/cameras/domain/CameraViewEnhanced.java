@@ -12,6 +12,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Parsed views settings from cameras database
  */
+// TODO add use sets info (source and target)
 public class CameraViewEnhanced {
     @JsonIgnore
     private DataStore originalDataStore;
