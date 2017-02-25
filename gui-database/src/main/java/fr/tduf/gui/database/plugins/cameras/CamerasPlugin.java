@@ -70,6 +70,7 @@ public class CamerasPlugin implements DatabasePlugin {
     private CamerasImExHelper imExHelper;
 
     private final Property<CameraInfoEnhanced> cameraInfoEnhancedProperty = new SimpleObjectProperty<>();
+    // TODO use enhanced objects
     private ObservableList<CameraInfo> cameraInfos;
     private ObservableList<CameraInfo.CameraView> cameraViews;
 
@@ -348,7 +349,7 @@ public class CamerasPlugin implements DatabasePlugin {
     }
 
     private List<Map.Entry<ViewProps, ?>> getSortedAndEditableViewProperties(long cameraIdentifier, ViewKind viewKind) {
-        final Set<ViewProps> nonEditableProps = new HashSet<>();
+        final Set<ViewProps> nonEditableProps = new HashSet<>(0);
 
         return CamerasHelper.fetchViewProperties(Long.valueOf(cameraIdentifier).intValue(), viewKind, cameraInfoEnhancedProperty.getValue()).entrySet().stream()
                 .filter(propsEntry -> !nonEditableProps.contains(propsEntry.getKey()))
