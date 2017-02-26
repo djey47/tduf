@@ -4,8 +4,9 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.CustomizableCameraView;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraViewEnhanced;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
+import fr.tduf.libunlimited.low.files.bin.cameras.dto.SetConfigurationDto;
 import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
 
 import java.io.IOException;
@@ -40,30 +41,30 @@ class AdjustCameraStep extends GenericStep {
         long cameraId = getDatabaseContext().getPatchProperties().getCameraIdentifier()
                 .orElseGet(this::getCameraIdentifierFromDatabase);
         String cameraFileName = Paths.get(getInstallerConfiguration().resolveDatabaseDirectory(), CamerasHelper.FILE_CAMERAS_BIN).toString();
-        CameraInfo cameraInfo = buildCustomViewsFromProperties(cameraId);
+        SetConfigurationDto config = buildCustomViewsFromProperties(Long.valueOf(cameraId).intValue());
 
-        if(cameraInfo.getViews().isEmpty()) {
+        if(config.getViews().isEmpty()) {
             Log.info(THIS_CLASS_NAME, "->No customization for camera id " + cameraId);
         } else {
             Log.info(THIS_CLASS_NAME, "->Adjusting camera id " + cameraId + ": " + cameraFileName);
-            CamerasHelper.useViews(cameraInfo, cameraFileName);
+            CamerasHelper.useViews(config, cameraFileName);
         }
     }
 
-    private CameraInfo buildCustomViewsFromProperties(long cameraIdentifier) {
-        List<CameraInfo.CameraView> views = Stream.of(CustomizableCameraView.values())
+    private SetConfigurationDto buildCustomViewsFromProperties(int cameraIdentifier) {
+        List<CameraViewEnhanced> views = Stream.of(CustomizableCameraView.values())
                 .map(this::buildCustomViewFromProperties)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(toList());
 
-        return CameraInfo.builder()
+        return SetConfigurationDto.builder()
                 .forIdentifier(cameraIdentifier)
                 .withViews(views)
                 .build();
     }
 
-    private Optional<CameraInfo.CameraView> buildCustomViewFromProperties(CustomizableCameraView cameraView) {
+    private Optional<CameraViewEnhanced> buildCustomViewFromProperties(CustomizableCameraView cameraView) {
         return getDatabaseContext().getPatchProperties().getCustomizedCameraView(cameraView)
                 .map(prop -> {
                     final String[] camCompounds = prop.split(REGEX_SEPARATOR_CAM_VIEW);
@@ -73,8 +74,8 @@ class AdjustCameraStep extends GenericStep {
 
                     ViewKind viewType = cameraView.getGenuineViewType();
                     ViewKind sourceViewType = CustomizableCameraView.fromSuffix(camCompounds[1]).getGenuineViewType();
-                    long sourceCameraIdentifier = Long.parseLong(camCompounds[0]);
-                    return CameraInfo.CameraView.from(
+                    int sourceCameraIdentifier = Integer.valueOf(camCompounds[0]);
+                    return CameraViewEnhanced.from(
                             viewType,
                             sourceCameraIdentifier,
                             sourceViewType);

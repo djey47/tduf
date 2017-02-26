@@ -6,6 +6,8 @@ import fr.tduf.libunlimited.high.files.bin.cameras.patcher.helper.CamPlaceholder
 import fr.tduf.libunlimited.high.files.common.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfoEnhanced;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraViewEnhanced;
+import fr.tduf.libunlimited.low.files.bin.cameras.dto.SetConfigurationDto;
 import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
 
 import java.util.List;
@@ -61,11 +63,11 @@ public class CamPatcher {
             createCameraSetFromReference(setIdentifier);
         }
 
-        List<CameraInfo.CameraView> allViews = setChangeObject.getChanges().stream()
-                .map(viewChange -> fromPatchProps(viewChange.getViewProps(), viewChange.getCameraViewKind()))
+        List<CameraViewEnhanced> allViews = setChangeObject.getChanges().stream()
+                .map(viewChange -> CameraViewEnhanced.fromPatchProps(viewChange.getViewProps(), viewChange.getCameraViewKind()))
                 .collect(toList());
 
-        CameraInfo updateConf = CameraInfo.builder()
+        SetConfigurationDto updateConf = SetConfigurationDto.builder()
                 .forIdentifier(setIdentifier)
                 .withViews(allViews)
                 .build();

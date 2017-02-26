@@ -194,6 +194,7 @@ public class DatabasePatchProperties extends PatchProperties {
         return retrieve(format(PLACEHOLDER_NAME_FMT_CUSTOM_CAM, cameraView.getPropertySuffix()));
     }
 
+    // TODO set to Optional<Integer>
     public Optional<Long> getCameraIdentifier() {
         return retrieve(PLACEHOLDER_NAME_CAMERA).map(Long::valueOf);
     }

@@ -3,8 +3,8 @@ package fr.tduf.cli.tools;
 import fr.tduf.cli.common.helper.CommandHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfoEnhanced;
+import fr.tduf.libunlimited.low.files.bin.cameras.dto.SetConfigurationDto;
 import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
-import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -170,7 +170,7 @@ public class CameraTool extends GenericTool {
     }
 
     private Map<String, ?> useViews(String sourceCameraFile, String configurationFile) throws IOException {
-        CameraInfo configurationObject = readConfiguration(configurationFile);
+        SetConfigurationDto configurationObject = readConfiguration(configurationFile);
         CameraInfo updatedCameraInfo = CamerasHelper.useViews(configurationObject, sourceCameraFile);
 
         outLine("> Done using views.");
@@ -180,14 +180,14 @@ public class CameraTool extends GenericTool {
 
     private Map<String, ?> customizeCameraSet(String sourceCameraFile, String targetCameraFile, String configurationFile) throws IOException {
         CameraInfoEnhanced cameraInfoEnhanced = loadCameras(sourceCameraFile);
-        CameraInfo configurationObject = readConfiguration(configurationFile);
+        SetConfigurationDto configurationObject = readConfiguration(configurationFile);
         CamerasHelper.updateViews(configurationObject, cameraInfoEnhanced);
 
         outLine("> Done customizing camera set.");
 
         CamerasHelper.saveCamerasDatabase(cameraInfoEnhanced, targetCameraFile);
 
-        return makeCommandResultForViewDetails(cameraInfoEnhanced, Long.valueOf(configurationObject.getCameraIdentifier()).intValue());
+        return makeCommandResultForViewDetails(cameraInfoEnhanced, configurationObject.getSetIdentifier());
     }
 
     private Map<String, ?> viewCameraSet(String cameraFile, int cameraIdentifier) throws IOException {
@@ -244,10 +244,10 @@ public class CameraTool extends GenericTool {
         return lines;
     }
 
-    private CameraInfo readConfiguration(String configurationFile) throws IOException {
+    private SetConfigurationDto readConfiguration(String configurationFile) throws IOException {
         outLine("> Will use configuration file: " + configurationFile);
 
-        CameraInfo readInfo = jsonMapper.readValue(new File(configurationFile), CameraInfo.class);
+        SetConfigurationDto readInfo = jsonMapper.readValue(new File(configurationFile), SetConfigurationDto.class);
 
         outLine("> Done reading configuration.");
 

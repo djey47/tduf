@@ -5,6 +5,7 @@ import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
 import fr.tduf.libunlimited.high.files.common.interop.GenuineGateway;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraViewEnhanced;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -60,9 +61,9 @@ public class GenuineCamGateway extends GenuineGateway {
         return cameraInfoBuilder.build();
     }
 
-    private static CameraInfo.CameraView mapGenuineCamViewToCameraView(GenuineCamViewsDto.GenuineCamViewDto genuineView) {
+    private static CameraViewEnhanced mapGenuineCamViewToCameraView(GenuineCamViewsDto.GenuineCamViewDto genuineView) {
         ViewKind sourceType = ViewKind.fromInternalId(genuineView.getViewId());
-        return CameraInfo.CameraView.from(genuineView.getViewType(), genuineView.getCameraId(), sourceType);
+        return CameraViewEnhanced.from(genuineView.getViewType(), Long.valueOf(genuineView.getCameraId()).intValue(), sourceType);
     }
 
     private static String createCamCustomizeInputFile(GenuineCamViewsDto customizeInput) throws IOException {

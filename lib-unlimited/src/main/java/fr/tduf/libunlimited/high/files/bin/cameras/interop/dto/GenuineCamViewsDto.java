@@ -54,6 +54,7 @@ public class GenuineCamViewsDto {
             return viewType;
         }
 
+        // TODO set to long
         public long getCameraId() {
             return cameraId;
         }

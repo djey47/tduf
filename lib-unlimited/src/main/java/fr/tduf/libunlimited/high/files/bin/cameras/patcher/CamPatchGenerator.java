@@ -5,6 +5,7 @@ import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.SetChangeDto;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.ViewChangeDto;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraViewEnhanced;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 
 import java.time.LocalDateTime;
@@ -24,6 +25,7 @@ public class CamPatchGenerator {
 
     private final List<CameraInfo> camerasInformation;
 
+    // TODO use enhanced object
     public CamPatchGenerator(List<CameraInfo> camerasInformation) {
         this.camerasInformation = requireNonNull(camerasInformation, "Loaded cameras information is required");
     }
@@ -68,14 +70,14 @@ public class CamPatchGenerator {
                 .collect(toList());
     }
 
-    private ViewChangeDto makeViewChangeObject(CameraInfo.CameraView cameraView) {
+    private ViewChangeDto makeViewChangeObject(CameraViewEnhanced cameraView) {
         return ViewChangeDto.builder()
-                .forViewKind(cameraView.getType())
+                .forViewKind(cameraView.getKind())
                 .withProps(getAllViewProperties(cameraView))
                 .build();
     }
 
-    private EnumMap<ViewProps, String> getAllViewProperties(CameraInfo.CameraView cameraView) {
+    private EnumMap<ViewProps, String> getAllViewProperties(CameraViewEnhanced cameraView) {
         return cameraView.getSettings().entrySet().stream()
                 .collect(
                         collectingAndThen(
@@ -87,7 +89,7 @@ public class CamPatchGenerator {
         return identifierRange.accepts(Long.toString(setEntry.getCameraIdentifier()));
     }
 
-    private boolean isInViewRange(CameraInfo.CameraView view, ItemRange identifierRange) {
-        return identifierRange.accepts(view.getType().name());
+    private boolean isInViewRange(CameraViewEnhanced view, ItemRange viewNameRange) {
+        return viewNameRange.accepts(view.getKind().name());
     }
 }

@@ -13,12 +13,13 @@ import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 
 /**
- * Brings all information about a camera (view set)
+ * Brings all information about a single camera (view set)
  */
-// TODO Use as configuration parameter only
+// TODO rename to CameraSetInfo
 public class CameraInfo {
+    // TODO set to int
     private long cameraIdentifier;
-    private List<CameraView> views;
+    private List<CameraViewEnhanced> views;
 
     private CameraInfo() {}
 
@@ -26,19 +27,18 @@ public class CameraInfo {
         return new CameraInfoBuilder();
     }
 
-    // TODO set to int
     public long getCameraIdentifier() {
         return cameraIdentifier;
     }
 
-    public List<CameraView> getViews() {
+    public List<CameraViewEnhanced> getViews() {
         return views;
     }
 
     @JsonIgnore
-    public Map<ViewKind, CameraView> getViewsByKind() {
+    public Map<ViewKind, CameraViewEnhanced> getViewsByKind() {
         return getViews().stream()
-                .collect(toMap(CameraInfo.CameraView::getType, v -> v));
+                .collect(toMap(CameraViewEnhanced::getKind, v -> v));
     }
 
     @Override
@@ -60,29 +60,29 @@ public class CameraInfo {
 
     public static class CameraInfoBuilder {
         private long cameraIdentifier;
-        private List<CameraView> views = new ArrayList<>();
+        private List<CameraViewEnhanced> views = new ArrayList<>();
 
         public CameraInfoBuilder forIdentifier(long cameraIdentifier) {
             this.cameraIdentifier = cameraIdentifier;
             return this;
         }
 
-        public CameraInfoBuilder addView(CameraView view) {
+        public CameraInfoBuilder addView(CameraViewEnhanced view) {
             views.add(view);
             return this;
         }
 
-        public CameraInfoBuilder withViews(List<CameraView> allViews) {
+        public CameraInfoBuilder withViews(List<CameraViewEnhanced> allViews) {
             views.addAll(allViews);
             return this;
         }
 
-        public CameraInfoBuilder withUsedViews(List<CameraView> allViews, List<CameraView> usedViews) {
+        public CameraInfoBuilder withUsedViews(List<CameraViewEnhanced> allViews, List<CameraViewEnhanced> usedViews) {
             views.addAll(allViews);
             views
                     .forEach(view -> usedViews.stream()
-                            .filter(usedView -> usedView.getType() == view.getType())
-                            .filter(usedView -> usedView.getSourceCameraIdentifier() != 0L)
+                            .filter(usedView -> usedView.getKind() == view.getKind())
+                            .filter(usedView -> usedView.getUsedCameraSetId() != 0L)
                             .findAny()
                             .ifPresent(view::setUsedSettings));
             return this;
@@ -101,6 +101,7 @@ public class CameraInfo {
     /**
      * Gathers all information about a particular view
      */
+    // TODO delete
     public static class CameraView {
         private ViewKind type;
         private long sourceCameraIdentifier;
@@ -179,9 +180,5 @@ public class CameraInfo {
             return settings;
         }
 
-        void setUsedSettings(CameraView usedView) {
-            sourceCameraIdentifier = usedView.sourceCameraIdentifier;
-            sourceType = usedView.sourceType;
-        }
     }
 }

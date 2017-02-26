@@ -5,6 +5,8 @@ import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.GenuineCamGateway;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.*;
+import fr.tduf.libunlimited.low.files.bin.cameras.dto.SetConfigurationDto;
+import fr.tduf.libunlimited.low.files.bin.cameras.dto.ViewConfigurationDto;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasWriter;
 
@@ -18,7 +20,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo.CameraView.fromProps;
 import static java.nio.file.Files.readAllBytes;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -82,13 +83,12 @@ public class CamerasHelper {
      * @param cameraInfoEnhanced    : parsed cameras contents
      * @return view properties for requested camera set.
      */
-    // TODO return type to be replaced with enhanced objects
     public static CameraInfo fetchInformation(int cameraIdentifier, CameraInfoEnhanced cameraInfoEnhanced) {
         CameraInfo.CameraInfoBuilder cameraInfoBuilder = CameraInfo.builder()
                 .forIdentifier(cameraIdentifier);
 
         cameraInfoEnhanced.getViewsForCameraSet(cameraIdentifier).stream()
-                .map(cameraViewEnhanced -> fromProps(cameraViewEnhanced.getSettings(), cameraViewEnhanced.getKind()))
+                .map(cameraViewEnhanced -> CameraViewEnhanced.fromProps(cameraViewEnhanced.getSettings(), cameraViewEnhanced.getKind()))
                 .forEach(cameraInfoBuilder::addView);
 
         return cameraInfoBuilder.build();
@@ -98,7 +98,6 @@ public class CamerasHelper {
      * @param cameraInfoEnhanced : loaded cameras contents
      * @return all cameras and their view properties.
      */
-    // TODO return type to be replaced with enhanced objects
     public static List<CameraInfo> fetchAllInformation(CameraInfoEnhanced cameraInfoEnhanced) {
         return cameraInfoEnhanced.getAllSetIdentifiers().stream()
                 .map(setIdentifier -> fetchInformation(setIdentifier, cameraInfoEnhanced))
@@ -113,9 +112,9 @@ public class CamerasHelper {
      */
     public static EnumMap<ViewProps, ?> fetchViewProperties(int cameraIdentifier, ViewKind viewKind, CameraInfoEnhanced cameraInfoEnhanced) {
         return fetchInformation(cameraIdentifier, cameraInfoEnhanced).getViews().stream()
-                .filter(cv -> viewKind == cv.getType())
+                .filter(cv -> viewKind == cv.getKind())
                 .findAny()
-                .map(CameraInfo.CameraView::getSettings)
+                .map(CameraViewEnhanced::getSettings)
                 .orElseThrow(() -> new NoSuchElementException("Camera view not found: (" + cameraIdentifier + ", " + viewKind + ")"));
     }
 
@@ -123,15 +122,14 @@ public class CamerasHelper {
      * @param configuration         : view properties to be updated
      * @param cameraInfoEnhanced    : cameras contents to be updated
      */
-    // TODO create dedicated object for configuration
-    public static void updateViews(CameraInfo configuration, CameraInfoEnhanced cameraInfoEnhanced) {
-        Long cameraIdentifier = validateConfiguration(configuration);
-        cameraInfoEnhanced.getViewsForCameraSet(cameraIdentifier.intValue())
+    public static void updateViews(SetConfigurationDto configuration, CameraInfoEnhanced cameraInfoEnhanced) {
+        int cameraIdentifier = validateConfiguration(configuration);
+        cameraInfoEnhanced.getViewsForCameraSet(cameraIdentifier)
                 .forEach(view -> {
                     ViewKind viewKind = view.getKind();
 
                     configuration.getViews().stream()
-                            .filter(v -> viewKind == v.getType())
+                            .filter(v -> viewKind == v.getOriginalKind())
                             .findAny()
                             .ifPresent(conf -> conf.getSettings().entrySet()
                                     .forEach(entry -> view.getSettings().put(entry.getKey(), entry.getValue())));
@@ -144,16 +142,14 @@ public class CamerasHelper {
      * @param sourceCamerasFile : camera contents to be modified
      * @return updated view properties.
      */
-    // TODO create dedicated object for configuration
-    // TODO return enhanced object with source and target info
-    public static CameraInfo useViews(CameraInfo configuration, String sourceCamerasFile) throws IOException {
-        Long cameraIdentifier = validateConfiguration(configuration);
+    public static CameraInfo useViews(SetConfigurationDto configuration, String sourceCamerasFile) throws IOException {
+        int cameraIdentifier = validateConfiguration(configuration);
 
         GenuineCamViewsDto customizeInput = mapCameraInfoToGenuineCamViews(configuration);
         cameraSupport.customizeCamera(sourceCamerasFile, cameraIdentifier, customizeInput);
 
         CameraInfo cameraInfoFromTDUMT = cameraSupport.getCameraInfo(sourceCamerasFile, cameraIdentifier);
-        CameraInfo cameraInfoFromTDUF = fetchInformation(cameraIdentifier.intValue(), loadAndParseCamerasDatabase(sourceCamerasFile));
+        CameraInfo cameraInfoFromTDUF = fetchInformation(cameraIdentifier, loadAndParseCamerasDatabase(sourceCamerasFile));
 
         return mergeCameraInfo(cameraInfoFromTDUF, cameraInfoFromTDUMT);
     }
@@ -194,7 +190,7 @@ public class CamerasHelper {
                 .build();
     }
 
-    private static GenuineCamViewsDto mapCameraInfoToGenuineCamViews(CameraInfo configuration) {
+    private static GenuineCamViewsDto mapCameraInfoToGenuineCamViews(SetConfigurationDto configuration) {
         List<GenuineCamViewsDto.GenuineCamViewDto> views = configuration.getViews().stream()
                 .map(CamerasHelper::mapCameraViewToGenuineCamView)
                 .collect(toList());
@@ -202,25 +198,25 @@ public class CamerasHelper {
         return GenuineCamViewsDto.withViews(views);
     }
 
-    private static GenuineCamViewsDto.GenuineCamViewDto mapCameraViewToGenuineCamView(CameraInfo.CameraView view) {
+    private static GenuineCamViewsDto.GenuineCamViewDto mapCameraViewToGenuineCamView(ViewConfigurationDto viewConfiguration) {
         GenuineCamViewsDto.GenuineCamViewDto genuineCamViewDto = new GenuineCamViewsDto.GenuineCamViewDto();
 
-        genuineCamViewDto.setViewType(view.getType());
-        genuineCamViewDto.setCameraId(Long.valueOf(view.getSourceCameraIdentifier()).intValue());
-        genuineCamViewDto.setViewId(view.getSourceType().getInternalId());
+        genuineCamViewDto.setViewType(viewConfiguration.getOriginalKind());
+        genuineCamViewDto.setCameraId(viewConfiguration.getUsedSetIdentifier());
+        genuineCamViewDto.setViewId(viewConfiguration.getUsedKind().getInternalId());
         genuineCamViewDto.setCustomized(true);
 
         return genuineCamViewDto;
     }
 
-    private static long validateConfiguration(CameraInfo configuration) {
-        requireNonNull(configuration, "View configuration is required.");
+    private static int validateConfiguration(SetConfigurationDto configuration) {
+        requireNonNull(configuration, "Camera set configuration is required.");
 
         if (configuration.getViews().isEmpty()) {
             throw new IllegalArgumentException("No views to update in provided configuration.");
         }
 
-        return configuration.getCameraIdentifier();
+        return configuration.getSetIdentifier();
     }
 
     private static ByteArrayInputStream getCamerasInputStream(String sourceCameraFile) throws IOException {

@@ -12,6 +12,7 @@ import static java.util.stream.Collectors.toMap;
 /**
  * Parsed cameras database contents
  */
+// TODO rename to CameraDatabase
 public class CameraInfoEnhanced {
     @JsonIgnore
     private DataStore originalDataStore;

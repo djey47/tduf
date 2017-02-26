@@ -6,6 +6,7 @@ import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.common.system.domain.ProcessResult;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraViewEnhanced;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,13 +58,13 @@ public class GenuineCamGatewayTest {
         // THEN
         assertThat(actualCameraInfo).isNotNull();
         assertThat(actualCameraInfo.getCameraIdentifier()).isEqualToComparingFieldByField(CAMERA_ID);
-        final List<CameraInfo.CameraView> actualViewSets = actualCameraInfo.getViews();
+        final List<CameraViewEnhanced> actualViewSets = actualCameraInfo.getViews();
         assertThat(actualViewSets).hasSize(4);
         assertThat(actualViewSets).extracting(("type")).containsOnly(Hood, Hood_Back, Cockpit, Cockpit_Back);
-        final CameraInfo.CameraView actualView = actualViewSets.stream().filter(v -> Hood == v.getType()).findAny().get();
-        assertThat(actualView.getType()).isEqualTo(Hood);
-        assertThat(actualView.getSourceCameraIdentifier()).isEqualTo(0);
-        assertThat(actualView.getSourceType()).isEqualTo(Unknown);
+        final CameraViewEnhanced actualView = actualViewSets.stream().filter(v -> Hood == v.getKind()).findAny().get();
+        assertThat(actualView.getKind()).isEqualTo(Hood);
+        assertThat(actualView.getUsedCameraSetId()).isEqualTo(0);
+        assertThat(actualView.getUsedKind()).isEqualTo(Unknown);
     }
 
     @Test

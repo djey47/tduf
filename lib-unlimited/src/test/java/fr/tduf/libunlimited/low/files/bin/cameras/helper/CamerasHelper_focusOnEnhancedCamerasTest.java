@@ -4,6 +4,7 @@ import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.GenuineCamGateway;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.*;
+import fr.tduf.libunlimited.low.files.bin.cameras.dto.SetConfigurationDto;
 import fr.tduf.libunlimited.low.files.bin.cameras.rw.CamerasParser;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,7 +55,7 @@ class CamerasHelper_focusOnEnhancedCamerasTest {
     void duplicateCameraSet_whenNullInfo_shouldThrowNullPointerException() throws Exception {
         // GIVEN-WHEN-THEN
         assertThrows(NullPointerException.class,
-                () -> CamerasHelper.duplicateCameraSet(1, 1001, (CameraInfoEnhanced)null));
+                () -> CamerasHelper.duplicateCameraSet(1, 1001, null));
     }
 
     @Test
@@ -125,7 +126,7 @@ class CamerasHelper_focusOnEnhancedCamerasTest {
         assertThat(cameraInfo.getCameraIdentifier()).isEqualTo((int)cameraIdentifier);
         assertThat(cameraInfo.getViews()).hasSize(4);
         assertThat(cameraInfo.getViews())
-                .extracting("type")
+                .extracting("kind")
                 .contains(
                         Cockpit,
                         Cockpit_Back,
@@ -168,18 +169,18 @@ class CamerasHelper_focusOnEnhancedCamerasTest {
         String camFile = camFilePath.toString();
         Files.write(camFilePath, camContents, StandardOpenOption.CREATE);
 
-        CameraInfo configuration = CameraInfo.builder()
+        SetConfigurationDto configuration = SetConfigurationDto.builder()
                 .forIdentifier(1000)
-                .addView(CameraInfo.CameraView.from(Hood, 101, Hood))
-                .addView(CameraInfo.CameraView.from(Cockpit_Back, 101, Cockpit_Back))
+                .addView(CameraViewEnhanced.from(Hood, 101, Hood))
+                .addView(CameraViewEnhanced.from(Cockpit_Back, 101, Cockpit_Back))
                 .build();
 
         CameraInfo cameraInfoFromModdingTools = CameraInfo.builder()
                 .forIdentifier(1000L)
-                .addView(CameraInfo.CameraView.from(Hood, 101L, Hood))
-                .addView(CameraInfo.CameraView.from(Cockpit_Back, 101L, Cockpit_Back))
-                .addView(CameraInfo.CameraView.from(Hood_Back, 0, Unknown))
-                .addView(CameraInfo.CameraView.from(Cockpit, 0, Unknown))
+                .addView(CameraViewEnhanced.from(Hood, 101, Hood))
+                .addView(CameraViewEnhanced.from(Cockpit_Back, 101, Cockpit_Back))
+                .addView(CameraViewEnhanced.from(Hood_Back, 0, Unknown))
+                .addView(CameraViewEnhanced.from(Cockpit, 0, Unknown))
                 .build();
         when(cameraSupportMock.getCameraInfo(camFile, 1000L)).thenReturn(cameraInfoFromModdingTools);
 
@@ -197,19 +198,19 @@ class CamerasHelper_focusOnEnhancedCamerasTest {
         assertThat(actualViewsParameters).extracting("cameraId").containsOnly(101L);
         assertThat(actualViewsParameters).extracting("viewId").containsExactly(24, 43);
 
-        Map<ViewKind, CameraInfo.CameraView> viewsByType = actualCameraInfo.getViewsByKind();
-        CameraInfo.CameraView hoodBackView = viewsByType.get(Hood_Back);
-        assertThat(hoodBackView.getSourceCameraIdentifier()).isEqualTo(0);
-        assertThat(hoodBackView.getSourceType()).isNull();
-        CameraInfo.CameraView cockpitView = viewsByType.get(Cockpit);
-        assertThat(cockpitView.getSourceCameraIdentifier()).isEqualTo(0);
-        assertThat(cockpitView.getSourceType()).isNull();
-        CameraInfo.CameraView hoodView = viewsByType.get(Hood);
-        assertThat(hoodView.getSourceCameraIdentifier()).isEqualTo(101L);
-        assertThat(hoodView.getSourceType()).isEqualTo(Hood);
-        CameraInfo.CameraView cockpitBackView = viewsByType.get(Cockpit_Back);
-        assertThat(cockpitBackView.getSourceCameraIdentifier()).isEqualTo(101L);
-        assertThat(cockpitBackView.getSourceType()).isEqualTo(Cockpit_Back);
+        Map<ViewKind, CameraViewEnhanced> viewsByType = actualCameraInfo.getViewsByKind();
+        CameraViewEnhanced hoodBackView = viewsByType.get(Hood_Back);
+        assertThat(hoodBackView.getUsedCameraSetId()).isEqualTo(0);
+        assertThat(hoodBackView.getUsedKind()).isNull();
+        CameraViewEnhanced cockpitView = viewsByType.get(Cockpit);
+        assertThat(cockpitView.getUsedCameraSetId()).isEqualTo(0);
+        assertThat(cockpitView.getUsedKind()).isNull();
+        CameraViewEnhanced hoodView = viewsByType.get(Hood);
+        assertThat(hoodView.getUsedCameraSetId()).isEqualTo(101L);
+        assertThat(hoodView.getUsedKind()).isEqualTo(Hood);
+        CameraViewEnhanced cockpitBackView = viewsByType.get(Cockpit_Back);
+        assertThat(cockpitBackView.getUsedCameraSetId()).isEqualTo(101L);
+        assertThat(cockpitBackView.getUsedKind()).isEqualTo(Cockpit_Back);
     }
 
     @Test
@@ -280,7 +281,7 @@ class CamerasHelper_focusOnEnhancedCamerasTest {
     @Test
     void updateViews_whenEmptyConfiguration_shouldThrowException() throws IOException {
         // GIVEN
-        CameraInfo configuration = CameraInfo.builder().build();
+        SetConfigurationDto configuration = SetConfigurationDto.builder().build();
 
         // WHEN-THEN
         assertThrows(IllegalArgumentException.class,
@@ -290,8 +291,8 @@ class CamerasHelper_focusOnEnhancedCamerasTest {
     @Test
     void updateViews_whenCameraDoesNotExist_shouldThrowException() throws Exception {
         // GIVEN
-        CameraInfo.CameraView cameraView = CameraInfo.CameraView.from(Bumper, 0, Bumper);
-        CameraInfo configuration = CameraInfo.builder()
+        CameraViewEnhanced cameraView = CameraViewEnhanced.from(Bumper, 0, Bumper);
+        SetConfigurationDto configuration = SetConfigurationDto.builder()
                 .forIdentifier(0)
                 .addView(cameraView)
                 .build();
@@ -307,8 +308,8 @@ class CamerasHelper_focusOnEnhancedCamerasTest {
         EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
         viewProps.put(BINOCULARS, 0L);
 
-        CameraInfo.CameraView cameraView = CameraInfo.CameraView.fromProps(viewProps, Follow_Far);
-        CameraInfo configuration = CameraInfo.builder()
+        CameraViewEnhanced cameraView = CameraViewEnhanced.fromProps(viewProps, Follow_Far);
+        SetConfigurationDto configuration = SetConfigurationDto.builder()
                 .forIdentifier(1000)
                 .addView(cameraView)
                 .build();
@@ -330,8 +331,8 @@ class CamerasHelper_focusOnEnhancedCamerasTest {
         EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
         viewProps.put(BINOCULARS, 0L);
 
-        CameraInfo.CameraView cameraView = CameraInfo.CameraView.fromProps(viewProps, Hood);
-        CameraInfo configuration = CameraInfo.builder()
+        CameraViewEnhanced cameraView = CameraViewEnhanced.fromProps(viewProps, Hood);
+        SetConfigurationDto configuration = SetConfigurationDto.builder()
                 .forIdentifier(1000)
                 .addView(cameraView)
                 .build();

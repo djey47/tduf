@@ -5,6 +5,7 @@ import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.SetChangeDto;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.ViewChangeDto;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraViewEnhanced;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import org.junit.jupiter.api.Test;
@@ -70,7 +71,7 @@ class CamPatchGeneratorTest {
         viewProps.put(ViewProps.BINOCULARS, 50L);
         CameraInfo cameraInfo = CameraInfo.builder()
                 .forIdentifier(1L)
-                .addView(CameraInfo.CameraView.fromProps(viewProps, Cockpit_Back))
+                .addView(CameraViewEnhanced.fromProps(viewProps, Cockpit_Back))
                 .build();
         CamPatchGenerator camPatchGenerator = new CamPatchGenerator(singletonList(cameraInfo));
 
@@ -94,7 +95,7 @@ class CamPatchGeneratorTest {
         viewProps.put(ViewProps.BINOCULARS, 50L);
         CameraInfo cameraInfo = CameraInfo.builder()
                 .forIdentifier(1L)
-                .addView(CameraInfo.CameraView.fromProps(viewProps, Cockpit_Back))
+                .addView(CameraViewEnhanced.fromProps(viewProps, Cockpit_Back))
                 .build();
         CamPatchGenerator camPatchGenerator = new CamPatchGenerator(singletonList(cameraInfo));
 
