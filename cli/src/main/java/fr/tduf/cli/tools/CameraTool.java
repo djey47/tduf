@@ -273,8 +273,6 @@ public class CameraTool extends GenericTool {
         return resultInfo;
     }
 
-    @Deprecated
-    // TODO Delete once info enhanced brings source and target info
     private Map<String, ?> makeCommandResultForViewDetails(CameraSetInfo cameraSetInfo) {
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("cameraSet", cameraSetInfo);

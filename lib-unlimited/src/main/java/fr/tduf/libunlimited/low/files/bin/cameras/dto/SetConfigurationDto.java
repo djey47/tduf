@@ -76,7 +76,8 @@ public class SetConfigurationDto {
             this.views.clear();
             this.views.addAll(views.stream()
                     .map(view -> ViewConfigurationDto.builder()
-                            .forKind(view.getKind())
+                            .withUsedSetIdentifier(view.getUsedCameraSetId())
+                            .witUsedViewKind(view.getUsedKind())
                             .withSettings(view.getSettings())
                             .build())
                     .collect(toList()));

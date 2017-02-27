@@ -65,6 +65,8 @@ public class ViewConfigurationDto {
     public static class ViewConfigurationDtoBuilder {
         private ViewKind kind;
         private EnumMap<ViewProps, Object> settings;
+        private int usedSetIdentifier;
+        private ViewKind usedViewKind;
 
         public ViewConfigurationDtoBuilder forKind(ViewKind kind) {
             this.kind = kind;
@@ -76,11 +78,23 @@ public class ViewConfigurationDto {
             return this;
         }
 
+        public ViewConfigurationDtoBuilder withUsedSetIdentifier(int setIdentifier) {
+            this.usedSetIdentifier = setIdentifier;
+            return this;
+        }
+
+        public ViewConfigurationDtoBuilder witUsedViewKind(ViewKind usedKind) {
+            this.usedViewKind = usedKind;
+            return this;
+        }
+
         public ViewConfigurationDto build() {
             ViewConfigurationDto viewConfigurationDto = new ViewConfigurationDto();
 
             viewConfigurationDto.originalKind = kind;
             viewConfigurationDto.settings = settings;
+            viewConfigurationDto.usedKind = usedViewKind ;
+            viewConfigurationDto.usedSetIdentifier = usedSetIdentifier ;
 
             return viewConfigurationDto;
         }
