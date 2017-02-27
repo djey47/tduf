@@ -10,14 +10,14 @@ import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind.Bumper;
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps.BINOCULARS;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class CameraViewEnhancedTest {
+class CameraViewTest {
     @Test
     void cloneForNewViewSet_shouldUpdateSetIdentifierAndCreateOwnReferences() {
         // given
         EnumMap<ViewProps, Object> settings = new EnumMap<>(ViewProps.class);
         settings.put(BINOCULARS, 10L);
         DataStore originalDataStore = new DataStore(FileStructureDto.builder().build());
-        CameraViewEnhanced source = CameraViewEnhanced.builder()
+        CameraView source = CameraView.builder()
                 .forCameraSetId(1)
                 .fromDatastore(originalDataStore)
                 .withSettings(settings)
@@ -27,7 +27,7 @@ class CameraViewEnhancedTest {
                 .build();
 
         // when
-        CameraViewEnhanced actualClone = source.cloneForNewViewSet(100);
+        CameraView actualClone = source.cloneForNewViewSet(100);
 
         // then
         assertThat(actualClone).isNotSameAs(source);

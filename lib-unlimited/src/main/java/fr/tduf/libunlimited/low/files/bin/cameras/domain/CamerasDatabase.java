@@ -12,18 +12,17 @@ import static java.util.stream.Collectors.toMap;
 /**
  * Parsed cameras database contents
  */
-// TODO rename to CameraDatabase
-public class CameraInfoEnhanced {
+public class CamerasDatabase {
     @JsonIgnore
     private DataStore originalDataStore;
 
     private Map<Integer, Short> index;
-    private Map<Integer, List<CameraViewEnhanced>> views;
+    private Map<Integer, List<CameraView>> views;
 
-    private CameraInfoEnhanced() {}
+    private CamerasDatabase() {}
 
-    public static CameraInfoEnhancedBuilder builder() {
-        return new CameraInfoEnhancedBuilder();
+    public static CamerasDatabaseBuilder builder() {
+        return new CamerasDatabaseBuilder();
     }
 
     /**
@@ -36,7 +35,7 @@ public class CameraInfoEnhanced {
     /**
      * @return all view entries, as stream
      */
-    public Stream<Map.Entry<Integer, List<CameraViewEnhanced>>> getViewEntriesAsStream() {
+    public Stream<Map.Entry<Integer, List<CameraView>>> getViewEntriesAsStream() {
         return views.entrySet().stream();
     }
 
@@ -74,7 +73,7 @@ public class CameraInfoEnhanced {
      * @return all views for specified set identifier
      * @throws NoSuchElementException if such a set does not exist
      */
-    public List<CameraViewEnhanced> getViewsForCameraSet(int setIdentifier) {
+    public List<CameraView> getViewsForCameraSet(int setIdentifier) {
         if (!views.containsKey(setIdentifier)) {
             throw new NoSuchElementException("No camera set with id=" + setIdentifier);
         }
@@ -85,9 +84,9 @@ public class CameraInfoEnhanced {
      * @return all available views, indexed by kind, for specified set identifier
      * @throws NoSuchElementException if such a set does not exist
      */
-    public Map<ViewKind, CameraViewEnhanced> getViewsByKindForCameraSet(int setIdentifier) {
+    public Map<ViewKind, CameraView> getViewsByKindForCameraSet(int setIdentifier) {
         return getViewsForCameraSet(setIdentifier).stream()
-                .collect(toMap(CameraViewEnhanced::getKind, v -> v));
+                .collect(toMap(CameraView::getKind, v -> v));
     }
 
     /**
@@ -100,7 +99,7 @@ public class CameraInfoEnhanced {
     /**
      * Creates or replaces index entry for specified set identifier
      */
-    public void updateViews(int setIdentifier, List<CameraViewEnhanced> newViews) {
+    public void updateViews(int setIdentifier, List<CameraView> newViews) {
         views.put(setIdentifier, newViews);
     }
 
@@ -120,35 +119,35 @@ public class CameraInfoEnhanced {
         return originalDataStore;
     }
 
-    public static class CameraInfoEnhancedBuilder {
+    public static class CamerasDatabaseBuilder {
         private DataStore originalDataStore;
 
         private final Map<Integer, Short> index = new LinkedHashMap<>(0);
-        private final Map<Integer, List<CameraViewEnhanced>> views = new LinkedHashMap<>(0);
+        private final Map<Integer, List<CameraView>> views = new LinkedHashMap<>(0);
 
-        public CameraInfoEnhancedBuilder fromDatastore(DataStore originalDataStore) {
+        public CamerasDatabaseBuilder fromDatastore(DataStore originalDataStore) {
             this.originalDataStore = originalDataStore;
             return this;
         }
 
-        public CameraInfoEnhancedBuilder withIndex(Map<Integer, Short> index) {
+        public CamerasDatabaseBuilder withIndex(Map<Integer, Short> index) {
             this.index.putAll(index);
             return this;
         }
 
-        public CameraInfoEnhancedBuilder withViews(Map<Integer, List<CameraViewEnhanced>> views) {
+        public CamerasDatabaseBuilder withViews(Map<Integer, List<CameraView>> views) {
             this.views.putAll(views);
             return this;
         }
 
-        public CameraInfoEnhanced build() {
-            CameraInfoEnhanced cameraInfoEnhanced = new CameraInfoEnhanced();
+        public CamerasDatabase build() {
+            CamerasDatabase camerasDatabase = new CamerasDatabase();
 
-            cameraInfoEnhanced.originalDataStore = originalDataStore;
-            cameraInfoEnhanced.index = requireNonNull(index, "Index is required");
-            cameraInfoEnhanced.views = requireNonNull(views, "Views are required");
+            camerasDatabase.originalDataStore = originalDataStore;
+            camerasDatabase.index = requireNonNull(index, "Index is required");
+            camerasDatabase.views = requireNonNull(views, "Views are required");
 
-            return cameraInfoEnhanced;
+            return camerasDatabase;
         }
     }
 }

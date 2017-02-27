@@ -1,8 +1,8 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.rw;
 
 import fr.tduf.libunlimited.common.helper.FilesHelper;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfoEnhanced;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraViewEnhanced;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CamerasDatabase;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraView;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
@@ -36,7 +36,7 @@ class CamerasParserTest {
 
         // WHEN
         CamerasParser camerasParser = CamerasParser.load(camInputStream);
-        CameraInfoEnhanced parsedContents = camerasParser.parse();
+        CamerasDatabase parsedContents = camerasParser.parse();
 
         // THEN
         assertThat(parsedContents.getIndexSize()).isEqualTo(150);
@@ -87,14 +87,14 @@ class CamerasParserTest {
         camerasParser.parse();
 
         // WHEN
-        CameraInfoEnhanced actualInfo = camerasParser.generate();
+        CamerasDatabase actualInfo = camerasParser.generate();
 
         // THEN
         assertThat(actualInfo).isNotNull();
         assertThat(actualInfo.getIndexSize()).isEqualTo(150);
         assertThat(actualInfo.getSetsCount()).isEqualTo(148);
 
-        List<CameraViewEnhanced> views = actualInfo.getViewsForCameraSet(1);
+        List<CameraView> views = actualInfo.getViewsForCameraSet(1);
         assertThat(views).hasSize(4);
         assertThat(views).extracting("kind").contains(Cockpit, Hood, Cockpit_Back, Hood_Back);
         assertThat(views).extracting("cameraSetId").containsOnly(1);

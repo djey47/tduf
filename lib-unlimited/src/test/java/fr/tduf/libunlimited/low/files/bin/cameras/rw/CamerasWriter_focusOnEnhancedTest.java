@@ -2,7 +2,7 @@ package fr.tduf.libunlimited.low.files.bin.cameras.rw;
 
 
 import fr.tduf.libunlimited.common.helper.FilesHelper;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfoEnhanced;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CamerasDatabase;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -16,7 +16,7 @@ class CamerasWriter_focusOnEnhancedTest {
     @Test
     void load_shouldReturnWriterInstance() throws IOException {
         // GIVEN
-        CameraInfoEnhanced cameraInfo = CameraInfoEnhanced.builder().build();
+        CamerasDatabase cameraInfo = CamerasDatabase.builder().build();
 
         // WHEN
         CamerasWriter actualWriter = CamerasWriter.load(cameraInfo);
@@ -31,7 +31,7 @@ class CamerasWriter_focusOnEnhancedTest {
         String camerasContentsFromJSONFile = FilesHelper.readTextFromResourceFile("/bin/Cameras.bin.json");
         CamerasParser camerasParser = CamerasParser.load(new ByteArrayInputStream(new byte[0]));
         camerasParser.getDataStore().fromJsonString(camerasContentsFromJSONFile);
-        CameraInfoEnhanced cameraInfo = camerasParser.generate();
+        CamerasDatabase cameraInfo = camerasParser.generate();
 
         // WHEN
         CamerasWriter actualWriter = CamerasWriter.load(cameraInfo);

@@ -1,7 +1,7 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.rw;
 
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfoEnhanced;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraViewEnhanced;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CamerasDatabase;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraView;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.rw.GenericWriter;
@@ -19,18 +19,18 @@ import static java.util.Objects.requireNonNull;
 /**
  * Helper class to produce TDU file contents for cameras.
  */
-public class CamerasWriter extends GenericWriter<CameraInfoEnhanced> {
+public class CamerasWriter extends GenericWriter<CamerasDatabase> {
 
-    private CamerasWriter(CameraInfoEnhanced cameraInfoEnhanced) throws IOException {
-        super(cameraInfoEnhanced);
+    private CamerasWriter(CamerasDatabase camerasDatabase) throws IOException {
+        super(camerasDatabase);
     }
 
     /**
      * Creates a writer from pre-existing domain object
-     * @param cameraInfoEnhanced : store providing data to be written
+     * @param camerasDatabase : store providing data to be written
      */
-    public static CamerasWriter load(CameraInfoEnhanced cameraInfoEnhanced) throws IOException {
-        return new CamerasWriter(requireNonNull(cameraInfoEnhanced, "A cameras domain object is required."));
+    public static CamerasWriter load(CamerasDatabase camerasDatabase) throws IOException {
+        return new CamerasWriter(requireNonNull(camerasDatabase, "A cameras domain object is required."));
     }
 
     @Override
@@ -49,7 +49,7 @@ public class CamerasWriter extends GenericWriter<CameraInfoEnhanced> {
 
     private void fillHeadings() {
         DataStore dataStore = getDataStore();
-        CameraInfoEnhanced data = getData() ;
+        CamerasDatabase data = getData() ;
 
         dataStore.addValue("header", UNKNOWN, data.getOriginalDataStore().getRawValue("header")
                 .orElseThrow(() -> new IllegalStateException("header entry not found in store")));
@@ -82,7 +82,7 @@ public class CamerasWriter extends GenericWriter<CameraInfoEnhanced> {
                         }));
     }
 
-    private void fillSettingsEntry(AtomicLong currentViewIndex, CameraViewEnhanced viewEnhanced) {
+    private void fillSettingsEntry(AtomicLong currentViewIndex, CameraView viewEnhanced) {
         DataStore dataStore = getDataStore();
         long currentViewIndexAsLong = currentViewIndex.get();
         DataStore sourceViewStore = viewEnhanced.getOriginalDataStore();

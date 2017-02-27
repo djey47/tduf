@@ -3,8 +3,8 @@ package fr.tduf.libunlimited.low.files.bin.cameras.helper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.GenuineCamGateway;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraViewEnhanced;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraSetInfo;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraView;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.dto.SetConfigurationDto;
 import org.junit.jupiter.api.BeforeAll;
@@ -51,22 +51,22 @@ class CamerasHelperTest {
 
         SetConfigurationDto configuration = SetConfigurationDto.builder()
                 .forIdentifier(1000)
-                .addView(CameraViewEnhanced.from(Hood, 101, Hood))
-                .addView(CameraViewEnhanced.from(Cockpit_Back, 101, Cockpit_Back))
+                .addView(CameraView.from(Hood, 101, Hood))
+                .addView(CameraView.from(Cockpit_Back, 101, Cockpit_Back))
                 .build();
 
-        CameraInfo cameraInfoFromModdingTools = CameraInfo.builder()
+        CameraSetInfo cameraInfoFromModdingTools = CameraSetInfo.builder()
                 .forIdentifier(1000L)
-                .addView(CameraViewEnhanced.from(Hood, 101, Hood))
-                .addView(CameraViewEnhanced.from(Cockpit_Back, 101, Cockpit_Back))
-                .addView(CameraViewEnhanced.from(Hood_Back, 0, Unknown))
-                .addView(CameraViewEnhanced.from(Cockpit, 0, Unknown))
+                .addView(CameraView.from(Hood, 101, Hood))
+                .addView(CameraView.from(Cockpit_Back, 101, Cockpit_Back))
+                .addView(CameraView.from(Hood_Back, 0, Unknown))
+                .addView(CameraView.from(Cockpit, 0, Unknown))
                 .build();
         when(cameraSupportMock.getCameraInfo(camFile, 1000L)).thenReturn(cameraInfoFromModdingTools);
 
 
         // WHEN
-        CameraInfo actualCameraInfo = CamerasHelper.useViews(configuration, camFile);
+        CameraSetInfo actualCameraInfo = CamerasHelper.useViews(configuration, camFile);
 
 
         // THEN
@@ -78,17 +78,17 @@ class CamerasHelperTest {
         assertThat(actualViewsParameters).extracting("cameraId").containsOnly(101L);
         assertThat(actualViewsParameters).extracting("viewId").containsExactly(24, 43);
 
-        Map<ViewKind, CameraViewEnhanced> viewsByType = actualCameraInfo.getViewsByKind();
-        CameraViewEnhanced hoodBackView = viewsByType.get(Hood_Back);
+        Map<ViewKind, CameraView> viewsByType = actualCameraInfo.getViewsByKind();
+        CameraView hoodBackView = viewsByType.get(Hood_Back);
         assertThat(hoodBackView.getUsedCameraSetId()).isEqualTo(0);
         assertThat(hoodBackView.getUsedKind()).isNull();
-        CameraViewEnhanced cockpitView = viewsByType.get(Cockpit);
+        CameraView cockpitView = viewsByType.get(Cockpit);
         assertThat(cockpitView.getUsedCameraSetId()).isEqualTo(0);
         assertThat(cockpitView.getUsedKind()).isNull();
-        CameraViewEnhanced hoodView = viewsByType.get(Hood);
+        CameraView hoodView = viewsByType.get(Hood);
         assertThat(hoodView.getUsedCameraSetId()).isEqualTo(101L);
         assertThat(hoodView.getUsedKind()).isEqualTo(Hood);
-        CameraViewEnhanced cockpitBackView = viewsByType.get(Cockpit_Back);
+        CameraView cockpitBackView = viewsByType.get(Cockpit_Back);
         assertThat(cockpitBackView.getUsedCameraSetId()).isEqualTo(101L);
         assertThat(cockpitBackView.getUsedKind()).isEqualTo(Cockpit_Back);
     }

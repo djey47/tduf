@@ -44,7 +44,7 @@ public class CamerasHelper {
      * @param targetCameraId    : identifier of camera to create views. May not exist already, in that case will add a new set
      * @param cameraInfo        : loaded cameras contents.
      */
-    public static void duplicateCameraSet(int sourceCameraId, int targetCameraId, CameraInfoEnhanced cameraInfo) {
+    public static void duplicateCameraSet(int sourceCameraId, int targetCameraId, CamerasDatabase cameraInfo) {
         requireNonNull(cameraInfo, "Loaded camera information is required.");
 
         checkCameraSetExists(sourceCameraId, cameraInfo);
@@ -57,7 +57,7 @@ public class CamerasHelper {
         Integer viewCount = cameraInfo.getViewsForCameraSet(sourceCameraId).size();
         cameraInfo.updateIndex(targetCameraId, viewCount.shortValue());
 
-        List<CameraViewEnhanced> clonedViews = cameraInfo.getViewsForCameraSet(sourceCameraId).stream()
+        List<CameraView> clonedViews = cameraInfo.getViewsForCameraSet(sourceCameraId).stream()
                 .map(sourceView -> sourceView.cloneForNewViewSet(targetCameraId))
                 .collect(toList());
         cameraInfo.updateViews(targetCameraId, clonedViews);
@@ -68,7 +68,7 @@ public class CamerasHelper {
      * @param instructions      : list of <sourceCameraId>;<targetCameraId>
      * @param cameraInfo        : loaded cameras contents.
      */
-    public static void batchDuplicateCameraSets(List<String> instructions, CameraInfoEnhanced cameraInfo) {
+    public static void batchDuplicateCameraSets(List<String> instructions, CamerasDatabase cameraInfo) {
         requireNonNull(instructions, "A list of instructions is required.");
 
         instructions.forEach(instruction -> {
@@ -80,51 +80,51 @@ public class CamerasHelper {
     /**
      * Kept for compatibility reasons
      * @param cameraIdentifier      : identifier of camera
-     * @param cameraInfoEnhanced    : parsed cameras contents
+     * @param camerasDatabase    : parsed cameras contents
      * @return view properties for requested camera set.
      */
-    public static CameraInfo fetchInformation(int cameraIdentifier, CameraInfoEnhanced cameraInfoEnhanced) {
-        CameraInfo.CameraInfoBuilder cameraInfoBuilder = CameraInfo.builder()
+    public static CameraSetInfo fetchInformation(int cameraIdentifier, CamerasDatabase camerasDatabase) {
+        CameraSetInfo.CameraInfoBuilder cameraInfoBuilder = CameraSetInfo.builder()
                 .forIdentifier(cameraIdentifier);
 
-        cameraInfoEnhanced.getViewsForCameraSet(cameraIdentifier).stream()
-                .map(cameraViewEnhanced -> CameraViewEnhanced.fromProps(cameraViewEnhanced.getSettings(), cameraViewEnhanced.getKind()))
+        camerasDatabase.getViewsForCameraSet(cameraIdentifier).stream()
+                .map(cameraViewEnhanced -> CameraView.fromProps(cameraViewEnhanced.getSettings(), cameraViewEnhanced.getKind()))
                 .forEach(cameraInfoBuilder::addView);
 
         return cameraInfoBuilder.build();
     }
 
     /**
-     * @param cameraInfoEnhanced : loaded cameras contents
+     * @param camerasDatabase : loaded cameras contents
      * @return all cameras and their view properties.
      */
-    public static List<CameraInfo> fetchAllInformation(CameraInfoEnhanced cameraInfoEnhanced) {
-        return cameraInfoEnhanced.getAllSetIdentifiers().stream()
-                .map(setIdentifier -> fetchInformation(setIdentifier, cameraInfoEnhanced))
+    public static List<CameraSetInfo> fetchAllInformation(CamerasDatabase camerasDatabase) {
+        return camerasDatabase.getAllSetIdentifiers().stream()
+                .map(setIdentifier -> fetchInformation(setIdentifier, camerasDatabase))
                 .collect(toList());
     }
 
     /**
      * @param cameraIdentifier      : identifier of camera
      * @param viewKind              : existing view in set
-     * @param cameraInfoEnhanced    : loaded cameras contents
+     * @param camerasDatabase    : loaded cameras contents
      * @return view properties for requested camera.
      */
-    public static EnumMap<ViewProps, ?> fetchViewProperties(int cameraIdentifier, ViewKind viewKind, CameraInfoEnhanced cameraInfoEnhanced) {
-        return fetchInformation(cameraIdentifier, cameraInfoEnhanced).getViews().stream()
+    public static EnumMap<ViewProps, ?> fetchViewProperties(int cameraIdentifier, ViewKind viewKind, CamerasDatabase camerasDatabase) {
+        return fetchInformation(cameraIdentifier, camerasDatabase).getViews().stream()
                 .filter(cv -> viewKind == cv.getKind())
                 .findAny()
-                .map(CameraViewEnhanced::getSettings)
+                .map(CameraView::getSettings)
                 .orElseThrow(() -> new NoSuchElementException("Camera view not found: (" + cameraIdentifier + ", " + viewKind + ")"));
     }
 
     /**
      * @param configuration         : view properties to be updated
-     * @param cameraInfoEnhanced    : cameras contents to be updated
+     * @param camerasDatabase    : cameras contents to be updated
      */
-    public static void updateViews(SetConfigurationDto configuration, CameraInfoEnhanced cameraInfoEnhanced) {
+    public static void updateViews(SetConfigurationDto configuration, CamerasDatabase camerasDatabase) {
         int cameraIdentifier = validateConfiguration(configuration);
-        cameraInfoEnhanced.getViewsForCameraSet(cameraIdentifier)
+        camerasDatabase.getViewsForCameraSet(cameraIdentifier)
                 .forEach(view -> {
                     ViewKind viewKind = view.getKind();
 
@@ -142,14 +142,14 @@ public class CamerasHelper {
      * @param sourceCamerasFile : camera contents to be modified
      * @return updated view properties.
      */
-    public static CameraInfo useViews(SetConfigurationDto configuration, String sourceCamerasFile) throws IOException {
+    public static CameraSetInfo useViews(SetConfigurationDto configuration, String sourceCamerasFile) throws IOException {
         int cameraIdentifier = validateConfiguration(configuration);
 
         GenuineCamViewsDto customizeInput = mapCameraInfoToGenuineCamViews(configuration);
         cameraSupport.customizeCamera(sourceCamerasFile, cameraIdentifier, customizeInput);
 
-        CameraInfo cameraInfoFromTDUMT = cameraSupport.getCameraInfo(sourceCamerasFile, cameraIdentifier);
-        CameraInfo cameraInfoFromTDUF = fetchInformation(cameraIdentifier, loadAndParseCamerasDatabase(sourceCamerasFile));
+        CameraSetInfo cameraInfoFromTDUMT = cameraSupport.getCameraInfo(sourceCamerasFile, cameraIdentifier);
+        CameraSetInfo cameraInfoFromTDUF = fetchInformation(cameraIdentifier, loadAndParseCamerasDatabase(sourceCamerasFile));
 
         return mergeCameraInfo(cameraInfoFromTDUF, cameraInfoFromTDUMT);
     }
@@ -157,34 +157,34 @@ public class CamerasHelper {
     /**
      * @return parsed camera contents.
      */
-    public static CameraInfoEnhanced loadAndParseCamerasDatabase(String cameraFile) throws IOException {
+    public static CamerasDatabase loadAndParseCamerasDatabase(String cameraFile) throws IOException {
         CamerasParser parser = CamerasParser.load(getCamerasInputStream(cameraFile));
         return parser.parse();
     }
 
     /**
      * Write file according to cameras.bin file format
-     * @param cameraInfoEnhanced    : parsed camera contents
+     * @param camerasDatabase    : parsed camera contents
      * @param cameraFile            : file to be written. Existing file will be replaced.
      * @throws IOException when a file system error occurs
      */
-    public static void saveCamerasDatabase(CameraInfoEnhanced cameraInfoEnhanced, String cameraFile) throws IOException {
-        ByteArrayOutputStream outputStream = CamerasWriter.load(cameraInfoEnhanced).write();
+    public static void saveCamerasDatabase(CamerasDatabase camerasDatabase, String cameraFile) throws IOException {
+        ByteArrayOutputStream outputStream = CamerasWriter.load(camerasDatabase).write();
         Files.write(Paths.get(cameraFile), outputStream.toByteArray(), StandardOpenOption.CREATE);
     }
 
     /**
      * @param cameraId              : identifier of camera set to use
-     * @param cameraInfoEnhanced    : parsed camera contents
+     * @param camerasDatabase    : parsed camera contents
      * @return true if a set with provded id exists in index and in settings
      */
-    public static boolean cameraSetExists(int cameraId, CameraInfoEnhanced cameraInfoEnhanced) {
-        return cameraInfoEnhanced.cameraSetExistsInIndex(cameraId)
-                && cameraInfoEnhanced.cameraSetExistsInSettings(cameraId);
+    public static boolean cameraSetExists(int cameraId, CamerasDatabase camerasDatabase) {
+        return camerasDatabase.cameraSetExistsInIndex(cameraId)
+                && camerasDatabase.cameraSetExistsInSettings(cameraId);
     }
 
-    private static CameraInfo mergeCameraInfo(CameraInfo cameraInfoFromTDUF, CameraInfo cameraInfoFromTDUMT) {
-        return CameraInfo.builder()
+    private static CameraSetInfo mergeCameraInfo(CameraSetInfo cameraInfoFromTDUF, CameraSetInfo cameraInfoFromTDUMT) {
+        return CameraSetInfo.builder()
                 .forIdentifier(cameraInfoFromTDUF.getCameraIdentifier())
                 .withUsedViews(cameraInfoFromTDUF.getViews(), cameraInfoFromTDUMT.getViews())
                 .build();
@@ -223,7 +223,7 @@ public class CamerasHelper {
         return new ByteArrayInputStream(readAllBytes(Paths.get(sourceCameraFile)));
     }
 
-    private static void checkCameraSetExists(int cameraSetId, CameraInfoEnhanced cameraInfo) {
+    private static void checkCameraSetExists(int cameraSetId, CamerasDatabase cameraInfo) {
         if (!cameraInfo.cameraSetExistsInSettings(cameraSetId)) {
             throw new NoSuchElementException("Unknown source camera identifier: " + cameraSetId);
         }

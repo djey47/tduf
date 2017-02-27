@@ -4,8 +4,8 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
 import fr.tduf.libunlimited.high.files.common.interop.GenuineGateway;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraViewEnhanced;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraSetInfo;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraView;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -28,7 +28,7 @@ public class GenuineCamGateway extends GenuineGateway {
     /**
      * tdumt-cli syntax: CAM-L <camFileName> <camId>
      */
-    public CameraInfo getCameraInfo(String camFileName, long camId) throws IOException {
+    public CameraSetInfo getCameraInfo(String camFileName, long camId) throws IOException {
         String result = callCommandLineInterface(CAM_LIST, camFileName, Long.toString(camId));
 
         GenuineCamViewsDto outputObject = new ObjectMapper().readValue(result, GenuineCamViewsDto.class);
@@ -51,8 +51,8 @@ public class GenuineCamGateway extends GenuineGateway {
         callCommandLineInterface(CAM_RESET, camFileName, Long.toString(camId));
     }
 
-    private static CameraInfo mapGenuineCamViewsToCameraInfo(GenuineCamViewsDto genuineCamViews, long camId) {
-        final CameraInfo.CameraInfoBuilder cameraInfoBuilder = CameraInfo.builder()
+    private static CameraSetInfo mapGenuineCamViewsToCameraInfo(GenuineCamViewsDto genuineCamViews, long camId) {
+        final CameraSetInfo.CameraInfoBuilder cameraInfoBuilder = CameraSetInfo.builder()
                 .forIdentifier(camId);
 
         genuineCamViews.getViews()
@@ -61,9 +61,9 @@ public class GenuineCamGateway extends GenuineGateway {
         return cameraInfoBuilder.build();
     }
 
-    private static CameraViewEnhanced mapGenuineCamViewToCameraView(GenuineCamViewsDto.GenuineCamViewDto genuineView) {
+    private static CameraView mapGenuineCamViewToCameraView(GenuineCamViewsDto.GenuineCamViewDto genuineView) {
         ViewKind sourceType = ViewKind.fromInternalId(genuineView.getViewId());
-        return CameraViewEnhanced.from(genuineView.getViewType(), Long.valueOf(genuineView.getCameraId()).intValue(), sourceType);
+        return CameraView.from(genuineView.getViewType(), Long.valueOf(genuineView.getCameraId()).intValue(), sourceType);
     }
 
     private static String createCamCustomizeInputFile(GenuineCamViewsDto customizeInput) throws IOException {

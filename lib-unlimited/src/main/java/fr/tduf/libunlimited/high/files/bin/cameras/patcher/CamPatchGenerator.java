@@ -4,8 +4,8 @@ import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.CamPatchDto;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.SetChangeDto;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.ViewChangeDto;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraViewEnhanced;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraSetInfo;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraView;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 
 import java.time.LocalDateTime;
@@ -23,10 +23,10 @@ import static java.util.stream.Collectors.*;
  */
 public class CamPatchGenerator {
 
-    private final List<CameraInfo> camerasInformation;
+    private final List<CameraSetInfo> camerasInformation;
 
     // TODO use enhanced object
-    public CamPatchGenerator(List<CameraInfo> camerasInformation) {
+    public CamPatchGenerator(List<CameraSetInfo> camerasInformation) {
         this.camerasInformation = requireNonNull(camerasInformation, "Loaded cameras information is required");
     }
 
@@ -56,28 +56,28 @@ public class CamPatchGenerator {
                 .collect(toList());
     }
 
-    private SetChangeDto makeChangeObjectForEntry(CameraInfo cameraInfo, ItemRange viewRange) {
+    private SetChangeDto makeChangeObjectForEntry(CameraSetInfo cameraSetInfo, ItemRange viewRange) {
         return SetChangeDto.builder()
-                .withSetIdentifier(cameraInfo.getCameraIdentifier())
-                .addChanges(makeViewChangeObjectsForSet(cameraInfo, viewRange))
+                .withSetIdentifier(cameraSetInfo.getCameraIdentifier())
+                .addChanges(makeViewChangeObjectsForSet(cameraSetInfo, viewRange))
                 .build();
     }
 
-    private Collection<ViewChangeDto> makeViewChangeObjectsForSet(CameraInfo cameraInfo, ItemRange viewRange) {
-        return cameraInfo.getViews().stream()
+    private Collection<ViewChangeDto> makeViewChangeObjectsForSet(CameraSetInfo cameraSetInfo, ItemRange viewRange) {
+        return cameraSetInfo.getViews().stream()
                 .filter(view -> isInViewRange(view, viewRange))
                 .map(this::makeViewChangeObject)
                 .collect(toList());
     }
 
-    private ViewChangeDto makeViewChangeObject(CameraViewEnhanced cameraView) {
+    private ViewChangeDto makeViewChangeObject(CameraView cameraView) {
         return ViewChangeDto.builder()
                 .forViewKind(cameraView.getKind())
                 .withProps(getAllViewProperties(cameraView))
                 .build();
     }
 
-    private EnumMap<ViewProps, String> getAllViewProperties(CameraViewEnhanced cameraView) {
+    private EnumMap<ViewProps, String> getAllViewProperties(CameraView cameraView) {
         return cameraView.getSettings().entrySet().stream()
                 .collect(
                         collectingAndThen(
@@ -85,11 +85,11 @@ public class CamPatchGenerator {
                                 EnumMap::new));
     }
 
-    private boolean isInIdRange(CameraInfo setEntry, ItemRange identifierRange) {
+    private boolean isInIdRange(CameraSetInfo setEntry, ItemRange identifierRange) {
         return identifierRange.accepts(Long.toString(setEntry.getCameraIdentifier()));
     }
 
-    private boolean isInViewRange(CameraViewEnhanced view, ItemRange viewNameRange) {
+    private boolean isInViewRange(CameraView view, ItemRange viewNameRange) {
         return viewNameRange.accepts(view.getKind().name());
     }
 }

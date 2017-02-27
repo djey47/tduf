@@ -1,8 +1,8 @@
 package fr.tduf.cli.tools;
 
 import fr.tduf.cli.common.helper.CommandHelper;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfoEnhanced;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraSetInfo;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CamerasDatabase;
 import fr.tduf.libunlimited.low.files.bin.cameras.dto.SetConfigurationDto;
 import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
 import org.kohsuke.args4j.CmdLineException;
@@ -171,7 +171,7 @@ public class CameraTool extends GenericTool {
 
     private Map<String, ?> useViews(String sourceCameraFile, String configurationFile) throws IOException {
         SetConfigurationDto configurationObject = readConfiguration(configurationFile);
-        CameraInfo updatedCameraInfo = CamerasHelper.useViews(configurationObject, sourceCameraFile);
+        CameraSetInfo updatedCameraInfo = CamerasHelper.useViews(configurationObject, sourceCameraFile);
 
         outLine("> Done using views.");
 
@@ -179,28 +179,28 @@ public class CameraTool extends GenericTool {
     }
 
     private Map<String, ?> customizeCameraSet(String sourceCameraFile, String targetCameraFile, String configurationFile) throws IOException {
-        CameraInfoEnhanced cameraInfoEnhanced = loadCameras(sourceCameraFile);
+        CamerasDatabase camerasDatabase = loadCameras(sourceCameraFile);
         SetConfigurationDto configurationObject = readConfiguration(configurationFile);
-        CamerasHelper.updateViews(configurationObject, cameraInfoEnhanced);
+        CamerasHelper.updateViews(configurationObject, camerasDatabase);
 
         outLine("> Done customizing camera set.");
 
-        CamerasHelper.saveCamerasDatabase(cameraInfoEnhanced, targetCameraFile);
+        CamerasHelper.saveCamerasDatabase(camerasDatabase, targetCameraFile);
 
-        return makeCommandResultForViewDetails(cameraInfoEnhanced, configurationObject.getSetIdentifier());
+        return makeCommandResultForViewDetails(camerasDatabase, configurationObject.getSetIdentifier());
     }
 
     private Map<String, ?> viewCameraSet(String cameraFile, int cameraIdentifier) throws IOException {
-        CameraInfoEnhanced cameraInfoEnhanced = loadCameras(cameraFile);
-        return makeCommandResultForViewDetails(cameraInfoEnhanced, cameraIdentifier);
+        CamerasDatabase camerasDatabase = loadCameras(cameraFile);
+        return makeCommandResultForViewDetails(camerasDatabase, cameraIdentifier);
     }
 
     private Map<String, ?> listCameras(String cameraFile) throws IOException {
-        CameraInfoEnhanced cameraInfoEnhanced = loadCameras(cameraFile);
+        CamerasDatabase camerasDatabase = loadCameras(cameraFile);
 
         Map<String, Object> resultInfo = new HashMap<>();
 
-        List<Integer> cameraIdentifiers = cameraInfoEnhanced.getAllSetIdentifiers().stream()
+        List<Integer> cameraIdentifiers = camerasDatabase.getAllSetIdentifiers().stream()
                 .sorted(Integer::compareTo)
                 .collect(toList());
         resultInfo.put("cameraCount", cameraIdentifiers.size());
@@ -210,26 +210,26 @@ public class CameraTool extends GenericTool {
     }
 
     private Map<String, ?> copySet(String sourceCameraFile, String targetCameraFile) throws IOException {
-        CameraInfoEnhanced cameraInfoEnhanced = loadCameras(sourceCameraFile);
+        CamerasDatabase camerasDatabase = loadCameras(sourceCameraFile);
 
-        CamerasHelper.duplicateCameraSet(sourceIdentifier, targetIdentifier, cameraInfoEnhanced);
+        CamerasHelper.duplicateCameraSet(sourceIdentifier, targetIdentifier, camerasDatabase);
 
         outLine("> Done copying camera set.");
 
-        CamerasHelper.saveCamerasDatabase(cameraInfoEnhanced, targetCameraFile);
+        CamerasHelper.saveCamerasDatabase(camerasDatabase, targetCameraFile);
 
         return makeCommandResultForCopy(targetCameraFile);
     }
 
     private Map<String, ?> copySets(String sourceCameraFile, String targetCameraFile) throws IOException {
-        CameraInfoEnhanced cameraInfoEnhanced = loadCameras(sourceCameraFile);
+        CamerasDatabase camerasDatabase = loadCameras(sourceCameraFile);
 
         List<String> instructions = readInstructions(batchIdentifiersFile);
-        CamerasHelper.batchDuplicateCameraSets(instructions, cameraInfoEnhanced);
+        CamerasHelper.batchDuplicateCameraSets(instructions, camerasDatabase);
 
         outLine("> Done copying camera sets.");
 
-        CamerasHelper.saveCamerasDatabase(cameraInfoEnhanced, targetCameraFile);
+        CamerasHelper.saveCamerasDatabase(camerasDatabase, targetCameraFile);
 
         return makeCommandResultForCopy(targetCameraFile);
     }
@@ -254,14 +254,14 @@ public class CameraTool extends GenericTool {
         return readInfo;
     }
 
-    private CameraInfoEnhanced loadCameras(String cameraFile) throws IOException {
+    private CamerasDatabase loadCameras(String cameraFile) throws IOException {
         outLine("> Will use Cameras file: " + cameraFile);
 
-        CameraInfoEnhanced cameraInfoEnhanced = CamerasHelper.loadAndParseCamerasDatabase(cameraFile);
+        CamerasDatabase camerasDatabase = CamerasHelper.loadAndParseCamerasDatabase(cameraFile);
 
         outLine("> Done reading cameras.");
 
-        return cameraInfoEnhanced;
+        return camerasDatabase;
     }
 
     private Map<String, Object> makeCommandResultForCopy(String fileName) {
@@ -275,17 +275,17 @@ public class CameraTool extends GenericTool {
 
     @Deprecated
     // TODO Delete once info enhanced brings source and target info
-    private Map<String, ?> makeCommandResultForViewDetails(CameraInfo cameraInfo) {
+    private Map<String, ?> makeCommandResultForViewDetails(CameraSetInfo cameraSetInfo) {
         HashMap<String, Object> resultInfo = new HashMap<>();
-        resultInfo.put("cameraSet", cameraInfo);
+        resultInfo.put("cameraSet", cameraSetInfo);
 
         return resultInfo;
     }
 
-    private Map<String, ?> makeCommandResultForViewDetails(CameraInfoEnhanced cameraInfoEnhanced, int setIdentifier) {
+    private Map<String, ?> makeCommandResultForViewDetails(CamerasDatabase camerasDatabase, int setIdentifier) {
         Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("cameraIdentifier", setIdentifier);
-        resultInfo.put("views", cameraInfoEnhanced.getViewsForCameraSet(setIdentifier));
+        resultInfo.put("views", camerasDatabase.getViewsForCameraSet(setIdentifier));
 
         return resultInfo;
     }

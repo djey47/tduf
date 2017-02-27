@@ -1,7 +1,7 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.rw;
 
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfoEnhanced;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraViewEnhanced;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CamerasDatabase;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraView;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
@@ -17,7 +17,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Allow to read data from cameras.bin file.
  */
-public class CamerasParser extends GenericParser<CameraInfoEnhanced> {
+public class CamerasParser extends GenericParser<CamerasDatabase> {
 
     private CamerasParser(ByteArrayInputStream inputStream) throws IOException {
         super(inputStream);
@@ -32,8 +32,8 @@ public class CamerasParser extends GenericParser<CameraInfoEnhanced> {
     }
 
     @Override
-    protected CameraInfoEnhanced generate() {
-        return CameraInfoEnhanced.builder()
+    protected CamerasDatabase generate() {
+        return CamerasDatabase.builder()
                 .fromDatastore(getDataStore())
                 .withIndex(generateCamerasIndex())
                 .withViews(generateCamerasViews())
@@ -51,19 +51,19 @@ public class CamerasParser extends GenericParser<CameraInfoEnhanced> {
         return props;
     }
 
-    private Map<Integer, List<CameraViewEnhanced>> generateCamerasViews() {
-        Map<Integer, List<CameraViewEnhanced>> views = new LinkedHashMap<>();
+    private Map<Integer, List<CameraView>> generateCamerasViews() {
+        Map<Integer, List<CameraView>> views = new LinkedHashMap<>();
         getDataStore().getRepeatedValues("views").forEach(updateViews(views));
         return views;
     }
 
-    private Consumer<DataStore> updateViews(Map<Integer, List<CameraViewEnhanced>> views) {
+    private Consumer<DataStore> updateViews(Map<Integer, List<CameraView>> views) {
         return store -> {
             int cameraId = store.getInteger("cameraId")
                     .orElseThrow(() -> new IllegalStateException("cameraId attribute not found in store"))
                     .intValue();
 
-            List<CameraViewEnhanced> currentViews;
+            List<CameraView> currentViews;
             if (views.containsKey(cameraId)) {
                 currentViews = views.get(cameraId);
             } else {
@@ -76,7 +76,7 @@ public class CamerasParser extends GenericParser<CameraInfoEnhanced> {
                     .orElseThrow(() -> new IllegalStateException("label attribute not found in store"));
             String name = store.getText("name")
                     .orElseThrow(() -> new IllegalStateException("name attribute not found in store"));
-            currentViews.add(CameraViewEnhanced.builder()
+            currentViews.add(CameraView.builder()
                     .fromDatastore(store)
                     .forCameraSetId(cameraId)
                     .ofKind(ViewKind.fromInternalId(kind))

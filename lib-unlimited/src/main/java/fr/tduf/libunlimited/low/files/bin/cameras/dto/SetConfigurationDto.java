@@ -1,13 +1,12 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.dto;
 
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraViewEnhanced;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraView;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
@@ -64,7 +63,7 @@ public class SetConfigurationDto {
             return this;
         }
 
-        public SetConfigurationDtoBuilder addView(CameraViewEnhanced view) {
+        public SetConfigurationDtoBuilder addView(CameraView view) {
             this.views.add(ViewConfigurationDto.builder()
                     .forKind(view.getKind())
                     .withSettings(view.getSettings())
@@ -73,7 +72,7 @@ public class SetConfigurationDto {
             return this;
         }
 
-        public SetConfigurationDtoBuilder withViews(List<CameraViewEnhanced> views) {
+        public SetConfigurationDtoBuilder withViews(List<CameraView> views) {
             this.views.clear();
             this.views.addAll(views.stream()
                     .map(view -> ViewConfigurationDto.builder()

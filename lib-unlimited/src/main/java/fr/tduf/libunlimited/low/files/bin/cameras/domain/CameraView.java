@@ -8,14 +8,12 @@ import java.io.Serializable;
 import java.util.EnumMap;
 import java.util.Map;
 
-import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toMap;
 
 /**
  * Parsed views settings from cameras database
  */
-// TODO add use sets info (source and target)
-public class CameraViewEnhanced {
+public class CameraView {
     @JsonIgnore
     private DataStore originalDataStore;
 
@@ -33,7 +31,7 @@ public class CameraViewEnhanced {
 
     private EnumMap<ViewProps, Object> settings;
 
-    private CameraViewEnhanced() {}
+    private CameraView() {}
 
     /**
      * @return unique way to get a view instance
@@ -45,7 +43,7 @@ public class CameraViewEnhanced {
     /**
      * @return a real copy of current view, for specified set identifier
      */
-    public CameraViewEnhanced cloneForNewViewSet(int setIdentifier) {
+    public CameraView cloneForNewViewSet(int setIdentifier) {
         return builder()
                 .forCameraSetId(setIdentifier)
                 .fromDatastore(originalDataStore.copy())
@@ -59,8 +57,8 @@ public class CameraViewEnhanced {
     /**
      * @return a new instance with properties from another camera view
      */
-    public static CameraViewEnhanced from(ViewKind kind, int usedSetIdentifier, ViewKind usedViewKind) {
-        return CameraViewEnhanced.builder()
+    public static CameraView from(ViewKind kind, int usedSetIdentifier, ViewKind usedViewKind) {
+        return CameraView.builder()
                 .ofKind(kind)
                 .usingSettingsFrom(usedSetIdentifier, usedViewKind)
                 .build();
@@ -70,8 +68,8 @@ public class CameraViewEnhanced {
      * @return a new instance with specified properties
      */
     // TODO set identifier ??
-    public static CameraViewEnhanced fromProps(EnumMap<ViewProps, Object> viewProps, ViewKind viewKind) {
-        return CameraViewEnhanced.builder()
+    public static CameraView fromProps(EnumMap<ViewProps, Object> viewProps, ViewKind viewKind) {
+        return CameraView.builder()
                 .ofKind(viewKind)
                 .withSettings(viewProps)
                 .build();
@@ -81,7 +79,7 @@ public class CameraViewEnhanced {
      * @return a new instance from patch properties
      */
     // TODO set identifier ??
-    public static CameraViewEnhanced fromPatchProps(EnumMap<ViewProps, String> patchProps, ViewKind viewKind) {
+    public static CameraView fromPatchProps(EnumMap<ViewProps, String> patchProps, ViewKind viewKind) {
         //noinspection Convert2Diamond (type args needed by compiler)
         EnumMap<ViewProps, Object> props = new EnumMap<ViewProps, Object>(
                 patchProps.entrySet().stream()
@@ -89,13 +87,13 @@ public class CameraViewEnhanced {
                                 Map.Entry::getKey,
                                 entry -> Long.valueOf(entry.getValue()))
                         ));
-        return CameraViewEnhanced.builder()
+        return CameraView.builder()
                 .ofKind(viewKind)
                 .withSettings(props)
                 .build();
     }
 
-    void setUsedSettings(CameraViewEnhanced usedView) {
+    void setUsedSettings(CameraView usedView) {
         usedCameraSetId = usedView.usedCameraSetId;
         usedKind = usedView.usedKind;
     }
@@ -182,25 +180,25 @@ public class CameraViewEnhanced {
             return this;
         }
 
-        public CameraViewEnhancedBuilder usingSettingsFrom(int usedSetIdentifier, ViewKind usedViewKind) {
+        CameraViewEnhancedBuilder usingSettingsFrom(int usedSetIdentifier, ViewKind usedViewKind) {
             this.usedSetId = usedSetIdentifier;
             this.usedKind = usedViewKind;
             return this;
         }
 
-        public CameraViewEnhanced build() {
-            CameraViewEnhanced cameraViewEnhanced = new CameraViewEnhanced();
+        public CameraView build() {
+            CameraView cameraView = new CameraView();
 
-            cameraViewEnhanced.cameraSetId = setId;
-            cameraViewEnhanced.kind = (kind == null ? ViewKind.Unknown : kind);
-            cameraViewEnhanced.label = (label == null ? "" : label);
-            cameraViewEnhanced.name = (name == null ? "" : name);
-            cameraViewEnhanced.originalDataStore = originalDataStore;
-            cameraViewEnhanced.settings = settings;
-            cameraViewEnhanced.usedCameraSetId = usedSetId;
-            cameraViewEnhanced.usedKind = usedKind;
+            cameraView.cameraSetId = setId;
+            cameraView.kind = (kind == null ? ViewKind.Unknown : kind);
+            cameraView.label = (label == null ? "" : label);
+            cameraView.name = (name == null ? "" : name);
+            cameraView.originalDataStore = originalDataStore;
+            cameraView.settings = settings;
+            cameraView.usedCameraSetId = usedSetId;
+            cameraView.usedKind = usedKind;
 
-            return cameraViewEnhanced;
+            return cameraView;
         }
 
     }

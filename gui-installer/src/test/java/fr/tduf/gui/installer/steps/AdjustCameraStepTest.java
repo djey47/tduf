@@ -10,7 +10,7 @@ import fr.tduf.libunlimited.high.files.bin.cameras.interop.GenuineCamGateway;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraSetInfo;
 import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -200,8 +200,8 @@ class AdjustCameraStepTest {
     }
 
     private void mockCameras() throws IOException {
-        CameraInfo cameraInfo = CameraInfo.builder().forIdentifier(200L).build();
-        when(cameraSupportMock.getCameraInfo(anyString(), eq(200L))).thenReturn(cameraInfo);
+        CameraSetInfo cameraSetInfo = CameraSetInfo.builder().forIdentifier(200L).build();
+        when(cameraSupportMock.getCameraInfo(anyString(), eq(200L))).thenReturn(cameraSetInfo);
         CamerasHelper.setCameraSupport(cameraSupportMock);
     }
 }

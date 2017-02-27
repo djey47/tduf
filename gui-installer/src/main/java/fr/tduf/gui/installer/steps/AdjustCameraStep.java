@@ -4,7 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.CustomizableCameraView;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraViewEnhanced;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraView;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.dto.SetConfigurationDto;
 import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
@@ -52,7 +52,7 @@ class AdjustCameraStep extends GenericStep {
     }
 
     private SetConfigurationDto buildCustomViewsFromProperties(int cameraIdentifier) {
-        List<CameraViewEnhanced> views = Stream.of(CustomizableCameraView.values())
+        List<CameraView> views = Stream.of(CustomizableCameraView.values())
                 .map(this::buildCustomViewFromProperties)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -64,7 +64,7 @@ class AdjustCameraStep extends GenericStep {
                 .build();
     }
 
-    private Optional<CameraViewEnhanced> buildCustomViewFromProperties(CustomizableCameraView cameraView) {
+    private Optional<CameraView> buildCustomViewFromProperties(CustomizableCameraView cameraView) {
         return getDatabaseContext().getPatchProperties().getCustomizedCameraView(cameraView)
                 .map(prop -> {
                     final String[] camCompounds = prop.split(REGEX_SEPARATOR_CAM_VIEW);
@@ -75,7 +75,7 @@ class AdjustCameraStep extends GenericStep {
                     ViewKind viewType = cameraView.getGenuineViewType();
                     ViewKind sourceViewType = CustomizableCameraView.fromSuffix(camCompounds[1]).getGenuineViewType();
                     int sourceCameraIdentifier = Integer.valueOf(camCompounds[0]);
-                    return CameraViewEnhanced.from(
+                    return CameraView.from(
                             viewType,
                             sourceCameraIdentifier,
                             sourceViewType);

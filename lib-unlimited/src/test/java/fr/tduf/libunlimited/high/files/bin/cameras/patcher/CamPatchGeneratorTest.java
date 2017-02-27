@@ -4,8 +4,8 @@ import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.CamPatchDto;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.SetChangeDto;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.ViewChangeDto;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraInfo;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraViewEnhanced;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraSetInfo;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraView;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import org.junit.jupiter.api.Test;
@@ -52,10 +52,10 @@ class CamPatchGeneratorTest {
     @Test
     void makePatch_whenSetIdentifierNotInRange_shouldReturnEmptyPatch() {
         // given
-        CameraInfo cameraInfo = CameraInfo.builder()
+        CameraSetInfo cameraSetInfo = CameraSetInfo.builder()
                 .forIdentifier(1L)
                 .build();
-        CamPatchGenerator camPatchGenerator = new CamPatchGenerator(singletonList(cameraInfo));
+        CamPatchGenerator camPatchGenerator = new CamPatchGenerator(singletonList(cameraSetInfo));
 
         // when
         CamPatchDto actualPatchObject = camPatchGenerator.makePatch(ItemRange.fromSingleValue("10"), ItemRange.ALL);
@@ -69,11 +69,11 @@ class CamPatchGeneratorTest {
         // given
         EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
         viewProps.put(ViewProps.BINOCULARS, 50L);
-        CameraInfo cameraInfo = CameraInfo.builder()
+        CameraSetInfo cameraSetInfo = CameraSetInfo.builder()
                 .forIdentifier(1L)
-                .addView(CameraViewEnhanced.fromProps(viewProps, Cockpit_Back))
+                .addView(CameraView.fromProps(viewProps, Cockpit_Back))
                 .build();
-        CamPatchGenerator camPatchGenerator = new CamPatchGenerator(singletonList(cameraInfo));
+        CamPatchGenerator camPatchGenerator = new CamPatchGenerator(singletonList(cameraSetInfo));
 
         // when
         CamPatchDto actualPatchObject = camPatchGenerator.makePatch(ItemRange.fromSingleValue("1"), ItemRange.ALL);
@@ -93,11 +93,11 @@ class CamPatchGeneratorTest {
         // given
         EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
         viewProps.put(ViewProps.BINOCULARS, 50L);
-        CameraInfo cameraInfo = CameraInfo.builder()
+        CameraSetInfo cameraSetInfo = CameraSetInfo.builder()
                 .forIdentifier(1L)
-                .addView(CameraViewEnhanced.fromProps(viewProps, Cockpit_Back))
+                .addView(CameraView.fromProps(viewProps, Cockpit_Back))
                 .build();
-        CamPatchGenerator camPatchGenerator = new CamPatchGenerator(singletonList(cameraInfo));
+        CamPatchGenerator camPatchGenerator = new CamPatchGenerator(singletonList(cameraSetInfo));
 
         // when
         CamPatchDto actualPatchObject = camPatchGenerator.makePatch(ItemRange.fromSingleValue("1"), ItemRange.fromSingleValue(ViewKind.Bumper.name()));
