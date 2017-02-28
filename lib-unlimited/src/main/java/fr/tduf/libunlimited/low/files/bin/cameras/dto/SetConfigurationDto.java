@@ -64,10 +64,7 @@ public class SetConfigurationDto {
         }
 
         public SetConfigurationDtoBuilder addView(CameraView view) {
-            this.views.add(ViewConfigurationDto.builder()
-                    .forKind(view.getKind())
-                    .withSettings(view.getSettings())
-                    .build());
+            this.views.add(createViewConfiguration(view));
 
             return this;
         }
@@ -75,11 +72,7 @@ public class SetConfigurationDto {
         public SetConfigurationDtoBuilder withViews(List<CameraView> views) {
             this.views.clear();
             this.views.addAll(views.stream()
-                    .map(view -> ViewConfigurationDto.builder()
-                            .withUsedSetIdentifier(view.getUsedCameraSetId())
-                            .witUsedViewKind(view.getUsedKind())
-                            .withSettings(view.getSettings())
-                            .build())
+                    .map(SetConfigurationDtoBuilder::createViewConfiguration)
                     .collect(toList()));
             return this;
         }
@@ -91,6 +84,15 @@ public class SetConfigurationDto {
             setConfigurationDto.viewsConfiguration = views;
 
             return setConfigurationDto;
+        }
+
+        private static ViewConfigurationDto createViewConfiguration(CameraView view) {
+            return ViewConfigurationDto.builder()
+                    .forKind(view.getKind())
+                    .withUsedSetIdentifier(view.getUsedCameraSetId())
+                    .witUsedViewKind(view.getUsedKind())
+                    .withSettings(view.getSettings())
+                    .build();
         }
     }
 }
