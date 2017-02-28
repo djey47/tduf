@@ -41,4 +41,30 @@ class CameraViewTest {
                 .containsOnlyKeys(BINOCULARS)
                 .containsValues(10L);
     }
+
+    @Test
+    void cloneForNewViewSet_whenNoDatastore_shouldUpdateSetIdentifierAndCreateOwnReferences() {
+        // given
+        CameraView source = CameraView.builder()
+                .forCameraSetId(1)
+                .withSettings(new EnumMap<>(ViewProps.class))
+                .ofKind(Bumper)
+                .withName("name")
+                .withLabel("label")
+                .build();
+
+        // when
+        CameraView actualClone = source.cloneForNewViewSet(100);
+
+        // then
+        assertThat(actualClone).isNotSameAs(source);
+        assertThat(actualClone.getCameraSetId()).isEqualTo(100);
+        assertThat(actualClone.getKind()).isEqualTo(Bumper);
+        assertThat(actualClone.getName()).isEqualTo("name");
+        assertThat(actualClone.getLabel()).isEqualTo("label");
+        assertThat(actualClone.getOriginalDataStore()).isNull();
+        assertThat(actualClone.getSettings())
+                .isNotSameAs(new EnumMap<>(ViewProps.class))
+                .isEmpty();
+    }
 }

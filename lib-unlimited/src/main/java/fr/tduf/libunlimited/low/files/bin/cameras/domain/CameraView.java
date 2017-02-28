@@ -44,14 +44,17 @@ public class CameraView {
      * @return a real copy of current view, for specified set identifier
      */
     public CameraView cloneForNewViewSet(int setIdentifier) {
-        return builder()
+        CameraViewBuilder builder = builder()
                 .forCameraSetId(setIdentifier)
-                .fromDatastore(originalDataStore.copy())
                 .ofKind(kind)
                 .withLabel(label)
                 .withName(name)
-                .withSettings(cloneSettings(settings))
-                .build();
+                .withSettings(cloneSettings(settings));
+
+        if (originalDataStore != null) {
+            return builder.fromDatastore(originalDataStore.copy()).build();
+        }
+        return builder.build();
     }
 
     /**
