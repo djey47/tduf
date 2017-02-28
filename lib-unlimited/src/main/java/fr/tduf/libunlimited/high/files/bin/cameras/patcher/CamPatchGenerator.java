@@ -6,12 +6,13 @@ import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.ViewChangeDto;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraSetInfo;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraView;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CamerasDatabase;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
+import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
@@ -23,11 +24,13 @@ import static java.util.stream.Collectors.*;
  */
 public class CamPatchGenerator {
 
-    private final List<CameraSetInfo> camerasInformation;
+    private final CamerasDatabase camerasDatabase;
 
-    // TODO use enhanced object
-    public CamPatchGenerator(List<CameraSetInfo> camerasInformation) {
-        this.camerasInformation = requireNonNull(camerasInformation, "Loaded cameras information is required");
+    /**
+     * @param camerasDatabase : parsed database contents
+     */
+    public CamPatchGenerator(CamerasDatabase camerasDatabase) {
+        this.camerasDatabase = requireNonNull(camerasDatabase, "Loaded cameras database is required");
     }
 
     /**
@@ -50,7 +53,7 @@ public class CamPatchGenerator {
     }
 
     private Collection<SetChangeDto> makeChangesObjectsForSetsWithIdentifiers(ItemRange identifierRange, ItemRange viewRange) {
-        return camerasInformation.stream()
+        return CamerasHelper.fetchAllInformation(camerasDatabase).stream()
                 .filter(setEntry -> isInIdRange(setEntry, identifierRange))
                 .map(cameraInfo -> makeChangeObjectForEntry(cameraInfo, viewRange))
                 .collect(toList());

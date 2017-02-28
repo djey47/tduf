@@ -7,10 +7,8 @@ import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.SetChangeDto;
 import fr.tduf.libunlimited.high.files.common.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PatchPropertiesReadWriteHelper;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraSetInfo;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CamerasDatabase;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
-import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.File;
@@ -30,7 +28,7 @@ public class CamerasImExHelper {
 
     /**
      * @param patchFile             : applied cameras patch file
-     * @param camerasDatabase    : loaded cameras contents
+     * @param camerasDatabase       : loaded cameras contents
      * @param targetSetIdentifier   : set identifier to use, can be null to use pre-existing identifier
      * @return potential path of written properties file
      */
@@ -51,11 +49,9 @@ public class CamerasImExHelper {
      * @param viewKind              : can be null, to export all views
      */
     public void exportToPatch(File patchFile, CamerasDatabase camerasDatabase, long setIdentifier, ViewKind viewKind) throws IOException {
-        List<CameraSetInfo> cameraSetInfos = CamerasHelper.fetchAllInformation(camerasDatabase);
-
         ItemRange identifierRange = fromSingleValue(Long.toString(setIdentifier));
         ItemRange viewRange = viewKind == null ? ALL : fromSingleValue(viewKind.name());
-        CamPatchDto camPatchObject = new CamPatchGenerator(cameraSetInfos).makePatch(identifierRange, viewRange);
+        CamPatchDto camPatchObject = new CamPatchGenerator(camerasDatabase).makePatch(identifierRange, viewRange);
 
         objectMapper.writerWithDefaultPrettyPrinter().writeValue(patchFile, camPatchObject);
     }
