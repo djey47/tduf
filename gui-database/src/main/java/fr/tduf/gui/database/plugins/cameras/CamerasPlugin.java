@@ -372,7 +372,7 @@ public class CamerasPlugin implements DatabasePlugin {
 
         SetConfigurationDto updatedConfiguration = SetConfigurationDto.builder()
                 .forIdentifier(cameraIdentifier)
-                .addView(CameraView.fromProps(viewProps, currentViewKind))
+                .addView(CameraView.fromProps(viewProps, currentViewKind, cameraIdentifier))
                 .build();
 
         Log.debug(THIS_CLASS_NAME, "Will update camera: " + cameraIdentifier);

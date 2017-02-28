@@ -89,7 +89,7 @@ public class CamerasHelper {
                 .forIdentifier(cameraIdentifier);
 
         camerasDatabase.getViewsForCameraSet(cameraIdentifier).stream()
-                .map(cameraViewEnhanced -> CameraView.fromProps(cameraViewEnhanced.getSettings(), cameraViewEnhanced.getKind()))
+                .map(cameraViewEnhanced -> CameraView.fromProps(cameraViewEnhanced.getSettings(), cameraViewEnhanced.getKind(), cameraIdentifier))
                 .forEach(cameraInfoBuilder::addView);
 
         return cameraInfoBuilder.build();

@@ -70,9 +70,9 @@ public class CameraView {
     /**
      * @return a new instance with specified properties
      */
-    // TODO set identifier ??
-    public static CameraView fromProps(EnumMap<ViewProps, Object> viewProps, ViewKind viewKind) {
+    public static CameraView fromProps(EnumMap<ViewProps, Object> viewProps, ViewKind viewKind, int setIdentifier) {
         return CameraView.builder()
+                .forCameraSetId(setIdentifier)
                 .ofKind(viewKind)
                 .withSettings(viewProps)
                 .build();
@@ -81,8 +81,7 @@ public class CameraView {
     /**
      * @return a new instance from patch properties
      */
-    // TODO set identifier ??
-    public static CameraView fromPatchProps(EnumMap<ViewProps, String> patchProps, ViewKind viewKind) {
+    public static CameraView fromPatchProps(EnumMap<ViewProps, String> patchProps, ViewKind viewKind, int setIdentifier) {
         //noinspection Convert2Diamond (type args needed by compiler)
         EnumMap<ViewProps, Object> props = new EnumMap<ViewProps, Object>(
                 patchProps.entrySet().stream()
@@ -91,6 +90,7 @@ public class CameraView {
                                 entry -> Long.valueOf(entry.getValue()))
                         ));
         return CameraView.builder()
+                .forCameraSetId(setIdentifier)
                 .ofKind(viewKind)
                 .withSettings(props)
                 .build();

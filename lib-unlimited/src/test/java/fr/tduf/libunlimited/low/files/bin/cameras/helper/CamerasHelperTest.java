@@ -308,7 +308,7 @@ class CamerasHelperTest {
         EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
         viewProps.put(BINOCULARS, 0L);
 
-        CameraView cameraView = CameraView.fromProps(viewProps, Follow_Far);
+        CameraView cameraView = CameraView.fromProps(viewProps, Follow_Far, 1000);
         SetConfigurationDto configuration = SetConfigurationDto.builder()
                 .forIdentifier(1000)
                 .addView(cameraView)
@@ -331,7 +331,7 @@ class CamerasHelperTest {
         EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
         viewProps.put(BINOCULARS, 0L);
 
-        CameraView cameraView = CameraView.fromProps(viewProps, Hood);
+        CameraView cameraView = CameraView.fromProps(viewProps, Hood, 1000);
         SetConfigurationDto configuration = SetConfigurationDto.builder()
                 .forIdentifier(1000)
                 .addView(cameraView)

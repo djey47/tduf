@@ -62,7 +62,7 @@ public class CamPatcher {
         }
 
         List<CameraView> allViews = setChangeObject.getChanges().stream()
-                .map(viewChange -> CameraView.fromPatchProps(viewChange.getViewProps(), viewChange.getCameraViewKind()))
+                .map(viewChange -> CameraView.fromPatchProps(viewChange.getViewProps(), viewChange.getCameraViewKind(), setIdentifier))
                 .collect(toList());
 
         SetConfigurationDto updateConf = SetConfigurationDto.builder()

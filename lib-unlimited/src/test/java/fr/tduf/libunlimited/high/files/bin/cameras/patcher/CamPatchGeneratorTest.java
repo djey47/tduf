@@ -70,7 +70,7 @@ class CamPatchGeneratorTest {
         viewProps.put(ViewProps.BINOCULARS, 50L);
         CameraSetInfo cameraSetInfo = CameraSetInfo.builder()
                 .forIdentifier(1)
-                .addView(CameraView.fromProps(viewProps, Cockpit_Back))
+                .addView(CameraView.fromProps(viewProps, Cockpit_Back, 1))
                 .build();
         CamPatchGenerator camPatchGenerator = new CamPatchGenerator(createCamerasDatabase(cameraSetInfo));
 
@@ -94,7 +94,7 @@ class CamPatchGeneratorTest {
         viewProps.put(ViewProps.BINOCULARS, 50L);
         CameraSetInfo cameraSetInfo = CameraSetInfo.builder()
                 .forIdentifier(1)
-                .addView(CameraView.fromProps(viewProps, Cockpit_Back))
+                .addView(CameraView.fromProps(viewProps, Cockpit_Back, 1))
                 .build();
         CamPatchGenerator camPatchGenerator = new CamPatchGenerator(createCamerasDatabase(cameraSetInfo));
 
