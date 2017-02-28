@@ -4,7 +4,7 @@
     "views" : [ {
       "kind" : "Cockpit",
       "usedKind" : "Cockpit",
-      "cameraSetId" : 0,
+      "cameraSetId" : 1000,
       "usedCameraSetId" : 101,
       "label" : "",
       "name" : "",
@@ -27,7 +27,7 @@
     }, {
       "kind" : "Cockpit_Back",
       "usedKind" : null,
-      "cameraSetId" : 0,
+      "cameraSetId" : 1000,
       "usedCameraSetId" : null,
       "label" : "",
       "name" : "",
@@ -50,7 +50,7 @@
     }, {
       "kind" : "Hood",
       "usedKind" : null,
-      "cameraSetId" : 0,
+      "cameraSetId" : 1000,
       "usedCameraSetId" : null,
       "label" : "",
       "name" : "",
@@ -73,7 +73,7 @@
     }, {
       "kind" : "Hood_Back",
       "usedKind" : "Hood_Back",
-      "cameraSetId" : 0,
+      "cameraSetId" : 1000,
       "usedCameraSetId" : 101,
       "label" : "",
       "name" : "",
