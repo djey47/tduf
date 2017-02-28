@@ -69,11 +69,7 @@ class CamPatcherTest {
         CamPatchDto camPatchDto = CamPatchDto.builder().addChanges(singletonList(setChangeObject)).build();
 
         DataStore dataStoreMock = mock(DataStore.class);
-        Map<Integer, List<CameraView>> settingsMap = new HashMap<>(1);
         List<CameraView> currentViews = singletonList(CameraView.builder().ofKind(Cockpit).fromDatastore(dataStoreMock).withSettings(new EnumMap<>(ViewProps.class)).build());
-        settingsMap.put(125, currentViews);
-        Map<Integer, Short> indexMap = new HashMap<>(1);
-        indexMap.put(125, (short) 4);
 
         when(camerasDatabaseMock.cameraSetExistsInIndex(125)).thenReturn(true);
         when(camerasDatabaseMock.cameraSetExistsInSettings(125)).thenReturn(true);
@@ -108,6 +104,7 @@ class CamPatcherTest {
                 () -> camPatcher.apply(camPatchDto));
     }
 
+    // TODO enable
     @Test
     @Disabled
     void apply_whenCameraSetDoesNotExist_shouldCloneReferenceSet() {

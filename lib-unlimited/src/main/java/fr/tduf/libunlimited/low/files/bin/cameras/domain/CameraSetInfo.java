@@ -70,6 +70,7 @@ public class CameraSetInfo {
             return this;
         }
 
+        // TODO delete?
         public CameraInfoBuilder withViews(List<CameraView> allViews) {
             views.addAll(allViews);
             return this;
@@ -80,7 +81,7 @@ public class CameraSetInfo {
             views
                     .forEach(view -> usedViews.stream()
                             .filter(usedView -> usedView.getKind() == view.getKind())
-                            .filter(usedView -> usedView.getUsedCameraSetId() != 0L)
+                            .filter(usedView -> usedView.getUsedCameraSetId() != 0)
                             .findAny()
                             .ifPresent(view::setUsedSettings));
             return this;

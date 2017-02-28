@@ -40,13 +40,13 @@ class CameraSetInfoTest {
 
         CameraView cockpitViewInfo = actual.getViewsByKind().get(Cockpit);
         assertThat(cockpitViewInfo.getKind()).isEqualTo(Cockpit);
-        assertThat(cockpitViewInfo.getUsedCameraSetId()).isEqualTo(101L);
+        assertThat(cockpitViewInfo.getUsedCameraSetId()).isEqualTo(101);
         assertThat(cockpitViewInfo.getUsedKind()).isEqualTo(Cockpit);
         assertThat(cockpitViewInfo.getSettings().get(BINOCULARS)).isEqualTo(20L);
 
         CameraView cockpitBackViewInfo = actual.getViewsByKind().get(Cockpit_Back);
         assertThat(cockpitBackViewInfo.getKind()).isEqualTo(Cockpit_Back);
-        assertThat(cockpitBackViewInfo.getUsedCameraSetId()).isEqualTo(0L);
+        assertThat(cockpitBackViewInfo.getUsedCameraSetId()).isNull();
         assertThat(cockpitBackViewInfo.getUsedKind()).isNull();
         assertThat(cockpitBackViewInfo.getSettings().get(BINOCULARS)).isEqualTo(30L);
     }

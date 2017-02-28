@@ -17,7 +17,7 @@ public class ViewConfigurationDto {
     private ViewKind originalKind;
 
     @JsonProperty("sourceCameraIdentifier")
-    private int usedSetIdentifier;
+    private Integer usedSetIdentifier;
 
     @JsonProperty("sourceType")
     private ViewKind usedKind;
@@ -62,33 +62,33 @@ public class ViewConfigurationDto {
         return new ViewConfigurationDtoBuilder();
     }
 
-    public static class ViewConfigurationDtoBuilder {
+    static class ViewConfigurationDtoBuilder {
         private ViewKind kind;
         private EnumMap<ViewProps, Object> settings;
-        private int usedSetIdentifier;
+        private Integer usedSetIdentifier;
         private ViewKind usedViewKind;
 
-        public ViewConfigurationDtoBuilder forKind(ViewKind kind) {
+        ViewConfigurationDtoBuilder forKind(ViewKind kind) {
             this.kind = kind;
             return this;
         }
 
-        public ViewConfigurationDtoBuilder withSettings(EnumMap<ViewProps, Object> settings) {
+        ViewConfigurationDtoBuilder withSettings(EnumMap<ViewProps, Object> settings) {
             this.settings = settings;
             return this;
         }
 
-        public ViewConfigurationDtoBuilder withUsedSetIdentifier(int setIdentifier) {
+        ViewConfigurationDtoBuilder withUsedSetIdentifier(Integer setIdentifier) {
             this.usedSetIdentifier = setIdentifier;
             return this;
         }
 
-        public ViewConfigurationDtoBuilder witUsedViewKind(ViewKind usedKind) {
+        ViewConfigurationDtoBuilder witUsedViewKind(ViewKind usedKind) {
             this.usedViewKind = usedKind;
             return this;
         }
 
-        public ViewConfigurationDto build() {
+        ViewConfigurationDto build() {
             ViewConfigurationDto viewConfigurationDto = new ViewConfigurationDto();
 
             viewConfigurationDto.originalKind = kind;
