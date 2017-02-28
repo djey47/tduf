@@ -8,14 +8,12 @@ import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDt
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraSetInfo;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraView;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,12 +22,13 @@ import java.util.List;
 
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
-@RunWith(MockitoJUnitRunner.class)
-public class GenuineCamGatewayTest {
+class GenuineCamGatewayTest {
 
     private static final long CAMERA_ID = 326L;
 
@@ -38,16 +37,18 @@ public class GenuineCamGatewayTest {
 
     @InjectMocks
     private GenuineCamGateway genuineCamGateway;
+
     @Captor
     private ArgumentCaptor<String> commandArgumentsCaptor;
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeEach
+    void setUp() throws IOException {
         Log.set(Log.LEVEL_DEBUG);
+        initMocks(this);
     }
 
     @Test
-    public void getCameraInfo_whenSuccess_shouldInvokeCommandLineCorrectly_andReturnObject() throws IOException, URISyntaxException {
+    void getCameraInfo_whenSuccess_shouldInvokeCommandLineCorrectly_andReturnObject() throws IOException, URISyntaxException {
         // GIVEN
         String camFileName = "cameras.bin";
         mockCommandLineHelperToReturnCameraViewsSuccess(camFileName, CAMERA_ID);
@@ -60,7 +61,7 @@ public class GenuineCamGatewayTest {
         assertThat(actualCameraInfo.getCameraIdentifier()).isEqualToComparingFieldByField(CAMERA_ID);
         final List<CameraView> actualViewSets = actualCameraInfo.getViews();
         assertThat(actualViewSets).hasSize(4);
-        assertThat(actualViewSets).extracting(("type")).containsOnly(Hood, Hood_Back, Cockpit, Cockpit_Back);
+        assertThat(actualViewSets).extracting(("kind")).containsOnly(Hood, Hood_Back, Cockpit, Cockpit_Back);
         final CameraView actualView = actualViewSets.stream().filter(v -> Hood == v.getKind()).findAny().get();
         assertThat(actualView.getKind()).isEqualTo(Hood);
         assertThat(actualView.getUsedCameraSetId()).isEqualTo(0);
@@ -68,7 +69,7 @@ public class GenuineCamGatewayTest {
     }
 
     @Test
-    public void customizeCamera_whenSuccess_shouldInvokeCommandLineCorrectly() throws IOException, URISyntaxException {
+    void customizeCamera_whenSuccess_shouldInvokeCommandLineCorrectly() throws IOException, URISyntaxException {
         // GIVEN
         String camFileName = "cameras.bin";
         GenuineCamViewsDto customizeInput = FilesHelper.readObjectFromJsonResourceFile(GenuineCamViewsDto.class, "/files/interop/tdumt-cli/CAM-C.input.json");
@@ -87,7 +88,7 @@ public class GenuineCamGatewayTest {
     }
 
     @Test
-    public void resetCamera_whenSuccess_shouldInvokeCommandLineCorrectly() throws IOException, URISyntaxException {
+    void resetCamera_whenSuccess_shouldInvokeCommandLineCorrectly() throws IOException, URISyntaxException {
         // GIVEN
         String camFileName = "cameras.bin";
         int CAMERA_ID = 326;
