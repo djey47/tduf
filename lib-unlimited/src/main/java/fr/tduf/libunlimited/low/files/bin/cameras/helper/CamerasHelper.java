@@ -120,8 +120,8 @@ public class CamerasHelper {
     }
 
     /**
-     * @param configuration         : view properties to be updated
-     * @param camerasDatabase    : cameras contents to be updated
+     * @param configuration     : view properties to be updated
+     * @param camerasDatabase   : cameras contents to be updated
      */
     public static void updateViews(SetConfigurationDto configuration, CamerasDatabase camerasDatabase) {
         int cameraIdentifier = validateConfiguration(configuration);

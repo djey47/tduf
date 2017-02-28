@@ -3,25 +3,22 @@ package fr.tduf.libunlimited.high.files.bin.cameras.patcher;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.CamPatchDto;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.SetChangeDto;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.ViewChangeDto;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CamerasDatabase;
+import fr.tduf.libunlimited.high.files.common.patcher.domain.PatchProperties;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraView;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CamerasDatabase;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind.Cockpit;
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps.VIEW_POSITION_X;
 import static java.util.Collections.singletonList;
-import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -77,9 +74,10 @@ class CamPatcherTest {
 
 
         // when
-        camPatcher.apply(camPatchDto);
+        PatchProperties effectiveProperties = camPatcher.apply(camPatchDto);
 
         // then
+        assertThat(effectiveProperties).isEmpty();
         assertThat(currentViews.get(0).getSettings().get(VIEW_POSITION_X)).isEqualTo(1500L);
     }
 
@@ -104,9 +102,7 @@ class CamPatcherTest {
                 () -> camPatcher.apply(camPatchDto));
     }
 
-    // TODO enable
     @Test
-    @Disabled
     void apply_whenCameraSetDoesNotExist_shouldCloneReferenceSet() {
         // given
         CamPatcher camPatcher = new CamPatcher(camerasDatabaseMock);
@@ -120,38 +116,31 @@ class CamPatcherTest {
                 .build();
         CamPatchDto camPatchDto = CamPatchDto.builder().addChanges(singletonList(setChangeObject)).build();
 
-        DataStore refDataStoreMock = mock(DataStore.class);
-        DataStore clonedDataStoreMock = mock(DataStore.class);
-        Map<Integer, List<CameraView>> viewsMapBeforeCloning = new HashMap<>(1);
-        viewsMapBeforeCloning.put(10000, singletonList(CameraView.builder().build()));
-        Map<Integer, List<CameraView>> storeMapAfterCloning = new HashMap<>(2);
-        storeMapAfterCloning.put(10000, singletonList(CameraView.builder().build()));
-        storeMapAfterCloning.put(1250, singletonList(CameraView.builder().build()));
-        Map<Integer, Short> indexMapBeforeCloning = new HashMap<>(1);
-        indexMapBeforeCloning.put(10000, (short) 12);
-        Map<Integer, Short> indexMapAfterCloning = new HashMap<>(2);
-        indexMapAfterCloning.put(10000, (short) 12);
-        indexMapAfterCloning.put(1250, (short) 4);
+        List<CameraView> referenceViews = singletonList(CameraView.builder()
+                .ofKind(Cockpit)
+                .withSettings(new EnumMap<>(ViewProps.class))
+                .build());
+        List<CameraView> clonedViews = singletonList(CameraView.builder()
+                .ofKind(Cockpit)
+                .withSettings(new EnumMap<>(ViewProps.class))
+                .build());
 
-        //noinspection unchecked
-        when(camerasDatabaseMock.getIndexEntriesAsStream()).thenReturn(
-                indexMapBeforeCloning.entrySet().stream(),
-                indexMapAfterCloning.entrySet().stream());
-        //noinspection unchecked
-        when(camerasDatabaseMock.getViewEntriesAsStream()).thenReturn(
-                viewsMapBeforeCloning.entrySet().stream(),
-                viewsMapBeforeCloning.entrySet().stream(),
-                storeMapAfterCloning.entrySet().stream(),
-                storeMapAfterCloning.entrySet().stream());
-        when(refDataStoreMock.copy()).thenReturn(clonedDataStoreMock);
-        when(clonedDataStoreMock.getInteger("type")).thenReturn(of(23L));
+        when(camerasDatabaseMock.cameraSetExistsInSettings(1250)).thenReturn(false);
+        when(camerasDatabaseMock.cameraSetExistsInSettings(10000)).thenReturn(true);
+        when(camerasDatabaseMock.getViewsForCameraSet(10000)).thenReturn(referenceViews);
+        when(camerasDatabaseMock.getViewsForCameraSet(1250)).thenReturn(clonedViews);
 
 
         // when
-        camPatcher.apply(camPatchDto);
+        PatchProperties effectiveProperties = camPatcher.apply(camPatchDto);
+
 
         // then
-        verify(camerasDatabaseMock, times(4)).getViewEntriesAsStream();
-        verify(clonedDataStoreMock).addInteger32("viewPositionX", 1500L);
+        assertThat(effectiveProperties).isEmpty();
+        assertThat(referenceViews.get(0).getSettings()).isEmpty();  // Make sure reference set is untouched
+        assertThat(clonedViews.get(0).getSettings().get(VIEW_POSITION_X)).isEqualTo(1500L);
+
+        verify(camerasDatabaseMock).updateIndex(1250, (short)1);
+        verify(camerasDatabaseMock).updateViews(eq(1250), anyList ());
     }
 }
