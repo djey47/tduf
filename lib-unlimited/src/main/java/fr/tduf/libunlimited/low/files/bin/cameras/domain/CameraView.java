@@ -148,7 +148,7 @@ public class CameraView {
         private String name;
         private EnumMap<ViewProps, Object> settings;
         private ViewKind usedKind;
-        private int usedSetId;
+        private Integer usedSetId;
 
         public CameraViewBuilder fromDatastore(DataStore originalDataStore) {
             this.originalDataStore = originalDataStore;
