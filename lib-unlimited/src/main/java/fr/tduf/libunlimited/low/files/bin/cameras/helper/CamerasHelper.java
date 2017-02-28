@@ -42,25 +42,26 @@ public class CamerasHelper {
      * Creates a camera set at targetCameraId with all views from set at sourceCameraId
      * @param sourceCameraId    : identifier of camera to get views from
      * @param targetCameraId    : identifier of camera to create views. May not exist already, in that case will add a new set
-     * @param cameraInfo        : loaded cameras contents.
+     * @param camerasDatabase   : loaded cameras contents.
      */
-    public static void duplicateCameraSet(int sourceCameraId, int targetCameraId, CamerasDatabase cameraInfo) {
-        requireNonNull(cameraInfo, "Loaded camera information is required.");
+    public static void duplicateCameraSet(int sourceCameraId, int targetCameraId, CamerasDatabase camerasDatabase) {
+        requireNonNull(camerasDatabase, "Loaded camera information is required.");
 
-        checkCameraSetExists(sourceCameraId, cameraInfo);
+        checkCameraSetExists(sourceCameraId, camerasDatabase);
 
-        if(cameraInfo.cameraSetExists(targetCameraId)) {
+        if(camerasDatabase.cameraSetExists(targetCameraId)) {
             Log.warn(THIS_CLASS_NAME, "Unable to overwrite existing camera set: " + targetCameraId);
             return;
         }
 
-        Integer viewCount = cameraInfo.getViewsForCameraSet(sourceCameraId).size();
-        cameraInfo.updateIndex(targetCameraId, viewCount.shortValue());
+        List<CameraView> sourceViews = camerasDatabase.getViewsForCameraSet(sourceCameraId);
+        Integer viewCount = sourceViews.size();
+        camerasDatabase.updateIndex(targetCameraId, viewCount.shortValue());
 
-        List<CameraView> clonedViews = cameraInfo.getViewsForCameraSet(sourceCameraId).stream()
+        List<CameraView> clonedViews = sourceViews.stream()
                 .map(sourceView -> sourceView.cloneForNewViewSet(targetCameraId))
                 .collect(toList());
-        cameraInfo.updateViews(targetCameraId, clonedViews);
+        camerasDatabase.updateViews(targetCameraId, clonedViews);
     }
 
     /**
