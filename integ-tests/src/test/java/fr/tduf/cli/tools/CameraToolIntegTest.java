@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static fr.tduf.libtesting.common.helper.AssertionsHelper.assertOutputStreamContainsJsonExactly;
 import static fr.tduf.tests.IntegTestsConstants.RESOURCES_PATH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -63,7 +64,7 @@ class CameraToolIntegTest {
         CameraTool.main(new String[]{"list", "-n", "-i", inputCameraFile});
 
         // THEN
-        AssertionsHelper.assertOutputStreamContainsJsonExactly(outputStream, expectedJson);
+        assertOutputStreamContainsJsonExactly(outputStream, expectedJson);
     }
 
     @Test
@@ -102,7 +103,7 @@ class CameraToolIntegTest {
         CameraTool.main(new String[]{"view-set", "-n", "-i", inputCameraFile, "-s", "1000"});
 
         // THEN
-        AssertionsHelper.assertOutputStreamContainsJsonExactly(outputStream, expectedJson);
+        assertOutputStreamContainsJsonExactly(outputStream, expectedJson);
     }
 
     @Test
@@ -117,7 +118,7 @@ class CameraToolIntegTest {
         CameraTool.main(new String[]{"customize-set", "-n", "-i", inputCameraFile,  "-o", outputCameraFile, "-c", setConfigurationFile});
 
         // THEN
-        AssertionsHelper.assertOutputStreamContainsJsonExactly(outputStream, expectedJson);
+        assertOutputStreamContainsJsonExactly(outputStream, expectedJson);
     }
 
     @Test
@@ -141,7 +142,7 @@ class CameraToolIntegTest {
 
         // THEN
         assertThat(cameraPath).exists();
-        AssertionsHelper.assertOutputStreamContainsJsonExactly(outputStream, expectedJson);
+        assertOutputStreamContainsJsonExactly(outputStream, expectedJson);
     }
 
     private GenuineCamGateway getGatewayWithMockedCLI() throws IOException {

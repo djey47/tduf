@@ -36,8 +36,8 @@ public class CameraView {
     /**
      * @return unique way to get a view instance
      */
-    public static CameraViewEnhancedBuilder builder() {
-        return new CameraViewEnhancedBuilder();
+    public static CameraViewBuilder builder() {
+        return new CameraViewBuilder();
     }
 
     /**
@@ -140,7 +140,7 @@ public class CameraView {
         return usedCameraSetId;
     }
 
-    public static class CameraViewEnhancedBuilder {
+    public static class CameraViewBuilder {
         private DataStore originalDataStore;
         private int setId;
         private ViewKind kind;
@@ -150,37 +150,37 @@ public class CameraView {
         private ViewKind usedKind;
         private int usedSetId;
 
-        public CameraViewEnhancedBuilder fromDatastore(DataStore originalDataStore) {
+        public CameraViewBuilder fromDatastore(DataStore originalDataStore) {
             this.originalDataStore = originalDataStore;
             return this;
         }
 
-        public CameraViewEnhancedBuilder forCameraSetId(int setId) {
+        public CameraViewBuilder forCameraSetId(int setId) {
             this.setId = setId;
             return this;
         }
 
-        public CameraViewEnhancedBuilder ofKind(ViewKind kind) {
+        public CameraViewBuilder ofKind(ViewKind kind) {
             this.kind = kind;
             return this;
         }
 
-        public CameraViewEnhancedBuilder withLabel(String label) {
+        public CameraViewBuilder withLabel(String label) {
             this.label = label;
             return this;
         }
 
-        public CameraViewEnhancedBuilder withName(String name) {
+        public CameraViewBuilder withName(String name) {
             this.name = name;
             return this;
         }
 
-        public CameraViewEnhancedBuilder withSettings(EnumMap<ViewProps, Object> settings) {
+        public CameraViewBuilder withSettings(EnumMap<ViewProps, Object> settings) {
             this.settings = settings;
             return this;
         }
 
-        CameraViewEnhancedBuilder usingSettingsFrom(int usedSetIdentifier, ViewKind usedViewKind) {
+        CameraViewBuilder usingSettingsFrom(int usedSetIdentifier, ViewKind usedViewKind) {
             this.usedSetId = usedSetIdentifier;
             this.usedKind = usedViewKind;
             return this;
