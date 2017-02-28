@@ -122,11 +122,11 @@ class AdjustCameraStepTest {
         adjustCameraStep.start();
 
         // THEN
-        verify(cameraSupportMock).customizeCamera(camFileCaptor.capture(), eq(200L), customizeCamCaptor.capture());
+        verify(cameraSupportMock).customizeCamera(camFileCaptor.capture(), eq(200), customizeCamCaptor.capture());
         assertThat(Paths.get(camFileCaptor.getValue()).toString()).endsWith(Paths.get("Euro", "Bnk", "Database", "cameras.bin").toString());
         List<GenuineCamViewsDto.GenuineCamViewDto> actualViews = customizeCamCaptor.getValue().getViews();
         assertThat(actualViews).extracting("viewType").containsOnly(Hood);
-        assertThat(actualViews).extracting("cameraId").containsOnly(201L);
+        assertThat(actualViews).extracting("cameraId").containsOnly(201);
         assertThat(actualViews).extracting("viewId").containsOnly(24);
     }
 
@@ -143,10 +143,10 @@ class AdjustCameraStepTest {
         adjustCameraStep.start();
 
         // THEN
-        verify(cameraSupportMock).customizeCamera(anyString(), eq(200L), customizeCamCaptor.capture());
+        verify(cameraSupportMock).customizeCamera(anyString(), eq(200), customizeCamCaptor.capture());
         List<GenuineCamViewsDto.GenuineCamViewDto> actualViews = customizeCamCaptor.getValue().getViews();
         assertThat(actualViews).extracting("viewType").containsExactly(Hood, Hood_Back, Cockpit, Cockpit_Back);
-        assertThat(actualViews).extracting("cameraId").containsExactly(201L, 202L, 203L, 204L);
+        assertThat(actualViews).extracting("cameraId").containsExactly(201, 202, 203, 204);
         assertThat(actualViews).extracting("viewId").containsExactly(24, 44, 23, 43);
     }
 
@@ -179,11 +179,11 @@ class AdjustCameraStepTest {
         adjustCameraStep.start();
 
         // THEN
-        verify(cameraSupportMock).customizeCamera(camFileCaptor.capture(), eq(200L), customizeCamCaptor.capture());
+        verify(cameraSupportMock).customizeCamera(camFileCaptor.capture(), eq(200), customizeCamCaptor.capture());
         assertThat(Paths.get(camFileCaptor.getValue()).toString()).endsWith(Paths.get("Euro", "Bnk", "Database", "cameras.bin").toString());
         List<GenuineCamViewsDto.GenuineCamViewDto> actualViews = customizeCamCaptor.getValue().getViews();
         assertThat(actualViews).extracting("viewType").containsOnly(Hood);
-        assertThat(actualViews).extracting("cameraId").containsOnly(201L);
+        assertThat(actualViews).extracting("cameraId").containsOnly(201);
         assertThat(actualViews).extracting("viewId").containsOnly(24);
     }
 
@@ -200,8 +200,8 @@ class AdjustCameraStepTest {
     }
 
     private void mockCameras() throws IOException {
-        CameraSetInfo cameraSetInfo = CameraSetInfo.builder().forIdentifier(200L).build();
-        when(cameraSupportMock.getCameraInfo(anyString(), eq(200L))).thenReturn(cameraSetInfo);
+        CameraSetInfo cameraSetInfo = CameraSetInfo.builder().forIdentifier(200).build();
+        when(cameraSupportMock.getCameraInfo(anyString(), eq(200))).thenReturn(cameraSetInfo);
         CamerasHelper.setCameraSupport(cameraSupportMock);
     }
 }

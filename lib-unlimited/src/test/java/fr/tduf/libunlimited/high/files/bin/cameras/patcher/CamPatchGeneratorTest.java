@@ -53,7 +53,7 @@ class CamPatchGeneratorTest {
     void makePatch_whenSetIdentifierNotInRange_shouldReturnEmptyPatch() {
         // given
         CameraSetInfo cameraSetInfo = CameraSetInfo.builder()
-                .forIdentifier(1L)
+                .forIdentifier(1)
                 .build();
         CamPatchGenerator camPatchGenerator = new CamPatchGenerator(singletonList(cameraSetInfo));
 
@@ -70,7 +70,7 @@ class CamPatchGeneratorTest {
         EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
         viewProps.put(ViewProps.BINOCULARS, 50L);
         CameraSetInfo cameraSetInfo = CameraSetInfo.builder()
-                .forIdentifier(1L)
+                .forIdentifier(1)
                 .addView(CameraView.fromProps(viewProps, Cockpit_Back))
                 .build();
         CamPatchGenerator camPatchGenerator = new CamPatchGenerator(singletonList(cameraSetInfo));
@@ -94,7 +94,7 @@ class CamPatchGeneratorTest {
         EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
         viewProps.put(ViewProps.BINOCULARS, 50L);
         CameraSetInfo cameraSetInfo = CameraSetInfo.builder()
-                .forIdentifier(1L)
+                .forIdentifier(1)
                 .addView(CameraView.fromProps(viewProps, Cockpit_Back))
                 .build();
         CamPatchGenerator camPatchGenerator = new CamPatchGenerator(singletonList(cameraSetInfo));

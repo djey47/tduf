@@ -15,8 +15,7 @@ import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCod
  * Brings all information about a single camera (view set)
  */
 public class CameraSetInfo {
-    // TODO set to int
-    private long cameraIdentifier;
+    private int cameraIdentifier;
     private List<CameraView> views;
 
     private CameraSetInfo() {}
@@ -25,7 +24,7 @@ public class CameraSetInfo {
         return new CameraInfoBuilder();
     }
 
-    public long getCameraIdentifier() {
+    public int getCameraIdentifier() {
         return cameraIdentifier;
     }
 
@@ -57,22 +56,16 @@ public class CameraSetInfo {
     }
 
     public static class CameraInfoBuilder {
-        private long cameraIdentifier;
+        private int cameraIdentifier;
         private List<CameraView> views = new ArrayList<>();
 
-        public CameraInfoBuilder forIdentifier(long cameraIdentifier) {
+        public CameraInfoBuilder forIdentifier(int cameraIdentifier) {
             this.cameraIdentifier = cameraIdentifier;
             return this;
         }
 
         public CameraInfoBuilder addView(CameraView view) {
             views.add(view);
-            return this;
-        }
-
-        // TODO delete?
-        public CameraInfoBuilder withViews(List<CameraView> allViews) {
-            views.addAll(allViews);
             return this;
         }
 

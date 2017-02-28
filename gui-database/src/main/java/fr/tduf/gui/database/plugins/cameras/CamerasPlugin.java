@@ -318,13 +318,13 @@ public class CamerasPlugin implements DatabasePlugin {
                 camerasContext.getErrorProperty().setValue(false);
                 camerasContext.getErrorMessageProperty().setValue("");
 
-                cameraViews.addAll(CamerasHelper.fetchInformation(Long.valueOf(newValue.getCameraIdentifier()).intValue(), cameraInfoEnhancedProperty.getValue()).getViews());
+                cameraViews.addAll(CamerasHelper.fetchInformation(newValue.getCameraIdentifier(), cameraInfoEnhancedProperty.getValue()).getViews());
 
                 if (!cameraViews.isEmpty()) {
                     currentCameraViewProperty.setValue(cameraViews.get(0));
                 }
 
-                context.getChangeDataController().updateContentItem(CAR_PHYSICS_DATA, FIELD_RANK_CAMERA, Long.toString(newValue.getCameraIdentifier()));
+                context.getChangeDataController().updateContentItem(CAR_PHYSICS_DATA, FIELD_RANK_CAMERA, Integer.toString(newValue.getCameraIdentifier()));
             }
         };
     }
@@ -344,11 +344,8 @@ public class CamerasPlugin implements DatabasePlugin {
         };
     }
 
-    private List<Map.Entry<ViewProps, ?>> getSortedAndEditableViewProperties(long cameraIdentifier, ViewKind viewKind) {
-        final Set<ViewProps> nonEditableProps = new HashSet<>(0);
-
+    private List<Map.Entry<ViewProps, ?>> getSortedAndEditableViewProperties(int cameraIdentifier, ViewKind viewKind) {
         return CamerasHelper.fetchViewProperties(Long.valueOf(cameraIdentifier).intValue(), viewKind, cameraInfoEnhancedProperty.getValue()).entrySet().stream()
-                .filter(propsEntry -> !nonEditableProps.contains(propsEntry.getKey()))
                 .sorted(comparing(Map.Entry::getKey))
                 .collect(toList());
     }

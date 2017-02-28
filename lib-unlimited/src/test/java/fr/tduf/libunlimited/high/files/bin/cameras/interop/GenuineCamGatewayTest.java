@@ -30,7 +30,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 class GenuineCamGatewayTest {
 
-    private static final long CAMERA_ID = 326L;
+    private static final int CAMERA_ID = 326;
 
     @Mock
     private CommandLineHelper commandLineHelperMock;

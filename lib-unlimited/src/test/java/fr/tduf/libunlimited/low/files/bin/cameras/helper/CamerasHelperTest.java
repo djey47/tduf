@@ -176,13 +176,13 @@ class CamerasHelperTest {
                 .build();
 
         CameraSetInfo cameraInfoFromModdingTools = CameraSetInfo.builder()
-                .forIdentifier(1000L)
+                .forIdentifier(1000)
                 .addView(CameraView.from(Hood, 101, Hood))
                 .addView(CameraView.from(Cockpit_Back, 101, Cockpit_Back))
                 .addView(CameraView.from(Hood_Back, 0, Unknown))
                 .addView(CameraView.from(Cockpit, 0, Unknown))
                 .build();
-        when(cameraSupportMock.getCameraInfo(camFile, 1000L)).thenReturn(cameraInfoFromModdingTools);
+        when(cameraSupportMock.getCameraInfo(camFile, 1000)).thenReturn(cameraInfoFromModdingTools);
 
 
         // WHEN
@@ -191,11 +191,11 @@ class CamerasHelperTest {
 
         // THEN
         ArgumentCaptor<GenuineCamViewsDto> argumentCaptor = ArgumentCaptor.forClass(GenuineCamViewsDto.class);
-        verify(cameraSupportMock).customizeCamera(eq(camFile), eq(1000L), argumentCaptor.capture());
+        verify(cameraSupportMock).customizeCamera(eq(camFile), eq(1000), argumentCaptor.capture());
         List<GenuineCamViewsDto.GenuineCamViewDto> actualViewsParameters = argumentCaptor.getValue().getViews();
         assertThat(actualViewsParameters).hasSize(2);
         assertThat(actualViewsParameters).extracting("viewType").containsExactly(ViewKind.Hood, ViewKind.Cockpit_Back);
-        assertThat(actualViewsParameters).extracting("cameraId").containsOnly(101L);
+        assertThat(actualViewsParameters).extracting("cameraId").containsOnly(101);
         assertThat(actualViewsParameters).extracting("viewId").containsExactly(24, 43);
 
         Map<ViewKind, CameraView> viewsByType = actualCameraInfo.getViewsByKind();

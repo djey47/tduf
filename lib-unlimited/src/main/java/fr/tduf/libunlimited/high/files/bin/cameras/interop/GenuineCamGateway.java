@@ -28,8 +28,8 @@ public class GenuineCamGateway extends GenuineGateway {
     /**
      * tdumt-cli syntax: CAM-L <camFileName> <camId>
      */
-    public CameraSetInfo getCameraInfo(String camFileName, long camId) throws IOException {
-        String result = callCommandLineInterface(CAM_LIST, camFileName, Long.toString(camId));
+    public CameraSetInfo getCameraInfo(String camFileName, int camId) throws IOException {
+        String result = callCommandLineInterface(CAM_LIST, camFileName, Integer.toString(camId));
 
         GenuineCamViewsDto outputObject = new ObjectMapper().readValue(result, GenuineCamViewsDto.class);
         return mapGenuineCamViewsToCameraInfo(outputObject, camId);
@@ -38,20 +38,20 @@ public class GenuineCamGateway extends GenuineGateway {
     /**
      * tdumt-cli syntax: CAM-C <camFileName> <camId> <customizeInputFileName>
      */
-    public void customizeCamera(String camFileName, long camId, GenuineCamViewsDto customizeInput) throws IOException {
+    public void customizeCamera(String camFileName, int camId, GenuineCamViewsDto customizeInput) throws IOException {
         String customizeInputFileName = createCamCustomizeInputFile(customizeInput);
 
-        callCommandLineInterface(CAM_CUSTOMIZE, camFileName, Long.toString(camId), customizeInputFileName);
+        callCommandLineInterface(CAM_CUSTOMIZE, camFileName, Integer.toString(camId), customizeInputFileName);
     }
 
     /**
      * tdumt-cli syntax: CAM-R <camFileName> <camId>
      */
-    public void resetCamera(String camFileName, long camId) throws IOException {
-        callCommandLineInterface(CAM_RESET, camFileName, Long.toString(camId));
+    public void resetCamera(String camFileName, int camId) throws IOException {
+        callCommandLineInterface(CAM_RESET, camFileName, Integer.toString(camId));
     }
 
-    private static CameraSetInfo mapGenuineCamViewsToCameraInfo(GenuineCamViewsDto genuineCamViews, long camId) {
+    private static CameraSetInfo mapGenuineCamViewsToCameraInfo(GenuineCamViewsDto genuineCamViews, int camId) {
         final CameraSetInfo.CameraInfoBuilder cameraInfoBuilder = CameraSetInfo.builder()
                 .forIdentifier(camId);
 
@@ -63,7 +63,7 @@ public class GenuineCamGateway extends GenuineGateway {
 
     private static CameraView mapGenuineCamViewToCameraView(GenuineCamViewsDto.GenuineCamViewDto genuineView) {
         ViewKind sourceType = ViewKind.fromInternalId(genuineView.getViewId());
-        return CameraView.from(genuineView.getViewType(), Long.valueOf(genuineView.getCameraId()).intValue(), sourceType);
+        return CameraView.from(genuineView.getViewType(), genuineView.getCameraId(), sourceType);
     }
 
     private static String createCamCustomizeInputFile(GenuineCamViewsDto customizeInput) throws IOException {

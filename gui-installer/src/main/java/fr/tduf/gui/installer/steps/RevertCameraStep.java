@@ -34,13 +34,12 @@ public class RevertCameraStep extends GenericStep {
 
         String cameraFileName = Paths.get(getInstallerConfiguration().resolveDatabaseDirectory(), CamerasHelper.FILE_CAMERAS_BIN).toString();
 
-        long cameraId = getDatabaseContext().getPatchProperties().getCameraIdentifier().orElseGet(this::getCameraIdentifierFromDatabase);
+        int cameraId = getDatabaseContext().getPatchProperties().getCameraIdentifier().orElseGet(this::getCameraIdentifierFromDatabase);
         Log.info(THIS_CLASS_NAME, "->Reverting camera id " + cameraId + ": " + cameraFileName);
         getInstallerConfiguration().getCameraSupport().resetCamera(cameraFileName, cameraId);
     }
 
-    // Ignore warning: method ref
-    private long getCameraIdentifierFromDatabase() {
+    private int getCameraIdentifierFromDatabase() {
         String slotReference = getDatabaseContext().getPatchProperties().getVehicleSlotReference()
                 .orElseThrow(() -> new IllegalStateException("Slot reference is unknown at this point. Cannot continue."));
 

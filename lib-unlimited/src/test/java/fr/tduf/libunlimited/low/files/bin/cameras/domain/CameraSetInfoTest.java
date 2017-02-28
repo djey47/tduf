@@ -30,13 +30,13 @@ class CameraSetInfoTest {
 
         // WHEN
         CameraSetInfo actual = CameraSetInfo.builder()
-                .forIdentifier(1000L)
+                .forIdentifier(1000)
                 .withUsedViews(allViews, usedViews)
                 .build();
 
 
         // THEN
-        assertThat(actual.getCameraIdentifier()).isEqualTo(1000L);
+        assertThat(actual.getCameraIdentifier()).isEqualTo(1000);
 
         CameraView cockpitViewInfo = actual.getViewsByKind().get(Cockpit);
         assertThat(cockpitViewInfo.getKind()).isEqualTo(Cockpit);
