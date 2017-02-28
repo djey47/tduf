@@ -2,9 +2,12 @@
   "cameraSet" : {
     "cameraIdentifier" : 1000,
     "views" : [ {
-      "type" : "Cockpit",
-      "sourceCameraIdentifier" : 101,
-      "sourceType" : "Cockpit",
+      "kind" : "Cockpit",
+      "usedKind" : "Cockpit",
+      "cameraSetId" : 0,
+      "usedCameraSetId" : 101,
+      "label" : "",
+      "name" : "",
       "settings" : {
         "STEERING_WHEEL_TURN" : 3890,
         "STEERING_WHEEL_TILT" : 41515,
@@ -22,9 +25,12 @@
         "UNKNOWN_5" : -27024
       }
     }, {
-      "type" : "Cockpit_Back",
-      "sourceCameraIdentifier" : 0,
-      "sourceType" : null,
+      "kind" : "Cockpit_Back",
+      "usedKind" : null,
+      "cameraSetId" : 0,
+      "usedCameraSetId" : null,
+      "label" : "",
+      "name" : "",
       "settings" : {
         "STEERING_WHEEL_TURN" : 3870,
         "STEERING_WHEEL_TILT" : 39191,
@@ -42,9 +48,12 @@
         "UNKNOWN_5" : 10403
       }
     }, {
-      "type" : "Hood",
-      "sourceCameraIdentifier" : 0,
-      "sourceType" : null,
+      "kind" : "Hood",
+      "usedKind" : null,
+      "cameraSetId" : 0,
+      "usedCameraSetId" : null,
+      "label" : "",
+      "name" : "",
       "settings" : {
         "STEERING_WHEEL_TURN" : 12333,
         "STEERING_WHEEL_TILT" : 32556,
@@ -62,9 +71,12 @@
         "UNKNOWN_5" : 19949
       }
     }, {
-      "type" : "Hood_Back",
-      "sourceCameraIdentifier" : 101,
-      "sourceType" : "Hood_Back",
+      "kind" : "Hood_Back",
+      "usedKind" : "Hood_Back",
+      "cameraSetId" : 0,
+      "usedCameraSetId" : 101,
+      "label" : "",
+      "name" : "",
       "settings" : {
         "STEERING_WHEEL_TURN" : 11565,
         "STEERING_WHEEL_TILT" : 32536,

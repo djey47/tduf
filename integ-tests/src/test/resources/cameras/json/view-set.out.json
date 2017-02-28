@@ -2,7 +2,9 @@
   "cameraIdentifier" : 1000,
   "views" : [ {
     "kind" : "Cockpit",
+    "usedKind" : null,
     "cameraSetId" : 1000,
+    "usedCameraSetId" : null,
     "label" : "ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ",
     "name" : "Cockpit\u0000ÍÍÍÍÍÍÍÍ",
     "settings" : {
@@ -23,7 +25,9 @@
     }
   }, {
     "kind" : "Cockpit_Back",
+    "usedKind" : null,
     "cameraSetId" : 1000,
+    "usedCameraSetId" : null,
     "label" : "ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ",
     "name" : "CockpitBack\u0000ÍÍÍÍ",
     "settings" : {
@@ -44,7 +48,9 @@
     }
   }, {
     "kind" : "Hood",
+    "usedKind" : null,
     "cameraSetId" : 1000,
+    "usedCameraSetId" : null,
     "label" : "ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ",
     "name" : "NewCamera\u0000ÍÍÍÍÍÍ",
     "settings" : {
@@ -65,7 +71,9 @@
     }
   }, {
     "kind" : "Hood_Back",
+    "usedKind" : null,
     "cameraSetId" : 1000,
+    "usedCameraSetId" : null,
     "label" : "ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ",
     "name" : "HoodBAck\u0000ÍÍÍÍÍÍÍ",
     "settings" : {
