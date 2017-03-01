@@ -11,6 +11,7 @@ import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -37,7 +38,8 @@ class CameraToolIntegTest {
     private final String outputDirectory = outputPath.toString();
     private final String inputCameraFile = camerasIntegTestPath.resolve("Cameras.bin").toString();
     private final String outputCameraFile = outputPath.resolve("Cameras.bin.modified").toString();
-    private final String batchFile = camerasIntegTestPath.resolve("instructions.csv").toString();
+    private final String batchCopyFile = camerasIntegTestPath.resolve("copy-instructions.csv").toString();
+    private final String batchDeleteFile = camerasIntegTestPath.resolve("delete-instructions.csv").toString();
     private final String setConfigurationFile = jsonPath.resolve("customize-set.in.json").toString();
     private final String useViewsConfigurationFile = jsonPath.resolve("use-views.in.json").toString();
 
@@ -85,7 +87,21 @@ class CameraToolIntegTest {
 
         // WHEN: copy-sets
         System.out.println("-> Copy Sets!");
-        CameraTool.main(new String[]{"copy-sets", "-n", "-i", inputCameraFile, "-o", outputCameraFile, "-b", batchFile});
+        CameraTool.main(new String[]{"copy-sets", "", "-i", inputCameraFile, "-o", outputCameraFile, "-b", batchCopyFile});
+
+        // THEN
+        AssertionsHelper.assertFileMatchesReference(new File(outputCameraFile), new File(referenceCameraFile));
+    }
+
+    // TODO enable and fix test
+    @Disabled
+    @Test
+    void deleteSets_shouldProduceCorrectFile() throws IOException, URISyntaxException {
+        String referenceCameraFile = camerasIntegTestPath.resolve("Cameras.sets108And109Deleted.bin").toString();
+
+        // WHEN: delete-sets
+        System.out.println("-> Delete Sets!");
+        CameraTool.main(new String[]{"delete-sets", "-n", "-i", inputCameraFile, "-o", outputCameraFile, "-b", batchDeleteFile});
 
         // THEN
         AssertionsHelper.assertFileMatchesReference(new File(outputCameraFile), new File(referenceCameraFile));

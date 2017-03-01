@@ -100,6 +100,7 @@ public class CameraTool extends GenericTool {
                 return true;
             case COPY_SETS:
                 commandResult = copySets(inputCameraFile, outputCameraFile);
+                return true;
             case DELETE_SETS:
                 commandResult = deleteSets(inputCameraFile, outputCameraFile);
                 return true;
