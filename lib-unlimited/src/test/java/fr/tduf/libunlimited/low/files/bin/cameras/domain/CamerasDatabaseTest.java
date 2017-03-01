@@ -24,6 +24,7 @@ class CamerasDatabaseTest {
         camerasDatabase.removeSet(1002);
 
         // then
+        assertThat(camerasDatabase.getIndexSize()).isEqualTo(2);
         assertThat(camerasDatabase.cameraSetExistsInIndex(1000)).isTrue();
         assertThat(camerasDatabase.cameraSetExistsInSettings(1000)).isTrue();
         assertThat(camerasDatabase.cameraSetExistsInIndex(1001)).isTrue();
@@ -39,6 +40,7 @@ class CamerasDatabaseTest {
         camerasDatabase.removeSet(1000);
 
         // then
+        assertThat(camerasDatabase.getIndexSize()).isEqualTo(1);
         assertThat(camerasDatabase.cameraSetExistsInIndex(1000)).isFalse();
         assertThat(camerasDatabase.cameraSetExistsInSettings(1000)).isFalse();
         assertThat(camerasDatabase.cameraSetExistsInIndex(1001)).isTrue();
