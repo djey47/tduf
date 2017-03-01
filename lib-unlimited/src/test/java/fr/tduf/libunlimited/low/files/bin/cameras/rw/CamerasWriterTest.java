@@ -12,7 +12,7 @@ import java.net.URISyntaxException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class CamerasWriter_focusOnEnhancedTest {
+class CamerasWriterTest {
     @Test
     void load_shouldReturnWriterInstance() throws IOException {
         // GIVEN
