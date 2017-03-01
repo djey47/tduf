@@ -1,6 +1,5 @@
 package fr.tduf.cli.tools;
 
-import fr.tduf.libtesting.common.helper.AssertionsHelper;
 import fr.tduf.libtesting.common.helper.ConsoleHelper;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
@@ -11,7 +10,6 @@ import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -23,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static fr.tduf.libtesting.common.helper.AssertionsHelper.assertFileMatchesReference;
 import static fr.tduf.libtesting.common.helper.AssertionsHelper.assertOutputStreamContainsJsonExactly;
 import static fr.tduf.tests.IntegTestsConstants.RESOURCES_PATH;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,11 +34,13 @@ class CameraToolIntegTest {
     private final Path camerasIntegTestPath = RESOURCES_PATH.resolve("cameras");
     private final Path outputPath = camerasIntegTestPath.resolve("out");
     private final Path jsonPath = camerasIntegTestPath.resolve("json");
+    private final Path csvPath = camerasIntegTestPath.resolve("csv");
     private final String outputDirectory = outputPath.toString();
     private final String inputCameraFile = camerasIntegTestPath.resolve("Cameras.bin").toString();
     private final String outputCameraFile = outputPath.resolve("Cameras.bin.modified").toString();
-    private final String batchCopyFile = camerasIntegTestPath.resolve("copy-instructions.csv").toString();
-    private final String batchDeleteFile = camerasIntegTestPath.resolve("delete-instructions.csv").toString();
+    private final String batchCopyFile = csvPath.resolve("copy-instructions.csv").toString();
+    private final String batchDeleteFile = csvPath.resolve("delete-instructions.csv").toString();
+    private final String batchDeleteSingleFile = csvPath.resolve("delete-single-instructions.csv").toString();
     private final String setConfigurationFile = jsonPath.resolve("customize-set.in.json").toString();
     private final String useViewsConfigurationFile = jsonPath.resolve("use-views.in.json").toString();
 
@@ -78,7 +79,7 @@ class CameraToolIntegTest {
         CameraTool.main(new String[]{"copy-set", "-n", "-i", inputCameraFile, "-o", outputCameraFile, "-s", "108", "-t", "109"});
 
         // THEN
-        AssertionsHelper.assertFileMatchesReference(new File(outputCameraFile), new File(referenceCameraFile));
+        assertFileMatchesReference(new File(outputCameraFile), new File(referenceCameraFile));
     }
 
     @Test
@@ -90,21 +91,32 @@ class CameraToolIntegTest {
         CameraTool.main(new String[]{"copy-sets", "", "-i", inputCameraFile, "-o", outputCameraFile, "-b", batchCopyFile});
 
         // THEN
-        AssertionsHelper.assertFileMatchesReference(new File(outputCameraFile), new File(referenceCameraFile));
+        assertFileMatchesReference(new File(outputCameraFile), new File(referenceCameraFile));
     }
 
-    // TODO enable and fix test
-    @Disabled
     @Test
-    void deleteSets_shouldProduceCorrectFile() throws IOException, URISyntaxException {
+    void deleteSets_withSingleSet_shouldProduceCorrectFile() throws IOException, URISyntaxException {
+        String startCameraFile = camerasIntegTestPath.resolve("Cameras.set108CopiedTo109.bin").toString();
+
+        // WHEN: delete-sets
+        System.out.println("-> Delete Sets!");
+        CameraTool.main(new String[]{"delete-sets", "-n", "-i", startCameraFile, "-o", outputCameraFile, "-b", batchDeleteSingleFile});
+
+        // THEN
+        assertFileMatchesReference(new File(outputCameraFile), new File(inputCameraFile));
+    }
+
+    @Test
+    void deleteSets_withTwoSets_shouldProduceCorrectFile() throws IOException, URISyntaxException {
+        String startCameraFile = camerasIntegTestPath.resolve("Cameras.set108CopiedTo109.bin").toString();
         String referenceCameraFile = camerasIntegTestPath.resolve("Cameras.sets108And109Deleted.bin").toString();
 
         // WHEN: delete-sets
         System.out.println("-> Delete Sets!");
-        CameraTool.main(new String[]{"delete-sets", "-n", "-i", inputCameraFile, "-o", outputCameraFile, "-b", batchDeleteFile});
+        CameraTool.main(new String[]{"delete-sets", "-n", "-i", startCameraFile, "-o", outputCameraFile, "-b", batchDeleteFile});
 
         // THEN
-        AssertionsHelper.assertFileMatchesReference(new File(outputCameraFile), new File(referenceCameraFile));
+        assertFileMatchesReference(new File(outputCameraFile), new File(referenceCameraFile));
     }
 
     @Test
