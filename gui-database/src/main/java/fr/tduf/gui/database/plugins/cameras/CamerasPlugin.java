@@ -158,6 +158,7 @@ public class CamerasPlugin implements DatabasePlugin {
         Window mainWindow = context.getMainWindow();
         VBox buttonColumnBox = createButtonColumn(
                 handleAddSetButtonAction(rawValueProperty, cameraSelectorComboBox.getSelectionModel(), mainWindow),
+                handleDeleteSetButtonAction(rawValueProperty, cameraSelectorComboBox.getSelectionModel(), mainWindow),
                 handleImportSetButtonAction(rawValueProperty, mainWindow),
                 handleExportCurrentViewAction(rawValueProperty, viewSelectorComboBox.getSelectionModel(), mainWindow),
                 handleExportAllViewsAction(rawValueProperty, mainWindow));
@@ -199,7 +200,7 @@ public class CamerasPlugin implements DatabasePlugin {
         return mainColumnBox;
     }
 
-    private VBox createButtonColumn(EventHandler<ActionEvent> onAddSetAction, EventHandler<ActionEvent> onImportSetAction, EventHandler<ActionEvent> onExportCurrentViewAction, EventHandler<ActionEvent> onExportAllViewsAction) {
+    private VBox createButtonColumn(EventHandler<ActionEvent> onAddSetAction, EventHandler<ActionEvent> onDeleteSetAction, EventHandler<ActionEvent> onImportSetAction, EventHandler<ActionEvent> onExportCurrentViewAction, EventHandler<ActionEvent> onExportAllViewsAction) {
         VBox buttonColumnBox = new VBox();
         buttonColumnBox.getStyleClass().add(fr.tduf.gui.database.common.FxConstants.CSS_CLASS_VERTICAL_BUTTON_BOX);
 
@@ -207,6 +208,11 @@ public class CamerasPlugin implements DatabasePlugin {
         addSetButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
         ControlHelper.setTooltipText(addSetButton, TOOLTIP_ADD_BUTTON);
         addSetButton.setOnAction(onAddSetAction);
+
+        Button delSetButton = new Button(LABEL_DEL_BUTTON);
+        delSetButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
+        ControlHelper.setTooltipText(delSetButton, TOOLTIP_DEL_BUTTON);
+        delSetButton.setOnAction(onDeleteSetAction);
 
         Button importSetButton = new Button(LABEL_IMPORT_SET_BUTTON);
         importSetButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
@@ -226,6 +232,7 @@ public class CamerasPlugin implements DatabasePlugin {
 
         ObservableList<Node> children = buttonColumnBox.getChildren();
         children.add(addSetButton);
+        children.add(delSetButton);
         children.add(importSetButton);
         children.add(exportSetMenuButton);
 
@@ -413,6 +420,29 @@ public class CamerasPlugin implements DatabasePlugin {
             }
 
             cameraSelectorSelectionModel.select(newCameraInfo);
+        };
+    }
+
+    private EventHandler<ActionEvent> handleDeleteSetButtonAction(StringProperty rawValueProperty, SingleSelectionModel<CameraSetInfo> cameraSelectorSelectionModel, Window mainWindow) {
+        return event -> {
+//            Optional<String> input = CommonDialogsHelper.showInputValueDialog(TITLE_ADD_SET, MESSAGE_ADD_SET_IDENTIFIER, mainWindow);
+//            if (!input.isPresent()) {
+//                return;
+//            }
+//
+//            int newCameraSetIdentifier = input.map(Integer::valueOf)
+//                    .orElseThrow(() -> new IllegalStateException("Should not happen"));
+//            int cameraSetIdentifier = Integer.valueOf(rawValueProperty.getValue());
+//
+//            CamerasDatabase camerasDatabase = cameraInfoEnhancedProperty.getValue();
+//            CamerasHelper.duplicateCameraSet(cameraSetIdentifier, newCameraSetIdentifier, camerasDatabase);
+//
+//            CameraSetInfo newCameraInfo = CamerasHelper.fetchInformation(newCameraSetIdentifier, camerasDatabase);
+//            if (!cameraSetInfos.contains(newCameraInfo)) {
+//                cameraSetInfos.add(newCameraInfo);
+//            }
+//
+//            cameraSelectorSelectionModel.select(newCameraInfo);
         };
     }
 

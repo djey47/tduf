@@ -12,6 +12,7 @@ public class DisplayConstants {
     public static final String LABEL_AVAILABLE_VIEWS = "Available views:";
 
     public static final String LABEL_ADD_BUTTON = "+";
+    public static final String LABEL_DEL_BUTTON = "-";
     public static final String LABEL_IMPORT_SET_BUTTON = "Import...";
     public static final String LABEL_EXPORT_SET_BUTTON = "Export";
     public static final String LABEL_EXPORT_CURRENT_BUTTON = "Current view only...";
@@ -27,6 +28,7 @@ public class DisplayConstants {
     public static final String HEADER_PROPTABLE_VALUE = "Value";
 
     public static final String TOOLTIP_ADD_BUTTON = "Creates a new camera set, based on current one";
+    public static final String TOOLTIP_DEL_BUTTON = "Deletes current camera set";
     public static final String TOOLTIP_IMPORT_SET_BUTTON = "Imports one or many camera sets from camera patch";
     public static final String TOOLTIP_EXPORT_SET_BUTTON = "Exports one or many views from current set";
 
