@@ -125,7 +125,8 @@ class CamPatcherTest {
                 .withSettings(new EnumMap<>(ViewProps.class))
                 .build());
 
-        when(camerasDatabaseMock.cameraSetExistsInSettings(1250)).thenReturn(false);
+        when(camerasDatabaseMock.cameraSetExists(1250)).thenReturn(false);
+        when(camerasDatabaseMock.cameraSetExists(10000)).thenReturn(true);
         when(camerasDatabaseMock.cameraSetExistsInSettings(10000)).thenReturn(true);
         when(camerasDatabaseMock.getViewsForCameraSet(10000)).thenReturn(referenceViews);
         when(camerasDatabaseMock.getViewsForCameraSet(1250)).thenReturn(clonedViews);

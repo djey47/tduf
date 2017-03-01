@@ -235,8 +235,8 @@ public class CamerasHelper {
         return new ByteArrayInputStream(readAllBytes(Paths.get(sourceCameraFile)));
     }
 
-    private static void checkCameraSetExists(int cameraSetId, CamerasDatabase cameraInfo) {
-        if (!cameraInfo.cameraSetExists(cameraSetId)) {
+    private static void checkCameraSetExists(int cameraSetId, CamerasDatabase camerasDatabase) {
+        if (!camerasDatabase.cameraSetExists(cameraSetId)) {
             throw new NoSuchElementException("Unknown source camera identifier: " + cameraSetId);
         }
     }
