@@ -158,7 +158,7 @@ public class CamerasPlugin implements DatabasePlugin {
         Window mainWindow = context.getMainWindow();
         VBox buttonColumnBox = createButtonColumn(
                 handleAddSetButtonAction(rawValueProperty, cameraSelectorComboBox.getSelectionModel(), mainWindow),
-                handleDeleteSetButtonAction(rawValueProperty, cameraSelectorComboBox.getSelectionModel(), mainWindow),
+                handleDeleteSetButtonAction(rawValueProperty, cameraSelectorComboBox.getSelectionModel()),
                 handleImportSetButtonAction(rawValueProperty, mainWindow),
                 handleExportCurrentViewAction(rawValueProperty, viewSelectorComboBox.getSelectionModel(), mainWindow),
                 handleExportAllViewsAction(rawValueProperty, mainWindow));
@@ -415,34 +415,23 @@ public class CamerasPlugin implements DatabasePlugin {
             CamerasHelper.duplicateCameraSet(cameraSetIdentifier, newCameraSetIdentifier, camerasDatabase);
 
             CameraSetInfo newCameraInfo = CamerasHelper.fetchInformation(newCameraSetIdentifier, camerasDatabase);
-            if (!cameraSetInfos.contains(newCameraInfo)) {
-                cameraSetInfos.add(newCameraInfo);
-            }
+            cameraSetInfos.add(newCameraInfo);
 
             cameraSelectorSelectionModel.select(newCameraInfo);
         };
     }
 
-    private EventHandler<ActionEvent> handleDeleteSetButtonAction(StringProperty rawValueProperty, SingleSelectionModel<CameraSetInfo> cameraSelectorSelectionModel, Window mainWindow) {
+    private EventHandler<ActionEvent> handleDeleteSetButtonAction(StringProperty rawValueProperty, SingleSelectionModel<CameraSetInfo> cameraSelectorSelectionModel) {
         return event -> {
-//            Optional<String> input = CommonDialogsHelper.showInputValueDialog(TITLE_ADD_SET, MESSAGE_ADD_SET_IDENTIFIER, mainWindow);
-//            if (!input.isPresent()) {
-//                return;
-//            }
-//
-//            int newCameraSetIdentifier = input.map(Integer::valueOf)
-//                    .orElseThrow(() -> new IllegalStateException("Should not happen"));
-//            int cameraSetIdentifier = Integer.valueOf(rawValueProperty.getValue());
-//
-//            CamerasDatabase camerasDatabase = cameraInfoEnhancedProperty.getValue();
-//            CamerasHelper.duplicateCameraSet(cameraSetIdentifier, newCameraSetIdentifier, camerasDatabase);
-//
-//            CameraSetInfo newCameraInfo = CamerasHelper.fetchInformation(newCameraSetIdentifier, camerasDatabase);
-//            if (!cameraSetInfos.contains(newCameraInfo)) {
-//                cameraSetInfos.add(newCameraInfo);
-//            }
-//
-//            cameraSelectorSelectionModel.select(newCameraInfo);
+            int cameraSetIdentifier = Integer.valueOf(rawValueProperty.getValue());
+            CamerasDatabase camerasDatabase = cameraInfoEnhancedProperty.getValue();
+
+            CamerasHelper.deleteCameraSet(cameraSetIdentifier, camerasDatabase);
+
+            CameraSetInfo currentCameraInfo = cameraSelectorSelectionModel.getSelectedItem();
+            cameraSetInfos.remove(currentCameraInfo);
+
+            cameraSelectorSelectionModel.selectFirst();
         };
     }
 

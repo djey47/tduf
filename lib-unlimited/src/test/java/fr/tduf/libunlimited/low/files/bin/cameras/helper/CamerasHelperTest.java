@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -26,6 +27,7 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 class CamerasHelperTest {
 
@@ -35,6 +37,9 @@ class CamerasHelperTest {
     private CamerasDatabase camerasDatabase;
 
     private GenuineCamGateway cameraSupportMock = mock(GenuineCamGateway.class);
+
+    @Mock
+    private CamerasDatabase camerasDatabaseMock;
 
     @BeforeAll
     static void globalSetUp() throws IOException, URISyntaxException {
@@ -49,6 +54,8 @@ class CamerasHelperTest {
     void setUp() {
         CamerasHelper.setCameraSupport(cameraSupportMock);
         camerasDatabase = readOnlyParser.parse();
+
+        initMocks(this);
     }
 
     @Test
@@ -346,5 +353,34 @@ class CamerasHelperTest {
         assertThat(viewsByType.get(Cockpit_Back).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
         assertThat(viewsByType.get(Hood).getSettings().get(BINOCULARS)).isEqualTo(0L);
         assertThat(viewsByType.get(Hood_Back).getSettings().get(BINOCULARS)).isNotEqualTo(0L);
+    }
+
+    @Test
+    void deleteCameraSet_whenNullDatabase_shouldThrowExceptione() {
+        // given-when-then
+        assertThrows(NullPointerException.class,
+                () -> CamerasHelper.deleteCameraSet(1000, null));
+    }
+
+    @Test
+    void deleteCameraSet_whenSetDoesNotExist_shouldThrowException() {
+        // given
+        when(camerasDatabaseMock.cameraSetExists(1000)).thenReturn(false);
+
+        // when-then
+        assertThrows(NoSuchElementException.class,
+                () -> CamerasHelper.deleteCameraSet(1000, camerasDatabaseMock));
+    }
+
+    @Test
+    void deleteCameraSet_whenSetExists_shouldInvokeDatabase() {
+        // given
+        when(camerasDatabaseMock.cameraSetExists(1000)).thenReturn(true);
+
+        // when
+        CamerasHelper.deleteCameraSet(1000, camerasDatabaseMock);
+
+        // then
+        verify(camerasDatabaseMock).removeSet(1000);
     }
 }

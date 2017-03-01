@@ -103,6 +103,14 @@ public class CamerasDatabase {
         views.put(setIdentifier, newViews);
     }
 
+    /**
+     * Removes all attached views from index and settings
+     */
+    public void removeSet(int cameraSetIdentifier) {
+        index.remove(cameraSetIdentifier);
+        views.remove(cameraSetIdentifier);
+    }
+
     public List<Integer> getAllSetIdentifiers() {
         return new ArrayList<>(views.keySet());
     }

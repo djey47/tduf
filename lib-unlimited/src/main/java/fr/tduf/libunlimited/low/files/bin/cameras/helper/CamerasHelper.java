@@ -46,7 +46,6 @@ public class CamerasHelper {
      */
     public static void duplicateCameraSet(int sourceCameraId, int targetCameraId, CamerasDatabase camerasDatabase) {
         requireNonNull(camerasDatabase, "Loaded camera information is required.");
-
         checkCameraSetExists(sourceCameraId, camerasDatabase);
 
         if(camerasDatabase.cameraSetExists(targetCameraId)) {
@@ -65,16 +64,28 @@ public class CamerasHelper {
     }
 
     /**
+     * Permanently removes specified camera set (all attached views)
+     * @param cameraSetIdentifier   : identifier of camera to get views from
+     * @param camerasDatabase       : loaded cameras contents.
+     */
+    public static void deleteCameraSet(int cameraSetIdentifier, CamerasDatabase camerasDatabase) {
+        requireNonNull(camerasDatabase, "Loaded camera information is required.");
+        checkCameraSetExists(cameraSetIdentifier, camerasDatabase);
+
+        camerasDatabase.removeSet(cameraSetIdentifier);
+    }
+
+    /**
      * Creates all camera sets at targetId with all views from sourceId
      * @param instructions      : list of <sourceCameraId>;<targetCameraId>
-     * @param cameraInfo        : loaded cameras contents.
+     * @param camerasDatabase        : loaded cameras contents.
      */
-    public static void batchDuplicateCameraSets(List<String> instructions, CamerasDatabase cameraInfo) {
+    public static void batchDuplicateCameraSets(List<String> instructions, CamerasDatabase camerasDatabase) {
         requireNonNull(instructions, "A list of instructions is required.");
 
         instructions.forEach(instruction -> {
             String[] compounds = instruction.split(INSTRUCTION_SEPARATOR);
-            duplicateCameraSet(Integer.valueOf(compounds[0]), Integer.valueOf(compounds[1]), cameraInfo);
+            duplicateCameraSet(Integer.valueOf(compounds[0]), Integer.valueOf(compounds[1]), camerasDatabase);
         });
     }
 
@@ -225,7 +236,7 @@ public class CamerasHelper {
     }
 
     private static void checkCameraSetExists(int cameraSetId, CamerasDatabase cameraInfo) {
-        if (!cameraInfo.cameraSetExistsInSettings(cameraSetId)) {
+        if (!cameraInfo.cameraSetExists(cameraSetId)) {
             throw new NoSuchElementException("Unknown source camera identifier: " + cameraSetId);
         }
     }
