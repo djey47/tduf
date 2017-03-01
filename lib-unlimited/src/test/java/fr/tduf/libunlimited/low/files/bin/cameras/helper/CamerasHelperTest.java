@@ -356,7 +356,7 @@ class CamerasHelperTest {
     }
 
     @Test
-    void deleteCameraSet_whenNullDatabase_shouldThrowExceptione() {
+    void deleteCameraSet_whenNullDatabase_shouldThrowException() {
         // given-when-then
         assertThrows(NullPointerException.class,
                 () -> CamerasHelper.deleteCameraSet(1000, null));
@@ -383,4 +383,28 @@ class CamerasHelperTest {
         // then
         verify(camerasDatabaseMock).removeSet(1000);
     }
+
+    @Test
+    void batchDeleteCameraSets_whenNullInstructions_shouldThrowException() {
+        // given-when-then
+        assertThrows(NullPointerException.class,
+                () -> CamerasHelper.batchDeleteCameraSets(null, camerasDatabaseMock));
+    }
+
+    @Test
+    void batchDeleteCameraSets_whenProvidedIdentifiers_shouldAskExistingForDeletion() {
+        // given
+        when(camerasDatabaseMock.cameraSetExists(1)).thenReturn(true);
+        when(camerasDatabaseMock.cameraSetExists(2)).thenReturn(false);
+        when(camerasDatabaseMock.cameraSetExists(3)).thenReturn(true);
+
+        // when
+        CamerasHelper.batchDeleteCameraSets(asList("1", "2", "3"), camerasDatabaseMock);
+
+        // then
+        verify(camerasDatabaseMock, times(2)).removeSet(anyInt());
+        verify(camerasDatabaseMock).removeSet(1);
+        verify(camerasDatabaseMock).removeSet(3);
+    }
+
 }

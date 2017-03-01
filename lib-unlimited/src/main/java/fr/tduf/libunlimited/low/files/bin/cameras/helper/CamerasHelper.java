@@ -78,7 +78,7 @@ public class CamerasHelper {
     /**
      * Creates all camera sets at targetId with all views from sourceId
      * @param instructions      : list of <sourceCameraId>;<targetCameraId>
-     * @param camerasDatabase        : loaded cameras contents.
+     * @param camerasDatabase   : loaded cameras contents.
      */
     public static void batchDuplicateCameraSets(List<String> instructions, CamerasDatabase camerasDatabase) {
         requireNonNull(instructions, "A list of instructions is required.");
@@ -90,7 +90,25 @@ public class CamerasHelper {
     }
 
     /**
-     * Kept for compatibility reasons
+     * Deletes all camera sets (views) at sourceId
+     * @param instructions      : list of <sourceId>
+     * @param camerasDatabase   : loaded cameras contents.
+     */
+    public static void batchDeleteCameraSets(List<String> instructions, CamerasDatabase camerasDatabase) {
+        requireNonNull(instructions, "A list of instructions is required.");
+
+        instructions.stream()
+                .map(Integer::valueOf)
+                .forEach(identifier -> {
+                    try {
+                        deleteCameraSet(identifier, camerasDatabase);
+                    } catch(NoSuchElementException nsee) {
+                        Log.warn(THIS_CLASS_NAME, "Camera set identifier not found for deletion: " + identifier);
+                    }
+                });
+    }
+
+    /**
      * @param cameraIdentifier      : identifier of camera
      * @param camerasDatabase    : parsed cameras contents
      * @return view properties for requested camera set.
