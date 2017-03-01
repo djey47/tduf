@@ -38,7 +38,7 @@ public class CameraTool extends GenericTool {
     @Option(name="-s", aliases = "--sourceId", usage = "Identifier of camera set to copy (required for copy-set operation).")
     private Integer sourceIdentifier;
 
-    @Option(name="-b", aliases = "--batchFile", usage = "CSV File containing all identifiers of camera sets to copy (required for copy-sets operation).")
+    @Option(name="-b", aliases = "--batchFile", usage = "CSV File containing all identifiers of camera sets to copy (required for copy-sets and delete-sets operations).")
     private String batchIdentifiersFile;
 
     @Option(name="-c", aliases = "--configurationFile", usage = "JSON File containing all view properties to modify (required for customize-set operation).")
@@ -53,6 +53,7 @@ public class CameraTool extends GenericTool {
         LIST("list", "Returns all camera identifiers in provided file."),
         COPY_SET("copy-set", "Duplicate given camera set to a new identifier. Will not erase existing."),
         COPY_SETS("copy-sets", "Duplicate given camera sets (in a CSV file) to new identifiers. Will not erase existing."),
+        DELETE_SETS("delete-sets", "Remove given camera sets (in a CSV file)."),
         VIEW_SET("view-set", "Returns all set properties of a given camera identifier."),
         CUSTOMIZE_SET("customize-set", "Defines set properties of a given camera identifier."),
         USE_VIEWS("use-views", "Make a particular camera set re-use views from other cameras (modifies provided camera file).");
@@ -99,6 +100,8 @@ public class CameraTool extends GenericTool {
                 return true;
             case COPY_SETS:
                 commandResult = copySets(inputCameraFile, outputCameraFile);
+            case DELETE_SETS:
+                commandResult = deleteSets(inputCameraFile, outputCameraFile);
                 return true;
             case VIEW_SET:
                 commandResult = viewCameraSet(inputCameraFile, sourceIdentifier);
@@ -218,7 +221,7 @@ public class CameraTool extends GenericTool {
 
         CamerasHelper.saveCamerasDatabase(camerasDatabase, targetCameraFile);
 
-        return makeCommandResultForCopy(targetCameraFile);
+        return makeCommandResultForCopyOrDeletion(targetCameraFile);
     }
 
     private Map<String, ?> copySets(String sourceCameraFile, String targetCameraFile) throws IOException {
@@ -231,7 +234,20 @@ public class CameraTool extends GenericTool {
 
         CamerasHelper.saveCamerasDatabase(camerasDatabase, targetCameraFile);
 
-        return makeCommandResultForCopy(targetCameraFile);
+        return makeCommandResultForCopyOrDeletion(targetCameraFile);
+    }
+
+    private Map<String, ?> deleteSets(String sourceCameraFile, String targetCameraFile) throws IOException {
+        CamerasDatabase camerasDatabase = loadCameras(sourceCameraFile);
+
+        List<String> instructions = readInstructions(batchIdentifiersFile);
+        CamerasHelper.batchDeleteCameraSets(instructions, camerasDatabase);
+
+        outLine("> Done removing camera sets.");
+
+        CamerasHelper.saveCamerasDatabase(camerasDatabase, targetCameraFile);
+
+        return makeCommandResultForCopyOrDeletion(targetCameraFile);
     }
 
     private List<String> readInstructions(String batchIdentifiersFile) throws IOException {
@@ -264,7 +280,7 @@ public class CameraTool extends GenericTool {
         return camerasDatabase;
     }
 
-    private Map<String, Object> makeCommandResultForCopy(String fileName) {
+    private Map<String, Object> makeCommandResultForCopyOrDeletion(String fileName) {
         String absolutePath = new File(fileName).getAbsolutePath();
 
         Map<String, Object> resultInfo = new HashMap<>();
