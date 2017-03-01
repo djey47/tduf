@@ -21,6 +21,22 @@ import static java.util.Objects.requireNonNull;
  */
 public class CamerasWriter extends GenericWriter<CamerasDatabase> {
 
+    private static final String FIELD_VIEWS = "views";
+    private static final String FIELD_HEADER = "header";
+    private static final String FIELD_INDEX_SIZE = "indexSize";
+    private static final String FIELD_MAGIC_FORTY = "magicForty";
+    private static final String FIELD_CAMERA_ID = "cameraId";
+    private static final String FIELD_LABEL = "label";
+    private static final String FIELD_TYPE = "type";
+    private static final String FIELD_NAME = "name";
+    private static final String FIELD_PROPERTIES = "properties";
+    private static final String FIELD_TAG = "tag";
+    private static final String FIELD_SETTINGS_PART_1 = "settingsPart1";
+    private static final String FIELD_SETTINGS_PART_2 = "settingsPart2";
+    private static final String FIELD_SETTINGS_PART_3 = "settingsPart3";
+    private static final String FIELD_SETTINGS_PART_4 = "settingsPart4";
+    private static final String FIELD_SETTINGS_PART_5 = "settingsPart5";
+
     private CamerasWriter(CamerasDatabase camerasDatabase) throws IOException {
         super(camerasDatabase);
     }
@@ -51,57 +67,50 @@ public class CamerasWriter extends GenericWriter<CamerasDatabase> {
         DataStore dataStore = getDataStore();
         CamerasDatabase data = getData() ;
 
-        dataStore.addValue("header", UNKNOWN, data.getOriginalDataStore().getRawValue("header")
+        dataStore.addValue(FIELD_HEADER, UNKNOWN, data.getOriginalDataStore().getRawValue(FIELD_HEADER)
                 .orElseThrow(() -> new IllegalStateException("header entry not found in store")));
-        dataStore.addInteger32("indexSize", data.getIndexSize());
-        dataStore.addValue("magicForty", UNKNOWN, data.getOriginalDataStore().getRawValue("magicForty")
+        dataStore.addInteger32(FIELD_INDEX_SIZE, data.getIndexSize());
+        dataStore.addValue(FIELD_MAGIC_FORTY, UNKNOWN, data.getOriginalDataStore().getRawValue(FIELD_MAGIC_FORTY)
                 .orElseThrow(() -> new IllegalStateException("magicForty entry not found in store")));
     }
 
     private void fillViewIndex() {
         AtomicLong currentIndex = new AtomicLong(0);
         getData().getIndexEntriesAsStream()
-                .forEach(indexEntry -> fillIndexEntry(currentIndex, indexEntry));
+                .forEach(indexEntry -> fillIndexEntry(currentIndex.getAndIncrement(), indexEntry));
     }
 
-    private void fillIndexEntry(AtomicLong currentIndex, Map.Entry<Integer, Short> indexEntry) {
+    private void fillIndexEntry(long currentIndex, Map.Entry<Integer, Short> indexEntry) {
         DataStore dataStore = getDataStore();
-        long currentIndexAsLong = currentIndex.get();
 
-        dataStore.addRepeatedInteger32("index", "cameraId", currentIndexAsLong, indexEntry.getKey());
-        dataStore.addRepeatedInteger32("index", "viewCount", currentIndexAsLong, indexEntry.getValue());
-        currentIndex.incrementAndGet();
+        dataStore.addRepeatedInteger32("index", FIELD_CAMERA_ID, currentIndex, indexEntry.getKey());
+        dataStore.addRepeatedInteger32("index", "viewCount", currentIndex, indexEntry.getValue());
     }
 
     private void fillViewSettings() {
         AtomicLong currentViewIndex = new AtomicLong(0);
         getData().getViewEntriesAsStream()
-                .forEach(viewEntry -> viewEntry.getValue()
-                        .forEach(viewEnhanced -> {
-                            fillSettingsEntry(currentViewIndex, viewEnhanced);
-                        }));
+                .flatMap(viewEntry -> viewEntry.getValue().stream())
+                .forEach(viewEnhanced -> fillSettingsEntry(currentViewIndex.getAndIncrement(), viewEnhanced));
     }
 
-    private void fillSettingsEntry(AtomicLong currentViewIndex, CameraView viewEnhanced) {
+    private void fillSettingsEntry(long currentViewIndex, CameraView viewEnhanced) {
         DataStore dataStore = getDataStore();
-        long currentViewIndexAsLong = currentViewIndex.get();
         DataStore sourceViewStore = viewEnhanced.getOriginalDataStore();
 
         // From domain object
-        dataStore.addRepeatedInteger32("views", "cameraId", currentViewIndexAsLong, viewEnhanced.getCameraSetId());
-        dataStore.addRepeatedText("views", "label", currentViewIndexAsLong, viewEnhanced.getLabel());
-        dataStore.addRepeatedInteger32("views", "type", currentViewIndexAsLong, viewEnhanced.getKind().getInternalId());
-        dataStore.addRepeatedText("views", "name", currentViewIndexAsLong, viewEnhanced.getName());
+        dataStore.addRepeatedInteger32(FIELD_VIEWS, FIELD_CAMERA_ID, currentViewIndex, viewEnhanced.getCameraSetId());
+        dataStore.addRepeatedText(FIELD_VIEWS, FIELD_LABEL, currentViewIndex, viewEnhanced.getLabel());
+        dataStore.addRepeatedInteger32(FIELD_VIEWS, FIELD_TYPE, currentViewIndex, viewEnhanced.getKind().getInternalId());
+        dataStore.addRepeatedText(FIELD_VIEWS, FIELD_NAME, currentViewIndex, viewEnhanced.getName());
 
         // From attached view props
         viewEnhanced.getSettings().entrySet()
-                .forEach(propsEntry -> fillViewProperties(currentViewIndexAsLong, propsEntry));
+                .forEach(propsEntry -> fillViewProperties(currentViewIndex, propsEntry));
 
         // From original store (unaltered values)
-        Set<String> fieldNames = new HashSet<>(asList("properties", "tag", "settingsPart1", "settingsPart2", "settingsPart3", "settingsPart4", "settingsPart5"));
-        sourceViewStore.copyFields(fieldNames, dataStore, "views", currentViewIndexAsLong);
-
-        currentViewIndex.incrementAndGet();
+        Set<String> fieldNames = new HashSet<>(asList(FIELD_PROPERTIES, FIELD_TAG, FIELD_SETTINGS_PART_1, FIELD_SETTINGS_PART_2, FIELD_SETTINGS_PART_3, FIELD_SETTINGS_PART_4, FIELD_SETTINGS_PART_5));
+        sourceViewStore.copyFields(fieldNames, dataStore, FIELD_VIEWS, currentViewIndex);
     }
 
     private void fillViewProperties(long currentViewIndexAsLong, Map.Entry<ViewProps, Object> propsEntry) {
@@ -113,6 +122,6 @@ public class CamerasWriter extends GenericWriter<CamerasDatabase> {
             effectiveValue = (long) value;
         }
 
-        getDataStore().addRepeatedInteger32("views", propsEntry.getKey().getStoreFieldName(), currentViewIndexAsLong, effectiveValue);
+        getDataStore().addRepeatedInteger32(FIELD_VIEWS, propsEntry.getKey().getStoreFieldName(), currentViewIndexAsLong, effectiveValue);
     }
 }
