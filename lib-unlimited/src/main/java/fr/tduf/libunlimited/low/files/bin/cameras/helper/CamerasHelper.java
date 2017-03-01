@@ -15,7 +15,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -200,7 +199,7 @@ public class CamerasHelper {
      */
     public static void saveCamerasDatabase(CamerasDatabase camerasDatabase, String cameraFile) throws IOException {
         ByteArrayOutputStream outputStream = CamerasWriter.load(camerasDatabase).write();
-        Files.write(Paths.get(cameraFile), outputStream.toByteArray(), StandardOpenOption.CREATE);
+        Files.write(Paths.get(cameraFile), outputStream.toByteArray());
     }
 
     /**

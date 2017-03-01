@@ -15,8 +15,8 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.DiffPatchesGenerator;
 import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -40,7 +40,6 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 import static fr.tduf.cli.tools.DatabaseTool.Command.*;
@@ -359,7 +358,7 @@ public class DatabaseTool extends GenericTool {
 
         outLine("Writing patch to " + outputPatchFile + "...");
 
-        Files.write(Paths.get(outputPatchFile), convertOutput.getBytes(), StandardOpenOption.CREATE);
+        Files.write(Paths.get(outputPatchFile), convertOutput.getBytes());
 
         Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("patchFile", outputPatchFile);

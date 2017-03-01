@@ -18,7 +18,6 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 import static fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind.*;
@@ -174,7 +173,7 @@ class CamerasHelperTest {
         String tempDirectory = fr.tduf.libtesting.common.helper.FilesHelper.createTempDirectoryForLibrary();
         Path camFilePath = Paths.get(tempDirectory, "cameras.bin");
         String camFile = camFilePath.toString();
-        Files.write(camFilePath, camContents, StandardOpenOption.CREATE);
+        Files.write(camFilePath, camContents);
 
         SetConfigurationDto configuration = SetConfigurationDto.builder()
                 .forIdentifier(1000)

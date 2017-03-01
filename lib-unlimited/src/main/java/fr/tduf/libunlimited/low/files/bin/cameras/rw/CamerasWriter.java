@@ -22,7 +22,9 @@ import static java.util.Objects.requireNonNull;
 public class CamerasWriter extends GenericWriter<CamerasDatabase> {
 
     private static final String FIELD_VIEWS = "views";
+    private static final String FIELD_INDEX = "index";
     private static final String FIELD_HEADER = "header";
+    private static final String FIELD_VIEW_COUNT = "viewCount";
     private static final String FIELD_INDEX_SIZE = "indexSize";
     private static final String FIELD_MAGIC_FORTY = "magicForty";
     private static final String FIELD_CAMERA_ID = "cameraId";
@@ -83,8 +85,8 @@ public class CamerasWriter extends GenericWriter<CamerasDatabase> {
     private void fillIndexEntry(long currentIndex, Map.Entry<Integer, Short> indexEntry) {
         DataStore dataStore = getDataStore();
 
-        dataStore.addRepeatedInteger32("index", FIELD_CAMERA_ID, currentIndex, indexEntry.getKey());
-        dataStore.addRepeatedInteger32("index", "viewCount", currentIndex, indexEntry.getValue());
+        dataStore.addRepeatedInteger32(FIELD_INDEX, FIELD_CAMERA_ID, currentIndex, indexEntry.getKey());
+        dataStore.addRepeatedInteger32(FIELD_INDEX, FIELD_VIEW_COUNT, currentIndex, indexEntry.getValue());
     }
 
     private void fillViewSettings() {

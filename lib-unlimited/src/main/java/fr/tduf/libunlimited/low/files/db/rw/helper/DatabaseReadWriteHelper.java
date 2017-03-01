@@ -350,7 +350,7 @@ public class DatabaseReadWriteHelper {
 
         try {
             ByteArrayOutputStream outputStream = CryptoHelper.decryptXTEA(inputStream, CryptoHelper.EncryptionModeEnum.OTHER_AND_SPECIAL);
-            Files.write(outputFile.toPath(), outputStream.toByteArray(), StandardOpenOption.CREATE);
+            Files.write(outputFile.toPath(), outputStream.toByteArray());
         } catch (Exception e) {
             Log.warn(THIS_CLASS_NAME, "Can't unencrypt file: " + contentsFileName, e);
 
@@ -382,7 +382,7 @@ public class DatabaseReadWriteHelper {
 
                         ByteArrayInputStream inputStream = new ByteArrayInputStream(Files.readAllBytes(inputFile.toPath()));
                         ByteArrayOutputStream outputStream = CryptoHelper.encryptXTEA(inputStream, CryptoHelper.EncryptionModeEnum.OTHER_AND_SPECIAL);
-                        Files.write(outputFile.toPath(), outputStream.toByteArray(), StandardOpenOption.CREATE);
+                        Files.write(outputFile.toPath(), outputStream.toByteArray());
 
                         Path source = outputFile.toPath();
                         Path target = Paths.get(outputDirectory, source.getFileName().toString());
