@@ -815,6 +815,7 @@
         },
         {
           "name": "Price_dollar",
+          "label": "Price ($)",
           "rank": 6
         },
         {
@@ -946,6 +947,7 @@
         },
         {
           "name": "Price_dollar",
+          "label": "Price ($)",
           "rank": 7
         }
       ]
@@ -1438,7 +1440,7 @@
           "rank": 1,
           "name": "REF",
           "pluginName": "CONTENT_REF",
-          "label": "(REF) Piece of cloth #"
+          "label": "(REF) Furniture #"
         },
         {
           "name": "File_",
@@ -1450,6 +1452,7 @@
         },
         {
           "name": "Price_dollar",
+          "label": "Price ($)",
           "rank": 4
         },
         {
@@ -1529,10 +1532,12 @@
         },
         {
           "name": "Buy_Price_",
+          "label": "Buy Price ($)",
           "rank": 8
         },
         {
           "name": "Sell_Price_",
+          "label": "Sell Price ($)",
           "rank": 9
         }
       ]
