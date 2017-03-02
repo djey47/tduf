@@ -85,12 +85,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         final StringProperty property = viewData.getItemPropsByFieldRank().rawValuePropertyAtFieldRank(fieldRank);
         property.set(DisplayConstants.VALUE_FIELD_DEFAULT);
 
-        String fieldName = field.getName();
-        if (fieldSettings.getLabel() != null) {
-            fieldName = fieldSettings.getLabel();
-        }
-
-        String toolTipText = String.format(DisplayConstants.TOOLTIP_FIELD_TEMPLATE, fieldRank, fieldName);
+        String toolTipText = String.format(DisplayConstants.TOOLTIP_FIELD_TEMPLATE, fieldRank, field.getName());
         if (fieldSettings.getToolTip() != null) {
             toolTipText += (":" + fieldSettings.getToolTip());
         }
@@ -101,7 +96,9 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         HBox fieldBox = addFieldBox(Optional.ofNullable(groupName), 25.0);
 
-        addFieldLabel(fieldBox, fieldReadOnly, fieldName, toolTipText, fieldRank);
+        String effectiveFieldName = fieldSettings.getLabel() == null ?
+                field.getName() : fieldSettings.getLabel();
+        addFieldLabel(fieldBox, fieldReadOnly, effectiveFieldName, toolTipText, fieldRank);
 
         addValueTextField(fieldBox, field, fieldReadOnly, toolTipText, property);
 
