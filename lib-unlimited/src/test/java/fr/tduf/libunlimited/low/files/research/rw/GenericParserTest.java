@@ -181,6 +181,20 @@ class GenericParserTest {
     }
 
     @Test
+    void dump_whenProvidedContentsAsConstants_shouldReturnAllParsedData() throws IOException, URISyntaxException {
+        // GIVEN
+        GenericParser<String> actualParser = createGenericParserWithConstants();
+        actualParser.parse();
+
+        // WHEN
+        String actualDump = actualParser.dump();
+        Log.debug(thisClass.getSimpleName(), "Dumped contents:\n" + actualDump);
+
+        // THEN
+        assertThat(actualDump).isEqualTo(getExpectedDumpForConstants());
+    }
+
+    @Test
     void getNumeric_whenValueExistInStore_shouldReturnIt() {
         // GIVEN
         DataStore viewStoreMock = mock(DataStore.class);
@@ -224,6 +238,10 @@ class GenericParserTest {
 
     private String getExpectedDumpSignedInteger() throws IOException, URISyntaxException {
         return FilesHelper.readTextFromResourceFile("/files/dumps/TEST-signedInteger.txt");
+    }
+
+    private String getExpectedDumpForConstants() throws IOException, URISyntaxException {
+        return FilesHelper.readTextFromResourceFile("/files/dumps/TEST-constants.txt");
     }
 
     private GenericParser<String> createGenericParser() throws IOException, URISyntaxException {
@@ -457,6 +475,25 @@ class GenericParserTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-signedInteger-map.json";
+            }
+        };
+    }
+
+    private GenericParser<String> createGenericParserWithConstants() throws IOException, URISyntaxException {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-constants.bin"));
+
+        return new GenericParser<String>(inputStream) {
+            @Override
+            protected String generate() {
+                // TODO isEmpty?
+                assertThat(getDataStore().size()).isZero();
+
+                return DATA;
+            }
+
+            @Override
+            public String getStructureResource() {
+                return "/files/structures/TEST-constants-map.json";
             }
         };
     }

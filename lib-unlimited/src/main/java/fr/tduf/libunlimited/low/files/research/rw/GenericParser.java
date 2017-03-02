@@ -122,6 +122,12 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
                 dumpRawValue(readResult.readValueAsBytes, length, key);
                 break;
 
+            case CONSTANT:
+                String constantValue = field.getConstantValue();
+                readResult = readConstantValue(constantValue);
+                dumpConstantValue(readResult.readValueAsBytes, constantValue, key);
+                break;
+
             case REPEATER:
                 dumpRepeaterStart(key);
                 readResult = readRepeatedValues(field, length);
@@ -197,6 +203,13 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
         return new ReadResult(parsedCount, readValueAsBytes);
     }
 
+    private ReadResult readConstantValue(String constantValue) {
+        byte[] readValueAsBytes = TypeHelper.hexRepresentationToByteArray(constantValue);
+        long parsedCount = inputStream.read(readValueAsBytes, 0, readValueAsBytes.length);
+
+        return new ReadResult(parsedCount, readValueAsBytes);
+    }
+
     private void dumpGap(Integer length, String key) {
         dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT,
                 key,
@@ -246,6 +259,16 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
                 UNKNOWN.name(),
                 length == null ? readValueAsBytes.length : length,
                 TypeHelper.byteArrayToHexRepresentation(readValueAsBytes),
+                ""));
+    }
+
+    private void dumpConstantValue(byte[] readValueAsBytes, String constantValue, String key) {
+        dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT,
+                key,
+                "",
+                CONSTANT.name(),
+                readValueAsBytes.length,
+                constantValue,
                 ""));
     }
 
