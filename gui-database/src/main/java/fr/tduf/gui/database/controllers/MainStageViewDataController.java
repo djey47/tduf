@@ -113,8 +113,6 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     }
 
     void updateDisplayWithLoadedObjects() {
-        setMiner(BulkDatabaseMiner.load(getDatabaseObjects()));
-
         getNavigationHistory().clear();
 
         switchToInitialProfile();

@@ -539,6 +539,8 @@ public class MainStageController extends AbstractGuiController {
         databaseObjects.clear();
         databaseObjects.addAll(databaseLoader.fetchValue());
 
+        databaseMiner = BulkDatabaseMiner.load(databaseObjects);
+
         initPlugins();
 
         viewDataController.updateDisplayWithLoadedObjects();
@@ -605,6 +607,8 @@ public class MainStageController extends AbstractGuiController {
         editorContext.setGameLocation(applicationConfiguration.getGamePath()
                 .map(Path::toString)
                 .orElseGet(this::askForGameLocationAndUpdateConfiguration));
+        editorContext.setMiner(getMiner());
+        editorContext.setMainWindow(getWindow());
         pluginHandler.initializeAllPlugins();
     }
 

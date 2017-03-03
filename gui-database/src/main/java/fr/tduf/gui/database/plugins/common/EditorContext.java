@@ -4,6 +4,7 @@ import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.cameras.CamerasContext;
 import fr.tduf.gui.database.plugins.iks.IKsContext;
 import fr.tduf.gui.database.plugins.mapping.MappingContext;
+import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
@@ -20,6 +21,7 @@ public class EditorContext implements PluginContext {
     private String gameLocation;
     private MainStageChangeDataController changeDataController;
     private Window mainWindow;
+    private BulkDatabaseMiner miner;
 
     private StringProperty rawValueProperty;
     private StringProperty errorMessageProperty;
@@ -124,5 +126,13 @@ public class EditorContext implements PluginContext {
 
     public MappingContext getMappingContext() {
         return mappingContext;
+    }
+
+    public BulkDatabaseMiner getMiner() {
+        return miner;
+    }
+
+    public void setMiner(BulkDatabaseMiner miner) {
+        this.miner = miner;
     }
 }
