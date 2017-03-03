@@ -70,6 +70,11 @@ public abstract class GenericWriter<T> implements StructureBasedProcessor {
                 case DELIMITER:
                 case TEXT:
                     writeRawValue(valueBytes, length, outputStream);
+                    break;                
+                    
+                case CONSTANT:
+                    valueBytes = TypeHelper.hexRepresentationToByteArray(field.getConstantValue());
+                    writeRawValue(valueBytes, valueBytes.length, outputStream);
                     break;
 
                 case INTEGER:

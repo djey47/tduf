@@ -149,6 +149,28 @@ public class GenericWriterTest {
 
         byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-unsignedLong.bin");
         assertThat(actualBytes).isEqualTo(expectedBytes);
+    }    
+    
+    @Test
+    public void write_whenProvidedFiles_andConstantValues_shouldReturnBytes() throws IOException, URISyntaxException {
+        // GIVEN
+        GenericWriter<String> actualWriter = createGenericWriterConstants();
+
+        
+        // WHEN
+        ByteArrayOutputStream actualOutputStream = actualWriter.write();
+        // Uncomment below to regen output file
+//        Files.write(Paths.get("src/test/resources/files/samples/TEST-constants.bin"), actualOutputStream.toByteArray());
+
+        
+        // THEN
+        assertThat(actualOutputStream).isNotNull();
+
+        byte[] actualBytes = actualOutputStream.toByteArray();
+        assertThat(actualBytes).hasSize(16);
+
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-constants.bin");
+        assertThat(actualBytes).isEqualTo(expectedBytes);
     }
 
     @Test
@@ -366,6 +388,18 @@ public class GenericWriterTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-unsignedLong-map.json";
+            }
+        };
+    }    
+    
+    private GenericWriter<String> createGenericWriterConstants() throws IOException {
+        return new GenericWriter<String>(DATA) {
+            @Override
+            protected void fillStore() {}
+
+            @Override
+            public String getStructureResource() {
+                return "/files/structures/TEST-constants-map.json";
             }
         };
     }
