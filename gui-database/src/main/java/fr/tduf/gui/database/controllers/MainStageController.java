@@ -16,6 +16,7 @@ import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
+import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
 import fr.tduf.gui.database.services.DatabaseLoader;
 import fr.tduf.gui.database.services.DatabaseSaver;
@@ -56,14 +57,13 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 
 import static fr.tduf.gui.common.javafx.application.AbstractGuiApp.getHostServicesInstance;
-import static fr.tduf.gui.database.common.DisplayConstants.LABEL_SEARCH_ENTRY;
-import static fr.tduf.gui.database.common.DisplayConstants.TITLE_APPLICATION;
-import static fr.tduf.gui.database.common.DisplayConstants.TITLE_SEARCH_CONTENTS_ENTRY;
+import static fr.tduf.gui.database.common.DisplayConstants.*;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static javafx.beans.binding.Bindings.when;
@@ -539,8 +539,7 @@ public class MainStageController extends AbstractGuiController {
         databaseObjects.clear();
         databaseObjects.addAll(databaseLoader.fetchValue());
 
-        pluginHandler.getContext().setDatabaseLocation(databaseLoader.databaseLocationProperty().get());
-        pluginHandler.initializeAllPlugins();
+        initPlugins();
 
         viewDataController.updateDisplayWithLoadedObjects();
     }
@@ -598,6 +597,15 @@ public class MainStageController extends AbstractGuiController {
         databaseChecker.stateProperty().addListener(getCheckerStateChangeListener());
 
         databaseFixer.stateProperty().addListener(getFixerStateChangeListener());
+    }
+
+    private void initPlugins() {
+        EditorContext editorContext = pluginHandler.getContext();
+        editorContext.setDatabaseLocation(databaseLoader.databaseLocationProperty().get());
+        editorContext.setGameLocation(applicationConfiguration.getGamePath()
+                .map(Path::toString)
+                .orElseGet(this::askForGameLocationAndUpdateConfiguration));
+        pluginHandler.initializeAllPlugins();
     }
 
     private ChangeListener<Worker.State> getFixerStateChangeListener() {
@@ -719,6 +727,14 @@ public class MainStageController extends AbstractGuiController {
         if (selectedDirectory != null) {
             this.databaseLocationTextField.setText(selectedDirectory.getPath());
         }
+    }    
+    
+    private Optional<String> browseForGameDirectory() {
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle(TITLE_BROWSE_GAME_DIRECTORY);
+
+        return ofNullable(directoryChooser.showDialog(getWindow()))
+                .map(File::getPath);
     }
 
     private void loadDatabaseFromDirectory(String databaseLocation) throws IOException {
@@ -949,6 +965,20 @@ public class MainStageController extends AbstractGuiController {
         CommonDialogsHelper.showInputValueDialog(TITLE_SEARCH_CONTENTS_ENTRY, LABEL_SEARCH_ENTRY, getWindow())
                 .ifPresent(entryReference -> viewDataController.switchToEntryWithReference(entryReference, currentTopicProperty.getValue()));
     }
+
+    private String askForGameLocationAndUpdateConfiguration() {
+        return browseForGameDirectory()
+                .map(gameLocation -> {
+                    try {
+                        applicationConfiguration.setGamePath(gameLocation);
+                        applicationConfiguration.store();
+                    } catch (IOException ioe) {
+                        Log.warn(THIS_CLASS_NAME, "Unable to save application configuration", ioe);
+                    }   
+                    return gameLocation;
+                })
+                .orElse("");
+    }    
 
     private void resetDatabaseCache(String databaseDirectory) throws IOException {
         DatabaseBanksCacheHelper.clearCache(Paths.get(databaseDirectory));
