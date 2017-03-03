@@ -54,6 +54,13 @@ public class ApplicationConfiguration extends Properties {
     public Optional<Path> getGamePath() {
         return ofNullable(getProperty(KEY_TDU_DIR))
                 .map(Paths::get);
+    }    
+    
+    /**
+     * @param gameLocation  : path to root game directory
+     */
+    public void setGamePath(String gameLocation) {
+        setProperty(KEY_TDU_DIR, gameLocation);
     }
 
     /**
