@@ -3,21 +3,21 @@ package fr.tduf.gui.database.plugins.mapping;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
-import fr.tduf.libunlimited.high.files.db.common.helper.CameraAndIKHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.rw.MapParser;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CamerasDatabase;
-import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
+import javafx.scene.layout.HBox;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Set;
+
+import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_PLUGIN_BOX;
 
 /**
  * File mapping status plugin
@@ -63,7 +63,10 @@ public class MappingPlugin implements DatabasePlugin {
 
     @Override
     public Node renderControls(EditorContext context) {
-        return null;
+        HBox hBox = new HBox();
+        hBox.getStyleClass().add(CSS_CLASS_PLUGIN_BOX);
+        
+        return hBox;
     }
 
     @Override

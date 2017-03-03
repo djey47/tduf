@@ -85,7 +85,8 @@
         },
         {
           "name": "Car_File_Name",
-          "rank": 9
+          "rank": 9,
+          "pluginName": "MAPPING"
         },
         {
           "name": "Default_Rims",
@@ -98,7 +99,8 @@
         {
           "name": "HUD_File_Name",
           "rank": 11,
-          "group": "Interior"
+          "group": "Interior",
+          "pluginName": "MAPPING"
         },
         {
           "name": "Car_RealName",
@@ -671,7 +673,8 @@
         {
           "rank": 2,
           "name": "Spot_Name",
-          "label": "Bank file name"
+          "label": "Bank file name",
+          "pluginName": "MAPPING"
         },
         {
           "rank": 3,
@@ -973,7 +976,8 @@
         {
           "name": "Car_File_Name_Swap",
           "rank": 3,
-          "priority": 0
+          "priority": 0,
+          "pluginName": "MAPPING"
         },
         {
           "name": "Libelle",
@@ -1272,14 +1276,16 @@
           "rank": 14,
           "group": "Front",
           "label": "File name",
-          "toolTip": "Will require <File name>.bnk under <Directory>"
+          "toolTip": "Will require <File name>.bnk under <Directory>",
+          "pluginName": "MAPPING"
         },
         {
           "name": "Rsc_File_Name_Rear",
           "rank": 15,
           "group": "Rear",
           "label": "File name",
-          "toolTip": "Will require <File name>.bnk under <Directory>"
+          "toolTip": "Will require <File name>.bnk under <Directory>",
+          "pluginName": "MAPPING"
         },
         {
           "name": "BitField",
@@ -1444,7 +1450,8 @@
         },
         {
           "name": "File_",
-          "rank": 2
+          "rank": 2,
+          "pluginName": "MAPPING"
         },
         {
           "name": "ID_Num_",
