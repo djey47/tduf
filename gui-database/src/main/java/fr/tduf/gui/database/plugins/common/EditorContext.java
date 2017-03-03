@@ -3,6 +3,7 @@ package fr.tduf.gui.database.plugins.common;
 import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.cameras.CamerasContext;
 import fr.tduf.gui.database.plugins.iks.IKsContext;
+import fr.tduf.gui.database.plugins.mapping.MappingContext;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
@@ -24,8 +25,9 @@ public class EditorContext implements PluginContext {
     private StringProperty errorMessageProperty;
     private BooleanProperty errorProperty;
 
-    private CamerasContext camerasContext = new CamerasContext();
-    private IKsContext iksContext = new IKsContext();
+    private final CamerasContext camerasContext = new CamerasContext();
+    private final IKsContext iksContext = new IKsContext();
+    private final MappingContext mappingContext = new MappingContext();
 
     @Override
     public void reset() {
@@ -118,5 +120,9 @@ public class EditorContext implements PluginContext {
 
     public void setGameLocation(String gameLocation) {
         this.gameLocation = gameLocation;
+    }
+
+    public MappingContext getMappingContext() {
+        return mappingContext;
     }
 }
