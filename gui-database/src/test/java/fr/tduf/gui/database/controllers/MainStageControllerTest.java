@@ -3,6 +3,7 @@ package fr.tduf.gui.database.controllers;
 import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
 import fr.tduf.gui.database.services.DatabaseLoader;
+import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.SimpleStringProperty;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,10 +11,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
+import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -27,6 +30,9 @@ class MainStageControllerTest {
 
     @Mock
     private MainStageViewDataController viewDataControllerMock;
+    
+    @Mock
+    private ApplicationConfiguration applicationConfigurationMock;
 
     @InjectMocks
     private MainStageController controller;
@@ -59,6 +65,7 @@ class MainStageControllerTest {
         when(databaseLoaderMock.databaseLocationProperty()).thenReturn(new SimpleStringProperty("/db"));
         EditorContext pluginContext = new EditorContext();
         when(pluginHandlerMock.getContext()).thenReturn(pluginContext);
+        when(applicationConfigurationMock.getGamePath()).thenReturn(of(Paths.get("/tdu")));
 
         // when
         controller.handleDatabaseLoaderSuccess();
@@ -66,6 +73,7 @@ class MainStageControllerTest {
         // then
         assertThat(controller.getDatabaseObjects()).isEqualTo(loadedObjects);
         assertThat(pluginContext.getDatabaseLocation()).isEqualTo("/db");
+        assertThat(pluginContext.getGameLocation()).isEqualTo("/tdu");
         verify(pluginHandlerMock).initializeAllPlugins();
         verify(viewDataControllerMock).updateDisplayWithLoadedObjects();
     }

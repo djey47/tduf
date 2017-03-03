@@ -90,7 +90,7 @@ public class MainStageController extends AbstractGuiController {
     private BulkDatabaseMiner databaseMiner;
     private DialogsHelper dialogsHelper;
     private final BankSupport bankSupport = new GenuineBnkGateway(new CommandLineHelper());
-    private final ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
+    private ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
     private PluginHandler pluginHandler;
 
     private MainStageViewDataController viewDataController;
