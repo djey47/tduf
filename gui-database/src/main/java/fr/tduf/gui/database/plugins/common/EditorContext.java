@@ -16,6 +16,7 @@ public class EditorContext implements PluginContext {
     private int fieldRank;
     private boolean fieldReadOnly;
     private String databaseLocation;
+    private String gameLocation;
     private MainStageChangeDataController changeDataController;
     private Window mainWindow;
 
@@ -109,5 +110,13 @@ public class EditorContext implements PluginContext {
 
     public IKsContext getIKsContext() {
         return iksContext;
+    }
+
+    public String getGameLocation() {
+        return gameLocation;
+    }
+
+    public void setGameLocation(String gameLocation) {
+        this.gameLocation = gameLocation;
     }
 }
