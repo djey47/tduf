@@ -32,7 +32,7 @@ public class InstallerConfiguration {
     }
 
     public String resolveBanksDirectory() {
-        return Paths.get(testDriveUnlimitedDirectory, "Euro", "Bnk").toString();
+        return Paths.get(testDriveUnlimitedDirectory, fr.tduf.libunlimited.common.game.FileConstants.DIRECTORY_EURO, fr.tduf.libunlimited.common.game.FileConstants.DIRECTORY_BANKS).toString();
     }
 
     public String resolveMagicMapFile() {
@@ -41,7 +41,7 @@ public class InstallerConfiguration {
     }
 
     public String resolveDatabaseDirectory() {
-        return Paths.get(resolveBanksDirectory()).resolve("Database").toString();
+        return Paths.get(resolveBanksDirectory()).resolve(fr.tduf.libunlimited.common.game.FileConstants.DIRECTORY_DATABASE).toString();
     }
 
     public String resolveFilesBackupDirectory() {

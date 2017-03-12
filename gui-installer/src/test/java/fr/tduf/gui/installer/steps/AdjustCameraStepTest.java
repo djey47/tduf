@@ -18,7 +18,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -34,6 +33,7 @@ import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 class AdjustCameraStepTest {
     private static String tduTempDirectory;
@@ -61,7 +61,7 @@ class AdjustCameraStepTest {
     static void globalSetUp() throws IOException, URISyntaxException {
         tduTempDirectory = FilesHelper.createTempDirectoryForInstaller();
         final Path tduDatabasePath = FilesHelper.getTduDatabasePath(tduTempDirectory);
-        FilesHelper.createFakeDatabase(tduDatabasePath.toString(), "");
+        FilesHelper.createFakeDatabase(tduDatabasePath.toString());
 
         byte[] camBytes = fr.tduf.libunlimited.common.helper.FilesHelper.readBytesFromResourceFile("/bin/Cameras.bin");
         Files.write(tduDatabasePath.resolve("cameras.bin"), camBytes);
@@ -72,7 +72,7 @@ class AdjustCameraStepTest {
 
     @BeforeEach
     void setUp() throws IOException, StepException {
-        MockitoAnnotations.initMocks(this);
+        initMocks(this);
         
         InstallerConfiguration installerConfiguration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduTempDirectory)

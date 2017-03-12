@@ -1,5 +1,7 @@
 package fr.tduf.libtesting.common.helper;
 
+import fr.tduf.libunlimited.common.game.FileConstants;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -49,14 +51,14 @@ public class FilesHelper {
         Files.createFile(banksPath.resolve("test3.bnk"));
     }
 
-    public static void createFakeDatabase(String databaseDirectory, String bankFileNamePrefix) throws IOException {
+    public static void createFakeDatabase(String databaseDirectory) throws IOException {
         Path databaseBanksPath = Paths.get(databaseDirectory);
         Files.createDirectories(databaseBanksPath);
 
         Stream.of(DATABASE_BANK_FILES)
                 .forEach((fileName) -> {
                     try {
-                        Files.createFile(databaseBanksPath.resolve(bankFileNamePrefix + fileName));
+                        Files.createFile(databaseBanksPath.resolve(fileName));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -64,7 +66,10 @@ public class FilesHelper {
     }
 
     public static Path getTduDatabasePath(String tempDirectory) {
-        return Paths.get(tempDirectory).resolve("Euro").resolve("Bnk").resolve("Database");
+        return Paths.get(tempDirectory)
+                .resolve(FileConstants.DIRECTORY_EURO)
+                .resolve(FileConstants.DIRECTORY_BANKS)
+                .resolve(FileConstants.DIRECTORY_DATABASE);
     }
 
     private static void createDirectoryIfNotExists(String directoryToCreate) throws IOException {

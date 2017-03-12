@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.common.configuration;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.libunlimited.common.game.FileConstants;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 
 import java.io.*;
@@ -36,9 +37,9 @@ public class ApplicationConfiguration extends Properties {
 
         return getGamePath()
                 .map(gamePath -> gamePath
-                        .resolve("Euro")
-                        .resolve("Bnk")
-                        .resolve("Database"));
+                        .resolve(FileConstants.DIRECTORY_EURO)
+                        .resolve(FileConstants.DIRECTORY_BANKS)
+                        .resolve(FileConstants.DIRECTORY_DATABASE));
     }
 
     /**

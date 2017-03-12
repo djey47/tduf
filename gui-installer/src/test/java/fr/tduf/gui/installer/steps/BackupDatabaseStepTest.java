@@ -3,7 +3,7 @@ package fr.tduf.gui.installer.steps;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.libtesting.common.helper.FilesHelper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,10 +13,10 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BackupDatabaseStepTest {
+class BackupDatabaseStepTest {
 
     @Test
-    public void perform_shouldCopyDatabaseFilesToBackupLocation() throws Exception {
+    void perform_shouldCopyDatabaseFilesToBackupLocation() throws Exception {
         // GIVEN
         final String tduTempDirectory = FilesHelper.createTempDirectoryForInstaller();
         final Path tduDatabasePath = FilesHelper.getTduDatabasePath(tduTempDirectory);
@@ -26,7 +26,7 @@ public class BackupDatabaseStepTest {
         Files.createDirectories(backupPath);
         String actualBackupDir = backupPath.toString();
 
-        FilesHelper.createFakeDatabase(tduDatabasePath.toString(), "");
+        FilesHelper.createFakeDatabase(tduDatabasePath.toString());
         InstallerConfiguration installerConfiguration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduTempDirectory)
                 .build();

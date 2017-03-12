@@ -5,6 +5,7 @@ import fr.tduf.gui.database.plugins.cameras.common.FxConstants;
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.gui.database.plugins.mapping.domain.MappingEntry;
+import fr.tduf.libunlimited.common.game.FileConstants;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.rw.MapParser;
@@ -185,6 +186,6 @@ public class MappingPlugin implements DatabasePlugin {
     }
     
     private Path resolveMappingFilePath(String gameLocation) {
-        return Paths.get(gameLocation, "euro", "bnk", MapHelper.MAPPING_FILE_NAME);
+        return Paths.get(gameLocation, FileConstants.DIRECTORY_EURO, FileConstants.DIRECTORY_BANKS, MapHelper.MAPPING_FILE_NAME);
     }    
 }
