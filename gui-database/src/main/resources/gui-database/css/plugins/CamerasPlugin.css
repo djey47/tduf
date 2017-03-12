@@ -11,8 +11,7 @@
 }
 
 .setPropertyTableView {
-    -fx-min-height: 300.0;
-    -fx-pref-width: 625.0;
+    -fx-min-height: 375.0;
 }
 
 .settingTableColumn {

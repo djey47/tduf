@@ -13,7 +13,6 @@ import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -22,19 +21,21 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Window;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static fr.tduf.gui.database.plugins.cameras.common.FxConstants.CSS_CLASS_SET_PROPERTY_TABLEVIEW;
 import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_PLUGIN_BOX;
+import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_TABLEVIEW;
 import static fr.tduf.gui.database.plugins.mapping.common.DisplayConstants.*;
+import static fr.tduf.gui.database.plugins.mapping.common.FxConstants.*;
+import static java.util.Collections.singletonList;
 import static javafx.geometry.Orientation.VERTICAL;
 import static javafx.scene.control.cell.TextFieldTableCell.forTableColumn;
 
@@ -91,9 +92,6 @@ public class MappingPlugin implements DatabasePlugin {
         }
         
         VBox mainColumnBox = createMainColumn(context);
-
-        StringProperty rawValueProperty = context.getRawValueProperty();
-        Window mainWindow = context.getMainWindow();
         VBox buttonColumnBox = createButtonColumn();
         
         ObservableList<Node> mainRowChildren = hBox.getChildren();
@@ -107,7 +105,7 @@ public class MappingPlugin implements DatabasePlugin {
 
     @Override
     public Set<String> getCss() {
-        return null;
+        return new HashSet<>(singletonList(thisClass.getResource(PATH_RESOURCE_CSS_MAPPING).toExternalForm()));
     }
 
     private VBox createMainColumn(EditorContext context) {
@@ -133,14 +131,20 @@ public class MappingPlugin implements DatabasePlugin {
 
         switch (context.getCurrentTopic()) {
             case CAR_PHYSICS_DATA:
+                // TODO create and use Database constants
                 if (9 == fieldRank) {
+                    // TODO generate file names and query mapping system
                     MappingEntry extMappingEntry = new MappingEntry("Exterior 3D model", fileName, false, false);
+                    MappingEntry intMappingEntry = new MappingEntry("Interior 3D model", fileName, false, false);
+                    MappingEntry sndMappingEntry = new MappingEntry("Engine sound", fileName, false, false);
                     mappingEntries.add(extMappingEntry);
-//                    mappingEntries.add(intMappingEntry);
-//                    mappingEntries.add(sndMappingEntry);
+                    mappingEntries.add(intMappingEntry);
+                    mappingEntries.add(sndMappingEntry);
                 } else if (11 == fieldRank) {
-//                    mappingEntries.add(lgeMappingEntry);
-//                    mappingEntries.add(hgeMappingEntry);
+                    MappingEntry lgeMappingEntry = new MappingEntry("Gauges (low-resolution)", fileName, false, false);
+                    MappingEntry hgeMappingEntry = new MappingEntry("Gauges (high-resolution)", fileName, false, false);
+                    mappingEntries.add(lgeMappingEntry);
+                    mappingEntries.add(hgeMappingEntry);
                 }
                 break;
                 // TODO other topics
@@ -158,14 +162,14 @@ public class MappingPlugin implements DatabasePlugin {
     }
 
     private TableView<MappingEntry> createFilesTableView(ObservableList<MappingEntry> files) {
-        TableView<MappingEntry> setPropertyTableView = new TableView<>(files);
-        setPropertyTableView.getStyleClass().add(CSS_CLASS_SET_PROPERTY_TABLEVIEW);
+        TableView<MappingEntry> mappingInfoTableView = new TableView<>(files);
+        mappingInfoTableView.getStyleClass().addAll(CSS_CLASS_TABLEVIEW, CSS_CLASS_MAPPING_TABLEVIEW);
 
         TableColumn<MappingEntry, String> kindColumn = new TableColumn<>(HEADER_FILESTABLE_KIND);
-//        pathColumn.getStyleClass().add(CSS_CLASS_SETTING_TABLECOLUMN);
-        kindColumn.setCellValueFactory((cellData) -> new SimpleStringProperty(cellData.getValue().getKind()));        
+        kindColumn.setCellValueFactory((cellData) -> new SimpleStringProperty(cellData.getValue().getKind()));
                 
         TableColumn<MappingEntry, String> pathColumn = new TableColumn<>(HEADER_FILESTABLE_PATH);
+        pathColumn.getStyleClass().add(CSS_CLASS_PATH_TABLECOLUMN);
         pathColumn.setCellValueFactory((cellData) -> new SimpleStringProperty(cellData.getValue().getPath()));
 
         TableColumn<MappingEntry, String> existsColumn = new TableColumn<>(HEADER_FILESTABLE_EXISTS);
@@ -176,13 +180,13 @@ public class MappingPlugin implements DatabasePlugin {
         registeredColumn.setCellValueFactory((cellData) -> new SimpleStringProperty(cellData.getValue().isRegistered() ? "Y" : "N"));
         registeredColumn.setCellFactory(forTableColumn());
 
-        ObservableList<TableColumn<MappingEntry, ?>> columns = setPropertyTableView.getColumns();
+        ObservableList<TableColumn<MappingEntry, ?>> columns = mappingInfoTableView.getColumns();
         columns.add(kindColumn);
         columns.add(pathColumn);
         columns.add(existsColumn);
         columns.add(registeredColumn);
 
-        return setPropertyTableView;
+        return mappingInfoTableView;
     }
     
     private Path resolveMappingFilePath(String gameLocation) {

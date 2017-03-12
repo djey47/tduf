@@ -13,3 +13,6 @@
     -fx-pref-width: 80.0;
 }
 
+.pluginTableView {
+    -fx-pref-width: 625.0;
+}
