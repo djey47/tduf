@@ -38,6 +38,7 @@ import java.util.Set;
 
 import static fr.tduf.gui.database.common.DisplayConstants.LABEL_BUTTON_BROWSE;
 import static fr.tduf.gui.database.common.DisplayConstants.TOOLTIP_BUTTON_BROWSE_RESOURCES;
+import static fr.tduf.gui.database.common.DisplayConstants.VALUE_RESOURCE_DEFAULT;
 import static fr.tduf.gui.database.plugins.common.FxConstants.*;
 import static fr.tduf.gui.database.plugins.mapping.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.mapping.common.FxConstants.*;
@@ -133,7 +134,7 @@ public class MappingPlugin implements DatabasePlugin {
         int fieldRank = context.getFieldRank();
         String fileName = context.getMiner().getResourceEntryFromTopicAndReference(context.getCurrentTopic(), context.getRawValueProperty().get())
                 .flatMap(ResourceEntryDto::pickValue)
-                .orElse("??"); // TODO use global constant?
+                .orElse(VALUE_RESOURCE_DEFAULT);
 
         switch (context.getCurrentTopic()) {
             case CAR_PHYSICS_DATA:
