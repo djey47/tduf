@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.plugins.common;
 
 import fr.tduf.gui.database.controllers.MainStageChangeDataController;
+import fr.tduf.gui.database.controllers.MainStageController;
 import fr.tduf.gui.database.plugins.cameras.CamerasContext;
 import fr.tduf.gui.database.plugins.iks.IKsContext;
 import fr.tduf.gui.database.plugins.mapping.MappingContext;
@@ -19,6 +20,7 @@ public class EditorContext implements PluginContext {
     private boolean fieldReadOnly;
     private String databaseLocation;
     private String gameLocation;
+    private MainStageController mainStageController;
     private MainStageChangeDataController changeDataController;
     private Window mainWindow;
     private BulkDatabaseMiner miner;
@@ -134,5 +136,13 @@ public class EditorContext implements PluginContext {
 
     public void setMiner(BulkDatabaseMiner miner) {
         this.miner = miner;
+    }
+
+    public MainStageController getMainStageController() {
+        return mainStageController;
+    }
+
+    public void setMainStageController(MainStageController mainStageController) {
+        this.mainStageController = mainStageController;
     }
 }

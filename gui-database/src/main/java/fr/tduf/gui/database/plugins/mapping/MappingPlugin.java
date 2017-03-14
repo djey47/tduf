@@ -1,6 +1,8 @@
 package fr.tduf.gui.database.plugins.mapping;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.common.javafx.helper.ControlHelper;
+import fr.tduf.gui.database.controllers.MainStageController;
 import fr.tduf.gui.database.plugins.cameras.common.FxConstants;
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
@@ -9,13 +11,16 @@ import fr.tduf.libunlimited.common.game.FileConstants;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.rw.MapParser;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -31,8 +36,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_PLUGIN_BOX;
-import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_TABLEVIEW;
+import static fr.tduf.gui.database.common.DisplayConstants.LABEL_BUTTON_BROWSE;
+import static fr.tduf.gui.database.common.DisplayConstants.TOOLTIP_BUTTON_BROWSE_RESOURCES;
+import static fr.tduf.gui.database.plugins.common.FxConstants.*;
 import static fr.tduf.gui.database.plugins.mapping.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.mapping.common.FxConstants.*;
 import static java.util.Collections.singletonList;
@@ -92,7 +98,7 @@ public class MappingPlugin implements DatabasePlugin {
         }
         
         VBox mainColumnBox = createMainColumn(context);
-        VBox buttonColumnBox = createButtonColumn();
+        VBox buttonColumnBox = createButtonColumn(context.getMainStageController(), context.getCurrentTopic(), context.getRawValueProperty(), context.getFieldRank());
         
         ObservableList<Node> mainRowChildren = hBox.getChildren();
         mainRowChildren.add(mainColumnBox);
@@ -154,10 +160,17 @@ public class MappingPlugin implements DatabasePlugin {
         return mappingEntries;
     }
 
-    private VBox createButtonColumn() {
+    private VBox createButtonColumn(MainStageController controller, DbDto.Topic topic, StringProperty rawValueProperty, int fieldRank) {
         VBox buttonColumnBox = new VBox();
         buttonColumnBox.getStyleClass().add(fr.tduf.gui.database.common.FxConstants.CSS_CLASS_VERTICAL_BUTTON_BOX);
 
+        Button browseResourceButton = new Button(LABEL_BUTTON_BROWSE);
+        browseResourceButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
+        ControlHelper.setTooltipText(browseResourceButton, TOOLTIP_BUTTON_BROWSE_RESOURCES);
+        browseResourceButton.setOnAction(controller.handleBrowseResourcesButtonMouseClick(topic, rawValueProperty, fieldRank));
+
+        buttonColumnBox.getChildren().add(browseResourceButton);
+        
         return buttonColumnBox;
     }
 

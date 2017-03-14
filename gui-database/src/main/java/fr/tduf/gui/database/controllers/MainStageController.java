@@ -433,6 +433,7 @@ public class MainStageController extends AbstractGuiController {
                 .ifPresent(topicObject -> askForGenuinePatchLocationAndImportDataFromFile());
     }
 
+    // TODO move to viewdata
     public EventHandler<ActionEvent> handleBrowseResourcesButtonMouseClick(DbDto.Topic targetTopic, StringProperty targetReferenceProperty, int fieldRank) {
         return actionEvent -> {
             Log.trace(THIS_CLASS_NAME, "->browseResourcesButton clicked");
@@ -441,6 +442,7 @@ public class MainStageController extends AbstractGuiController {
         };
     }
 
+    // TODO move to viewdata
     public EventHandler<ActionEvent> handleBrowseEntriesButtonMouseClick(DbDto.Topic targetTopic, List<Integer> labelFieldRanks, StringProperty targetEntryReferenceProperty, int fieldRank) {
         return actionEvent -> {
             Log.trace(THIS_CLASS_NAME, "->browseEntriesButton clicked");
@@ -449,6 +451,7 @@ public class MainStageController extends AbstractGuiController {
         };
     }
 
+    // TODO move to viewdata
     public EventHandler<ActionEvent> handleGotoReferenceButtonMouseClick(DbDto.Topic targetTopic, int fieldRank, String targetProfileName) {
         return actionEvent -> {
             Log.trace(THIS_CLASS_NAME, "->gotoReferenceButton clicked, targetTopic:" + targetTopic + LOG_TARGET_PROFILE_NAME + targetProfileName);
@@ -457,6 +460,7 @@ public class MainStageController extends AbstractGuiController {
         };
     }
 
+    // TODO move to viewdata
     public EventHandler<ActionEvent> handleGotoReferenceButtonMouseClick(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, String targetProfileName) {
         return actionEvent -> {
             Log.trace(THIS_CLASS_NAME, "->gotoReferenceButtonForLinkedTopic clicked, targetTopic:" + targetTopic + LOG_TARGET_PROFILE_NAME + targetProfileName);
@@ -465,6 +469,7 @@ public class MainStageController extends AbstractGuiController {
         };
     }
 
+    // TODO move to changedata
     public EventHandler<ActionEvent> handleAddLinkedEntryButtonMouseClick(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, String targetProfileName, TopicLinkDto topicLinkObject) {
         return actionEvent -> {
             Log.trace(THIS_CLASS_NAME, "->handleAddLinkedEntryButton clicked, targetTopic:" + targetTopic + LOG_TARGET_PROFILE_NAME + targetProfileName);
@@ -483,6 +488,7 @@ public class MainStageController extends AbstractGuiController {
         };
     }
 
+    // TODO move to changedata
     public EventHandler<ActionEvent> handleRemoveLinkedEntryButtonMouseClick(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
         return actionEvent -> {
             Log.trace(THIS_CLASS_NAME, "->handleRemoveLinkedEntryButton clicked");
@@ -492,6 +498,7 @@ public class MainStageController extends AbstractGuiController {
         };
     }
 
+    // TODO move to changedata
     public EventHandler<ActionEvent> handleMoveLinkedEntryUpButtonMouseClick(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
         return actionEvent -> {
             Log.trace(THIS_CLASS_NAME, "->handleMoveLinkedEntryUpButton clicked");
@@ -501,6 +508,7 @@ public class MainStageController extends AbstractGuiController {
         };
     }
 
+    // TODO move to changedata
     public EventHandler<ActionEvent> handleMoveLinkedEntryDownButtonMouseClick(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
         return actionEvent -> {
             Log.trace(THIS_CLASS_NAME, "->handleMoveLinkedEntryDownButton clicked");
@@ -510,6 +518,7 @@ public class MainStageController extends AbstractGuiController {
         };
     }
 
+    // TODO move to viewdata
     public EventHandler<MouseEvent> handleLinkTableMouseClick(String targetProfileName, DbDto.Topic targetTopic) {
         return mouseEvent -> {
             Log.trace(THIS_CLASS_NAME, "->handleLinkTableMouseClick, targetProfileName:" + targetProfileName + ", targetTopic:" + targetTopic);
@@ -522,6 +531,7 @@ public class MainStageController extends AbstractGuiController {
         };
     }
 
+    // TODO move to changedata
     public ChangeListener<Boolean> handleTextFieldFocusChange(int fieldRank, StringProperty textFieldValueProperty) {
         return (observable, oldFocusState, newFocusState) -> {
             Log.trace(THIS_CLASS_NAME, "->handleTextFieldFocusChange, focused=" + newFocusState + ", fieldRank=" + fieldRank + ", fieldValue=" + textFieldValueProperty.get());
@@ -609,6 +619,7 @@ public class MainStageController extends AbstractGuiController {
                 .orElseGet(this::askForGameLocationAndUpdateConfiguration));
         editorContext.setMiner(getMiner());
         editorContext.setMainWindow(getWindow());
+        editorContext.setMainStageController(this);
         pluginHandler.initializeAllPlugins();
     }
 
