@@ -87,8 +87,7 @@ abstract class AbstractDynamicControlsHelper {
 
     protected static Button addContextualButton(Pane fieldPane, String buttonLabel, String tooltipText, EventHandler<ActionEvent> action) {
         Button contextualButton = new Button(buttonLabel);
-        // TODO use CSS
-        contextualButton.setPrefWidth(34);
+        contextualButton.getStyleClass().add(FxConstants.CSS_CLASS_BUTTON_SMALL);
         ControlHelper.setTooltipText(contextualButton, tooltipText);
 
         contextualButton.setOnAction(action);

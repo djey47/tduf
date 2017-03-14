@@ -17,3 +17,7 @@
 .verticalButtonBox {
     -fx-spacing: 5.0;
 }
+
+.smallButton {
+    -fx-pref-width: 34.0;
+}
