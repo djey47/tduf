@@ -257,6 +257,13 @@ public class DataStore {
      */
     public int size() {
         return this.store.size();
+    }    
+    
+    /**
+     * @return true if store does not contain any key.
+     */
+    public boolean isEmpty() {
+        return this.store.isEmpty();
     }
 
     /**

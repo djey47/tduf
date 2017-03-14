@@ -485,8 +485,7 @@ class GenericParserTest {
         return new GenericParser<String>(inputStream) {
             @Override
             protected String generate() {
-                // TODO isEmpty?
-                assertThat(getDataStore().size()).isZero();
+                assertThat(getDataStore().isEmpty());
 
                 return DATA;
             }
