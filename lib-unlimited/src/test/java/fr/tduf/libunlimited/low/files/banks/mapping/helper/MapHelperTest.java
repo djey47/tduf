@@ -16,7 +16,6 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MapHelperTest {
-
     private static Class<MapHelperTest> thisClass = MapHelperTest.class;
 
     @Test
@@ -48,9 +47,9 @@ class MapHelperTest {
         assertThat(checksums)
                 .isNotNull()
                 .hasSameSizeAs(files);
-        assertThat(checksums.get(0xc48bdcaaL)).isEqualTo("avatar/barb.bnk");
-        assertThat(checksums.get(0xe5b1ee5fL)).isEqualTo("bnk1.no.magic.map");
-        assertThat(checksums.get(0x0b6b3ea2L)).isEqualTo("frontend/hires/gauges/hud01.bnk");
+        assertThat(checksums.get(0xc48bdcaaL)).isEqualTo("Avatar/BARB.BNK");
+        assertThat(checksums.get(0xe5b1ee5fL)).isEqualTo("Bnk1.no.magic.map");
+        assertThat(checksums.get(0x0b6b3ea2L)).isEqualTo("FrontEnd/Hires/Gauges/hud01.bnk");
     }
 
     @Test
@@ -106,6 +105,22 @@ class MapHelperTest {
                 .hasSize(1);
         assertThat(newChecksums.containsKey(0xfe168a1cL)).isTrue();
         assertThat(newChecksums.containsValue("bnk1.map")).isTrue();
+    }
+
+    @Test
+    void hasEntryForPath_whenEntryExists() {
+        // given
+        BankMap bankMap = new BankMap();
+        bankMap.addMagicEntry(0xc48bdcaaL);
+
+        // when-then
+        assertThat(MapHelper.hasEntryForPath(bankMap, "avatar/barb.bnk")).isTrue();
+    }
+
+    @Test
+    void hasEntryForPath_whenEntryDoesNotExist() {
+        // given-when-then
+        assertThat(MapHelper.hasEntryForPath(new BankMap(), "avatar/barb.bnk")).isFalse();
     }
 
     private static List<String> createExpectedFileList() {

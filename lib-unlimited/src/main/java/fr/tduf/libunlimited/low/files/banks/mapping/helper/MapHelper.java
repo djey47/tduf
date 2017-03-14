@@ -18,7 +18,6 @@ import static java.util.stream.Collectors.toMap;
  * Class providing methods to manage BNK mapping at low level.
  */
 public class MapHelper {
-
     public static final String MAPPING_FILE_NAME = "Bnk1.map";
 
     /**
@@ -27,7 +26,6 @@ public class MapHelper {
      * @return list of all paths, relative to bnkFolderName parameter.
      */
     public static List<String> parseBanks(String bnkFolderName) throws IOException {
-
         if (!bnkFolderName.endsWith(File.separator)) {
             bnkFolderName += File.separator;
         }
@@ -35,11 +33,8 @@ public class MapHelper {
         final String rootFolderName = bnkFolderName;
         Path startPath = new File(rootFolderName).toPath();
         return Files.walk(startPath)
-
                 .filter(path -> path.toFile().isFile())
-
                 .map(path -> path.toString().substring(rootFolderName.length()))
-
                 .collect(toList());
     }
 
@@ -51,11 +46,8 @@ public class MapHelper {
      * @return associated checksum to each file name.
      */
     public static Map<Long, String> findNewChecksums(BankMap bankMap, Map<Long, String> existingChecksums) {
-
         return existingChecksums.keySet().stream()
-
                 .filter(checksum -> !bankMap.getChecksums().contains(checksum))
-
                 .collect(Collectors.toMap(checksum -> checksum, existingChecksums::get));
     }
 
@@ -66,20 +58,28 @@ public class MapHelper {
      */
     public static Map<Long, String> computeChecksums(List<String> files) {
         return files.stream()
-
-                .map(String::toLowerCase)
-
-                .map(fileName -> fileName.replace('\\', '/'))
-
                 .collect(toMap(MapHelper::computeChecksum, fileName -> fileName));
     }
 
     /**
-     * Uses CRC-32 algorithm to compute checksum of provided file name.
      * @param fileName : file name, relative to BNK folder.
+     * @return true if an entry with the same checksum is already present
+     */
+    public static boolean hasEntryForPath(BankMap bankMap, String fileName) {
+        long fileHash = computeChecksum(fileName);
+        return bankMap.getEntries().stream().parallel()
+                .filter(entry -> fileHash == entry.getHash())
+                .findFirst()
+                .map(entry -> true)
+                .orElse(false);
+    }
+
+    /**
+     * Uses CRC-32 algorithm to compute checksum of provided file name.
+     * @param fileName : file name, relative to BNK folder
      * @return checksum.
      */
-    public static Long computeChecksum(String fileName) {
+    static Long computeChecksum(String fileName) {
 
         // Initial value
         final long init = 4294967295L;
@@ -159,7 +159,7 @@ public class MapHelper {
 
         long crc = init;
 
-        List<Integer> characters = byteArraytoUnsignedIntegers(fileName.getBytes());
+        List<Integer> characters = byteArraytoUnsignedIntegers(fileName.toLowerCase().replace('\\', '/').getBytes());
         for (Integer c : characters) {
             crc = (crc >> 8) ^ crcLookup[((int) ((crc & 0xFF) ^ c ))];
         }
@@ -169,9 +169,7 @@ public class MapHelper {
 
     private static List<Integer> byteArraytoUnsignedIntegers(byte[] bytes) {
         return Stream.of(ArrayUtils.toObject(bytes))
-
                     .map((b) -> b.intValue() & 0xFF)
-
                     .collect(toList());
     }
 }
