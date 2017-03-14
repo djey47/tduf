@@ -1692,7 +1692,8 @@
         },
         {
           "name": "File_",
-          "rank": 4
+          "rank": 4,
+          "pluginName": "MAPPING"
         },
         {
           "name": "Time_cent",

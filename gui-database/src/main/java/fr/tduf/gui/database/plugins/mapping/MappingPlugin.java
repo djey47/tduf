@@ -8,6 +8,8 @@ import fr.tduf.gui.database.plugins.common.DatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.gui.database.plugins.mapping.domain.MappingEntry;
 import fr.tduf.libunlimited.common.game.FileConstants;
+import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
+import fr.tduf.libunlimited.low.files.banks.domain.BankKind;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.rw.MapParser;
@@ -17,6 +19,7 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -31,17 +34,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
-import static fr.tduf.gui.database.common.DisplayConstants.LABEL_BUTTON_BROWSE;
-import static fr.tduf.gui.database.common.DisplayConstants.TOOLTIP_BUTTON_BROWSE_RESOURCES;
-import static fr.tduf.gui.database.common.DisplayConstants.VALUE_RESOURCE_DEFAULT;
+import static fr.tduf.gui.database.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.common.FxConstants.*;
 import static fr.tduf.gui.database.plugins.mapping.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.mapping.common.FxConstants.*;
+import static fr.tduf.libunlimited.low.files.banks.domain.BankKind.*;
 import static java.util.Collections.singletonList;
 import static javafx.geometry.Orientation.VERTICAL;
 import static javafx.scene.control.cell.TextFieldTableCell.forTableColumn;
@@ -115,9 +116,29 @@ public class MappingPlugin implements DatabasePlugin {
         return new HashSet<>(singletonList(thisClass.getResource(PATH_RESOURCE_CSS_MAPPING).toExternalForm()));
     }
 
+    // TODO unit test
+    Path resolveMappingFilePath(String gameLocation) {
+        return Paths.get(gameLocation, FileConstants.DIRECTORY_EURO, FileConstants.DIRECTORY_BANKS, MapHelper.MAPPING_FILE_NAME);
+    }
+
+    // TODO unit test
+    Path resolveBankFilePath(String gameLocation, String filePath) {
+        return Paths.get(gameLocation, FileConstants.DIRECTORY_EURO, FileConstants.DIRECTORY_BANKS, filePath);
+    }
+
+    // TODO unit test
+    MappingEntry createMappingEntry(String resourceValue, BankKind kind, String gameLocation) {
+        String fileName = String.format(kind.getFileNameFormat(), resourceValue);
+        Path filePath = kind.getParentPath().resolve(fileName);
+        // TODO compute full path
+        boolean exists = Files.exists(resolveBankFilePath(gameLocation, filePath.toString()));
+        boolean registered = MapHelper.hasEntryForPath(bankMapProperty.getValue(), filePath.toString());
+        return new MappingEntry(kind.getDescription(), filePath.toString(), exists, registered);
+    }
+
     private VBox createMainColumn(EditorContext context) {
         ObservableList<MappingEntry> files = FXCollections.observableArrayList();
-        files.addAll(getEntries(context));
+        getEntries(context, files);
 
         VBox mainColumnBox = new VBox();
         mainColumnBox.getStyleClass().add(FxConstants.CSS_CLASS_MAIN_COLUMN);
@@ -129,36 +150,13 @@ public class MappingPlugin implements DatabasePlugin {
         return mainColumnBox;
     }
 
-    private List<MappingEntry> getEntries(EditorContext context) {
-        List<MappingEntry> mappingEntries = new ArrayList<>();
+    private void getEntries(EditorContext context, ObservableList<MappingEntry> files) {
         int fieldRank = context.getFieldRank();
-        String fileName = context.getMiner().getResourceEntryFromTopicAndReference(context.getCurrentTopic(), context.getRawValueProperty().get())
-                .flatMap(ResourceEntryDto::pickValue)
-                .orElse(VALUE_RESOURCE_DEFAULT);
+        DbDto.Topic currentTopic = context.getCurrentTopic();
+        BulkDatabaseMiner miner = context.getMiner();
+        String gameLocation = context.getGameLocation();
 
-        switch (context.getCurrentTopic()) {
-            case CAR_PHYSICS_DATA:
-                // TODO create and use Database constants
-                if (9 == fieldRank) {
-                    // TODO generate file names and query mapping system
-                    MappingEntry extMappingEntry = new MappingEntry("Exterior 3D model", fileName, false, false);
-                    MappingEntry intMappingEntry = new MappingEntry("Interior 3D model", fileName, false, false);
-                    MappingEntry sndMappingEntry = new MappingEntry("Engine sound", fileName, false, false);
-                    mappingEntries.add(extMappingEntry);
-                    mappingEntries.add(intMappingEntry);
-                    mappingEntries.add(sndMappingEntry);
-                } else if (11 == fieldRank) {
-                    MappingEntry lgeMappingEntry = new MappingEntry("Gauges (low-resolution)", fileName, false, false);
-                    MappingEntry hgeMappingEntry = new MappingEntry("Gauges (high-resolution)", fileName, false, false);
-                    mappingEntries.add(lgeMappingEntry);
-                    mappingEntries.add(hgeMappingEntry);
-                }
-                break;
-                // TODO other topics
-            default:
-        }
-        
-        return mappingEntries;
+        context.getRawValueProperty().addListener(handleResourceValueChange(files, fieldRank, currentTopic, miner, gameLocation));
     }
 
     private VBox createButtonColumn(MainStageController controller, DbDto.Topic topic, StringProperty rawValueProperty, int fieldRank) {
@@ -171,7 +169,7 @@ public class MappingPlugin implements DatabasePlugin {
         browseResourceButton.setOnAction(controller.handleBrowseResourcesButtonMouseClick(topic, rawValueProperty, fieldRank));
 
         buttonColumnBox.getChildren().add(browseResourceButton);
-        
+
         return buttonColumnBox;
     }
 
@@ -181,7 +179,7 @@ public class MappingPlugin implements DatabasePlugin {
 
         TableColumn<MappingEntry, String> kindColumn = new TableColumn<>(HEADER_FILESTABLE_KIND);
         kindColumn.setCellValueFactory((cellData) -> new SimpleStringProperty(cellData.getValue().getKind()));
-                
+
         TableColumn<MappingEntry, String> pathColumn = new TableColumn<>(HEADER_FILESTABLE_PATH);
         pathColumn.getStyleClass().add(CSS_CLASS_PATH_TABLECOLUMN);
         pathColumn.setCellValueFactory((cellData) -> new SimpleStringProperty(cellData.getValue().getPath()));
@@ -202,8 +200,68 @@ public class MappingPlugin implements DatabasePlugin {
 
         return mappingInfoTableView;
     }
-    
-    private Path resolveMappingFilePath(String gameLocation) {
-        return Paths.get(gameLocation, FileConstants.DIRECTORY_EURO, FileConstants.DIRECTORY_BANKS, MapHelper.MAPPING_FILE_NAME);
-    }    
+
+    private ChangeListener<String> handleResourceValueChange(ObservableList<MappingEntry> files, int fieldRank, DbDto.Topic currentTopic, BulkDatabaseMiner miner, String gameLocation) {
+        return (observable, oldValue, newValue) -> {
+            if (Objects.equals(oldValue, newValue)) {
+                return;
+            }
+
+            files.clear();
+
+            String resourceValue = miner.getResourceEntryFromTopicAndReference(currentTopic, newValue)
+                    .flatMap(ResourceEntryDto::pickValue)
+                    .orElse(VALUE_RESOURCE_DEFAULT);
+
+            switch (currentTopic) {
+                // TODO create and use Database constants
+                case CAR_PHYSICS_DATA:
+                    if (9 == fieldRank) {
+                        MappingEntry extMappingEntry = createMappingEntry(resourceValue, EXT_3D, gameLocation);
+                        MappingEntry intMappingEntry = createMappingEntry(resourceValue, INT_3D, gameLocation);
+                        MappingEntry sndMappingEntry = createMappingEntry(resourceValue, SOUND, gameLocation);
+                        files.addAll(extMappingEntry, intMappingEntry, sndMappingEntry);
+                    } else if (11 == fieldRank) {
+                        MappingEntry lgeMappingEntry = createMappingEntry(resourceValue, GAUGES_LOW, gameLocation);
+                        MappingEntry hgeMappingEntry = createMappingEntry(resourceValue, GAUGES_HIGH, gameLocation);
+                        files.addAll(lgeMappingEntry, hgeMappingEntry);
+                    }
+                    break;
+                case CAR_PACKS:
+                    if (3 == fieldRank) {
+                        MappingEntry extMappingEntry = createMappingEntry(resourceValue, EXT_3D, gameLocation);
+                        files.add(extMappingEntry);
+                    }
+                    break;
+                case CAR_SHOPS:
+                    if (2 == fieldRank) {
+                        MappingEntry shopMappingEntry = createMappingEntry(resourceValue, SHOP_3D, gameLocation);
+                        files.add(shopMappingEntry);
+                    }
+                    break;
+                case CLOTHES:
+                    if (2 == fieldRank) {
+                        MappingEntry clothesMappingEntry = createMappingEntry(resourceValue, CLOTHES_3D, gameLocation);
+                        files.add(clothesMappingEntry);
+                    }
+                    break;
+                case RIMS:
+                    if (14 == fieldRank) {
+                        MappingEntry frontMappingEntry = createMappingEntry(resourceValue, FRONT_RIMS_3D, gameLocation);
+                        files.add(frontMappingEntry);
+                    } else if (15 == fieldRank) {
+                        MappingEntry rearMappingEntry = createMappingEntry(resourceValue, REAR_RIMS_3D, gameLocation);
+                        files.add(rearMappingEntry);
+                    }
+                    break;
+                case TUTORIALS:
+                    if (4 == fieldRank) {
+                        MappingEntry tutoMappingEntry = createMappingEntry(resourceValue, TUTO_INSTRUCTION, gameLocation);
+                        files.add(tutoMappingEntry);
+                    }
+                    break;
+                default:
+            }
+        };
+    }
 }
