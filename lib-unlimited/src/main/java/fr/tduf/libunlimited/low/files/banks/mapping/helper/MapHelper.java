@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
@@ -46,6 +47,8 @@ public class MapHelper {
      * @return associated checksum to each file name.
      */
     public static Map<Long, String> findNewChecksums(BankMap bankMap, Map<Long, String> existingChecksums) {
+        requireNonNull(bankMap, "Mapping information is required.");
+        
         return existingChecksums.keySet().stream()
                 .filter(checksum -> !bankMap.getChecksums().contains(checksum))
                 .collect(Collectors.toMap(checksum -> checksum, existingChecksums::get));
@@ -66,6 +69,8 @@ public class MapHelper {
      * @return true if an entry with the same checksum is already present
      */
     public static boolean hasEntryForPath(BankMap bankMap, String fileName) {
+        requireNonNull(bankMap, "Mapping information is required.");
+        
         long fileHash = computeChecksum(fileName);
         return bankMap.getEntries().stream().parallel()
                 .filter(entry -> fileHash == entry.getHash())
