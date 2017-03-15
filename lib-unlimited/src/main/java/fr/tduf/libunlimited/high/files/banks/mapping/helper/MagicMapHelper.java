@@ -1,7 +1,6 @@
 package fr.tduf.libunlimited.high.files.banks.mapping.helper;
 
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
-import fr.tduf.libunlimited.low.files.banks.mapping.rw.MapParser;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -71,9 +70,5 @@ public class MagicMapHelper {
         bankMap.magifyAll();
 
         saveBankMap(bankMap, mapFile);
-    }
-
-    private static BankMap loadBankMap(String mapFile) throws IOException {
-        return MapParser.load(mapFile).parse();
     }
 }

@@ -4,7 +4,6 @@ import fr.tduf.cli.common.helper.CommandHelper;
 import fr.tduf.libunlimited.high.files.banks.mapping.helper.MagicMapHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper;
-import fr.tduf.libunlimited.low.files.banks.mapping.rw.MapParser;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -137,7 +136,7 @@ public class MappingTool extends GenericTool {
 
     private Map<String, ?> info(String sourceMapFile) throws IOException {
 
-        BankMap map = loadBankMap(sourceMapFile);
+        BankMap map = MapHelper.loadBankMap(sourceMapFile);
         Collection<BankMap.Entry> mapEntries = map.getEntries();
         boolean isMagicMap = map.isMagic();
 
@@ -154,7 +153,7 @@ public class MappingTool extends GenericTool {
 
     private Map<String, Object> list(String sourceMapFile) throws IOException {
 
-        BankMap map = loadBankMap(sourceMapFile);
+        BankMap map = MapHelper.loadBankMap(sourceMapFile);
         Collection<BankMap.Entry> sortedMapEntries = map.getEntries().stream()
 
                 .sorted(comparingLong(BankMap.Entry::getHash))
@@ -180,7 +179,8 @@ public class MappingTool extends GenericTool {
         outLine("  -> Files: " + banks);
         outLine("  -> Checksums: " + checksums);
 
-        Map<Long, String> newChecksums = MapHelper.findNewChecksums(loadBankMap(sourceMapFile), checksums);
+        BankMap bankMap = MapHelper.loadBankMap(sourceMapFile);
+        Map<Long, String> newChecksums = MapHelper.findNewChecksums(bankMap, checksums);
 
         outLine("  -> Absent from Bnk1.map: " + newChecksums);
 
@@ -202,9 +202,5 @@ public class MappingTool extends GenericTool {
         MagicMapHelper.toMagicMap(sourceMapFile);
 
         return null;
-    }
-
-    private BankMap loadBankMap(String sourceMapFile) throws IOException {
-        return MapParser.load(sourceMapFile).parse();
     }
 }
