@@ -2,6 +2,7 @@ package fr.tduf.gui.database.plugins.mapping;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.javafx.helper.ControlHelper;
+import fr.tduf.gui.common.javafx.helper.DesktopHelper;
 import fr.tduf.gui.database.plugins.cameras.common.FxConstants;
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
@@ -20,6 +21,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
@@ -97,8 +100,10 @@ public class MappingPlugin implements DatabasePlugin {
             return hBox;
         }
         
-        VBox mainColumnBox = createMainColumn(context);
-        VBox buttonColumnBox = createButtonColumn(context);
+        TableView<MappingEntry> filesTableView = createFilesTableView();
+        
+        VBox mainColumnBox = createMainColumn(context, filesTableView);
+        VBox buttonColumnBox = createButtonColumn(context, filesTableView.getSelectionModel());
         
         ObservableList<Node> mainRowChildren = hBox.getChildren();
         mainRowChildren.add(mainColumnBox);
@@ -154,18 +159,35 @@ public class MappingPlugin implements DatabasePlugin {
         return new MappingEntry(kind.getDescription(), filePath.toString(), exists, registered);
     }
 
-    private VBox createMainColumn(EditorContext context) {
-        ObservableList<MappingEntry> files = FXCollections.observableArrayList();
-        getEntries(context, files);
+    private VBox createMainColumn(EditorContext context, TableView<MappingEntry> filesTableView) {
+        getEntries(context, filesTableView.getItems());
 
         VBox mainColumnBox = new VBox();
         mainColumnBox.getStyleClass().add(FxConstants.CSS_CLASS_MAIN_COLUMN);
         ObservableList<Node> mainColumnChildren = mainColumnBox.getChildren();
-
-        TableView<MappingEntry> filesTableView = createFilesTableView(files);
-
+        
         mainColumnChildren.add(filesTableView);
         return mainColumnBox;
+    }
+
+    private VBox createButtonColumn(EditorContext context, TableView.TableViewSelectionModel<MappingEntry> selectionModel) {
+        VBox buttonColumnBox = new VBox();
+        buttonColumnBox.getStyleClass().add(fr.tduf.gui.database.common.FxConstants.CSS_CLASS_VERTICAL_BUTTON_BOX);
+
+        Button browseResourceButton = new Button(LABEL_BUTTON_BROWSE);
+        browseResourceButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
+        ControlHelper.setTooltipText(browseResourceButton, TOOLTIP_BUTTON_BROWSE_RESOURCES);
+        browseResourceButton.setOnAction(
+                context.getMainStageController().handleBrowseResourcesButtonMouseClick(context.getRemoteTopic(), context.getRawValueProperty(), context.getFieldRank()));
+       
+        Button seeDirectoryButton = new Button(LABEL_BUTTON_GOTO);
+        seeDirectoryButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
+        ControlHelper.setTooltipText(seeDirectoryButton, TOOLTIP_BUTTON_SEE_DIRECTORY);
+        seeDirectoryButton.setOnAction(handleSeeDirectoryButtonAction(selectionModel, context.getGameLocation()));
+
+        buttonColumnBox.getChildren().addAll(browseResourceButton, seeDirectoryButton);
+
+        return buttonColumnBox;
     }
 
     private void getEntries(EditorContext context, ObservableList<MappingEntry> files) {
@@ -178,23 +200,8 @@ public class MappingPlugin implements DatabasePlugin {
         context.getRawValueProperty().addListener(handleResourceValueChange(files, fieldRank, currentTopic, remoteTopic, miner, gameLocation));
     }
 
-    private VBox createButtonColumn(EditorContext context) {
-        VBox buttonColumnBox = new VBox();
-        buttonColumnBox.getStyleClass().add(fr.tduf.gui.database.common.FxConstants.CSS_CLASS_VERTICAL_BUTTON_BOX);
-
-        Button browseResourceButton = new Button(LABEL_BUTTON_BROWSE);
-        browseResourceButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
-        ControlHelper.setTooltipText(browseResourceButton, TOOLTIP_BUTTON_BROWSE_RESOURCES);
-        browseResourceButton.setOnAction(
-                context.getMainStageController().handleBrowseResourcesButtonMouseClick(context.getRemoteTopic(), context.getRawValueProperty(), context.getFieldRank()));
-
-        buttonColumnBox.getChildren().add(browseResourceButton);
-
-        return buttonColumnBox;
-    }
-
-    private TableView<MappingEntry> createFilesTableView(ObservableList<MappingEntry> files) {
-        TableView<MappingEntry> mappingInfoTableView = new TableView<>(files);
+    private TableView<MappingEntry> createFilesTableView() {
+        TableView<MappingEntry> mappingInfoTableView = new TableView<>(FXCollections.observableArrayList());
         mappingInfoTableView.getStyleClass().addAll(CSS_CLASS_TABLEVIEW, CSS_CLASS_MAPPING_TABLEVIEW);
 
         TableColumn<MappingEntry, String> kindColumn = new TableColumn<>(HEADER_FILESTABLE_KIND);
@@ -257,6 +264,19 @@ public class MappingPlugin implements DatabasePlugin {
         };
     }
 
+    private EventHandler<ActionEvent> handleSeeDirectoryButtonAction(TableView.TableViewSelectionModel<MappingEntry> selectionModel, String gameLocation) {
+        return event -> {
+            if (selectionModel.getSelectedItem() == null) {
+                return;
+            }
+            
+            String selectedPath = selectionModel.getSelectedItem().getPath();
+            Path parentPath = resolveBankFilePath(gameLocation, selectedPath).getParent();
+
+            DesktopHelper.openInFiles(parentPath);
+        };
+    }
+    
     // TODO create and use Database constants
     
     private void addTutorialsEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue) {
