@@ -9,6 +9,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 
+import static fr.tduf.gui.common.javafx.application.AbstractGuiApp.getHostServicesInstance;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -26,26 +27,46 @@ public class DesktopHelper {
 
         new Thread(() -> {
             try {
+                checkForLegacyDesktopSupport();
                 Desktop.getDesktop().open(path.toFile());
-            } catch (IOException | IllegalArgumentException e) {
+            } catch (IOException | IllegalArgumentException | UnsupportedOperationException e) {
                 Log.error(THIS_CLASS_NAME, "Unable to display file system location: " + path, e);
             }
         }).start();        
-    }    
-    
+    }
+
     /**
-     * @see Desktop#browse(URI)
      * @param address   : address to be displayed in default web browser
      */
     public static void openInBrowser(String address) {
         requireNonNull(address, "Address to open is required");
+        
+        try {
+            getHostServicesInstance().showDocument(address);
+        } catch (NullPointerException npe) {
+            // Workaround for OpenJDK, falling back to AWT's Desktop...
+            Log.warn(THIS_CLASS_NAME, "Host services are not supported, falling back to AWT Desktop services...");
+            DesktopHelper.openInBrowserLegacy(address);
+        }        
+    }
 
+    /**
+     * @see Desktop#browse(URI)
+     */
+    private static void openInBrowserLegacy(String address) {
         new Thread(() -> {
             try {
+                checkForLegacyDesktopSupport();
                 Desktop.getDesktop().browse(new URI(address));
-            } catch (IOException | IllegalArgumentException | URISyntaxException e) {
+            } catch (IOException | IllegalArgumentException | URISyntaxException | UnsupportedOperationException e) {
                 Log.error(THIS_CLASS_NAME, "Unable to browse address: " + address, e);
             }
         }).start();        
+    }
+
+    private static void checkForLegacyDesktopSupport() {
+        if (!Desktop.isDesktopSupported()) {
+            throw new UnsupportedOperationException("Java AWT Desktop services are not supported :(");
+        }
     }
 }
