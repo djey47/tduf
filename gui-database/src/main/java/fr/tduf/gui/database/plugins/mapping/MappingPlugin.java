@@ -6,6 +6,7 @@ import fr.tduf.gui.common.javafx.helper.DesktopHelper;
 import fr.tduf.gui.database.plugins.cameras.common.FxConstants;
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
+import fr.tduf.gui.database.plugins.mapping.converter.BooleanStatusToDisplayConverter;
 import fr.tduf.gui.database.plugins.mapping.domain.MappingEntry;
 import fr.tduf.libunlimited.common.game.FileConstants;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
@@ -15,6 +16,7 @@ import fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.rw.MapParser;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -46,7 +48,6 @@ import static fr.tduf.gui.database.plugins.mapping.common.FxConstants.*;
 import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.*;
 import static java.util.Collections.singletonList;
 import static javafx.geometry.Orientation.VERTICAL;
-import static javafx.scene.control.cell.TextFieldTableCell.forTableColumn;
 
 /**
  * File mapping status plugin
@@ -183,9 +184,14 @@ public class MappingPlugin implements DatabasePlugin {
         Button seeDirectoryButton = new Button(LABEL_BUTTON_GOTO);
         seeDirectoryButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
         ControlHelper.setTooltipText(seeDirectoryButton, TOOLTIP_BUTTON_SEE_DIRECTORY);
-        seeDirectoryButton.setOnAction(handleSeeDirectoryButtonAction(selectionModel, context.getGameLocation()));
+        seeDirectoryButton.setOnAction(handleSeeDirectoryButtonAction(selectionModel, context.getGameLocation()));        
+        
+        Button registerButton = new Button(LABEL_BUTTON_REGISTER);
+        registerButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
+        ControlHelper.setTooltipText(registerButton, TOOLTIP_BUTTON_REGISTER);
+        registerButton.setOnAction(handleRegisterButtonAction(selectionModel));
 
-        buttonColumnBox.getChildren().addAll(browseResourceButton, seeDirectoryButton);
+        buttonColumnBox.getChildren().addAll(browseResourceButton, seeDirectoryButton, registerButton);
 
         return buttonColumnBox;
     }
@@ -205,19 +211,26 @@ public class MappingPlugin implements DatabasePlugin {
         mappingInfoTableView.getStyleClass().addAll(CSS_CLASS_TABLEVIEW, CSS_CLASS_MAPPING_TABLEVIEW);
 
         TableColumn<MappingEntry, String> kindColumn = new TableColumn<>(HEADER_FILESTABLE_KIND);
-        kindColumn.setCellValueFactory((cellData) -> new SimpleStringProperty(cellData.getValue().getKind()));
+        kindColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKind()));
 
         TableColumn<MappingEntry, String> pathColumn = new TableColumn<>(HEADER_FILESTABLE_PATH);
         pathColumn.getStyleClass().add(CSS_CLASS_PATH_TABLECOLUMN);
-        pathColumn.setCellValueFactory((cellData) -> new SimpleStringProperty(cellData.getValue().getPath()));
+        pathColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPath()));
 
         TableColumn<MappingEntry, String> existsColumn = new TableColumn<>(HEADER_FILESTABLE_EXISTS);
-        // TODO extract constants
-        existsColumn.setCellValueFactory((cellData) -> new SimpleStringProperty(cellData.getValue().isExists() ? "Y" : "N"));
+        existsColumn.setCellValueFactory(cellData -> {
+            Property<String> existStatusProperty = new SimpleStringProperty();
+            Bindings.bindBidirectional(existStatusProperty, cellData.getValue().existingProperty(), new BooleanStatusToDisplayConverter());
+            return existStatusProperty;
+        });
 
         TableColumn<MappingEntry, String> registeredColumn = new TableColumn<>(HEADER_FILESTABLE_REGISTERED);
-        registeredColumn.setCellValueFactory((cellData) -> new SimpleStringProperty(cellData.getValue().isRegistered() ? "Y" : "N"));
-        registeredColumn.setCellFactory(forTableColumn());
+        registeredColumn.setCellValueFactory(cellData -> {
+            Property<String> registerStatusProperty = new SimpleStringProperty();
+            Bindings.bindBidirectional(registerStatusProperty, cellData.getValue().registeredProperty(), new BooleanStatusToDisplayConverter());
+            return registerStatusProperty;
+        });
+//        registeredColumn.setCellFactory(forTableColumn());
 
         ObservableList<TableColumn<MappingEntry, ?>> columns = mappingInfoTableView.getColumns();
         columns.add(kindColumn);
@@ -274,6 +287,18 @@ public class MappingPlugin implements DatabasePlugin {
             Path parentPath = resolveBankFilePath(gameLocation, selectedPath).getParent();
 
             DesktopHelper.openInFiles(parentPath);
+        };
+    }    
+    
+    private EventHandler<ActionEvent> handleRegisterButtonAction(TableView.TableViewSelectionModel<MappingEntry> selectionModel) {
+        return event -> {
+            MappingEntry selectedItem = selectionModel.getSelectedItem();
+            if (selectedItem == null) {
+                return;
+            }
+            
+            MapHelper.registerPath(bankMapProperty.getValue(), selectedItem.getPath());
+            selectedItem.registered();
         };
     }
     
