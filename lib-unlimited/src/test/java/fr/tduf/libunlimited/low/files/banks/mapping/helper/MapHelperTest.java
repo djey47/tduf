@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.banks.mapping.helper;
 
+import fr.tduf.libtesting.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import org.junit.jupiter.api.Test;
 
@@ -85,7 +86,7 @@ class MapHelperTest {
     @Test
     void findNewChecksums_forGivenValues_shouldReturnDifferences() {
         // GIVEN
-        BankMap bankMap = new BankMap();
+        BankMap bankMap = createDefaultBankMap();
         bankMap.addMagicEntry(0xc48bdcaaL);
         bankMap.addMagicEntry(0x0b6b3ea2L);
 
@@ -110,7 +111,7 @@ class MapHelperTest {
     @Test
     void hasEntryForPath_whenEntryExists() {
         // given
-        BankMap bankMap = new BankMap();
+        BankMap bankMap = createDefaultBankMap();
         bankMap.addMagicEntry(0xc48bdcaaL);
 
         // when-then
@@ -120,13 +121,13 @@ class MapHelperTest {
     @Test
     void hasEntryForPath_whenEntryDoesNotExist() {
         // given-when-then
-        assertThat(MapHelper.hasEntryForPath(new BankMap(), "avatar/barb.bnk")).isFalse();
+        assertThat(MapHelper.hasEntryForPath(createDefaultBankMap(), "avatar/barb.bnk")).isFalse();
     }
     
     @Test
     void registerPath() {
         // given
-        BankMap bankMap = new BankMap();
+        BankMap bankMap = createDefaultBankMap();
         
         // when
         MapHelper.registerPath(bankMap, "avatar/barb.bnk");
@@ -134,6 +135,24 @@ class MapHelperTest {
         // then
         assertThat(MapHelper.hasEntryForPath(bankMap, "avatar/barb.bnk")).isTrue();
         assertThat(MapHelper.hasEntryForPath(bankMap, "avatar/barb1.bnk")).isFalse();
+    }
+    
+    @Test
+    void saveBankMap() throws IOException {
+        // given
+        String outputFile = Paths.get(FilesHelper.createTempDirectoryForLibrary(), "bnk1.map").toString();
+
+        // when
+        MapHelper.saveBankMap(createDefaultBankMap(), outputFile);
+        
+        // then
+        assertThat(new File(outputFile)).exists();
+    }
+
+    private static BankMap createDefaultBankMap() {
+        BankMap bankMap = new BankMap();
+        bankMap.setTag("TAG");
+        return bankMap;
     }
 
     private static List<String> createExpectedFileList() {

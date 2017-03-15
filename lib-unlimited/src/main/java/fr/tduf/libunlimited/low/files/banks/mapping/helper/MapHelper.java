@@ -1,12 +1,14 @@
 package fr.tduf.libunlimited.low.files.banks.mapping.helper;
 
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
+import fr.tduf.libunlimited.low.files.banks.mapping.rw.MapWriter;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -89,6 +91,15 @@ public class MapHelper {
 
         long fileHash = computeChecksum(fileName);
         bankMap.addMagicEntry(fileHash);
+    }
+
+    /**
+     * @param bankMap           : mapping data to be written to disk
+     * @param outputMapFile     : file name to be written
+     */
+    public static void saveBankMap(BankMap bankMap, String outputMapFile) throws IOException {
+        Path mapFilePath = Paths.get(outputMapFile);
+        Files.write(mapFilePath, MapWriter.load(bankMap).write().toByteArray());
     }
 
     /**
