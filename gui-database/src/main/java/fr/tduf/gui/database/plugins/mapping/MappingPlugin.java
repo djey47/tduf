@@ -9,7 +9,7 @@ import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.gui.database.plugins.mapping.domain.MappingEntry;
 import fr.tduf.libunlimited.common.game.FileConstants;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.low.files.banks.domain.BankKind;
+import fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.rw.MapParser;
@@ -42,7 +42,7 @@ import static fr.tduf.gui.database.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.common.FxConstants.*;
 import static fr.tduf.gui.database.plugins.mapping.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.mapping.common.FxConstants.*;
-import static fr.tduf.libunlimited.low.files.banks.domain.BankKind.*;
+import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.*;
 import static java.util.Collections.singletonList;
 import static javafx.geometry.Orientation.VERTICAL;
 import static javafx.scene.control.cell.TextFieldTableCell.forTableColumn;
@@ -127,7 +127,7 @@ public class MappingPlugin implements DatabasePlugin {
     }
 
     // TODO unit test
-    MappingEntry createMappingEntry(String resourceValue, BankKind kind, String gameLocation) {
+    MappingEntry createMappingEntry(String resourceValue, MappedFileKind kind, String gameLocation) {
         String fileName = String.format(kind.getFileNameFormat(), resourceValue);
         Path filePath = kind.getParentPath().resolve(fileName);
         // TODO compute full path
@@ -222,8 +222,8 @@ public class MappingPlugin implements DatabasePlugin {
                         MappingEntry sndMappingEntry = createMappingEntry(resourceValue, SOUND, gameLocation);
                         files.addAll(extMappingEntry, intMappingEntry, sndMappingEntry);
                     } else if (11 == fieldRank) {
-                        MappingEntry lgeMappingEntry = createMappingEntry(resourceValue, GAUGES_LOW, gameLocation);
-                        MappingEntry hgeMappingEntry = createMappingEntry(resourceValue, GAUGES_HIGH, gameLocation);
+                        MappingEntry lgeMappingEntry = createMappingEntry(resourceValue, HUD_LOW, gameLocation);
+                        MappingEntry hgeMappingEntry = createMappingEntry(resourceValue, HUD_HIGH, gameLocation);
                         files.addAll(lgeMappingEntry, hgeMappingEntry);
                     }
                     break;

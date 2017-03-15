@@ -8,21 +8,23 @@ import fr.tduf.gui.installer.domain.*;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
+import fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 import static fr.tduf.gui.installer.common.DatabaseConstants.*;
 import static fr.tduf.gui.installer.common.DisplayConstants.*;
-import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.FRONT_RIM;
-import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.REAR_RIM;
 import static fr.tduf.gui.installer.domain.Resource.from;
+import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.FRONT_RIMS_3D;
+import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.REAR_RIMS_3D;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -57,13 +59,6 @@ public class VehicleSlotsHelper extends CommonHelper {
     private VehicleSlotsHelper(BulkDatabaseMiner miner) {
         super(miner);
         brandHelper = BrandHelper.load(miner);
-    }
-
-    /**
-     * All handled bank file types
-     */
-    public enum BankFileType {
-        EXTERIOR_MODEL, INTERIOR_MODEL, HUD, SOUND, FRONT_RIM, REAR_RIM
     }
 
     /**
@@ -167,7 +162,7 @@ public class VehicleSlotsHelper extends CommonHelper {
      * @param withExtension : true to append appropriate extension, false otherwise
      * @return simple file name
      */
-    public static String getBankFileName(VehicleSlot vehicleSlot, BankFileType bankFileType, boolean withExtension) {
+    public static String getBankFileName(VehicleSlot vehicleSlot, MappedFileKind bankFileType, boolean withExtension) {
 
         final String extension = withExtension ?
                 "." + GenuineBnkGateway.EXTENSION_BANKS : "";
@@ -175,11 +170,11 @@ public class VehicleSlotsHelper extends CommonHelper {
         String suffix;
         switch (bankFileType) {
             case HUD:
-            case EXTERIOR_MODEL:
+            case EXT_3D:
                 suffix = "";
                 break;
 
-            case INTERIOR_MODEL:
+            case INT_3D:
                 suffix = FileConstants.SUFFIX_INTERIOR_BANK_FILE;
                 break;
 
@@ -199,17 +194,17 @@ public class VehicleSlotsHelper extends CommonHelper {
      * @param rimBankFileType : type of bank file to be resolved
      * @return simple file name
      */
-    public static String getRimBankFileName(VehicleSlot vehicleSlot, BankFileType rimBankFileType, int rimRank, boolean withExtension) {
+    public static String getRimBankFileName(VehicleSlot vehicleSlot, MappedFileKind rimBankFileType, int rimRank, boolean withExtension) {
         String extension = withExtension ?
                 "." + GenuineBnkGateway.EXTENSION_BANKS : "";
-        if (FRONT_RIM != rimBankFileType &&
-                REAR_RIM != rimBankFileType) {
+        if (FRONT_RIMS_3D != rimBankFileType &&
+                REAR_RIMS_3D != rimBankFileType) {
             throw new IllegalArgumentException("Not a valid rim bank type: " + rimBankFileType);
         }
 
         final RimSlot rimSlot = vehicleSlot.getRimAtRank(rimRank)
                 .orElseThrow(() -> new IllegalArgumentException("Vehicle slot hasn't required rim at rank: " + rimRank));
-        RimSlot.RimInfo rimInfo = FRONT_RIM == rimBankFileType ?
+        RimSlot.RimInfo rimInfo = FRONT_RIMS_3D == rimBankFileType ?
                 rimSlot.getFrontRimInfo() : rimSlot.getRearRimInfo();
 
         return of(rimInfo.getFileName().getValue())

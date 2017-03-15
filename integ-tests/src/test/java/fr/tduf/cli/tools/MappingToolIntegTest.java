@@ -5,8 +5,8 @@ import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import fr.tduf.libunlimited.low.files.banks.mapping.rw.MapParser;
 import fr.tduf.libunlimited.low.files.banks.mapping.rw.MapWriter;
 import org.apache.commons.io.FileUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -23,14 +23,14 @@ public class MappingToolIntegTest {
     private final String contentsDirectory1 = Paths.get(mappingDirectory).resolve("cnt1").toString();
     private final String contentsDirectory2 = Paths.get(contentsDirectory1).resolve("cnt2").toString();
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeEach
+    void setUp() throws IOException {
         FileUtils.deleteDirectory(new File(mappingDirectory));
         FilesHelper.createDirectoryIfNotExists(contentsDirectory2);
     }
 
     @Test
-    public void info_ListMissing_FixMissing_List_whenEmptyInitialMap_andAddingNewFiles_shouldNotThrowError() throws IOException {
+    void info_ListMissing_FixMissing_List_whenEmptyInitialMap_andAddingNewFiles_shouldNotThrowError() throws IOException {
         //GIVEN: empty map file
         BankMap bankMap = createEmptyMap();
         bankMap.addMagicEntry(0);
@@ -64,7 +64,7 @@ public class MappingToolIntegTest {
     }
 
     @Test
-    public void magify_whenMixedEntriesInProvidedMap_shouldConvertToMagicMap() throws IOException {
+    void magify_whenMixedEntriesInProvidedMap_shouldConvertToMagicMap() throws IOException {
         // GIVEN
         BankMap bankMap = createEmptyMap();
         bankMap.addEntry(1589L, 1L, 1L);

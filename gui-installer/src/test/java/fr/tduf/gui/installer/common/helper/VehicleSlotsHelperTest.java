@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.*;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.SlotKind.ALL;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.VehicleKind.DRIVABLE;
 import static fr.tduf.gui.installer.domain.Resource.from;
 import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
+import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
@@ -319,8 +319,8 @@ public class VehicleSlotsHelperTest {
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(SLOTREF_TDUCP, CAR_PHYSICS_DATA)).thenReturn(of(physicsEntry));
         //noinspection unchecked
         when(bulkDatabaseMinerMock.getContentEntryStreamMatchingSimpleCondition(DbFieldValueDto.fromCouple(DatabaseConstants.FIELD_RANK_CAR_REF, SLOTREF_TDUCP), CAR_RIMS)).thenReturn(
-                singletonList(carRimsEntry1).stream(),
-                singletonList(carRimsEntry1).stream());
+                Stream.of(carRimsEntry1),
+                Stream.of(carRimsEntry1));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef1, RIMS)).thenReturn(of(rimsEntry1));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef2, RIMS)).thenReturn(of(rimsEntry2));
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(rimSlotRef3, RIMS)).thenReturn(empty());
@@ -454,7 +454,7 @@ public class VehicleSlotsHelperTest {
                 .withFileName(from("", resourceValue)).build();
 
         // WHEN
-        String actualBankFileName = VehicleSlotsHelper.getBankFileName(vehicleSlot, EXTERIOR_MODEL, true);
+        String actualBankFileName = VehicleSlotsHelper.getBankFileName(vehicleSlot, EXT_3D, true);
 
         // THEN
         assertThat(actualBankFileName).isEqualTo("RX8.bnk");
@@ -484,7 +484,7 @@ public class VehicleSlotsHelperTest {
                 .withFileName(from("", resourceValue)).build();
 
         // WHEN
-        String actualBankFileName = VehicleSlotsHelper.getBankFileName(vehicleSlot, INTERIOR_MODEL, true);
+        String actualBankFileName = VehicleSlotsHelper.getBankFileName(vehicleSlot, INT_3D, true);
 
         // THEN
         assertThat(actualBankFileName).isEqualTo("RX8_I.bnk");
@@ -504,7 +504,7 @@ public class VehicleSlotsHelperTest {
                 .build();
 
         // WHEN
-        VehicleSlotsHelper.getBankFileName(vehicleSlot, FRONT_RIM, true);
+        VehicleSlotsHelper.getBankFileName(vehicleSlot, FRONT_RIMS_3D, true);
 
         // THEN: IAE
     }
@@ -523,7 +523,7 @@ public class VehicleSlotsHelperTest {
                 .build();
 
         // WHEN
-        VehicleSlotsHelper.getBankFileName(vehicleSlot, REAR_RIM, true);
+        VehicleSlotsHelper.getBankFileName(vehicleSlot, REAR_RIMS_3D, true);
 
         // THEN: IAE
     }
@@ -531,7 +531,7 @@ public class VehicleSlotsHelperTest {
     @Test(expected = IllegalArgumentException.class)
     public void getRimBankFileName_whenNoRimBankType_shouldThrowException() {
         // GIVEN-WHEN
-        VehicleSlotsHelper.getRimBankFileName(null, EXTERIOR_MODEL, 0, false);
+        VehicleSlotsHelper.getRimBankFileName(null, EXT_3D, 0, false);
 
         // THEN:IAE
     }
@@ -544,7 +544,7 @@ public class VehicleSlotsHelperTest {
                 .build();
 
         // WHEN
-        VehicleSlotsHelper.getRimBankFileName(vehicleSlot, FRONT_RIM, 1, false);
+        VehicleSlotsHelper.getRimBankFileName(vehicleSlot, FRONT_RIMS_3D, 1, false);
 
         // THEN:IAE
     }
@@ -579,7 +579,7 @@ public class VehicleSlotsHelperTest {
                 .build();
 
         // WHEN
-        final String actualFileName = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, FRONT_RIM, 2, true);
+        final String actualFileName = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, FRONT_RIMS_3D, 2, true);
 
         // THEN
         assertThat(actualFileName).isEqualTo("RX8_F_02.bnk");

@@ -18,10 +18,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.BankFileType.*;
 import static fr.tduf.gui.installer.steps.GenericStep.StepType.UPDATE_DATABASE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
+import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -167,7 +167,7 @@ public class PatchEnhancer {
             throw new IllegalArgumentException(String.format(DisplayConstants.MESSAGE_FMT_INVALID_SLOT_INFO, slotReference));
         }
 
-        String selectedBankName = VehicleSlotsHelper.getBankFileName(effectiveSlot, EXTERIOR_MODEL, false);
+        String selectedBankName = VehicleSlotsHelper.getBankFileName(effectiveSlot, EXT_3D, false);
         String selectedResourceBankName = effectiveSlot.getFileName().getRef();
         List<String> values = asList(selectedBankName, selectedResourceBankName);
         if (values.contains(DisplayConstants.ITEM_UNAVAILABLE)) {
@@ -367,9 +367,9 @@ public class PatchEnhancer {
     private void createPatchPropertiesForRimSetAtRank(VehicleSlot vehicleSlot, RimSlot rimSlot, int rank, DatabasePatchProperties patchProperties) {
         String selectedRimReference = rimSlot.getRef();
         String selectedResourceRimBrandReference = rimSlot.getParentDirectoryName().getRef();
-        String selectedFrontRimBank = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, FRONT_RIM, rimSlot.getRank(), false);
+        String selectedFrontRimBank = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, FRONT_RIMS_3D, rimSlot.getRank(), false);
         String selectedResourceFrontRimBankName = rimSlot.getFrontRimInfo().getFileName().getRef();
-        String selectedRearRimBank = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, REAR_RIM, rimSlot.getRank(), false);
+        String selectedRearRimBank = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, REAR_RIMS_3D, rimSlot.getRank(), false);
         String selectedResourceRearRimBankName = rimSlot.getRearRimInfo().getFileName().getRef();
 
         List<String> values = asList(selectedRimReference, selectedFrontRimBank, selectedRearRimBank, selectedResourceFrontRimBankName, selectedResourceRearRimBankName);

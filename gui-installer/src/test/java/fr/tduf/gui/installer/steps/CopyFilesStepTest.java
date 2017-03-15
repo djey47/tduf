@@ -7,8 +7,8 @@ import fr.tduf.gui.installer.domain.exceptions.StepException;
 import fr.tduf.libtesting.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,8 +19,9 @@ import java.nio.file.Paths;
 
 import static fr.tduf.gui.installer.steps.GenericStep.StepType.COPY_FILES;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CopyFilesStepTest {
+class CopyFilesStepTest {
 
     private static final Class<CopyFilesStepTest> thisClass = CopyFilesStepTest.class;
 
@@ -28,8 +29,8 @@ public class CopyFilesStepTest {
 
     private Path backupPath;
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeEach
+    void setUp() throws IOException {
         tempDirectory = InstallerTestsHelper.createTempDirectory();
 
         FilesHelper.prepareTduDirectoryLayout(tempDirectory);
@@ -39,7 +40,7 @@ public class CopyFilesStepTest {
     }
 
     @Test
-    public void copyFilesStep_withFakeFilesAllPresent_shouldCopyThemToCorrectLocation_withRightNames_andBackupExisting() throws Exception {
+    void copyFilesStep_withFakeFilesAllPresent_shouldCopyThemToCorrectLocation_withRightNames_andBackupExisting() throws Exception {
         // GIVEN
         System.out.println("Testing TDU directory: " + tempDirectory);
 
@@ -99,7 +100,7 @@ public class CopyFilesStepTest {
     }
 
     @Test
-    public void copyFilesStep_withDeniedAccessToTargetFile_shouldAllowCopy() throws Exception {
+    void copyFilesStep_withDeniedAccessToTargetFile_shouldAllowCopy() throws Exception {
         // GIVEN
         System.out.println("Testing TDU directory: " + tempDirectory);
 
@@ -132,7 +133,7 @@ public class CopyFilesStepTest {
     }
 
     @Test
-    public void copyFilesStep_withDifferentRimsFrontRear_shouldCopyThemToCorrectLocation_withRightNames() throws Exception {
+    void copyFilesStep_withDifferentRimsFrontRear_shouldCopyThemToCorrectLocation_withRightNames() throws Exception {
         // GIVEN
         System.out.println("Testing TDU directory: " + tempDirectory);
 
@@ -161,7 +162,7 @@ public class CopyFilesStepTest {
     }
 
     @Test
-    public void copyFilesStep_withDifferentRimsFrontRear_andTargetFilesAlreadyExist_shouldNotCrashWhileBackup() throws Exception {
+    void copyFilesStep_withDifferentRimsFrontRear_andTargetFilesAlreadyExist_shouldNotCrashWhileBackup() throws Exception {
         // GIVEN
         System.out.println("Testing TDU directory: " + tempDirectory);
 
@@ -194,7 +195,7 @@ public class CopyFilesStepTest {
                 .hasSameContentAs(rimAssetsPath.resolve("BIKE_R_01.bnk").toFile());
     }
 
-    @Test(expected = StepException.class)
+    @Test
     public void copyFilesStep_withDifferentRimsFrontRear_andSlotHasSameFileNameForFrontAndRear_shouldThrowException() throws Exception {
         // GIVEN
         System.out.println("Testing TDU directory: " + tempDirectory);
@@ -207,13 +208,16 @@ public class CopyFilesStepTest {
 
 
         // WHEN-THEN
-        try {
-            GenericStep.starterStep(configuration, databaseContext)
-                    .nextStep(COPY_FILES).start();
-        } catch (StepException se) {
-            assertThat(se).hasCauseInstanceOf(IllegalArgumentException.class);
-            throw se;
-        }
+        assertThrows(StepException.class,
+                () -> {
+                    try {
+                        GenericStep.starterStep(configuration, databaseContext)
+                                .nextStep(COPY_FILES).start();
+                    } catch (StepException se) {
+                        assertThat(se).hasCauseInstanceOf(IllegalArgumentException.class);
+                        throw se;
+                    }            
+                });
     }
 
     @Test
@@ -246,7 +250,7 @@ public class CopyFilesStepTest {
     }
 
     @Test
-    public void copyFilesStep_withSameRimsFrontRear_andSlotHasDifferentFileNameForFrontAndRear_shouldCopyFrontAndRearRims() throws Exception {
+    void copyFilesStep_withSameRimsFrontRear_andSlotHasDifferentFileNameForFrontAndRear_shouldCopyFrontAndRearRims() throws Exception {
         // GIVEN
         System.out.println("Testing TDU directory: " + tempDirectory);
 
@@ -275,7 +279,7 @@ public class CopyFilesStepTest {
     }
 
     @Test
-    public void copyFilesStep_withSameRimsFrontRear_andSlotHasDifferentFileNameForFrontAndRear_andTargetFilesAlreadyExist_shouldCopyFrontAndRearRim() throws Exception {
+    void copyFilesStep_withSameRimsFrontRear_andSlotHasDifferentFileNameForFrontAndRear_andTargetFilesAlreadyExist_shouldCopyFrontAndRearRim() throws Exception {
         // GIVEN
         System.out.println("Testing TDU directory: " + tempDirectory);
 
