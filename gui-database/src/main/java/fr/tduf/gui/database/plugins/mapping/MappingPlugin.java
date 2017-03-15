@@ -79,16 +79,26 @@ public class MappingPlugin implements DatabasePlugin {
 
         Log.info(THIS_CLASS_NAME, "Loading mapping info from " + mappingFile);
 
-        BankMap bankMap = MapParser.load(mappingFile.toString()).parse();
+        String mapFileName = mappingFile.toString();
+        BankMap bankMap = MapParser.load(mapFileName).parse();
         bankMapProperty.setValue(bankMap);
 
         Log.info(THIS_CLASS_NAME, "Mapping info loaded");        
-        mappingContext.setPluginLoaded(true);        
+        mappingContext.setPluginLoaded(true);
+        mappingContext.setBinaryFileLocation(mapFileName);
     }
 
     @Override
     public void onSave(EditorContext context) throws IOException {
+        MappingContext mappingContext = context.getMappingContext();
+        if (!mappingContext.isPluginLoaded()) {
+            Log.warn(THIS_CLASS_NAME, "Mapping plugin not loaded, no saving will be performed");
+            return;
+        }
 
+        String mapFile = mappingContext.getBinaryFileLocation();
+        Log.info(THIS_CLASS_NAME, "Saving mapping info to " + mapFile);
+        MapHelper.saveBankMap(bankMapProperty.getValue(), mapFile);
     }
 
     @Override
