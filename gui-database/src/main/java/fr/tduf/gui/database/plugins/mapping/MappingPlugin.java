@@ -54,7 +54,7 @@ public class MappingPlugin implements DatabasePlugin {
     private static final Class<MappingPlugin> thisClass = MappingPlugin.class;
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 
-    private final Property<BankMap> bankMapProperty = new SimpleObjectProperty<>();
+    private Property<BankMap> bankMapProperty = new SimpleObjectProperty<>();
 
     /**
      * Required contextual information:
@@ -116,21 +116,17 @@ public class MappingPlugin implements DatabasePlugin {
         return new HashSet<>(singletonList(thisClass.getResource(PATH_RESOURCE_CSS_MAPPING).toExternalForm()));
     }
 
-    // TODO unit test
     Path resolveMappingFilePath(String gameLocation) {
         return Paths.get(gameLocation, FileConstants.DIRECTORY_EURO, FileConstants.DIRECTORY_BANKS, MapHelper.MAPPING_FILE_NAME);
     }
 
-    // TODO unit test
     Path resolveBankFilePath(String gameLocation, String filePath) {
         return Paths.get(gameLocation, FileConstants.DIRECTORY_EURO, FileConstants.DIRECTORY_BANKS, filePath);
     }
 
-    // TODO unit test
     MappingEntry createMappingEntry(String resourceValue, MappedFileKind kind, String gameLocation) {
         String fileName = String.format(kind.getFileNameFormat(), resourceValue);
         Path filePath = kind.getParentPath().resolve(fileName);
-        // TODO compute full path
         boolean exists = Files.exists(resolveBankFilePath(gameLocation, filePath.toString()));
         boolean registered = MapHelper.hasEntryForPath(bankMapProperty.getValue(), filePath.toString());
         return new MappingEntry(kind.getDescription(), filePath.toString(), exists, registered);
