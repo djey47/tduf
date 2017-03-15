@@ -2,7 +2,6 @@ package fr.tduf.gui.database.plugins.mapping;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.javafx.helper.ControlHelper;
-import fr.tduf.gui.database.controllers.MainStageController;
 import fr.tduf.gui.database.plugins.cameras.common.FxConstants;
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
@@ -18,7 +17,6 @@ import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -100,7 +98,7 @@ public class MappingPlugin implements DatabasePlugin {
         }
         
         VBox mainColumnBox = createMainColumn(context);
-        VBox buttonColumnBox = createButtonColumn(context.getMainStageController(), context.getCurrentTopic(), context.getRawValueProperty(), context.getFieldRank());
+        VBox buttonColumnBox = createButtonColumn(context);
         
         ObservableList<Node> mainRowChildren = hBox.getChildren();
         mainRowChildren.add(mainColumnBox);
@@ -126,7 +124,14 @@ public class MappingPlugin implements DatabasePlugin {
 
     MappingEntry createMappingEntry(String resourceValue, MappedFileKind kind, String gameLocation) {
         String fileName = String.format(kind.getFileNameFormat(), resourceValue);
-        Path filePath = kind.getParentPath().resolve(fileName);
+        Path filePath;
+        if (FRONT_RIMS_3D == kind || REAR_RIMS_3D == kind) {
+            // FIXME get real brand name
+            String brandName = "AC";
+            filePath = kind.getParentPath().resolve(brandName).resolve(fileName);
+        } else {
+            filePath = kind.getParentPath().resolve(fileName);
+        }
         boolean exists = Files.exists(resolveBankFilePath(gameLocation, filePath.toString()));
         boolean registered = MapHelper.hasEntryForPath(bankMapProperty.getValue(), filePath.toString());
         return new MappingEntry(kind.getDescription(), filePath.toString(), exists, registered);
@@ -149,20 +154,22 @@ public class MappingPlugin implements DatabasePlugin {
     private void getEntries(EditorContext context, ObservableList<MappingEntry> files) {
         int fieldRank = context.getFieldRank();
         DbDto.Topic currentTopic = context.getCurrentTopic();
+        DbDto.Topic remoteTopic = context.getRemoteTopic();
         BulkDatabaseMiner miner = context.getMiner();
         String gameLocation = context.getGameLocation();
 
-        context.getRawValueProperty().addListener(handleResourceValueChange(files, fieldRank, currentTopic, miner, gameLocation));
+        context.getRawValueProperty().addListener(handleResourceValueChange(files, fieldRank, currentTopic, remoteTopic, miner, gameLocation));
     }
 
-    private VBox createButtonColumn(MainStageController controller, DbDto.Topic topic, StringProperty rawValueProperty, int fieldRank) {
+    private VBox createButtonColumn(EditorContext context) {
         VBox buttonColumnBox = new VBox();
         buttonColumnBox.getStyleClass().add(fr.tduf.gui.database.common.FxConstants.CSS_CLASS_VERTICAL_BUTTON_BOX);
 
         Button browseResourceButton = new Button(LABEL_BUTTON_BROWSE);
         browseResourceButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
         ControlHelper.setTooltipText(browseResourceButton, TOOLTIP_BUTTON_BROWSE_RESOURCES);
-        browseResourceButton.setOnAction(controller.handleBrowseResourcesButtonMouseClick(topic, rawValueProperty, fieldRank));
+        browseResourceButton.setOnAction(
+                context.getMainStageController().handleBrowseResourcesButtonMouseClick(context.getRemoteTopic(), context.getRawValueProperty(), context.getFieldRank()));
 
         buttonColumnBox.getChildren().add(browseResourceButton);
 
@@ -197,7 +204,7 @@ public class MappingPlugin implements DatabasePlugin {
         return mappingInfoTableView;
     }
 
-    private ChangeListener<String> handleResourceValueChange(ObservableList<MappingEntry> files, int fieldRank, DbDto.Topic currentTopic, BulkDatabaseMiner miner, String gameLocation) {
+    private ChangeListener<String> handleResourceValueChange(ObservableList<MappingEntry> files, int fieldRank, DbDto.Topic currentTopic, DbDto.Topic remoteTopic, BulkDatabaseMiner miner, String gameLocation) {
         return (observable, oldValue, newValue) -> {
             if (Objects.equals(oldValue, newValue)) {
                 return;
@@ -205,59 +212,84 @@ public class MappingPlugin implements DatabasePlugin {
 
             files.clear();
 
-            String resourceValue = miner.getResourceEntryFromTopicAndReference(currentTopic, newValue)
+            String resourceValue = miner.getResourceEntryFromTopicAndReference(remoteTopic, newValue)
                     .flatMap(ResourceEntryDto::pickValue)
                     .orElse(VALUE_RESOURCE_DEFAULT);
 
             switch (currentTopic) {
-                // TODO create and use Database constants
                 case CAR_PHYSICS_DATA:
-                    if (9 == fieldRank) {
-                        MappingEntry extMappingEntry = createMappingEntry(resourceValue, EXT_3D, gameLocation);
-                        MappingEntry intMappingEntry = createMappingEntry(resourceValue, INT_3D, gameLocation);
-                        MappingEntry sndMappingEntry = createMappingEntry(resourceValue, SOUND, gameLocation);
-                        files.addAll(extMappingEntry, intMappingEntry, sndMappingEntry);
-                    } else if (11 == fieldRank) {
-                        MappingEntry lgeMappingEntry = createMappingEntry(resourceValue, HUD_LOW, gameLocation);
-                        MappingEntry hgeMappingEntry = createMappingEntry(resourceValue, HUD_HIGH, gameLocation);
-                        files.addAll(lgeMappingEntry, hgeMappingEntry);
-                    }
+                    addCarPhysicsEntries(files, fieldRank, gameLocation, resourceValue);
                     break;
                 case CAR_PACKS:
-                    if (3 == fieldRank) {
-                        MappingEntry extMappingEntry = createMappingEntry(resourceValue, EXT_3D, gameLocation);
-                        files.add(extMappingEntry);
-                    }
+                    addCarPacksEntries(files, fieldRank, gameLocation, resourceValue);
                     break;
                 case CAR_SHOPS:
-                    if (2 == fieldRank) {
-                        MappingEntry shopMappingEntry = createMappingEntry(resourceValue, SHOP_3D, gameLocation);
-                        files.add(shopMappingEntry);
-                    }
+                    addCarShopsEntries(files, fieldRank, gameLocation, resourceValue);
                     break;
                 case CLOTHES:
-                    if (2 == fieldRank) {
-                        MappingEntry clothesMappingEntry = createMappingEntry(resourceValue, CLOTHES_3D, gameLocation);
-                        files.add(clothesMappingEntry);
-                    }
+                    addClothesEntries(files, fieldRank, gameLocation, resourceValue);
                     break;
                 case RIMS:
-                    if (14 == fieldRank) {
-                        MappingEntry frontMappingEntry = createMappingEntry(resourceValue, FRONT_RIMS_3D, gameLocation);
-                        files.add(frontMappingEntry);
-                    } else if (15 == fieldRank) {
-                        MappingEntry rearMappingEntry = createMappingEntry(resourceValue, REAR_RIMS_3D, gameLocation);
-                        files.add(rearMappingEntry);
-                    }
+                    addRimsEntries(files, fieldRank, gameLocation, resourceValue);
                     break;
                 case TUTORIALS:
-                    if (4 == fieldRank) {
-                        MappingEntry tutoMappingEntry = createMappingEntry(resourceValue, TUTO_INSTRUCTION, gameLocation);
-                        files.add(tutoMappingEntry);
-                    }
+                    addTutorialsEntries(files, fieldRank, gameLocation, resourceValue);
                     break;
                 default:
             }
         };
+    }
+
+    // TODO create and use Database constants
+    
+    private void addTutorialsEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue) {
+        if (4 == fieldRank) {
+            MappingEntry tutoMappingEntry = createMappingEntry(resourceValue, TUTO_INSTRUCTION, gameLocation);
+            files.add(tutoMappingEntry);
+        }
+    }
+
+    private void addRimsEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue) {
+        if (14 == fieldRank) {
+            MappingEntry frontMappingEntry = createMappingEntry(resourceValue, FRONT_RIMS_3D, gameLocation);
+            files.add(frontMappingEntry);
+        } else if (15 == fieldRank) {
+            MappingEntry rearMappingEntry = createMappingEntry(resourceValue, REAR_RIMS_3D, gameLocation);
+            files.add(rearMappingEntry);
+        }
+    }
+
+    private void addClothesEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue) {
+        if (2 == fieldRank) {
+            MappingEntry clothesMappingEntry = createMappingEntry(resourceValue, CLOTHES_3D, gameLocation);
+            files.add(clothesMappingEntry);
+        }
+    }
+
+    private void addCarShopsEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue) {
+        if (2 == fieldRank) {
+            MappingEntry shopMappingEntry = createMappingEntry(resourceValue, SHOP_3D, gameLocation);
+            files.add(shopMappingEntry);
+        }
+    }
+
+    private void addCarPacksEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue) {
+        if (3 == fieldRank) {
+            MappingEntry extMappingEntry = createMappingEntry(resourceValue, EXT_3D, gameLocation);
+            files.add(extMappingEntry);
+        }
+    }
+
+    private void addCarPhysicsEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue) {
+        if (9 == fieldRank) {
+            MappingEntry extMappingEntry = createMappingEntry(resourceValue, EXT_3D, gameLocation);
+            MappingEntry intMappingEntry = createMappingEntry(resourceValue, INT_3D, gameLocation);
+            MappingEntry sndMappingEntry = createMappingEntry(resourceValue, SOUND, gameLocation);
+            files.addAll(extMappingEntry, intMappingEntry, sndMappingEntry);
+        } else if (11 == fieldRank) {
+            MappingEntry lgeMappingEntry = createMappingEntry(resourceValue, HUD_LOW, gameLocation);
+            MappingEntry hgeMappingEntry = createMappingEntry(resourceValue, HUD_HIGH, gameLocation);
+            files.addAll(lgeMappingEntry, hgeMappingEntry);
+        }
     }
 }

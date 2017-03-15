@@ -63,7 +63,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         if (pluginName == null) {
             addSpecialControls(fieldBox, field, fieldSettings, currentTopic);
         } else {
-            addPluginControls(pluginName, currentTopic, fieldBox, fieldSettings, rawValueProperty, errorMessageProperty, errorProperty);
+            addPluginControls(pluginName, currentTopic, fieldBox, fieldSettings, rawValueProperty, errorMessageProperty, errorProperty, field.getTargetRef());
         }
 
         addErrorSign(fieldBox, errorProperty, errorMessageProperty);
@@ -138,9 +138,10 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
     }
 
-    private void addPluginControls(String pluginName, DbDto.Topic currentTopic, HBox fieldBox, FieldSettingsDto fieldSettings, StringProperty rawValueProperty, StringProperty errorMessageProperty, BooleanProperty errorProperty) {
+    private void addPluginControls(String pluginName, DbDto.Topic currentTopic, HBox fieldBox, FieldSettingsDto fieldSettings, StringProperty rawValueProperty, StringProperty errorMessageProperty, BooleanProperty errorProperty, String fieldTargetRef) {
         EditorContext editorContext = controller.getPluginHandler().getContext();
         editorContext.setCurrentTopic(currentTopic);
+        editorContext.setRemoteTopic(getEffectiveTopic(currentTopic, fieldTargetRef));
         editorContext.setFieldRank(fieldSettings.getRank());
         editorContext.setFieldReadOnly(fieldSettings.isReadOnly());
         editorContext.setRawValueProperty(rawValueProperty);
@@ -197,8 +198,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
     private void addResourceValueControls(HBox fieldBox, boolean fieldReadOnly, DbStructureDto.Field field, DbDto.Topic topic) {
         String fieldTargetRef = field.getTargetRef();
-        DbDto.Topic effectiveTopic = fieldTargetRef == null ?
-                topic : getMiner().getDatabaseTopicFromReference(fieldTargetRef).getTopic();
+        DbDto.Topic effectiveTopic = getEffectiveTopic(topic, fieldTargetRef);
 
         int fieldRank = field.getRank();
 
@@ -226,6 +226,11 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         }
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
+    }
+
+    private DbDto.Topic getEffectiveTopic(DbDto.Topic sourceTopic, String fieldTargetRef) {
+        return fieldTargetRef == null ?
+                sourceTopic : getMiner().getDatabaseTopicFromReference(fieldTargetRef).getTopic();
     }
 
     private static void addResourceValueLabel(HBox fieldBox, boolean fieldReadOnly, StringProperty property) {

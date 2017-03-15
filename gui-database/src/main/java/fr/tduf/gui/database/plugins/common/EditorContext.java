@@ -16,6 +16,7 @@ import javafx.stage.Window;
  */
 public class EditorContext implements PluginContext {
     private DbDto.Topic currentTopic;
+    private DbDto.Topic remoteTopic;
     private int fieldRank;
     private boolean fieldReadOnly;
     private String databaseLocation;
@@ -144,5 +145,13 @@ public class EditorContext implements PluginContext {
 
     public void setMainStageController(MainStageController mainStageController) {
         this.mainStageController = mainStageController;
+    }
+
+    public DbDto.Topic getRemoteTopic() {
+        return remoteTopic;
+    }
+
+    public void setRemoteTopic(DbDto.Topic remoteTopic) {
+        this.remoteTopic = remoteTopic;
     }
 }
