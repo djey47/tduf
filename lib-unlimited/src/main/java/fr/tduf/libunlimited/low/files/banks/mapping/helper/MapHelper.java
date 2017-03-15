@@ -65,7 +65,8 @@ public class MapHelper {
     }
 
     /**
-     * @param fileName : file name, relative to BNK folder.
+     * @param bankMap   : mapping data
+     * @param fileName  : file name, relative to BNK folder.
      * @return true if an entry with the same checksum is already present
      */
     public static boolean hasEntryForPath(BankMap bankMap, String fileName) {
@@ -77,6 +78,17 @@ public class MapHelper {
                 .findFirst()
                 .map(entry -> true)
                 .orElse(false);
+    }
+
+    /**
+     * @param bankMap   : mapping data
+     * @param fileName  : file name, relative to BNK folder.
+     */
+    public static void registerPath(BankMap bankMap, String fileName) {
+        requireNonNull(bankMap, "Mapping information is required.");
+
+        long fileHash = computeChecksum(fileName);
+        bankMap.addMagicEntry(fileHash);
     }
 
     /**

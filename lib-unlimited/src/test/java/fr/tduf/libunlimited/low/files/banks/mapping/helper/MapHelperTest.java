@@ -122,6 +122,19 @@ class MapHelperTest {
         // given-when-then
         assertThat(MapHelper.hasEntryForPath(new BankMap(), "avatar/barb.bnk")).isFalse();
     }
+    
+    @Test
+    void registerPath() {
+        // given
+        BankMap bankMap = new BankMap();
+        
+        // when
+        MapHelper.registerPath(bankMap, "avatar/barb.bnk");
+        
+        // then
+        assertThat(MapHelper.hasEntryForPath(bankMap, "avatar/barb.bnk")).isTrue();
+        assertThat(MapHelper.hasEntryForPath(bankMap, "avatar/barb1.bnk")).isFalse();
+    }
 
     private static List<String> createExpectedFileList() {
         return asList(
