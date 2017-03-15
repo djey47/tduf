@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.low.files.banks.mapping.helper;
 
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
+import fr.tduf.libunlimited.low.files.banks.mapping.rw.MapParser;
 import fr.tduf.libunlimited.low.files.banks.mapping.rw.MapWriter;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -92,6 +93,14 @@ public class MapHelper {
         long fileHash = computeChecksum(fileName);
         bankMap.addMagicEntry(fileHash);
     }
+
+    /**
+     * @param mapFile   : file name to be read
+     * @return parsed mapping contents
+     */
+    public static BankMap loadBankMap(String mapFile) throws IOException {
+        return MapParser.load(mapFile).parse();
+    }    
 
     /**
      * @param bankMap           : mapping data to be written to disk
