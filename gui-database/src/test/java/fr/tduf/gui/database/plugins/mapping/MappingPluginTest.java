@@ -15,7 +15,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.CLOTHES_3D;
 import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.EXT_3D;
+import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.SHOP_3D;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -94,6 +96,36 @@ class MappingPluginTest {
         // then
         assertThat(actualEntry.getKind()).isEqualTo(EXT_3D.getDescription());
         assertThat(actualEntry.getPath()).isEqualTo(Paths.get("Vehicules", "A3_V6.bnk").toString());
+        assertThat(actualEntry.isExists()).isFalse();
+        assertThat(actualEntry.isRegistered()).isFalse();
+    }    
+    
+    @Test
+    void createMappingEntry_forShopModelBank() {
+        // given
+        when(bankMapProperty.getValue()).thenReturn(new BankMap());
+        
+        // when
+        MappingEntry actualEntry = mappingPlugin.createMappingEntry("ECD_2B2_7555", SHOP_3D, "/tdu");
+        
+        // then
+        assertThat(actualEntry.getKind()).isEqualTo(SHOP_3D.getDescription());
+        assertThat(actualEntry.getPath()).isEqualTo(Paths.get("Level", "Hawai", "Spots", "ECD_2B2.bnk").toString());
+        assertThat(actualEntry.isExists()).isFalse();
+        assertThat(actualEntry.isRegistered()).isFalse();
+    }    
+    
+    @Test
+    void createMappingEntry_forClothesModelBank() {
+        // given
+        when(bankMapProperty.getValue()).thenReturn(new BankMap());
+        
+        // when
+        MappingEntry actualEntry = mappingPlugin.createMappingEntry("M_SHIRT_ELLSON", CLOTHES_3D, "/tdu");
+        
+        // then
+        assertThat(actualEntry.getKind()).isEqualTo(CLOTHES_3D.getDescription());
+        assertThat(actualEntry.getPath()).isEqualTo(Paths.get("Avatar", "CLOTHES", "ELLSON", "M_SHIRT_ELLSON.bnk").toString());
         assertThat(actualEntry.isExists()).isFalse();
         assertThat(actualEntry.isRegistered()).isFalse();
     }

@@ -124,14 +124,31 @@ public class MappingPlugin implements DatabasePlugin {
 
     MappingEntry createMappingEntry(String resourceValue, MappedFileKind kind, String gameLocation) {
         String fileName = String.format(kind.getFileNameFormat(), resourceValue);
+        int lastPartIndex = fileName.lastIndexOf("_");
+        int dotIndex = fileName.lastIndexOf(".");
+        String brandName;
         Path filePath;
-        if (FRONT_RIMS_3D == kind || REAR_RIMS_3D == kind) {
-            // FIXME get real brand name
-            String brandName = "AC";
-            filePath = kind.getParentPath().resolve(brandName).resolve(fileName);
-        } else {
-            filePath = kind.getParentPath().resolve(fileName);
+        
+        switch(kind) {
+            case FRONT_RIMS_3D:
+            case REAR_RIMS_3D:
+                // FIXME get real brand name
+                brandName = "AC";
+                filePath = kind.getParentPath().resolve(brandName).resolve(fileName);
+                break;
+            case SHOP_3D:
+                // FIXME check location
+                filePath = kind.getParentPath().resolve(fileName.substring(0, lastPartIndex) + fileName.substring(dotIndex));
+                break;
+            case CLOTHES_3D:
+                // FIXME check location and find reliable way to extract brand
+                brandName = fileName.substring(lastPartIndex + 1, dotIndex);
+                filePath = kind.getParentPath().resolve(brandName).resolve(fileName);
+                break;
+            default:
+                filePath = kind.getParentPath().resolve(fileName);
         }
+
         boolean exists = Files.exists(resolveBankFilePath(gameLocation, filePath.toString()));
         boolean registered = MapHelper.hasEntryForPath(bankMapProperty.getValue(), filePath.toString());
         return new MappingEntry(kind.getDescription(), filePath.toString(), exists, registered);
