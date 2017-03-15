@@ -152,9 +152,11 @@ public class MappingPlugin implements DatabasePlugin {
                 brandName = "AC";
                 filePath = kind.getParentPath().resolve(brandName).resolve(fileName);
                 break;
-            case SHOP_3D:
-                // FIXME check location
-                filePath = kind.getParentPath().resolve(fileName.substring(0, lastPartIndex) + fileName.substring(dotIndex));
+            case SHOP_EXT_3D:
+                filePath = kind.getParentPath().resolve(fileName.substring(0, lastPartIndex).toLowerCase() + fileName.substring(dotIndex));
+                break;
+            case SHOP_INT_3D:
+                filePath = kind.getParentPath().resolve("i" + fileName.substring(1, lastPartIndex).toLowerCase() + fileName.substring(dotIndex));
                 break;
             case CLOTHES_3D:
                 // FIXME check location and find reliable way to extract brand
@@ -340,8 +342,10 @@ public class MappingPlugin implements DatabasePlugin {
 
     private void addCarShopsEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue) {
         if (2 == fieldRank) {
-            MappingEntry shopMappingEntry = createMappingEntry(resourceValue, SHOP_3D, gameLocation);
-            files.add(shopMappingEntry);
+            MappingEntry shopExtMappingEntry = createMappingEntry(resourceValue, SHOP_EXT_3D, gameLocation);
+            MappingEntry shopIntMappingEntry = createMappingEntry(resourceValue, SHOP_INT_3D, gameLocation);
+            MappingEntry shopThumbMappingEntry = createMappingEntry(resourceValue, SHOP_MAP_SCREEN, gameLocation);
+            files.addAll(shopExtMappingEntry, shopIntMappingEntry, shopThumbMappingEntry);
         }
     }
 

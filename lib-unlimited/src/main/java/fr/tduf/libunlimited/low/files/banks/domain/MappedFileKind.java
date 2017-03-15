@@ -12,7 +12,9 @@ import static fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway.EX
 public enum MappedFileKind {
     EXT_3D("Exterior 3D model", "%s." + EXTENSION_BANKS, Paths.get("Vehicules")),
     INT_3D("Interior 3D model", "%s_I." + EXTENSION_BANKS, Paths.get("Vehicules")),
-    SHOP_3D("Shop 3D model", "%s." + EXTENSION_BANKS, Paths.get("Level", "Hawai", "Spots")),
+    SHOP_EXT_3D("Exterior 3D model", "%s." + EXTENSION_BANKS, Paths.get("Level", "Hawai", "Spots")),
+    SHOP_INT_3D("Interior 3D model", "%s." + EXTENSION_BANKS, Paths.get("Interior")),
+    SHOP_MAP_SCREEN("Spot Map Thumbnail", "%s." + EXTENSION_BANKS, Paths.get("FrontEnd", "AllRes", "MapScreens", "Spots")),
     CLOTHES_3D("Clothes 3D model", "%s." + EXTENSION_BANKS, Paths.get("Avatar", "CLOTHES")),
     FRONT_RIMS_3D("Front rims 3D model", "%s." + EXTENSION_BANKS, Paths.get("Vehicules", "Rim")),
     REAR_RIMS_3D("Rear rims 3D model", "%s." + EXTENSION_BANKS, Paths.get("Vehicules", "Rim")),

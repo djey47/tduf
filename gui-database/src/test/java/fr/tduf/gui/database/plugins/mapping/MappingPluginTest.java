@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 
 import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.CLOTHES_3D;
 import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.EXT_3D;
-import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.SHOP_3D;
+import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.SHOP_EXT_3D;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -106,11 +106,11 @@ class MappingPluginTest {
         when(bankMapProperty.getValue()).thenReturn(new BankMap());
         
         // when
-        MappingEntry actualEntry = mappingPlugin.createMappingEntry("ECD_2B2_7555", SHOP_3D, "/tdu");
+        MappingEntry actualEntry = mappingPlugin.createMappingEntry("ECD_2B2_7555", SHOP_EXT_3D, "/tdu");
         
         // then
-        assertThat(actualEntry.getKind()).isEqualTo(SHOP_3D.getDescription());
-        assertThat(actualEntry.getPath()).isEqualTo(Paths.get("Level", "Hawai", "Spots", "ECD_2B2.bnk").toString());
+        assertThat(actualEntry.getKind()).isEqualTo(SHOP_EXT_3D.getDescription());
+        assertThat(actualEntry.getPath()).isEqualTo(Paths.get("Level", "Hawai", "Spots", "ecd_2b2.bnk").toString());
         assertThat(actualEntry.isExists()).isFalse();
         assertThat(actualEntry.isRegistered()).isFalse();
     }    
