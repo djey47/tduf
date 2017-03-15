@@ -5,6 +5,7 @@ import fr.tduf.gui.common.AppConstants;
 import fr.tduf.gui.common.controllers.helper.DatabaseOpsHelper;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
+import fr.tduf.gui.common.javafx.helper.DesktopHelper;
 import fr.tduf.gui.common.javafx.helper.TableViewHelper;
 import fr.tduf.gui.common.javafx.helper.options.SimpleDialogOptions;
 import fr.tduf.gui.common.services.DatabaseChecker;
@@ -41,10 +42,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
-import javafx.scene.control.Button;
 import javafx.scene.control.*;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -52,17 +50,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
 import org.apache.commons.lang3.StringUtils;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.List;
 
-import static fr.tduf.gui.common.javafx.application.AbstractGuiApp.getHostServicesInstance;
 import static fr.tduf.gui.database.common.DisplayConstants.*;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
@@ -253,22 +247,7 @@ public class MainStageController extends AbstractGuiController {
     public void handleHelpButtonAction() throws URISyntaxException, IOException {
         Log.trace(THIS_CLASS_NAME, "->handleHelpButtonAction");
 
-        try {
-            getHostServicesInstance().showDocument(AppConstants.URL_WIKI_TOOLS_REF);
-        } catch (NullPointerException npe) {
-            // Workaround for OpenJDK, falling back to AWT's Desktop...
-            if (!Desktop.isDesktopSupported()) {
-                Log.error(THIS_CLASS_NAME, "AWT desktop not supported!");
-                return;
-            }
-            new Thread(() -> {
-                try {
-                    Desktop.getDesktop().browse(new URI(AppConstants.URL_WIKI_TOOLS_REF ));
-                } catch (IOException | URISyntaxException e) {
-                    e.printStackTrace();
-                }
-            }).start();
-        }
+        DesktopHelper.openInBrowser(AppConstants.URL_WIKI_TOOLS_REF );
     }
 
     @FXML
