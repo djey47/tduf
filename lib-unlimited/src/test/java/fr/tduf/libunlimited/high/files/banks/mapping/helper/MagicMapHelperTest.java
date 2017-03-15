@@ -49,12 +49,12 @@ class MagicMapHelperTest {
         Log.info(thisClass.getSimpleName(), "Temp dir: " + tempDirectory);
 
         assertThat(actualFiles).containsOnly(
-                "avatar/barb.bnk",
-                "bnk1.no.magic.map",
-                "bnk1-enhanced1.map",
-                "bnk1-enhanced2.map",
-                "frontend/hires/gauges/hud01.bnk",
-                "vehicules/a3_v6.bnk");
+                "Avatar/BARB.BNK",
+                "Bnk1.no.magic.map",
+                "Bnk1-enhanced1.map",
+                "Bnk1-enhanced2.map",
+                "FrontEnd/Hires/Gauges/hud01.bnk",
+                "Vehicules/A3_V6.bnk");
 
         Path expectedMagicMapPath = Paths.get(thisClass.getResource("/banks/Bnk1-enhanced1.map").toURI());
         AssertionsHelper.assertFileMatchesReference(magicMapPath.toFile(), expectedMagicMapPath.toFile());
