@@ -1511,22 +1511,28 @@
           "rank": 1,
           "name": "REF",
           "pluginName": "CONTENT_REF",
-          "label": "(REF) House  #"
+          "label": "(REF) House #"
         },
         {
           "name": "Spot_Name_",
+          "label": "Spot",
+          "pluginName": "MAPPING",
           "rank": 2
         },
         {
           "name": "Realtor_",
+          "label": "Realtor Spot",
+          "pluginName": "MAPPING",          
           "rank": 3
         },
         {
           "name": "House_Name_",
+          "label": "Name",
           "rank": 4
         },
         {
           "name": "Level_",
+          "label": "Available at Level",
           "rank": 5
         },
         {
@@ -1535,6 +1541,7 @@
         },
         {
           "name": "Nb_CarSlots_",
+          "label": "Garage Capacity",          
           "rank": 7
         },
         {

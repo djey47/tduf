@@ -153,10 +153,18 @@ public class MappingPlugin implements DatabasePlugin {
                 filePath = kind.getParentPath().resolve(brandName).resolve(fileName);
                 break;
             case SHOP_EXT_3D:
+            case HOUSE_EXT_3D:
                 filePath = kind.getParentPath().resolve(fileName.substring(0, lastPartIndex).toLowerCase() + fileName.substring(dotIndex));
                 break;
             case SHOP_INT_3D:
+            case REALTOR_INT_3D:
                 filePath = kind.getParentPath().resolve("i" + fileName.substring(1, lastPartIndex).toLowerCase() + fileName.substring(dotIndex));
+                break;            
+            case HOUSE_LOUNGE_3D:
+                filePath = kind.getParentPath().resolve("l" + fileName.substring(1, lastPartIndex).toLowerCase() + fileName.substring(dotIndex));
+                break;            
+            case HOUSE_GARAGE_3D:
+                filePath = kind.getParentPath().resolve("g" + fileName.substring(1, lastPartIndex).toLowerCase() + fileName.substring(dotIndex));
                 break;
             case CLOTHES_3D:
                 // FIXME check location and find reliable way to extract brand
@@ -277,6 +285,9 @@ public class MappingPlugin implements DatabasePlugin {
                     break;
                 case CLOTHES:
                     addClothesEntries(files, fieldRank, gameLocation, resourceValue);
+                    break;                
+                case HOUSES:
+                    addHousesEntries(files, fieldRank, gameLocation, resourceValue);
                     break;
                 case RIMS:
                     addRimsEntries(files, fieldRank, gameLocation, resourceValue);
@@ -344,8 +355,24 @@ public class MappingPlugin implements DatabasePlugin {
         if (2 == fieldRank) {
             MappingEntry shopExtMappingEntry = createMappingEntry(resourceValue, SHOP_EXT_3D, gameLocation);
             MappingEntry shopIntMappingEntry = createMappingEntry(resourceValue, SHOP_INT_3D, gameLocation);
-            MappingEntry shopThumbMappingEntry = createMappingEntry(resourceValue, SHOP_MAP_SCREEN, gameLocation);
+            MappingEntry shopThumbMappingEntry = createMappingEntry(resourceValue, SPOT_MAP_SCREEN, gameLocation);
             files.addAll(shopExtMappingEntry, shopIntMappingEntry, shopThumbMappingEntry);
+        }
+    }    
+    
+    private void addHousesEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue) {
+        // TODO check locations
+        if (2 == fieldRank) {
+            MappingEntry houseExtMappingEntry = createMappingEntry(resourceValue, HOUSE_EXT_3D, gameLocation);
+            MappingEntry houseLoungeMappingEntry = createMappingEntry(resourceValue, HOUSE_LOUNGE_3D, gameLocation);
+            MappingEntry houseGarageMappingEntry = createMappingEntry(resourceValue, HOUSE_GARAGE_3D, gameLocation);
+            MappingEntry thumbMappingEntry = createMappingEntry(resourceValue, SPOT_MAP_SCREEN, gameLocation);
+            files.addAll(houseExtMappingEntry, houseLoungeMappingEntry, houseGarageMappingEntry, thumbMappingEntry);
+        } else if (3 == fieldRank) {
+            MappingEntry realtorExtMappingEntry = createMappingEntry(resourceValue, REALTOR_EXT_3D, gameLocation);
+            MappingEntry realtorIntMappingEntry = createMappingEntry(resourceValue, REALTOR_INT_3D, gameLocation);
+            MappingEntry thumbMappingEntry = createMappingEntry(resourceValue, SPOT_MAP_SCREEN, gameLocation);
+            files.addAll(realtorExtMappingEntry, realtorIntMappingEntry,  thumbMappingEntry);           
         }
     }
 
