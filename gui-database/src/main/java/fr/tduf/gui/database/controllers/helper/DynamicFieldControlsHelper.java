@@ -141,6 +141,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     private void addPluginControls(String pluginName, DbDto.Topic currentTopic, HBox fieldBox, FieldSettingsDto fieldSettings, StringProperty rawValueProperty, StringProperty errorMessageProperty, BooleanProperty errorProperty, String fieldTargetRef) {
         EditorContext editorContext = controller.getPluginHandler().getContext();
         editorContext.setCurrentTopic(currentTopic);
+        editorContext.setContentEntryIndex(controller.getCurrentEntryIndex());
         editorContext.setRemoteTopic(getEffectiveTopic(currentTopic, fieldTargetRef));
         editorContext.setFieldRank(fieldSettings.getRank());
         editorContext.setFieldReadOnly(fieldSettings.isReadOnly());

@@ -1084,7 +1084,7 @@ public class MainStageController extends AbstractGuiController {
         return databaseObjects;
     }
 
-    int getCurrentEntryIndex() {
+    public int getCurrentEntryIndex() {
         return currentEntryIndexProperty.getValue();
     }
 
