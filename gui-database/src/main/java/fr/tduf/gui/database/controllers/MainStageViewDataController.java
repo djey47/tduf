@@ -2,6 +2,7 @@ package fr.tduf.gui.database.controllers;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.AppConstants;
+import fr.tduf.gui.common.javafx.helper.TableViewHelper;
 import fr.tduf.gui.database.DatabaseEditor;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.SettingsConstants;
@@ -21,7 +22,6 @@ import fr.tduf.gui.database.dto.TopicLinkDto;
 import fr.tduf.gui.database.factory.EntryCellFactory;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.common.game.domain.Locale;
-import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
@@ -34,9 +34,14 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TableView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -44,6 +49,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 
+import static fr.tduf.gui.database.common.SupportConstants.LOG_TARGET_PROFILE_NAME;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.REFERENCE;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
@@ -80,6 +86,49 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         dynamicLinkControlsHelper = new DynamicLinkControlsHelper(mainStageController);
     }
 
+    public EventHandler<ActionEvent> handleGotoReferenceButtonMouseClick(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, String targetProfileName) {
+        return actionEvent -> {
+            Log.trace(THIS_CLASS_NAME, "->gotoReferenceButtonForLinkedTopic clicked, targetTopic:" + targetTopic + LOG_TARGET_PROFILE_NAME + targetProfileName);
+
+            switchToSelectedResourceForLinkedTopic(tableViewSelectionModel.getSelectedItem(), targetTopic, targetProfileName);
+        };
+    }
+
+    public EventHandler<MouseEvent> handleLinkTableMouseClick(String targetProfileName, DbDto.Topic targetTopic) {
+        return mouseEvent -> {
+            Log.trace(THIS_CLASS_NAME, "->handleLinkTableMouseClick, targetProfileName:" + targetProfileName + ", targetTopic:" + targetTopic);
+
+            if (MouseButton.PRIMARY == mouseEvent.getButton()
+                    && mouseEvent.getClickCount() == 2) {
+                TableViewHelper.getMouseSelectedItem(mouseEvent, ContentEntryDataItem.class)
+                        .ifPresent(selectedResource -> switchToSelectedResourceForLinkedTopic(selectedResource, targetTopic, targetProfileName));
+            }
+        };
+    }
+
+    public EventHandler<ActionEvent> handleBrowseResourcesButtonMouseClick(DbDto.Topic targetTopic, StringProperty targetReferenceProperty, int fieldRank) {
+        return actionEvent -> {
+            Log.trace(THIS_CLASS_NAME, "->browseResourcesButton clicked");
+
+            getResourcesStageController().initAndShowDialog(targetReferenceProperty, fieldRank, getLocalesChoiceBox().getValue(), targetTopic);
+        };
+    }
+
+    public EventHandler<ActionEvent> handleBrowseEntriesButtonMouseClick(DbDto.Topic targetTopic, List<Integer> labelFieldRanks, StringProperty targetEntryReferenceProperty, int fieldRank) {
+        return actionEvent -> {
+            Log.trace(THIS_CLASS_NAME, "->browseEntriesButton clicked");
+
+            getEntriesStageController().initAndShowDialog(targetEntryReferenceProperty.get(), fieldRank, targetTopic, labelFieldRanks);
+        };
+    }
+
+    public EventHandler<ActionEvent> handleGotoReferenceButtonMouseClick(DbDto.Topic targetTopic, int fieldRank, String targetProfileName) {
+        return actionEvent -> {
+            Log.trace(THIS_CLASS_NAME, "->gotoReferenceButton clicked, targetTopic:" + targetTopic + LOG_TARGET_PROFILE_NAME + targetProfileName);
+
+            switchToProfileAndRemoteEntry(targetProfileName, currentEntryIndexProperty().getValue(), fieldRank, currentTopicProperty().getValue(), targetTopic);
+        };
+    }
 
     void initTopToolbar() {
         getCreditsLabel().setText(DisplayConstants.LABEL_STATUS_VERSION);
@@ -245,27 +294,6 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         switchToContentEntry(effectiveIndex);
     }
 
-    void switchToSelectedResourceForLinkedTopic(ContentEntryDataItem selectedResource, DbDto.Topic targetTopic, String targetProfileName) {
-        ofNullable(selectedResource)
-                .ifPresent(resource -> {
-                    int remoteContentEntryId;
-                    String entryReference = selectedResource.referenceProperty().get();
-                    if (entryReference == null) {
-                        remoteContentEntryId = selectedResource.internalEntryIdProperty().get();
-                    } else {
-                        remoteContentEntryId = getMiner().getContentEntryInternalIdentifierWithReference(entryReference, targetTopic)
-                                .orElseThrow(() -> new IllegalStateException("No entry with ref: " + entryReference + " for topic: " + targetTopic));
-                    }
-
-                    switchToProfileAndEntry(targetProfileName, remoteContentEntryId, true);
-                });
-    }
-
-    void switchToProfileAndRemoteEntry(String profileName, int localEntryIndex, int fieldRank, DbDto.Topic localTopic, DbDto.Topic remoteTopic) {
-        getMiner().getRemoteContentEntryWithInternalIdentifier(localTopic, fieldRank, localEntryIndex, remoteTopic)
-                .ifPresent(remoteContentEntry -> switchToProfileAndEntry(profileName, remoteContentEntry.getId(), true));
-    }
-
     void switchToContentEntry(int entryIndex) {
         if (entryIndex < 0 || entryIndex >= getCurrentTopicObject().getData().getEntries().size()) {
             return;
@@ -413,6 +441,27 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                 .set(DisplayConstants.TOOLTIP_ERROR_CONTENT_NOT_FOUND);
 
         return DisplayConstants.VALUE_FIELD_DEFAULT;
+    }
+
+    private void switchToProfileAndRemoteEntry(String profileName, int localEntryIndex, int fieldRank, DbDto.Topic localTopic, DbDto.Topic remoteTopic) {
+        getMiner().getRemoteContentEntryWithInternalIdentifier(localTopic, fieldRank, localEntryIndex, remoteTopic)
+                .ifPresent(remoteContentEntry -> switchToProfileAndEntry(profileName, remoteContentEntry.getId(), true));
+    }
+
+    private void switchToSelectedResourceForLinkedTopic(ContentEntryDataItem selectedResource, DbDto.Topic targetTopic, String targetProfileName) {
+        ofNullable(selectedResource)
+                .ifPresent(resource -> {
+                    int remoteContentEntryId;
+                    String entryReference = selectedResource.referenceProperty().get();
+                    if (entryReference == null) {
+                        remoteContentEntryId = selectedResource.internalEntryIdProperty().get();
+                    } else {
+                        remoteContentEntryId = getMiner().getContentEntryInternalIdentifierWithReference(entryReference, targetTopic)
+                                .orElseThrow(() -> new IllegalStateException("No entry with ref: " + entryReference + " for topic: " + targetTopic));
+                    }
+
+                    switchToProfileAndEntry(targetProfileName, remoteContentEntryId, true);
+                });
     }
 
     private void updateConfiguration() {

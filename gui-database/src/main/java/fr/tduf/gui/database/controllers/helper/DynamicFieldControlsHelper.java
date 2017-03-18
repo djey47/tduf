@@ -125,7 +125,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         valueTextField.textProperty().bindBidirectional(property);
         if (!valueTextFieldReadOnly) {
-            valueTextField.focusedProperty().addListener(controller.handleTextFieldFocusChange(fieldRank, property));
+            valueTextField.focusedProperty().addListener(controller.getChangeData().handleTextFieldFocusChange(fieldRank, property));
         }
     }
 
@@ -184,13 +184,13 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
                         fieldBox,
                         DisplayConstants.LABEL_BUTTON_BROWSE,
                         DisplayConstants.TOOLTIP_BUTTON_BROWSE_ENTRIES,
-                        controller.handleBrowseEntriesButtonMouseClick(targetTopic, labelFieldRanks, entryReferenceProperty, fieldRank));
+                        viewData.handleBrowseEntriesButtonMouseClick(targetTopic, labelFieldRanks, entryReferenceProperty, fieldRank));
             }
             addContextualButtonWithActivationCondition(
                     fieldBox,
                     DisplayConstants.LABEL_BUTTON_GOTO,
                     DisplayConstants.TOOLTIP_BUTTON_GOTO_LINKED_ENTRY,
-                    controller.handleGotoReferenceButtonMouseClick(targetTopic, fieldRank, targetProfileName),
+                    viewData.handleGotoReferenceButtonMouseClick(targetTopic, fieldRank, targetProfileName),
                     not(errorProperty));
         }
 
@@ -203,7 +203,8 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         int fieldRank = field.getRank();
 
-        ItemViewModel itemViewModel = controller.getViewData().getItemPropsByFieldRank();
+        MainStageViewDataController viewData = controller.getViewData();
+        ItemViewModel itemViewModel = viewData.getItemPropsByFieldRank();
         StringProperty property = itemViewModel
                 .resolvedValuePropertyAtFieldRank(fieldRank);
         property.set(DisplayConstants.VALUE_RESOURCE_DEFAULT);
@@ -222,7 +223,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
                     fieldBox,
                     DisplayConstants.LABEL_BUTTON_BROWSE,
                     DisplayConstants.TOOLTIP_BUTTON_BROWSE_RESOURCES,
-                    controller.handleBrowseResourcesButtonMouseClick(effectiveTopic, rawValueProperty, fieldRank)
+                    viewData.handleBrowseResourcesButtonMouseClick(effectiveTopic, rawValueProperty, fieldRank)
             );
         }
 

@@ -6,7 +6,6 @@ import fr.tduf.gui.common.controllers.helper.DatabaseOpsHelper;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.javafx.helper.DesktopHelper;
-import fr.tduf.gui.common.javafx.helper.TableViewHelper;
 import fr.tduf.gui.common.javafx.helper.options.SimpleDialogOptions;
 import fr.tduf.gui.common.services.DatabaseChecker;
 import fr.tduf.gui.common.services.DatabaseFixer;
@@ -16,7 +15,6 @@ import fr.tduf.gui.database.controllers.helper.DialogsHelper;
 import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
-import fr.tduf.gui.database.dto.TopicLinkDto;
 import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
 import fr.tduf.gui.database.services.DatabaseLoader;
@@ -33,20 +31,14 @@ import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
-import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.concurrent.Worker;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
 import org.apache.commons.lang3.StringUtils;
 
@@ -58,7 +50,6 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import static fr.tduf.gui.database.common.DisplayConstants.*;
-import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static javafx.beans.binding.Bindings.when;
 import static javafx.concurrent.Worker.State.FAILED;
@@ -70,8 +61,6 @@ import static javafx.scene.control.Alert.AlertType.*;
  */
 public class MainStageController extends AbstractGuiController {
     private static final String THIS_CLASS_NAME = MainStageController.class.getSimpleName();
-
-    private static final String LOG_TARGET_PROFILE_NAME = ", targetProfileName:";
 
     private final Deque<EditorLocation> navigationHistory = new ArrayDeque<>();
 
@@ -412,115 +401,6 @@ public class MainStageController extends AbstractGuiController {
                 .ifPresent(topicObject -> askForGenuinePatchLocationAndImportDataFromFile());
     }
 
-    // TODO move to viewdata
-    public EventHandler<ActionEvent> handleBrowseResourcesButtonMouseClick(DbDto.Topic targetTopic, StringProperty targetReferenceProperty, int fieldRank) {
-        return actionEvent -> {
-            Log.trace(THIS_CLASS_NAME, "->browseResourcesButton clicked");
-
-            resourcesStageController.initAndShowDialog(targetReferenceProperty, fieldRank, localesChoiceBox.getValue(), targetTopic);
-        };
-    }
-
-    // TODO move to viewdata
-    public EventHandler<ActionEvent> handleBrowseEntriesButtonMouseClick(DbDto.Topic targetTopic, List<Integer> labelFieldRanks, StringProperty targetEntryReferenceProperty, int fieldRank) {
-        return actionEvent -> {
-            Log.trace(THIS_CLASS_NAME, "->browseEntriesButton clicked");
-
-            entriesStageController.initAndShowDialog(targetEntryReferenceProperty.get(), fieldRank, targetTopic, labelFieldRanks);
-        };
-    }
-
-    // TODO move to viewdata
-    public EventHandler<ActionEvent> handleGotoReferenceButtonMouseClick(DbDto.Topic targetTopic, int fieldRank, String targetProfileName) {
-        return actionEvent -> {
-            Log.trace(THIS_CLASS_NAME, "->gotoReferenceButton clicked, targetTopic:" + targetTopic + LOG_TARGET_PROFILE_NAME + targetProfileName);
-
-            viewDataController.switchToProfileAndRemoteEntry(targetProfileName, currentEntryIndexProperty.getValue(), fieldRank, currentTopicProperty.getValue(), targetTopic);
-        };
-    }
-
-    // TODO move to viewdata
-    public EventHandler<ActionEvent> handleGotoReferenceButtonMouseClick(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, String targetProfileName) {
-        return actionEvent -> {
-            Log.trace(THIS_CLASS_NAME, "->gotoReferenceButtonForLinkedTopic clicked, targetTopic:" + targetTopic + LOG_TARGET_PROFILE_NAME + targetProfileName);
-
-            viewDataController.switchToSelectedResourceForLinkedTopic(tableViewSelectionModel.getSelectedItem(), targetTopic, targetProfileName);
-        };
-    }
-
-    // TODO move to changedata
-    public EventHandler<ActionEvent> handleAddLinkedEntryButtonMouseClick(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, String targetProfileName, TopicLinkDto topicLinkObject) {
-        return actionEvent -> {
-            Log.trace(THIS_CLASS_NAME, "->handleAddLinkedEntryButton clicked, targetTopic:" + targetTopic + LOG_TARGET_PROFILE_NAME + targetProfileName);
-
-            List<DbStructureDto.Field> structureFields = databaseMiner.getDatabaseTopic(targetTopic)
-                    .orElseThrow(() -> new IllegalStateException("Database object not found for topic: " + targetTopic))
-                    .getStructure().getFields();
-            if (DatabaseStructureQueryHelper.getUidFieldRank(structureFields).isPresent()) {
-                // Association topic -> browse remote entries in target topic
-                entriesStageController.initAndShowModalDialog(empty(), targetTopic, targetProfileName)
-                        .ifPresent(selectedEntry -> addLinkedEntryWithTargetRefAndUpdateStage(tableViewSelectionModel, topicLinkObject.getTopic(), selectedEntry, topicLinkObject));
-            } else {
-                // Direct topic link -> add default entry in target topic
-                addLinkedEntryWithoutTargetRefAndUpdateStage(tableViewSelectionModel, targetTopic, topicLinkObject);
-            }
-        };
-    }
-
-    // TODO move to changedata
-    public EventHandler<ActionEvent> handleRemoveLinkedEntryButtonMouseClick(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
-        return actionEvent -> {
-            Log.trace(THIS_CLASS_NAME, "->handleRemoveLinkedEntryButton clicked");
-
-            ofNullable(tableViewSelectionModel.getSelectedItem())
-                    .ifPresent(selectedItem -> removeLinkedEntryAndUpdateStage(tableViewSelectionModel, topicLinkObject));
-        };
-    }
-
-    // TODO move to changedata
-    public EventHandler<ActionEvent> handleMoveLinkedEntryUpButtonMouseClick(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
-        return actionEvent -> {
-            Log.trace(THIS_CLASS_NAME, "->handleMoveLinkedEntryUpButton clicked");
-
-            ofNullable(tableViewSelectionModel.getSelectedItem())
-                    .ifPresent(selectedItem -> moveLinkedEntryUpAndUpdateStage(tableViewSelectionModel, topicLinkObject));
-        };
-    }
-
-    // TODO move to changedata
-    public EventHandler<ActionEvent> handleMoveLinkedEntryDownButtonMouseClick(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
-        return actionEvent -> {
-            Log.trace(THIS_CLASS_NAME, "->handleMoveLinkedEntryDownButton clicked");
-
-            ofNullable(tableViewSelectionModel.getSelectedItem())
-                    .ifPresent(selectedItem -> moveLinkedEntryDownAndUpdateStage(tableViewSelectionModel, topicLinkObject));
-        };
-    }
-
-    // TODO move to viewdata
-    public EventHandler<MouseEvent> handleLinkTableMouseClick(String targetProfileName, DbDto.Topic targetTopic) {
-        return mouseEvent -> {
-            Log.trace(THIS_CLASS_NAME, "->handleLinkTableMouseClick, targetProfileName:" + targetProfileName + ", targetTopic:" + targetTopic);
-
-            if (MouseButton.PRIMARY == mouseEvent.getButton()
-                    && mouseEvent.getClickCount() == 2) {
-                TableViewHelper.getMouseSelectedItem(mouseEvent, ContentEntryDataItem.class)
-                        .ifPresent(selectedResource -> viewDataController.switchToSelectedResourceForLinkedTopic(selectedResource, targetTopic, targetProfileName));
-            }
-        };
-    }
-
-    // TODO move to changedata
-    public ChangeListener<Boolean> handleTextFieldFocusChange(int fieldRank, StringProperty textFieldValueProperty) {
-        return (observable, oldFocusState, newFocusState) -> {
-            Log.trace(THIS_CLASS_NAME, "->handleTextFieldFocusChange, focused=" + newFocusState + ", fieldRank=" + fieldRank + ", fieldValue=" + textFieldValueProperty.get());
-
-            if (oldFocusState && !newFocusState) {
-                changeDataController.updateContentItem(currentTopicObject.getTopic(), fieldRank, textFieldValueProperty.get());
-            }
-        };
-    }
-
     void handleDatabaseLoaderSuccess() {
         if (databaseLoader.fetchValue().isEmpty()) {
             return;
@@ -704,7 +584,6 @@ public class MainStageController extends AbstractGuiController {
         };
     }
 
-
     private void browseForDatabaseDirectory() {
         if (runningServiceProperty.get()) {
             return;
@@ -768,51 +647,10 @@ public class MainStageController extends AbstractGuiController {
         viewDataController.updateEntriesAndSwitchTo(newEntryIndex);
     }
 
-    private void addLinkedEntryWithTargetRefAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, ContentEntryDataItem linkedEntry, TopicLinkDto topicLinkObject) {
-        changeDataController.addLinkedEntryWithTargetRef(targetTopic, linkedEntry);
-        viewDataController.updateAllLinkProperties(topicLinkObject);
-        TableViewHelper.selectLastRowAndScroll(tableViewSelectionModel.getTableView());
-    }
-
-    private void addLinkedEntryWithoutTargetRefAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, TopicLinkDto topicLinkObject) {
-        addLinkedEntryWithTargetRefAndUpdateStage(tableViewSelectionModel, targetTopic, null, topicLinkObject);
-    }
-
     private void removeCurrentEntryAndUpdateStage() {
         int currentEntryIndex = currentEntryIndexProperty.getValue();
         changeDataController.removeEntryWithIdentifier(currentEntryIndex, currentTopicProperty.getValue());
         viewDataController.updateEntriesAndSwitchTo(currentEntryIndex - 1);
-    }
-
-    private void removeLinkedEntryAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
-        ContentEntryDataItem selectedItem = tableViewSelectionModel.getSelectedItem();
-        changeDataController.removeEntryWithIdentifier(selectedItem.internalEntryIdProperty().get(), topicLinkObject.getTopic());
-        viewDataController.updateAllLinkProperties(topicLinkObject);
-        TableViewHelper.selectRowAndScroll(tableViewSelectionModel.getSelectedIndex(), tableViewSelectionModel.getTableView());
-    }
-
-    private void moveLinkedEntryUpAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
-        final TableView<ContentEntryDataItem> tableView = tableViewSelectionModel.getTableView();
-        int initialRowIndex = tableViewSelectionModel.getSelectedIndex();
-        if (initialRowIndex == 0) {
-            return;
-        }
-
-        changeDataController.moveEntryWithIdentifier(-1, tableViewSelectionModel.getSelectedItem().internalEntryIdProperty().get(), topicLinkObject.getTopic());
-        viewDataController.updateAllLinkProperties(topicLinkObject);
-        TableViewHelper.selectRowAndScroll(initialRowIndex - 1, tableView);
-    }
-
-    private void moveLinkedEntryDownAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
-        final TableView<ContentEntryDataItem> tableView = tableViewSelectionModel.getTableView();
-        int initialRowIndex = tableViewSelectionModel.getSelectedIndex();
-        if (initialRowIndex == tableView.getItems().size() - 1) {
-            return;
-        }
-
-        changeDataController.moveEntryWithIdentifier(1, tableViewSelectionModel.getSelectedItem().internalEntryIdProperty().get(), topicLinkObject.getTopic());
-        viewDataController.updateAllLinkProperties(topicLinkObject);
-        TableViewHelper.selectRowAndScroll(initialRowIndex + 1, tableView);
     }
 
     private void exportCurrentEntryAsLineAndShowResult() {
@@ -1068,12 +906,16 @@ public class MainStageController extends AbstractGuiController {
         return viewDataController;
     }
 
-    MainStageChangeDataController getChangeData() {
+    public MainStageChangeDataController getChangeData() {
         return changeDataController;
     }
 
     EntriesStageController getEntriesStageController() {
         return entriesStageController;
+    }
+
+    ResourcesStageController getResourcesStageController() {
+        return resourcesStageController;
     }
 
     FieldsBrowserStageController getFieldsBrowserStageController() {

@@ -47,6 +47,10 @@ abstract class AbstractMainStageSubController {
         return mainStageController.getEntriesStageController();
     }
 
+    protected ResourcesStageController getResourcesStageController() {
+        return mainStageController.getResourcesStageController();
+    }
+
     protected void setLayoutObject(EditorLayoutDto editorLayoutDto) {
         mainStageController.setLayoutObject(editorLayoutDto);
     }
@@ -63,6 +67,13 @@ abstract class AbstractMainStageSubController {
 
     protected DbDto getCurrentTopicObject() {
         return mainStageController.getCurrentTopicObject();
+    }
+
+    protected DbDto.Topic getCurrentTopic() {
+        if (mainStageController.getCurrentTopicObject() == null) {
+            return null;
+        }
+        return mainStageController.getCurrentTopicObject().getTopic();
     }
 
     protected void setCurrentTopicObject(DbDto currentTopicObject) {

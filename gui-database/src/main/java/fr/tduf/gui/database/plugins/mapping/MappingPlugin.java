@@ -207,7 +207,7 @@ public class MappingPlugin implements DatabasePlugin {
         browseResourceButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
         ControlHelper.setTooltipText(browseResourceButton, TOOLTIP_BUTTON_BROWSE_RESOURCES);
         browseResourceButton.setOnAction(
-                context.getMainStageController().handleBrowseResourcesButtonMouseClick(context.getRemoteTopic(), context.getRawValueProperty(), context.getFieldRank()));
+                context.getMainStageController().getViewData().handleBrowseResourcesButtonMouseClick(context.getRemoteTopic(), context.getRawValueProperty(), context.getFieldRank()));
        
         Button seeDirectoryButton = new Button(LABEL_BUTTON_GOTO);
         seeDirectoryButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);

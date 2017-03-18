@@ -1,7 +1,9 @@
 package fr.tduf.gui.database.controllers;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.common.javafx.helper.TableViewHelper;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
+import fr.tduf.gui.database.dto.TopicLinkDto;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
@@ -16,9 +18,16 @@ import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PatchPropertiesReadWriteHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.rw.DatabaseParser;
+import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.TableView;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.w3c.dom.Document;
 
@@ -27,6 +36,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.gui.database.common.SupportConstants.LOG_TARGET_PROFILE_NAME;
 import static fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange.ALL;
 import static fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange.fromCollection;
 import static java.util.Objects.requireNonNull;
@@ -65,6 +75,61 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
                 });
     }
 
+    public EventHandler<ActionEvent> handleAddLinkedEntryButtonMouseClick(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, String targetProfileName, TopicLinkDto topicLinkObject) {
+        return actionEvent -> {
+            Log.trace(THIS_CLASS_NAME, "->handleAddLinkedEntryButton clicked, targetTopic:" + targetTopic + LOG_TARGET_PROFILE_NAME + targetProfileName);
+
+            List<DbStructureDto.Field> structureFields = getMiner().getDatabaseTopic(targetTopic)
+                    .orElseThrow(() -> new IllegalStateException("Database object not found for topic: " + targetTopic))
+                    .getStructure().getFields();
+            if (DatabaseStructureQueryHelper.getUidFieldRank(structureFields).isPresent()) {
+                // Association topic -> browse remote entries in target topic
+                getEntriesStageController().initAndShowModalDialog(empty(), targetTopic, targetProfileName)
+                        .ifPresent(selectedEntry -> addLinkedEntryWithTargetRefAndUpdateStage(tableViewSelectionModel, topicLinkObject.getTopic(), selectedEntry, topicLinkObject));
+            } else {
+                // Direct topic link -> add default entry in target topic
+                addLinkedEntryWithoutTargetRefAndUpdateStage(tableViewSelectionModel, targetTopic, topicLinkObject);
+            }
+        };
+    }
+
+    public EventHandler<ActionEvent> handleRemoveLinkedEntryButtonMouseClick(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
+        return actionEvent -> {
+            Log.trace(THIS_CLASS_NAME, "->handleRemoveLinkedEntryButton clicked");
+
+            ofNullable(tableViewSelectionModel.getSelectedItem())
+                    .ifPresent(selectedItem -> removeLinkedEntryAndUpdateStage(tableViewSelectionModel, topicLinkObject));
+        };
+    }
+
+    public EventHandler<ActionEvent> handleMoveLinkedEntryUpButtonMouseClick(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
+        return actionEvent -> {
+            Log.trace(THIS_CLASS_NAME, "->handleMoveLinkedEntryUpButton clicked");
+
+            ofNullable(tableViewSelectionModel.getSelectedItem())
+                    .ifPresent(selectedItem -> moveLinkedEntryUpAndUpdateStage(tableViewSelectionModel, topicLinkObject));
+        };
+    }
+
+    public EventHandler<ActionEvent> handleMoveLinkedEntryDownButtonMouseClick(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
+        return actionEvent -> {
+            Log.trace(THIS_CLASS_NAME, "->handleMoveLinkedEntryDownButton clicked");
+
+            ofNullable(tableViewSelectionModel.getSelectedItem())
+                    .ifPresent(selectedItem -> moveLinkedEntryDownAndUpdateStage(tableViewSelectionModel, topicLinkObject));
+        };
+    }
+
+    public ChangeListener<Boolean> handleTextFieldFocusChange(int fieldRank, StringProperty textFieldValueProperty) {
+        return (observable, oldFocusState, newFocusState) -> {
+            Log.trace(THIS_CLASS_NAME, "->handleTextFieldFocusChange, focused=" + newFocusState + ", fieldRank=" + fieldRank + ", fieldValue=" + textFieldValueProperty.get());
+
+            if (oldFocusState && !newFocusState) {
+                updateContentItem(getCurrentTopic(), fieldRank, textFieldValueProperty.get());
+            }
+        };
+    }
+
     void updateResourceWithReferenceForLocale(DbDto.Topic topic, Locale locale, String resourceReference, String newResourceValue) {
         requireNonNull(getChangeHelper());
 
@@ -85,11 +150,6 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
     void removeEntryWithIdentifier(int internalEntryId, DbDto.Topic topic) {
         requireNonNull(getChangeHelper());
         getChangeHelper().removeEntryWithIdentifier(internalEntryId, topic);
-    }
-
-    void moveEntryWithIdentifier(int step, int internalEntryId, DbDto.Topic topic) {
-        requireNonNull(getChangeHelper());
-        getChangeHelper().moveEntryWithIdentifier(step, internalEntryId, topic);
     }
 
     void removeResourceWithReference(DbDto.Topic topic, String resourceReference) {
@@ -113,19 +173,11 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
         return newEntry.getId();
     }
 
-
-    void addLinkedEntryWithTargetRef(DbDto.Topic targetTopic, ContentEntryDataItem linkedEntry) {
-        String sourceEntryRef = getMiner().getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty().getValue(), currentTopicProperty().getValue()).get();
-        Optional<String> targetEntryRef = ofNullable(linkedEntry)
-                .map(entry -> entry.referenceProperty().get());
-
-        addLinkedEntry(sourceEntryRef, targetEntryRef, targetTopic);
-    }
-
     void addResourceWithReference(DbDto.Topic topic, Locale locale, String newResourceReference, String newResourceValue) {
         requireNonNull(getGenHelper());
         getChangeHelper().addResourceValueWithReference(topic, locale, newResourceReference, newResourceValue);
     }
+
 
     String exportCurrentEntryAsLine() {
         List<String> values = getRawValuesFromCurrentEntry();
@@ -181,6 +233,11 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
         patcher.apply(patchObject);
     }
 
+    private void moveEntryWithIdentifier(int step, int internalEntryId, DbDto.Topic topic) {
+        requireNonNull(getChangeHelper());
+        getChangeHelper().moveEntryWithIdentifier(step, internalEntryId, topic);
+    }
+
     private List<String> getRawValuesFromCurrentEntry() {
         final DbDto.Topic currentTopic = currentTopicProperty().getValue();
         final int currentEntryIndex = getCurrentEntryIndex();
@@ -195,10 +252,61 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
                 .collect(toList());
     }
 
+    private void addLinkedEntryWithTargetRef(DbDto.Topic targetTopic, ContentEntryDataItem linkedEntry) {
+        String sourceEntryRef = getMiner().getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty().getValue(), currentTopicProperty().getValue()).get();
+        Optional<String> targetEntryRef = ofNullable(linkedEntry)
+                .map(entry -> entry.referenceProperty().get());
+
+        addLinkedEntry(sourceEntryRef, targetEntryRef, targetTopic);
+    }
+
+    private void addLinkedEntryWithTargetRefAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, ContentEntryDataItem linkedEntry, TopicLinkDto topicLinkObject) {
+        addLinkedEntryWithTargetRef(targetTopic, linkedEntry);
+        getViewDataController().updateAllLinkProperties(topicLinkObject);
+        TableViewHelper.selectLastRowAndScroll(tableViewSelectionModel.getTableView());
+    }
+
+
+    private void addLinkedEntryWithoutTargetRefAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, TopicLinkDto topicLinkObject) {
+        addLinkedEntryWithTargetRefAndUpdateStage(tableViewSelectionModel, targetTopic, null, topicLinkObject);
+    }
+
     private void addLinkedEntry(String sourceEntryRef, Optional<String> targetEntryRef, DbDto.Topic targetTopic) {
         requireNonNull(getChangeHelper());
         ContentEntryDto newEntry = getChangeHelper().addContentsEntryWithDefaultItems(targetTopic);
         DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(newEntry, sourceEntryRef, targetEntryRef);
+    }
+
+    private void removeLinkedEntryAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
+        ContentEntryDataItem selectedItem = tableViewSelectionModel.getSelectedItem();
+        removeEntryWithIdentifier(selectedItem.internalEntryIdProperty().get(), topicLinkObject.getTopic());
+        getViewDataController().updateAllLinkProperties(topicLinkObject);
+        TableViewHelper.selectRowAndScroll(tableViewSelectionModel.getSelectedIndex(), tableViewSelectionModel.getTableView());
+    }
+
+
+    private void moveLinkedEntryUpAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
+        final TableView<ContentEntryDataItem> tableView = tableViewSelectionModel.getTableView();
+        int initialRowIndex = tableViewSelectionModel.getSelectedIndex();
+        if (initialRowIndex == 0) {
+            return;
+        }
+
+        moveEntryWithIdentifier(-1, tableViewSelectionModel.getSelectedItem().internalEntryIdProperty().get(), topicLinkObject.getTopic());
+        getViewDataController().updateAllLinkProperties(topicLinkObject);
+        TableViewHelper.selectRowAndScroll(initialRowIndex - 1, tableView);
+    }
+
+    private void moveLinkedEntryDownAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
+        final TableView<ContentEntryDataItem> tableView = tableViewSelectionModel.getTableView();
+        int initialRowIndex = tableViewSelectionModel.getSelectedIndex();
+        if (initialRowIndex == tableView.getItems().size() - 1) {
+            return;
+        }
+
+        moveEntryWithIdentifier(1, tableViewSelectionModel.getSelectedItem().internalEntryIdProperty().get(), topicLinkObject.getTopic());
+        getViewDataController().updateAllLinkProperties(topicLinkObject);
+        TableViewHelper.selectRowAndScroll(initialRowIndex + 1, tableView);
     }
 
     private static Optional<DbPatchDto> generatePatchObject(DbDto.Topic currentTopic, List<String> entryReferences, List<String> entryFields, List<DbDto> databaseObjects) {

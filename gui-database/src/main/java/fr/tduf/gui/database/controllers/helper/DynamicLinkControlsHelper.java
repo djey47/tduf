@@ -2,6 +2,7 @@ package fr.tduf.gui.database.controllers.helper;
 
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
+import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import fr.tduf.gui.database.controllers.MainStageController;
 import fr.tduf.gui.database.domain.ItemViewModel;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
@@ -110,7 +111,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         tableView.setItems(resourceData);
 
         ofNullable(topicLinkObject.getRemoteReferenceProfile())
-                .ifPresent(targetProfileName -> tableView.setOnMousePressed(controller.handleLinkTableMouseClick(targetProfileName, targetTopic)));
+                .ifPresent(targetProfileName -> tableView.setOnMousePressed(controller.getViewData().handleLinkTableMouseClick(targetProfileName, targetTopic)));
 
         fieldBox.getChildren().add(tableView);
 
@@ -132,28 +133,29 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
                 buttonsBox,
                 DisplayConstants.LABEL_BUTTON_GOTO,
                 DisplayConstants.TOOLTIP_BUTTON_GOTO_SELECTED_ENTRY,
-                controller.handleGotoReferenceButtonMouseClick(tableSelectionModel, targetTopic, profileName));
+                controller.getViewData().handleGotoReferenceButtonMouseClick(tableSelectionModel, targetTopic, profileName));
         if (!topicLinkObject.isReadOnly()) {
+            MainStageChangeDataController changeDataController = controller.getChangeData();
             addContextualButton(
                     buttonsBox,
                     DisplayConstants.LABEL_BUTTON_PLUS,
                     DisplayConstants.TOOLTIP_BUTTON_ADD_LINKED_ENTRY,
-                    controller.handleAddLinkedEntryButtonMouseClick(tableSelectionModel, targetTopic, profileName, topicLinkObject));
+                    changeDataController.handleAddLinkedEntryButtonMouseClick(tableSelectionModel, targetTopic, profileName, topicLinkObject));
             addContextualButton(
                     buttonsBox,
                     DisplayConstants.LABEL_BUTTON_MINUS,
                     DisplayConstants.TOOLTIP_BUTTON_DELETE_LINKED_ENTRY,
-                    controller.handleRemoveLinkedEntryButtonMouseClick(tableSelectionModel, topicLinkObject));
+                    changeDataController.handleRemoveLinkedEntryButtonMouseClick(tableSelectionModel, topicLinkObject));
             addContextualButton(
                     buttonsBox,
                     DisplayConstants.LABEL_BUTTON_UP,
                     DisplayConstants.TOOLTIP_BUTTON_MOVE_LINKED_ENTRY_UP,
-                    controller.handleMoveLinkedEntryUpButtonMouseClick(tableSelectionModel, topicLinkObject));
+                    changeDataController.handleMoveLinkedEntryUpButtonMouseClick(tableSelectionModel, topicLinkObject));
             addContextualButton(
                     buttonsBox,
                     DisplayConstants.LABEL_BUTTON_DOWN,
                     DisplayConstants.TOOLTIP_BUTTON_MOVE_LINKED_ENTRY_DOWN,
-                    controller.handleMoveLinkedEntryDownButtonMouseClick(tableSelectionModel, topicLinkObject));
+                    changeDataController.handleMoveLinkedEntryDownButtonMouseClick(tableSelectionModel, topicLinkObject));
         }
     }
 
