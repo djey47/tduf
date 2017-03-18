@@ -91,7 +91,7 @@ class MappingPluginTest {
         when(bankMapProperty.getValue()).thenReturn(new BankMap());
         
         // when
-        MappingEntry actualEntry = mappingPlugin.createMappingEntry("A3_V6", EXT_3D, "/tdu");
+        MappingEntry actualEntry = mappingPlugin.createMappingEntry("A3_V6", EXT_3D, "/tdu", context);
         
         // then
         assertThat(actualEntry.getKind()).isEqualTo(EXT_3D.getDescription());
@@ -106,7 +106,7 @@ class MappingPluginTest {
         when(bankMapProperty.getValue()).thenReturn(new BankMap());
         
         // when
-        MappingEntry actualEntry = mappingPlugin.createMappingEntry("ECD_2B2_7555", SHOP_EXT_3D, "/tdu");
+        MappingEntry actualEntry = mappingPlugin.createMappingEntry("ECD_2B2_7555", SHOP_EXT_3D, "/tdu", context);
         
         // then
         assertThat(actualEntry.getKind()).isEqualTo(SHOP_EXT_3D.getDescription());
@@ -121,7 +121,7 @@ class MappingPluginTest {
         when(bankMapProperty.getValue()).thenReturn(new BankMap());
         
         // when
-        MappingEntry actualEntry = mappingPlugin.createMappingEntry("M_SHIRT_ELLSON", CLOTHES_3D, "/tdu");
+        MappingEntry actualEntry = mappingPlugin.createMappingEntry("M_SHIRT_ELLSON", CLOTHES_3D, "/tdu", context);
         
         // then
         assertThat(actualEntry.getKind()).isEqualTo(CLOTHES_3D.getDescription());
