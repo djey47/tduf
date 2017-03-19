@@ -10,6 +10,8 @@ public class DisplayConstants {
     public static final String TOOLTIP_BUTTON_REGISTER = "Adds this file to Bnk1.map.";
     
     public static final String LABEL_BUTTON_REGISTER = "Register";
+
+    public static final String LABEL_ERROR_TOOLTIP_UNREGISTERED = "One of listed files is not registered into Bnk1.map, may not be taken into account by the game.";
     
     private DisplayConstants() {}
 }

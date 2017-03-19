@@ -258,9 +258,8 @@ public class CamerasPlugin implements DatabasePlugin {
         valueColumn.setCellFactory(forTableColumn());
         valueColumn.setOnEditCommit(getCellEditEventHandler(context.getRawValueProperty(), currentViewProperty));
 
-        setPropertyTableView.getColumns().add(settingColumn);
-        setPropertyTableView.getColumns().add(descriptionColumn);
-        setPropertyTableView.getColumns().add(valueColumn);
+        //noinspection unchecked
+        setPropertyTableView.getColumns().addAll(settingColumn, descriptionColumn, valueColumn);
 
         return setPropertyTableView;
     }
@@ -309,7 +308,7 @@ public class CamerasPlugin implements DatabasePlugin {
         return viewSelectorBox;
     }
 
-    private ChangeListener<CameraSetInfo> getCameraSelectorChangeListener(EditorContext context, ObjectProperty<CameraView> currentCameraViewProperty) {
+    private ChangeListener<CameraSetInfo> getCameraSelectorChangeListener(EditorContext editorContext, ObjectProperty<CameraView> currentCameraViewProperty) {
         return (ObservableValue<? extends CameraSetInfo> observable, CameraSetInfo oldValue, CameraSetInfo newValue) -> {
             if (Objects.equals(oldValue, newValue)) {
                 return;
@@ -317,7 +316,7 @@ public class CamerasPlugin implements DatabasePlugin {
 
             cameraViews.clear();
 
-            CamerasContext camerasContext = context.getCamerasContext();
+            CamerasContext camerasContext = editorContext.getCamerasContext();
             if (newValue == null) {
                 camerasContext.getErrorProperty().setValue(true);
                 camerasContext.getErrorMessageProperty().setValue(LABEL_ERROR_TOOLTIP);
@@ -331,7 +330,7 @@ public class CamerasPlugin implements DatabasePlugin {
                     currentCameraViewProperty.setValue(cameraViews.get(0));
                 }
 
-                context.getChangeDataController().updateContentItem(CAR_PHYSICS_DATA, FIELD_RANK_CAMERA, Integer.toString(newValue.getCameraIdentifier()));
+                editorContext.getChangeDataController().updateContentItem(CAR_PHYSICS_DATA, FIELD_RANK_CAMERA, Integer.toString(newValue.getCameraIdentifier()));
             }
         };
     }

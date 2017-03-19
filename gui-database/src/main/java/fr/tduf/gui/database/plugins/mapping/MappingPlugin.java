@@ -19,9 +19,7 @@ import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.Property;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -47,9 +45,7 @@ import static fr.tduf.gui.database.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.common.FxConstants.*;
 import static fr.tduf.gui.database.plugins.mapping.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.mapping.common.FxConstants.*;
-import static fr.tduf.libunlimited.common.game.FileConstants.PREFIX_SPOT_GARAGE_BANK;
-import static fr.tduf.libunlimited.common.game.FileConstants.PREFIX_SPOT_INTERIOR_BANK;
-import static fr.tduf.libunlimited.common.game.FileConstants.PREFIX_SPOT_LOUNGE_BANK;
+import static fr.tduf.libunlimited.common.game.FileConstants.*;
 import static fr.tduf.libunlimited.high.files.db.common.DatabaseConstants.*;
 import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
@@ -110,6 +106,10 @@ public class MappingPlugin implements DatabasePlugin {
 
     @Override
     public Node renderControls(EditorContext context) {
+        MappingContext mappingContext = context.getMappingContext();
+        mappingContext.setErrorProperty(context.getErrorProperty());
+        mappingContext.setErrorMessageProperty(context.getErrorMessageProperty());
+
         HBox hBox = new HBox();
         hBox.getStyleClass().add(CSS_CLASS_PLUGIN_BOX);
 
@@ -184,13 +184,14 @@ public class MappingPlugin implements DatabasePlugin {
     }
 
     private VBox createMainColumn(EditorContext context, TableView<MappingEntry> filesTableView) {
-        getEntries(context, filesTableView.getItems());
-
         VBox mainColumnBox = new VBox();
         mainColumnBox.getStyleClass().add(FxConstants.CSS_CLASS_MAIN_COLUMN);
         ObservableList<Node> mainColumnChildren = mainColumnBox.getChildren();
 
         mainColumnChildren.add(filesTableView);
+
+        context.getRawValueProperty().addListener(handleResourceValueChange(filesTableView.getItems(), context));
+
         return mainColumnBox;
     }
 
@@ -219,16 +220,6 @@ public class MappingPlugin implements DatabasePlugin {
         return buttonColumnBox;
     }
 
-    private void getEntries(EditorContext context, ObservableList<MappingEntry> files) {
-        int fieldRank = context.getFieldRank();
-        DbDto.Topic currentTopic = context.getCurrentTopic();
-        DbDto.Topic remoteTopic = context.getRemoteTopic();
-        BulkDatabaseMiner miner = context.getMiner();
-        String gameLocation = context.getGameLocation();
-
-        context.getRawValueProperty().addListener(handleResourceValueChange(files, fieldRank, currentTopic, remoteTopic, miner, gameLocation, context));
-    }
-
     private TableView<MappingEntry> createFilesTableView() {
         TableView<MappingEntry> mappingInfoTableView = new TableView<>(FXCollections.observableArrayList());
         mappingInfoTableView.getStyleClass().addAll(CSS_CLASS_TABLEVIEW, CSS_CLASS_MAPPING_TABLEVIEW);
@@ -253,7 +244,6 @@ public class MappingPlugin implements DatabasePlugin {
             Bindings.bindBidirectional(registerStatusProperty, cellData.getValue().registeredProperty(), new BooleanStatusToDisplayConverter());
             return registerStatusProperty;
         });
-//        registeredColumn.setCellFactory(forTableColumn());
 
         ObservableList<TableColumn<MappingEntry, ?>> columns = mappingInfoTableView.getColumns();
         columns.add(kindColumn);
@@ -264,7 +254,11 @@ public class MappingPlugin implements DatabasePlugin {
         return mappingInfoTableView;
     }
 
-    private ChangeListener<String> handleResourceValueChange(ObservableList<MappingEntry> files, int fieldRank, DbDto.Topic currentTopic, DbDto.Topic remoteTopic, BulkDatabaseMiner miner, String gameLocation, EditorContext editorContext) {
+    private ChangeListener<String> handleResourceValueChange(ObservableList<MappingEntry> files, EditorContext editorContext) {
+        int fieldRank = editorContext.getFieldRank();
+        StringProperty errorMessageProperty = editorContext.getMappingContext().getErrorMessageProperty();
+        BooleanProperty errorProperty = editorContext.getMappingContext().getErrorProperty();
+
         return (observable, oldValue, newValue) -> {
             if (Objects.equals(oldValue, newValue)) {
                 return;
@@ -272,11 +266,13 @@ public class MappingPlugin implements DatabasePlugin {
 
             files.clear();
 
-            String resourceValue = miner.getResourceEntryFromTopicAndReference(remoteTopic, newValue)
+            BulkDatabaseMiner miner = editorContext.getMiner();
+            String gameLocation = editorContext.getGameLocation();
+            String resourceValue = miner.getResourceEntryFromTopicAndReference(editorContext.getRemoteTopic(), newValue)
                     .flatMap(ResourceEntryDto::pickValue)
                     .orElse(VALUE_RESOURCE_DEFAULT);
 
-            switch (currentTopic) {
+            switch (editorContext.getCurrentTopic()) {
                 case CAR_PHYSICS_DATA:
                     addCarPhysicsEntries(files, fieldRank, gameLocation, resourceValue, editorContext);
                     break;
@@ -299,6 +295,20 @@ public class MappingPlugin implements DatabasePlugin {
                     addTutorialsEntries(files, fieldRank, gameLocation, resourceValue, editorContext);
                     break;
                 default:
+            }
+
+            boolean isRegistrationFailure = files.stream()
+                    .filter(entry -> !entry.isRegistered())
+                    .findFirst()
+                    .map(entry -> true)
+                    .orElse(false);
+
+            if (isRegistrationFailure) {
+                errorProperty.setValue(true);
+                errorMessageProperty.setValue(LABEL_ERROR_TOOLTIP_UNREGISTERED);
+            } else {
+                errorProperty.setValue(false);
+                errorMessageProperty.setValue("");
             }
         };
     }
