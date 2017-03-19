@@ -32,13 +32,6 @@ abstract class CommonHelper {
                 });
     }
 
-    protected Optional<Resource> getResourceFromDatabaseEntry(ContentEntryDto entry, int sourceFieldRank, DbDto.Topic targetTopic, int targetFieldRank) {
-        return entry.getItemAtRank(sourceFieldRank)
-                .flatMap(sourceItem -> miner.getContentEntryFromTopicWithReference(sourceItem.getRawValue(), targetTopic))
-                .flatMap(targetEntry -> miner.getLocalizedResourceValueFromContentEntry(targetEntry.getId(), targetFieldRank, targetTopic, DEFAULT_LOCALE))
-                .map(value -> Resource.from(DatabaseConstants.RESOURCE_REF_DEFAULT, value));
-    }
-
     protected static Optional<Integer> getIntValueFromDatabaseEntry(ContentEntryDto entry, int fieldRank) {
         return entry.getItemAtRank(fieldRank)
                 .map(ContentItemDto::getRawValue)

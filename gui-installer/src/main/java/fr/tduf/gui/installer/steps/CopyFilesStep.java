@@ -1,11 +1,11 @@
 package fr.tduf.gui.installer.steps;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.domain.RimSlot;
 import fr.tduf.gui.installer.domain.VehicleSlot;
 import fr.tduf.gui.installer.domain.exceptions.InternalStepException;
+import fr.tduf.libunlimited.common.game.FileConstants;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind;
@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import static fr.tduf.gui.installer.common.InstallerConstants.*;
+import static fr.tduf.libunlimited.common.game.FileConstants.*;
 import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -74,19 +75,19 @@ class CopyFilesStep extends GenericStep {
         Path targetPath;
         switch (assetDirectoryName) {
             case DIRECTORY_3D:
-                targetPath = banksPath.resolve(FileConstants.DIRECTORY_NAME_VEHICLES);
+                targetPath = banksPath.resolve(DIRECTORY_NAME_VEHICLES);
                 break;
             case DIRECTORY_SOUND:
-                targetPath = banksPath.resolve("Sound").resolve(FileConstants.DIRECTORY_NAME_VEHICLES);
+                targetPath = banksPath.resolve(DIRECTORY_SOUNDS).resolve(DIRECTORY_NAME_VEHICLES);
                 break;
             case DIRECTORY_GAUGES_HIGH:
-                targetPath = banksPath.resolve(FileConstants.DIRECTORY_NAME_FRONT_END).resolve("HiRes").resolve(FileConstants.DIRECTORY_NAME_HUDS);
+                targetPath = banksPath.resolve(DIRECTORY_NAME_FRONT_END).resolve("HiRes").resolve(DIRECTORY_NAME_HUDS);
                 break;
             case DIRECTORY_GAUGES_LOW:
-                targetPath = banksPath.resolve(FileConstants.DIRECTORY_NAME_FRONT_END).resolve("LowRes").resolve(FileConstants.DIRECTORY_NAME_HUDS);
+                targetPath = banksPath.resolve(DIRECTORY_NAME_FRONT_END).resolve("LowRes").resolve(DIRECTORY_NAME_HUDS);
                 break;
             case DIRECTORY_RIMS:
-                targetPath = banksPath.resolve(FileConstants.DIRECTORY_NAME_VEHICLES).resolve("Rim");
+                targetPath = banksPath.resolve(DIRECTORY_NAME_VEHICLES).resolve("Rim");
                 break;
             default:
                 throw new IllegalArgumentException("Unhandled asset type: " + assetDirectoryName);
@@ -131,7 +132,7 @@ class CopyFilesStep extends GenericStep {
 
     private static String getTargetFileNameForExteriorAndInterior(VehicleSlot vehicleSlot, String assetFileName) {
         String targetFileName;
-        if (FileConstants.PATTERN_INTERIOR_MODEL_BANK_FILE_NAME.matcher(assetFileName).matches()) {
+        if (PATTERN_INTERIOR_MODEL_BANK_FILE_NAME.matcher(assetFileName).matches()) {
             targetFileName = VehicleSlotsHelper.getBankFileName(vehicleSlot, INT_3D, true);
         } else {
             targetFileName = VehicleSlotsHelper.getBankFileName(vehicleSlot, EXT_3D, true);
@@ -140,7 +141,7 @@ class CopyFilesStep extends GenericStep {
     }
 
     private Path getTargetPathForRims(Path rimAssetPath, Path targetPath, VehicleSlot vehicleSlot) {
-        Matcher matcher = FileConstants.PATTERN_RIM_BANK_FILE_NAME.matcher(rimAssetPath.getFileName().toString());
+        Matcher matcher = PATTERN_RIM_BANK_FILE_NAME.matcher(rimAssetPath.getFileName().toString());
         if (!matcher.matches()) {
             return null;
         }
@@ -161,7 +162,7 @@ class CopyFilesStep extends GenericStep {
         String typeGroupValue = matcher.group(1);
         int rimIndex = Integer.parseInt(matcher.group(2));
 
-        MappedFileKind rimBankFileType = FileConstants.INDICATOR_FRONT_RIMS.equalsIgnoreCase(typeGroupValue) ? FRONT_RIMS_3D : REAR_RIMS_3D;
+        MappedFileKind rimBankFileType = INDICATOR_FRONT_RIMS.equalsIgnoreCase(typeGroupValue) ? FRONT_RIMS_3D : REAR_RIMS_3D;
         String targetFileNameForFrontRim = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, FRONT_RIMS_3D, rimIndex, true);
         String targetFileNameForRearRim = VehicleSlotsHelper.getRimBankFileName(vehicleSlot, REAR_RIMS_3D, rimIndex, true);
 
