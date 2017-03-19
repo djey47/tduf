@@ -75,19 +75,19 @@ class CopyFilesStep extends GenericStep {
         Path targetPath;
         switch (assetDirectoryName) {
             case DIRECTORY_3D:
-                targetPath = banksPath.resolve(DIRECTORY_NAME_VEHICLES);
+                targetPath = banksPath.resolve(DIRECTORY_VEHICLES);
                 break;
             case DIRECTORY_SOUND:
-                targetPath = banksPath.resolve(DIRECTORY_SOUNDS).resolve(DIRECTORY_NAME_VEHICLES);
+                targetPath = banksPath.resolve(DIRECTORY_SOUNDS).resolve(DIRECTORY_VEHICLES);
                 break;
             case DIRECTORY_GAUGES_HIGH:
-                targetPath = banksPath.resolve(DIRECTORY_NAME_FRONT_END).resolve("HiRes").resolve(DIRECTORY_NAME_HUDS);
+                targetPath = banksPath.resolve(DIRECTORY_FRONT_END).resolve("HiRes").resolve(DIRECTORY_HUDS);
                 break;
             case DIRECTORY_GAUGES_LOW:
-                targetPath = banksPath.resolve(DIRECTORY_NAME_FRONT_END).resolve("LowRes").resolve(DIRECTORY_NAME_HUDS);
+                targetPath = banksPath.resolve(DIRECTORY_FRONT_END).resolve("LowRes").resolve(DIRECTORY_HUDS);
                 break;
             case DIRECTORY_RIMS:
-                targetPath = banksPath.resolve(DIRECTORY_NAME_VEHICLES).resolve("Rim");
+                targetPath = banksPath.resolve(DIRECTORY_VEHICLES).resolve("Rim");
                 break;
             default:
                 throw new IllegalArgumentException("Unhandled asset type: " + assetDirectoryName);
@@ -132,7 +132,7 @@ class CopyFilesStep extends GenericStep {
 
     private static String getTargetFileNameForExteriorAndInterior(VehicleSlot vehicleSlot, String assetFileName) {
         String targetFileName;
-        if (PATTERN_INTERIOR_MODEL_BANK_FILE_NAME.matcher(assetFileName).matches()) {
+        if (PATTERN_INTERIOR_MODEL_BANK_FILE.matcher(assetFileName).matches()) {
             targetFileName = VehicleSlotsHelper.getBankFileName(vehicleSlot, INT_3D, true);
         } else {
             targetFileName = VehicleSlotsHelper.getBankFileName(vehicleSlot, EXT_3D, true);
@@ -141,7 +141,7 @@ class CopyFilesStep extends GenericStep {
     }
 
     private Path getTargetPathForRims(Path rimAssetPath, Path targetPath, VehicleSlot vehicleSlot) {
-        Matcher matcher = PATTERN_RIM_BANK_FILE_NAME.matcher(rimAssetPath.getFileName().toString());
+        Matcher matcher = PATTERN_RIM_BANK_FILE.matcher(rimAssetPath.getFileName().toString());
         if (!matcher.matches()) {
             return null;
         }
@@ -154,7 +154,7 @@ class CopyFilesStep extends GenericStep {
     }
 
     private List<String> getTargetFileNamesForRims(VehicleSlot vehicleSlot, Path assetPath) throws IOException {
-        Matcher matcher = FileConstants.PATTERN_RIM_BANK_FILE_NAME.matcher(assetPath.getFileName().toString());
+        Matcher matcher = FileConstants.PATTERN_RIM_BANK_FILE.matcher(assetPath.getFileName().toString());
         if (!matcher.matches()) {
             return null;
         }

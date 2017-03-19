@@ -1,11 +1,10 @@
 package fr.tduf.gui.installer.common.helper;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.libunlimited.high.files.db.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.DisplayConstants;
-import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.gui.installer.domain.*;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
+import fr.tduf.libunlimited.high.files.db.common.DatabaseConstants;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind;
@@ -20,9 +19,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
-import static fr.tduf.libunlimited.high.files.db.common.DatabaseConstants.*;
 import static fr.tduf.gui.installer.common.DisplayConstants.*;
 import static fr.tduf.gui.installer.domain.Resource.from;
+import static fr.tduf.libunlimited.common.game.FileConstants.SUFFIX_AUDIO_BANK_FILE;
+import static fr.tduf.libunlimited.common.game.FileConstants.SUFFIX_INTERIOR_BANK_FILE;
+import static fr.tduf.libunlimited.high.files.db.common.DatabaseConstants.*;
 import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.FRONT_RIMS_3D;
 import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.REAR_RIMS_3D;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
@@ -175,11 +176,11 @@ public class VehicleSlotsHelper extends CommonHelper {
                 break;
 
             case INT_3D:
-                suffix = FileConstants.SUFFIX_INTERIOR_BANK_FILE;
+                suffix = SUFFIX_INTERIOR_BANK_FILE;
                 break;
 
             case SOUND:
-                suffix = FileConstants.SUFFIX_AUDIO_BANK_FILE;
+                suffix = SUFFIX_AUDIO_BANK_FILE;
                 break;
 
             default:
