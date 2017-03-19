@@ -149,15 +149,7 @@ public class MappingPlugin implements DatabasePlugin {
         switch(kind) {
             case FRONT_RIMS_3D:
             case REAR_RIMS_3D:
-                int entryId = context.getMainStageController().getCurrentEntryIndex();
-                ContentEntryDto contentEntry = context.getMiner().getContentEntryFromTopicWithInternalIdentifier(entryId, context.getCurrentTopic())
-                        .orElseThrow(() -> new IllegalStateException("No content entry for identifier: " + entryId));
-                String brandRef = contentEntry.getItemAtRank(2)
-                        .map(ContentItemDto::getRawValue)
-                        .orElseThrow(() -> new IllegalStateException("No content item at rank: " + 2));
-                String brandName = context.getMiner().getResourceEntryFromTopicAndReference(context.getCurrentTopic(), brandRef)
-                        .flatMap(ResourceEntryDto::pickValue)
-                        .orElseThrow(() -> new IllegalStateException("No resource value for ref: " + brandRef));
+                String brandName = resolveRimDirectoryName(context);
                 filePath = kind.getParentPath().resolve(brandName).resolve(fileName);
                 break;
             case SHOP_EXT_3D:
@@ -194,7 +186,7 @@ public class MappingPlugin implements DatabasePlugin {
         VBox mainColumnBox = new VBox();
         mainColumnBox.getStyleClass().add(FxConstants.CSS_CLASS_MAIN_COLUMN);
         ObservableList<Node> mainColumnChildren = mainColumnBox.getChildren();
-        
+
         mainColumnChildren.add(filesTableView);
         return mainColumnBox;
     }
@@ -208,12 +200,12 @@ public class MappingPlugin implements DatabasePlugin {
         ControlHelper.setTooltipText(browseResourceButton, TOOLTIP_BUTTON_BROWSE_RESOURCES);
         browseResourceButton.setOnAction(
                 context.getMainStageController().getViewData().handleBrowseResourcesButtonMouseClick(context.getRemoteTopic(), context.getRawValueProperty(), context.getFieldRank()));
-       
+
         Button seeDirectoryButton = new Button(LABEL_BUTTON_GOTO);
         seeDirectoryButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
         ControlHelper.setTooltipText(seeDirectoryButton, TOOLTIP_BUTTON_SEE_DIRECTORY);
-        seeDirectoryButton.setOnAction(handleSeeDirectoryButtonAction(selectionModel, context.getGameLocation()));        
-        
+        seeDirectoryButton.setOnAction(handleSeeDirectoryButtonAction(selectionModel, context.getGameLocation()));
+
         Button registerButton = new Button(LABEL_BUTTON_REGISTER);
         registerButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
         ControlHelper.setTooltipText(registerButton, TOOLTIP_BUTTON_REGISTER);
@@ -293,7 +285,7 @@ public class MappingPlugin implements DatabasePlugin {
                     break;
                 case CLOTHES:
                     addClothesEntries(files, fieldRank, gameLocation, resourceValue, editorContext);
-                    break;                
+                    break;
                 case HOUSES:
                     addHousesEntries(files, fieldRank, gameLocation, resourceValue, editorContext);
                     break;
@@ -313,28 +305,28 @@ public class MappingPlugin implements DatabasePlugin {
             if (selectionModel.getSelectedItem() == null) {
                 return;
             }
-            
+
             String selectedPath = selectionModel.getSelectedItem().getPath();
             Path parentPath = resolveBankFilePath(gameLocation, selectedPath).getParent();
 
             DesktopHelper.openInFiles(parentPath);
         };
-    }    
-    
+    }
+
     private EventHandler<ActionEvent> handleRegisterButtonAction(TableView.TableViewSelectionModel<MappingEntry> selectionModel) {
         return event -> {
             MappingEntry selectedItem = selectionModel.getSelectedItem();
             if (selectedItem == null) {
                 return;
             }
-            
+
             MapHelper.registerPath(bankMapProperty.getValue(), selectedItem.getPath());
             selectedItem.registered();
         };
     }
-    
+
     // TODO create and use Database constants
-    
+
     private void addTutorialsEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue, EditorContext editorContext) {
         if (4 == fieldRank) {
             MappingEntry tutoMappingEntry = createMappingEntry(resourceValue, TUTO_INSTRUCTION, gameLocation, editorContext);
@@ -366,8 +358,8 @@ public class MappingPlugin implements DatabasePlugin {
             MappingEntry shopThumbMappingEntry = createMappingEntry(resourceValue, SPOT_MAP_SCREEN, gameLocation, editorContext);
             files.addAll(shopExtMappingEntry, shopIntMappingEntry, shopThumbMappingEntry);
         }
-    }    
-    
+    }
+
     private void addHousesEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue, EditorContext editorContext) {
         // TODO check locations
         if (2 == fieldRank) {
@@ -380,7 +372,7 @@ public class MappingPlugin implements DatabasePlugin {
             MappingEntry realtorExtMappingEntry = createMappingEntry(resourceValue, REALTOR_EXT_3D, gameLocation, editorContext);
             MappingEntry realtorIntMappingEntry = createMappingEntry(resourceValue, REALTOR_INT_3D, gameLocation, editorContext);
             MappingEntry thumbMappingEntry = createMappingEntry(resourceValue, SPOT_MAP_SCREEN, gameLocation, editorContext);
-            files.addAll(realtorExtMappingEntry, realtorIntMappingEntry,  thumbMappingEntry);           
+            files.addAll(realtorExtMappingEntry, realtorIntMappingEntry,  thumbMappingEntry);
         }
     }
 
@@ -402,5 +394,19 @@ public class MappingPlugin implements DatabasePlugin {
             MappingEntry hgeMappingEntry = createMappingEntry(resourceValue, HUD_HIGH, gameLocation, editorContext);
             files.addAll(lgeMappingEntry, hgeMappingEntry);
         }
+    }
+
+    private String resolveRimDirectoryName(EditorContext context) {
+        int entryId = context.getMainStageController().getCurrentEntryIndex();
+        DbDto.Topic currentTopic = context.getCurrentTopic();
+        BulkDatabaseMiner miner = context.getMiner();
+        ContentEntryDto contentEntry = miner.getContentEntryFromTopicWithInternalIdentifier(entryId, currentTopic)
+                .orElseThrow(() -> new IllegalStateException("No content entry for identifier: " + entryId));
+        String directoryRef = contentEntry.getItemAtRank(13)
+                .map(ContentItemDto::getRawValue)
+                .orElseThrow(() -> new IllegalStateException("No content item for directory name"));
+        return miner.getResourceEntryFromTopicAndReference(currentTopic, directoryRef)
+                .flatMap(ResourceEntryDto::pickValue)
+                .orElseThrow(() -> new IllegalStateException("No resource value for ref: " + directoryRef));
     }
 }
