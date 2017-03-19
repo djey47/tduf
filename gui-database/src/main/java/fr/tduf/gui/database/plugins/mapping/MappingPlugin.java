@@ -47,6 +47,10 @@ import static fr.tduf.gui.database.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.common.FxConstants.*;
 import static fr.tduf.gui.database.plugins.mapping.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.mapping.common.FxConstants.*;
+import static fr.tduf.libunlimited.common.game.FileConstants.PREFIX_SPOT_GARAGE_BANK;
+import static fr.tduf.libunlimited.common.game.FileConstants.PREFIX_SPOT_INTERIOR_BANK;
+import static fr.tduf.libunlimited.common.game.FileConstants.PREFIX_SPOT_LOUNGE_BANK;
+import static fr.tduf.libunlimited.high.files.db.common.DatabaseConstants.*;
 import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.*;
 import static java.util.Collections.singletonList;
 import static javafx.geometry.Orientation.VERTICAL;
@@ -149,8 +153,7 @@ public class MappingPlugin implements DatabasePlugin {
         switch(kind) {
             case FRONT_RIMS_3D:
             case REAR_RIMS_3D:
-                String brandName = resolveRimDirectoryName(context);
-                filePath = kind.getParentPath().resolve(brandName).resolve(fileName);
+                filePath = kind.getParentPath().resolve(resolveRimDirectoryName(context)).resolve(fileName);
                 break;
             case SHOP_EXT_3D:
             case HOUSE_EXT_3D:
@@ -158,18 +161,17 @@ public class MappingPlugin implements DatabasePlugin {
                 break;
             case SHOP_INT_3D:
             case REALTOR_INT_3D:
-                filePath = kind.getParentPath().resolve("i" + fileName.substring(1, lastPartIndex).toLowerCase() + fileName.substring(dotIndex));
+                filePath = kind.getParentPath().resolve(PREFIX_SPOT_INTERIOR_BANK + fileName.substring(1, lastPartIndex).toLowerCase() + fileName.substring(dotIndex));
                 break;            
             case HOUSE_LOUNGE_3D:
-                filePath = kind.getParentPath().resolve("l" + fileName.substring(1, lastPartIndex).toLowerCase() + fileName.substring(dotIndex));
+                filePath = kind.getParentPath().resolve(PREFIX_SPOT_LOUNGE_BANK + fileName.substring(1, lastPartIndex).toLowerCase() + fileName.substring(dotIndex));
                 break;            
             case HOUSE_GARAGE_3D:
-                filePath = kind.getParentPath().resolve("g" + fileName.substring(1, lastPartIndex).toLowerCase() + fileName.substring(dotIndex));
+                filePath = kind.getParentPath().resolve(PREFIX_SPOT_GARAGE_BANK + fileName.substring(1, lastPartIndex).toLowerCase() + fileName.substring(dotIndex));
                 break;
             case CLOTHES_3D:
                 // FIXME check location and find reliable way to extract brand
-                brandName = fileName.substring(lastPartIndex + 1, dotIndex);
-                filePath = kind.getParentPath().resolve(brandName).resolve(fileName);
+                filePath = kind.getParentPath().resolve(fileName.substring(lastPartIndex + 1, dotIndex)).resolve(fileName);
                 break;
             default:
                 filePath = kind.getParentPath().resolve(fileName);
@@ -325,34 +327,32 @@ public class MappingPlugin implements DatabasePlugin {
         };
     }
 
-    // TODO create and use Database constants
-
     private void addTutorialsEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue, EditorContext editorContext) {
-        if (4 == fieldRank) {
+        if (FIELD_RANK_VOICE_FILE == fieldRank) {
             MappingEntry tutoMappingEntry = createMappingEntry(resourceValue, TUTO_INSTRUCTION, gameLocation, editorContext);
             files.add(tutoMappingEntry);
         }
     }
 
     private void addRimsEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue, EditorContext editorContext) {
-        if (14 == fieldRank) {
+        if (FIELD_RANK_RSC_FILE_NAME_FRONT == fieldRank) {
             MappingEntry frontMappingEntry = createMappingEntry(resourceValue, FRONT_RIMS_3D, gameLocation, editorContext);
             files.add(frontMappingEntry);
-        } else if (15 == fieldRank) {
+        } else if (FIELD_RANK_RSC_FILE_NAME_REAR == fieldRank) {
             MappingEntry rearMappingEntry = createMappingEntry(resourceValue, REAR_RIMS_3D, gameLocation, editorContext);
             files.add(rearMappingEntry);
         }
     }
 
     private void addClothesEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue, EditorContext editorContext) {
-        if (2 == fieldRank) {
+        if (FIELD_RANK_FURNITURE_FILE == fieldRank) {
             MappingEntry clothesMappingEntry = createMappingEntry(resourceValue, CLOTHES_3D, gameLocation, editorContext);
             files.add(clothesMappingEntry);
         }
     }
 
     private void addCarShopsEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue, EditorContext editorContext) {
-        if (2 == fieldRank) {
+        if (FIELD_RANK_DEALER_NAME == fieldRank) {
             MappingEntry shopExtMappingEntry = createMappingEntry(resourceValue, SHOP_EXT_3D, gameLocation, editorContext);
             MappingEntry shopIntMappingEntry = createMappingEntry(resourceValue, SHOP_INT_3D, gameLocation, editorContext);
             MappingEntry shopThumbMappingEntry = createMappingEntry(resourceValue, SPOT_MAP_SCREEN, gameLocation, editorContext);
@@ -362,13 +362,13 @@ public class MappingPlugin implements DatabasePlugin {
 
     private void addHousesEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue, EditorContext editorContext) {
         // TODO check locations
-        if (2 == fieldRank) {
+        if (FIELD_RANK_SPOT_NAME == fieldRank) {
             MappingEntry houseExtMappingEntry = createMappingEntry(resourceValue, HOUSE_EXT_3D, gameLocation, editorContext);
             MappingEntry houseLoungeMappingEntry = createMappingEntry(resourceValue, HOUSE_LOUNGE_3D, gameLocation, editorContext);
             MappingEntry houseGarageMappingEntry = createMappingEntry(resourceValue, HOUSE_GARAGE_3D, gameLocation, editorContext);
             MappingEntry thumbMappingEntry = createMappingEntry(resourceValue, SPOT_MAP_SCREEN, gameLocation, editorContext);
             files.addAll(houseExtMappingEntry, houseLoungeMappingEntry, houseGarageMappingEntry, thumbMappingEntry);
-        } else if (3 == fieldRank) {
+        } else if (FIELD_RANK_REALTOR == fieldRank) {
             MappingEntry realtorExtMappingEntry = createMappingEntry(resourceValue, REALTOR_EXT_3D, gameLocation, editorContext);
             MappingEntry realtorIntMappingEntry = createMappingEntry(resourceValue, REALTOR_INT_3D, gameLocation, editorContext);
             MappingEntry thumbMappingEntry = createMappingEntry(resourceValue, SPOT_MAP_SCREEN, gameLocation, editorContext);
@@ -377,19 +377,19 @@ public class MappingPlugin implements DatabasePlugin {
     }
 
     private void addCarPacksEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue, EditorContext editorContext) {
-        if (3 == fieldRank) {
+        if (FIELD_RANK_CAR_FILE_NAME_SWAP == fieldRank) {
             MappingEntry extMappingEntry = createMappingEntry(resourceValue, EXT_3D, gameLocation, editorContext);
             files.add(extMappingEntry);
         }
     }
 
     private void addCarPhysicsEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue, EditorContext editorContext) {
-        if (9 == fieldRank) {
+        if (FIELD_RANK_CAR_FILE_NAME == fieldRank) {
             MappingEntry extMappingEntry = createMappingEntry(resourceValue, EXT_3D, gameLocation, editorContext);
             MappingEntry intMappingEntry = createMappingEntry(resourceValue, INT_3D, gameLocation, editorContext);
             MappingEntry sndMappingEntry = createMappingEntry(resourceValue, SOUND, gameLocation, editorContext);
             files.addAll(extMappingEntry, intMappingEntry, sndMappingEntry);
-        } else if (11 == fieldRank) {
+        } else if (FIELD_RANK_HUD_FILE_NAME == fieldRank) {
             MappingEntry lgeMappingEntry = createMappingEntry(resourceValue, HUD_LOW, gameLocation, editorContext);
             MappingEntry hgeMappingEntry = createMappingEntry(resourceValue, HUD_HIGH, gameLocation, editorContext);
             files.addAll(lgeMappingEntry, hgeMappingEntry);
@@ -402,7 +402,7 @@ public class MappingPlugin implements DatabasePlugin {
         BulkDatabaseMiner miner = context.getMiner();
         ContentEntryDto contentEntry = miner.getContentEntryFromTopicWithInternalIdentifier(entryId, currentTopic)
                 .orElseThrow(() -> new IllegalStateException("No content entry for identifier: " + entryId));
-        String directoryRef = contentEntry.getItemAtRank(13)
+        String directoryRef = contentEntry.getItemAtRank(FIELD_RANK_RSC_PATH)
                 .map(ContentItemDto::getRawValue)
                 .orElseThrow(() -> new IllegalStateException("No content item for directory name"));
         return miner.getResourceEntryFromTopicAndReference(currentTopic, directoryRef)
