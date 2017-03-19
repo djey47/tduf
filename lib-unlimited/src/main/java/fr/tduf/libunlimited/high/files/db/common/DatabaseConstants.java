@@ -29,6 +29,7 @@ public class DatabaseConstants {
 
     // CLOTHES
     public static final int FIELD_RANK_FURNITURE_FILE = 2;
+    public static final int FIELD_RANK_FURNITURE_BRAND = 5;
 
     // CAR PACKS
     public static final int FIELD_RANK_CAR_FILE_NAME_SWAP = 3;

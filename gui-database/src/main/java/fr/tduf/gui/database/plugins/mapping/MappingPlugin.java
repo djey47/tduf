@@ -52,6 +52,7 @@ import static fr.tduf.libunlimited.common.game.FileConstants.PREFIX_SPOT_INTERIO
 import static fr.tduf.libunlimited.common.game.FileConstants.PREFIX_SPOT_LOUNGE_BANK;
 import static fr.tduf.libunlimited.high.files.db.common.DatabaseConstants.*;
 import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.*;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
 import static java.util.Collections.singletonList;
 import static javafx.geometry.Orientation.VERTICAL;
 
@@ -171,8 +172,7 @@ public class MappingPlugin implements DatabasePlugin {
                 filePath = kind.getParentPath().resolve(PREFIX_SPOT_GARAGE_BANK + fileName.substring(1, lastPartIndex).toLowerCase() + fileName.substring(dotIndex));
                 break;
             case CLOTHES_3D:
-                // FIXME check location and find reliable way to extract brand
-                filePath = kind.getParentPath().resolve(fileName.substring(lastPartIndex + 1, dotIndex)).resolve(fileName);
+                filePath = kind.getParentPath().resolve(resolveClothesBrandDirectoryName(context)).resolve(fileName);
                 break;
             default:
                 filePath = kind.getParentPath().resolve(fileName);
@@ -362,7 +362,6 @@ public class MappingPlugin implements DatabasePlugin {
     }
 
     private void addHousesEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue, EditorContext editorContext) {
-        // TODO check locations
         if (FIELD_RANK_SPOT_NAME == fieldRank) {
             MappingEntry houseExtMappingEntry = createMappingEntry(resourceValue, HOUSE_EXT_3D, gameLocation, editorContext);
             MappingEntry houseLoungeMappingEntry = createMappingEntry(resourceValue, HOUSE_LOUNGE_3D, gameLocation, editorContext);
@@ -409,5 +408,22 @@ public class MappingPlugin implements DatabasePlugin {
         return miner.getResourceEntryFromTopicAndReference(currentTopic, directoryRef)
                 .flatMap(ResourceEntryDto::pickValue)
                 .orElseThrow(() -> new IllegalStateException("No resource value for ref: " + directoryRef));
+    }
+
+    private String resolveClothesBrandDirectoryName(EditorContext context) {
+        int entryId = context.getMainStageController().getCurrentEntryIndex();
+        DbDto.Topic currentTopic = context.getCurrentTopic();
+        BulkDatabaseMiner miner = context.getMiner();
+        ContentEntryDto clothesContentEntry = miner.getContentEntryFromTopicWithInternalIdentifier(entryId, currentTopic)
+                .orElseThrow(() -> new IllegalStateException("No content entry for identifier: " + entryId));
+        String brandRef = clothesContentEntry.getItemAtRank(FIELD_RANK_FURNITURE_BRAND)
+                .map(ContentItemDto::getRawValue)
+                .orElseThrow(() -> new IllegalStateException("No content item for brand reference"));
+        ContentEntryDto brandsContentEntry = miner.getContentEntryFromTopicWithReference(brandRef, BRANDS)
+                .orElseThrow(() -> new IllegalStateException("No brand content entry for ref: " + brandRef));
+        return brandsContentEntry.getItemAtRank(FIELD_RANK_MANUFACTURER_ID)
+                .flatMap(item -> miner.getResourceEntryFromTopicAndReference(BRANDS, item.getRawValue()))
+                .flatMap(ResourceEntryDto::pickValue)
+                .orElseThrow(() -> new IllegalStateException("No manufacturer id available"));
     }
 }
