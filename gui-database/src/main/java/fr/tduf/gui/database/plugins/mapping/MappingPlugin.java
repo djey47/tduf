@@ -157,6 +157,7 @@ public class MappingPlugin implements DatabasePlugin {
                 break;
             case SHOP_EXT_3D:
             case HOUSE_EXT_3D:
+            case REALTOR_EXT_3D:
                 filePath = kind.getParentPath().resolve(fileName.substring(0, lastPartIndex).toLowerCase() + fileName.substring(dotIndex));
                 break;
             case SHOP_INT_3D:
