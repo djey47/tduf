@@ -1,6 +1,6 @@
 package fr.tduf.gui.installer.common.helper;
 
-import fr.tduf.gui.installer.common.DatabaseConstants;
+import fr.tduf.libunlimited.high.files.db.common.DatabaseConstants;
 import fr.tduf.gui.installer.domain.Brand;
 import fr.tduf.gui.installer.domain.Resource;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;

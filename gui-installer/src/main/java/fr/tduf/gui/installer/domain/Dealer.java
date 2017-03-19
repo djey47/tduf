@@ -1,6 +1,6 @@
 package fr.tduf.gui.installer.domain;
 
-import fr.tduf.gui.installer.common.DatabaseConstants;
+import fr.tduf.libunlimited.high.files.db.common.DatabaseConstants;
 
 import java.util.List;
 import java.util.Optional;

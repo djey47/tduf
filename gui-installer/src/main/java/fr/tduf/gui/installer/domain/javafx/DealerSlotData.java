@@ -1,6 +1,6 @@
 package fr.tduf.gui.installer.domain.javafx;
 
-import fr.tduf.gui.installer.common.DatabaseConstants;
+import fr.tduf.libunlimited.high.files.db.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.domain.Dealer;

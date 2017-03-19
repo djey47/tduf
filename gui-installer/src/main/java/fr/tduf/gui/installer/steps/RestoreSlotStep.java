@@ -1,7 +1,7 @@
 package fr.tduf.gui.installer.steps;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.installer.common.DatabaseConstants;
+import fr.tduf.libunlimited.high.files.db.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.common.TDUCPConstants;
 import fr.tduf.gui.installer.common.helper.DealerHelper;

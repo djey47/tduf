@@ -1,6 +1,6 @@
 package fr.tduf.gui.installer.common.helper;
 
-import fr.tduf.gui.installer.common.DatabaseConstants;
+import fr.tduf.libunlimited.high.files.db.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.domain.Dealer;
 import fr.tduf.gui.installer.domain.Resource;
@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-import static fr.tduf.gui.installer.common.DatabaseConstants.*;
+import static fr.tduf.libunlimited.high.files.db.common.DatabaseConstants.*;
 import static fr.tduf.gui.installer.common.DisplayConstants.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_SHOPS;
 import static java.util.Collections.singletonList;

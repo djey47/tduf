@@ -1,4 +1,4 @@
-package fr.tduf.gui.installer.common;
+package fr.tduf.libunlimited.high.files.db.common;
 
 /**
  * Gives all constants to access particular information in TDU database.

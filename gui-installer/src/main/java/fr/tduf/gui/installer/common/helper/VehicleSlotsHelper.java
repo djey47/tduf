@@ -1,7 +1,7 @@
 package fr.tduf.gui.installer.common.helper;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.installer.common.DatabaseConstants;
+import fr.tduf.libunlimited.high.files.db.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.FileConstants;
 import fr.tduf.gui.installer.domain.*;
@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
-import static fr.tduf.gui.installer.common.DatabaseConstants.*;
+import static fr.tduf.libunlimited.high.files.db.common.DatabaseConstants.*;
 import static fr.tduf.gui.installer.common.DisplayConstants.*;
 import static fr.tduf.gui.installer.domain.Resource.from;
 import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.FRONT_RIMS_3D;
