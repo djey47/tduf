@@ -1,8 +1,8 @@
 package fr.tduf.gui.installer.common.helper;
 
-import fr.tduf.gui.installer.domain.Dealer;
-import fr.tduf.gui.installer.domain.Resource;
-import fr.tduf.gui.installer.domain.VehicleSlot;
+import fr.tduf.libunlimited.common.game.domain.Dealer;
+import fr.tduf.libunlimited.common.game.domain.Resource;
+import fr.tduf.libunlimited.common.game.domain.VehicleSlot;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;

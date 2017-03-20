@@ -1,7 +1,7 @@
 package fr.tduf.gui.installer.common.helper;
 
-import fr.tduf.gui.installer.domain.Brand;
-import fr.tduf.gui.installer.domain.Resource;
+import fr.tduf.libunlimited.common.game.domain.Brand;
+import fr.tduf.libunlimited.common.game.domain.Resource;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
@@ -20,7 +20,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.List;
 import java.util.Optional;
 
-import static fr.tduf.gui.installer.domain.Resource.from;
+import static fr.tduf.libunlimited.common.game.domain.Resource.from;
 import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
 import static java.util.Arrays.asList;

@@ -4,7 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.common.javafx.helper.TableViewHelper;
 import fr.tduf.gui.installer.common.helper.DealerHelper;
-import fr.tduf.gui.installer.domain.Dealer;
+import fr.tduf.libunlimited.common.game.domain.Dealer;
 import fr.tduf.gui.installer.domain.exceptions.AbortedInteractiveStepException;
 import fr.tduf.gui.installer.domain.javafx.DealerSlotData;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;

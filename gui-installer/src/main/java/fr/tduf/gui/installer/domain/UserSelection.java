@@ -1,5 +1,8 @@
 package fr.tduf.gui.installer.domain;
 
+import fr.tduf.libunlimited.common.game.domain.Dealer;
+import fr.tduf.libunlimited.common.game.domain.VehicleSlot;
+
 import java.util.Optional;
 
 import static java.util.Optional.empty;

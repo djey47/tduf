@@ -2,8 +2,8 @@ package fr.tduf.gui.installer.steps;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
-import fr.tduf.gui.installer.domain.RimSlot;
-import fr.tduf.gui.installer.domain.VehicleSlot;
+import fr.tduf.libunlimited.common.game.domain.RimSlot;
+import fr.tduf.libunlimited.common.game.domain.VehicleSlot;
 import fr.tduf.gui.installer.domain.exceptions.InternalStepException;
 import fr.tduf.libunlimited.common.game.FileConstants;
 import fr.tduf.libunlimited.common.helper.FilesHelper;

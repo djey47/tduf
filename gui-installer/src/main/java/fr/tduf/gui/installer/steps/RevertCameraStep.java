@@ -2,7 +2,7 @@ package fr.tduf.gui.installer.steps;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
-import fr.tduf.gui.installer.domain.VehicleSlot;
+import fr.tduf.libunlimited.common.game.domain.VehicleSlot;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.CustomizableCameraView;
 import fr.tduf.libunlimited.low.files.bin.cameras.helper.CamerasHelper;
 

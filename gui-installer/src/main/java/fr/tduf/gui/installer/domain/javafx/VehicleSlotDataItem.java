@@ -1,8 +1,8 @@
 package fr.tduf.gui.installer.domain.javafx;
 
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
-import fr.tduf.gui.installer.domain.SecurityOptions;
-import fr.tduf.gui.installer.domain.VehicleSlot;
+import fr.tduf.libunlimited.common.game.domain.SecurityOptions;
+import fr.tduf.libunlimited.common.game.domain.VehicleSlot;
 import javafx.beans.property.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 

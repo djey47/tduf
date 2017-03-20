@@ -2,7 +2,7 @@ package fr.tduf.gui.installer.common.helper;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.DisplayConstants;
-import fr.tduf.gui.installer.domain.*;
+import fr.tduf.libunlimited.common.game.domain.*;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.db.common.DatabaseConstants;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 import static fr.tduf.gui.installer.common.DisplayConstants.*;
-import static fr.tduf.gui.installer.domain.Resource.from;
+import static fr.tduf.libunlimited.common.game.domain.Resource.from;
 import static fr.tduf.libunlimited.common.game.FileConstants.SUFFIX_AUDIO_BANK_FILE;
 import static fr.tduf.libunlimited.common.game.FileConstants.SUFFIX_INTERIOR_BANK_FILE;
 import static fr.tduf.libunlimited.high.files.db.common.DatabaseConstants.*;

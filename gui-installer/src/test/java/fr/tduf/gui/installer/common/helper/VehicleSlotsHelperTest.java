@@ -1,10 +1,10 @@
 package fr.tduf.gui.installer.common.helper;
 
 import fr.tduf.libunlimited.high.files.db.common.DatabaseConstants;
-import fr.tduf.gui.installer.domain.Brand;
-import fr.tduf.gui.installer.domain.RimSlot;
-import fr.tduf.gui.installer.domain.SecurityOptions;
-import fr.tduf.gui.installer.domain.VehicleSlot;
+import fr.tduf.libunlimited.common.game.domain.Brand;
+import fr.tduf.libunlimited.common.game.domain.RimSlot;
+import fr.tduf.libunlimited.common.game.domain.SecurityOptions;
+import fr.tduf.libunlimited.common.game.domain.VehicleSlot;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.SlotKind.ALL;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.VehicleKind.DRIVABLE;
-import static fr.tduf.gui.installer.domain.Resource.from;
+import static fr.tduf.libunlimited.common.game.domain.Resource.from;
 import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
 import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;

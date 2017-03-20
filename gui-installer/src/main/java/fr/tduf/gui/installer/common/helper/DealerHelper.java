@@ -2,8 +2,8 @@ package fr.tduf.gui.installer.common.helper;
 
 import fr.tduf.libunlimited.high.files.db.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.DisplayConstants;
-import fr.tduf.gui.installer.domain.Dealer;
-import fr.tduf.gui.installer.domain.Resource;
+import fr.tduf.libunlimited.common.game.domain.Dealer;
+import fr.tduf.libunlimited.common.game.domain.Resource;
 import fr.tduf.libunlimited.high.files.db.common.helper.CarShopsHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;

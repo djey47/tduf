@@ -6,7 +6,7 @@ import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.common.TDUCPConstants;
 import fr.tduf.gui.installer.common.helper.DealerHelper;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
-import fr.tduf.gui.installer.domain.VehicleSlot;
+import fr.tduf.libunlimited.common.game.domain.VehicleSlot;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;

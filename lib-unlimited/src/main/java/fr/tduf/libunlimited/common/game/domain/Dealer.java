@@ -1,4 +1,4 @@
-package fr.tduf.gui.installer.domain;
+package fr.tduf.libunlimited.common.game.domain;
 
 import fr.tduf.libunlimited.high.files.db.common.DatabaseConstants;
 
@@ -94,9 +94,9 @@ public class Dealer {
      */
     public static class Slot {
         private final int rank;
-        private Optional<VehicleSlot> vehicleSlot;
+        private VehicleSlot vehicleSlot;
 
-        public Slot(int rank) {
+        Slot(int rank) {
             this.rank = rank;
         }
 
@@ -109,7 +109,7 @@ public class Dealer {
         }
 
         public Optional<VehicleSlot> getVehicleSlot() {
-            return vehicleSlot;
+            return ofNullable(vehicleSlot);
         }
 
         @Override
@@ -132,7 +132,7 @@ public class Dealer {
             public Slot build() {
                 final Slot slot = new Slot(rank);
 
-                slot.vehicleSlot = ofNullable(vehicleSlot);
+                slot.vehicleSlot = vehicleSlot;
 
                 return slot;
             }

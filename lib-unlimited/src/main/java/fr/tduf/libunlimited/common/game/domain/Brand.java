@@ -1,4 +1,4 @@
-package fr.tduf.gui.installer.domain;
+package fr.tduf.libunlimited.common.game.domain;
 
 import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;

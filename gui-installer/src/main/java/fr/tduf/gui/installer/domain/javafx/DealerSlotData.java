@@ -3,7 +3,7 @@ package fr.tduf.gui.installer.domain.javafx;
 import fr.tduf.libunlimited.high.files.db.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
-import fr.tduf.gui.installer.domain.Dealer;
+import fr.tduf.libunlimited.common.game.domain.Dealer;
 import javafx.beans.property.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 

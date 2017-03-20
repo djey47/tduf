@@ -1,7 +1,7 @@
 package fr.tduf.gui.installer.common.helper;
 
 import fr.tduf.libunlimited.high.files.db.common.DatabaseConstants;
-import fr.tduf.gui.installer.domain.Resource;
+import fr.tduf.libunlimited.common.game.domain.Resource;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;

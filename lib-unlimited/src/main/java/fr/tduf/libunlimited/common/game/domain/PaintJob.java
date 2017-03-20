@@ -1,4 +1,4 @@
-package fr.tduf.gui.installer.domain;
+package fr.tduf.libunlimited.common.game.domain;
 
 import java.util.ArrayList;
 import java.util.List;
