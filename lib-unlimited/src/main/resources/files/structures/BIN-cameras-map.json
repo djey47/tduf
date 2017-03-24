@@ -14,8 +14,8 @@
     },
     {
       "name": "magicForty",
-      "type": "UNKNOWN",
-      "size": 4
+      "type": "CONSTANT",
+      "constantValue": "0x[28 00 00 00]"
     },
     {
       "name": "index",
@@ -65,8 +65,8 @@
         },
         {
           "name": "tag",
-          "type": "INTEGER",
-          "size": 4
+          "type": "CONSTANT",
+          "constantValue": "0x[00 01 86 AD]"
         },
         {
           "name": "cameraId",

@@ -4,8 +4,8 @@
   "fields" : [
     {
       "name" : "tag",
-      "type" : "TEXT",
-      "size" : 5
+      "type" : "CONSTANT",
+      "constantValue" : "0x[4D 41 50 34 00]"
     },{
       "name" : "entry_list",
       "type" : "REPEATER",

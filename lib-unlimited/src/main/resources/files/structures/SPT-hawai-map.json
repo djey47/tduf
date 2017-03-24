@@ -4,8 +4,8 @@
   "fields": [
     {
       "name": "headerExtension",
-      "type": "TEXT",
-      "size": 4
+      "type": "CONSTANT",
+      "constantValue": "0x[2E 53 50 54]"
     },
     {
       "name": "headerUnknown1",
@@ -14,8 +14,8 @@
     },
     {
       "name": "headerTag",
-      "type": "TEXT",
-      "size": 4
+      "type": "CONSTANT",
+      "constantValue": "0x[53 50 54 41]"
     },
     {
       "name": "headerEntryZoneSizePlus16",
@@ -88,8 +88,8 @@
         },
         {
           "name": "spotPad1",
-          "type": "TEXT",
-          "size": 4
+          "type": "CONSTANT",
+          "constantValue": "0x[CC CC CC CC]"
         },
         {
           "name": "spotUnknown3",

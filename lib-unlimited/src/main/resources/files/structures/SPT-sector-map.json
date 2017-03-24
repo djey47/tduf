@@ -4,8 +4,8 @@
   "fields": [
     {
       "name": "headerExtension",
-      "type": "TEXT",
-      "size": 4
+      "type": "CONSTANT",
+      "constantValue": "0x[2E 53 50 54]"
     },
     {
       "name": "headerUnknown1",
@@ -14,8 +14,8 @@
     },
     {
       "name": "headerTag",
-      "type": "TEXT",
-      "size": 4
+      "type": "CONSTANT",
+      "constantValue": "0x[53 50 54 41]"
     },
     {
       "name": "headerEntryZoneSizePlus16",
@@ -53,8 +53,8 @@
         },
         {
           "name": "spotStaticBlock",
-          "type": "UNKNOWN",
-          "size": 8
+          "type": "CONSTANT",
+          "constantValue": "0x[00 00 00 00 10 02 10 02]"
         },
         {
           "name": "spotCoordinatesX",
@@ -118,8 +118,8 @@
             },
             {
               "name": "staticDelimiter",
-              "type": "UNKNOWN",
-              "size": 4
+              "type": "CONSTANT",
+              "constantValue": "0x[00 00 80 3F]"
             }
           ]
         }
