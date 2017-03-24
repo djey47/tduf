@@ -26,13 +26,11 @@ public class CamerasWriter extends GenericWriter<CamerasDatabase> {
     private static final String FIELD_HEADER = "header";
     private static final String FIELD_VIEW_COUNT = "viewCount";
     private static final String FIELD_INDEX_SIZE = "indexSize";
-    private static final String FIELD_MAGIC_FORTY = "magicForty";
     private static final String FIELD_CAMERA_ID = "cameraId";
     private static final String FIELD_LABEL = "label";
     private static final String FIELD_TYPE = "type";
     private static final String FIELD_NAME = "name";
     private static final String FIELD_PROPERTIES = "properties";
-    private static final String FIELD_TAG = "tag";
     private static final String FIELD_SETTINGS_PART_1 = "settingsPart1";
     private static final String FIELD_SETTINGS_PART_2 = "settingsPart2";
     private static final String FIELD_SETTINGS_PART_3 = "settingsPart3";
@@ -72,8 +70,6 @@ public class CamerasWriter extends GenericWriter<CamerasDatabase> {
         dataStore.addValue(FIELD_HEADER, UNKNOWN, data.getOriginalDataStore().getRawValue(FIELD_HEADER)
                 .orElseThrow(() -> new IllegalStateException("header entry not found in store")));
         dataStore.addInteger32(FIELD_INDEX_SIZE, data.getIndexSize());
-        dataStore.addValue(FIELD_MAGIC_FORTY, UNKNOWN, data.getOriginalDataStore().getRawValue(FIELD_MAGIC_FORTY)
-                .orElseThrow(() -> new IllegalStateException("magicForty entry not found in store")));
     }
 
     private void fillViewIndex() {
@@ -111,7 +107,7 @@ public class CamerasWriter extends GenericWriter<CamerasDatabase> {
                 .forEach(propsEntry -> fillViewProperties(currentViewIndex, propsEntry));
 
         // From original store (unaltered values)
-        Set<String> fieldNames = new HashSet<>(asList(FIELD_PROPERTIES, FIELD_TAG, FIELD_SETTINGS_PART_1, FIELD_SETTINGS_PART_2, FIELD_SETTINGS_PART_3, FIELD_SETTINGS_PART_4, FIELD_SETTINGS_PART_5));
+        Set<String> fieldNames = new HashSet<>(asList(FIELD_PROPERTIES, FIELD_SETTINGS_PART_1, FIELD_SETTINGS_PART_2, FIELD_SETTINGS_PART_3, FIELD_SETTINGS_PART_4, FIELD_SETTINGS_PART_5));
         sourceViewStore.copyFields(fieldNames, dataStore, FIELD_VIEWS, currentViewIndex);
     }
 

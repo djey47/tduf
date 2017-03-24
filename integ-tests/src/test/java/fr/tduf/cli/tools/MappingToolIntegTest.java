@@ -88,7 +88,6 @@ public class MappingToolIntegTest {
     private static BankMap createEmptyMap() {
         BankMap bankMap = new BankMap();
         bankMap.setEntrySeparator(new byte[] { (byte)0xFE, 0x12, 0x00, 0x00});
-        bankMap.setTag("MAP4");
 
         return bankMap;
     }

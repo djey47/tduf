@@ -32,12 +32,8 @@ public class MapWriter extends GenericWriter<BankMap> {
 
     @Override
     protected void fillStore() {
-        getDataStore().addText("tag", this.getData().getTag());
-
         List<BankMap.Entry> sortedEntries = this.getData().getEntries().stream()
-
                 .sorted(comparingLong(BankMap.Entry::getHash))
-
                 .collect(toList());
 
         int index = 0;
