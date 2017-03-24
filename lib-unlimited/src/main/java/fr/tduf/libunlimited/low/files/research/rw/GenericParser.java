@@ -263,13 +263,14 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
     }
 
     private void dumpConstantValue(byte[] readValueAsBytes, String constantValue, String key) {
+        int length = readValueAsBytes.length;
         dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT,
                 key,
                 "",
                 CONSTANT.name(),
-                readValueAsBytes.length,
+                length,
                 constantValue,
-                ""));
+                "\"" + TypeHelper.rawToText(readValueAsBytes, length) + "\""));
     }
 
     private void dumpRepeaterStart(String key) {

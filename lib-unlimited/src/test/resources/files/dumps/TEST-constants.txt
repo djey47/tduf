@@ -1,2 +1,2 @@
-tag1	<CONSTANT: 10 bytes>	0x[41 42 43 44 45 46 47 48 49 4A]	
-tag2	<CONSTANT: 6 bytes>	0x[01 02 03 04 05 FF]	
+tag1	<CONSTANT: 10 bytes>	0x[41 42 43 44 45 46 47 48 49 4A]	"ABCDEFGHIJ"
+tag2	<CONSTANT: 6 bytes>	0x[01 02 03 04 05 FF]	"ÿ"
