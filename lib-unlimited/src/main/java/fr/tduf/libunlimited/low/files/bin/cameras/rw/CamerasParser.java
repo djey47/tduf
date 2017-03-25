@@ -72,15 +72,12 @@ public class CamerasParser extends GenericParser<CamerasDatabase> {
             int kind = store.getInteger("type")
                     .orElseThrow(() -> new IllegalStateException("type attribute not found in store"))
                     .intValue();
-            String label = store.getText("label")
-                    .orElseThrow(() -> new IllegalStateException("label attribute not found in store"));
             String name = store.getText("name")
                     .orElseThrow(() -> new IllegalStateException("name attribute not found in store"));
             currentViews.add(CameraView.builder()
                     .fromDatastore(store)
                     .forCameraSetId(cameraId)
                     .ofKind(ViewKind.fromInternalId(kind))
-                    .withLabel(label)
                     .withName(name)
                     .withSettings(getViewProps(store))
                     .build());

@@ -25,8 +25,6 @@ public class CameraView {
 
     private Integer usedCameraSetId;
 
-    private String label;
-
     private String name;
 
     private EnumMap<ViewProps, Object> settings;
@@ -47,7 +45,6 @@ public class CameraView {
         CameraViewBuilder builder = builder()
                 .forCameraSetId(setIdentifier)
                 .ofKind(kind)
-                .withLabel(label)
                 .withName(name)
                 .withSettings(cloneSettings(settings));
 
@@ -131,10 +128,6 @@ public class CameraView {
         return name;
     }
 
-    public String getLabel() {
-        return label;
-    }
-
     public DataStore getOriginalDataStore() {
         return originalDataStore;
     }
@@ -147,7 +140,6 @@ public class CameraView {
         private DataStore originalDataStore;
         private int setId;
         private ViewKind kind;
-        private String label;
         private String name;
         private EnumMap<ViewProps, Object> settings;
         private ViewKind usedKind;
@@ -165,11 +157,6 @@ public class CameraView {
 
         public CameraViewBuilder ofKind(ViewKind kind) {
             this.kind = kind;
-            return this;
-        }
-
-        public CameraViewBuilder withLabel(String label) {
-            this.label = label;
             return this;
         }
 
@@ -194,7 +181,6 @@ public class CameraView {
 
             cameraView.cameraSetId = setId;
             cameraView.kind = (kind == null ? ViewKind.Unknown : kind);
-            cameraView.label = (label == null ? "" : label);
             cameraView.name = (name == null ? "" : name);
             cameraView.originalDataStore = originalDataStore;
             cameraView.settings = settings;

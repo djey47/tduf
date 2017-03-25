@@ -279,7 +279,7 @@ public class DataStore {
             return Optional.empty();
         }
 
-        return Optional.ofNullable(entry.getRawValue());
+        return ofNullable(entry.getRawValue());
     }
 
     /**
@@ -449,7 +449,7 @@ public class DataStore {
 
         fieldNames
                 .forEach(fieldName -> {
-                    Entry sourceEntry = Optional.ofNullable(store.get(fieldName))
+                    Entry sourceEntry = ofNullable(store.get(fieldName))
                             .orElseThrow(() -> new IllegalStateException("Entry not found in current store: " + fieldName));
                     byte[] sourceRawValue = sourceEntry.getRawValue();
                     Type sourceType = sourceEntry.getType();

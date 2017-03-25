@@ -2,8 +2,8 @@ package fr.tduf.libunlimited.low.files.research.domain;
 
 import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.domain.fixture.DataStoreFixture;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
@@ -13,23 +13,23 @@ import static fr.tduf.libunlimited.low.files.research.domain.Type.UNKNOWN;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DataStore_focusOnGettingValuesTest {
+class DataStore_focusOnGettingValuesTest {
 
     private DataStore dataStore;
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeEach
+    void setUp() throws IOException {
         dataStore = new DataStore(DataStoreFixture.getFileStructure("/files/structures/TEST-datastore-map.json"));
     }
 
     @Test
-    public void getRawValue_whenNoItem_shouldReturnAbsent() {
+    void getRawValue_whenNoItem_shouldReturnAbsent() {
         // GIVEN-WHEN-THEN
         assertThat(dataStore.getRawValue("f1").isPresent()).isEqualTo(false);
     }
 
     @Test
-    public void getRawValue_whenOneItem_andSuccess_shouldReturnValue() {
+    void getRawValue_whenOneItem_andSuccess_shouldReturnValue() {
         // GIVEN
         byte[] expectedBytes = { 0, 1, 2, 3};
         DataStoreFixture.putRawValueInStore("f1", expectedBytes, dataStore);
@@ -39,7 +39,7 @@ public class DataStore_focusOnGettingValuesTest {
     }
 
     @Test
-    public void getRawValue_whenOneItem_andNoSuccess_shouldReturnAbsent() {
+    void getRawValue_whenOneItem_andNoSuccess_shouldReturnAbsent() {
         // GIVEN
         byte[] bytes = { 0 };
         DataStoreFixture.putRawValueInStore("f1", bytes, dataStore);
@@ -49,13 +49,13 @@ public class DataStore_focusOnGettingValuesTest {
     }
 
     @Test
-    public void getText_whenNoItem_shouldReturnAbsent() {
+    void getText_whenNoItem_shouldReturnAbsent() {
         // GIVEN-WHEN-THEN
         assertThat(dataStore.getText("f1")).isEmpty();
     }
 
     @Test
-    public void getText_whenOneItem_andSuccess_shouldReturnValue() {
+    void getText_whenOneItem_andSuccess_shouldReturnValue() {
         // GIVEN
         DataStoreFixture.putStringInStore("f1", "v1", dataStore);
 
@@ -64,7 +64,7 @@ public class DataStore_focusOnGettingValuesTest {
     }
 
     @Test
-    public void getText_whenOneItem_andNoSuccess_shouldReturnAbsent() {
+    void getText_whenOneItem_andNoSuccess_shouldReturnAbsent() {
         // GIVEN
         DataStoreFixture.putStringInStore("f1", "v1", dataStore);
 
@@ -73,13 +73,13 @@ public class DataStore_focusOnGettingValuesTest {
     }
 
     @Test
-    public void getInteger_whenNoItem_shouldReturnAbsent() {
+    void getInteger_whenNoItem_shouldReturnAbsent() {
         // GIVEN-WHEN-THEN
         assertThat(dataStore.getInteger("f1")).isEmpty();
     }
 
     @Test
-    public void getInteger_whenOneItem_andSuccess_shouldReturnValue() {
+    void getInteger_whenOneItem_andSuccess_shouldReturnValue() {
         // GIVEN
         DataStoreFixture.putLongInStore("f1", 100L, false, dataStore);
 
@@ -88,7 +88,7 @@ public class DataStore_focusOnGettingValuesTest {
     }
 
     @Test
-    public void getInteger_whenSignedValue_shouldReturnValue() {
+    void getInteger_whenSignedValue_shouldReturnValue() {
         // GIVEN
         DataStoreFixture.putLongInStore("f1", -100L, true, dataStore);
 
@@ -97,7 +97,7 @@ public class DataStore_focusOnGettingValuesTest {
     }
 
     @Test
-    public void getInteger_whenOneItem_andNoSuccess_shouldReturnAbsent() {
+    void getInteger_whenOneItem_andNoSuccess_shouldReturnAbsent() {
         // GIVEN
         DataStoreFixture.putLongInStore("f1", 100L, false, dataStore);
 
@@ -106,13 +106,13 @@ public class DataStore_focusOnGettingValuesTest {
     }
 
     @Test
-    public void getFloatingPoint_whenNoItem_shouldReturnAbsent() {
+    void getFloatingPoint_whenNoItem_shouldReturnAbsent() {
         // GIVEN-WHEN-THEN
         assertThat(dataStore.getFloatingPoint("f1")).isEmpty();
     }
 
     @Test
-    public void getFloatingPoint_whenOne32BitItem_andSuccess_shouldReturnValue() {
+    void getFloatingPoint_whenOne32BitItem_andSuccess_shouldReturnValue() {
         // GIVEN
         DataStoreFixture.putFloatInStore("f1", 691.44006f, dataStore);
 
@@ -121,7 +121,7 @@ public class DataStore_focusOnGettingValuesTest {
     }
 
     @Test
-    public void getFloatingPoint_whenOne16BitItem_andSuccess_shouldReturnValue() {
+    void getFloatingPoint_whenOne16BitItem_andSuccess_shouldReturnValue() {
         // GIVEN
         DataStoreFixture.putHalfFloatInStore("f1", 691.5f, dataStore);
 
@@ -130,7 +130,7 @@ public class DataStore_focusOnGettingValuesTest {
     }
 
     @Test
-    public void getIntegerListOf_whenProvidedStore_shouldReturnSelectedValues() {
+    void getIntegerListOf_whenProvidedStore_shouldReturnSelectedValues() {
         // GIVEN
         DataStoreFixture.createStoreEntries(dataStore);
 
@@ -145,7 +145,7 @@ public class DataStore_focusOnGettingValuesTest {
     }
 
     @Test
-    public void getFloatingPointListOf_whenProvidedStore_shouldReturnSelectedValues() {
+    void getFloatingPointListOf_whenProvidedStore_shouldReturnSelectedValues() {
         // GIVEN
         DataStoreFixture.createStoreEntries(dataStore);
 
@@ -160,7 +160,7 @@ public class DataStore_focusOnGettingValuesTest {
     }
 
     @Test
-    public void getRepeatedValues_whenProvidedStore_shouldReturnCorrespondingValues() {
+    void getRepeatedValues_whenProvidedStore_shouldReturnCorrespondingValues() {
         // GIVEN
         DataStoreFixture.createStoreEntries(dataStore);
 

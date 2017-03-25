@@ -4,8 +4,8 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.research.domain.fixture.DataStoreFixture;
 import org.json.JSONException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.IOException;
@@ -18,21 +18,21 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
-public class DataStoreTest {
+class DataStoreTest {
 
     private static Class<DataStoreTest> thisClass = DataStoreTest.class;
 
     private DataStore dataStore;
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeEach
+    void setUp() throws IOException {
         Log.set(Log.LEVEL_INFO);
 
         dataStore = createEmptyStore();
     }
 
     @Test
-    public void clearAll_shouldRemoveAllEntries() throws Exception {
+    void clearAll_shouldRemoveAllEntries() throws Exception {
         // GIVEN
         DataStoreFixture.putStringInStore("k1", "v1", dataStore);
         DataStoreFixture.putStringInStore("k2", "v2", dataStore);
@@ -45,7 +45,7 @@ public class DataStoreTest {
     }
 
     @Test
-    public void size_whenNewStore_shouldReturnZero() {
+    void size_whenNewStore_shouldReturnZero() {
         // GIVEN - WHEN
         int size = dataStore.size();
 
@@ -54,7 +54,7 @@ public class DataStoreTest {
     }
 
     @Test
-    public void size_whenTwoItemsInStore_shouldReturnTwo() {
+    void size_whenTwoItemsInStore_shouldReturnTwo() {
         // GIVEN
         DataStoreFixture.putStringInStore("k1", "v1", dataStore);
         DataStoreFixture.putStringInStore("k2", "v2", dataStore);
@@ -67,7 +67,7 @@ public class DataStoreTest {
     }
 
     @Test
-    public void generateKeyPrefixForRepeatedField() {
+    void generateKeyPrefixForRepeatedField() {
         // GIVEN-WHEN
         String actualKeyPrefix = DataStore.generateKeyPrefixForRepeatedField("entry_list", 1);
 
@@ -76,7 +76,7 @@ public class DataStoreTest {
     }
 
     @Test
-    public void toJsonString_whenProvidedStore_shouldReturnJsonRepresentation() throws IOException, URISyntaxException, JSONException {
+    void toJsonString_whenProvidedStore_shouldReturnJsonRepresentation() throws IOException, URISyntaxException, JSONException {
         // GIVEN
         String expectedJson = getStoreContentsAsJson("/files/json/store.json");
         DataStoreFixture.createStoreEntries(dataStore);
@@ -91,7 +91,7 @@ public class DataStoreTest {
     }
 
     @Test
-    public void toJsonString_whenProvidedStore_andSizeAsReference_shouldReturnJsonRepresentation() throws IOException, URISyntaxException, JSONException {
+    void toJsonString_whenProvidedStore_andSizeAsReference_shouldReturnJsonRepresentation() throws IOException, URISyntaxException, JSONException {
         // GIVEN
         DataStore specialDataStore = new DataStore(DataStoreFixture.getFileStructure("/files/structures/TEST-datastoreAndFormula-map.json"));
         String expectedJson = getStoreContentsAsJson("/files/json/store_formula.json");
@@ -106,7 +106,7 @@ public class DataStoreTest {
     }
 
     @Test
-    public void fromJsonString_whenProvidedJson_shouldSetStore() throws IOException, URISyntaxException {
+    void fromJsonString_whenProvidedJson_shouldSetStore() throws IOException, URISyntaxException {
         // GIVEN
         String jsonInput = getStoreContentsAsJson("/files/json/store.json");
 
@@ -126,7 +126,7 @@ public class DataStoreTest {
     }
 
     @Test
-    public void fromJsonString_whenProvidedJson_andLongIntegerValues_shouldSetStore() throws IOException, URISyntaxException {
+    void fromJsonString_whenProvidedJson_andLongIntegerValues_shouldSetStore() throws IOException, URISyntaxException {
         // GIVEN
         dataStore = new DataStore(DataStoreFixture.getFileStructure("/files/structures/TEST-unsignedLong-map.json"));
         String jsonInput = getStoreContentsAsJson("/files/json/store_longInteger.json");
@@ -141,7 +141,7 @@ public class DataStoreTest {
     }
 
     @Test
-    public void copy_shouldMakeDataStoreCopy() {
+    void copy_shouldMakeDataStoreCopy() {
         // GIVEN
         DataStoreFixture.createStoreEntries(dataStore);
 
@@ -167,7 +167,7 @@ public class DataStoreTest {
     }
 
     @Test
-    public void copyFields_toSameStore_withoutRepeater_shouldNotChangeValue() {
+    void copyFields_toSameStore_withoutRepeater_shouldNotChangeValue() {
         // GIVEN
         DataStoreFixture.createStoreEntries(dataStore);
         DataStore subStore = dataStore.getRepeatedValues("entry_list").get(0);
@@ -185,7 +185,7 @@ public class DataStoreTest {
     }
 
     @Test
-    public void copyFields_toSameStore_withRepeater_shouldAddValue() {
+    void copyFields_toSameStore_withRepeater_shouldAddValue() {
         // GIVEN
         DataStoreFixture.createStoreEntries(dataStore);
         DataStore subStore = dataStore.getRepeatedValues("entry_list").get(0);
@@ -203,7 +203,7 @@ public class DataStoreTest {
     }
 
     @Test
-    public void copyFields_toAnotherStore_withoutRepeater_shouldAddValue() throws IOException {
+    void copyFields_toAnotherStore_withoutRepeater_shouldAddValue() throws IOException {
         // GIVEN
         DataStore targetStore = createEmptyStore();
         DataStoreFixture.createStoreEntries(dataStore);
@@ -222,7 +222,7 @@ public class DataStoreTest {
     }
 
     @Test
-    public void copyFields_toAnotherStore_withRepeater_shouldAddValue() throws IOException {
+    void copyFields_toAnotherStore_withRepeater_shouldAddValue() throws IOException {
         // GIVEN
         DataStore targetStore = createEmptyStore();
         DataStoreFixture.createStoreEntries(dataStore);

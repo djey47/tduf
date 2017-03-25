@@ -27,7 +27,6 @@ public class CamerasWriter extends GenericWriter<CamerasDatabase> {
     private static final String FIELD_VIEW_COUNT = "viewCount";
     private static final String FIELD_INDEX_SIZE = "indexSize";
     private static final String FIELD_CAMERA_ID = "cameraId";
-    private static final String FIELD_LABEL = "label";
     private static final String FIELD_TYPE = "type";
     private static final String FIELD_NAME = "name";
     private static final String FIELD_PROPERTIES = "properties";
@@ -98,7 +97,6 @@ public class CamerasWriter extends GenericWriter<CamerasDatabase> {
 
         // From domain object
         dataStore.addRepeatedInteger32(FIELD_VIEWS, FIELD_CAMERA_ID, currentViewIndex, viewEnhanced.getCameraSetId());
-        dataStore.addRepeatedText(FIELD_VIEWS, FIELD_LABEL, currentViewIndex, viewEnhanced.getLabel());
         dataStore.addRepeatedInteger32(FIELD_VIEWS, FIELD_TYPE, currentViewIndex, viewEnhanced.getKind().getInternalId());
         dataStore.addRepeatedText(FIELD_VIEWS, FIELD_NAME, currentViewIndex, viewEnhanced.getName());
 

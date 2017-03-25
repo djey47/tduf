@@ -23,7 +23,6 @@ class CameraViewTest {
                 .withSettings(settings)
                 .ofKind(Bumper)
                 .withName("name")
-                .withLabel("label")
                 .build();
 
         // when
@@ -34,7 +33,6 @@ class CameraViewTest {
         assertThat(actualClone.getCameraSetId()).isEqualTo(100);
         assertThat(actualClone.getKind()).isEqualTo(Bumper);
         assertThat(actualClone.getName()).isEqualTo("name");
-        assertThat(actualClone.getLabel()).isEqualTo("label");
         assertThat(actualClone.getOriginalDataStore()).isNotSameAs(originalDataStore);
         assertThat(actualClone.getSettings())
                 .isNotSameAs(settings)
@@ -50,7 +48,6 @@ class CameraViewTest {
                 .withSettings(new EnumMap<>(ViewProps.class))
                 .ofKind(Bumper)
                 .withName("name")
-                .withLabel("label")
                 .build();
 
         // when
@@ -61,7 +58,6 @@ class CameraViewTest {
         assertThat(actualClone.getCameraSetId()).isEqualTo(100);
         assertThat(actualClone.getKind()).isEqualTo(Bumper);
         assertThat(actualClone.getName()).isEqualTo("name");
-        assertThat(actualClone.getLabel()).isEqualTo("label");
         assertThat(actualClone.getOriginalDataStore()).isNull();
         assertThat(actualClone.getSettings())
                 .isNotSameAs(new EnumMap<>(ViewProps.class))

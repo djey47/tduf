@@ -3,25 +3,25 @@ package fr.tduf.libunlimited.low.files.research.domain;
 import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.domain.fixture.DataStoreFixture;
 import org.assertj.core.data.MapEntry;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
 import static fr.tduf.libunlimited.low.files.research.domain.Type.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DataStore_focusOnAddingValuesTest {
+class DataStore_focusOnAddingValuesTest {
 
     private DataStore dataStore;
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeEach
+    void setUp() throws IOException {
         dataStore = new DataStore(DataStoreFixture.getFileStructure("/files/structures/TEST-datastore-map.json"));
     }
 
     @Test
-    public void addValue_whenUnknowType_shouldCreateNewEntryInStore() throws Exception {
+    void addValue_whenUnknowType_shouldCreateNewEntryInStore() throws Exception {
         // GIVEN
         byte[] expectedRawValue = { 0x0, 0x1, 0x2, 0x3 };
 
@@ -35,7 +35,7 @@ public class DataStore_focusOnAddingValuesTest {
     }
 
     @Test
-    public void addValue_whenTextType_shouldCreateNewEntryInStore() throws Exception {
+    void addValue_whenTextType_shouldCreateNewEntryInStore() throws Exception {
         // GIVEN - WHEN
         dataStore.addValue("f1", TEXT, "v1".getBytes());
 
@@ -45,7 +45,7 @@ public class DataStore_focusOnAddingValuesTest {
     }
 
     @Test
-    public void addValue_whenIntegerType_shouldCreateNewEntryInStore() throws Exception {
+    void addValue_whenIntegerType_shouldCreateNewEntryInStore() throws Exception {
         // GIVEN - WHEN
         dataStore.addValue("f1", INTEGER, TypeHelper.integerToRaw(500L));
 
@@ -55,7 +55,7 @@ public class DataStore_focusOnAddingValuesTest {
     }
 
     @Test
-    public void addValue_whenFloatingPointType_shouldCreateNewEntryInStore() throws Exception {
+    void addValue_whenFloatingPointType_shouldCreateNewEntryInStore() throws Exception {
         // GIVEN - WHEN
         dataStore.addValue("f1", FPOINT, TypeHelper.floatingPoint32ToRaw(83.666667f));
 
@@ -65,7 +65,7 @@ public class DataStore_focusOnAddingValuesTest {
     }
 
     @Test
-    public void addValue_whenNonStoredType_shouldNotCreateEntryInStore() throws Exception {
+    void addValue_whenNonStoredType_shouldNotCreateEntryInStore() throws Exception {
         // GIVEN - WHEN
         dataStore.addValue("f1", GAP, new byte[]{0xA});
 
@@ -74,7 +74,7 @@ public class DataStore_focusOnAddingValuesTest {
     }
 
     @Test
-    public void addText_shouldCreateNewEntryInStore() throws Exception {
+    void addText_shouldCreateNewEntryInStore() throws Exception {
         // GIVEN - WHEN
         dataStore.addText("f1", "v1");
 
@@ -84,7 +84,7 @@ public class DataStore_focusOnAddingValuesTest {
     }
 
     @Test
-    public void addInteger_shouldCreateNewEntryInStore() throws Exception {
+    void addInteger_shouldCreateNewEntryInStore() throws Exception {
         // GIVEN - WHEN
         dataStore.addInteger32("f1", 500L);
 
@@ -94,7 +94,7 @@ public class DataStore_focusOnAddingValuesTest {
     }
 
     @Test
-    public void addFloatingPoint_shouldCreateNewEntryInStore() throws Exception {
+    void addFloatingPoint_shouldCreateNewEntryInStore() throws Exception {
         // GIVEN - WHEN
         dataStore.addFloatingPoint("f1", 83.666667f);
 
@@ -104,7 +104,7 @@ public class DataStore_focusOnAddingValuesTest {
     }
 
     @Test
-    public void addHalfFloatingPoint_shouldCreateNewEntryInStore() throws Exception {
+    void addHalfFloatingPoint_shouldCreateNewEntryInStore() throws Exception {
         // GIVEN - WHEN
         dataStore.addHalfFloatingPoint("f1", 83.67f);
 
@@ -114,7 +114,7 @@ public class DataStore_focusOnAddingValuesTest {
     }
 
     @Test
-    public void addRepeatedRawValue_shouldCreateNewEntryInStore() {
+    void addRepeatedRawValue_shouldCreateNewEntryInStore() {
         // GIVEN
         byte[] expectedRawValue = { 0x0, 0x1, 0x2, 0x3 };
 
@@ -128,7 +128,7 @@ public class DataStore_focusOnAddingValuesTest {
     }
 
     @Test
-    public void addRepeatedTextValue_shouldCreateNewEntryInStore() {
+    void addRepeatedTextValue_shouldCreateNewEntryInStore() {
         // GIVEN - WHEN
         dataStore.addRepeatedText("repeater", "f1", 0, "v1");
 
@@ -139,7 +139,7 @@ public class DataStore_focusOnAddingValuesTest {
     }
 
     @Test
-    public void addRepeatedIntegerValue_shouldCreateNewEntryInStore() {
+    void addRepeatedIntegerValue_shouldCreateNewEntryInStore() {
         // GIVEN
         byte[] expectedBytes = { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, (byte)0xFF, (byte)0xFF};
 
@@ -153,7 +153,7 @@ public class DataStore_focusOnAddingValuesTest {
     }
 
     @Test
-    public void addRepeatedFloatingPointValue_shouldCreateNewEntryInStore() {
+    void addRepeatedFloatingPointValue_shouldCreateNewEntryInStore() {
         // GIVEN
         byte[] expectedBytes = { 0x44, 0x21, (byte)0x9D, (byte)0xD6 };
 

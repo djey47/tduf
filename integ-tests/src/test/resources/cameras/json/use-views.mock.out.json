@@ -6,7 +6,6 @@
       "usedKind" : "Cockpit",
       "cameraSetId" : 1000,
       "usedCameraSetId" : 101,
-      "label" : "",
       "name" : "",
       "settings" : {
         "STEERING_WHEEL_TURN" : 3890,
@@ -29,7 +28,6 @@
       "usedKind" : null,
       "cameraSetId" : 1000,
       "usedCameraSetId" : null,
-      "label" : "",
       "name" : "",
       "settings" : {
         "STEERING_WHEEL_TURN" : 3870,
@@ -52,7 +50,6 @@
       "usedKind" : null,
       "cameraSetId" : 1000,
       "usedCameraSetId" : null,
-      "label" : "",
       "name" : "",
       "settings" : {
         "STEERING_WHEEL_TURN" : 12333,
@@ -75,7 +72,6 @@
       "usedKind" : "Hood_Back",
       "cameraSetId" : 1000,
       "usedCameraSetId" : 101,
-      "label" : "",
       "name" : "",
       "settings" : {
         "STEERING_WHEEL_TURN" : 11565,

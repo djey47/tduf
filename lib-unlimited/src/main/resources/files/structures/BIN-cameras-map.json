@@ -59,14 +59,9 @@
           "size": 164
         },
         {
-          "name": "label",
-          "type": "TEXT",
-          "size": 16
-        },
-        {
           "name": "tag",
           "type": "CONSTANT",
-          "constantValue": "0x[00 01 86 AD]"
+          "constantValue": "0x[CD CD CD CD CD CD CD CD CD CD CD CD CD CD CD CD AD 86 01 00]"
         },
         {
           "name": "cameraId",

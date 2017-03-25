@@ -1,12 +1,13 @@
 package fr.tduf.libunlimited.low.files.research.domain;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class EntryTest {
+class EntryTest {
     @Test
-    public void copy_shouldMakeFullEntryCopy() {
+    void copy_shouldMakeFullEntryCopy() {
         // GIVEN
         Entry entry = new Entry(Type.GAP, true, 1, new byte[] { 0x0 });
 
