@@ -468,6 +468,11 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void initPlugins() {
+        if (!applicationConfiguration.isEditorPluginsEnabled()) {
+            Log.info(THIS_CLASS_NAME, "Editor plugins were disabled via application configuration");
+            return;
+        }
+        
         EditorContext editorContext = pluginHandler.getContext();
         editorContext.setDatabaseLocation(databaseLoader.databaseLocationProperty().get());
         editorContext.setGameLocation(applicationConfiguration.getGamePath()
