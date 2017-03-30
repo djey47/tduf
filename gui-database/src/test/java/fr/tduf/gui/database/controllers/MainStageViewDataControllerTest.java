@@ -7,7 +7,7 @@ import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.gui.database.dto.TopicLinkDto;
-import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
+import fr.tduf.libtesting.common.helper.javafx.ApplicationTestHelper;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
@@ -26,15 +26,13 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -49,11 +47,11 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static javafx.collections.FXCollections.observableArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
-
-@RunWith(MockitoJUnitRunner.class)
-public class MainStageViewDataControllerTest {
+class MainStageViewDataControllerTest {
     private static final DbDto.Topic TOPIC1 = CAR_PHYSICS_DATA;
     private static final DbDto.Topic TOPIC2 = BRANDS;
     private static final DbDto.Topic TOPIC3 = CAR_RIMS;
@@ -66,8 +64,10 @@ public class MainStageViewDataControllerTest {
     private static final String TEST_REMOTE_ASSO_PROFILE_NAME = "Test association remote profile";
     private static final String TEST_UNK_PROFILE_NAME = "profile?";
 
-    @Rule
-    public JavaFXThreadingRule javaFXRule = new JavaFXThreadingRule();
+    @BeforeAll
+    static void globalSetUp() {
+        ApplicationTestHelper.initJavaFX();
+    }
 
     @Mock
     private MainStageController mainStageControllerMock;
@@ -95,8 +95,10 @@ public class MainStageViewDataControllerTest {
     private ChoiceBox<Locale> localesChoiceBox;
     private TitledPane settingsPane;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
+        initMocks(this);
+
         DatabaseEditor.getCommandLineParameters().clear();
 
         when(mainStageControllerMock.getApplicationConfiguration()).thenReturn(applicationConfigurationMock);
@@ -140,7 +142,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void initSettingsPane_whenNoLocaleInProperties_shouldSetDefaultLocale() throws IOException {
+    void initSettingsPane_whenNoLocaleInProperties_shouldSetDefaultLocale() throws IOException {
         // GIVEN
         settingsPane.expandedProperty().set(true);
 
@@ -161,7 +163,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void initSettingsPane_whenLocaleInProperties_shouldSetLocaleAccordingly() throws IOException {
+    void initSettingsPane_whenLocaleInProperties_shouldSetLocaleAccordingly() throws IOException {
         // GIVEN
         when(applicationConfigurationMock.getEditorLocale()).thenReturn(of(FRANCE));
 
@@ -175,7 +177,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void initSettingsPane_shouldSetProfileProperties() throws IOException {
+    void initSettingsPane_shouldSetProfileProperties() throws IOException {
         // GIVEN
         when(applicationConfigurationMock.getEditorLocale()).thenReturn(empty());
 
@@ -191,7 +193,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void resolveInitialDatabaseDirectory_whenNoCommandLineParameter_andNoConfiguration_shouldReturnEmpty() throws Exception {
+    void resolveInitialDatabaseDirectory_whenNoCommandLineParameter_andNoConfiguration_shouldReturnEmpty() throws Exception {
         // GIVEN
         when(applicationConfigurationMock.getDatabasePath()).thenReturn(empty());
 
@@ -203,7 +205,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void resolveInitialDatabaseDirectory_whenWrongCommandLineParameter_andNoConfiguration_shouldReturnEmpty() throws Exception {
+    void resolveInitialDatabaseDirectory_whenWrongCommandLineParameter_andNoConfiguration_shouldReturnEmpty() throws Exception {
         // GIVEN
         DatabaseEditor.getCommandLineParameters().add("-p");
         when(applicationConfigurationMock.getDatabasePath()).thenReturn(empty());
@@ -218,7 +220,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void resolveInitialDatabaseDirectory_whenRightCommandLineParameter_shouldReturnLocation() throws Exception {
+    void resolveInitialDatabaseDirectory_whenRightCommandLineParameter_shouldReturnLocation() throws Exception {
         // GIVEN
         DatabaseEditor.getCommandLineParameters().add("/tdu/euro/bnk/database");
 
@@ -234,7 +236,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void resolveInitialDatabaseDirectory_whenNoCommandLineParameter_andConfiguration_shouldReturnSavedLocation() throws Exception {
+    void resolveInitialDatabaseDirectory_whenNoCommandLineParameter_andConfiguration_shouldReturnSavedLocation() throws Exception {
         // GIVEN
         when(applicationConfigurationMock.getDatabasePath()).thenReturn(of(Paths.get("/tdu/euro/bnk/database")));
 
@@ -246,7 +248,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void applyProfile_whenProfileDoesNotExist_shouldApplyDefaultProfile() {
+    void applyProfile_whenProfileDoesNotExist_shouldApplyDefaultProfile() {
         // GIVEN
         when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(topicObject));
         when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>());
@@ -257,7 +259,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void applyProfile_whenProfileExists_shouldSwitchProperties_andUpdateConfiguration() throws IOException {
+    void applyProfile_whenProfileExists_shouldSwitchProperties_andUpdateConfiguration() throws IOException {
         // GIVEN
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(createTopicObjectWithoutStructureFields());
         Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>();
@@ -281,7 +283,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void applySelectedLocale_shouldUpdateConfiguration() throws IOException {
+    void applySelectedLocale_shouldUpdateConfiguration() throws IOException {
         // GIVEN
         controller.currentProfile().setValue(getSecondLayoutProfile());
         when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0));
@@ -297,7 +299,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void updateDisplayWithLoadedObjects_whenNoProfileInProperties_shouldUseFirstProfile_andUpdateConfiguration() throws IOException {
+    void updateDisplayWithLoadedObjects_whenNoProfileInProperties_shouldUseFirstProfile_andUpdateConfiguration() throws IOException {
         // GIVEN
         when(mainStageControllerMock.getDatabaseObjects()).thenReturn(singletonList(createTopicObject(TOPIC2)));
         Deque<EditorLocation> navigationHistory = new ArrayDeque<>();
@@ -321,7 +323,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void updateDisplayWithLoadedObjects_whenProfileInProperties_shouldUseRightProfile() throws IOException {
+    void updateDisplayWithLoadedObjects_whenProfileInProperties_shouldUseRightProfile() throws IOException {
         // GIVEN
         final String profileName = getThirdLayoutProfile().getName();
         when(applicationConfigurationMock.getEditorProfile()).thenReturn(of(profileName));
@@ -342,7 +344,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void updateDisplayWithLoadedObjects_whenUnknownProfileInProperties_shouldNotOverwriteProperty() throws IOException {
+    void updateDisplayWithLoadedObjects_whenUnknownProfileInProperties_shouldNotOverwriteProperty() throws IOException {
         // GIVEN
         when(applicationConfigurationMock.getEditorProfile()).thenReturn(of(TEST_UNK_PROFILE_NAME));
         when(mainStageControllerMock.getDatabaseObjects()).thenReturn(singletonList(createTopicObject(TOPIC2)));
@@ -357,7 +359,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void updateEntriesAndSwitchTo_whenNoEntry_shouldSetEmptyList() {
+    void updateEntriesAndSwitchTo_whenNoEntry_shouldSetEmptyList() {
         // GIVEN
         controller.currentProfile().setValue(getSecondLayoutProfile());
         controller.getBrowsableEntries().add(new ContentEntryDataItem());
@@ -370,7 +372,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void updateEntriesAndSwitchTo_whenEntries_shouldPopulateEntryList() {
+    void updateEntriesAndSwitchTo_whenEntries_shouldPopulateEntryList() {
         // GIVEN
         controller.currentProfile().setValue(getSecondLayoutProfile());
         controller.getBrowsableEntries().add(new ContentEntryDataItem());
@@ -392,7 +394,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void updateEntriesAndSwitchTo_whenNegativeIndex_shouldSelectFirstItem() {
+    void updateEntriesAndSwitchTo_whenNegativeIndex_shouldSelectFirstItem() {
         // GIVEN
         final DbDto topicObjectWithDataEntry = createTopicObjectWithDataEntry();
 
@@ -416,7 +418,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void refreshAll_shouldResetProperties() {
+    void refreshAll_shouldResetProperties() {
         // GIVEN
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(createTopicObjectWithoutStructureFields());
         final Property<Integer> currentEntryIndexProperty = new SimpleObjectProperty<>();
@@ -437,7 +439,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void updateAllPropertiesWithItemValues_whenEntryNotFound_shouldNotCrash() {
+    void updateAllPropertiesWithItemValues_whenEntryNotFound_shouldNotCrash() {
         // GIVEN
         final EditorLayoutDto.EditorProfileDto profileObject = getSecondLayoutProfile();
         controller.currentProfile().setValue(profileObject);
@@ -452,7 +454,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void updateAllPropertiesWithItemValues_whenClassicFieldType_andNoLink_shouldUpdateCurrentEntryLabel () {
+    void updateAllPropertiesWithItemValues_whenClassicFieldType_andNoLink_shouldUpdateCurrentEntryLabel () {
         // GIVEN
         ContentItemDto item = createContentItem();
         ContentEntryDto contentEntry = ContentEntryDto.builder()
@@ -478,7 +480,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void updateCurrentEntryLabelProperty_whenNoFieldRank_shouldReturnDefaultLabel() {
+    void updateCurrentEntryLabelProperty_whenNoFieldRank_shouldReturnDefaultLabel() {
         // GIVEN
         final EditorLayoutDto.EditorProfileDto profileObject = getSecondLayoutProfile();
         controller.currentProfile().setValue(profileObject);
@@ -495,7 +497,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void updateCurrentEntryLabelProperty_whenSingleFieldRank_shouldRetrieveLabel() {
+    void updateCurrentEntryLabelProperty_whenSingleFieldRank_shouldRetrieveLabel() {
         // GIVEN
         final EditorLayoutDto.EditorProfileDto profileObject = getSecondLayoutProfile();
         profileObject.addDefaultEntryLabelFieldRank();
@@ -514,7 +516,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void updateItemProperties_withoutRawValueSet() {
+    void updateItemProperties_withoutRawValueSet() {
         // GIVEN
         ContentItemDto itemObject = createContentItem();
 
@@ -523,7 +525,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void updateItemProperties_withRawValueSet_andNoResolvedValueInIndex_shouldOnlyUpdateProperty() {
+    void updateItemProperties_withRawValueSet_andNoResolvedValueInIndex_shouldOnlyUpdateProperty() {
         // GIVEN
         ContentItemDto itemObject = createContentItem();
         StringProperty rawValueProperty = controller.getItemPropsByFieldRank()
@@ -538,7 +540,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void updateItemProperties_withRawValueSet_andResolvedValueInIndex_forReferenceField_withUnknownRemoteReference_shouldUpdatePropertyWithErrorLabel() {
+    void updateItemProperties_withRawValueSet_andResolvedValueInIndex_forReferenceField_withUnknownRemoteReference_shouldUpdatePropertyWithErrorLabel() {
         // GIVEN
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(createTopicObjectForReference());
         when(minerMock.getDatabaseTopicFromReference(TOPIC_REFERENCE)).thenReturn(createTopicObject(TOPIC2));
@@ -561,7 +563,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void updateItemProperties_withRawValueSet_andResolvedValueInIndex_forReferenceField_withExistingRemoteReference_shouldUpdateProperty() {
+    void updateItemProperties_withRawValueSet_andResolvedValueInIndex_forReferenceField_withExistingRemoteReference_shouldUpdateProperty() {
         // GIVEN
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(createTopicObjectForReference());
         when(minerMock.getDatabaseTopicFromReference(TOPIC_REFERENCE)).thenReturn(createTopicObject(TOPIC2));
@@ -583,7 +585,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void updateItemProperties_withRawValueSet_andResolvedValueInIndex_forLocalResourceField_shouldUpdateProperty() {
+    void updateItemProperties_withRawValueSet_andResolvedValueInIndex_forLocalResourceField_shouldUpdateProperty() {
         // GIVEN
         ItemViewModel itemViewModel = controller.getItemPropsByFieldRank();
         itemViewModel
@@ -606,7 +608,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void updateItemProperties_withRawValueSet_andResolvedValueInIndex_forRemoteResourceField_shouldUpdateProperty() {
+    void updateItemProperties_withRawValueSet_andResolvedValueInIndex_forRemoteResourceField_shouldUpdateProperty() {
         // GIVEN
         ItemViewModel itemViewModel = controller.getItemPropsByFieldRank();
         itemViewModel
@@ -627,8 +629,8 @@ public class MainStageViewDataControllerTest {
         assertThat(resolvedValueProperty.get()).isEqualTo("resolved remote value");
     }
 
-    @Test(expected=IllegalStateException.class)
-    public void updateAllLinkProperties_whenReferenceNotAvailable_shouldThrowException() {
+    @Test
+    void updateAllLinkProperties_whenReferenceNotAvailable_shouldThrowException() {
         // GIVEN
         TopicLinkDto topicLinkObject = createTopicLinkObject(TOPIC2);
         ContentEntryDataItem item = new ContentEntryDataItem();
@@ -639,14 +641,13 @@ public class MainStageViewDataControllerTest {
         when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
         when(minerMock.getContentEntryReferenceWithInternalIdentifier(0, TOPIC1)).thenReturn(empty());
 
-        // WHEN
-        controller.updateAllLinkProperties(topicLinkObject);
-
-        // THEN:ISE
+        // WHEN-THEN
+        assertThrows(IllegalStateException.class,
+                () -> controller.updateAllLinkProperties(topicLinkObject));
     }
 
-    @Test(expected=IllegalStateException.class)
-    public void updateAllLinkProperties_whenLinkedTopicNotFound_shouldThrowException() {
+    @Test
+    void updateAllLinkProperties_whenLinkedTopicNotFound_shouldThrowException() {
         // GIVEN
         TopicLinkDto topicLinkObject = createTopicLinkObject(TOPIC2);
         ContentEntryDataItem item = new ContentEntryDataItem();
@@ -658,14 +659,13 @@ public class MainStageViewDataControllerTest {
         when(minerMock.getContentEntryReferenceWithInternalIdentifier(0, TOPIC1)).thenReturn(of("entryRef"));
         when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(empty());
 
-        // WHEN
-        controller.updateAllLinkProperties(topicLinkObject);
-
-        // THEN:ISE
+        // WHEN-THEN
+        assertThrows(IllegalStateException.class,
+                () -> controller.updateAllLinkProperties(topicLinkObject));
     }
 
     @Test
-    public void updateAllLinkProperties_whenEntryFoundInLinkedTopic_shouldUpdateProperties() {
+    void updateAllLinkProperties_whenEntryFoundInLinkedTopic_shouldUpdateProperties() {
         // GIVEN
         TopicLinkDto topicLinkObject = createTopicLinkObject(TOPIC2);
         ContentEntryDataItem item = new ContentEntryDataItem();
@@ -690,7 +690,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void updateAllLinkProperties_whenEntryFoundInLinkedTopic_andLinkedTopicAsAssociation_shouldUpdateProperties() {
+    void updateAllLinkProperties_whenEntryFoundInLinkedTopic_andLinkedTopicAsAssociation_shouldUpdateProperties() {
         // GIVEN
         TopicLinkDto topicLinkObject = createTopicLinkObjectForAssociation();
         ContentEntryDataItem item = new ContentEntryDataItem();
@@ -718,7 +718,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void updateLinkProperties_whenNoMoreLinkedItem_shouldResetErrorProps() {
+    void updateLinkProperties_whenNoMoreLinkedItem_shouldResetErrorProps() {
         // GIVEN
         ItemViewModel itemProps = controller.getItemPropsByFieldRank();
         itemProps.rawValuePropertyAtFieldRank(-1).set("RAW VALUE");
@@ -742,7 +742,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void selectFieldsFromTopic_whenTopicWithoutREFSupport_shouldReturnEmptyList() {
+    void selectFieldsFromTopic_whenTopicWithoutREFSupport_shouldReturnEmptyList() {
         // GIVEN
         when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(ACHIEVEMENTS));
 
@@ -754,7 +754,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void selectEntriesFromTopic_whenTopicWithoutREFSupport_shouldReturnEmptyList() {
+    void selectEntriesFromTopic_whenTopicWithoutREFSupport_shouldReturnEmptyList() {
         // GIVEN
         when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(ACHIEVEMENTS));
 
@@ -766,7 +766,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void fetchRemoteContentsWithEntryRef_whenRemoteEntryDoesNotExist_shouldUpdateErrorProps_andReturnDefaultValue() {
+    void fetchRemoteContentsWithEntryRef_whenRemoteEntryDoesNotExist_shouldUpdateErrorProps_andReturnDefaultValue() {
         // GIVEN
         when(minerMock.getContentEntryInternalIdentifierWithReference("000000", TOPIC1)).thenReturn(OptionalInt.empty());
 
@@ -781,7 +781,7 @@ public class MainStageViewDataControllerTest {
     }
 
     @Test
-    public void fetchRemoteContentsWithEntryRef_whenRemoteEntryDoesExist_shouldNotUpdateErrorProps_andReturnResolveddValue() {
+    void fetchRemoteContentsWithEntryRef_whenRemoteEntryDoesExist_shouldNotUpdateErrorProps_andReturnResolveddValue() {
         // GIVEN
         ItemViewModel itemProps = controller.getItemPropsByFieldRank();
         itemProps.errorPropertyAtFieldRank(1).set(true);
@@ -987,10 +987,6 @@ public class MainStageViewDataControllerTest {
                 .ofFieldRank(1)
                 .withRawValue("rawValue")
                 .build();
-    }
-
-    private EditorLayoutDto.EditorProfileDto getDefaultLayoutProfile() {
-        return layoutObject.getProfiles().get(0);
     }
 
     private EditorLayoutDto.EditorProfileDto getSecondLayoutProfile() {

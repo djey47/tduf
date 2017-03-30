@@ -1,32 +1,30 @@
 package fr.tduf.gui.database.controllers;
 
-
 import fr.tduf.gui.database.domain.LocalizedResource;
-import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
+import fr.tduf.libtesting.common.helper.javafx.ApplicationTestHelper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.scene.control.ChoiceBox;
 import javafx.util.Pair;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import static fr.tduf.libunlimited.common.game.domain.Locale.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ResourcesStageControllerTest {
-
-    @Rule
-    public JavaFXThreadingRule javaFXRule = new JavaFXThreadingRule();
+class ResourcesStageControllerTest {
+    @BeforeAll
+    static void globalSetUp() {
+        ApplicationTestHelper.initJavaFX();
+    }
 
     @Mock
     private MainStageController mainStageControllerMock;
@@ -43,8 +41,10 @@ public class ResourcesStageControllerTest {
     @InjectMocks
     private ResourcesStageController controller;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
+        initMocks(this);
+        
         ChoiceBox<DbDto.Topic> topicsChoiceBox = new ChoiceBox<>();
         topicsChoiceBox.setValue(CAR_PHYSICS_DATA);
 
@@ -59,8 +59,8 @@ public class ResourcesStageControllerTest {
     }
 
     @Test
-    @Ignore("Displays message box so can't be run automatically")
-    public void editResourceAndUpdateMainStage_whenResourceDoesNotExist_shouldRaisePopup() {
+    @Disabled("Displays message box so can't be run automatically")
+    void editResourceAndUpdateMainStage_whenResourceDoesNotExist_shouldRaisePopup() {
         // GIVEN
         LocalizedResource newLocalizedResource = new LocalizedResource(new Pair<>("0", "V"), of(FRANCE));
         doThrow(new IllegalArgumentException("Does not exist"))
@@ -74,7 +74,7 @@ public class ResourcesStageControllerTest {
     }
 
     @Test
-    public void editResourceAndUpdateMainStage_whenNewValueForLocale_shouldCallChangeComponent_andUpdateAllStages() {
+    void editResourceAndUpdateMainStage_whenNewValueForLocale_shouldCallChangeComponent_andUpdateAllStages() {
         // GIVEN
         LocalizedResource newLocalizedResource = new LocalizedResource(new Pair<>("0", "V"), of(FRANCE));
 
@@ -87,7 +87,7 @@ public class ResourcesStageControllerTest {
     }
 
     @Test
-    public void editResourceAndUpdateMainStage_whenExistingResourceReference_andNewValueAnyLocale_shouldCallChangeComponent_andUpdateAllStages() {
+    void editResourceAndUpdateMainStage_whenExistingResourceReference_andNewValueAnyLocale_shouldCallChangeComponent_andUpdateAllStages() {
         // GIVEN
         LocalizedResource newLocalizedResource = new LocalizedResource(new Pair<>("0", "V"), empty());
 
@@ -100,7 +100,7 @@ public class ResourcesStageControllerTest {
     }
 
     @Test
-    public void editResourceAndUpdateMainStage_whenExistingResourceReference_andNewValueAndReference_shouldCallChangeComponent_andUpdateAllStages() {
+    void editResourceAndUpdateMainStage_whenExistingResourceReference_andNewValueAndReference_shouldCallChangeComponent_andUpdateAllStages() {
         // GIVEN
         LocalizedResource newLocalizedResource = new LocalizedResource(new Pair<>("1", "V"), empty());
 
@@ -113,8 +113,8 @@ public class ResourcesStageControllerTest {
     }
 
     @Test
-    @Ignore("Displays message box so can't be run automatically")
-    public void editNewResourceAndUpdateMainStage_whenResourceAlreadyExists_shouldRaisePopup() {
+    @Disabled("Displays message box so can't be run automatically")
+    void editNewResourceAndUpdateMainStage_whenResourceAlreadyExists_shouldRaisePopup() {
         // GIVEN
         LocalizedResource newLocalizedResource = new LocalizedResource(new Pair<>("0", "V"), of(FRANCE));
         doThrow(new IllegalArgumentException("Already exists"))
@@ -128,7 +128,7 @@ public class ResourcesStageControllerTest {
     }
 
     @Test
-    public void editNewResourceAndUpdateMainStage_forAllLocales_shouldCallChangeComponent_andUpdateAllStages() {
+    void editNewResourceAndUpdateMainStage_forAllLocales_shouldCallChangeComponent_andUpdateAllStages() {
         // GIVEN
         LocalizedResource newLocalizedResource = new LocalizedResource(new Pair<>("1", "V"), empty());
 
@@ -141,7 +141,7 @@ public class ResourcesStageControllerTest {
     }
 
     @Test
-    public void editNewResourceAndUpdateMainStage_forSingleLocale_shouldCallChangeComponent_andUpdateAllStages() {
+    void editNewResourceAndUpdateMainStage_forSingleLocale_shouldCallChangeComponent_andUpdateAllStages() {
         // GIVEN
         LocalizedResource newLocalizedResource = new LocalizedResource(new Pair<>("1", "V"), of(UNITED_STATES));
 

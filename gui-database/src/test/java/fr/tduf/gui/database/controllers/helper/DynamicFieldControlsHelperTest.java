@@ -7,25 +7,25 @@ import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
-import fr.tduf.libtesting.common.helper.javafx.NonApp;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.layout.HBox;
-import org.junit.jupiter.api.BeforeAll;
+import javafx.stage.Stage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.testfx.framework.junit5.ApplicationTest;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.INTEGER;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-class DynamicFieldControlsHelperTest {
+class DynamicFieldControlsHelperTest extends ApplicationTest {
     @Mock
     private MainStageController controllerMock;
 
@@ -34,17 +34,15 @@ class DynamicFieldControlsHelperTest {
 
     @Mock
     private PluginHandler pluginHandlerMock;
-    
+
     @Mock
     private ApplicationConfiguration applicationConfigurationMock;
 
     @InjectMocks
     private DynamicFieldControlsHelper helper;
 
-    @BeforeAll
-    static void globalSetUp() {
-        NonApp.initJavaFX();
-    }
+    @Override
+    public void start(Stage stage) throws Exception {}
 
     @BeforeEach
     void setUp() {
@@ -96,8 +94,8 @@ class DynamicFieldControlsHelperTest {
 
         // then
         verify(pluginHandlerMock).renderPluginByName("PLUGIN", fieldBox);
-    }    
-    
+    }
+
     @Test
     void addCustomControls_whenPluginNamePresent_andPluginsDisabled_shouldNotInvokeHandler() {
         // given
@@ -120,7 +118,7 @@ class DynamicFieldControlsHelperTest {
     void addCustomControls_withoutPluginName_andPluginsEnabled_shouldNotInvokeHandler() {
         // given
         when(applicationConfigurationMock.isEditorPluginsEnabled()).thenReturn(false);
-        
+
         // when
         helper.addCustomControls(new HBox(), createField(), new FieldSettingsDto(), CAR_PHYSICS_DATA, new SimpleStringProperty("RAW_VALUE"));
 

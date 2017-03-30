@@ -1,6 +1,5 @@
 package fr.tduf.gui.common.javafx.helper;
 
-import fr.tduf.libtesting.common.helper.javafx.NonApp;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventTarget;
@@ -8,20 +7,18 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import org.junit.jupiter.api.BeforeAll;
+import javafx.stage.Stage;
 import org.junit.jupiter.api.Test;
+import org.testfx.framework.junit5.ApplicationTest;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class TableViewHelperTest {
-
-    @BeforeAll
-    static void globalSetUp() {
-        NonApp.initJavaFX();
-    }
+class TableViewHelperTest extends ApplicationTest {
+    @Override
+    public void start(Stage stage) throws Exception {}
 
     @Test
     void getMouseSelectedItem_whenNullEvent_shouldThrowException() throws Exception {
