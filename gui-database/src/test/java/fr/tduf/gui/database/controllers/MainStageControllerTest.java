@@ -38,7 +38,7 @@ class MainStageControllerTest {
     private MainStageController controller;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         initMocks(this);
     }
 
@@ -56,7 +56,7 @@ class MainStageControllerTest {
     }
 
     @Test
-    void handleDatabaseLoaderSuccess_whenLoadedObjects_shouldReplaceObjects_andUpdateDisplay() {
+    void handleDatabaseLoaderSuccess_whenLoadedObjects_andPluginsEnabled_shouldReplaceObjects_andUpdateDisplay() {
         // given
         DbDto previousDatabaseObject = DbDto.builder().build();
         controller.getDatabaseObjects().add(previousDatabaseObject);
@@ -66,6 +66,7 @@ class MainStageControllerTest {
         EditorContext pluginContext = new EditorContext();
         when(pluginHandlerMock.getContext()).thenReturn(pluginContext);
         when(applicationConfigurationMock.getGamePath()).thenReturn(of(Paths.get("/tdu")));
+        when(applicationConfigurationMock.isEditorPluginsEnabled()).thenReturn(true);
 
         // when
         controller.handleDatabaseLoaderSuccess();
