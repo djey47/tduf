@@ -33,7 +33,6 @@ allprojects {
         
         jsonassertVersion = '1.4.0'
 
-        junitVersion = '4.12'
         junitJupiterVersion = '5.0.0-M3'
         junitPlatformVersion = '1.0.0-M3'
         
@@ -68,10 +67,6 @@ subprojects {
 
         testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: "$junitJupiterVersion"
         testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: "$junitJupiterVersion"
-
-        testCompile group: 'junit', name: 'junit', version: "$junitVersion"
-        testRuntime group: 'org.junit.vintage', name: 'junit-vintage-engine', version: "$junitVersion.0-M3"
-
         testCompile group: 'org.mockito', name: 'mockito-core', version: "$mockitoVersion"
         testCompile group: 'org.assertj', name: 'assertj-core', version: "$assertjVersion"
         testCompile group: 'org.skyscreamer', name: 'jsonassert', version: "$jsonassertVersion"
@@ -139,10 +134,8 @@ project(':cli') {
 }
 
 project('lib-testing') {
-    // Should use 4.x Junit because of rules
     dependencies {
         compile project(':lib-unlimited')
-        compile group: 'junit', name: 'junit', version: "$junitVersion"
         compile group: 'org.assertj', name: 'assertj-core', version: "$assertjVersion"
         compile group: 'org.skyscreamer', name: 'jsonassert', version: "$jsonassertVersion"
     }
