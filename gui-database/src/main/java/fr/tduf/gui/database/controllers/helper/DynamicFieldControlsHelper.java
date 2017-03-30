@@ -60,7 +60,8 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         StringProperty errorMessageProperty = itemProps.errorMessagePropertyAtFieldRank(field.getRank());
 
         String pluginName = fieldSettings.getPluginName();
-        if (pluginName == null) {
+        if (!controller.getApplicationConfiguration().isEditorPluginsEnabled()
+                || pluginName == null) {
             addSpecialControls(fieldBox, field, fieldSettings, currentTopic);
         } else {
             addPluginControls(pluginName, currentTopic, fieldBox, fieldSettings, rawValueProperty, errorMessageProperty, errorProperty, field.getTargetRef());

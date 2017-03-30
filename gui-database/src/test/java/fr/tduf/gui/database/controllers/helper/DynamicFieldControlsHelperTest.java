@@ -8,6 +8,7 @@ import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
 import fr.tduf.libtesting.common.helper.javafx.NonApp;
+import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import javafx.beans.property.SimpleObjectProperty;
@@ -33,6 +34,9 @@ class DynamicFieldControlsHelperTest {
 
     @Mock
     private PluginHandler pluginHandlerMock;
+    
+    @Mock
+    private ApplicationConfiguration applicationConfigurationMock;
 
     @InjectMocks
     private DynamicFieldControlsHelper helper;
@@ -48,6 +52,7 @@ class DynamicFieldControlsHelperTest {
 
         when(controllerMock.getPluginHandler()).thenReturn(pluginHandlerMock);
         when(controllerMock.getViewData()).thenReturn(viewDataMock);
+        when(controllerMock.getApplicationConfiguration()).thenReturn(applicationConfigurationMock);
         when(viewDataMock.getItemPropsByFieldRank()).thenReturn(new ItemViewModel());
     }
 
@@ -76,27 +81,47 @@ class DynamicFieldControlsHelperTest {
     }
 
     @Test
-    void addCustomControls_whenPluginNamePresent_shouldInvokeHandler() {
+    void addCustomControls_whenPluginNamePresent_andPluginsEnabled_shouldInvokeHandler() {
         // given
-        FieldSettingsDto fieldSettings = new FieldSettingsDto();
-        fieldSettings.setPluginName("PLUGIN");
         HBox fieldBox = new HBox();
 
         EditorContext editorContext = new EditorContext();
         when(pluginHandlerMock.getContext()).thenReturn(editorContext);
+        when(applicationConfigurationMock.isEditorPluginsEnabled()).thenReturn(true);
 
 
         // when
-        helper.addCustomControls(fieldBox, createField(), fieldSettings, CAR_PHYSICS_DATA, new SimpleStringProperty("RAW_VALUE"));
+        helper.addCustomControls(fieldBox, createField(), createFieldSettingsForPlugin(), CAR_PHYSICS_DATA, new SimpleStringProperty("RAW_VALUE"));
 
 
         // then
         verify(pluginHandlerMock).renderPluginByName("PLUGIN", fieldBox);
+    }    
+    
+    @Test
+    void addCustomControls_whenPluginNamePresent_andPluginsDisabled_shouldNotInvokeHandler() {
+        // given
+        HBox fieldBox = new HBox();
+
+        EditorContext editorContext = new EditorContext();
+        when(pluginHandlerMock.getContext()).thenReturn(editorContext);
+        when(applicationConfigurationMock.isEditorPluginsEnabled()).thenReturn(false);
+
+
+        // when
+        helper.addCustomControls(fieldBox, createField(), createFieldSettingsForPlugin(), CAR_PHYSICS_DATA, new SimpleStringProperty("RAW_VALUE"));
+
+
+        // then
+        verifyZeroInteractions(pluginHandlerMock);
     }
 
     @Test
-    void addCustomControls_withoutPluginName_shouldNotInvokeHandler() {
-        // given-when
+    void addCustomControls_withoutPluginName_andPluginsEnabled_shouldNotInvokeHandler() {
+        // given
+        when(applicationConfigurationMock.isEditorPluginsEnabled()).thenReturn(false);
+        
+        // when
         helper.addCustomControls(new HBox(), createField(), new FieldSettingsDto(), CAR_PHYSICS_DATA, new SimpleStringProperty("RAW_VALUE"));
 
         // then
@@ -108,5 +133,11 @@ class DynamicFieldControlsHelperTest {
                 .ofRank(1)
                 .fromType(INTEGER)
                 .build();
+    }
+
+    private FieldSettingsDto createFieldSettingsForPlugin() {
+        FieldSettingsDto fieldSettings = new FieldSettingsDto();
+        fieldSettings.setPluginName("PLUGIN");
+        return fieldSettings;
     }
 }
