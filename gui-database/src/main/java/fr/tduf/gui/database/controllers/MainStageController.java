@@ -413,6 +413,9 @@ public class MainStageController extends AbstractGuiController {
     }
 
     void handleDatabaseSaverSuccess() {
+        if(!applicationConfiguration.isEditorPluginsEnabled()) {
+            return;
+        }
         pluginHandler.triggerOnSaveForAllPLugins();
     }
 

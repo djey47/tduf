@@ -80,11 +80,26 @@ class MainStageControllerTest {
     }
 
     @Test
-    void handleDatabaseSaverSuccess_shouldInvokePluginHandler() {
-        // given-when
+    void handleDatabaseSaverSuccess_whenPluginsEnabled_shouldInvokePluginHandler() {
+        // given
+        when(applicationConfigurationMock.isEditorPluginsEnabled()).thenReturn(true);
+
+        // when
         controller.handleDatabaseSaverSuccess();
 
         // then
         verify(pluginHandlerMock).triggerOnSaveForAllPLugins();
+    }
+
+    @Test
+    void handleDatabaseSaverSuccess_whenPluginsDisabled_shouldInvokePluginHandler() {
+        // given
+        when(applicationConfigurationMock.isEditorPluginsEnabled()).thenReturn(false);
+
+        // when
+        controller.handleDatabaseSaverSuccess();
+
+        // then
+        verifyZeroInteractions(pluginHandlerMock);
     }
 }
