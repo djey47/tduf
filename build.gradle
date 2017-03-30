@@ -42,6 +42,8 @@ allprojects {
         minlogVersion = '1.2'
 
         commonsLangVersion = '3.5'
+
+        testfxVersion = '4.0.6-alpha'
     }
 }
 
@@ -74,6 +76,8 @@ subprojects {
         testCompile group: 'org.assertj', name: 'assertj-core', version: "$assertjVersion"
         testCompile group: 'org.skyscreamer', name: 'jsonassert', version: "$jsonassertVersion"
         testCompile group: 'com.github.stefanbirkner', name: 'system-rules', version: '1.8.0'
+        testCompile group: 'org.testfx', name: 'testfx-core', version: "$testfxVersion"
+        testCompile group: 'org.testfx', name: 'testfx-junit5', version: "$testfxVersion"
     }
 
     compileJava {
@@ -334,14 +338,14 @@ task cleanPackDir(type: Delete) {
     description 'Prepares new package by removing all files in pack directory.'
     group 'packaging'
 
-    delete 'pack/'
+    delete ['pack/']
 }
 
 task cleanTempJarDir(type: Delete) {
     description 'Prepares new package by removing all files in tmp-jarContents directory.'
     group 'packaging'
 
-    delete tempJarDirectory
+    delete [tempJarDirectory]
 }
 
 task copyDoc(type: Copy) {
