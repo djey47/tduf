@@ -2,30 +2,34 @@ package fr.tduf.gui.database.controllers;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.database.stages.MainStageDesigner;
-import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
 import javafx.stage.Stage;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.testfx.framework.junit5.ApplicationTest;
 
 import java.io.IOException;
 
-@Ignore
-public class MainStageController_focusOnrenderTest {
+@Disabled
+class MainStageController_focusOnrenderTest extends ApplicationTest {
+    @Override
+    public void start(Stage stage) throws Exception {}
 
-    @Rule
-    public JavaFXThreadingRule javaFXRule = new JavaFXThreadingRule();
-
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         Log.set(Log.LEVEL_TRACE);
     }
 
     @Test
-    public void display() throws Exception {
+    void display() throws Exception {
         // GIVEN-WHEN
-        initMainStageController().showAndWait();
+        interact(() -> {
+            try {
+                initMainStageController().showAndWait();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     private static Stage initMainStageController() throws IOException {

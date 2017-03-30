@@ -1,26 +1,26 @@
 package fr.tduf.gui.common.javafx.helper;
 
-import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
 import javafx.scene.control.Button;
-import org.junit.Rule;
-import org.junit.Test;
+import javafx.stage.Stage;
+import org.junit.jupiter.api.Test;
+import org.testfx.framework.junit5.ApplicationTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ControlHelperTest {
-    @Rule
-    public JavaFXThreadingRule javaFXRule = new JavaFXThreadingRule();
+class ControlHelperTest extends ApplicationTest {
+    @Override
+    public void start(Stage stage) throws Exception {}
 
-    @Test(expected=NullPointerException.class)
-    public void setTooltipText_whenNullControl_shouldThrowException() {
-        // GIVEN-WHEN
-        ControlHelper.setTooltipText(null, "");
-
-        // THEN: NPE
+    @Test
+    void setTooltipText_whenNullControl_shouldThrowException() {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> ControlHelper.setTooltipText(null, ""));
     }
 
     @Test
-    public void setTooltipText_shouldDefineTooltip() {
+    void setTooltipText_shouldDefineTooltip() {
         // GIVEN
         Button button = new Button();
         String text = "tooltip text";

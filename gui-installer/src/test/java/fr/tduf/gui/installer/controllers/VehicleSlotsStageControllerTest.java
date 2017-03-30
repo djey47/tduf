@@ -4,15 +4,13 @@ package fr.tduf.gui.installer.controllers;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.stages.VehicleSlotsStageDesigner;
 import fr.tduf.libtesting.common.helper.game.DatabaseHelper;
-import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.stage.Stage;
-import javafx.stage.Window;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.testfx.framework.junit5.ApplicationTest;
 
 import java.io.IOException;
 import java.util.List;
@@ -20,29 +18,31 @@ import java.util.List;
 /**
  * To display stage without running whole application.
  */
-@Ignore
-public class VehicleSlotsStageControllerTest {
-    @Rule
-    public JavaFXThreadingRule javaFXRule = new JavaFXThreadingRule();
-
+@Disabled
+class VehicleSlotsStageControllerTest extends ApplicationTest {
     private List<DbDto> databaseObjects;
 
-    @Before
-    public void setUp() {
+    @Override
+    public void start(Stage stage) throws Exception {
+
+    }
+
+    @BeforeEach
+    void setUp() {
         Log.set(Log.LEVEL_TRACE);
 
         databaseObjects = DatabaseHelper.createDatabaseForReadOnly();
     }
 
     @Test
-    public void display() throws Exception {
+    void display() throws Exception {
         // GIVEN-WHEN
-        initSlotsBrowserStageController(null).initAndShowModalDialog(BulkDatabaseMiner.load(databaseObjects));
+        interact(() -> initSlotsBrowserStageController().initAndShowModalDialog(BulkDatabaseMiner.load(databaseObjects)));
     }
 
-    private static VehicleSlotsStageController initSlotsBrowserStageController(Window mainWindow) throws IOException {
+    private static VehicleSlotsStageController initSlotsBrowserStageController() throws IOException {
         Stage stage = new Stage();
-        stage.initOwner(mainWindow);
+        stage.initOwner(null);
 
         return VehicleSlotsStageDesigner.init(stage);
     }

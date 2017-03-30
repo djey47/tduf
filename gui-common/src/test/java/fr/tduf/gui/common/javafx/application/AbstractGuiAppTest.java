@@ -3,15 +3,14 @@ package fr.tduf.gui.common.javafx.application;
 import com.esotericsoftware.minlog.Log;
 import com.sun.javafx.application.ParametersImpl;
 import fr.tduf.libtesting.common.helper.ConsoleHelper;
-import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.testfx.framework.junit5.ApplicationTest;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -24,13 +23,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-// FIXME not compatible with NonApp as @Rule replacement. Must change TestApp implementation?
-public class AbstractGuiAppTest {
+class AbstractGuiAppTest extends ApplicationTest {
     private static final String[] ARGS = new String[]{"arg1", "arg2", "arg3"};
     private static final String[] ARGS_VERBOSE = new String[]{"arg1", "-v", "arg3"};
-
-    @Rule
-    public JavaFXThreadingRule javaFXRule = new JavaFXThreadingRule();
 
     @Mock
     private MiniSpy spy;
@@ -40,40 +35,52 @@ public class AbstractGuiAppTest {
 
     private OutputStream consoleOutputStream;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         initMocks(this);
 
         consoleOutputStream = ConsoleHelper.hijackStandardOutput();
     }
 
-    @After
-    public void tearDown() {
+    @Override
+    public void start(Stage stage) throws Exception {}
+
+    @AfterEach
+    void tearDown() {
         ConsoleHelper.restoreOutput();
     }
 
     @Test
-    public void start_withArgs_should_invokeStartApp_andGetArgs() throws Exception {
+    void start_withArgs_should_invokeStartApp_andGetArgs() throws Exception {
         // GIVEN
         ParametersImpl.registerParameters(testApp, createParams(ARGS));
-        final Stage primaryStage = new Stage();
 
-        // WHEN
-        testApp.start(primaryStage);
-
-        // THEN
-        verify(spy).invoke(primaryStage);
-
+        // WHEN-THEN
+        interact(() -> {
+            Stage primaryStage =  new Stage();
+            try {
+                testApp.start(primaryStage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            verify(spy).invoke(primaryStage);
+        });
         assertThat(TestApp.getCommandLineParameters()).containsExactly(ARGS);
     }
 
     @Test
-    public void start_withVerboseSwitch_should_setLogLevelToTrace() throws Exception {
+    void start_withVerboseSwitch_should_setLogLevelToTrace() throws Exception {
         // GIVEN
         ParametersImpl.registerParameters(testApp, createParams(ARGS_VERBOSE));
 
         // WHEN
-        testApp.start(new Stage());
+        interact(() -> {
+            try {
+                testApp.start(new Stage());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
         Log.trace("trace");
         Log.info("info");
 
@@ -85,12 +92,18 @@ public class AbstractGuiAppTest {
     }
 
     @Test
-    public void start_withoutVerboseSwitch_should_setLogLevelToInfo() throws Exception {
+    void start_withoutVerboseSwitch_should_setLogLevelToInfo() throws Exception {
         // GIVEN
         ParametersImpl.registerParameters(testApp, createParams(ARGS));
 
         // WHEN
-        testApp.start(new Stage());
+        interact(() -> {
+            try {
+                testApp.start(new Stage());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
         Log.trace("trace");
         Log.info("info");
 

@@ -8,6 +8,7 @@ import javafx.stage.Stage;
  * Fake application allowing to initialize FX toolkit in tests.
  * Must be used in Junit5's @BeforeAll as rules are not supported anymore .
  */
+// TODO see to replace with testFX
 public class NonApp extends Application {
     private static final Class<NonApp> thisClass = NonApp.class;
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();

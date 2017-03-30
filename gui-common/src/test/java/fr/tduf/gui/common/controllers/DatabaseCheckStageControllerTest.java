@@ -2,15 +2,13 @@ package fr.tduf.gui.common.controllers;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.stages.DatabaseCheckStageDesigner;
-import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import javafx.stage.Stage;
-import javafx.stage.Window;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.testfx.framework.junit5.ApplicationTest;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -18,19 +16,18 @@ import java.util.HashSet;
 /**
  * To display stage without running whole application.
  */
-@Ignore
-public class DatabaseCheckStageControllerTest {
+@Disabled
+class DatabaseCheckStageControllerTest extends ApplicationTest {
+    @Override
+    public void start(Stage stage) throws Exception {}
 
-    @Rule
-    public JavaFXThreadingRule javaFXRule = new JavaFXThreadingRule();
-
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         Log.set(Log.LEVEL_TRACE);
     }
 
     @Test
-    public void display_whenManyErrors() throws IOException {
+    void display_whenManyErrors() throws IOException {
         // GIVEN
         final HashSet<IntegrityError> integrityErrors = new HashSet<>();
         integrityErrors.add(IntegrityError.builder().ofType(IntegrityError.ErrorTypeEnum.CONTENTS_FIELDS_COUNT_MISMATCH).build());
@@ -48,12 +45,12 @@ public class DatabaseCheckStageControllerTest {
                 .build());
 
         // WHEN
-        initDatabaseCheckStageController(null).initAndShowModalDialog(integrityErrors);
+        interact(() -> initDatabaseCheckStageController().initAndShowModalDialog(integrityErrors));
     }
 
-    private static DatabaseCheckStageController initDatabaseCheckStageController(Window mainWindow) throws IOException {
+    private static DatabaseCheckStageController initDatabaseCheckStageController() throws IOException {
         Stage stage = new Stage();
-        stage.initOwner(mainWindow);
+        stage.initOwner(null);
 
         return DatabaseCheckStageDesigner.init(stage, "Testing DatabaseCheckStageController...");
     }

@@ -2,12 +2,12 @@ package fr.tduf.gui.common.javafx.helper;
 
 import fr.tduf.gui.common.javafx.helper.options.FileBrowsingOptions;
 import fr.tduf.gui.common.javafx.helper.options.SimpleDialogOptions;
-import fr.tduf.libtesting.common.helper.javafx.JavaFXThreadingRule;
 import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
+import javafx.stage.Stage;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.testfx.framework.junit5.ApplicationTest;
 
 import java.io.File;
 import java.util.List;
@@ -19,13 +19,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Interactive testing - can't be asserted automatically
  */
-@Ignore
-public class CommonDialogsHelperTest {
-    @Rule
-    public JavaFXThreadingRule javaFXRule = new JavaFXThreadingRule();
+@Disabled
+class CommonDialogsHelperTest extends ApplicationTest {
+    @Override
+    public void start(Stage stage) throws Exception {}
 
     @Test
-    public void alertDialog() {
+    void alertDialog() {
         // GIVEN
         final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
                 .withContext(Alert.AlertType.INFORMATION)
@@ -35,23 +35,23 @@ public class CommonDialogsHelperTest {
                 .build();
 
         // WHEN
-        CommonDialogsHelper.showDialog(dialogOptions, null);
+        interact(() -> CommonDialogsHelper.showDialog(dialogOptions, null));
     }
 
     @Test
-    public void inputValueDialog() {
+    void inputValueDialog() {
         // GIVEN
         final String prompt = "Lorem ipsum dolor sit amet, consectetur adipiscing elit,";
 
-        // WHEN
-        final Optional<String> actualInput = CommonDialogsHelper.showInputValueDialog("Enter sed then click OK", prompt, null);
-
-        // THEN
-        assertThat(actualInput).contains("sed");
+        // WHEN-THEN
+        interact(() -> {
+            final Optional<String> actualInput = CommonDialogsHelper.showInputValueDialog("Enter sed then click OK", prompt, null);
+            assertThat(actualInput).contains("sed");
+        });
     }
 
     @Test
-    public void browseForFilename_whenSaveMode_andExtensionFilters() {
+    void browseForFilename_whenSaveMode_andExtensionFilters() {
         // GIVEN
         List<FileChooser.ExtensionFilter> filters = asList(
                 new FileChooser.ExtensionFilter("Filter 1", "*.txt"),
@@ -63,22 +63,22 @@ public class CommonDialogsHelperTest {
                 .withDialogTitle("Enter toto.txt")
                 .build();
 
-        // WHEN
-        Optional<File> actualFile = CommonDialogsHelper.browseForFilename(options, null);
-
-        // THEN
-        assertThat(actualFile).isPresent();
-        assertThat(actualFile.get()).hasName("toto.txt");
+        // WHEN-THEN
+        interact(() -> {
+            Optional<File> actualFile = CommonDialogsHelper.browseForFilename(options, null);
+            assertThat(actualFile).isPresent();
+            assertThat(actualFile.get()).hasName("toto.txt");
+        });
     }
 
     @Test
-    public void browseForFilename_whenLoadMode() {
+    void browseForFilename_whenLoadMode() {
         // GIVEN
         FileBrowsingOptions options = FileBrowsingOptions.builder()
                 .forLoading()
                 .build();
 
         // WHEN-THEN
-        CommonDialogsHelper.browseForFilename(options, null);
+        interact(() -> CommonDialogsHelper.browseForFilename(options, null));
     }
 }
