@@ -26,6 +26,7 @@ public class ApplicationConfiguration extends Properties {
     private static final String KEY_TDU_DIR = "tdu.root.directory";
     private static final String KEY_EDITOR_LOCALE = "tduf.editor.locale";
     private static final String KEY_EDITOR_PROFILE = "tduf.editor.profile";
+    private static final String KEY_EDITOR_PLUGINS_ENABLED = "tduf.editor.plugins.enabled";
 
     /**
      * @return full path to game database if it exists, else return default location from game directory, or empty otherwise
@@ -93,6 +94,22 @@ public class ApplicationConfiguration extends Properties {
         return ofNullable(getProperty(KEY_EDITOR_PROFILE));
     }
 
+    /**
+     * @return true to enable Database Editor plugins, false otherwise
+     */
+    public boolean isEditorPluginsEnabled() {
+        return ofNullable(getProperty(KEY_EDITOR_PLUGINS_ENABLED))
+                .map(Boolean::parseBoolean)
+                .orElse(true);
+    }
+
+    /**
+     * @param enabled   : true to enable editor plugins, false otherwise
+     */
+    public void setEditorPluginsEnabled(boolean enabled) {
+        setProperty(KEY_EDITOR_PLUGINS_ENABLED, Boolean.toString(enabled));
+    }
+    
     /**
      * Saves current configuration into user home directory.
      * @throws IOException when storage error occurs

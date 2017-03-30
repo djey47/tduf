@@ -81,4 +81,28 @@ class ApplicationConfigurationTest {
         applicationConfiguration.load();
         assertThat(applicationConfiguration).isEmpty();
     }
+    
+    @Test
+    void isEditorPluginsEnabled_whenNoSetting_shouldReturnTrue() {
+        // given-when-then
+        assertThat(applicationConfiguration.isEditorPluginsEnabled()).isTrue();
+    }    
+    
+    @Test
+    void isEditorPluginsEnabled_whenSettingToFalse_shouldReturnFalse() {
+        // given
+        applicationConfiguration.setProperty("tduf.editor.plugins.enabled", "false");
+        
+        // when-then
+        assertThat(applicationConfiguration.isEditorPluginsEnabled()).isFalse();
+    }    
+    
+    @Test
+    void isEditorPluginsEnabled_whenSettingToTrue_shouldReturnTrue() {
+        // given
+        applicationConfiguration.setProperty("tduf.editor.plugins.enabled", "true");
+        
+        // when-then
+        assertThat(applicationConfiguration.isEditorPluginsEnabled()).isTrue();
+    }
 }
