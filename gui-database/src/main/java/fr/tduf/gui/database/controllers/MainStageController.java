@@ -93,9 +93,6 @@ public class MainStageController extends AbstractGuiController {
     private DatabaseLoader databaseLoader = new DatabaseLoader();
 
     @FXML
-    Button loadDatabaseButton;
-
-    @FXML
     Label creditsLabel;
 
     @FXML
@@ -930,7 +927,7 @@ public class MainStageController extends AbstractGuiController {
         return currentEntryIndexProperty.getValue();
     }
 
-    ApplicationConfiguration getApplicationConfiguration() {
+    public ApplicationConfiguration getApplicationConfiguration() {
         return applicationConfiguration;
     }
 
