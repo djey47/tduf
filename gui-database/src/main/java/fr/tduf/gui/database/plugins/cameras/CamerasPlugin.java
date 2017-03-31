@@ -10,7 +10,7 @@ import fr.tduf.gui.database.plugins.cameras.converter.CameraInfoToItemConverter;
 import fr.tduf.gui.database.plugins.cameras.converter.CameraInfoToRawValueConverter;
 import fr.tduf.gui.database.plugins.cameras.converter.CameraViewToItemConverter;
 import fr.tduf.gui.database.plugins.cameras.helper.CamerasDialogsHelper;
-import fr.tduf.gui.database.plugins.cameras.helper.CamerasImExHelper;
+import fr.tduf.libunlimited.high.files.bin.cameras.interop.helper.CamerasImExHelper;
 import fr.tduf.gui.database.plugins.common.DatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.libunlimited.high.files.db.common.helper.CameraAndIKHelper;

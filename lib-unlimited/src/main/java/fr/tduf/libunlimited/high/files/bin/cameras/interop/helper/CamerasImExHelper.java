@@ -1,4 +1,4 @@
-package fr.tduf.gui.database.plugins.cameras.helper;
+package fr.tduf.libunlimited.high.files.bin.cameras.interop.helper;
 
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.CamPatchGenerator;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.CamPatcher;

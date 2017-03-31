@@ -1,4 +1,4 @@
-package fr.tduf.gui.database.plugins.cameras.helper;
+package fr.tduf.libunlimited.high.files.bin.cameras.interop.helper;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libtesting.common.helper.FilesHelper;
@@ -36,7 +36,7 @@ class CamerasImExHelperTest {
     @Test
     void importPatch_withEmptyPatch_shouldReturnEmpty() throws IOException {
         // given
-        File patchFile = new File(thisClass.getResource("/patches/cameras/tduf-empty.cam.json").getFile());
+        File patchFile = new File(thisClass.getResource("/cameras/patch/tduf-empty.cam.json").getFile());
 
         // when
         Optional<String> actualPropertyPath = imExHelper.importPatch(patchFile, camerasDatabaseMock, null);
@@ -48,7 +48,7 @@ class CamerasImExHelperTest {
     @Test
     void importPatch_withEmptyParser_shouldThrowException() throws IOException {
         // given
-        File patchFile = new File(thisClass.getResource("/patches/cameras/tduf-simple.cam.json").getFile());
+        File patchFile = new File(thisClass.getResource("/cameras/patch/tduf-simple.cam.json").getFile());
 
         // when-then
         assertThrows(IllegalStateException.class,
@@ -58,7 +58,7 @@ class CamerasImExHelperTest {
     @Test
     void exportToPatch_withEmptyParser_shouldReturnEmptyPatch() throws IOException, URISyntaxException, JSONException {
         // given
-        File patchFile = new File(FilesHelper.createTempDirectoryForDatabaseEditor(), "tduf-export.cam.json");
+        File patchFile = new File(FilesHelper.createTempDirectoryForLibrary(), "tduf-export.cam.json");
 
         // when
         imExHelper.exportToPatch(patchFile, camerasDatabaseMock, 1L, null);
