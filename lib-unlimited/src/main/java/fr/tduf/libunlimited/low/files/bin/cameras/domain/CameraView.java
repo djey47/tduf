@@ -100,11 +100,10 @@ public class CameraView {
 
     private EnumMap<ViewProps, Object> cloneSettings(EnumMap<ViewProps, Object> sourceSettings) {
         EnumMap<ViewProps, Object> targetSettings = new EnumMap<>(ViewProps.class);
-        sourceSettings.entrySet()
-                .forEach(settingsEntry -> {
-                    Serializable clonedValue = SerializationUtils.clone((Serializable) settingsEntry.getValue());
-                    targetSettings.put(settingsEntry.getKey(), clonedValue);
-                });
+        sourceSettings.forEach((key, value) -> {
+            Serializable clonedValue = SerializationUtils.clone((Serializable) value);
+            targetSettings.put(key, clonedValue);
+        });
         return targetSettings;
     }
 
