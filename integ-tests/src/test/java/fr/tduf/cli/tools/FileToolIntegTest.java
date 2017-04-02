@@ -1,20 +1,18 @@
 package fr.tduf.cli.tools;
 
-import fr.tduf.libtesting.common.helper.ConsoleHelper;
 import fr.tduf.libtesting.common.helper.AssertionsHelper;
+import fr.tduf.libtesting.common.helper.ConsoleHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import fr.tduf.libunlimited.low.files.banks.dto.PackedFileInfoDto;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,9 +25,9 @@ import static fr.tduf.tests.IntegTestsConstants.RESOURCES_PATH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
-@RunWith(MockitoJUnitRunner.class)
-public class FileToolIntegTest {
+class FileToolIntegTest {
 
     private final String sourceFileNameToBeEncrypted = "TDU_CarColors.json";
 
@@ -51,8 +49,10 @@ public class FileToolIntegTest {
     @InjectMocks
     private FileTool fileTool;  // Used for bank testing only. Do not use twice in a same test method!
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeEach
+    void setUp() throws IOException {
+        initMocks(this);
+        
         FileUtils.deleteDirectory(new File(encryptDirectory));
         FilesHelper.createDirectoryIfNotExists(encryptDirectory);
 
@@ -69,13 +69,13 @@ public class FileToolIntegTest {
         FileUtils.deleteDirectory(new File(unpackedDirectory));
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    void tearDown() {
         ConsoleHelper.restoreOutput();
     }
 
     @Test
-    public void encryptDecrypt_whenSavegameMode_shouldGiveOriginalFileBack() throws IOException {
+    void encryptDecrypt_whenSavegameMode_shouldGiveOriginalFileBack() throws IOException {
         // GIVEN
         String inputFile = Paths.get(sourceDirectoryForEncryption, sourceFileNameToBeEncrypted).toString();
         String outputFile = Paths.get(encryptDirectory, encryptedFileName).toString();
@@ -103,7 +103,7 @@ public class FileToolIntegTest {
     }
 
     @Test
-    public void encryptDecrypt_whenDatabaseMode_shouldGiveOriginalFileBack() throws IOException {
+    void encryptDecrypt_whenDatabaseMode_shouldGiveOriginalFileBack() throws IOException {
         // GIVEN
         String inputFile = Paths.get(sourceDirectoryForEncryption, sourceFileNameToBeEncrypted).toString();
         String outputFile = Paths.get(encryptDirectory, encryptedFileName).toString();
@@ -131,7 +131,7 @@ public class FileToolIntegTest {
     }
 
     @Test
-    public void jsonifyApplyJson_whenEncryptedContents_shouldGiveOriginalContentsBack() throws IOException, URISyntaxException {
+    void jsonifyApplyJson_whenEncryptedContents_shouldGiveOriginalContentsBack() throws IOException, URISyntaxException {
         String researchDirectory = RESOURCES_PATH.resolve("research").toString();
         String structureFileName = Paths.get(researchDirectory, "BTRQ-map.json").toString();
 
@@ -182,7 +182,7 @@ public class FileToolIntegTest {
     }
 
     @Test
-    public void bankInfo_shouldReturnInformation() throws IOException, JSONException {
+    void bankInfo_shouldReturnInformation() throws IOException, JSONException {
         String bankFile = Paths.get(bankDirectory, "Empty.bnk").toString();
 
         // GIVEN
@@ -211,7 +211,7 @@ public class FileToolIntegTest {
     }
 
     @Test
-    public void unpack_shouldCallGateway() throws IOException {
+    void unpack_shouldCallGateway() throws IOException {
         String bankFile = Paths.get(bankDirectory, bankFileName).toString();
 
         // WHEN
@@ -223,7 +223,7 @@ public class FileToolIntegTest {
     }
 
     @Test
-    public void repack_shouldCallGateway() throws IOException {
+    void repack_shouldCallGateway() throws IOException {
         String outputBankFile = Paths.get(repackedDirectory, bankFileName).toString();
 
         // WHEN
@@ -235,7 +235,7 @@ public class FileToolIntegTest {
     }
 
     @Test
-    public void repack_whenOutputFileNotProvided_andInputEndsWithSeparator_shouldGenerateRightFileName() throws IOException {
+    void repack_whenOutputFileNotProvided_andInputEndsWithSeparator_shouldGenerateRightFileName() throws IOException {
         String expectedOutputBankFile = RESOURCES_PATH.resolve("unpacked-repacked.bnk").toString();
 
         // WHEN

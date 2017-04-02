@@ -33,6 +33,7 @@ allprojects {
         
         jsonassertVersion = '1.4.0'
 
+        junitVersion = '4.12'
         junitJupiterVersion = '5.0.0-M3'
         junitPlatformVersion = '1.0.0-M3'
         
@@ -101,6 +102,10 @@ subprojects {
 project(':integ-tests') {
     dependencies {
         testCompile project(':cli')
+
+        // JUNIT4 kept for system rules
+        testCompile group: 'junit', name: 'junit', version: "$junitVersion"
+        testRuntime group: 'org.junit.vintage', name: 'junit-vintage-engine', version: "$junitVersion.0-M3"
     }
 
     junitPlatform {
