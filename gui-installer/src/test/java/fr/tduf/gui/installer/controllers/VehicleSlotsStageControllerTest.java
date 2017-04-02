@@ -31,7 +31,7 @@ class VehicleSlotsStageControllerTest extends ApplicationTest {
     void setUp() {
         Log.set(Log.LEVEL_TRACE);
 
-        databaseObjects = DatabaseHelper.createDatabaseForReadOnly();
+        databaseObjects = DatabaseHelper.createDatabase();
     }
 
     @Test

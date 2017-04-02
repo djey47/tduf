@@ -53,7 +53,7 @@ public class DatabaseHelper {
     /**
      * @return database objects from current JSON resources
      */
-    public static List<DbDto> createDatabaseForReadOnly() {
+    public static List<DbDto> createDatabase() {
         try {
             return createDatabaseFromResources(null);
         } catch (IOException ioe) {
@@ -67,7 +67,7 @@ public class DatabaseHelper {
      * @return database object from current JSON resources
      */
     public static DbDto createDatabaseTopicForReadOnly(DbDto.Topic topic) {
-        return createDatabaseForReadOnly().stream()
+        return createDatabase().stream()
                 .filter(databaseObject -> topic == databaseObject.getStructure().getTopic())
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("Topic not found in database: " + topic));

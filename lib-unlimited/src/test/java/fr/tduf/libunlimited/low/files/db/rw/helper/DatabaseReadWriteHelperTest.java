@@ -127,7 +127,7 @@ class DatabaseReadWriteHelperTest {
     @Test
     void readFullDatabaseFromJson_whenRealFiles_shouldReturnCorrespondingDtos() throws URISyntaxException {
         // GIVEN-WHEN
-        List<DbDto> actualTopicObjects = DatabaseHelper.createDatabaseForReadOnly();
+        List<DbDto> actualTopicObjects = DatabaseHelper.createDatabase();
 
 
         // THEN

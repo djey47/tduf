@@ -201,7 +201,7 @@ class DatabasePatcher_focusOnContentsTest {
         // GIVEN
         DbPatchDto updateContentsPatch = readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateContents-addAll-assoc.mini.json");
 
-        List<DbDto> databaseObjects = DatabaseHelper.createDatabaseForReadOnly();
+        List<DbDto> databaseObjects = DatabaseHelper.createDatabase();
         DatabasePatcher patcher = createPatcher(databaseObjects);
 
         BulkDatabaseMiner databaseMiner = BulkDatabaseMiner.load(databaseObjects);

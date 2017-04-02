@@ -13,12 +13,10 @@ import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import javafx.beans.property.SimpleObjectProperty;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -37,11 +35,11 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
-@RunWith(MockitoJUnitRunner.class)
-public class MainStageChangeDataControllerTest {
+class MainStageChangeDataControllerTest {
 
-    private static final List<DbDto> databaseObjects = DatabaseHelper.createDatabaseForReadOnly();
+    private static final List<DbDto> databaseObjects = DatabaseHelper.createDatabase();
     private static final BulkDatabaseMiner verifyMiner = BulkDatabaseMiner.load(databaseObjects);
 
     @Mock
@@ -61,8 +59,10 @@ public class MainStageChangeDataControllerTest {
 
     private ObjectMapper objectMapper;
 
-    @Before
-    public void setUp() throws URISyntaxException {
+    @BeforeEach
+    void setUp() throws URISyntaxException {
+        initMocks(this);
+        
         Log.set(Log.LEVEL_INFO);
 
         objectMapper = new ObjectMapper();
@@ -73,7 +73,7 @@ public class MainStageChangeDataControllerTest {
     }
 
     @Test
-    public void exportEntriesToPatchFile_whenIllegalOutputFile_shouldReturnFalse() throws Exception {
+    void exportEntriesToPatchFile_whenIllegalOutputFile_shouldReturnFalse() throws Exception {
 
         // GIVEN
         String patchFile = "/unkdir/patch.mini.json";
@@ -90,7 +90,7 @@ public class MainStageChangeDataControllerTest {
     }
 
     @Test
-    public void exportEntriesToPatchFile_whenReferenceList_shouldExportSelectedRefs() throws Exception {
+    void exportEntriesToPatchFile_whenReferenceList_shouldExportSelectedRefs() throws Exception {
 
         // GIVEN
         final Path patchPath = Paths.get(createTempDirectory(), "export-3.mini.json");
@@ -110,7 +110,7 @@ public class MainStageChangeDataControllerTest {
     }
 
     @Test
-    public void exportEntriesToPatchFile_whenEmptyLists_shouldExportAllRefs_andAllFields() throws Exception {
+    void exportEntriesToPatchFile_whenEmptyLists_shouldExportAllRefs_andAllFields() throws Exception {
 
         // GIVEN
         final Path patchPath = Paths.get(createTempDirectory(), "export-all.mini.json");
@@ -136,7 +136,7 @@ public class MainStageChangeDataControllerTest {
     }
 
     @Test
-    public void exportEntriesToPatchFile_whenFieldList_shouldExportSelectedFields() throws Exception {
+    void exportEntriesToPatchFile_whenFieldList_shouldExportSelectedFields() throws Exception {
 
         // GIVEN
         final Path patchPath = Paths.get(createTempDirectory(), "export-partial-3fields.mini.json");
@@ -161,7 +161,7 @@ public class MainStageChangeDataControllerTest {
     }
 
     @Test
-    public void exportCurrentEntryAsLine_should_generate_line_with_trailing_semicolon() {
+    void exportCurrentEntryAsLine_should_generate_line_with_trailing_semicolon() {
         // GIVEN
         ContentEntryDto entry = ContentEntryDto.builder()
                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue("25").build())
@@ -180,7 +180,7 @@ public class MainStageChangeDataControllerTest {
     }
 
     @Test
-    public void updateResourceWithReferenceForLocale_shouldCallUpdateComponent() {
+    void updateResourceWithReferenceForLocale_shouldCallUpdateComponent() {
         // GIVEN-WHEN
         controller.updateResourceWithReferenceForLocale(CAR_PHYSICS_DATA, FRANCE, "0", "1");
 
@@ -189,7 +189,7 @@ public class MainStageChangeDataControllerTest {
     }
 
     @Test
-    public void updateResourceWithReferenceForAllLocales_withReferenceChange_shouldCallUpdateComponent() {
+    void updateResourceWithReferenceForAllLocales_withReferenceChange_shouldCallUpdateComponent() {
         // GIVEN-WHEN
         controller.updateResourceWithReferenceForAllLocales(CAR_PHYSICS_DATA, "0", "1", "V");
 
@@ -198,7 +198,7 @@ public class MainStageChangeDataControllerTest {
     }
 
     @Test
-    public void updateResourceWithReferenceForAllLocales_shouldCallUpdateComponent() {
+    void updateResourceWithReferenceForAllLocales_shouldCallUpdateComponent() {
         // GIVEN-WHEN
         controller.updateResourceWithReferenceForAllLocales(CAR_PHYSICS_DATA, "0", "V");
 
@@ -207,7 +207,7 @@ public class MainStageChangeDataControllerTest {
     }
 
     @Test
-    public void importPatch_whenPatchWithoutProperties_shouldApplyIt() throws IOException, ReflectiveOperationException, URISyntaxException {
+    void importPatch_whenPatchWithoutProperties_shouldApplyIt() throws IOException, ReflectiveOperationException, URISyntaxException {
         // GIVEN
         File patchFile = new File(fr.tduf.libunlimited.common.helper.FilesHelper.getFileNameFromResourcePath("/patches/tduf.mini.json"));
 
@@ -224,12 +224,12 @@ public class MainStageChangeDataControllerTest {
     }
 
     @Test
-    public void importPerformancePack_shouldApplyIt() throws URISyntaxException, ReflectiveOperationException {
+    void importPerformancePack_shouldApplyIt() throws URISyntaxException, ReflectiveOperationException {
         // GIVEN
         String packFileName = fr.tduf.libunlimited.common.helper.FilesHelper.getFileNameFromResourcePath("/patches/pp.tdupk");
 
         when(mainStageController.getDatabaseObjects()).thenReturn(databaseObjects);
-        when(mainStageController.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0));
+        when(mainStageController.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(1));
 
 
         // WHEN
@@ -237,14 +237,14 @@ public class MainStageChangeDataControllerTest {
 
 
         // THEN
-        assertThat(verifyMiner.getContentEntryFromTopicWithReference("606298799", CAR_PHYSICS_DATA)
+        assertThat(verifyMiner.getContentEntryFromTopicWithReference("70033960", CAR_PHYSICS_DATA)
                 .flatMap(entry -> entry.getItemAtRank(17))
                 .map(ContentItemDto::getRawValue))
                 .contains("6210");
     }
 
     @Test
-    public void importLegacyPatch_shouldApplyIt() throws URISyntaxException, ReflectiveOperationException, ParserConfigurationException, SAXException, IOException {
+    void importLegacyPatch_shouldApplyIt() throws URISyntaxException, ReflectiveOperationException, ParserConfigurationException, SAXException, IOException {
         // GIVEN
         String patchFile = fr.tduf.libunlimited.common.helper.FilesHelper.getFileNameFromResourcePath("/patches/legacy.pch");
 
@@ -260,7 +260,7 @@ public class MainStageChangeDataControllerTest {
     }
 
     @Test
-    public void removeResourceWithReference_shouldRemoveEntry() {
+    void removeResourceWithReference_shouldRemoveEntry() {
         // GIVEN
         String resourceReference = "3005487";
 
