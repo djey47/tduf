@@ -105,5 +105,10 @@ public class DisplayConstants {
 
     public static final String TAB_NAME_DEFAULT = "Default";
 
+    public static final String STATUS_SAVING = "Saving data, please wait...";
+    public static final String STATUS_LOADING_DATA = "Loading data, please wait...";
+    public static final String STATUS_FORMAT_SAVED_DATABASE = "Saved database: %s";
+    public static final String STATUS_FORMAT_LOADED_DATABASE = "Loaded database: %s";
+
     private DisplayConstants() {}
 }

@@ -1,9 +1,9 @@
 package fr.tduf.gui.database.services;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.libunlimited.high.files.db.common.helper.BankHelper;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
+import fr.tduf.libunlimited.high.files.db.common.helper.BankHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import javafx.beans.property.SimpleObjectProperty;
@@ -16,6 +16,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+
+import static fr.tduf.gui.database.common.DisplayConstants.STATUS_FORMAT_LOADED_DATABASE;
+import static fr.tduf.gui.database.common.DisplayConstants.STATUS_LOADING_DATA;
 
 /**
  * Background service to load database objects from banks or json files
@@ -40,19 +43,20 @@ public class DatabaseLoader extends Service<List<DbDto>> {
             @Override
             protected List<DbDto> call() throws Exception {
 
-                updateMessage("Loading database, please wait...");
+                updateMessage(STATUS_LOADING_DATA);
 
-                String jsonDatabaseLocation = resolveJsonDatabaseLocationAndUnpack(databaseLocation.get(), bankSupport.get());
+                String realDatabaseLocation = databaseLocation.get();
+                String jsonDatabaseLocation = resolveJsonDatabaseLocationAndUnpack(realDatabaseLocation, bankSupport.get());
 
                 Log.debug(THIS_CLASS_NAME, "jsonDatabaseLocation=" + jsonDatabaseLocation);
 
                 List<DbDto> databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDatabaseLocation);
 
                 if (databaseObjects.isEmpty()) {
-                    throw new IllegalArgumentException("Invalid database location: " + databaseLocation.get());
+                    throw new IllegalArgumentException("Invalid database location: " + realDatabaseLocation);
                 }
 
-                updateMessage("Loaded database: " + databaseLocation.get());
+                updateMessage(String.format(STATUS_FORMAT_LOADED_DATABASE, realDatabaseLocation));
 
                 return databaseObjects;
             }

@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.services;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.libunlimited.high.files.db.common.helper.BankHelper;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
@@ -18,6 +19,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static fr.tduf.gui.database.common.DisplayConstants.STATUS_FORMAT_SAVED_DATABASE;
+import static fr.tduf.gui.database.common.DisplayConstants.STATUS_SAVING;
+
 /**
  * Background service to save database objects to banks or json files
  */
@@ -34,20 +38,21 @@ public class DatabaseSaver extends Service<String> {
             @Override
             protected String call() throws Exception {
 
-                updateMessage("Saving database, please wait...");
+                updateMessage(STATUS_SAVING);
 
-                String jsonDatabaseLocation = resolveJsonDatabaseLocation(databaseLocation.get());
+                String databasePath = databaseLocation.get();
+                String jsonDatabaseLocation = resolveJsonDatabaseLocation(databasePath);
                 Log.debug(THIS_CLASS_NAME, "jsonDatabaseLocation=" + jsonDatabaseLocation);
 
                 DatabaseReadWriteHelper.writeDatabaseTopicsToJson(databaseObjects.get(), jsonDatabaseLocation);
 
-                if(!Paths.get(databaseLocation.get()).toAbsolutePath().equals(Paths.get(jsonDatabaseLocation).toAbsolutePath())) {
-                    DatabaseBanksCacheHelper.repackDatabaseFromJsonWithCacheSupport(Paths.get(databaseLocation.get()), bankSupport.get());
+                if(!Paths.get(databasePath).toAbsolutePath().equals(Paths.get(jsonDatabaseLocation).toAbsolutePath())) {
+                    DatabaseBanksCacheHelper.repackDatabaseFromJsonWithCacheSupport(Paths.get(databasePath), bankSupport.get());
                 }
 
-                updateMessage("Saved database: " + databaseLocation.get());
+                updateMessage(String.format(STATUS_FORMAT_SAVED_DATABASE, databasePath));
 
-                return databaseLocation.get();
+                return databasePath;
             }
         };
     }
