@@ -9,8 +9,8 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import org.assertj.core.api.Condition;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,7 +25,7 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DatabaseReadWriteHelperTest {
+class DatabaseReadWriteHelperTest {
 
     private static Class<DatabaseReadWriteHelperTest> thisClass = DatabaseReadWriteHelperTest.class;
 
@@ -33,14 +33,14 @@ public class DatabaseReadWriteHelperTest {
 
     private String existingAsFile;
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeEach
+    void setUp() throws IOException {
         tempDirectory = FilesHelper.createTempDirectoryForLibrary();
         existingAsFile = Files.createFile(Paths.get(tempDirectory, "file")).toString();
     }
 
     @Test
-    public void readDatabase_whenFileNotFound_shouldReturnMissingContentsNotice() throws URISyntaxException, IOException {
+    void readDatabase_whenFileNotFound_shouldReturnMissingContentsNotice() throws URISyntaxException, IOException {
         // GIVEN
         File dbFile = new File("TDU_Achievements.db.nope");
         String databaseDirectory = dbFile.getParent();
@@ -59,7 +59,7 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void readDatabase_whenRealFile_andEncryptedContents_shouldReturnDatabaseContents_andMissingResourceNotices() throws URISyntaxException, IOException {
+    void readDatabase_whenRealFile_andEncryptedContents_shouldReturnDatabaseContents_andMissingResourceNotices() throws URISyntaxException, IOException {
         // GIVEN
         File dbFile = new File(thisClass.getResource("/db/encrypted/TDU_Achievements.db").toURI());
         String databaseDirectory = dbFile.getParent();
@@ -79,7 +79,7 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void readDatabase_whenRealFile_andNonDecryptableContents_shouldReturnInvalidContentsNotice() throws URISyntaxException, IOException {
+    void readDatabase_whenRealFile_andNonDecryptableContents_shouldReturnInvalidContentsNotice() throws URISyntaxException, IOException {
         // GIVEN (corrupted file)
         File dbFile = new File(thisClass.getResource("/db/encrypted/errors/sizeNotMultipleOf8/TDU_Achievements.db").toURI());
         String databaseDirectory = dbFile.getParent();
@@ -98,13 +98,13 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void readDatabaseFromJson_whenFileNotFound_shouldReturnEmpty() throws URISyntaxException, IOException {
+    void readDatabaseFromJson_whenFileNotFound_shouldReturnEmpty() throws URISyntaxException, IOException {
         // GIVEN-WHEN-THEN
         assertThat(DatabaseReadWriteHelper.readDatabaseTopicFromJson(ACHIEVEMENTS, "")).isEmpty();
     }
 
     @Test
-    public void readDatabaseFromJson_whenRealFile_shouldReturnCorrespondingDto() throws URISyntaxException, IOException {
+    void readDatabaseFromJson_whenRealFile_shouldReturnCorrespondingDto() throws URISyntaxException, IOException {
         // GIVEN-WHEN
         DbDto actualdbDto = DatabaseHelper.createDatabaseTopicForReadOnly(ACHIEVEMENTS);
 
@@ -113,7 +113,7 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void readFullDatabaseFromJson_whenMissingFiles_shouldReturnEmptyList() {
+    void readFullDatabaseFromJson_whenMissingFiles_shouldReturnEmptyList() {
         // GIVEN
         String jsonDirectory = "." ;
 
@@ -125,7 +125,7 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void readFullDatabaseFromJson_whenRealFiles_shouldReturnCorrespondingDtos() throws URISyntaxException {
+    void readFullDatabaseFromJson_whenRealFiles_shouldReturnCorrespondingDtos() throws URISyntaxException {
         // GIVEN-WHEN
         List<DbDto> actualTopicObjects = DatabaseHelper.createDatabaseForReadOnly();
 
@@ -138,7 +138,7 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void parseTopicContentsFromDirectory_whenFileNotFound_shouldReturnEmptyList() throws URISyntaxException, FileNotFoundException {
+    void parseTopicContentsFromDirectory_whenFileNotFound_shouldReturnEmptyList() throws URISyntaxException, FileNotFoundException {
         // GIVEN
         File dbFile = new File("TDU_Achievements.db.nope");
 
@@ -151,7 +151,7 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void parseTopicContentsFromDirectory_whenRealFile_shouldReturnContentsAsLines() throws URISyntaxException, FileNotFoundException {
+    void parseTopicContentsFromDirectory_whenRealFile_shouldReturnContentsAsLines() throws URISyntaxException, FileNotFoundException {
         // GIVEN
         File dbFile = new File(thisClass.getResource("/db/TDU_Achievements.db").toURI());
 
@@ -164,7 +164,7 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void parseTopicResourcesFromDirectory_whenRealFiles_shouldReturnContentsAsCollections() throws URISyntaxException, FileNotFoundException {
+    void parseTopicResourcesFromDirectory_whenRealFiles_shouldReturnContentsAsCollections() throws URISyntaxException, FileNotFoundException {
         // GIVEN
         Set<IntegrityError> integrityErrors = new HashSet<>();
         File dbFile = new File(thisClass.getResource("/db/res/TDU_Achievements.fr").toURI());
@@ -187,7 +187,7 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void writeDatabaseTopicToJson_whenProvidedContents_shouldCreateFile_andReturnAbsolutePaths() throws IOException {
+    void writeDatabaseTopicToJson_whenProvidedContents_shouldCreateFile_andReturnAbsolutePaths() throws IOException {
         // GIVEN
         DbDto dbDto = createDatabaseTopicObject();
 
@@ -201,7 +201,7 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void writeDatabaseTopicToJson_whenWriterFailure_shouldReturnEmptyNameList() throws IOException {
+    void writeDatabaseTopicToJson_whenWriterFailure_shouldReturnEmptyNameList() throws IOException {
         // GIVEN
         DbDto dbDto = createDatabaseTopicObject();
 
@@ -213,7 +213,7 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void writeDatabaseTopicsToJson_whenProvidedContents_shouldCreateFiles_andReturnFileNames() {
+    void writeDatabaseTopicsToJson_whenProvidedContents_shouldCreateFiles_andReturnFileNames() {
         // GIVEN
         List<DbDto> topicObjects = singletonList(createDatabaseTopicObject());
 
@@ -225,7 +225,7 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void writeDatabaseTopicsToJson_whenWriterFailure_shouldReturnEmptyList() throws IOException {
+    void writeDatabaseTopicsToJson_whenWriterFailure_shouldReturnEmptyList() throws IOException {
         // GIVEN
         List<DbDto> topicObjects = singletonList(createDatabaseTopicObject());
 
@@ -237,7 +237,7 @@ public class DatabaseReadWriteHelperTest {
     }
 
     @Test
-    public void writeDatabaseTopic_whenProvidedContents_shouldCreateEncryptedFiles() throws URISyntaxException, IOException {
+    void writeDatabaseTopic_whenProvidedContents_shouldCreateEncryptedFiles() throws URISyntaxException, IOException {
         // GIVEN
         DbDto dbDto = DatabaseHelper.createDatabaseTopicForReadOnly(ACHIEVEMENTS);
 

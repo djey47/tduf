@@ -1,35 +1,34 @@
 package fr.tduf.libunlimited.common.helper;
 
 import fr.tduf.libunlimited.common.system.domain.ProcessResult;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CommandLineHelperTest {
+class CommandLineHelperTest {
 
     private CommandLineHelper commandLineHelper = new CommandLineHelper();
 
-    @Test(expected = NullPointerException.class)
-    public void runCliCommand_whenNullCommand_shouldThrowException() throws IOException {
-        // GIVEN-WHEN
-        commandLineHelper.runCliCommand(null);
-
-        // THEN: NPE
-    }
-
-    @Test(expected = IOException.class)
-    public void runCliCommand_whenInvalidCommand_shouldThrowException() throws IOException {
-        // GIVEN-WHEN
-        commandLineHelper.runCliCommand("aaa");
-
-        // THEN: IOE
+    @Test
+    void runCliCommand_whenNullCommand_shouldThrowException() throws IOException {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> commandLineHelper.runCliCommand(null));
     }
 
     @Test
-    public void runCliCommand_whenValidCommand_shouldReturnPositiveProcessResult() throws IOException, URISyntaxException {
+    void runCliCommand_whenInvalidCommand_shouldThrowException() throws IOException {
+        // GIVEN-WHEN-THEN
+        assertThrows(IOException.class,
+                () -> commandLineHelper.runCliCommand("aaa"));
+    }
+
+    @Test
+    void runCliCommand_whenValidCommand_shouldReturnPositiveProcessResult() throws IOException, URISyntaxException {
         // GIVEN-WHEN
         ProcessResult actualProcessResult = commandLineHelper.runCliCommand("date");
         actualProcessResult.printOut();
@@ -45,7 +44,7 @@ public class CommandLineHelperTest {
     }
 
     @Test
-    public void runCliCommand_whenValidCommand_andOneInvalidArgument_shouldReturnNegativeProcessResult() throws IOException {
+    void runCliCommand_whenValidCommand_andOneInvalidArgument_shouldReturnNegativeProcessResult() throws IOException {
         // GIVEN-WHEN
         ProcessResult actualProcessResult = commandLineHelper.runCliCommand("sort", "/JUKE");
         actualProcessResult.printOut();

@@ -4,7 +4,7 @@ package fr.tduf.libunlimited.high.files.db.interop;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -24,19 +24,19 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class TdumtPatchConverterTest {
+class TdumtPatchConverterTest {
 
-    @Test(expected = NullPointerException.class)
-    public void jsonToPch_whenNullObject_shouldThrowException() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
-        // GIVEN-WHEN
-        TdumtPatchConverter.jsonToPch(null);
-
-        // THEN: NPE
+    @Test
+    void jsonToPch_whenNullObject_shouldThrowException() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> TdumtPatchConverter.jsonToPch(null));
     }
 
     @Test
-    public void jsonToPch_whenNoChange_shouldReturnDefaultPatch() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
+    void jsonToPch_whenNoChange_shouldReturnDefaultPatch() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
         // GIVEN
         DbPatchDto patchObject = DbPatchDto.builder().build();
 
@@ -63,7 +63,7 @@ public class TdumtPatchConverterTest {
     }
 
     @Test
-    public void jsonToPch_whenRealPatchObject_forContents_shouldReturnPatch() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
+    void jsonToPch_whenRealPatchObject_forContents_shouldReturnPatch() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
         // GIVEN
         DbPatchDto patchObject = FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateContents-addAll-ref.mini.json");
 
@@ -82,7 +82,7 @@ public class TdumtPatchConverterTest {
     }
 
     @Test
-    public void jsonToPch_whenRealPatchObject_forContents_andNoEntryRef_shouldReturnPatch() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
+    void jsonToPch_whenRealPatchObject_forContents_andNoEntryRef_shouldReturnPatch() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
         // GIVEN
         DbPatchDto patchObject = FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateContents-addAll-noRef.mini.json");
 
@@ -101,7 +101,7 @@ public class TdumtPatchConverterTest {
     }
 
     @Test
-    public void jsonToPch_whenRealPatchObject_forResources_shouldReturnPatch() throws IOException, URISyntaxException, ParserConfigurationException, SAXException {
+    void jsonToPch_whenRealPatchObject_forResources_shouldReturnPatch() throws IOException, URISyntaxException, ParserConfigurationException, SAXException {
         // GIVEN
         DbPatchDto patchObject = FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateResources.mini.json");
 
@@ -120,7 +120,7 @@ public class TdumtPatchConverterTest {
     }
 
     @Test
-    public void jsonToPch_whenRealPatchObject_forContentsAndResources_shouldReturnPatch() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
+    void jsonToPch_whenRealPatchObject_forContentsAndResources_shouldReturnPatch() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
         // GIVEN
         DbPatchDto patchObject = FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class, "/db/patch/updateContentsAndResources-all.mini.json");
 
@@ -141,16 +141,15 @@ public class TdumtPatchConverterTest {
         assertUpdateResourceInstruction(instruction2, "Bots", "54367256|Brian Molko||33333333|Cindy");
     }
 
-    @Test(expected = NullPointerException.class)
-    public void pchToJson_whenNullObject_shouldThrowException() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
-        // GIVEN-WHEN
-        TdumtPatchConverter.pchToJson(null);
-
-        // THEN: NPE
+    @Test
+    void pchToJson_whenNullObject_shouldThrowException() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> TdumtPatchConverter.pchToJson(null));
     }
 
     @Test
-    public void pchToJson_whenNoInstruction_shouldReturnEmptyPatchObject() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
+    void pchToJson_whenNoInstruction_shouldReturnEmptyPatchObject() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
         // GIVEN
         Document patchDocument = TdumtPatchConverter.initXmlDocumentFromResource("/db/patch/tdumt/empty.pch");
 
@@ -163,7 +162,7 @@ public class TdumtPatchConverterTest {
     }
 
     @Test
-    public void pchToJson_whenRealPatchDocument_andDuplicateInstructions_shouldReturnPatchObject_withSingleChange() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
+    void pchToJson_whenRealPatchDocument_andDuplicateInstructions_shouldReturnPatchObject_withSingleChange() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
         // GIVEN
         Document patchDocument = TdumtPatchConverter.initXmlDocumentFromResource("/db/patch/tdumt/removeAllLines_duplicateInstruction.pch");
 
@@ -176,7 +175,7 @@ public class TdumtPatchConverterTest {
     }
 
     @Test
-    public void pchToJson_whenRealPatchDocument_forContentsAndResources_shouldReturnPatchObject() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
+    void pchToJson_whenRealPatchDocument_forContentsAndResources_shouldReturnPatchObject() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
         // GIVEN
         Document patchDocument = TdumtPatchConverter.initXmlDocumentFromResource("/db/patch/tdumt/updateContentsAndResources.pch");
 
@@ -195,7 +194,7 @@ public class TdumtPatchConverterTest {
     }
 
     @Test
-    public void pchToJson_whenRealPatchDocument_forContents_andCompositeEntryRef_shouldReturnPatchObject() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
+    void pchToJson_whenRealPatchDocument_forContents_andCompositeEntryRef_shouldReturnPatchObject() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
         // GIVEN
         Document patchDocument = TdumtPatchConverter.initXmlDocumentFromResource("/db/patch/tdumt/updateContents_compositeRef.pch");
 
@@ -218,7 +217,7 @@ public class TdumtPatchConverterTest {
     }
 
     @Test
-    public void pchToJson_whenRealPatchDocument_forAllLinesRemoval_shouldReturnPatchObject() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
+    void pchToJson_whenRealPatchDocument_forAllLinesRemoval_shouldReturnPatchObject() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
         // GIVEN
         Document patchDocument = TdumtPatchConverter.initXmlDocumentFromResource("/db/patch/tdumt/removeAllLines.pch");
 
@@ -244,7 +243,7 @@ public class TdumtPatchConverterTest {
     }
 
     @Test
-    public void pchToJson_whenRealPatchDocument_forSetVehicleOnTwoSpots_shouldReturnTwoChangeObjects() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
+    void pchToJson_whenRealPatchDocument_forSetVehicleOnTwoSpots_shouldReturnTwoChangeObjects() throws ParserConfigurationException, IOException, SAXException, URISyntaxException {
         // GIVEN
         Document patchDocument = TdumtPatchConverter.initXmlDocumentFromResource("/db/patch/tdumt/setVehicleOnSpots.pch");
 
@@ -267,7 +266,7 @@ public class TdumtPatchConverterTest {
     }
 
     @Test
-    public void getContentsValue_whenNoEntryRef_shouldReturnValuesWithCompositeKey() {
+    void getContentsValue_whenNoEntryRef_shouldReturnValuesWithCompositeKey() {
         // GIVEN
         List<String> values = asList("000000", "111111", "222222");
 
@@ -279,7 +278,7 @@ public class TdumtPatchConverterTest {
     }
 
     @Test
-    public void getContentsValue_whenEntryRef_shouldReturnValuesWithSingleKey() {
+    void getContentsValue_whenEntryRef_shouldReturnValuesWithSingleKey() {
         // GIVEN
         List<String> values = asList("000000", "111111", "222222");
 

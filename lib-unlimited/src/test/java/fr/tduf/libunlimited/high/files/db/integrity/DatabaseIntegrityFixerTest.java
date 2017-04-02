@@ -13,11 +13,9 @@ import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -25,34 +23,34 @@ import java.util.stream.Stream;
 import static fr.tduf.libunlimited.common.game.domain.Locale.*;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorInfoEnum.*;
 import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeEnum.*;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.AFTER_MARKET_PACKS;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
-@RunWith(MockitoJUnitRunner.class)
-public class DatabaseIntegrityFixerTest {
+class DatabaseIntegrityFixerTest {
 
     @Mock
     private static DatabaseGenHelper genHelperMock;
 
-    @Before
-    public void setUp() {}
-
-    @Test(expected = NullPointerException.class)
-    public void fixAllContentsObjects_whenNullErrors_shouldThrowNPE() throws Exception {
-        //GIVEN-WHEN
-        createFixer(new ArrayList<>()).fixAllContentsObjects(null);
-        
-        //THEN: NPE
+    @BeforeEach
+    void setUp() {
+        initMocks(this);
     }
 
     @Test
-    public void fixAllContentsObjects_whenNoError_shouldSetIntegrityErrors_andReturnEmptyList() throws ReflectiveOperationException {
+    void fixAllContentsObjects_whenNullErrors_shouldThrowNPE() throws Exception {
+        //GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> createFixer(new ArrayList<>()).fixAllContentsObjects(null));
+    }
+
+    @Test
+    void fixAllContentsObjects_whenNoError_shouldSetIntegrityErrors_andReturnEmptyList() throws ReflectiveOperationException {
         // GIVEN
         List<DbDto> dbDtos = new ArrayList<>();
         Set<IntegrityError> integrityErrors = new HashSet<>();
@@ -70,7 +68,7 @@ public class DatabaseIntegrityFixerTest {
     }
 
     @Test
-    public void fixAllContentsObjects_whenOneErrorAutoFixed_shouldReturnEmptyList() throws ReflectiveOperationException {
+    void fixAllContentsObjects_whenOneErrorAutoFixed_shouldReturnEmptyList() throws ReflectiveOperationException {
         // GIVEN
         List<DbDto> dbDtos = createDefaultDatabaseObjects();
         Set<IntegrityError> integrityErrors = new HashSet<>(singletonList(createIntegrityError_AutoFixed()));
@@ -84,7 +82,7 @@ public class DatabaseIntegrityFixerTest {
     }
 
     @Test
-    public void fixAllContentsObjects_whenOneErrorNotHandled_shouldReturnErrorInList() throws ReflectiveOperationException {
+    void fixAllContentsObjects_whenOneErrorNotHandled_shouldReturnErrorInList() throws ReflectiveOperationException {
         // GIVEN
         List<DbDto> dbDtos = createDefaultDatabaseObjects();
         Set<IntegrityError> integrityErrors = new HashSet<>(singletonList(createIntegrityError_NotHandled()));
@@ -99,7 +97,7 @@ public class DatabaseIntegrityFixerTest {
     }
 
     @Test
-    public void fixAllContentsObjects_whenOneError_asLocalResourceReferenceNotFound_shouldInsertMissingResource() throws ReflectiveOperationException {
+    void fixAllContentsObjects_whenOneError_asLocalResourceReferenceNotFound_shouldInsertMissingResource() throws ReflectiveOperationException {
         // GIVEN
         List<DbDto> dbDtos = createDefaultDatabaseObjects();
 
@@ -126,7 +124,7 @@ public class DatabaseIntegrityFixerTest {
     }
 
     @Test
-    public void fixAllContentsObjects_whenOneError_asRemoteResourceReferenceNotFound_shouldInsertMissingResource() throws ReflectiveOperationException {
+    void fixAllContentsObjects_whenOneError_asRemoteResourceReferenceNotFound_shouldInsertMissingResource() throws ReflectiveOperationException {
         // GIVEN
         List<DbDto> dbDtos = createDefaultDatabaseObjects();
 
@@ -153,7 +151,7 @@ public class DatabaseIntegrityFixerTest {
     }
 
     @Test
-    public void fixAllContentsObjects_whenOneError_asRemoteContentsReferenceNotFound_shouldInsertMissingContents() throws ReflectiveOperationException {
+    void fixAllContentsObjects_whenOneError_asRemoteContentsReferenceNotFound_shouldInsertMissingContents() throws ReflectiveOperationException {
         // GIVEN
         List<DbDto> dbDtos = createDefaultDatabaseObjects();
 
@@ -213,7 +211,7 @@ public class DatabaseIntegrityFixerTest {
     }
 
     @Test
-    public void fixAllContentsObjects_whenOneError_asContentsFieldsCountMismatch_shouldInsertMissingFields() throws ReflectiveOperationException {
+    void fixAllContentsObjects_whenOneError_asContentsFieldsCountMismatch_shouldInsertMissingFields() throws ReflectiveOperationException {
         // GIVEN
         List<DbDto> dbDtos = createDatabaseObjectsWithDataEntryTwoFieldsMissing();
 
@@ -273,7 +271,7 @@ public class DatabaseIntegrityFixerTest {
     }
 
     @Test
-    public void fixAllContentsObjects_whenOneError_asResourceNotFound_shouldBuildMissingLocale() throws ReflectiveOperationException {
+    void fixAllContentsObjects_whenOneError_asResourceNotFound_shouldBuildMissingLocale() throws ReflectiveOperationException {
         // GIVEN
         List<DbDto> dbDtos = createDefaultDatabaseObjects();
 
@@ -300,7 +298,7 @@ public class DatabaseIntegrityFixerTest {
     }
 
     @Test
-    public void fixAllContentsObjects_whenOneError_asResourceItemCountMismatch_shouldCompleteMissingLocale() throws ReflectiveOperationException {
+    void fixAllContentsObjects_whenOneError_asResourceItemCountMismatch_shouldCompleteMissingLocale() throws ReflectiveOperationException {
         // GIVEN
         List<DbDto> dbDtos = createDatabaseObjectsWithUnconsistentResourceEntryCount();
         Set<IntegrityError> integrityErrors = new HashSet<>(singletonList(createIntegrityError_ResourceReferenceMissingForOneLocale()));
@@ -321,7 +319,7 @@ public class DatabaseIntegrityFixerTest {
     }
 
     @Test
-    public void fixAllContentsObjects_whenOneError_asDifferentValuesForGlobalizedResource_shouldApplyProperValue() throws ReflectiveOperationException {
+    void fixAllContentsObjects_whenOneError_asDifferentValuesForGlobalizedResource_shouldApplyProperValue() throws ReflectiveOperationException {
         // GIVEN
         List<DbDto> dbDtos = createDatabaseObjectsWithDifferentResourceValuesGlobalized();
         Set<IntegrityError> integrityErrors = new HashSet<>(singletonList(createIntegrityError_ResourceValuesDifferentGlobalized()));
@@ -343,7 +341,7 @@ public class DatabaseIntegrityFixerTest {
     }
 
     @Test
-    public void fixAllContentsObjects_whenManyErrors() throws ReflectiveOperationException {
+    void fixAllContentsObjects_whenManyErrors() throws ReflectiveOperationException {
         // GIVEN
         List<DbDto> dbDtos = createDatabaseObjectsWithUnconsistentResourceEntryCount();
         Set<IntegrityError> integrityErrors = new HashSet<>(asList(

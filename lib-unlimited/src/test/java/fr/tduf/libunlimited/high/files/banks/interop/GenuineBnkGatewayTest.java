@@ -7,14 +7,12 @@ import fr.tduf.libunlimited.common.system.domain.ProcessResult;
 import fr.tduf.libunlimited.high.files.banks.interop.dto.GenuineBatchInputDto;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,15 +20,14 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
 import static fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway.PREFIX_ORIGINAL_BANK_FILE;
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
-@RunWith(MockitoJUnitRunner.class)
-public class GenuineBnkGatewayTest {
+class GenuineBnkGatewayTest {
 
     private static final String PACKED_FILE_FULL_NAME = "D:\\Eden-Prog\\Games\\TestDrive\\Resources\\4Build\\PC\\EURO\\Vehicules\\Cars\\Mercedes\\CLK_55\\.2DM\\CLK_55";
 
@@ -48,8 +45,10 @@ public class GenuineBnkGatewayTest {
     private String tempDirectory;
 
 
-    @Before
-    public void setUp() throws URISyntaxException, IOException {
+    @BeforeEach
+    void setUp() throws URISyntaxException, IOException {
+        initMocks(this);
+        
         tempDirectory = createTempDirectory();
 
         bankFileName = FilesHelper.getFileNameFromResourcePath("/banks/Vehicules/A3_V6.bnk");
@@ -58,7 +57,7 @@ public class GenuineBnkGatewayTest {
     }
 
     @Test
-    public void getBankInfo_whenSuccess_shouldInvokeCommandLineCorrectly_andReturnObject() throws IOException, URISyntaxException {
+    void getBankInfo_whenSuccess_shouldInvokeCommandLineCorrectly_andReturnObject() throws IOException, URISyntaxException {
         // GIVEN
         mockCommandLineHelperToReturnBankInformationSuccess(bankFileName);
 
@@ -72,30 +71,28 @@ public class GenuineBnkGatewayTest {
         assertThat(actualBankInfoObject.getPackedFiles()).hasSize(28);
     }
 
-    @Test(expected = IOException.class)
-    public void getBankInfo_whenSystemFailure_shouldInvokeCommandLineCorrectly_andThrowException() throws IOException, URISyntaxException {
+    @Test
+    void getBankInfo_whenSystemFailure_shouldInvokeCommandLineCorrectly_andThrowException() throws IOException, URISyntaxException {
         // GIVEN
         when(commandLineHelperMock.runCliCommand(eq("mono"), anyString(), eq("BANK-I"), eq(bankFileName))).thenThrow(new IOException());
 
-        // WHEN
-        genuineBnkGateway.getBankInfo(bankFileName);
-
-        // THEN: IOException
-    }
-
-    @Test(expected = IOException.class)
-    public void getBankInfo_whenCommandFailure_shouldInvokeCommandLineCorrectly_andThrowException() throws IOException, URISyntaxException {
-        // GIVEN
-        mockCommandLineHelperToReturnBankInformationFailure(bankFileName);
-
-        // WHEN
-        genuineBnkGateway.getBankInfo(bankFileName);
-
-        // THEN: IOException
+        // WHEN-THEN
+        assertThrows(IOException.class,
+                () -> genuineBnkGateway.getBankInfo(bankFileName));
     }
 
     @Test
-    public void extractAll_whenSuccess_shouldInvokeCommandLineCorrectly() throws IOException, URISyntaxException {
+    void getBankInfo_whenCommandFailure_shouldInvokeCommandLineCorrectly_andThrowException() throws IOException, URISyntaxException {
+        // GIVEN
+        mockCommandLineHelperToReturnBankInformationFailure(bankFileName);
+
+        // WHEN-THEN
+        assertThrows(IOException.class,
+                () -> genuineBnkGateway.getBankInfo(bankFileName));
+    }
+
+    @Test
+    void extractAll_whenSuccess_shouldInvokeCommandLineCorrectly() throws IOException, URISyntaxException {
         // GIVEN
         mockCommandLineHelperToReturnBankInformationSuccess(bankFileName);
         mockCommandLineHelperToReturnExtractionSuccess(bankFileName);
@@ -119,7 +116,7 @@ public class GenuineBnkGatewayTest {
     }
 
     @Test
-    public void packAll_whenSuccess_shouldInvokeCommandLineCorrectly() throws IOException, URISyntaxException {
+    void packAll_whenSuccess_shouldInvokeCommandLineCorrectly() throws IOException, URISyntaxException {
         // GIVEN
         String bankShortName = "CLK_55.bnk";
         createRepackedFileTree(bankShortName);
@@ -145,7 +142,7 @@ public class GenuineBnkGatewayTest {
     }
 
     @Test
-    public void getInternalPathFromRealPath() throws Exception {
+    void getInternalPathFromRealPath() throws Exception {
         // GIVEN
         Path realFilePath = Paths.get("/home/bill/work/4Build/PC/EURO/Vehicules/Cars/Mercedes/CLK_55/CLK_55.2DM");
         Path basePath = Paths.get("/home/bill/work");
@@ -158,7 +155,7 @@ public class GenuineBnkGatewayTest {
     }
 
     @Test
-    public void getRealFilePathFromInternalPath() {
+    void getRealFilePathFromInternalPath() {
         // GIVEN
         Path basePath = Paths.get("/home/bill/work/");
 
@@ -170,7 +167,7 @@ public class GenuineBnkGatewayTest {
     }
 
     @Test
-    public void generatePackedFileReference() {
+    void generatePackedFileReference() {
         // GIVEN-WHEN
         String actualReference = GenuineBnkGateway.generatePackedFileReference(PACKED_FILE_FULL_NAME);
 
@@ -178,16 +175,15 @@ public class GenuineBnkGatewayTest {
         assertThat(actualReference).isEqualTo("3367621430");
     }
 
-    @Test(expected = IOException.class)
-    public void searchOriginalBankFilePath_whenNoFilePresent_shouldThrowException() throws IOException {
-        // GIVEN-WHEN
-        GenuineBnkGateway.searchOriginalBankPath(tempDirectory);
-
-        // THEN: IOE
+    @Test
+    void searchOriginalBankFilePath_whenNoFilePresent_shouldThrowException() throws IOException {
+        // GIVEN-WHEN-THEN
+        assertThrows(IOException.class,
+                () -> GenuineBnkGateway.searchOriginalBankPath(tempDirectory));
     }
 
     @Test
-    public void searchOriginalBankFilePath_whenCorrectFilePresent_shouldReturnFileName() throws IOException {
+    void searchOriginalBankFilePath_whenCorrectFilePresent_shouldReturnFileName() throws IOException {
         // GIVEN
         String officialBankFileName = "A3_V6.bnk";
         createRepackedFileTree(officialBankFileName);
@@ -203,17 +199,15 @@ public class GenuineBnkGatewayTest {
         return fr.tduf.libtesting.common.helper.FilesHelper.createTempDirectoryForLibrary();
     }
 
-    private List<Path> createRepackedFileTree(String bankFileName) throws IOException {
+    private void createRepackedFileTree(String bankFileName) throws IOException {
 
         Path contentsPath = Paths.get(tempDirectory, "4Build", "PC", "EURO", "Vehicules", "Cars", "Audi", "A3_V6");
         Files.createDirectories(contentsPath);
         Files.createFile(Paths.get(tempDirectory, PREFIX_ORIGINAL_BANK_FILE + bankFileName));
 
-        Path filePath1 = Files.createFile(contentsPath.resolve("A3_V6.3DD"));
-        Path filePath2 = Files.createFile(contentsPath.resolve("A3_V6.3DG"));
-        Path filePath3 = Files.createFile(contentsPath.resolve("A3_V6.2DM"));
-
-        return asList(filePath1, filePath2, filePath3);
+        Files.createFile(contentsPath.resolve("A3_V6.3DD"));
+        Files.createFile(contentsPath.resolve("A3_V6.3DG"));
+        Files.createFile(contentsPath.resolve("A3_V6.2DM"));
     }
 
     private void mockCommandLineHelperToReturnBankInformationSuccess(String bankFileName) throws URISyntaxException, IOException {

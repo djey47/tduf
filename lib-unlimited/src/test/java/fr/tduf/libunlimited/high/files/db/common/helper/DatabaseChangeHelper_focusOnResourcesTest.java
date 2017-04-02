@@ -5,12 +5,10 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Optional;
 
@@ -21,12 +19,14 @@ import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class DatabaseChangeHelper_focusOnResourcesTest {
+class DatabaseChangeHelper_focusOnResourcesTest {
 
     private static final String RESOURCE_REFERENCE = "000000";
     private static final String RESOURCE_VALUE = "TEST";
@@ -43,11 +43,13 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     @InjectMocks
     private DatabaseChangeHelper changeHelper;
 
-    @After
-    public void tearDown() {}
+    @BeforeEach
+    void setUp() {
+        initMocks(this);
+    }
 
     @Test
-    public void addResourceWithReference_andNonExistingEntry_shouldCreateNewResourceEntry() throws Exception {
+    void addResourceWithReference_andNonExistingEntry_shouldCreateNewResourceEntry() throws Exception {
         // GIVEN
         DbResourceDto resourceObject = createDefaultResourceObject();
 
@@ -65,7 +67,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     }
 
     @Test
-    public void addResourceWithReference_andExistingEntry_shouldCreateNewResourceItem() throws Exception {
+    void addResourceWithReference_andExistingEntry_shouldCreateNewResourceItem() throws Exception {
         // GIVEN
         DbResourceDto resourceObject = createDefaultResourceObject();
         resourceObject.addEntryByReference(RESOURCE_REFERENCE)
@@ -88,45 +90,44 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
         assertThat(actualEntry.getValueForLocale(FRANCE)).contains("");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void addResourceWithReference_andExisting_shouldThrowException() throws Exception {
+    @Test
+    void addResourceWithReference_andExisting_shouldThrowException() throws Exception {
         // GIVEN
         String resourceValue = "TEST2";
         when(minerMock.getLocalizedResourceValueFromTopicAndReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(of(resourceValue));
 
-        // WHEN
-        changeHelper.addResourceValueWithReference(TOPIC, LOCALE, RESOURCE_REFERENCE, RESOURCE_VALUE);
-
-        // THEN: IAE
-        verifyNoMoreInteractions(minerMock);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void addResourceValueWithReference_andNoResource_shouldThrowException() throws Exception {
-        // GIVEN
-        when(minerMock.getLocalizedResourceValueFromTopicAndReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(empty());
-        when(minerMock.getResourcesFromTopic(TOPIC)).thenReturn(empty());
-
-        // WHEN
-        changeHelper.addResourceValueWithReference(TOPIC, LOCALE, RESOURCE_REFERENCE, RESOURCE_VALUE);
-
-        // THEN: NSEE
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void updateResourceItemWithReference_whenNonexistingEntry_shouldThrowException() {
-        // GIVEN
-        when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(empty());
-
-        // WHEN
-        changeHelper.updateResourceItemWithReference(TOPIC, LOCALE, RESOURCE_REFERENCE, RESOURCE_VALUE);
-
-        // THEN: IAE
+        // WHEN-THEN
+        assertThrows(IllegalArgumentException.class,
+                () -> changeHelper.addResourceValueWithReference(TOPIC, LOCALE, RESOURCE_REFERENCE, RESOURCE_VALUE));
+        verify(minerMock).getLocalizedResourceValueFromTopicAndReference(anyString(), any(DbDto.Topic.class), any(Locale.class));
         verifyNoMoreInteractions(minerMock);
     }
 
     @Test
-    public void updateResourceItemWithReference_whenExistingEntry_shouldChangeValue() {
+    void addResourceValueWithReference_andNoResource_shouldThrowException() throws Exception {
+        // GIVEN
+        when(minerMock.getLocalizedResourceValueFromTopicAndReference(RESOURCE_REFERENCE, TOPIC, LOCALE)).thenReturn(empty());
+        when(minerMock.getResourcesFromTopic(TOPIC)).thenReturn(empty());
+
+        // WHEN-THEN
+        assertThrows(IllegalStateException.class,
+                () -> changeHelper.addResourceValueWithReference(TOPIC, LOCALE, RESOURCE_REFERENCE, RESOURCE_VALUE));
+    }
+
+    @Test
+    void updateResourceItemWithReference_whenNonexistingEntry_shouldThrowException() {
+        // GIVEN
+        when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(empty());
+
+        // WHEN-THEN
+        assertThrows(IllegalArgumentException.class,
+                () -> changeHelper.updateResourceItemWithReference(TOPIC, LOCALE, RESOURCE_REFERENCE, RESOURCE_VALUE));
+        verify(minerMock).getResourceEntryFromTopicAndReference(any(DbDto.Topic.class), anyString());
+        verifyNoMoreInteractions(minerMock);
+    }
+
+    @Test
+    void updateResourceItemWithReference_whenExistingEntry_shouldChangeValue() {
         // GIVEN
         ResourceEntryDto resourceEntry = createDefaultResourceEntry(RESOURCE_REFERENCE);
         when(minerMock.getResourceEntryFromTopicAndReference(TOPIC, RESOURCE_REFERENCE)).thenReturn(of(resourceEntry));
@@ -139,7 +140,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     }
 
     @Test
-    public void updateResourceEntryWithReference_whenExistingEntry_shouldReplaceReferenceAndValue() {
+    void updateResourceEntryWithReference_whenExistingEntry_shouldReplaceReferenceAndValue() {
         // GIVEN
         String initialReference = "0";
         DbResourceDto resourceObject = createDefaultResourceObject();
@@ -161,8 +162,8 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
                 .contains(RESOURCE_VALUE);
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void updateResourceEntryWithReference_whenEntryExistsWithNewReference_shouldThrowException_andKeepOriginalResource() {
+    @Test
+    void updateResourceEntryWithReference_whenEntryExistsWithNewReference_shouldThrowException_andKeepOriginalResource() {
         // GIVEN
         String initialReference = "1";
 
@@ -177,16 +178,13 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
 
 
         // WHEN-THEN
-        try {
-            changeHelper.updateResourceEntryWithReference(TOPIC, initialReference, RESOURCE_REFERENCE, RESOURCE_VALUE);
-        } catch (IllegalArgumentException iae) {
-            assertThat(existingEntry.pickValue()).isPresent();
-            throw iae;
-        }
+        assertThrows(IllegalArgumentException.class,
+                () -> changeHelper.updateResourceEntryWithReference(TOPIC, initialReference, RESOURCE_REFERENCE, RESOURCE_VALUE));
+        assertThat(existingEntry.pickValue()).isPresent();
     }
 
     @Test
-    public void removeResourceEntryWithReference_whenResourceEntryExists_shouldDeleteIt() {
+    void removeResourceEntryWithReference_whenResourceEntryExists_shouldDeleteIt() {
         // GIVEN
         ResourceEntryDto resourceEntry = createDefaultResourceEntry(RESOURCE_REFERENCE);
         setValuesForAllLocales(resourceEntry);
@@ -207,7 +205,7 @@ public class DatabaseChangeHelper_focusOnResourcesTest {
     }
 
     @Test
-    public void removeResourceValuesWithReference_whenResourceEntryDoesNotExist_shouldNotThrowException() {
+    void removeResourceValuesWithReference_whenResourceEntryDoesNotExist_shouldNotThrowException() {
         // GIVEN
         when(minerMock.getResourcesFromTopic(TOPIC)).thenReturn(of(createDefaultResourceObject()));
 

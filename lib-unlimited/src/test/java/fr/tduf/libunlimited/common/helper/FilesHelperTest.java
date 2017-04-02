@@ -4,8 +4,8 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 
 import java.io.EOFException;
@@ -17,18 +17,19 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class FilesHelperTest {
+class FilesHelperTest {
 
     private String tempDirectory;
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeEach
+    void setUp() throws IOException {
         tempDirectory = fr.tduf.libtesting.common.helper.FilesHelper.createTempDirectoryForLibrary();
     }
 
     @Test
-    public void createDirectoryIfNotExists_whenExisting_shouldDoNothing() throws IOException {
+    void createDirectoryIfNotExists_whenExisting_shouldDoNothing() throws IOException {
         // GIVEN-WHEN
         FilesHelper.createDirectoryIfNotExists(tempDirectory);
 
@@ -39,7 +40,7 @@ public class FilesHelperTest {
     }
 
     @Test
-    public void createDirectoryIfNotExists_whenNonExisting_shouldCreateIt() throws IOException {
+    void createDirectoryIfNotExists_whenNonExisting_shouldCreateIt() throws IOException {
         // GIVEN
         String directoryToCreate = Paths.get(tempDirectory, "1", "2", "3").toString();
 
@@ -53,7 +54,7 @@ public class FilesHelperTest {
     }
 
     @Test
-    public void createFileIfNotExists_whenExisting_shouldDoNothing() throws IOException {
+    void createFileIfNotExists_whenExisting_shouldDoNothing() throws IOException {
         // GIVEN
         Path pathToCreate = Paths.get(tempDirectory, "nope");
         Files.createFile(pathToCreate);
@@ -66,7 +67,7 @@ public class FilesHelperTest {
     }
 
     @Test
-    public void createFileIfNotExists_whenNonExisting_shouldCreateIt() throws IOException {
+    void createFileIfNotExists_whenNonExisting_shouldCreateIt() throws IOException {
         // GIVEN
         Path pathToCreate = Paths.get(tempDirectory, "nope");
 
@@ -77,16 +78,15 @@ public class FilesHelperTest {
         assertThat(pathToCreate.toFile()).exists();
     }
 
-    @Test(expected = NullPointerException.class)
-    public void readTextFromResourceFile_whenResourceNotFound_shouldThrowNullPointerException() throws IOException, URISyntaxException {
-        // GIVEN-WHEN
-        FilesHelper.readTextFromResourceFile("/not a resource/");
-
-        // THEN: exception
+    @Test
+    void readTextFromResourceFile_whenResourceNotFound_shouldThrowNullPointerException() throws IOException, URISyntaxException {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> FilesHelper.readTextFromResourceFile("/not a resource/"));
     }
 
     @Test
-    public void readTextFromResourceFile_whenResourceFound_shouldReturnContents() throws IOException, URISyntaxException {
+    void readTextFromResourceFile_whenResourceFound_shouldReturnContents() throws IOException, URISyntaxException {
         // GIVEN-WHEN
         String actualContents = FilesHelper.readTextFromResourceFile("/files/file.txt");
 
@@ -94,24 +94,22 @@ public class FilesHelperTest {
         assertThat(actualContents).hasSize(128);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void readTextFromResourceFile_withNullEncoding_shouldThrowException() throws IOException, URISyntaxException {
-        // GIVEN-WHEN
-        FilesHelper.readTextFromResourceFile("/files/file.txt", null);
-
-        // THEN: NPE
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void readBytesFromResourceFile_whenResourceNotFound_shouldThrowNullPointerException() throws IOException, URISyntaxException {
-        // GIVEN-WHEN
-        FilesHelper.readBytesFromResourceFile("/not a resource/");
-
-        // THEN: exception
+    @Test
+    void readTextFromResourceFile_withNullEncoding_shouldThrowException() throws IOException, URISyntaxException {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> FilesHelper.readTextFromResourceFile("/files/file.txt", null));
     }
 
     @Test
-    public void readBytesFromResourceFile_whenResourceFound_shouldReturnContents() throws IOException, URISyntaxException {
+    void readBytesFromResourceFile_whenResourceNotFound_shouldThrowNullPointerException() throws IOException, URISyntaxException {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> FilesHelper.readBytesFromResourceFile("/not a resource/"));
+    }
+
+    @Test
+    void readBytesFromResourceFile_whenResourceFound_shouldReturnContents() throws IOException, URISyntaxException {
         // GIVEN-WHEN
         byte[] actualContents = FilesHelper.readBytesFromResourceFile("/files/file.txt");
 
@@ -119,16 +117,15 @@ public class FilesHelperTest {
         assertThat(actualContents).hasSize(128);
     }
 
-    @Test(expected = EOFException.class)
-    public void readObjectFromJsonResourceFile_whenResourceNotFound_shouldThrowException() throws IOException, URISyntaxException {
-        // GIVEN-WHEN
-        FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/not a resource/");
-
-        // THEN: EOFE
+    @Test
+    void readObjectFromJsonResourceFile_whenResourceNotFound_shouldThrowException() throws IOException, URISyntaxException {
+        // GIVEN-WHEN-THEN
+        assertThrows(EOFException.class,
+                () -> FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/not a resource/"));
     }
 
     @Test
-    public void readObjectFromJsonResourceFile_whenResourceFound_shouldReturnObjectContents() throws IOException, URISyntaxException {
+    void readObjectFromJsonResourceFile_whenResourceFound_shouldReturnObjectContents() throws IOException, URISyntaxException {
         // GIVEN-WHEN
         DbStructureDto actualObject = FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/mapper/topicObject.structure.json");
 
@@ -137,16 +134,15 @@ public class FilesHelperTest {
         assertThat(actualObject.getTopic()).isEqualTo(DbDto.Topic.ACHIEVEMENTS);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void getFileNameFromResourcePath_whenResourceNotFound_shouldThrowNullPointerException() throws URISyntaxException {
-        // GIVEN-WHEN
-        FilesHelper.getFileNameFromResourcePath("/not a resource/");
-
-        // THEN: exception
+    @Test
+    void getFileNameFromResourcePath_whenResourceNotFound_shouldThrowNullPointerException() throws URISyntaxException {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> FilesHelper.getFileNameFromResourcePath("/not a resource/"));
     }
 
     @Test
-    public void getFileNameFromResourcePath_whenResourceFound_shouldReturnAbsoluteFilePath() throws URISyntaxException {
+    void getFileNameFromResourcePath_whenResourceFound_shouldReturnAbsoluteFilePath() throws URISyntaxException {
         // GIVEN-WHEN
         String actualFileName = FilesHelper.getFileNameFromResourcePath("/files/file.txt");
 
@@ -155,7 +151,7 @@ public class FilesHelperTest {
     }
 
     @Test
-    public void writeJsonObjectToFile_whenValidObject_shouldCreateFileWithSameContents() throws IOException, URISyntaxException {
+    void writeJsonObjectToFile_whenValidObject_shouldCreateFileWithSameContents() throws IOException, URISyntaxException {
         // GIVEN
         Path outputFilePath = Paths.get(tempDirectory, "writtenJson", "TDU_Achievements.json");
         DbDataDto sourceObject = FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/mapper/topicObject.data.json");
@@ -169,7 +165,7 @@ public class FilesHelperTest {
     }
 
     @Test
-    public void getExtension_whenNoExtension_shouldReturnEmptyString() {
+    void getExtension_whenNoExtension_shouldReturnEmptyString() {
         // GIVEN-WHEN
         final String actualExtension = FilesHelper.getExtension("/etc/default/docker");
 
@@ -178,7 +174,7 @@ public class FilesHelperTest {
     }
 
     @Test
-    public void getExtension_whenExtension_shouldReturnIt() {
+    void getExtension_whenExtension_shouldReturnIt() {
         // GIVEN-WHEN
         final String actualExtension = FilesHelper.getExtension("/etc/default/docker.conf");
 
@@ -186,16 +182,15 @@ public class FilesHelperTest {
         assertThat(actualExtension).isEqualTo("conf");
     }
 
-    @Test(expected = NullPointerException.class)
-    public void getExtension_whenNullFileName_shouldThrowException() {
-        // GIVEN-WHEN
-        FilesHelper.getExtension(null);
-
-        // THEN: NPE
+    @Test
+    void getExtension_whenNullFileName_shouldThrowException() {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> FilesHelper.getExtension(null));
     }
 
     @Test
-    public void getNameWithoutExtension_whenNoExtension_shouldReturnSameName() {
+    void getNameWithoutExtension_whenNoExtension_shouldReturnSameName() {
         // GIVEN-WHEN
         final String actualName = FilesHelper.getNameWithoutExtension("docker");
 
@@ -204,7 +199,7 @@ public class FilesHelperTest {
     }
 
     @Test
-    public void getNameWithoutExtension_whenExtension() {
+    void getNameWithoutExtension_whenExtension() {
         // GIVEN-WHEN
         final String actualName = FilesHelper.getNameWithoutExtension("docker.conf");
 
@@ -213,7 +208,7 @@ public class FilesHelperTest {
     }
 
     @Test
-    public void getNameWithoutExtension_whenExtension_andPath_shouldReturnWithoutPath() {
+    void getNameWithoutExtension_whenExtension_andPath_shouldReturnWithoutPath() {
         // GIVEN-WHEN
         final String actualName = FilesHelper.getNameWithoutExtension("/etc/docker.conf");
 
@@ -221,16 +216,15 @@ public class FilesHelperTest {
         assertThat(actualName).isEqualTo("docker");
     }
 
-    @Test(expected = NullPointerException.class)
-    public void getNameWithoutExtension_whenNullFileName_shouldThrowException() {
-        // GIVEN-WHEN
-        FilesHelper.getNameWithoutExtension(null);
-
-        // THEN: NPE
+    @Test
+    void getNameWithoutExtension_whenNullFileName_shouldThrowException() {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> FilesHelper.getNameWithoutExtension(null));
     }
 
     @Test
-    public void readXMLDocumentFromFile_whenCorrectFile_shouldParseIt() throws URISyntaxException, IOException {
+    void readXMLDocumentFromFile_whenCorrectFile_shouldParseIt() throws URISyntaxException, IOException {
         // GIVEN
         final String sampleFile = FilesHelper.getFileNameFromResourcePath("/common/samples/sample.xml");
 
@@ -242,14 +236,13 @@ public class FilesHelperTest {
         assertThat(actualDocument.getDocumentElement().getTagName()).isEqualTo("note");
     }
 
-    @Test(expected = IOException.class)
-    public void readXMLDocumentFromFile_whenIncorrectFile_shouldThrowException() throws URISyntaxException, IOException {
+    @Test
+    void readXMLDocumentFromFile_whenIncorrectFile_shouldThrowException() throws URISyntaxException, IOException {
         // GIVEN
         final String sampleFile = FilesHelper.getFileNameFromResourcePath("/common/samples/sample_malformed.xml");
 
-        // WHEN
-        FilesHelper.readXMLDocumentFromFile(sampleFile);
-
-        // THEN: IOE
+        // WHEN-THEN
+        assertThrows(IOException.class,
+                () -> FilesHelper.readXMLDocumentFromFile(sampleFile));
     }
 }

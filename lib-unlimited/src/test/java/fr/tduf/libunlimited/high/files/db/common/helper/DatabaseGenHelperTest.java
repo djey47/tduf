@@ -9,11 +9,10 @@ import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import org.apache.commons.lang3.Range;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.*;
 
@@ -21,10 +20,11 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
-@RunWith(MockitoJUnitRunner.class)
-public class DatabaseGenHelperTest {
+class DatabaseGenHelperTest {
 
     private static final String ENTRY_REFERENCE = "11111111";
     private static final String RESOURCE_REFERENCE = "11111111";
@@ -38,14 +38,19 @@ public class DatabaseGenHelperTest {
     @InjectMocks
     private DatabaseGenHelper genHelper;
 
+    @BeforeEach
+    void setUp() {
+        initMocks(this);
+    }
+
     @Test
-    public void generateUniqueResourceEntryIdentifier_whenNullTopicObject_shouldReturnNull() throws Exception {
+    void generateUniqueResourceEntryIdentifier_whenNullTopicObject_shouldReturnNull() throws Exception {
         // GIVEN-WHEN-THEN
         assertThat(DatabaseGenHelper.generateUniqueResourceEntryIdentifier(null)).isNull();
     }
 
     @Test
-    public void generateUniqueResourceEntryIdentifier_shouldReturnCorrectIdentifier() throws Exception {
+    void generateUniqueResourceEntryIdentifier_shouldReturnCorrectIdentifier() throws Exception {
         // GIVEN
         DbDto topicObject = DbDto.builder()
                 .withResource(DbResourceDto.builder()
@@ -66,24 +71,23 @@ public class DatabaseGenHelperTest {
     }
 
     @Test
-    public void generateUniqueContentsEntryIdentifier_whenNullTopicObject_shouldReturnNull() throws Exception {
+    void generateUniqueContentsEntryIdentifier_whenNullTopicObject_shouldReturnNull() throws Exception {
         // GIVEN-WHEN-THEN
         assertThat(DatabaseGenHelper.generateUniqueContentsEntryIdentifier(null)).isNull();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void generateUniqueContentsEntryIdentifier_whenTopicObjectWithoutIdentifierField_shouldThrowIllegalArgumentException() throws Exception {
-        // GIVEN-
+    @Test
+    void generateUniqueContentsEntryIdentifier_whenTopicObjectWithoutIdentifierField_shouldThrowIllegalArgumentException() throws Exception {
+        // GIVEN
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.INTEGER);
 
-        // WHEN
-        DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject);
-
-        // THEN: IllegalArgumentException
+        // WHEN-THEN
+        assertThrows(IllegalArgumentException.class,
+                () -> DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject));
     }
 
     @Test
-    public void generateUniqueContentsEntryIdentifier_whenTopicObjectWithIdentifierField_shouldReturnCorrectIdentifier() throws Exception {
+    void generateUniqueContentsEntryIdentifier_whenTopicObjectWithIdentifierField_shouldReturnCorrectIdentifier() throws Exception {
         // GIVEN
         DbDto topicObject = createTopicObjectOneUIDField();
 
@@ -98,7 +102,7 @@ public class DatabaseGenHelperTest {
     }
 
     @Test
-    public void buildDefaultContentItems_whenOneField_andReference_shouldCreateOneItem() {
+    void buildDefaultContentItems_whenOneField_andReference_shouldCreateOneItem() {
         // GIVEN
         DbDto topicObject = createTopicObjectOneUIDField();
 
@@ -111,7 +115,7 @@ public class DatabaseGenHelperTest {
     }
 
     @Test
-    public void buildDefaultContentItems_whenOneField_andNoReference_shouldCreateOneItemWithDefaultRef() {
+    void buildDefaultContentItems_whenOneField_andNoReference_shouldCreateOneItemWithDefaultRef() {
         // GIVEN
         DbDto topicObject = createTopicObjectOneUIDField();
 
@@ -123,20 +127,19 @@ public class DatabaseGenHelperTest {
         assertThat(actualItems.get(0).getRawValue()).isNotEmpty();
     }
 
-    @Test(expected = NullPointerException.class)
-    public void buildDefaultContentItem_whenNullFieldType_shouldThrowException() {
+    @Test
+    void buildDefaultContentItem_whenNullFieldType_shouldThrowException() {
         // GIVEN
         DbStructureDto.Field field = createSingleStructureField(null);
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.BITFIELD);
 
-        // WHEN
-        genHelper.buildDefaultContentItem(empty(), field, topicObject);
-
-        // THEN
+        // WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> genHelper.buildDefaultContentItem(empty(), field, topicObject));
     }
 
     @Test
-    public void buildDefaultContentItem_whenBitfield_shouldCreateItem() {
+    void buildDefaultContentItem_whenBitfield_shouldCreateItem() {
         // GIVEN
         DbStructureDto.Field field = createSingleStructureField(DbStructureDto.FieldType.BITFIELD);
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.BITFIELD);
@@ -150,7 +153,7 @@ public class DatabaseGenHelperTest {
     }
 
     @Test
-    public void buildDefaultContentItem_whenFloatingPoint_shouldCreateItem() {
+    void buildDefaultContentItem_whenFloatingPoint_shouldCreateItem() {
         // GIVEN
         DbStructureDto.Field field = createSingleStructureField(DbStructureDto.FieldType.FLOAT);
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.FLOAT);
@@ -164,7 +167,7 @@ public class DatabaseGenHelperTest {
     }
 
     @Test
-    public void buildDefaultContentItem_whenInteger_shouldCreateItem() {
+    void buildDefaultContentItem_whenInteger_shouldCreateItem() {
         // GIVEN
         DbStructureDto.Field field = createSingleStructureField(DbStructureDto.FieldType.INTEGER);
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.INTEGER);
@@ -178,7 +181,7 @@ public class DatabaseGenHelperTest {
     }
 
     @Test
-    public void buildDefaultContentItem_whenPercent_shouldCreateItem() {
+    void buildDefaultContentItem_whenPercent_shouldCreateItem() {
         // GIVEN
         DbStructureDto.Field field = createSingleStructureField(DbStructureDto.FieldType.PERCENT);
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.PERCENT);
@@ -192,7 +195,7 @@ public class DatabaseGenHelperTest {
     }
 
     @Test
-    public void buildDefaultContentItem_whenReference_shouldCreateItem_andAddRemoteEntry() {
+    void buildDefaultContentItem_whenReference_shouldCreateItem_andAddRemoteEntry() {
         // GIVEN
         DbStructureDto.Field field = createStructureFieldForRemoteContent();
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.REFERENCE);
@@ -213,7 +216,7 @@ public class DatabaseGenHelperTest {
     }
 
     @Test
-    public void buildDefaultContentItem_whenResource_shouldCreateItem_andResource() {
+    void buildDefaultContentItem_whenResource_shouldCreateItem_andResource() {
         // GIVEN
         DbStructureDto.Field field = createSingleStructureField(DbStructureDto.FieldType.RESOURCE_CURRENT_GLOBALIZED);
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.RESOURCE_CURRENT_GLOBALIZED);
@@ -233,7 +236,7 @@ public class DatabaseGenHelperTest {
     }
 
     @Test
-    public void buildDefaultContentItem_whenRemoteResource_shouldCreateItem_andResource() {
+    void buildDefaultContentItem_whenRemoteResource_shouldCreateItem_andResource() {
         // GIVEN
         DbStructureDto.Field field = createStructureFieldForRemoteResource();
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.RESOURCE_REMOTE);
@@ -256,7 +259,7 @@ public class DatabaseGenHelperTest {
     }
 
     @Test
-    public void buildDefaultContentItem_whenRemoteResource_andTargetGenerationDisabled_shouldNotCreateResource() {
+    void buildDefaultContentItem_whenRemoteResource_andTargetGenerationDisabled_shouldNotCreateResource() {
         // GIVEN
         DbStructureDto.Field field = createStructureFieldForRemoteResource();
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.RESOURCE_REMOTE);
@@ -276,7 +279,7 @@ public class DatabaseGenHelperTest {
     }
 
     @Test
-    public void generateDefaultResourceReference_whenDefaultResourceEntryExists_shouldReturnIt() {
+    void generateDefaultResourceReference_whenDefaultResourceEntryExists_shouldReturnIt() {
         // GIVEN
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.RESOURCE_CURRENT_LOCALIZED);
         topicObject.getResource().addEntryByReference("12345").setDefaultValue("??");
@@ -293,7 +296,7 @@ public class DatabaseGenHelperTest {
     }
 
     @Test
-    public void generateDefaultResourceReference_whenDefaultResourceEntryDoesNotExist_shouldGenerateIt() {
+    void generateDefaultResourceReference_whenDefaultResourceEntryDoesNotExist_shouldGenerateIt() {
         // GIVEN
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.RESOURCE_CURRENT_LOCALIZED);
 
@@ -306,7 +309,7 @@ public class DatabaseGenHelperTest {
     }
 
     @Test
-    public void generateUniqueIdentifier() {
+    void generateUniqueIdentifier() {
         // GIVEN
         Set<String> existingValues = new HashSet<>(Arrays.asList("1", "2", "3"));
 
@@ -318,17 +321,14 @@ public class DatabaseGenHelperTest {
         assertThat(existingValues).doesNotContain(actual);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void generateUniqueIdentifier_whenNoSpaceLeftInRange_shouldThrowException() {
+    @Test
+    void generateUniqueIdentifier_whenNoSpaceLeftInRange_shouldThrowException() {
         // GIVEN
         Set<String> existingValues = new HashSet<>(Arrays.asList("1", "2", "3"));
 
-        // WHEN
-        final String actual = DatabaseGenHelper.generateUniqueIdentifier(existingValues, Range.between(1, 3));
-
-        // THEN
-        assertThat(actual).isNotNull();
-        assertThat(existingValues).doesNotContain(actual);
+        // WHEN-THEN
+        assertThrows(IllegalArgumentException.class,
+                () -> DatabaseGenHelper.generateUniqueIdentifier(existingValues, Range.between(1, 3)));
     }
 
     private static DbStructureDto.Field createSingleStructureField(DbStructureDto.FieldType fieldType) {

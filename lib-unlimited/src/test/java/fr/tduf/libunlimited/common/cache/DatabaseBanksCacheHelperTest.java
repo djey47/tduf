@@ -3,11 +3,9 @@ package fr.tduf.libunlimited.common.cache;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libtesting.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,9 +19,9 @@ import static java.lang.Long.valueOf;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
-@RunWith(MockitoJUnitRunner.class)
-public class DatabaseBanksCacheHelperTest {
+class DatabaseBanksCacheHelperTest {
 
     private static final Class<DatabaseBanksCacheHelperTest> thisClass = DatabaseBanksCacheHelperTest.class;
 
@@ -34,8 +32,10 @@ public class DatabaseBanksCacheHelperTest {
 
     private String databaseDirectory;
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeEach
+    void setUp() throws IOException {
+        initMocks(this);
+
         tempDirectory = FilesHelper.createTempDirectoryForLibrary();
 
         databaseDirectory = Paths.get(tempDirectory, "Euro", "Bnk", "Database").toString();
@@ -46,7 +46,7 @@ public class DatabaseBanksCacheHelperTest {
     }
 
     @Test
-    public void unpackDatabaseToJsonWithCacheSupport_whenCachePresentAndBankFilesOlder_shouldNotUseBankSupportComponent_andReturnCacheDirectory() throws IOException {
+    void unpackDatabaseToJsonWithCacheSupport_whenCachePresentAndBankFilesOlder_shouldNotUseBankSupportComponent_andReturnCacheDirectory() throws IOException {
         // GIVEN
         final Path cachePath = createCacheDirectory();
         long originalTimestamp = System.currentTimeMillis();
@@ -66,7 +66,7 @@ public class DatabaseBanksCacheHelperTest {
     }
 
     @Test
-    public void unpackDatabaseToJsonWithCacheSupport_whenCachePresentAndBankFilesNewer_shouldUseBankSupportComponent_andReturnCacheDirectory() throws IOException {
+    void unpackDatabaseToJsonWithCacheSupport_whenCachePresentAndBankFilesNewer_shouldUseBankSupportComponent_andReturnCacheDirectory() throws IOException {
         // GIVEN
         final Path cachePath = initCacheTimestamp(0);
 
@@ -86,7 +86,7 @@ public class DatabaseBanksCacheHelperTest {
     }
 
     @Test
-    public void unpackDatabaseToJsonWithCacheSupport_whenNoCache_shouldUseBankSupportComponent_andReturnNewCacheDirectory() throws IOException {
+    void unpackDatabaseToJsonWithCacheSupport_whenNoCache_shouldUseBankSupportComponent_andReturnNewCacheDirectory() throws IOException {
         // GIVEN-WHEN
         String jsonDirectory = DatabaseBanksCacheHelper.unpackDatabaseToJsonWithCacheSupport(Paths.get(databaseDirectory), bankSupportMock);
 
@@ -104,7 +104,7 @@ public class DatabaseBanksCacheHelperTest {
     }
 
     @Test
-    public void repackDatabaseFromJsonWithCacheSupport_whenCacheInfoDoesNotExist_shouldCallBankSupportComponent_andSetTimestamp() throws IOException, ReflectiveOperationException {
+    void repackDatabaseFromJsonWithCacheSupport_whenCacheInfoDoesNotExist_shouldCallBankSupportComponent_andSetTimestamp() throws IOException, ReflectiveOperationException {
         // GIVEN
         createCacheDirectory();
         String jsonDatabaseDirectory = createJsonDatabase(databaseDirectory);
@@ -132,7 +132,7 @@ public class DatabaseBanksCacheHelperTest {
     }
 
     @Test
-    public void repackDatabaseFromJsonWithCacheSupport_whenCacheInfoExists_shouldUpdateTimestamp() throws IOException, ReflectiveOperationException, InterruptedException {
+    void repackDatabaseFromJsonWithCacheSupport_whenCacheInfoExists_shouldUpdateTimestamp() throws IOException, ReflectiveOperationException, InterruptedException {
         // GIVEN
         createCacheDirectory();
         String jsonDatabaseDirectory = createJsonDatabase(databaseDirectory);
@@ -153,7 +153,7 @@ public class DatabaseBanksCacheHelperTest {
     }
 
     @Test
-    public void updateCacheDirectory_whenNoCache_shouldCreateCacheDirectory() throws IOException {
+    void updateCacheDirectory_whenNoCache_shouldCreateCacheDirectory() throws IOException {
         // GIVEN-WHEN
         DatabaseBanksCacheHelper.updateCacheTimestamp(Paths.get(databaseDirectory));
 
@@ -162,7 +162,7 @@ public class DatabaseBanksCacheHelperTest {
     }
 
     @Test
-    public void updateCacheDirectory_whenCacheExists_shouldUpdateTimestampInLastFile() throws IOException {
+    void updateCacheDirectory_whenCacheExists_shouldUpdateTimestampInLastFile() throws IOException {
         // GIVEN
         Path cachePath = initCacheTimestamp(0);
 
@@ -174,7 +174,7 @@ public class DatabaseBanksCacheHelperTest {
     }
 
     @Test
-    public void resolveCachePath() {
+    void resolveCachePath() {
         // GIVEN
         final Path databasePath = Paths.get("/home/djey/tdu/db/");
 
@@ -187,7 +187,7 @@ public class DatabaseBanksCacheHelperTest {
     }
 
     @Test
-    public void clearCache_whenDirectoryDoesNotExist_shouldDoNothing() throws IOException {
+    void clearCache_whenDirectoryDoesNotExist_shouldDoNothing() throws IOException {
         // GIVEN
         final Path databasePath = Paths.get("/home/djey/tdu/db/");
 
@@ -198,7 +198,7 @@ public class DatabaseBanksCacheHelperTest {
     }
 
     @Test
-    public void clearCache_whenDirectoryDoesExist_shouldRemoveIt() throws IOException {
+    void clearCache_whenDirectoryDoesExist_shouldRemoveIt() throws IOException {
         // GIVEN
         final Path cachePath = initCacheTimestamp(0);
         final Path realDatabasePath = Paths.get(databaseDirectory);

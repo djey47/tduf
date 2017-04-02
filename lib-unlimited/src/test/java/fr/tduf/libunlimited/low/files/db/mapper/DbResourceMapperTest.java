@@ -8,8 +8,8 @@ import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceItemDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.json.JSONException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.IOException;
@@ -20,19 +20,19 @@ import static fr.tduf.libunlimited.common.game.domain.Locale.ITALY;
 import static java.util.Arrays.asList;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
-public class DbResourceMapperTest {
+class DbResourceMapperTest {
 
     private static final Class<DbResourceMapperTest> thisClass = DbResourceMapperTest.class;
 
     private final ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         Log.set(Log.LEVEL_INFO);
     }
 
     @Test
-    public void serialize_shouldWriteProperJson() throws IOException, JSONException, URISyntaxException {
+    void serialize_shouldWriteProperJson() throws IOException, JSONException, URISyntaxException {
         //GIVEN
         ResourceItemDto item1 = ResourceItemDto.builder()
                 .withLocale(FRANCE)

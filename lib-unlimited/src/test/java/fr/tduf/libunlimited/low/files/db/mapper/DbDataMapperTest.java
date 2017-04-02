@@ -8,8 +8,8 @@ import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.json.JSONException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.IOException;
@@ -19,19 +19,19 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 
-public class DbDataMapperTest {
+class DbDataMapperTest {
 
     private static final Class<DbDataMapperTest> thisClass = DbDataMapperTest.class;
 
     private final ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         Log.set(Log.LEVEL_INFO);
     }
 
     @Test
-    public void serialize_shouldWriteProperJson() throws IOException, JSONException, URISyntaxException {
+    void serialize_shouldWriteProperJson() throws IOException, JSONException, URISyntaxException {
         //GIVEN
         ContentItemDto item11 = ContentItemDto.builder()
                 .ofFieldRank(1)

@@ -5,8 +5,8 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.json.JSONException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.IOException;
@@ -20,7 +20,8 @@ public class DbStructureMapperTest {
 
     private final ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
 
-    @Before
+    @BeforeEach
+
     public void setUp() {
         Log.set(Log.LEVEL_INFO);
     }

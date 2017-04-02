@@ -1,15 +1,15 @@
 package fr.tduf.libunlimited.low.files.banks.mapping.domain;
 
 import org.assertj.core.groups.Tuple;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class BankMapTest {
+class BankMapTest {
 
     @Test
-    public void magifyAll_shouldMagifyAllEntries() throws Exception {
+    void magifyAll_shouldMagifyAllEntries() throws Exception {
         // GIVEN
         BankMap bankMap = new BankMap();
         bankMap.addEntry(1589L, 150L, 150L);
@@ -25,7 +25,7 @@ public class BankMapTest {
     }
 
     @Test
-    public void isMagic_whenNoEntry_shouldReturnFalse() {
+    void isMagic_whenNoEntry_shouldReturnFalse() {
         // GIVEN
         BankMap bankMap = new BankMap();
 
@@ -34,7 +34,7 @@ public class BankMapTest {
     }
 
     @Test
-    public void isMagic_whenAllStandardEntries_shouldReturnFalse() {
+    void isMagic_whenAllStandardEntries_shouldReturnFalse() {
         // GIVEN
         BankMap bankMap = new BankMap();
         bankMap.addEntry(1589L, 150L, 150L);
@@ -45,7 +45,7 @@ public class BankMapTest {
     }
 
     @Test
-    public void isMagic_whenOneEntryMagic_shouldReturnFalse() {
+    void isMagic_whenOneEntryMagic_shouldReturnFalse() {
         // GIVEN
         BankMap bankMap = new BankMap();
         bankMap.addEntry(1589L, 150L, 150L);
@@ -57,7 +57,7 @@ public class BankMapTest {
     }
 
     @Test
-    public void isMagic_whenAllEntriesMagic_shouldReturnTrue() {
+    void isMagic_whenAllEntriesMagic_shouldReturnTrue() {
         // GIVEN
         BankMap bankMap = new BankMap();
         bankMap.addMagicEntry(1589L);

@@ -1,14 +1,15 @@
 package fr.tduf.libunlimited.low.files.db.dto;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class DbStructureDtoTest {
+class DbStructureDtoTest {
 
     @Test
-    public void itemTypeFromCode_whenCodeExists_shouldReturnProperType() throws Exception {
+    void itemTypeFromCode_whenCodeExists_shouldReturnProperType() throws Exception {
         //GIVEN
         DbStructureDto.FieldType expectedFieldType = DbStructureDto.FieldType.RESOURCE_CURRENT_GLOBALIZED;
 
@@ -20,7 +21,7 @@ public class DbStructureDtoTest {
     }
 
     @Test
-    public void itemTypeFromCode_whenCodeDoesNotExist_shouldReturnNull() throws Exception {
+    void itemTypeFromCode_whenCodeDoesNotExist_shouldReturnNull() throws Exception {
         //GIVEN-WHEN
         DbStructureDto.FieldType actualFieldType = DbStructureDto.FieldType.fromCode("z");
 
@@ -29,7 +30,7 @@ public class DbStructureDtoTest {
     }
 
     @Test
-    public void isAResourceField_whenUIDField_shouldReturnFalse() {
+    void isAResourceField_whenUIDField_shouldReturnFalse() {
         // GIVEN
         DbStructureDto.Field field = DbStructureDto.Field.builder()
                 .ofRank(1)
@@ -41,7 +42,7 @@ public class DbStructureDtoTest {
     }
 
     @Test
-    public void isAResourceField_whenResourceField_shouldReturnTrue() {
+    void isAResourceField_whenResourceField_shouldReturnTrue() {
         // GIVEN
         DbStructureDto.Field field1 = DbStructureDto.Field.builder()
                 .ofRank(1)

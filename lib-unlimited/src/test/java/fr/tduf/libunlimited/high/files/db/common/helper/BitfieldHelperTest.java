@@ -2,8 +2,8 @@ package fr.tduf.libunlimited.high.files.db.common.helper;
 
 import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -11,18 +11,19 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class BitfieldHelperTest {
+class BitfieldHelperTest {
 
     private BitfieldHelper bitfieldHelper;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    void setUp() throws Exception {
         bitfieldHelper = new BitfieldHelper();
     }
 
     @Test
-    public void getBitfieldReferenceForTopic_whenUnavailable_shouldReturnEmpty() throws Exception {
+    void getBitfieldReferenceForTopic_whenUnavailable_shouldReturnEmpty() throws Exception {
         // GIVEN-WHEN
         Optional<List<DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto>> bitfieldReferenceForTopic = bitfieldHelper.getBitfieldReferenceForTopic(DbDto.Topic.TUTORIALS);
 
@@ -31,7 +32,7 @@ public class BitfieldHelperTest {
     }
 
     @Test
-    public void getBitfieldReferenceForTopic_whenAvailable_shouldReturnIt() throws Exception {
+    void getBitfieldReferenceForTopic_whenAvailable_shouldReturnIt() throws Exception {
         // GIVEN-WHEN
         Optional<List<DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto>> bitfieldReferenceForTopic = bitfieldHelper.getBitfieldReferenceForTopic(DbDto.Topic.CAR_PHYSICS_DATA);
 
@@ -39,16 +40,15 @@ public class BitfieldHelperTest {
         assertThat(bitfieldReferenceForTopic).isPresent();
     }
 
-    @Test(expected = NullPointerException.class)
-    public void resolve_wheNullRawValue_shouldThrowException() throws IOException, URISyntaxException {
-        // GIVEN - WHEN
-        bitfieldHelper.resolve(DbDto.Topic.CAR_PHYSICS_DATA, null);
-
-        // THEN: NPE
+    @Test
+    void resolve_wheNullRawValue_shouldThrowException() throws IOException, URISyntaxException {
+        // GIVEN - WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> bitfieldHelper.resolve(DbDto.Topic.CAR_PHYSICS_DATA, null));
     }
 
     @Test
-    public void resolve_whenNoReference_shouldReturnEmpty() throws IOException, URISyntaxException {
+    void resolve_whenNoReference_shouldReturnEmpty() throws IOException, URISyntaxException {
         // GIVEN - WHEN
         Optional<List<Boolean>> resolved = bitfieldHelper.resolve(DbDto.Topic.TUTORIALS, "101");
 
@@ -57,7 +57,7 @@ public class BitfieldHelperTest {
     }
 
     @Test
-    public void resolve_whenReference_shouldReturnResolvedSwitches() throws IOException, URISyntaxException {
+    void resolve_whenReference_shouldReturnResolvedSwitches() throws IOException, URISyntaxException {
         // GIVEN - WHEN
         List<Boolean> resolved = bitfieldHelper.resolve(DbDto.Topic.CAR_PHYSICS_DATA, "101").get();
 
@@ -66,16 +66,15 @@ public class BitfieldHelperTest {
         assertThat(resolved).containsExactly(true, false, true, false, false, true, true);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void resolve_whenRawValueHasIllegalFormat_shouldThrowException() throws IOException, URISyntaxException {
-        // GIVEN - WHEN
-        bitfieldHelper.resolve(DbDto.Topic.CAR_PHYSICS_DATA, "abc").get();
-
-        // THEN: IAE
+    @Test
+    void resolve_whenRawValueHasIllegalFormat_shouldThrowException() throws IOException, URISyntaxException {
+        // GIVEN - WHEN - THEN
+        assertThrows(IllegalArgumentException.class,
+                () -> bitfieldHelper.resolve(DbDto.Topic.CAR_PHYSICS_DATA, "abc").get());
     }
 
     @Test
-    public void updateRawValue_whenNoReference_shouldReturnEmpty() {
+    void updateRawValue_whenNoReference_shouldReturnEmpty() {
         // GIVEN-WHEN
         Optional<String> actualValue = bitfieldHelper.updateRawValue(DbDto.Topic.CAR_RIMS, "111", 1, false);
 
@@ -84,7 +83,7 @@ public class BitfieldHelperTest {
     }
 
     @Test
-    public void updateRawValue_whenReference_shouldReturnValueWithChangedBitState() {
+    void updateRawValue_whenReference_shouldReturnValueWithChangedBitState() {
         // GIVEN-WHEN
         String actualValue = bitfieldHelper.updateRawValue(DbDto.Topic.CAR_PHYSICS_DATA, "111", 1, false).get();
 
@@ -93,7 +92,7 @@ public class BitfieldHelperTest {
     }
 
     @Test
-    public void updateRawValue_whenReference_andBitIndexOutOfBounds_shouldReturnInitialValue() {
+    void updateRawValue_whenReference_andBitIndexOutOfBounds_shouldReturnInitialValue() {
         // GIVEN-WHEN
         String actualValue = bitfieldHelper.updateRawValue(DbDto.Topic.CAR_PHYSICS_DATA, "111", 50, true).get();
 
@@ -101,11 +100,10 @@ public class BitfieldHelperTest {
         assertThat(actualValue).isEqualTo("111");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void updateRawValue_whenRawValueHasIllegalFormat_shouldThrowException() throws IOException, URISyntaxException {
-        // GIVEN - WHEN
-        bitfieldHelper.updateRawValue(DbDto.Topic.CAR_PHYSICS_DATA, "abc", 1, false).get();
-
-        // THEN: IAE
+    @Test
+    void updateRawValue_whenRawValueHasIllegalFormat_shouldThrowException() throws IOException, URISyntaxException {
+        // GIVEN - WHEN - THEN
+        assertThrows(IllegalArgumentException.class,
+                () -> bitfieldHelper.updateRawValue(DbDto.Topic.CAR_PHYSICS_DATA, "abc", 1, false));
     }
 }

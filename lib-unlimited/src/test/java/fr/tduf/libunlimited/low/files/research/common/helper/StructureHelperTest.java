@@ -1,7 +1,7 @@
 package fr.tduf.libunlimited.low.files.research.common.helper;
 
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -12,11 +12,12 @@ import static fr.tduf.libunlimited.low.files.research.domain.Type.INTEGER;
 import static fr.tduf.libunlimited.low.files.research.domain.Type.REPEATER;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class StructureHelperTest {
+class StructureHelperTest {
 
     @Test
-    public void retrieveStructureFromLocation_whenClasspathResource_shouldReturnResource() throws Exception {
+    void retrieveStructureFromLocation_whenClasspathResource_shouldReturnResource() throws Exception {
         // GIVEN
         String resourcePath = "/files/structures/TEST-map.json";
 
@@ -28,7 +29,7 @@ public class StructureHelperTest {
     }
 
     @Test
-    public void retrieveStructureFromLocation_whenExternalResource_shouldReturnResource() throws Exception {
+    void retrieveStructureFromLocation_whenExternalResource_shouldReturnResource() throws Exception {
         // GIVEN
         String resourcePath = "./src/test/resources/files/structures/TEST-map.json";
 
@@ -40,7 +41,7 @@ public class StructureHelperTest {
     }
 
     @Test
-    public void encryptIfNeeded_whenNoCryptoMode_shouldReturnInitialContents() throws IOException {
+    void encryptIfNeeded_whenNoCryptoMode_shouldReturnInitialContents() throws IOException {
         // GIVEN
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         outputStream.write(100);
@@ -53,7 +54,7 @@ public class StructureHelperTest {
     }
 
     @Test
-    public void encryptIfNeeded_whenCryptoMode_shouldReturnEncryptedContents() throws IOException {
+    void encryptIfNeeded_whenCryptoMode_shouldReturnEncryptedContents() throws IOException {
         // GIVEN
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         outputStream.write(new byte[8]);
@@ -67,7 +68,7 @@ public class StructureHelperTest {
     }
 
     @Test
-    public void decryptIfNeeded_whenNoCryptoMode_shouldReturnInitialContents() throws IOException {
+    void decryptIfNeeded_whenNoCryptoMode_shouldReturnInitialContents() throws IOException {
         // GIVEN
         ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[]{ 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8 });
 
@@ -79,7 +80,7 @@ public class StructureHelperTest {
     }
 
     @Test
-    public void decryptIfNeeded_whenCryptoMode_shouldReturnEncryptedContents() throws IOException {
+    void decryptIfNeeded_whenCryptoMode_shouldReturnEncryptedContents() throws IOException {
         // GIVEN
         ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[]{ 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8 });
 
@@ -93,7 +94,7 @@ public class StructureHelperTest {
     }
 
     @Test
-    public void getFieldDefinitionFromFullName_whenFieldExist_shouldReturnDef() {
+    void getFieldDefinitionFromFullName_whenFieldExist_shouldReturnDef() {
         // GIVEN
         FileStructureDto.Field field = FileStructureDto.Field.builder()
                 .forName("my_field")
@@ -118,7 +119,7 @@ public class StructureHelperTest {
     }
 
     @Test
-    public void getFieldDefinitionFromFullName_whenFieldDoesNotExist_shouldReturnDef() {
+    void getFieldDefinitionFromFullName_whenFieldDoesNotExist_shouldReturnDef() {
         // GIVEN
         FileStructureDto.Field field = FileStructureDto.Field.builder()
                 .forName("my_field")
@@ -141,11 +142,10 @@ public class StructureHelperTest {
         assertThat(potentialField).isEmpty();
     }
 
-    @Test(expected = NullPointerException.class)
-    public void getFieldDefinitionFromFullName_whenNullStructureObject_shouldThrowException() {
-        // GIVEN-WHEN
-        StructureHelper.getFieldDefinitionFromFullName("entry_list[0].my_field", null);
-
-        // THEN: NPE
+    @Test
+    void getFieldDefinitionFromFullName_whenNullStructureObject_shouldThrowException() {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> StructureHelper.getFieldDefinitionFromFullName("entry_list[0].my_field", null));
     }
 }

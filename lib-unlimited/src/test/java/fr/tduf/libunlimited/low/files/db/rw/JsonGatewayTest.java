@@ -1,33 +1,33 @@
 package fr.tduf.libunlimited.low.files.db.rw;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class JsonGatewayTest {
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-    @Test(expected = NullPointerException.class)
-    public void dump_whenNullTopicList_shouldThrowException() throws Exception {
-        // GIVEN-WHEN
-        JsonGateway.dump("", "", null, new HashSet<>());
+class JsonGatewayTest {
 
-        // THEN: NPE
+    @Test
+    void dump_whenNullTopicList_shouldThrowException() throws Exception {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> JsonGateway.dump("", "", null, new HashSet<>()));
     }
 
-    @Test(expected = NullPointerException.class)
-    public void dump_whenNullIntegrityErrorList_shouldThrowException() throws Exception {
-        // GIVEN-WHEN
-        JsonGateway.dump("", "", new ArrayList<>(), null);
-
-        // THEN: NPE
+    @Test
+    void dump_whenNullIntegrityErrorList_shouldThrowException() throws Exception {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> JsonGateway.dump("", "", new ArrayList<>(), null));
     }
 
-    @Test(expected = NullPointerException.class)
-    public void gen_whenNullTopicList_shouldThrowException() throws Exception {
-        // GIVEN-WHEN
-        JsonGateway.gen("", "", null);
-
-        // THEN: NPE
+    @Test
+    void gen_whenNullTopicList_shouldThrowException() throws Exception {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> JsonGateway.gen("", "", null));
     }
 }

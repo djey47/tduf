@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.high.files.db.patcher.domain;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -8,11 +9,12 @@ import java.util.Optional;
 import static java.util.Arrays.asList;
 import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ItemRangeTest {
+class ItemRangeTest {
 
     @Test
-    public void isGlobal_whenBothMinAndMaxEmpty_shouldReturnTrue() {
+    void isGlobal_whenBothMinAndMaxEmpty_shouldReturnTrue() {
         // GIVEN-WHEN
         ItemRange actualRange = new ItemRange(empty(), empty());
 
@@ -21,7 +23,7 @@ public class ItemRangeTest {
     }
 
     @Test
-    public void isGlobal_whenMinEmpty_shouldReturnFalse() {
+    void isGlobal_whenMinEmpty_shouldReturnFalse() {
         // GIVEN-WHEN
         ItemRange actualRange = new ItemRange(empty(), Optional.of(1000000L));
 
@@ -30,7 +32,7 @@ public class ItemRangeTest {
     }
 
     @Test
-    public void isGlobal_whenEmptyList_shouldReturnFalse() {
+    void isGlobal_whenEmptyList_shouldReturnFalse() {
         // GIVEN-WHEN
         ItemRange actualRange = new ItemRange(new ArrayList<>());
 
@@ -39,7 +41,7 @@ public class ItemRangeTest {
     }
 
     @Test
-    public void fromCliOption_whenAbsentValue_shouldCreateGlobalRange() {
+    void fromCliOption_whenAbsentValue_shouldCreateGlobalRange() {
         // GIVEN-WHEN
         ItemRange actualRange = ItemRange.fromCliOption(empty());
 
@@ -48,24 +50,22 @@ public class ItemRangeTest {
         assertThat(actualRange.isGlobal()).isTrue();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void fromCliOption_whenIllegalRangeValue_shouldThrowException() {
-        // GIVEN-WHEN
-        ItemRange.fromCliOption(Optional.of("azertyuiop"));
-
-        // THEN: IAE
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void fromCliOption_whenValueWithIllegalBounds_shouldThrowException() {
-        // GIVEN-WHEN
-        ItemRange.fromCliOption(Optional.of("1..0"));
-
-        // THEN: IAE
+    @Test
+    void fromCliOption_whenIllegalRangeValue_shouldThrowException() {
+        // GIVEN-WHEN-THEN
+        assertThrows(IllegalArgumentException.class,
+                () -> ItemRange.fromCliOption(Optional.of("azertyuiop")));
     }
 
     @Test
-    public void fromCliOption_whenValueWithValidBounds_shouldReturnRange() {
+    void fromCliOption_whenValueWithIllegalBounds_shouldThrowException() {
+        // GIVEN-WHEN-THEN
+        assertThrows(IllegalArgumentException.class,
+                () -> ItemRange.fromCliOption(Optional.of("1..0")));
+    }
+
+    @Test
+    void fromCliOption_whenValueWithValidBounds_shouldReturnRange() {
         // GIVEN-WHEN
         ItemRange actualRange = ItemRange.fromCliOption(Optional.of("10..20"));
 
@@ -77,7 +77,7 @@ public class ItemRangeTest {
     }
 
     @Test
-    public void fromCliOption_whenValueWithEnumeration_shouldReturnRange() {
+    void fromCliOption_whenValueWithEnumeration_shouldReturnRange() {
         // GIVEN-WHEN
         ItemRange actualRange = ItemRange.fromCliOption(Optional.of("10,20,30,40"));
 
@@ -88,16 +88,15 @@ public class ItemRangeTest {
         assertThat(actualRange.getEnumeratedItems()).containsExactly("10", "20", "30", "40");
     }
 
-    @Test(expected = NullPointerException.class)
-    public void fromCollection_whenNullArgument_shouldThrowException() {
-        // GIVEN-WHEN
-        ItemRange.fromCollection(null);
-
-        // THEN: NPE
+    @Test
+    void fromCollection_whenNullArgument_shouldThrowException() {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> ItemRange.fromCollection(null));
     }
 
     @Test
-    public void fromCollection_whenEmptyList_shouldReturnGlobalRange() {
+    void fromCollection_whenEmptyList_shouldReturnGlobalRange() {
         // GIVEN-WHEN
         ItemRange actualRange = ItemRange.fromCollection(new ArrayList<>());
 
@@ -106,7 +105,7 @@ public class ItemRangeTest {
     }
 
     @Test
-    public void fromCollection_whenNonEmptyList_shouldReturnRange() {
+    void fromCollection_whenNonEmptyList_shouldReturnRange() {
         // GIVEN-WHEN
         ItemRange actualRange = ItemRange.fromCollection(asList("1", "2", "3"));
 
@@ -116,7 +115,7 @@ public class ItemRangeTest {
     }
 
     @Test
-    public void fromSingleValue_shouldReturnRange() {
+    void fromSingleValue_shouldReturnRange() {
         // GIVEN-WHEN
         ItemRange actualRange = ItemRange.fromSingleValue("1");
 
@@ -125,16 +124,15 @@ public class ItemRangeTest {
         assertThat(actualRange.getEnumeratedItems()).containsExactly("1");
     }
 
-    @Test(expected = NullPointerException.class)
-    public void fromSingleValue_whenNullArgument_shouldThrowException() {
-        // GIVEN-WHEN
-        ItemRange.fromSingleValue(null);
-
-        // THEN: NPE
+    @Test
+    void fromSingleValue_whenNullArgument_shouldThrowException() {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> ItemRange.fromSingleValue(null));
     }
 
     @Test
-    public void accepts_whenGlobalRange_shouldReturnTrue(){
+    void accepts_whenGlobalRange_shouldReturnTrue(){
         // Long
         ItemRange actualRange = new ItemRange(empty(), empty());
 
@@ -143,7 +141,7 @@ public class ItemRangeTest {
     }
 
     @Test
-    public void accepts_whenRefInList_shouldReturnTrue(){
+    void accepts_whenRefInList_shouldReturnTrue(){
         // GIVEN
         ItemRange actualRange = new ItemRange(asList("11111111", "12345678"));
 
@@ -152,7 +150,7 @@ public class ItemRangeTest {
     }
 
     @Test
-    public void accepts_whenRefNotInList_shouldReturnFalse(){
+    void accepts_whenRefNotInList_shouldReturnFalse(){
         // GIVEN
         ItemRange actualRange = new ItemRange(new ArrayList<>());
 
@@ -161,7 +159,7 @@ public class ItemRangeTest {
     }
 
     @Test
-    public void accepts_whenRefInRange_shouldReturnTrue(){
+    void accepts_whenRefInRange_shouldReturnTrue(){
         // GIVEN
         ItemRange actualRange = new ItemRange(Optional.of(1L), Optional.of(1000L));
 
@@ -170,7 +168,7 @@ public class ItemRangeTest {
     }
 
     @Test
-    public void accepts_whenLowerUnbounded_andRefInRange_shouldReturnTrue(){
+    void accepts_whenLowerUnbounded_andRefInRange_shouldReturnTrue(){
         // GIVEN
         ItemRange actualRange = new ItemRange(empty(), Optional.of(1000L));
 
@@ -179,7 +177,7 @@ public class ItemRangeTest {
     }
 
     @Test
-    public void accepts_whenUpperUnbounded_andRefInRange_shouldReturnTrue(){
+    void accepts_whenUpperUnbounded_andRefInRange_shouldReturnTrue(){
         // GIVEN
         ItemRange actualRange = new ItemRange(Optional.of(1L), empty());
 
@@ -188,7 +186,7 @@ public class ItemRangeTest {
     }
 
     @Test
-    public void accepts_whenRefNotInRange_shouldReturnFalse(){
+    void accepts_whenRefNotInRange_shouldReturnFalse(){
         // GIVEN
         ItemRange actualRange = new ItemRange(Optional.of(1L), Optional.of(1000L));
 

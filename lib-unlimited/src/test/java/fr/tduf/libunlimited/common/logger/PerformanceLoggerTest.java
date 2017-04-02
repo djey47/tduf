@@ -2,8 +2,8 @@ package fr.tduf.libunlimited.common.logger;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libtesting.common.helper.FilesHelper;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,31 +12,31 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class PerformanceLoggerTest {
+class PerformanceLoggerTest {
 
     private static final  Class<PerformanceLoggerTest> thisClass = PerformanceLoggerTest.class;
 
     private Path perfLogPath;
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeEach
+    void setUp() throws IOException {
         final String tempDirectoryForLibrary = FilesHelper.createTempDirectoryForLibrary();
         perfLogPath = Paths.get(tempDirectoryForLibrary).resolve("tduf-perfs.log");
 
         Log.setLogger(new PerformanceLogger(perfLogPath.getParent()));
     }
 
-    @Test(expected = NullPointerException.class)
-    public void newPerformanceLogger_whenParentPathIsNull_shouldThrowException() {
-        // GIVEN-WHEN
-        new PerformanceLogger(null);
-
-        // THEN: NPE
+    @Test
+    void newPerformanceLogger_whenParentPathIsNull_shouldThrowException() {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> new PerformanceLogger(null));
     }
 
     @Test
-    public void info_whenInfoLevel_shouldWriteMessageInFile() throws IOException, InterruptedException {
+    void info_whenInfoLevel_shouldWriteMessageInFile() throws IOException, InterruptedException {
         // GIVEN-WHEN
         Log.set(Log.LEVEL_INFO);
         Log.info(thisClass.getSimpleName(), "here is a logged line!");
@@ -53,7 +53,7 @@ public class PerformanceLoggerTest {
     }
 
     @Test
-    public void info_whenInfoLevel_andMaxMessages_shouldWriteAllMessagesToFile() throws IOException, InterruptedException {
+    void info_whenInfoLevel_andMaxMessages_shouldWriteAllMessagesToFile() throws IOException, InterruptedException {
         // GIVEN-WHEN
         Log.set(Log.LEVEL_INFO);
 
@@ -73,7 +73,7 @@ public class PerformanceLoggerTest {
     }
 
     @Test
-    public void info_withoutCategory_shouldWriteMessageInFile() throws IOException, InterruptedException {
+    void info_withoutCategory_shouldWriteMessageInFile() throws IOException, InterruptedException {
         // GIVEN-WHEN
         Log.set(Log.LEVEL_INFO);
         Log.info("here is a logged line without category!");
@@ -90,7 +90,7 @@ public class PerformanceLoggerTest {
     }
 
     @Test
-    public void error_withException_shouldWriteMessageInFile() throws IOException, InterruptedException {
+    void error_withException_shouldWriteMessageInFile() throws IOException, InterruptedException {
         // GIVEN-WHEN
         Log.set(Log.LEVEL_INFO);
         Log.error("PerformanceLoggerTest", "here is a logged exception!", new IllegalArgumentException("iae!"));

@@ -8,12 +8,10 @@ import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import org.assertj.core.api.Condition;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +23,12 @@ import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class DatabaseChangeHelperTest {
+class DatabaseChangeHelperTest {
 
     private static final String ENTRY_REFERENCE = "111111";
     private static final String ENTRY_BITFIELD = "79";
@@ -47,11 +46,13 @@ public class DatabaseChangeHelperTest {
     @InjectMocks
     private DatabaseChangeHelper changeHelper;
 
-    @After
-    public void tearDown() {}
+    @BeforeEach
+    void setUp() {
+        initMocks(this);
+    }
 
     @Test
-    public void addContentsEntryWithDefaultItems_whenTopicObjectAvailable_shouldCreateAndReturnIt() {
+    void addContentsEntryWithDefaultItems_whenTopicObjectAvailable_shouldCreateAndReturnIt() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
         DbStructureDto stuctureObject = createDefaultStructureObject();
@@ -76,20 +77,19 @@ public class DatabaseChangeHelperTest {
         assertThat(actualEntry.getItems()).extracting("fieldRank").containsExactly(1);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void addContentsEntryWithDefaultItems_whenTopicObjectUnavailable_shouldThrowException() {
+    @Test
+    void addContentsEntryWithDefaultItems_whenTopicObjectUnavailable_shouldThrowException() {
         // GIVEN
         when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(empty());
 
-        // WHEN
-        changeHelper.addContentsEntryWithDefaultItems(ENTRY_REFERENCE, TOPIC);
-
-        // THEN: NSEE
+        // GIVEN-WHEN-THEN
+        assertThrows(IllegalStateException.class,
+                () -> changeHelper.addContentsEntryWithDefaultItems(ENTRY_REFERENCE, TOPIC));
         verifyZeroInteractions(genHelperMock);
     }
 
     @Test
-    public void removeEntryWithIdentifier_whenEntryExists_shouldDeleteIt_andUpdateIds() {
+    void removeEntryWithIdentifier_whenEntryExists_shouldDeleteIt_andUpdateIds() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
         ContentEntryDto entry1 = createDefaultContentEntry();
@@ -116,19 +116,18 @@ public class DatabaseChangeHelperTest {
         assertThat(dataObject.getEntries()).extracting("id").containsExactly(0, 1);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void removeEntryWithIdentifier_whenEntryDoesNotExist_shouldThrowException() {
+    @Test
+    void removeEntryWithIdentifier_whenEntryDoesNotExist_shouldThrowException() {
         // GIVEN
         when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(empty());
 
-        // WHEN
-        changeHelper.removeEntryWithIdentifier(1, TOPIC);
-
-        // THEN: NSEE
+        // WHEN-THEN
+        assertThrows(IllegalStateException.class,
+                () -> changeHelper.removeEntryWithIdentifier(1, TOPIC));
     }
 
     @Test
-    public void removeEntryWithReference_whenEntryExists_shouldDeleteIt() {
+    void removeEntryWithReference_whenEntryExists_shouldDeleteIt() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
         ContentEntryDto contentEntryWithUidItem = createContentEntryWithUidItem();
@@ -149,7 +148,7 @@ public class DatabaseChangeHelperTest {
     }
 
     @Test
-    public void removeEntryWithReference_whenEntryDoesNotExist_shouldDoNothing() {
+    void removeEntryWithReference_whenEntryDoesNotExist_shouldDoNothing() {
         // GIVEN
         when(minerMock.getContentEntryFromTopicWithReference("111111", TOPIC)).thenReturn(empty());
 
@@ -160,7 +159,7 @@ public class DatabaseChangeHelperTest {
     }
 
     @Test
-    public void removeEntriesMatchingCriteria_whenOneEntryMatches_shouldDeleteIt() {
+    void removeEntriesMatchingCriteria_whenOneEntryMatches_shouldDeleteIt() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
         ContentEntryDto contentEntryWithUidItem = createContentEntryWithUidItem();
@@ -183,7 +182,7 @@ public class DatabaseChangeHelperTest {
     }
 
     @Test
-    public void removeEntriesMatchingCriteria_whenNoEntryMatches_shouldDoNothing() {
+    void removeEntriesMatchingCriteria_whenNoEntryMatches_shouldDoNothing() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
         ContentEntryDto contentEntryWithUidItem = createContentEntryWithUidItem();
@@ -203,7 +202,7 @@ public class DatabaseChangeHelperTest {
     }
 
     @Test
-    public void duplicateEntryWithIdentifier_whenEntryExists_shouldDuplicateItAndAddItToTopic() {
+    void duplicateEntryWithIdentifier_whenEntryExists_shouldDuplicateItAndAddItToTopic() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
         ContentEntryDto entry0 = createDefaultContentEntry();
@@ -236,7 +235,7 @@ public class DatabaseChangeHelperTest {
     }
 
     @Test
-    public void duplicateEntryWithIdentifier_whenEntryExists_withSingleBitfieldItem_shouldDuplicateItAndAddItToTopic() {
+    void duplicateEntryWithIdentifier_whenEntryExists_withSingleBitfieldItem_shouldDuplicateItAndAddItToTopic() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
 
@@ -262,7 +261,7 @@ public class DatabaseChangeHelperTest {
     }
 
     @Test
-    public void duplicateEntryWithIdentifier_whenUidField_shouldGenerateNewRefValueWithinBounds() {
+    void duplicateEntryWithIdentifier_whenUidField_shouldGenerateNewRefValueWithinBounds() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
 
@@ -302,20 +301,20 @@ public class DatabaseChangeHelperTest {
         assertThat(actualCloneEntry.getItems()).extracting("rawValue").containsExactly(cloneEntryReference);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void duplicateEntryWithIdentifier_whenEntryDoesNotExist_shouldThrowException() {
+    @Test
+    void duplicateEntryWithIdentifier_whenEntryDoesNotExist_shouldThrowException() {
         // GIVEN
         when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(of(createDatabaseObject(createDefaultDataObject(), createDefaultStructureObject())));
 
-        // WHEN
-        changeHelper.duplicateEntryWithIdentifier(2, TOPIC);
-
-        // THEN
+        // WHEN-THEN
+        assertThrows(IllegalStateException.class,
+                () -> changeHelper.duplicateEntryWithIdentifier(2, TOPIC));
+        verify(minerMock).getDatabaseTopic(any(DbDto.Topic.class));
         verifyNoMoreInteractions(minerMock);
     }
 
     @Test
-    public void moveEntryWithIdentifier_whenEntryExists_andStepNotInRange_shouldDoNothing() {
+    void moveEntryWithIdentifier_whenEntryExists_andStepNotInRange_shouldDoNothing() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
         ContentEntryDto entry0 = createDefaultContentEntry();
@@ -339,7 +338,7 @@ public class DatabaseChangeHelperTest {
     }
 
     @Test
-    public void moveEntryWithIdentifier_whenEntryExists_andStepInRange_shouldUpdateEntryRank() {
+    void moveEntryWithIdentifier_whenEntryExists_andStepInRange_shouldUpdateEntryRank() {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
         ContentEntryDto entry0 = createDefaultContentEntry();
@@ -366,20 +365,20 @@ public class DatabaseChangeHelperTest {
         assertThat(dataObject.getEntries()).extracting("id").containsExactly(0, 1, 2);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void moveEntryWithIdentifier_whenTopicDoesNotExist_shouldThrowException() {
+    @Test
+    void moveEntryWithIdentifier_whenTopicDoesNotExist_shouldThrowException() {
         // GIVEN
         when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(empty());
 
-        // WHEN
-        changeHelper.moveEntryWithIdentifier(1, 2, TOPIC);
-
-        // THEN
+        // WHEN-THEN
+        assertThrows(IllegalStateException.class,
+                () -> changeHelper.moveEntryWithIdentifier(1, 2, TOPIC));
+        verify(minerMock.getDatabaseTopic(any(DbDto.Topic.class)));
         verifyNoMoreInteractions(minerMock);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void moveEntryWithIdentifier_whenEntryDoesNotExist_shouldThrowException() {
+    @Test
+    void moveEntryWithIdentifier_whenEntryDoesNotExist_shouldThrowException() {
         // GIVEN
         DbDto topicObject = DbDto.builder().withData(createDefaultDataObject()).build();
 
@@ -387,16 +386,16 @@ public class DatabaseChangeHelperTest {
         when(minerMock.getContentEntryFromTopicWithInternalIdentifier(2, TOPIC)).thenReturn(empty());
 
 
-        // WHEN
-        changeHelper.moveEntryWithIdentifier(-2, 2, TOPIC);
-
-
-        // THEN
+        // WHEN-THEN
+        assertThrows(IllegalStateException.class,
+                () -> changeHelper.moveEntryWithIdentifier(-2, 2, TOPIC));
+        verify(minerMock).getDatabaseTopic(any(DbDto.Topic.class));
+        verify(minerMock).getContentEntryFromTopicWithInternalIdentifier(anyInt(), any(DbDto.Topic.class));
         verifyNoMoreInteractions(minerMock);
     }
 
     @Test
-    public void updateAssociationEntryWithSourceAndTargetReferences_whenNoTargetReference_shouldOnlyApplySourceRef() {
+    void updateAssociationEntryWithSourceAndTargetReferences_whenNoTargetReference_shouldOnlyApplySourceRef() {
         // GIVEN
         ContentEntryDto associationEntry = createDefaultContentEntry();
         associationEntry.appendItem(ContentItemDto.builder().ofFieldRank(1).build());
@@ -410,7 +409,7 @@ public class DatabaseChangeHelperTest {
     }
 
     @Test
-    public void updateAssociationEntryWithSourceAndTargetReferences_whenTargetReference_shouldApplySourceAndTargetRefs() {
+    void updateAssociationEntryWithSourceAndTargetReferences_whenTargetReference_shouldApplySourceAndTargetRefs() {
         // GIVEN
         ContentEntryDto associationEntry = createDefaultContentEntry();
         associationEntry.appendItem(ContentItemDto.builder().ofFieldRank(1).build());
@@ -424,16 +423,15 @@ public class DatabaseChangeHelperTest {
         assertThat(associationEntry.getItems()).extracting("rawValue").containsExactly(ENTRY_REFERENCE, ENTRY_REFERENCE_BIS, null);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void updateAssociationEntryWithSourceAndTargetReferences_whenNullEntry_shouldThrowException() {
-        // GIVEN-WHEN
-        DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(null, ENTRY_REFERENCE, of(ENTRY_REFERENCE_BIS));
-
-        // THEN: NPE
+    @Test
+    void updateAssociationEntryWithSourceAndTargetReferences_whenNullEntry_shouldThrowException() {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(null, ENTRY_REFERENCE, of(ENTRY_REFERENCE_BIS)));
     }
 
     @Test
-    public void updateItemRawValueAtIndexAndFieldRank_whenRawValueUnchanged_shouldReturnEmpty() {
+    void updateItemRawValueAtIndexAndFieldRank_whenRawValueUnchanged_shouldReturnEmpty() {
         // GIVEN
         ContentItemDto item = createEntryItemForBitField();
         ContentEntryDto entry = createDefaultContentEntry();
@@ -449,7 +447,7 @@ public class DatabaseChangeHelperTest {
     }
 
     @Test
-    public void updateItemRawValueAtIndexAndFieldRank_whenRawValueChanged_shouldReturnUpdatedItem() {
+    void updateItemRawValueAtIndexAndFieldRank_whenRawValueChanged_shouldReturnUpdatedItem() {
         // GIVEN
         ContentItemDto item = createEntryItemForBitField();
         ContentEntryDto entry = createDefaultContentEntry();
@@ -467,15 +465,14 @@ public class DatabaseChangeHelperTest {
         assertThat(updatedItem.get().getRawValue()).isEqualTo("80");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void updateItemRawValueAtIndexAndFieldRank_whenItemDoesNotExist_shouldThrowException() {
+    @Test
+    void updateItemRawValueAtIndexAndFieldRank_whenItemDoesNotExist_shouldThrowException() {
         // GIVEN
         when(minerMock.getContentEntryFromTopicWithInternalIdentifier(1, TOPIC)).thenReturn(of(createDefaultContentEntry()));
 
-        // WHEN
-        changeHelper.updateItemRawValueAtIndexAndFieldRank(TOPIC, 1, 1, "NEW_VALUE");
-
-        // THEN: IAE
+        // WHEN-THEN
+        assertThrows(IllegalArgumentException.class,
+                () -> changeHelper.updateItemRawValueAtIndexAndFieldRank(TOPIC, 1, 1, "NEW_VALUE"));
     }
 
     private static DbDto createDatabaseObject(DbDataDto dataObject, DbStructureDto stuctureObject) {

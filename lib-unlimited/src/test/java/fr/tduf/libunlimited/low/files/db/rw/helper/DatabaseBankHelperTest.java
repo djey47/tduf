@@ -4,12 +4,10 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.libtesting.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,12 +18,14 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
 
-@RunWith(MockitoJUnitRunner.class)
-public class DatabaseBankHelperTest {
+class DatabaseBankHelperTest {
 
     private static Class<DatabaseBankHelperTest> thisClass = DatabaseBankHelperTest.class;
 
@@ -34,15 +34,17 @@ public class DatabaseBankHelperTest {
 
     private String tempDirectory;
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeEach
+    void setUp() throws IOException {
+        initMocks(this);
+        
         Log.set(Log.LEVEL_INFO);
 
         tempDirectory = FilesHelper.createTempDirectoryForLibrary();
     }
 
     @Test
-    public void unpackDatabaseFromDirectory_whenNoTargetDirectory_shouldCallBankSupport_andReturnOutputDirectory() throws IOException, URISyntaxException {
+    void unpackDatabaseFromDirectory_whenNoTargetDirectory_shouldCallBankSupport_andReturnOutputDirectory() throws IOException, URISyntaxException {
         // GIVEN
         String databaseDirectory = new File(thisClass.getResource("/db/full/DB.bnk").toURI()).getParent();
 
@@ -70,7 +72,7 @@ public class DatabaseBankHelperTest {
     }
 
     @Test
-    public void unpackDatabaseFromDirectory_whenTargetDirectory_shouldCopyOriginalBankFiles() throws IOException, URISyntaxException {
+    void unpackDatabaseFromDirectory_whenTargetDirectory_shouldCopyOriginalBankFiles() throws IOException, URISyntaxException {
         // GIVEN
         String tempDir = FilesHelper.createTempDirectoryForLibrary();
         String databaseDirectory = new File(thisClass.getResource("/db/full/DB.bnk").toURI()).getParent();
@@ -92,16 +94,17 @@ public class DatabaseBankHelperTest {
                 .forEach((bankFileName) -> assertThat(new File(tempDir, "original-" + bankFileName)).exists());
     }
 
-    @Test(expected = NullPointerException.class)
-    public void unpackDatabaseFromDirectory_whenNullArgumentsShouldThrowException() throws IOException {
-        // GIVEN-WHEN
-        DatabaseBankHelper.unpackDatabaseFromDirectory(null, Optional.empty(), null);
+    @Test
+    void unpackDatabaseFromDirectory_whenNullArgumentsShouldThrowException() throws IOException {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> DatabaseBankHelper.unpackDatabaseFromDirectory(null, Optional.empty(), null));
 
         // THEN: NPE
     }
 
     @Test
-    public void repackDatabaseFromDirectory_whenNoOriginalBanksDirectory_shouldCallBankSupport_andReturnOutputDirectory() throws IOException, URISyntaxException {
+    void repackDatabaseFromDirectory_whenNoOriginalBanksDirectory_shouldCallBankSupport_andReturnOutputDirectory() throws IOException, URISyntaxException {
         // GIVEN: original banks provided in same directory
         String databaseDirectory = thisClass.getResource("/db/full/unpacked").getFile();
         String targetDirectory = tempDirectory;
@@ -118,7 +121,7 @@ public class DatabaseBankHelperTest {
     }
 
     @Test
-    public void repackDatabaseFromDirectory_whenOriginalBanksDirectory_shouldCallBankSupport_andReturnOutputDirectory() throws IOException, URISyntaxException {
+    void repackDatabaseFromDirectory_whenOriginalBanksDirectory_shouldCallBankSupport_andReturnOutputDirectory() throws IOException, URISyntaxException {
         // GIVEN: original banks provided in another directory
         String originalBanksDirectory = thisClass.getResource("/db/full/original-banks").getFile();
         String databaseDirectory = thisClass.getResource("/db/full/unpacked").getFile();
@@ -133,16 +136,17 @@ public class DatabaseBankHelperTest {
         verifyBankSupportCalls(databaseDirectory, targetDirectory);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void repackDatabaseFromDirectory_whenNullArgumentsShouldThrowException() throws IOException {
-        // GIVEN-WHEN
-        DatabaseBankHelper.repackDatabaseFromDirectory(null, null, Optional.empty(), null);
+    @Test
+    void repackDatabaseFromDirectory_whenNullArgumentsShouldThrowException() throws IOException {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> DatabaseBankHelper.repackDatabaseFromDirectory(null, null, Optional.empty(), null));
 
         // THEN: NPE
     }
 
     @Test
-    public void getDatabaseBankFileNames_shouldReturnCorrectList() {
+    void getDatabaseBankFileNames_shouldReturnCorrectList() {
         // GIVEN-WHEN
         List<String> actualFileNames = DatabaseBankHelper.getDatabaseBankFileNames();
 

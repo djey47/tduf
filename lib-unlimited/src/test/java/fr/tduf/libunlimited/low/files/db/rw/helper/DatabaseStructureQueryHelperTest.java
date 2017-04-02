@@ -4,7 +4,7 @@ import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -13,20 +13,20 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
-public class DatabaseStructureQueryHelperTest {
+class DatabaseStructureQueryHelperTest {
 
-    @Test(expected = NullPointerException.class)
-    public void getUidField_whenFieldListNull_shouldThrowException() throws Exception {
-        // GIVEN-WHEN
-        assertThat(DatabaseStructureQueryHelper.getUidField(null)).isNull();
-
-        // THEN: NPE
+    @Test
+    void getUidField_whenFieldListNull_shouldThrowException() throws Exception {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> DatabaseStructureQueryHelper.getUidField(null));
     }
 
     @Test
-    public void getUidField_whenNoIdentifierField_shouldReturnAbsent() throws Exception {
+    void getUidField_whenNoIdentifierField_shouldReturnAbsent() throws Exception {
         // GIVEN
         DbStructureDto structureObject = DbStructureDto.builder()
                 .addItem(createClassicField())
@@ -37,7 +37,7 @@ public class DatabaseStructureQueryHelperTest {
     }
 
     @Test
-    public void getUidField_whenFound_shouldReturnIt() throws Exception {
+    void getUidField_whenFound_shouldReturnIt() throws Exception {
         // GIVEN
         DbStructureDto.Field identifierField = createIdentifierField();
         DbStructureDto structureObject = createStructureWithTwoFields(identifierField);
@@ -49,30 +49,28 @@ public class DatabaseStructureQueryHelperTest {
         assertThat(actualField).contains(identifierField);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void getStructureField_whenNullArguments_shouldThrowException() {
-        // GIVEN-WHEN
-        DatabaseStructureQueryHelper.getStructureField(null, null);
-
-        // THEN: NPE
+    @Test
+    void getStructureField_whenNullArguments_shouldThrowException() {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> DatabaseStructureQueryHelper.getStructureField(null, null));
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void getStructureField_whenNotFound_shouldThrowException() throws Exception {
+    @Test
+    void getStructureField_whenNotFound_shouldThrowException() throws Exception {
         // GIVEN
         ContentItemDto contentsItem = ContentItemDto.builder()
                 .ofFieldRank(2)
                 .build();
         DbStructureDto structureObject = createStructureWithTwoFields(createIdentifierField());
 
-        // WHEN
-        DatabaseStructureQueryHelper.getStructureField(contentsItem, structureObject.getFields());
-
-        // THEN: NSEE
+        // WHEN-THEN
+        assertThrows(IllegalStateException.class,
+                () -> DatabaseStructureQueryHelper.getStructureField(contentsItem, structureObject.getFields()));
     }
 
     @Test
-    public void getStructureField_whenFound_shouldReturnIt() throws Exception {
+    void getStructureField_whenFound_shouldReturnIt() throws Exception {
         // GIVEN
         ContentItemDto contentsItem = ContentItemDto.builder()
                 .ofFieldRank(0)
@@ -89,7 +87,7 @@ public class DatabaseStructureQueryHelperTest {
     }
 
     @Test
-    public void getUidFieldRank_whenNoIdentifierField_shouldReturnAbsent() {
+    void getUidFieldRank_whenNoIdentifierField_shouldReturnAbsent() {
         // GIVEN
         List<DbStructureDto.Field> structureFields = new ArrayList<>();
 
@@ -98,7 +96,7 @@ public class DatabaseStructureQueryHelperTest {
     }
 
     @Test
-    public void getUidFieldRank_whenIdentifierFieldPresent_shouldReturnRank() throws IOException, URISyntaxException {
+    void getUidFieldRank_whenIdentifierFieldPresent_shouldReturnRank() throws IOException, URISyntaxException {
         // GIVEN
         List<DbStructureDto.Field> structureFields = createTopicObjectsFromResources().get(0).getStructure().getFields();
 

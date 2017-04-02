@@ -1,14 +1,15 @@
 package fr.tduf.libunlimited.high.files.common.interop;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GenuineGatewayTest {
+class GenuineGatewayTest {
     @Test
-    public void getExecutableDirectory() throws Exception {
+    void getExecutableDirectory() throws Exception {
         // GIVEN-WHEN
         final Path actualDirectory = GenuineGateway.getExecutableDirectory();
 

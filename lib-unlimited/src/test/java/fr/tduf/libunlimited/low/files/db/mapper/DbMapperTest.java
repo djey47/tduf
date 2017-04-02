@@ -12,8 +12,8 @@ import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceItemDto;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.json.JSONException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.IOException;
@@ -23,19 +23,19 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.ACHIEVEMENTS;
 import static java.util.Collections.singletonList;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
-public class DbMapperTest {
+class DbMapperTest {
 
     private static final Class<DbMapperTest> thisClass = DbMapperTest.class;
 
     private final ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         Log.set(Log.LEVEL_INFO);
     }
 
     @Test
-    public void serialize_shouldWriteProperJson() throws IOException, JSONException, URISyntaxException {
+    void serialize_shouldWriteProperJson() throws IOException, JSONException, URISyntaxException {
         //GIVEN
         DbStructureDto dbStructureDto = DbStructureDto.builder()
                 .forReference("2442784645")

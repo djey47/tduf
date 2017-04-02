@@ -1,17 +1,18 @@
 package fr.tduf.libunlimited.high.files.db.common;
 
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class AbstractDatabaseHolderTest {
+class AbstractDatabaseHolderTest {
 
     @Test
-    public void prepare_shouldSetDatabaseObject_andExecutePostActions() throws ReflectiveOperationException {
+    void prepare_shouldSetDatabaseObject_andExecutePostActions() throws ReflectiveOperationException {
         // GIVEN
         List<DbDto> databaseObjects = createDefaultDatabaseObjects();
 
@@ -24,12 +25,11 @@ public class AbstractDatabaseHolderTest {
         assertThat(holder.getI()).isEqualTo(1);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void prepare_whenNullDatabaseObject_shouldThrowException() throws ReflectiveOperationException {
-        // GIVEN-WHEN
-        AbstractDatabaseHolder.prepare(PoorDatabaseHolder.class, null);
-
-        // THEN: NPE
+    @Test
+    void prepare_whenNullDatabaseObject_shouldThrowException() throws ReflectiveOperationException {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class,
+                () -> AbstractDatabaseHolder.prepare(PoorDatabaseHolder.class, null));
     }
 
     static class PoorDatabaseHolder extends AbstractDatabaseHolder {
@@ -41,7 +41,7 @@ public class AbstractDatabaseHolderTest {
             i++;
         }
 
-        public int getI() {
+        int getI() {
             return i;
         }
     }
