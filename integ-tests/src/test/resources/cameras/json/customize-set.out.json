@@ -7,6 +7,7 @@
     "usedCameraSetId" : null,
     "name" : "Cockpit\u0000ÍÍÍÍÍÍÍÍ",
     "settings" : {
+      "COMPLEMENTARY_VIEW_KIND" : 43,
       "STEERING_WHEEL_TURN" : 0,
       "STEERING_WHEEL_TILT" : 0,
       "CAMERA_POSITION_X" : 0,
@@ -29,8 +30,9 @@
     "usedCameraSetId" : null,
     "name" : "CockpitBack\u0000ÍÍÍÍ",
     "settings" : {
+      "COMPLEMENTARY_VIEW_KIND" : 23,
       "STEERING_WHEEL_TURN" : 3870,
-      "STEERING_WHEEL_TILT" : 39191,
+      "STEERING_WHEEL_TILT" : 153,
       "CAMERA_POSITION_X" : 15174,
       "CAMERA_POSITION_Y" : 16269,
       "CAMERA_POSITION_Z" : -16634,
@@ -51,8 +53,9 @@
     "usedCameraSetId" : null,
     "name" : "NewCamera\u0000ÍÍÍÍÍÍ",
     "settings" : {
+      "COMPLEMENTARY_VIEW_KIND" : 44,
       "STEERING_WHEEL_TURN" : 12333,
-      "STEERING_WHEEL_TILT" : 32556,
+      "STEERING_WHEEL_TILT" : 127,
       "CAMERA_POSITION_X" : 15236,
       "CAMERA_POSITION_Y" : 16254,
       "CAMERA_POSITION_Z" : 16249,
@@ -73,8 +76,9 @@
     "usedCameraSetId" : null,
     "name" : "HoodBAck\u0000ÍÍÍÍÍÍÍ",
     "settings" : {
+      "COMPLEMENTARY_VIEW_KIND" : 24,
       "STEERING_WHEEL_TURN" : 11565,
-      "STEERING_WHEEL_TILT" : 32536,
+      "STEERING_WHEEL_TILT" : 127,
       "CAMERA_POSITION_X" : 15442,
       "CAMERA_POSITION_Y" : 16292,
       "CAMERA_POSITION_Z" : -16506,

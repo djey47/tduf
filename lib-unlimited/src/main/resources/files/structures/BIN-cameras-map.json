@@ -95,9 +95,14 @@
           "size": 2
         },
         {
+          "name": "complementaryViewKind",
+          "type": "INTEGER",
+          "size": 1
+        },
+        {
           "name": "steeringWheelTilt",
           "type": "INTEGER",
-          "size": 2
+          "size": 1
         },
         {
           "name": "settingsPart2",

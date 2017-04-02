@@ -27,6 +27,9 @@ class CamerasWriterTest {
 
     @Test
     void write_shouldReturnOriginalContentsBack() throws IOException, URISyntaxException {
+        // To regen json input file:
+        // FileTool jsonify -i [..]/tduf/lib-testing/src/main/resources/bin/Cameras.bin -s [..]/tduf/lib-unlimited/src/main/resources/files/structures/bin-cameras-map.json
+
         // GIVEN
         String camerasContentsFromJSONFile = FilesHelper.readTextFromResourceFile("/bin/Cameras.bin.json");
         CamerasParser camerasParser = CamerasParser.load(new ByteArrayInputStream(new byte[0]));
@@ -41,6 +44,5 @@ class CamerasWriterTest {
         byte[] expectedcamerasContents = FilesHelper.readBytesFromResourceFile("/bin/Cameras.bin");
         assertThat(actualOutputStream).isNotNull();
         assertThat(actualOutputStream.toByteArray()).isEqualTo(expectedcamerasContents);
-//        Files.write(Paths.get("./Cameras.written.bin"), actualOutputStream.toByteArray(), StandardOpenOption.CREATE);
     }
 }

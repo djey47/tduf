@@ -12,8 +12,9 @@ import java.util.stream.Stream;
  * All handled view properties
  */
 public enum ViewProps implements DataStoreProps {
+    COMPLEMENTARY_VIEW_KIND("complementaryViewKind", "Front/back switch", GenericParser::getNumeric),
     STEERING_WHEEL_TURN("steeringWheelTurn", "", GenericParser::getNumeric),
-    STEERING_WHEEL_TILT("steeringWheelTilt", "Wheel vertical adjustment", GenericParser::getNumeric),
+    STEERING_WHEEL_TILT("steeringWheelTilt", "Wheel vertical adjustment (0..255)", GenericParser::getNumeric),
     CAMERA_POSITION_X("cameraPositionX", "Left/Right", GenericParser::getNumeric),
     CAMERA_POSITION_Y("cameraPositionY", "Up/Down", GenericParser::getNumeric),
     CAMERA_POSITION_Z("cameraPositionZ", "Forward/Backward", GenericParser::getNumeric),
