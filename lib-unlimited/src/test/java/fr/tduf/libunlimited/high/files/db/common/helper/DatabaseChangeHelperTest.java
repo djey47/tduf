@@ -373,7 +373,7 @@ class DatabaseChangeHelperTest {
         // WHEN-THEN
         assertThrows(IllegalStateException.class,
                 () -> changeHelper.moveEntryWithIdentifier(1, 2, TOPIC));
-        verify(minerMock.getDatabaseTopic(any(DbDto.Topic.class)));
+        verify(minerMock).getDatabaseTopic(any(DbDto.Topic.class));
         verifyNoMoreInteractions(minerMock);
     }
 
