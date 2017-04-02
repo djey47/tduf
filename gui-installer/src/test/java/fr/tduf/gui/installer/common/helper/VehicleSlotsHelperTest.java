@@ -1,22 +1,20 @@
 package fr.tduf.gui.installer.common.helper;
 
-import fr.tduf.libunlimited.high.files.db.common.DatabaseConstants;
 import fr.tduf.libunlimited.common.game.domain.Brand;
 import fr.tduf.libunlimited.common.game.domain.RimSlot;
 import fr.tduf.libunlimited.common.game.domain.SecurityOptions;
 import fr.tduf.libunlimited.common.game.domain.VehicleSlot;
+import fr.tduf.libunlimited.high.files.db.common.DatabaseConstants;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,20 +22,21 @@ import java.util.stream.Stream;
 
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.SlotKind.ALL;
 import static fr.tduf.gui.installer.common.helper.VehicleSlotsHelper.VehicleKind.DRIVABLE;
-import static fr.tduf.libunlimited.common.game.domain.Resource.from;
 import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
+import static fr.tduf.libunlimited.common.game.domain.Resource.from;
 import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
-@RunWith(MockitoJUnitRunner.class)
-public class VehicleSlotsHelperTest {
+class VehicleSlotsHelperTest {
     private static final String SLOTREF = "REF";
     private static final String SLOTREF_TDUCP = "300000000";
     private static final String SLOTREF_UNDRIVABLE = "00000000";
@@ -56,13 +55,15 @@ public class VehicleSlotsHelperTest {
     @InjectMocks
     private VehicleSlotsHelper vehicleSlotsHelper;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
+        initMocks(this);
+
         mockBrandHelper();
     }
 
     @Test
-    public void classInitializer_shouldPopulateDataFromProps() {
+    void classInitializer_shouldPopulateDataFromProps() {
         // GIVEN-WHEN-THEN
         assertThat(VehicleSlotsHelper.getTducpUnlockedSlotRefs()).hasSize(27);
 
@@ -73,7 +74,7 @@ public class VehicleSlotsHelperTest {
     }
 
     @Test
-    public void getVehicleSlotFromReference_whenSlotNotAvailable_shouldReturnEmpty() {
+    void getVehicleSlotFromReference_whenSlotNotAvailable_shouldReturnEmpty() {
         // GIVEN
         when(bulkDatabaseMinerMock.getContentEntryFromTopicWithReference(SLOTREF, CAR_PHYSICS_DATA)).thenReturn(empty());
 
@@ -87,7 +88,7 @@ public class VehicleSlotsHelperTest {
     }
 
     @Test
-    public void getVehicleSlotFromReference() {
+    void getVehicleSlotFromReference() {
         // GIVEN
         String rimSlotRef1 = "RIMREF1";
         String rimSlotRef2 = "RIMREF2";
@@ -232,7 +233,7 @@ public class VehicleSlotsHelperTest {
     }
 
     @Test
-    public void getVehicleSlotFromReference_whenNewTDUCPSlot_shouldLoadRimCandidates() {
+    void getVehicleSlotFromReference_whenNewTDUCPSlot_shouldLoadRimCandidates() {
         // GIVEN
         String rimSlotRef1 = "000030001";
         String rimSlotRef2 = "000030002";
@@ -360,7 +361,7 @@ public class VehicleSlotsHelperTest {
     }
 
     @Test
-    public void getVehicleName_whenRealNameAvailable() throws Exception {
+    void getVehicleName_whenRealNameAvailable() throws Exception {
         // GIVEN
         String realName = "realName";
         VehicleSlot vehicleSlot = VehicleSlot.builder()
@@ -378,7 +379,7 @@ public class VehicleSlotsHelperTest {
     }
 
     @Test
-    public void getVehicleName_whenRealNameUnavailable() throws Exception {
+    void getVehicleName_whenRealNameUnavailable() throws Exception {
         // GIVEN
         String modelName = "360";
         String versionName = "Challenge Stradale";
@@ -397,7 +398,7 @@ public class VehicleSlotsHelperTest {
     }
 
     @Test
-    public void getVehicleSlots_whenNoDrivableVehicle_shouldReturnEmptyList() {
+    void getVehicleSlots_whenNoDrivableVehicle_shouldReturnEmptyList() {
         // GIVEN
         ContentItemDto refItem = ContentItemDto.builder().ofFieldRank(1).withRawValue(SLOTREF_UNDRIVABLE).build();
         ContentItemDto groupItem = ContentItemDto.builder().ofFieldRank(5).withRawValue("92900264").build();
@@ -417,7 +418,7 @@ public class VehicleSlotsHelperTest {
     }
 
     @Test
-    public void getVehicleSlots_when1DrivableVehicle_shouldReturnIt() {
+    void getVehicleSlots_when1DrivableVehicle_shouldReturnIt() {
         // GIVEN
         ContentItemDto refItem1 = ContentItemDto.builder().ofFieldRank(1).withRawValue(SLOTREF_UNDRIVABLE).build();
         ContentItemDto brandItem1 = ContentItemDto.builder().ofFieldRank(2).withRawValue(BRANDREF).build();
@@ -446,7 +447,7 @@ public class VehicleSlotsHelperTest {
     }
 
     @Test
-    public void getBankFileName_forExteriorModel() {
+    void getBankFileName_forExteriorModel() {
         // GIVEN
         String resourceValue = "RX8";
         VehicleSlot vehicleSlot = VehicleSlot.builder()
@@ -461,7 +462,7 @@ public class VehicleSlotsHelperTest {
     }
 
     @Test
-    public void getBankFileName_forAudio() {
+    void getBankFileName_forAudio() {
         // GIVEN
         String resourceValue = "RX8";
         VehicleSlot vehicleSlot = VehicleSlot.builder()
@@ -476,7 +477,7 @@ public class VehicleSlotsHelperTest {
     }
 
     @Test
-    public void getBankFileName_forInteriorModel() {
+    void getBankFileName_forInteriorModel() {
         // GIVEN
         String resourceValue = "RX8";
         VehicleSlot vehicleSlot = VehicleSlot.builder()
@@ -490,8 +491,8 @@ public class VehicleSlotsHelperTest {
         assertThat(actualBankFileName).isEqualTo("RX8_I.bnk");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getBankFileName_forFrontRimsModel_shouldReturnDefaultFrontRimFileName() {
+    @Test
+    void getBankFileName_forFrontRimsModel_shouldReturnDefaultFrontRimFileName() {
         // GIVEN
         RimSlot rims = RimSlot.builder()
                 .atRank(0)
@@ -503,54 +504,50 @@ public class VehicleSlotsHelperTest {
                 .addRim(rims)
                 .build();
 
-        // WHEN
-        VehicleSlotsHelper.getBankFileName(vehicleSlot, FRONT_RIMS_3D, true);
-
-        // THEN: IAE
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void getBankFileName_forRearRimsModel_shouldThrowException() {
-        // GIVEN
-        RimSlot rims = RimSlot.builder()
-                .withRef("22222222")
-                .atRank(0)
-                .setDefaultRims(true)
-                .build();
-        VehicleSlot vehicleSlot = VehicleSlot.builder()
-                .withRef("11111111")
-                .addRim(rims)
-                .build();
-
-        // WHEN
-        VehicleSlotsHelper.getBankFileName(vehicleSlot, REAR_RIMS_3D, true);
-
-        // THEN: IAE
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void getRimBankFileName_whenNoRimBankType_shouldThrowException() {
-        // GIVEN-WHEN
-        VehicleSlotsHelper.getRimBankFileName(null, EXT_3D, 0, false);
-
-        // THEN:IAE
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void getRimBankFileName_whenNotEnoughRims_shouldThrowException() {
-        // GIVEN
-        VehicleSlot vehicleSlot = VehicleSlot.builder()
-                .withRef("11111111")
-                .build();
-
-        // WHEN
-        VehicleSlotsHelper.getRimBankFileName(vehicleSlot, FRONT_RIMS_3D, 1, false);
-
-        // THEN:IAE
+        // WHEN-THEN
+        assertThrows(IllegalArgumentException.class,
+                () -> VehicleSlotsHelper.getBankFileName(vehicleSlot, FRONT_RIMS_3D, true));
     }
 
     @Test
-    public void getRimBankFileName_forFrontRims() {
+    void getBankFileName_forRearRimsModel_shouldThrowException() {
+        // GIVEN
+        RimSlot rims = RimSlot.builder()
+                .withRef("22222222")
+                .atRank(0)
+                .setDefaultRims(true)
+                .build();
+        VehicleSlot vehicleSlot = VehicleSlot.builder()
+                .withRef("11111111")
+                .addRim(rims)
+                .build();
+
+        // WHEN-THEN
+        assertThrows(IllegalArgumentException.class,
+                () -> VehicleSlotsHelper.getBankFileName(vehicleSlot, REAR_RIMS_3D, true));
+    }
+
+    @Test
+    void getRimBankFileName_whenNoRimBankType_shouldThrowException() {
+        // GIVEN-WHEN-THEN
+        assertThrows(IllegalArgumentException.class,
+                () -> VehicleSlotsHelper.getRimBankFileName(null, EXT_3D, 0, false));
+    }
+
+    @Test
+    void getRimBankFileName_whenNotEnoughRims_shouldThrowException() {
+        // GIVEN
+        VehicleSlot vehicleSlot = VehicleSlot.builder()
+                .withRef("11111111")
+                .build();
+
+        // WHEN-THEN
+        assertThrows(IllegalArgumentException.class,
+                () -> VehicleSlotsHelper.getRimBankFileName(vehicleSlot, FRONT_RIMS_3D, 1, false));
+    }
+
+    @Test
+    void getRimBankFileName_forFrontRims() {
         // GIVEN
         String rimsResourceValue1 = "RX8_F_01";
         String rimsResourceValue2 = "RX8_F_02";

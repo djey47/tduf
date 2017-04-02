@@ -4,16 +4,16 @@ package fr.tduf.gui.installer.controllers.helper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-public class DealerSlotUserInputHelperTest {
+class DealerSlotUserInputHelperTest {
 
     private static final String DEALERREF = "1111";
 
     @Test
-    public void selectAndDefineDealerSlot_whenForcedDealerSlot_shouldNotSelectIt() throws Exception {
+    void selectAndDefineDealerSlot_whenForcedDealerSlot_shouldNotSelectIt() throws Exception {
         // GIVEN
         DatabasePatchProperties patchProperties = new DatabasePatchProperties();
         patchProperties.setDealerReferenceIfNotExists(DEALERREF);

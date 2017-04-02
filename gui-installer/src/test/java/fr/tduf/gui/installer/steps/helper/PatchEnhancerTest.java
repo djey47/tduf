@@ -3,18 +3,16 @@ package fr.tduf.gui.installer.steps.helper;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.helper.BrandHelper;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
-import fr.tduf.gui.installer.domain.*;
+import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.exceptions.InternalStepException;
 import fr.tduf.gui.installer.domain.exceptions.StepException;
 import fr.tduf.libunlimited.common.game.domain.*;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -29,10 +27,11 @@ import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
-@RunWith(MockitoJUnitRunner.class)
-public class PatchEnhancerTest {
+class PatchEnhancerTest {
 
     private static final String SLOT_REFERENCE = "12345678";
     private static final String TDUCP_SLOT_REFERENCE = "30000000";
@@ -66,8 +65,10 @@ public class PatchEnhancerTest {
     @Mock
     private BrandHelper brandHelperMock;
 
-    @Before
-    public void setUp() throws IOException, URISyntaxException {
+    @BeforeEach
+    void setUp() throws IOException, URISyntaxException {
+        initMocks(this);
+
         Log.set(Log.LEVEL_DEBUG);
 
         patchProperties = new DatabasePatchProperties();
@@ -79,20 +80,19 @@ public class PatchEnhancerTest {
         databaseContext.getUserSelection().selectVehicleSlot(createVehicleSlot());
     }
 
-    @Test(expected = InternalStepException.class)
-    public void enhancePatchProperties_whenNoSlotReferenceProperty_andNoSlotSelected_shouldThrowException() {
+    @Test
+    void enhancePatchProperties_whenNoSlotReferenceProperty_andNoSlotSelected_shouldThrowException() {
         // GIVEN
         databaseContext.getUserSelection().resetVehicleSlot();
         patchProperties.clear();
 
-        // WHEN
-        createDefaultEnhancer().enhancePatchProperties(patchProperties);
-
-        // THEN: IAE
+        // WHEN-THEN
+        assertThrows(InternalStepException.class,
+                () -> createDefaultEnhancer().enhancePatchProperties(patchProperties));
     }
 
     @Test
-    public void enhancePatchProperties_whenNoVehicleSlotSelected_shouldLoadFromDatabaseWithSlotProperty() {
+    void enhancePatchProperties_whenNoVehicleSlotSelected_shouldLoadFromDatabaseWithSlotProperty() {
         // GIVEN
         databaseContext.getUserSelection().resetVehicleSlot();
 
@@ -114,7 +114,7 @@ public class PatchEnhancerTest {
     }
 
     @Test
-    public void enhancePatchProperties_whenNoVehicleSlotSelected_andPropertiesExist_shouldKeepCurrentValues() {
+    void enhancePatchProperties_whenNoVehicleSlotSelected_andPropertiesExist_shouldKeepCurrentValues() {
         // GIVEN
         databaseContext.getUserSelection().resetVehicleSlot();
 
@@ -146,7 +146,7 @@ public class PatchEnhancerTest {
     }
 
     @Test
-    public void enhancePatchProperties_whenNoDealerSlotSelected_shouldNotAddProperties() {
+    void enhancePatchProperties_whenNoDealerSlotSelected_shouldNotAddProperties() {
         // GIVEN-WHEN
         createDefaultEnhancer().enhancePatchProperties(patchProperties);
 
@@ -156,7 +156,7 @@ public class PatchEnhancerTest {
     }
 
     @Test
-    public void enhancePatchProperties_whenDealerSlotSelected_shouldAddProperties() {
+    void enhancePatchProperties_whenDealerSlotSelected_shouldAddProperties() {
         // GIVEN
         Dealer dealer = Dealer.builder()
                 .withRef("1111")
@@ -173,7 +173,7 @@ public class PatchEnhancerTest {
     }
 
     @Test
-    public void enhancePatchProperties_whenDealerSlotSelected_andPropertiesAlreadyExist_shouldKeepProperties() {
+    void enhancePatchProperties_whenDealerSlotSelected_andPropertiesAlreadyExist_shouldKeepProperties() {
         // GIVEN
         Dealer dealer = Dealer.builder()
                 .withRef("2222")
@@ -191,19 +191,18 @@ public class PatchEnhancerTest {
         assertThat(patchProperties.getDealerSlot()).contains(1);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void enhancePatchProperties_whenBrandReferenceNotSpecified_andNoBrandName_shouldThrowException() {
+    @Test
+    void enhancePatchProperties_whenBrandReferenceNotSpecified_andNoBrandName_shouldThrowException() {
         // GIVEN
         patchProperties.clear();
 
-        // WHEN
-        createDefaultEnhancer().enhancePatchProperties(patchProperties);
-
-        // THEN: IAE
+        // WHEN-THEN
+        assertThrows(IllegalArgumentException.class,
+                () -> createDefaultEnhancer().enhancePatchProperties(patchProperties));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void enhancePatchProperties_whenBrandReferenceNotSpecified_andBrandNamePresent_butNotAvailableInDatabase_shouldThrowException() {
+    @Test
+    void enhancePatchProperties_whenBrandReferenceNotSpecified_andBrandNamePresent_butNotAvailableInDatabase_shouldThrowException() {
         // GIVEN
         patchProperties.setBrandIfNotExists("MDR");
         PatchEnhancer patchEnhancer = createDefaultEnhancer();
@@ -212,15 +211,13 @@ public class PatchEnhancerTest {
         when(brandHelperMock.getBrandFromIdentifierOrName("MDR")).thenReturn(empty());
 
 
-        // WHEN
-        patchEnhancer.enhancePatchProperties(patchProperties);
-
-
-        // THEN: IAE
+        // WHEN-THEN
+        assertThrows(IllegalArgumentException.class,
+                () -> patchEnhancer.enhancePatchProperties(patchProperties));
     }
 
     @Test
-    public void enhancePatchProperties_whenBrandReferenceNotSpecified_andBrandNamePresent_shouldResolveBrandReference() {
+    void enhancePatchProperties_whenBrandReferenceNotSpecified_andBrandNamePresent_shouldResolveBrandReference() {
         // GIVEN
         patchProperties.clear();
         patchProperties.setBrandIfNotExists("ALFA");
@@ -240,20 +237,19 @@ public class PatchEnhancerTest {
         assertThat(patchProperties.getBrandReference()).contains("1111");
     }
 
-    @Test(expected = InternalStepException.class)
-    public void enhancePatchObject_withoutProperties_withoutSelectedSlot_shouldThrowException() {
+    @Test
+    void enhancePatchObject_withoutProperties_withoutSelectedSlot_shouldThrowException() {
         // GIVEN
         patchProperties.clear();
         databaseContext.getUserSelection().resetVehicleSlot();
 
-        // WHEN
-        createDefaultEnhancer().enhancePatchObject();
-
-        // THEN: ISE
+        // WHEN-THEN
+        assertThrows(InternalStepException.class,
+                () -> createDefaultEnhancer().enhancePatchObject());
     }
 
     @Test
-    public void enhancePatchObject_withoutProperties_shouldGenerateSlotRefFromSelectedSlot() {
+    void enhancePatchObject_withoutProperties_shouldGenerateSlotRefFromSelectedSlot() {
         // GIVEN
         patchProperties.clear();
         patchProperties.setBrandReferenceIfNotExists(BRAND_REFERENCE);
@@ -266,7 +262,7 @@ public class PatchEnhancerTest {
     }
 
     @Test
-    public void enhancePatchObject_withoutDealerProperties_shoulNotAddCarShops_updateInstruction() {
+    void enhancePatchObject_withoutDealerProperties_shoulNotAddCarShops_updateInstruction() {
         // GIVEN-WHEN
         createDefaultEnhancer().enhancePatchObject();
 
@@ -276,7 +272,7 @@ public class PatchEnhancerTest {
     }
 
     @Test
-    public void enhancePatchObjectWithPaintJobs_withPaintJobProperties_shouldAddCarColors_andInterior_updateInstructions() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
+    void enhancePatchObjectWithPaintJobs_withPaintJobProperties_shouldAddCarColors_andInterior_updateInstructions() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
         // GIVEN
         String customColorName1 = "Red";
         String customColorName2 = "Black";
@@ -395,7 +391,7 @@ public class PatchEnhancerTest {
     }
 
     @Test
-    public void enhancePatchObjectWithRims_withRimProperties_shouldAddCarRims_andRims_updateInstructions() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
+    void enhancePatchObjectWithRims_withRimProperties_shouldAddCarRims_andRims_updateInstructions() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
         // GIVEN
         String rimId1 = "1111";
         String rimId2 = "2222";
@@ -493,7 +489,7 @@ public class PatchEnhancerTest {
     }
 
     @Test
-    public void enhancePatchObjectWithRims_withRimCandidates_shouldAddCarRims_andRims_updateInstructions() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
+    void enhancePatchObjectWithRims_withRimCandidates_shouldAddCarRims_andRims_updateInstructions() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
         // GIVEN
         String rimId1 = "1111";
         String rimId2 = "2222";
@@ -542,7 +538,7 @@ public class PatchEnhancerTest {
     }
 
     @Test
-    public void enhancePatchObjectWithLocationChange_withDealerProperties_shouldAddCarShops_updateInstruction() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
+    void enhancePatchObjectWithLocationChange_withDealerProperties_shouldAddCarShops_updateInstruction() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
         // GIVEN
         String dealerRef = "0000";
         patchProperties.setDealerReferenceIfNotExists(dealerRef);
@@ -563,7 +559,7 @@ public class PatchEnhancerTest {
     }
 
     @Test
-    public void enhancePatchObjectWithInstallFlag_shouldAddCarPhysics_updateInstruction() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
+    void enhancePatchObjectWithInstallFlag_shouldAddCarPhysics_updateInstruction() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
         // GIVEN-WHEN
         createDefaultEnhancer().enhancePatchObjectWithInstallFlag(SLOT_REFERENCE);
 
@@ -577,7 +573,7 @@ public class PatchEnhancerTest {
     }
 
     @Test
-    public void getEffectiveInteriorReferences() {
+    void getEffectiveInteriorReferences() {
         // GIVEN
         List<String> interiorRefs = asList(
                 "15623",

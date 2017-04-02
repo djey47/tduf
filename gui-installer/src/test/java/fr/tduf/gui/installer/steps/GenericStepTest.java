@@ -1,16 +1,17 @@
 package fr.tduf.gui.installer.steps;
 
 import fr.tduf.gui.installer.domain.exceptions.StepException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class GenericStepTest {
+class GenericStepTest {
 
-    @Test(expected = StepException.class)
-    public void start_whenExceptionInProcessMethod_shouldThrowStepException() throws StepException {
+    @Test
+    void start_whenExceptionInProcessMethod_shouldThrowStepException() throws StepException {
         // GIVEN
         GenericStep step = new GenericStep() {
             @Override
@@ -19,18 +20,12 @@ public class GenericStepTest {
             }
         };
 
-        // WHEN
-        try {
-            step.start();
-        } catch (StepException se) {
-
-            // THEN
-            assertThat(se)
-                    .hasCauseExactlyInstanceOf(IllegalAccessException.class)
-                    .hasMessage("Current step could not be performed");
-            assertThat(se.getStepName()).isEqualTo("UNDEFINED");
-
-            throw se;
-        }
+        // WHEN-THEN
+        StepException actualException = assertThrows(StepException.class,
+                step::start);
+        assertThat(actualException)
+                .hasCauseExactlyInstanceOf(IllegalAccessException.class)
+                .hasMessage("Current step could not be performed");
+        assertThat(actualException.getStepName()).isEqualTo("UNDEFINED");
     }
 }

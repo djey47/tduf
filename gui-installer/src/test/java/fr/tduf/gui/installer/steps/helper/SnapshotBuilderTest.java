@@ -7,7 +7,7 @@ import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.List;
@@ -16,13 +16,13 @@ import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChange
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SnapshotBuilderTest {
+class SnapshotBuilderTest {
     private static final String SLOTREF = "606298799";
     private static final String DEALERREF = "550413704";
     private static final int DEALERSLOT = 2;
 
     @Test
-    public void take_shouldWritePatchObject() throws Exception {
+    void take_shouldWritePatchObject() throws Exception {
         // GIVEN
         DatabasePatchProperties patchProperties = new DatabasePatchProperties();
         patchProperties.setVehicleSlotReferenceIfNotExists(SLOTREF);

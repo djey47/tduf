@@ -3,8 +3,8 @@ package fr.tduf.gui.installer.steps;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -13,17 +13,17 @@ import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class InitBackupStepTest {
+class InitBackupStepTest {
 
     private Path currentBackupPath;
 
-    @After
-    public void tearDown() throws IOException {
+    @AfterEach
+    void tearDown() throws IOException {
         FileUtils.deleteQuietly(currentBackupPath.toFile());
     }
 
     @Test
-    public void perform_shouldCreateBackupDirectories_andSetContexts() throws Exception {
+    void perform_shouldCreateBackupDirectories_andSetContexts() throws Exception {
         // GIVEN
         InstallerConfiguration installerConfiguration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory("")

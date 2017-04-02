@@ -2,20 +2,17 @@ package fr.tduf.gui.installer.steps;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.installer.common.helper.InstallerTestsHelper;
-import fr.tduf.gui.installer.domain.*;
+import fr.tduf.gui.installer.domain.DatabaseContext;
+import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.gui.installer.domain.exceptions.StepException;
 import fr.tduf.libunlimited.common.game.domain.Brand;
 import fr.tduf.libunlimited.common.game.domain.Resource;
 import fr.tduf.libunlimited.common.game.domain.RimSlot;
 import fr.tduf.libunlimited.common.game.domain.VehicleSlot;
-import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,8 +22,7 @@ import java.nio.file.Paths;
 import static fr.tduf.gui.installer.steps.GenericStep.StepType.UPDATE_DATABASE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
-public class UpdateDatabaseStepTest {
+class UpdateDatabaseStepTest {
     private static final Class<UpdateDatabaseStepTest> thisClass = UpdateDatabaseStepTest.class;
 
     private static final String SLOT_REFERENCE = "30000000";
@@ -42,17 +38,14 @@ public class UpdateDatabaseStepTest {
     private static final String RES_RIMBRAND_1 = "654857";
     private static final String RIMBRAND_1 = "Default";
 
-    @Mock
-    private BankSupport bankSupportMock;
-
     private DatabaseContext databaseContext;
 
     private String assetsDirectory;
 
     private InstallerConfiguration installerConfiguration;
 
-    @Before
-    public void setUp() throws IOException, URISyntaxException {
+    @BeforeEach
+    void setUp() throws IOException, URISyntaxException {
         Log.set(Log.LEVEL_DEBUG);
 
         DatabasePatchProperties patchProperties = new DatabasePatchProperties();
@@ -84,7 +77,7 @@ public class UpdateDatabaseStepTest {
     }
 
     @Test
-    public void perform_shouldCreate_effectivePropertiesFile_andEffectivePatchFile() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
+    void perform_shouldCreate_effectivePropertiesFile_andEffectivePatchFile() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
         // GIVEN-WHEN
         final UpdateDatabaseStep updateDatabaseStep = (UpdateDatabaseStep) (
                 GenericStep.starterStep(installerConfiguration, databaseContext)
@@ -97,7 +90,7 @@ public class UpdateDatabaseStepTest {
     }
 
     @Test
-    public void perform_withoutPerformancePack_shouldNotCrash() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
+    void perform_withoutPerformancePack_shouldNotCrash() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
         // GIVEN
 
         // WHEN
@@ -110,7 +103,7 @@ public class UpdateDatabaseStepTest {
     }
 
     @Test
-    public void perform_withPerformancePack_shouldNotCrash() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
+    void perform_withPerformancePack_shouldNotCrash() throws URISyntaxException, IOException, ReflectiveOperationException, StepException {
         // GIVEN
         assetsDirectory = new File(thisClass.getResource("/assets-patch-tdupk-only").toURI()).getAbsolutePath();
 

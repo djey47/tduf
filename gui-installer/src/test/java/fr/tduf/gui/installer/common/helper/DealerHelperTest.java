@@ -10,12 +10,10 @@ import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 import java.util.Map;
@@ -27,10 +25,10 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class DealerHelperTest {
+class DealerHelperTest {
     private static final String SLOTREF_1 = "SLOTREF1";
     private static final String SLOTREF_2 = "SLOTREF2";
     private static final String DEALERREF = "541293706";
@@ -45,13 +43,15 @@ public class DealerHelperTest {
     @InjectMocks
     private DealerHelper dealerHelper;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
+        initMocks(this);
+        
         mockVehicleSlots();
     }
 
     @Test
-    public void getDealers_whenMetaDataUnavailable() throws Exception {
+    void getDealers_whenMetaDataUnavailable() throws Exception {
         // GIVEN
         final String nameResourceReference = "0000";
         final String nameResourceValue = "DEALER";
@@ -98,7 +98,7 @@ public class DealerHelperTest {
     }
 
     @Test
-    public void getDealers_whenMetaDataAvailable_shouldUseIt() throws Exception {
+    void getDealers_whenMetaDataAvailable_shouldUseIt() throws Exception {
         // GIVEN
         final String nameResourceReference = "0000";
         final String nameResourceValue = "DEALER";
@@ -133,7 +133,7 @@ public class DealerHelperTest {
     }
 
     @Test
-    public void searchForVehicleSlot_whenSameVehicleLocatedThreeTimesInSingleDealer_shouldReturnOneEntryWithThreeSlots() {
+    void searchForVehicleSlot_whenSameVehicleLocatedThreeTimesInSingleDealer_shouldReturnOneEntryWithThreeSlots() {
         // GIVEN
         final String nameResourceReference = "0000";
 
@@ -173,7 +173,7 @@ public class DealerHelperTest {
     }
 
     @Test
-    public void searchForVehicleSlot_whenUnlocatedVehicle_shouldReturnEmptyMap() {
+    void searchForVehicleSlot_whenUnlocatedVehicle_shouldReturnEmptyMap() {
         // GIVEN
         final String nameResourceReference = "0000";
 

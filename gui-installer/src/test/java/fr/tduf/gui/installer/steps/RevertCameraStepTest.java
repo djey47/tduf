@@ -6,33 +6,34 @@ import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.GenuineCamGateway;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 
 import static fr.tduf.gui.installer.steps.GenericStep.StepType.REVERT_CAMERA;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.MockitoAnnotations.initMocks;
 
-@RunWith(MockitoJUnitRunner.class)
-public class RevertCameraStepTest {
+class RevertCameraStepTest {
 
     @Mock
     private GenuineCamGateway camGatewayMock;
 
     private final DatabasePatchProperties patchProperties = new DatabasePatchProperties();
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
+        initMocks(this);
+        
         patchProperties.clear();
     }
 
     @Test
-    public void perform_whenNoCameraProperty_shouldNotCallCameraGateway() throws Exception {
+    void perform_whenNoCameraProperty_shouldNotCallCameraGateway() throws Exception {
         // GIVEN
         InstallerConfiguration installerConfiguration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory("./")
@@ -50,8 +51,8 @@ public class RevertCameraStepTest {
         verifyZeroInteractions(camGatewayMock);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void perform_whenCustomCameraPropertyOnly_andNoVehicleSlotProperty_shouldThrowException() throws Exception {
+    @Test
+    void perform_whenCustomCameraPropertyOnly_andNoVehicleSlotProperty_shouldThrowException() throws Exception {
         // GIVEN
         InstallerConfiguration installerConfiguration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory("./")
@@ -63,14 +64,13 @@ public class RevertCameraStepTest {
         GenericStep genericStep = GenericStep.starterStep(installerConfiguration, databaseContext)
                 .nextStep(REVERT_CAMERA);
 
-        // WHEN
-        genericStep.perform();
-
-        // THEN: ISE
+        // WHEN-THEN
+        assertThrows(IllegalStateException.class,
+            genericStep::perform);
     }
 
     @Test
-    public void perform_whenCustomCameraPropertyOnly_shouldLoadVehicleFromDatabase_andCallCameraGateway() throws Exception {
+    void perform_whenCustomCameraPropertyOnly_shouldLoadVehicleFromDatabase_andCallCameraGateway() throws Exception {
         // GIVEN
         InstallerConfiguration installerConfiguration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory("./")
@@ -91,7 +91,7 @@ public class RevertCameraStepTest {
     }
 
     @Test
-    public void perform_whenCameraProperties_shouldCallCameraGateway() throws Exception {
+    void perform_whenCameraProperties_shouldCallCameraGateway() throws Exception {
         // GIVEN
         InstallerConfiguration installerConfiguration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory("./")

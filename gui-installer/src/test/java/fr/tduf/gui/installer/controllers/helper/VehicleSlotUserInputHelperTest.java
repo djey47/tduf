@@ -4,16 +4,16 @@ package fr.tduf.gui.installer.controllers.helper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-public class VehicleSlotUserInputHelperTest {
+class VehicleSlotUserInputHelperTest {
 
     private static final String SLOTREF = "30000000";
 
     @Test
-    public void selectAndDefineVehicleSlot_whenForcedVehicleSlot_shouldNotSelectIt() throws Exception {
+    void selectAndDefineVehicleSlot_whenForcedVehicleSlot_shouldNotSelectIt() throws Exception {
         // GIVEN
         DatabasePatchProperties patchProperties = new DatabasePatchProperties();
         patchProperties.setVehicleSlotReferenceIfNotExists(SLOTREF);

@@ -4,7 +4,7 @@ import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.libtesting.common.helper.FilesHelper;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class RestoreDatabaseStepTest {
+class RestoreDatabaseStepTest {
 
     @Test
-    public void perform_shouldRestoreDatabaseFiles_andClearCache() throws Exception {
+    void perform_shouldRestoreDatabaseFiles_andClearCache() throws Exception {
         // GIVEN
         final String tduTempDirectory = FilesHelper.createTempDirectoryForInstaller();
         final Path tduDatabasePath = FilesHelper.getTduDatabasePath(tduTempDirectory);

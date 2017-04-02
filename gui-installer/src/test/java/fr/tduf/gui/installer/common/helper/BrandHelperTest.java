@@ -10,18 +10,16 @@ import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceItemDto;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 import java.util.Optional;
 
-import static fr.tduf.libunlimited.common.game.domain.Resource.from;
 import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
+import static fr.tduf.libunlimited.common.game.domain.Resource.from;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -29,9 +27,9 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
-@RunWith(MockitoJUnitRunner.class)
-public class BrandHelperTest {
+class BrandHelperTest {
     private static final String BRAND_REF_1 = "REF1";
     private static final String BRAND_REF_2 = "REF2";
     private static final String BRAND_NOREF = "REF3";
@@ -46,8 +44,10 @@ public class BrandHelperTest {
     @InjectMocks
     private BrandHelper brandHelper;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
+        initMocks(this);
+        
         ContentEntryDto brandsEntry1 = ContentEntryDto.builder()
                 .addItem(ContentItemDto.builder().ofFieldRank(1).withRawValue(BRAND_REF_1).build())
                 .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue(BRAND_ID_RESOURCE_1.getRef()).build())
@@ -111,13 +111,13 @@ public class BrandHelperTest {
     }
 
     @Test
-    public void getBrandFromReference_whenNonExistingRef_shouldReturnEmpty() throws Exception {
+    void getBrandFromReference_whenNonExistingRef_shouldReturnEmpty() throws Exception {
         // GIVEN-WHEN-THEN
         assertThat(brandHelper.getBrandFromReference(BRAND_NOREF)).isEmpty();
     }
 
     @Test
-    public void getBrandFromReference_whenExistingRef_shouldReturnBrand() throws Exception {
+    void getBrandFromReference_whenExistingRef_shouldReturnBrand() throws Exception {
         // GIVEN-WHEN
         Optional<Brand> actualBrand = brandHelper.getBrandFromReference(BRAND_REF_1);
 
@@ -131,13 +131,13 @@ public class BrandHelperTest {
     }
 
     @Test
-    public void getBrandFromIdentifierOrName_whenNonExisting_shouldReturnEmpty() throws Exception {
+    void getBrandFromIdentifierOrName_whenNonExisting_shouldReturnEmpty() throws Exception {
         // GIVEN-WHEN-THEN
         assertThat(brandHelper.getBrandFromIdentifierOrName("azerty")).isEmpty();
     }
 
     @Test
-    public void getBrandFromIdentifierOrName_whenExistingId_shouldReturnBrand() throws Exception {
+    void getBrandFromIdentifierOrName_whenExistingId_shouldReturnBrand() throws Exception {
         // GIVEN-WHEN
         Optional<Brand> actualBrand = brandHelper.getBrandFromIdentifierOrName("honda");
 
@@ -151,7 +151,7 @@ public class BrandHelperTest {
     }
 
     @Test
-    public void getBrandFromIdentifierOrName_whenExistingName_shouldReturnBrand() throws Exception {
+    void getBrandFromIdentifierOrName_whenExistingName_shouldReturnBrand() throws Exception {
         // GIVEN-WHEN
         Optional<Brand> actualBrand = brandHelper.getBrandFromIdentifierOrName("alfa ROMEO");
 
@@ -165,7 +165,7 @@ public class BrandHelperTest {
     }
 
     @Test
-    public void getAllBrands_shouldReturnAllEntries() throws Exception {
+    void getAllBrands_shouldReturnAllEntries() throws Exception {
         // GIVEN-WHEN
         List<Brand> actualBrands = brandHelper.getAllBrands();
 

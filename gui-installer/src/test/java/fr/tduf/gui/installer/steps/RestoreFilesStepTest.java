@@ -3,7 +3,7 @@ package fr.tduf.gui.installer.steps;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.libtesting.common.helper.FilesHelper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,10 +12,10 @@ import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class RestoreFilesStepTest {
+class RestoreFilesStepTest {
 
     @Test
-    public void perform_shouldRestoreBackup() throws Exception {
+    void perform_shouldRestoreBackup() throws Exception {
         // GIVEN
         final String tduTempDirectory = FilesHelper.createTempDirectoryForInstaller();
         Path bankFilesPath = Paths.get(tduTempDirectory).resolve("Euro").resolve("Bnk").resolve("Vehicules");
