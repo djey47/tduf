@@ -4,7 +4,7 @@ package fr.tduf.gui.database.common;
  * Gives all constants to be displayed by controllers.
  */
 public class DisplayConstants {
-    public static final String SEPARATOR_VALUES = " - ";
+    public static final String SEPARATOR_VALUES = " ";
     public static final String VALUE_ENTRY_CELL = "%d:%s";
     public static final String VALUE_UNKNOWN = "<%s>";
     public static final String VALUE_FIELD_DEFAULT = "";

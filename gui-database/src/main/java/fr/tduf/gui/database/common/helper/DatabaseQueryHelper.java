@@ -12,7 +12,9 @@ import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.List;
 
+import static fr.tduf.gui.database.common.DisplayConstants.SEPARATOR_VALUES;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.REFERENCE;
+import static java.lang.String.join;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -43,7 +45,7 @@ public class DatabaseQueryHelper {
                 .map(fieldRank -> resolveResourceValue(entryId, topic, locale, databaseMiner, editorLayoutDto, structureFields, fieldRank))
                 .collect(toList());
 
-        return String.join(DisplayConstants.SEPARATOR_VALUES, contents);
+        return join(SEPARATOR_VALUES, contents);
     }
 
     private static String resolveResourceValue(int entryId, DbDto.Topic topic, Locale locale, BulkDatabaseMiner databaseMiner, EditorLayoutDto editorLayoutDto, List<DbStructureDto.Field> structureFields, Integer fieldRank) {

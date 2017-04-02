@@ -8,11 +8,9 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -23,17 +21,16 @@ import static fr.tduf.libunlimited.common.game.domain.Locale.FRANCE;
 import static fr.tduf.libunlimited.framework.primitives.Ints.asList;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
-import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.REFERENCE;
-import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.RESOURCE_CURRENT_GLOBALIZED;
-import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.RESOURCE_CURRENT_LOCALIZED;
+import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.*;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
-@RunWith(MockitoJUnitRunner.class)
-public class DatabaseQueryHelperTest {
+class DatabaseQueryHelperTest {
     private static final DbDto.Topic TOPIC = CAR_PHYSICS_DATA;
     private static final DbDto.Topic TOPIC_REMOTE = BRANDS;
     private static final String REF_REMOTE_TOPIC = "123";
@@ -43,11 +40,13 @@ public class DatabaseQueryHelperTest {
     @Mock
     private BulkDatabaseMiner minerMock;
 
-    public DatabaseQueryHelperTest() throws IOException, URISyntaxException {
+    DatabaseQueryHelperTest() throws IOException, URISyntaxException {
     }
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
+        initMocks(this);
+
         when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(of(createDatabaseObject()));
 
         final DbDto remoteDatabaseObject = createRemoteDatabaseObject();
@@ -56,7 +55,7 @@ public class DatabaseQueryHelperTest {
     }
 
     @Test
-    public void fetchResourceValuesWithEntryId_whenNoFieldRanks_shouldReturnUnavailable() throws Exception {
+    void fetchResourceValuesWithEntryId_whenNoFieldRanks_shouldReturnUnavailable() throws Exception {
         // GIVEN - WHEN
         final String actualLabel = DatabaseQueryHelper.fetchResourceValuesWithEntryId(1, TOPIC, FRANCE, new ArrayList<>(), minerMock, layoutObject);
 
@@ -65,7 +64,7 @@ public class DatabaseQueryHelperTest {
     }
 
     @Test
-    public void fetchResourceValuesWithEntryId_whenLocalResourcesAvailable() throws Exception {
+    void fetchResourceValuesWithEntryId_whenLocalResourcesAvailable() throws Exception {
         // GIVEN
         List<Integer> fieldRanks = asList(3, 4);
         String resValue1 = "RES1";
@@ -80,11 +79,11 @@ public class DatabaseQueryHelperTest {
 
 
         // THEN
-        assertThat(actualLabel).isEqualTo("RES1 - RES2");
+        assertThat(actualLabel).isEqualTo("RES1 RES2");
     }
 
     @Test
-    public void fetchResourceValuesWithEntryId_whenLocalResourceUnavailable_shouldReturnItemRawValue() throws Exception {
+    void fetchResourceValuesWithEntryId_whenLocalResourceUnavailable_shouldReturnItemRawValue() throws Exception {
         // GIVEN
         List<Integer> fieldRanks = asList(3, 4);
         String resValue1 = "RES1";
@@ -103,11 +102,11 @@ public class DatabaseQueryHelperTest {
 
 
         // THEN
-        assertThat(actualLabel).isEqualTo("RES1 - <85467580>");
+        assertThat(actualLabel).isEqualTo("RES1 <85467580>");
     }
 
     @Test
-    public void fetchResourceValuesWithEntryId_whenReferenceField_andRemoteResourceAvailable() throws Exception {
+    void fetchResourceValuesWithEntryId_whenReferenceField_andRemoteResourceAvailable() throws Exception {
         // GIVEN
         List<Integer> fieldRanks = asList(4, 5);
         String resValue1 = "RES1";
@@ -123,11 +122,11 @@ public class DatabaseQueryHelperTest {
 
 
         // THEN
-        assertThat(actualLabel).isEqualTo("RES1 - REMOTE ENTRY");
+        assertThat(actualLabel).isEqualTo("RES1 REMOTE ENTRY");
     }
 
     @Test
-    public void fetchResourceValuesWithEntryId_whenReferenceField_andRemoteEntryUnavailable() throws Exception {
+    void fetchResourceValuesWithEntryId_whenReferenceField_andRemoteEntryUnavailable() throws Exception {
         // GIVEN
         List<Integer> fieldRanks = asList(4, 5);
         String resValue = "RES1";
@@ -141,11 +140,11 @@ public class DatabaseQueryHelperTest {
 
 
         // THEN
-        assertThat(actualLabel).isEqualTo("RES1 - <>");
+        assertThat(actualLabel).isEqualTo("RES1 <>");
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void fetchResourceValuesWithEntryId_whenLocalResourceUnavailable_andItemUnavailable_shouldThrowException() throws Exception {
+    @Test
+    void fetchResourceValuesWithEntryId_whenLocalResourceUnavailable_andItemUnavailable_shouldThrowException() throws Exception {
         // GIVEN
         List<Integer> fieldRanks = singletonList(3);
 
@@ -153,15 +152,13 @@ public class DatabaseQueryHelperTest {
         when(minerMock.getContentItemWithEntryIdentifierAndFieldRank(TOPIC, 3, 1)).thenReturn(empty());
 
 
-        // WHEN
-        DatabaseQueryHelper.fetchResourceValuesWithEntryId(1, TOPIC, FRANCE, fieldRanks, minerMock, layoutObject);
-
-
-        // THEN: ISE
+        // WHEN-THEN
+        assertThrows(IllegalStateException.class,
+                () -> DatabaseQueryHelper.fetchResourceValuesWithEntryId(1, TOPIC, FRANCE, fieldRanks, minerMock, layoutObject));
     }
 
     @Test
-    public void fetchResourceValuesWithEntryId_whenReferenceField_andRemoteResourceUnavailable_shouldWriteRawValue() throws Exception {
+    void fetchResourceValuesWithEntryId_whenReferenceField_andRemoteResourceUnavailable_shouldWriteRawValue() throws Exception {
         // GIVEN
         List<Integer> fieldRanks = asList(4, 5);
         String resValue1 = "RES1";
@@ -181,11 +178,11 @@ public class DatabaseQueryHelperTest {
 
 
         // THEN
-        assertThat(actualLabel).isEqualTo("RES1 - <RAW>");
+        assertThat(actualLabel).isEqualTo("RES1 <RAW>");
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void fetchResourceValuesWithEntryId_whenReferenceField_andRemoteResourceUnavailable_andItemUnavailable_shouldWriteRawValue() throws Exception {
+    @Test
+    void fetchResourceValuesWithEntryId_whenReferenceField_andRemoteResourceUnavailable_andItemUnavailable_shouldWriteRawValue() throws Exception {
         // GIVEN
         List<Integer> fieldRanks = asList(4, 5);
         String resValue1 = "RES1";
@@ -200,11 +197,9 @@ public class DatabaseQueryHelperTest {
         when(minerMock.getContentItemWithEntryIdentifierAndFieldRank(TOPIC_REMOTE, 1, 0)).thenReturn(empty());
 
 
-        // WHEN
-        DatabaseQueryHelper.fetchResourceValuesWithEntryId(1, TOPIC, FRANCE, fieldRanks, minerMock, layoutObject);
-
-
-        // THEN: ISE
+        // WHEN-THEN
+        assertThrows(IllegalStateException.class,
+                () -> DatabaseQueryHelper.fetchResourceValuesWithEntryId(1, TOPIC, FRANCE, fieldRanks, minerMock, layoutObject));
     }
 
     private DbDto createDatabaseObject() {
