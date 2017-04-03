@@ -14,7 +14,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Optional;
 
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.createTempDirectory;
 import static java.lang.Long.valueOf;
@@ -122,18 +121,17 @@ public class DatabaseBanksCacheHelper {
         return resolveCachePath(databasePath).resolve(FILE_LAST_MODIFIED);
     }
 
-    private static List<String> unpackDatabaseToJson(String databaseDirectory, String jsonDatabaseDirectory, BankSupport bankSupport) throws IOException {
+    private static void unpackDatabaseToJson(String databaseDirectory, String jsonDatabaseDirectory, BankSupport bankSupport) throws IOException {
         Log.info(THIS_CLASS_NAME, "->Unpacking TDU database: " + databaseDirectory);
 
-        String unpackedDatabaseDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(databaseDirectory, Optional.of(jsonDatabaseDirectory), bankSupport);
+        String unpackedDatabaseDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(databaseDirectory, jsonDatabaseDirectory, bankSupport);
 
         Log.info(THIS_CLASS_NAME, "->Unpacked TDU database directory: " + unpackedDatabaseDirectory);
 
-        List<String> jsonFiles = JsonGateway.dump(unpackedDatabaseDirectory, jsonDatabaseDirectory, new ArrayList<>(), new LinkedHashSet<>());
+        JsonGateway.dump(unpackedDatabaseDirectory, jsonDatabaseDirectory, new ArrayList<>(), new LinkedHashSet<>());
 
         Log.info(THIS_CLASS_NAME, "->Prepared JSON database directory: " + jsonDatabaseDirectory);
 
-        return jsonFiles;
     }
 
     private static void repackJsonDatabase(String jsonDatabaseDirectory, String databaseDirectory, BankSupport bankSupport) throws IOException {
@@ -145,7 +143,7 @@ public class DatabaseBanksCacheHelper {
 
         Log.info(THIS_CLASS_NAME, "->Converted TDU database directory: " + extractedDatabaseDirectory);
 
-        DatabaseBankHelper.repackDatabaseFromDirectory(extractedDatabaseDirectory, databaseDirectory, Optional.of(jsonDatabaseDirectory), bankSupport);
+        DatabaseBankHelper.repackDatabaseFromDirectory(extractedDatabaseDirectory, databaseDirectory, jsonDatabaseDirectory, bankSupport);
 
         Log.info(THIS_CLASS_NAME, "->Repacked database: " + extractedDatabaseDirectory + " to " + databaseDirectory);
     }

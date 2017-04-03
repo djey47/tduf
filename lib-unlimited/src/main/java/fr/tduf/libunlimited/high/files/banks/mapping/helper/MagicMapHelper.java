@@ -34,12 +34,9 @@ public class MagicMapHelper {
 
         List<String> newFileNames = new ArrayList<>();
         findNewChecksums(map, checksums)
-
-                .entrySet()
-
-                .forEach((mapEntry) -> {
-                    map.addMagicEntry(mapEntry.getKey());
-                    newFileNames.add(mapEntry.getValue());
+                .forEach((checksum, fileName) -> {
+                    map.addMagicEntry(checksum);
+                    newFileNames.add(fileName);
                 });
 
         saveBankMap(map, magicMapFile);

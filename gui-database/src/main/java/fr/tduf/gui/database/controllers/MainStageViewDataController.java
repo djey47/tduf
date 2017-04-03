@@ -372,7 +372,8 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         DbDto.Topic currentTopic = currentTopicProperty().getValue();
 
         if (DatabaseStructureQueryHelper.isUidSupportForTopic(currentTopic)) {
-            Optional<String> potentialEntryReference = getMiner().getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty().getValue(), currentTopic);
+            String potentialEntryReference = getMiner().getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty().getValue(), currentTopic)
+                    .orElse(null);
             final List<ContentEntryDataItem> selectedItems = getEntriesStageController().initAndShowModalDialogForMultiSelect(potentialEntryReference, currentTopic, currentProfileProperty.getValue().getName());
 
             return selectedItems.stream()

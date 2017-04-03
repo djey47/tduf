@@ -50,7 +50,6 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.synchronizedSet;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
-import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.*;
 
 /**
@@ -229,8 +228,8 @@ public class DatabaseTool extends GenericTool {
                 throw new CmdLineException(parser, "Error: database topic is required.", null);
             }
             effectiveTopic = DbDto.Topic.valueOf(databaseTopic);
-            effectiveRefRange = ItemRange.fromCliOption(ofNullable(refRange));
-            effectiveFieldRange = ItemRange.fromCliOption(ofNullable(fieldRange));
+            effectiveRefRange = ItemRange.fromCliOption(refRange);
+            effectiveFieldRange = ItemRange.fromCliOption(fieldRange);
         }
     }
 
@@ -266,7 +265,7 @@ public class DatabaseTool extends GenericTool {
 
         Files.createDirectories(targetPath);
         String targetDirectory = targetPath.toString();
-        DatabaseBankHelper.repackDatabaseFromDirectory(sourceExtractedDatabaseDirectory, targetDirectory, Optional.of(jsonSourceDirectory), bankSupport);
+        DatabaseBankHelper.repackDatabaseFromDirectory(sourceExtractedDatabaseDirectory, targetDirectory, jsonSourceDirectory, bankSupport);
 
         Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("sourceDirectory", sourceDirectory);
@@ -281,7 +280,7 @@ public class DatabaseTool extends GenericTool {
         outLine("-> TDU database directory: " + sourceDirectory);
         outLine("Unpacking TDU database to " + jsonDatabaseDirectory + ", please wait...");
 
-        String extractedDatabaseDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(sourceDirectory, Optional.of(jsonDatabaseDirectory), bankSupport);
+        String extractedDatabaseDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(sourceDirectory, jsonDatabaseDirectory, bankSupport);
 
         outLine("Done unpacking.");
 
@@ -550,7 +549,7 @@ public class DatabaseTool extends GenericTool {
         return targetPropertyFile;
     }
 
-    private Map<String, ?> generateDatabaseFiles(String sourceJsonDirectory, String targetExtractedDatabaseDirectory) throws IOException {
+    private void generateDatabaseFiles(String sourceJsonDirectory, String targetExtractedDatabaseDirectory) throws IOException {
         FilesHelper.createDirectoryIfNotExists(targetExtractedDatabaseDirectory);
 
         outLine("-> Source directory: " + sourceJsonDirectory);
@@ -558,13 +557,7 @@ public class DatabaseTool extends GenericTool {
         outLine();
 
         List<DbDto.Topic> missingTopicContents = new ArrayList<>();
-        List<String> writtenFileNames = JsonGateway.gen(sourceJsonDirectory, targetExtractedDatabaseDirectory, missingTopicContents);
-
-        Map<String, Object> resultInfo = new HashMap<>();
-        resultInfo.put("missingJsonTopicContents", missingTopicContents);
-        resultInfo.put("writtenFiles", writtenFileNames);
-
-        return resultInfo;
+        JsonGateway.gen(sourceJsonDirectory, targetExtractedDatabaseDirectory, missingTopicContents);
     }
 
     private Set<IntegrityError> fixIntegrityErrorsAndSaveDatabaseFiles(List<DbDto> databaseObjects, Set<IntegrityError> integrityErrors, String jsonDatabaseDirectory) throws ReflectiveOperationException {
@@ -599,7 +592,7 @@ public class DatabaseTool extends GenericTool {
     private void applyPerformancePackToCarPhysicsData(String performancePackFile, String targetJsonDirectory, List<DbDto> allTopicObjects, List<String> writtenFileNames) {
         try {
             TdupeGateway gateway = AbstractDatabaseHolder.prepare(TdupeGateway.class, allTopicObjects);
-            gateway.applyPerformancePackToEntryWithReference(ofNullable(refRange), performancePackFile);
+            gateway.applyPerformancePackToEntryWithReference(refRange, performancePackFile);
         } catch (ReflectiveOperationException roe) {
             throw new RuntimeException("Unable to apply patch.", roe);
         }

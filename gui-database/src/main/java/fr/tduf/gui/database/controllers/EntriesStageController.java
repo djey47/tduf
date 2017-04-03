@@ -29,6 +29,7 @@ import java.util.OptionalInt;
 
 import static fr.tduf.gui.database.common.DisplayConstants.LABEL_SEARCH_ENTRY;
 import static fr.tduf.gui.database.common.DisplayConstants.TITLE_SEARCH_CONTENTS_ENTRY;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -110,19 +111,19 @@ public class EntriesStageController extends AbstractGuiController {
         showWindow();
     }
 
-    Optional<ContentEntryDataItem> initAndShowModalDialog(Optional<String> potentialEntryReference, DbDto.Topic topic, String targetProfileName) {
-        initAndShowModalDialog(potentialEntryReference, topic, targetProfileName, false);
+    Optional<ContentEntryDataItem> initAndShowModalDialog(String entryReference, DbDto.Topic topic, String targetProfileName) {
+        initAndShowModalDialog(entryReference, topic, targetProfileName, false);
 
         return selectedEntries.stream().findAny();
     }
 
-    List<ContentEntryDataItem> initAndShowModalDialogForMultiSelect(Optional<String> potentialEntryReference, DbDto.Topic topic, String targetProfileName) {
-        initAndShowModalDialog(potentialEntryReference, topic, targetProfileName, true);
+    List<ContentEntryDataItem> initAndShowModalDialogForMultiSelect(String entryReference, DbDto.Topic topic, String targetProfileName) {
+        initAndShowModalDialog(entryReference, topic, targetProfileName, true);
 
         return selectedEntries;
     }
 
-    private void initAndShowModalDialog(Optional<String> entryReference, DbDto.Topic topic, String targetProfileName, boolean multiSelect) {
+    private void initAndShowModalDialog(String entryReference, DbDto.Topic topic, String targetProfileName, boolean multiSelect) {
         switchMultiSelectMode(multiSelect);
 
         fieldRankForUpdate = OptionalInt.empty();
@@ -134,7 +135,8 @@ public class EntriesStageController extends AbstractGuiController {
 
         selectedEntries.clear();
 
-        entryReference.ifPresent(this::selectEntryInTableAndScroll);
+        ofNullable(entryReference)
+                .ifPresent(this::selectEntryInTableAndScroll);
 
         showModalWindow();
     }
@@ -161,9 +163,11 @@ public class EntriesStageController extends AbstractGuiController {
 
     private void initTablePane() {
         TableColumn<ContentEntryDataItem, ?> refColumn = entriesTableView.getColumns().get(0);
+        //noinspection unchecked
         refColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().referenceProperty());
 
         TableColumn<ContentEntryDataItem, ?> valueColumn = entriesTableView.getColumns().get(1);
+        //noinspection unchecked
         valueColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().valueProperty());
 
         entriesTableView.setItems(entriesData);

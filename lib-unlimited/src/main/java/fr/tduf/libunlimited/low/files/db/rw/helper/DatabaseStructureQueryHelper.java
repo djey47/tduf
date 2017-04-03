@@ -39,10 +39,9 @@ public class DatabaseStructureQueryHelper {
      */
     public static OptionalInt getUidFieldRank(List<DbStructureDto.Field> structureFields) {
         Optional<DbStructureDto.Field> potentialUidField = DatabaseStructureQueryHelper.getUidField(requireNonNull(structureFields, MESSAGE_ERR_FIELDS));
-        if (potentialUidField.isPresent()) {
-            return OptionalInt.of(potentialUidField.get().getRank());
-        }
-        return OptionalInt.empty();
+        return potentialUidField
+                .map(field -> OptionalInt.of(field.getRank()))
+                .orElseGet(OptionalInt::empty);
     }
 
     /**

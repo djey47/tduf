@@ -12,7 +12,6 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,14 +25,14 @@ class TdupePerformancePackConverterTest {
     void tdupkToJson_whenNullLine_shouldThrowException() {
         // GIVEN-WHEN-THEN
         assertThrows(NullPointerException.class,
-                () -> TdupePerformancePackConverter.tdupkToJson(null, Optional.empty(), DbDto.builder().build()));
+                () -> TdupePerformancePackConverter.tdupkToJson(null, null, DbDto.builder().build()));
     }
 
     @Test
     void tdupkToJson_whenNullTopicObject_shouldThrowException() {
         // GIVEN-WHEN-THEN
         assertThrows(NullPointerException.class,
-                () -> TdupePerformancePackConverter.tdupkToJson("", Optional.empty(), null));
+                () -> TdupePerformancePackConverter.tdupkToJson("", null, null));
     }
 
     @Test
@@ -43,7 +42,7 @@ class TdupePerformancePackConverterTest {
         DbDto carPhysicsTopicObject = DatabaseHelper.createDatabaseTopicForReadOnly(CAR_PHYSICS_DATA);
 
         // WHEN
-        DbPatchDto actualPatchObject = TdupePerformancePackConverter.tdupkToJson(carPhysicsDataLine, Optional.empty(), carPhysicsTopicObject);
+        DbPatchDto actualPatchObject = TdupePerformancePackConverter.tdupkToJson(carPhysicsDataLine, null, carPhysicsTopicObject);
 
         // THEN
         DbPatchDto expectedPatchObject = readPatchObjectFromResource("/db/patch/updateContents-f150PerformancePack-newRef.mini.json");
@@ -57,7 +56,7 @@ class TdupePerformancePackConverterTest {
         DbDto carPhysicsTopicObject = DatabaseHelper.createDatabaseTopicForReadOnly(CAR_PHYSICS_DATA);
 
         // WHEN
-        DbPatchDto actualPatchObject = TdupePerformancePackConverter.tdupkToJson(carPhysicsDataLine, Optional.empty(), carPhysicsTopicObject);
+        DbPatchDto actualPatchObject = TdupePerformancePackConverter.tdupkToJson(carPhysicsDataLine, null, carPhysicsTopicObject);
 
         // THEN
         DbPatchDto expectedPatchObject = readPatchObjectFromResource("/db/patch/updateContents-f150PerformancePack-existingRef.mini.json");
@@ -71,7 +70,7 @@ class TdupePerformancePackConverterTest {
         DbDto carPhysicsTopicObject = DatabaseHelper.createDatabaseTopicForReadOnly(CAR_PHYSICS_DATA);
 
         // WHEN
-        DbPatchDto actualPatchObject = TdupePerformancePackConverter.tdupkToJson(carPhysicsDataLine, Optional.of("601945475"), carPhysicsTopicObject);
+        DbPatchDto actualPatchObject = TdupePerformancePackConverter.tdupkToJson(carPhysicsDataLine, "601945475", carPhysicsTopicObject);
 
         // THEN
         DbPatchDto expectedPatchObject = readPatchObjectFromResource("/db/patch/updateContents-f150PerformancePack-targetNewRef.mini.json");
@@ -85,7 +84,7 @@ class TdupePerformancePackConverterTest {
         DbDto carPhysicsTopicObject = DatabaseHelper.createDatabaseTopicForReadOnly(CAR_PHYSICS_DATA);
 
         // WHEN
-        DbPatchDto actualPatchObject = TdupePerformancePackConverter.tdupkToJson(carPhysicsDataLine, Optional.of("601945474"), carPhysicsTopicObject);
+        DbPatchDto actualPatchObject = TdupePerformancePackConverter.tdupkToJson(carPhysicsDataLine, "601945474", carPhysicsTopicObject);
 
         // THEN
         DbPatchDto expectedPatchObject = readPatchObjectFromResource("/db/patch/updateContents-f150PerformancePack-targetExistingRef.mini.json");

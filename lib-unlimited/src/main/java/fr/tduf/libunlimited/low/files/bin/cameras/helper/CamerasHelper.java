@@ -160,8 +160,8 @@ public class CamerasHelper {
                     configuration.getViews().stream()
                             .filter(v -> viewKind == v.getOriginalKind())
                             .findAny()
-                            .ifPresent(conf -> conf.getSettings().entrySet()
-                                    .forEach(entry -> view.getSettings().put(entry.getKey(), entry.getValue())));
+                            .ifPresent(conf -> conf.getSettings()
+                                    .forEach((prop, value) -> view.getSettings().put(prop, value)));
                 });
     }
 

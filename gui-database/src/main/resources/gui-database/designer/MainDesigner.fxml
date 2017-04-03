@@ -36,7 +36,7 @@
                     <Tooltip text="Selects a directory for JSON/BNK database files." />
                 </tooltip>
             </Button>
-            <Button fx:id="loadDatabaseButton" mnemonicParsing="false" onAction="#handleLoadButtonMouseClick" prefWidth="60.0" text="Load">
+            <Button mnemonicParsing="false" onAction="#handleLoadButtonMouseClick" prefWidth="60.0" text="Load">
                 <tooltip>
                     <Tooltip text="Opens database files from selected directory." />
                 </tooltip>

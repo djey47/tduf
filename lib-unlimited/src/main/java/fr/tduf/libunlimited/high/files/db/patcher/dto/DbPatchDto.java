@@ -13,7 +13,6 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.OptionalInt;
 
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.renderComparator;
 import static java.util.Objects.requireNonNull;
@@ -237,8 +236,6 @@ public class DbPatchDto {
             private String reference;
             private DbDto.Topic topic;
             private ChangeTypeEnum type;
-            private DirectionEnum moveDirection;
-            private Integer moveSteps;
             private Boolean strictMode;
 
             public DbChangeDtoBuilder withType(ChangeTypeEnum type) {
@@ -296,12 +293,6 @@ public class DbPatchDto {
                 return this;
             }
 
-            public DbChangeDtoBuilder moveForDirection(DirectionEnum direction, OptionalInt steps) {
-                this.moveDirection = direction;
-                this.moveSteps = steps.orElse(1);
-                return this;
-            }
-
             public DbChangeDto build() {
                 if (partialEntryValues != null && entryValues != null) {
                     throw new IllegalStateException("Conflict in change: can't have partialEntryValues and entryValues at the same time");
@@ -317,8 +308,6 @@ public class DbPatchDto {
                 changeObject.partialValues = partialEntryValues;
                 changeObject.value = value;
                 changeObject.locale = locale;
-                changeObject.direction = moveDirection;
-                changeObject.steps = moveSteps;
                 changeObject.strictMode = strictMode;
 
                 return changeObject;

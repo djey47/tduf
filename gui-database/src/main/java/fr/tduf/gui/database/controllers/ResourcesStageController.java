@@ -188,7 +188,7 @@ public class ResourcesStageController extends AbstractGuiController {
 
     void editResourceAndUpdateMainStage(DbDto.Topic topic, String currentResourceReference, LocalizedResource newLocalizedResource) {
         try {
-            updateResource(topic, currentResourceReference, newLocalizedResource.getReferenceValuePair(), newLocalizedResource.getLocale());
+            updateResource(topic, currentResourceReference, newLocalizedResource.getReferenceValuePair(), newLocalizedResource.getLocale().orElse(null));
         } catch (IllegalArgumentException iae) {
             Log.error(THIS_CLASS_NAME, "Unable to update resource", iae);
             showResourceErrorDialog(iae);
@@ -199,7 +199,7 @@ public class ResourcesStageController extends AbstractGuiController {
 
     void editNewResourceAndUpdateMainStage(DbDto.Topic topic, LocalizedResource newLocalizedResource) {
         try {
-            createResource(topic, newLocalizedResource.getReferenceValuePair(), newLocalizedResource.getLocale());
+            createResource(topic, newLocalizedResource.getReferenceValuePair(), newLocalizedResource.getLocale().orElse(null));
         } catch (IllegalArgumentException iae) {
             Log.error(THIS_CLASS_NAME, "Unable to create resource", iae);
             showResourceErrorDialog(iae);
@@ -285,11 +285,12 @@ public class ResourcesStageController extends AbstractGuiController {
         TableViewHelper.selectRowAndScroll(selectedRowIndex, resourcesTableView);
     }
 
-    private void updateResource(DbDto.Topic topic, String currentRef, Pair<String, String> referenceValuePair, Optional<Locale> potentialAffectedLocale) {
+    private void updateResource(DbDto.Topic topic, String currentRef, Pair<String, String> referenceValuePair, Locale affectedLocale) {
         String newResourceReference = referenceValuePair.getKey();
         String newResourceValue = referenceValuePair.getValue();
 
         if (currentRef.equals(newResourceReference)) {
+            Optional<Locale> potentialAffectedLocale = ofNullable(affectedLocale);
             if (potentialAffectedLocale.isPresent()) {
                 mainStageController.getChangeData().updateResourceWithReferenceForLocale(topic, potentialAffectedLocale.get(), currentRef, newResourceValue);
             } else {
@@ -300,11 +301,12 @@ public class ResourcesStageController extends AbstractGuiController {
         }
     }
 
-    private void createResource(DbDto.Topic topic, Pair<String, String> referenceValuePair, Optional<Locale> potentialAffectedLocale) {
+    private void createResource(DbDto.Topic topic, Pair<String, String> referenceValuePair, Locale affectedLocale) {
         String newResourceReference = referenceValuePair.getKey();
         String newResourceValue = referenceValuePair.getValue();
 
         MainStageChangeDataController changeDataController = mainStageController.getChangeData();
+        Optional<Locale> potentialAffectedLocale = ofNullable(affectedLocale);
         if (potentialAffectedLocale.isPresent()) {
             changeDataController.addResourceWithReference(topic, potentialAffectedLocale.get(), newResourceReference, newResourceValue);
         } else {

@@ -95,7 +95,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
 
         String groupName = fieldSettings.getGroup();
 
-        HBox fieldBox = addFieldBox(Optional.ofNullable(groupName), 25.0);
+        HBox fieldBox = addFieldBox(groupName, 25.0);
 
         String effectiveFieldName = fieldSettings.getLabel() == null ?
                 field.getName() : fieldSettings.getLabel();
@@ -174,26 +174,26 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         ItemViewModel itemViewModel = viewData.getItemPropsByFieldRank();
         BooleanProperty errorProperty = itemViewModel.errorPropertyAtFieldRank(fieldRank);
 
-        Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRank(fieldRank, viewData.currentProfile().getValue());
-        if (potentialFieldSettings.isPresent()) {
-            String targetProfileName = potentialFieldSettings.get().getRemoteReferenceProfile();
-            List<Integer> labelFieldRanks = EditorLayoutHelper.getAvailableProfileByName(targetProfileName, controller.getLayoutObject()).getEntryLabelFieldRanks();
-            StringProperty entryReferenceProperty = viewData.getItemPropsByFieldRank().rawValuePropertyAtFieldRank(fieldRank);
+        EditorLayoutHelper.getFieldSettingsByRank(fieldRank, viewData.currentProfile().getValue())
+                .ifPresent(fieldSettings -> {
+                    String targetProfileName = fieldSettings.getRemoteReferenceProfile();
+                    List<Integer> labelFieldRanks = EditorLayoutHelper.getAvailableProfileByName(targetProfileName, controller.getLayoutObject()).getEntryLabelFieldRanks();
+                    StringProperty entryReferenceProperty = viewData.getItemPropsByFieldRank().rawValuePropertyAtFieldRank(fieldRank);
 
-            if (!fieldReadOnly) {
-                addContextualButton(
-                        fieldBox,
-                        DisplayConstants.LABEL_BUTTON_BROWSE,
-                        DisplayConstants.TOOLTIP_BUTTON_BROWSE_ENTRIES,
-                        viewData.handleBrowseEntriesButtonMouseClick(targetTopic, labelFieldRanks, entryReferenceProperty, fieldRank));
-            }
-            addContextualButtonWithActivationCondition(
-                    fieldBox,
-                    DisplayConstants.LABEL_BUTTON_GOTO,
-                    DisplayConstants.TOOLTIP_BUTTON_GOTO_LINKED_ENTRY,
-                    viewData.handleGotoReferenceButtonMouseClick(targetTopic, fieldRank, targetProfileName),
-                    not(errorProperty));
-        }
+                    if (!fieldReadOnly) {
+                        addContextualButton(
+                                fieldBox,
+                                DisplayConstants.LABEL_BUTTON_BROWSE,
+                                DisplayConstants.TOOLTIP_BUTTON_BROWSE_ENTRIES,
+                                viewData.handleBrowseEntriesButtonMouseClick(targetTopic, labelFieldRanks, entryReferenceProperty, fieldRank));
+                    }
+                    addContextualButtonWithActivationCondition(
+                            fieldBox,
+                            DisplayConstants.LABEL_BUTTON_GOTO,
+                            DisplayConstants.TOOLTIP_BUTTON_GOTO_LINKED_ENTRY,
+                            viewData.handleGotoReferenceButtonMouseClick(targetTopic, fieldRank, targetProfileName),
+                            not(errorProperty));
+                });
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
     }

@@ -25,6 +25,7 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.*;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -98,17 +99,14 @@ public class PatchGenerator extends AbstractDatabaseHolder {
 
         return topicObject.getData().getEntries().stream()
                 .filter(entry -> isInRefRange(entry, refFieldRank, range))
-                .map(acceptedEntry -> makeChangeObjectForEntry(topicObject.getTopic(), acceptedEntry, refFieldRank, structureFields, fieldRange, requiredReferences))
+                .map(acceptedEntry -> makeChangeObjectForEntry(topicObject.getTopic(), acceptedEntry, structureFields, fieldRange, requiredReferences))
                 .collect(toSet());
     }
 
     private Set<DbPatchDto.DbChangeDto> makeChangesObjectsForContentsWithId(List<DbStructureDto.Field> structureFields, ItemRange range, ItemRange fieldRange, RequiredReferences requiredReferences) {
-        OptionalInt potentialRank = DatabaseStructureQueryHelper.getUidFieldRank(structureFields);
-        Integer refFieldRank = potentialRank.isPresent() ? potentialRank.getAsInt() : null;
-
         return topicObject.getData().getEntries().stream()
                 .filter(entry -> isInIdRange(entry, range))
-                .map(acceptedEntry -> makeChangeObjectForEntry(topicObject.getTopic(), acceptedEntry, refFieldRank, structureFields, fieldRange, requiredReferences))
+                .map(acceptedEntry -> makeChangeObjectForEntry(topicObject.getTopic(), acceptedEntry, structureFields, fieldRange, requiredReferences))
                 .collect(toSet());
     }
 
@@ -149,19 +147,20 @@ public class PatchGenerator extends AbstractDatabaseHolder {
         Set<String> localizedResourceRefs = new HashSet<>();
         identifyGlobalizedAndLocalizedResourceReferences(resources, resourceFromTopic, globalizedResourceRefs, localizedResourceRefs);
 
-        Stream<DbPatchDto.DbChangeDto> changesObjectsForGlobalizedResources = makeChangesObjectsForResourcesWithLocale(topic, Optional.empty(), globalizedResourceRefs);
+        Stream<DbPatchDto.DbChangeDto> changesObjectsForGlobalizedResources = makeChangesObjectsForResourcesWithLocale(topic, null, globalizedResourceRefs);
         Stream<DbPatchDto.DbChangeDto> changesObjectsForLocalizedResources = Locale.valuesAsStream()
-                .flatMap(locale -> makeChangesObjectsForResourcesWithLocale(topic, Optional.of(locale), localizedResourceRefs));
+                .flatMap(locale -> makeChangesObjectsForResourcesWithLocale(topic, locale, localizedResourceRefs));
 
         return Stream.concat(changesObjectsForGlobalizedResources, changesObjectsForLocalizedResources);
     }
 
-    private Stream<DbPatchDto.DbChangeDto> makeChangesObjectsForResourcesWithLocale(DbDto.Topic topic, Optional<Locale> potentialLocale, Set<String> topicResources) {
+    private Stream<DbPatchDto.DbChangeDto> makeChangesObjectsForResourcesWithLocale(DbDto.Topic topic, Locale potentialLocale, Set<String> topicResources) {
         return topicResources.stream()
                 .map(resourceRef -> makeChangeObjectForResource(topic, potentialLocale, resourceRef));
     }
 
-    private DbPatchDto.DbChangeDto makeChangeObjectForResource(DbDto.Topic topic, Optional<Locale> potentialLocale, String resourceRef) {
+    private DbPatchDto.DbChangeDto makeChangeObjectForResource(DbDto.Topic topic, Locale locale, String resourceRef) {
+        Optional<Locale> potentialLocale = ofNullable(locale);
         String resourceValue = databaseMiner.getLocalizedResourceValueFromTopicAndReference(resourceRef, topic, potentialLocale.orElse(Locale.FRANCE))
                 .orElse(DatabaseGenHelper.RESOURCE_VALUE_DEFAULT);
 
@@ -174,7 +173,7 @@ public class PatchGenerator extends AbstractDatabaseHolder {
                 .build();
     }
 
-    private DbPatchDto.DbChangeDto makeChangeObjectForEntry(DbDto.Topic topic, ContentEntryDto entry, Integer refFieldRank, List<DbStructureDto.Field> structureFields, ItemRange fieldRange, RequiredReferences requiredReferences) {
+    private DbPatchDto.DbChangeDto makeChangeObjectForEntry(DbDto.Topic topic, ContentEntryDto entry, List<DbStructureDto.Field> structureFields, ItemRange fieldRange, RequiredReferences requiredReferences) {
         String entryReference = entry.getEffectiveRef();
         List<ContentItemDto> items = entry.getItems();
         if (fieldRange.isGlobal()) {

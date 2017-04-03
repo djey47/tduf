@@ -63,7 +63,7 @@ class DatabaseChangeHelperTest {
                 .build());
 
         when(minerMock.getDatabaseTopic(TOPIC)).thenReturn(of(databaseObject));
-        when(genHelperMock.buildDefaultContentItems(of(ENTRY_REFERENCE), databaseObject)).thenReturn(contentItems);
+        when(genHelperMock.buildDefaultContentItems(ENTRY_REFERENCE, databaseObject)).thenReturn(contentItems);
 
 
         // WHEN
@@ -402,7 +402,7 @@ class DatabaseChangeHelperTest {
         associationEntry.appendItem(ContentItemDto.builder().ofFieldRank(2).build());
 
         // WHEN
-        DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(associationEntry, ENTRY_REFERENCE, empty());
+        DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(associationEntry, ENTRY_REFERENCE, null);
 
         // THEN
         assertThat(associationEntry.getItems()).extracting("rawValue").containsExactly(ENTRY_REFERENCE, null);
@@ -417,7 +417,7 @@ class DatabaseChangeHelperTest {
         associationEntry.appendItem(ContentItemDto.builder().ofFieldRank(3).build());
 
         // WHEN
-        DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(associationEntry, ENTRY_REFERENCE, of(ENTRY_REFERENCE_BIS));
+        DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(associationEntry, ENTRY_REFERENCE, ENTRY_REFERENCE_BIS);
 
         // THEN
         assertThat(associationEntry.getItems()).extracting("rawValue").containsExactly(ENTRY_REFERENCE, ENTRY_REFERENCE_BIS, null);
@@ -427,7 +427,7 @@ class DatabaseChangeHelperTest {
     void updateAssociationEntryWithSourceAndTargetReferences_whenNullEntry_shouldThrowException() {
         // GIVEN-WHEN-THEN
         assertThrows(NullPointerException.class,
-                () -> DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(null, ENTRY_REFERENCE, of(ENTRY_REFERENCE_BIS)));
+                () -> DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(null, ENTRY_REFERENCE, ENTRY_REFERENCE_BIS));
     }
 
     @Test

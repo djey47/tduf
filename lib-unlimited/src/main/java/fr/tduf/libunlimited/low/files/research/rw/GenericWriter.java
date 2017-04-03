@@ -12,7 +12,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 import static fr.tduf.libunlimited.common.helper.AssertorHelper.assertSimpleCondition;
 import static java.util.Objects.requireNonNull;
@@ -58,7 +57,7 @@ public abstract class GenericWriter<T> implements StructureBasedProcessor {
         for(FileStructureDto.Field field : fields) {
 
             byte[] valueBytes = retrieveValueFromStore(field, repeaterKey);
-            Integer length = FormulaHelper.resolveToInteger(field.getSizeFormula(), Optional.of(repeaterKey), this.dataStore);
+            Integer length = FormulaHelper.resolveToInteger(field.getSizeFormula(), repeaterKey, this.dataStore);
 
             Type type = field.getType();
             switch (type) {

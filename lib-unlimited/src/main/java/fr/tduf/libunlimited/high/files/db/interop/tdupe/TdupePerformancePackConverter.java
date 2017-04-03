@@ -17,6 +17,7 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -32,11 +33,11 @@ public class TdupePerformancePackConverter {
     /**
      * Converts a performance pack line (aka. CarPhysics entry)
      * @param carPhysicsDataLine    : performance pack value
-     * @param carPhysicsRef         : vehicle slot reference, not mandatory
+     * @param carPhysicsRef         : vehicle slot reference, can be null
      * @param carPhysicsTopicObject : actual car physics topic in database
      * @return a TDUF mini patch object.
      */
-    public static DbPatchDto tdupkToJson(String carPhysicsDataLine, Optional<String> carPhysicsRef, DbDto carPhysicsTopicObject) {
+    public static DbPatchDto tdupkToJson(String carPhysicsDataLine, String carPhysicsRef, DbDto carPhysicsTopicObject) {
         requireNonNull(carPhysicsDataLine, "Line from Performance Pack is required.");
         requireNonNull(carPhysicsTopicObject, "CarPhysicsData topic object is required.");
 
@@ -47,10 +48,10 @@ public class TdupePerformancePackConverter {
                 .build();
     }
 
-    private static DbPatchDto.DbChangeDto getChangeObjectForContentsUpdate(String contentsEntry, DbDto carPhysicsTopicObject, Optional<String> carPhysicsRef) {
+    private static DbPatchDto.DbChangeDto getChangeObjectForContentsUpdate(String contentsEntry, DbDto carPhysicsTopicObject, String carPhysicsRef) {
 
         List<String> packValues = asList(contentsEntry.split(REGEX_SEPARATOR_ITEMS));
-        String slotReference = carPhysicsRef.orElse(packValues.get(0));
+        String slotReference = ofNullable(carPhysicsRef).orElse(packValues.get(0));
 
         Optional<ContentEntryDto> carPhysicsEntry = BulkDatabaseMiner.load(singletonList(carPhysicsTopicObject))
                 .getContentEntryFromTopicWithReference(slotReference, CAR_PHYSICS_DATA);

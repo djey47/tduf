@@ -83,7 +83,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
         for(FileStructureDto.Field field : fields) {
 
             String key = repeaterKey + field.getName();
-            Integer length = FormulaHelper.resolveToInteger(field.getSizeFormula(), Optional.of(repeaterKey), dataStore);
+            Integer length = FormulaHelper.resolveToInteger(field.getSizeFormula(), repeaterKey, dataStore);
             ReadResult readResult = readAndDumpValue(key, field, length);
 
             assertSimpleCondition(() -> length == null || readResult.parsedCount == length, "Structure mismatch for field key: " + key);

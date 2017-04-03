@@ -4,28 +4,27 @@ package fr.tduf.libunlimited.high.files.db.patcher.domain;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
+import static fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange.ALL;
 import static java.util.Arrays.asList;
-import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ItemRangeTest {
 
     @Test
-    void isGlobal_whenBothMinAndMaxEmpty_shouldReturnTrue() {
+    void isGlobal_whenBothMinAndMaxNull_shouldReturnTrue() {
         // GIVEN-WHEN
-        ItemRange actualRange = new ItemRange(empty(), empty());
+        ItemRange actualRange = new ItemRange(null, null);
 
         //THEN
         assertThat(actualRange.isGlobal()).isTrue();
     }
 
     @Test
-    void isGlobal_whenMinEmpty_shouldReturnFalse() {
+    void isGlobal_whenMinNull_shouldReturnFalse() {
         // GIVEN-WHEN
-        ItemRange actualRange = new ItemRange(empty(), Optional.of(1000000L));
+        ItemRange actualRange = new ItemRange(null, 1000000L);
 
         //THEN
         assertThat(actualRange.isGlobal()).isFalse();
@@ -41,9 +40,9 @@ class ItemRangeTest {
     }
 
     @Test
-    void fromCliOption_whenAbsentValue_shouldCreateGlobalRange() {
+    void fromCliOption_whenNullValue_shouldCreateGlobalRange() {
         // GIVEN-WHEN
-        ItemRange actualRange = ItemRange.fromCliOption(empty());
+        ItemRange actualRange = ItemRange.fromCliOption(null);
 
         // THEN
         assertThat(actualRange).isNotNull();
@@ -54,20 +53,20 @@ class ItemRangeTest {
     void fromCliOption_whenIllegalRangeValue_shouldThrowException() {
         // GIVEN-WHEN-THEN
         assertThrows(IllegalArgumentException.class,
-                () -> ItemRange.fromCliOption(Optional.of("azertyuiop")));
+                () -> ItemRange.fromCliOption("azertyuiop"));
     }
 
     @Test
     void fromCliOption_whenValueWithIllegalBounds_shouldThrowException() {
         // GIVEN-WHEN-THEN
         assertThrows(IllegalArgumentException.class,
-                () -> ItemRange.fromCliOption(Optional.of("1..0")));
+                () -> ItemRange.fromCliOption("1..0"));
     }
 
     @Test
     void fromCliOption_whenValueWithValidBounds_shouldReturnRange() {
         // GIVEN-WHEN
-        ItemRange actualRange = ItemRange.fromCliOption(Optional.of("10..20"));
+        ItemRange actualRange = ItemRange.fromCliOption("10..20");
 
         // THEN
         assertThat(actualRange).isNotNull();
@@ -79,7 +78,7 @@ class ItemRangeTest {
     @Test
     void fromCliOption_whenValueWithEnumeration_shouldReturnRange() {
         // GIVEN-WHEN
-        ItemRange actualRange = ItemRange.fromCliOption(Optional.of("10,20,30,40"));
+        ItemRange actualRange = ItemRange.fromCliOption("10,20,30,40");
 
         // THEN
         assertThat(actualRange).isNotNull();
@@ -133,11 +132,8 @@ class ItemRangeTest {
 
     @Test
     void accepts_whenGlobalRange_shouldReturnTrue(){
-        // Long
-        ItemRange actualRange = new ItemRange(empty(), empty());
-
-        // WHEN-THEN
-        assertThat(actualRange.accepts("12345678")).isTrue();
+        // GIVEN-WHEN-THEN
+        assertThat(ALL.accepts("12345678")).isTrue();
     }
 
     @Test
@@ -161,7 +157,7 @@ class ItemRangeTest {
     @Test
     void accepts_whenRefInRange_shouldReturnTrue(){
         // GIVEN
-        ItemRange actualRange = new ItemRange(Optional.of(1L), Optional.of(1000L));
+        ItemRange actualRange = new ItemRange(1L, 1000L);
 
         // WHEN-THEN
         assertThat(actualRange.accepts("500")).isTrue();
@@ -170,7 +166,7 @@ class ItemRangeTest {
     @Test
     void accepts_whenLowerUnbounded_andRefInRange_shouldReturnTrue(){
         // GIVEN
-        ItemRange actualRange = new ItemRange(empty(), Optional.of(1000L));
+        ItemRange actualRange = new ItemRange(null, 1000L);
 
         // WHEN-THEN
         assertThat(actualRange.accepts("500")).isTrue();
@@ -179,7 +175,7 @@ class ItemRangeTest {
     @Test
     void accepts_whenUpperUnbounded_andRefInRange_shouldReturnTrue(){
         // GIVEN
-        ItemRange actualRange = new ItemRange(Optional.of(1L), empty());
+        ItemRange actualRange = new ItemRange(1L, null);
 
         // WHEN-THEN
         assertThat(actualRange.accepts("12345678")).isTrue();
@@ -188,7 +184,7 @@ class ItemRangeTest {
     @Test
     void accepts_whenRefNotInRange_shouldReturnFalse(){
         // GIVEN
-        ItemRange actualRange = new ItemRange(Optional.of(1L), Optional.of(1000L));
+        ItemRange actualRange = new ItemRange(1L, 1000L);
 
         // WHEN-THEN
         assertThat(actualRange.accepts("12345678")).isFalse();

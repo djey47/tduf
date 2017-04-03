@@ -11,6 +11,7 @@ import org.apache.commons.lang3.Range;
 
 import java.util.*;
 
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -47,30 +48,30 @@ public class DatabaseGenHelper {
     }
 
     /**
-     * @param reference   : unique reference of entry to create. If empty, a new one will be generated when necessary
+     * @param reference   : unique reference of entry to create. If null, a new one will be generated when necessary
      * @param topicObject : database contents hosting items to be created
      * @return created items list with default values.
      */
-    public List<ContentItemDto> buildDefaultContentItems(Optional<String> reference, DbDto topicObject) {
+    public List<ContentItemDto> buildDefaultContentItems(String reference, DbDto topicObject) {
         return topicObject.getStructure().getFields().stream()
                 .map(structureField -> buildDefaultContentItem(reference, structureField, topicObject))
                 .collect(toList());
     }
 
     /**
-     * @param entryReference      : unique reference of entry to create. If empty, a new one will be generated when necessary
+     * @param entryReference      : unique reference of entry to create. If null, a new one will be generated when necessary
      * @param field               : structure field to create item from
      * @param topicObject         : database contents hosting items to be created
      * @return created item with default value.
      */
-    public ContentItemDto buildDefaultContentItem(Optional<String> entryReference, DbStructureDto.Field field, DbDto topicObject) {
+    public ContentItemDto buildDefaultContentItem(String entryReference, DbStructureDto.Field field, DbDto topicObject) {
         String rawValue;
         DbDto remoteTopicObject = databaseMiner.getDatabaseTopicFromReference(field.getTargetRef());
 
         DbStructureDto.FieldType fieldType = field.getFieldType();
         switch (fieldType) {
             case UID:
-                rawValue = entryReference
+                rawValue = ofNullable(entryReference)
                         .orElseGet(() -> DatabaseGenHelper.generateUniqueContentsEntryIdentifier(topicObject));
                 break;
             case BITFIELD:

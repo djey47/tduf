@@ -16,7 +16,6 @@ import org.mockito.Mock;
 import static fr.tduf.libunlimited.common.game.domain.Locale.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Optional.empty;
-import static java.util.Optional.of;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -62,7 +61,7 @@ class ResourcesStageControllerTest {
     @Disabled("Displays message box so can't be run automatically")
     void editResourceAndUpdateMainStage_whenResourceDoesNotExist_shouldRaisePopup() {
         // GIVEN
-        LocalizedResource newLocalizedResource = new LocalizedResource(new Pair<>("0", "V"), of(FRANCE));
+        LocalizedResource newLocalizedResource = new LocalizedResource(new Pair<>("0", "V"), FRANCE);
         doThrow(new IllegalArgumentException("Does not exist"))
                 .when(changeDataControllerMock).updateResourceWithReferenceForLocale(CAR_PHYSICS_DATA, FRANCE, "0", "V");
 
@@ -76,7 +75,7 @@ class ResourcesStageControllerTest {
     @Test
     void editResourceAndUpdateMainStage_whenNewValueForLocale_shouldCallChangeComponent_andUpdateAllStages() {
         // GIVEN
-        LocalizedResource newLocalizedResource = new LocalizedResource(new Pair<>("0", "V"), of(FRANCE));
+        LocalizedResource newLocalizedResource = new LocalizedResource(new Pair<>("0", "V"), FRANCE);
 
         // WHEN
         controller.editResourceAndUpdateMainStage(CAR_PHYSICS_DATA, "0", newLocalizedResource);
@@ -89,7 +88,7 @@ class ResourcesStageControllerTest {
     @Test
     void editResourceAndUpdateMainStage_whenExistingResourceReference_andNewValueAnyLocale_shouldCallChangeComponent_andUpdateAllStages() {
         // GIVEN
-        LocalizedResource newLocalizedResource = new LocalizedResource(new Pair<>("0", "V"), empty());
+        LocalizedResource newLocalizedResource = new LocalizedResource(new Pair<>("0", "V"), null);
 
         // WHEN
         controller.editResourceAndUpdateMainStage(CAR_PHYSICS_DATA, "0", newLocalizedResource);
@@ -102,7 +101,7 @@ class ResourcesStageControllerTest {
     @Test
     void editResourceAndUpdateMainStage_whenExistingResourceReference_andNewValueAndReference_shouldCallChangeComponent_andUpdateAllStages() {
         // GIVEN
-        LocalizedResource newLocalizedResource = new LocalizedResource(new Pair<>("1", "V"), empty());
+        LocalizedResource newLocalizedResource = new LocalizedResource(new Pair<>("1", "V"), null);
 
         // WHEN
         controller.editResourceAndUpdateMainStage(CAR_PHYSICS_DATA, "0", newLocalizedResource);
@@ -116,7 +115,7 @@ class ResourcesStageControllerTest {
     @Disabled("Displays message box so can't be run automatically")
     void editNewResourceAndUpdateMainStage_whenResourceAlreadyExists_shouldRaisePopup() {
         // GIVEN
-        LocalizedResource newLocalizedResource = new LocalizedResource(new Pair<>("0", "V"), of(FRANCE));
+        LocalizedResource newLocalizedResource = new LocalizedResource(new Pair<>("0", "V"), FRANCE);
         doThrow(new IllegalArgumentException("Already exists"))
                 .when(changeDataControllerMock).addResourceWithReference(CAR_PHYSICS_DATA, FRANCE, "0", "V");
 
@@ -130,7 +129,7 @@ class ResourcesStageControllerTest {
     @Test
     void editNewResourceAndUpdateMainStage_forAllLocales_shouldCallChangeComponent_andUpdateAllStages() {
         // GIVEN
-        LocalizedResource newLocalizedResource = new LocalizedResource(new Pair<>("1", "V"), empty());
+        LocalizedResource newLocalizedResource = new LocalizedResource(new Pair<>("1", "V"), null);
 
         // WHEN
         controller.editNewResourceAndUpdateMainStage(CAR_PHYSICS_DATA, newLocalizedResource);
@@ -143,7 +142,7 @@ class ResourcesStageControllerTest {
     @Test
     void editNewResourceAndUpdateMainStage_forSingleLocale_shouldCallChangeComponent_andUpdateAllStages() {
         // GIVEN
-        LocalizedResource newLocalizedResource = new LocalizedResource(new Pair<>("1", "V"), of(UNITED_STATES));
+        LocalizedResource newLocalizedResource = new LocalizedResource(new Pair<>("1", "V"), UNITED_STATES);
 
         // WHEN
         controller.editNewResourceAndUpdateMainStage(CAR_PHYSICS_DATA, newLocalizedResource);

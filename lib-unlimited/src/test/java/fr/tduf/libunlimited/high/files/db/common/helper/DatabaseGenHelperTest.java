@@ -18,7 +18,6 @@ import java.util.*;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
-import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -107,7 +106,7 @@ class DatabaseGenHelperTest {
         DbDto topicObject = createTopicObjectOneUIDField();
 
         // WHEN
-        List<ContentItemDto> actualItems = genHelper.buildDefaultContentItems(Optional.of(ENTRY_REFERENCE), topicObject);
+        List<ContentItemDto> actualItems = genHelper.buildDefaultContentItems(ENTRY_REFERENCE, topicObject);
 
         // THEN
         assertThat(actualItems).hasSize(1);
@@ -120,7 +119,7 @@ class DatabaseGenHelperTest {
         DbDto topicObject = createTopicObjectOneUIDField();
 
         // WHEN
-        List<ContentItemDto> actualItems = genHelper.buildDefaultContentItems(empty(), topicObject);
+        List<ContentItemDto> actualItems = genHelper.buildDefaultContentItems(null, topicObject);
 
         // THEN
         assertThat(actualItems).hasSize(1);
@@ -135,7 +134,7 @@ class DatabaseGenHelperTest {
 
         // WHEN-THEN
         assertThrows(NullPointerException.class,
-                () -> genHelper.buildDefaultContentItem(empty(), field, topicObject));
+                () -> genHelper.buildDefaultContentItem(null, field, topicObject));
     }
 
     @Test
@@ -145,7 +144,7 @@ class DatabaseGenHelperTest {
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.BITFIELD);
 
         // WHEN
-        ContentItemDto actualItem = genHelper.buildDefaultContentItem(empty(), field, topicObject);
+        ContentItemDto actualItem = genHelper.buildDefaultContentItem(null, field, topicObject);
 
         // THEN
         assertThat(actualItem.getFieldRank()).isEqualTo(1);
@@ -159,7 +158,7 @@ class DatabaseGenHelperTest {
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.FLOAT);
 
         // WHEN
-        ContentItemDto actualItem = genHelper.buildDefaultContentItem(empty(), field, topicObject);
+        ContentItemDto actualItem = genHelper.buildDefaultContentItem(null, field, topicObject);
 
         // THEN
         assertThat(actualItem.getFieldRank()).isEqualTo(1);
@@ -173,7 +172,7 @@ class DatabaseGenHelperTest {
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.INTEGER);
 
         // WHEN
-        ContentItemDto actualItem = genHelper.buildDefaultContentItem(empty(), field, topicObject);
+        ContentItemDto actualItem = genHelper.buildDefaultContentItem(null, field, topicObject);
 
         // THEN
         assertThat(actualItem.getFieldRank()).isEqualTo(1);
@@ -187,7 +186,7 @@ class DatabaseGenHelperTest {
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.PERCENT);
 
         // WHEN
-        ContentItemDto actualItem = genHelper.buildDefaultContentItem(empty(), field, topicObject);
+        ContentItemDto actualItem = genHelper.buildDefaultContentItem(null, field, topicObject);
 
         // THEN
         assertThat(actualItem.getFieldRank()).isEqualTo(1);
@@ -205,7 +204,7 @@ class DatabaseGenHelperTest {
 
 
         // WHEN
-        ContentItemDto actualItem = genHelper.buildDefaultContentItem(empty(), field, topicObject);
+        ContentItemDto actualItem = genHelper.buildDefaultContentItem(null, field, topicObject);
 
 
         // THEN
@@ -223,7 +222,7 @@ class DatabaseGenHelperTest {
 
 
         // WHEN
-        ContentItemDto actualItem = genHelper.buildDefaultContentItem(empty(), field, topicObject);
+        ContentItemDto actualItem = genHelper.buildDefaultContentItem(null, field, topicObject);
 
 
         // THEN
@@ -246,7 +245,7 @@ class DatabaseGenHelperTest {
 
 
         // WHEN
-        ContentItemDto actualItem = genHelper.buildDefaultContentItem(empty(), field, topicObject);
+        ContentItemDto actualItem = genHelper.buildDefaultContentItem(null, field, topicObject);
 
 
         // THEN
@@ -269,7 +268,7 @@ class DatabaseGenHelperTest {
 
 
         // WHEN
-        ContentItemDto actualItem = genHelper.buildDefaultContentItem(empty(), field, topicObject);
+        ContentItemDto actualItem = genHelper.buildDefaultContentItem(null, field, topicObject);
 
 
         // THEN

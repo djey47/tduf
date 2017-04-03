@@ -84,7 +84,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
                     .getStructure().getFields();
             if (DatabaseStructureQueryHelper.getUidFieldRank(structureFields).isPresent()) {
                 // Association topic -> browse remote entries in target topic
-                getEntriesStageController().initAndShowModalDialog(empty(), targetTopic, targetProfileName)
+                getEntriesStageController().initAndShowModalDialog(null, targetTopic, targetProfileName)
                         .ifPresent(selectedEntry -> addLinkedEntryWithTargetRefAndUpdateStage(tableViewSelectionModel, topicLinkObject.getTopic(), selectedEntry, topicLinkObject));
             } else {
                 // Direct topic link -> add default entry in target topic
@@ -192,7 +192,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
                 currentEntryIndexProperty().getValue(),
                 currentTopicProperty().getValue());
 
-        return TdumtPatchConverter.getContentsValue(potentialRef, values);
+        return TdumtPatchConverter.getContentsValue(potentialRef.orElse(null), values);
     }
 
     boolean exportEntriesToPatchFile(DbDto.Topic currentTopic, List<String> entryReferences, List<String> entryFields, String patchFileLocation) throws IOException {
@@ -253,9 +253,10 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
     }
 
     private void addLinkedEntryWithTargetRef(DbDto.Topic targetTopic, ContentEntryDataItem linkedEntry) {
-        String sourceEntryRef = getMiner().getContentEntryReferenceWithInternalIdentifier(currentEntryIndexProperty().getValue(), currentTopicProperty().getValue()).get();
-        Optional<String> targetEntryRef = ofNullable(linkedEntry)
-                .map(entry -> entry.referenceProperty().get());
+        int entryIdentifier = currentEntryIndexProperty().getValue();
+        String sourceEntryRef = getMiner().getContentEntryReferenceWithInternalIdentifier(entryIdentifier, currentTopicProperty().getValue())
+                .orElseThrow(() -> new IllegalStateException("No content entry ref with identifier: " + entryIdentifier));
+        String targetEntryRef = linkedEntry == null ? null : linkedEntry.referenceProperty().get();
 
         addLinkedEntry(sourceEntryRef, targetEntryRef, targetTopic);
     }
@@ -271,7 +272,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
         addLinkedEntryWithTargetRefAndUpdateStage(tableViewSelectionModel, targetTopic, null, topicLinkObject);
     }
 
-    private void addLinkedEntry(String sourceEntryRef, Optional<String> targetEntryRef, DbDto.Topic targetTopic) {
+    private void addLinkedEntry(String sourceEntryRef, String targetEntryRef, DbDto.Topic targetTopic) {
         requireNonNull(getChangeHelper());
         ContentEntryDto newEntry = getChangeHelper().addContentsEntryWithDefaultItems(targetTopic);
         DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(newEntry, sourceEntryRef, targetEntryRef);

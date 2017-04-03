@@ -33,9 +33,8 @@ import java.util.stream.Collectors;
 
 import static fr.tduf.libunlimited.common.game.domain.Locale.fromOrder;
 import static java.util.Arrays.asList;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import static javafx.scene.control.Alert.AlertType.*;
+import static javafx.scene.control.Alert.AlertType.ERROR;
+import static javafx.scene.control.Alert.AlertType.INFORMATION;
 import static javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE;
 import static javafx.scene.control.ButtonBar.ButtonData.OTHER;
 
@@ -258,10 +257,10 @@ public class DialogsHelper {
 
         editResourceDialog.setResultConverter(dialogButton -> {
             if (dialogButton == okButtonType) {
-                Optional<Locale> affectedLocale = empty();
+                Locale affectedLocale = null;
                 int selectedLocaleIndex = localeChoiceBox.getSelectionModel().getSelectedIndex();
                 if (selectedLocaleIndex != 0) {
-                    affectedLocale = of(fromOrder(selectedLocaleIndex));
+                    affectedLocale = fromOrder(selectedLocaleIndex);
                 }
                 return new LocalizedResource(new Pair<>(referenceTextField.getText(), valueTextField.getText()), affectedLocale);
             }

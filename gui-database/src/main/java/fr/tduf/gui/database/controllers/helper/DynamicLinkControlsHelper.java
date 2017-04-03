@@ -58,7 +58,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         ObservableList<ContentEntryDataItem> resourceData = FXCollections.observableArrayList();
         resourceListByTopicLinkIndex.put(topicLinkObject, resourceData);
 
-        HBox fieldBox = addFieldBox(ofNullable(topicLinkObject.getGroup()), 250.0);
+        HBox fieldBox = addFieldBox(topicLinkObject.getGroup(), 250.0);
 
         addFieldLabelForLinkedTopic(fieldBox, topicLinkObject);
 

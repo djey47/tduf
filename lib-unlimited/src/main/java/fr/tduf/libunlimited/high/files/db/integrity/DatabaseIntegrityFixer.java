@@ -21,6 +21,7 @@ import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeE
 import static java.util.Arrays.asList;
 import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.*;
 
 /**
@@ -99,12 +100,12 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
             Map<ErrorInfoEnum, Object> information = integrityError.getInformation();
 
             DbDto.Topic sourceTopic = (DbDto.Topic) information.get(SOURCE_TOPIC);
-            Optional<DbDto.Topic> remoteTopic = Optional.ofNullable((DbDto.Topic) information.get(REMOTE_TOPIC));
+            Optional<DbDto.Topic> remoteTopic = ofNullable((DbDto.Topic) information.get(REMOTE_TOPIC));
             String reference = (String) information.get(REFERENCE);
             Integer entryIdentifier = (Integer) information.get(ENTRY_ID);
             fr.tduf.libunlimited.common.game.domain.Locale locale = (Locale) information.get(ErrorInfoEnum.LOCALE);
             //noinspection unchecked
-            Optional<Set<Locale>> missingLocales = Optional.ofNullable ((Set<Locale>) information.get(MISSING_LOCALES));
+            Set<Locale> missingLocales = (Set<Locale>) information.get(MISSING_LOCALES);
             //noinspection unchecked
             Map<String, Integer> perValueCount = (Map<String, Integer>) information.get(PER_VALUE_COUNT);
 
@@ -113,7 +114,7 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
                     addResourceValueFromValidLocale(reference, remoteTopic.orElse(sourceTopic), missingLocales);
                     break;
                 case CONTENTS_REFERENCE_NOT_FOUND:
-                    addContentsEntryWithDefaultItems(Optional.of(reference), remoteTopic
+                    addContentsEntryWithDefaultItems(reference, remoteTopic
                             .orElseThrow(() -> new IllegalStateException("No remote topic for a contents reference"))
                     );
                     break;
@@ -185,11 +186,11 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
 
     private void addContentItem(DbStructureDto.Field missingField, ContentEntryDto invalidEntry, DbDto topicObject) {
         int newFieldRank = missingField.getRank();
-        ContentItemDto newItem = genHelper.buildDefaultContentItem(Optional.empty(), missingField, topicObject);
+        ContentItemDto newItem = genHelper.buildDefaultContentItem(null, missingField, topicObject);
         invalidEntry.addItemAtRank(newFieldRank, newItem);
     }
 
-    private void addResourceValueFromValidLocale(String reference, DbDto.Topic topic, Optional<Set<Locale>> missingLocales) throws Exception {
+    private void addResourceValueFromValidLocale(String reference, DbDto.Topic topic, Set<Locale> missingLocales) throws Exception {
         Set<Locale> validResourceLocales = findValidResourceLocales();
         if (validResourceLocales.isEmpty()) {
             throw new Exception("Unable to add value for locales " + missingLocales + ": no valid resource locale exists.");
@@ -203,14 +204,17 @@ public class DatabaseIntegrityFixer extends AbstractDatabaseHolder {
                 // Use supplier to only invoke addEntry when result is absent
                 .orElseGet(() -> resourceObject.addEntryByReference(reference));
 
-        missingLocales.orElse(Locale.valuesAsStream().collect(toSet())).forEach(missingLocale -> {
+        ofNullable(missingLocales)
+                .orElse(Locale.valuesAsStream()
+                        .collect(toSet()))
+                .forEach(missingLocale -> {
             String referenceValue = entry.getValueForLocale(referenceLocale)
                     .orElse(RESOURCE_VALUE_DEFAULT);
             entry.setValueForLocale(referenceValue, missingLocale);
         });
     }
 
-    private void addContentsEntryWithDefaultItems(Optional<String> reference, DbDto.Topic topic) {
+    private void addContentsEntryWithDefaultItems(String reference, DbDto.Topic topic) {
         DbDto topicObject = databaseMiner.getDatabaseTopic(topic)
                 .orElseThrow(() -> new IllegalStateException("No contents for topic: " + topic));
 

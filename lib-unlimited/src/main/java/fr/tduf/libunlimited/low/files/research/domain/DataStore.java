@@ -19,7 +19,6 @@ import static fr.tduf.libunlimited.common.helper.AssertorHelper.assertSimpleCond
 import static fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper.*;
 import static fr.tduf.libunlimited.low.files.research.domain.Type.*;
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -513,9 +512,9 @@ public class DataStore {
                 } catch (IllegalArgumentException iae) {
                     type = TEXT;
                     Optional<String> potentialParentKey = ofNullable(parentKey);
-                    int length = potentialParentKey.isPresent() ?
-                            computeValueLengthWithParentKey(fieldDefinition.getSizeFormula(), potentialParentKey.get()) :
-                            computeValueLengthWithoutParentKey(fieldDefinition.getSizeFormula());
+                    int length = potentialParentKey
+                            .map(k -> computeValueLengthWithParentKey(fieldDefinition.getSizeFormula(), k))
+                            .orElseGet(() -> computeValueLengthWithoutParentKey(fieldDefinition.getSizeFormula()));
                     rawValue = TypeHelper.textToRaw(stringValue, length);
                     Log.info(THIS_CLASS_NAME, "Unable to parse hex: '" + stringValue + "', will be considered as text");
                 }
@@ -528,11 +527,11 @@ public class DataStore {
     }
 
     private int computeValueLengthWithoutParentKey(String sizeFormula) {
-        return FormulaHelper.resolveToInteger(sizeFormula, empty(), this);
+        return FormulaHelper.resolveToInteger(sizeFormula, null, this);
     }
 
     private int computeValueLengthWithParentKey(String sizeFormula, String parentKey) {
-        return FormulaHelper.resolveToInteger(sizeFormula, of(parentKey), this);
+        return FormulaHelper.resolveToInteger(sizeFormula, parentKey, this);
     }
 
     private void readJsonArrayNode(JsonNode jsonNode, String parentKey) {

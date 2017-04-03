@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 
 /**
  * Represents a range of items for patch generation (references, field indexes...)
@@ -28,21 +29,20 @@ public class ItemRange {
         bounds = null;
     }
 
-    ItemRange(Optional<Long> lowerBound, Optional<Long> upperBound) {
+    ItemRange(Long lowerBound, Long upperBound) {
         enumeratedItems = null;
         bounds = RangeBounds.fromBounds(lowerBound, upperBound);
     }
 
     /**
-     * @param potentialRangeOptionValue     : if present, a range under the forms 1,2,3 or 1..3
+     * @param rangeOptionValue  : if present, a range under the forms 1,2,3 or 1..3
      * @return a range from a command-line option.
      */
-    public static ItemRange fromCliOption(Optional<String> potentialRangeOptionValue) {
-        if (!potentialRangeOptionValue.isPresent()) {
+    public static ItemRange fromCliOption(String rangeOptionValue) {
+        if (rangeOptionValue == null) {
             return ALL;
         }
 
-        String rangeOptionValue = potentialRangeOptionValue.get();
         checkValueFormat(rangeOptionValue);
 
         if (rangeOptionValue.contains("..")) {
@@ -109,7 +109,7 @@ public class ItemRange {
     }
 
     private static ItemRange global() {
-        return new ItemRange(Optional.empty(), Optional.empty());
+        return new ItemRange(null, null);
     }
 
     private static ItemRange fromEnumerated(String enumeratedRange) {
@@ -126,17 +126,17 @@ public class ItemRange {
             throw new IllegalArgumentException("Invalid range: " + lowerBound + ".." + upperBound);
         }
 
-        return new ItemRange(Optional.of(lowerBound), Optional.of(upperBound));
+        return new ItemRange(lowerBound, upperBound);
     }
 
     Optional<Long> fetchLowerBound() {
-        return Optional.ofNullable(bounds)
-                .flatMap(bounds -> bounds.lowerBound);
+        return ofNullable(bounds)
+                .map(bounds -> bounds.lowerBound);
     }
 
     Optional<Long> fetchUpperBound() {
-        return Optional.ofNullable(bounds)
-                .flatMap(bounds -> bounds.upperBound);
+        return ofNullable(bounds)
+                .map(bounds -> bounds.upperBound);
     }
 
     List<String> getEnumeratedItems() {
@@ -144,19 +144,19 @@ public class ItemRange {
     }
 
     private static class RangeBounds {
-        private final Optional<Long> lowerBound;
-        private final Optional<Long> upperBound;
+        private final Long lowerBound;
+        private final Long upperBound;
 
-        private RangeBounds(Optional<Long> lowerBound, Optional<Long> upperBound) {
+        private RangeBounds(Long lowerBound, Long upperBound) {
             this.lowerBound = lowerBound;
             this.upperBound = upperBound;
         }
 
         private boolean isGlobal() {
-            return !lowerBound.isPresent() && !upperBound.isPresent();
+            return lowerBound == null && upperBound == null;
         }
 
-        private static RangeBounds fromBounds(Optional<Long> lowerBound, Optional<Long> upperBound) {
+        private static RangeBounds fromBounds(Long lowerBound, Long upperBound) {
             return new RangeBounds(lowerBound, upperBound);
         }
 
@@ -167,22 +167,22 @@ public class ItemRange {
         }
 
         private boolean valueBelowLowerBound(long value) {
-            return !upperBound.isPresent()
-                    && lowerBound.isPresent()
-                    && value >= lowerBound.get();
+            return upperBound == null
+                    && lowerBound != null
+                    && value >= lowerBound;
         }
 
         private boolean valueAboveUpperBound(long value) {
-            return !lowerBound.isPresent()
-                    && upperBound.isPresent()
-                    && value <= upperBound.get();
+            return lowerBound == null
+                    && upperBound != null
+                    && value <= upperBound;
         }
 
         private boolean valueInBounds(long value) {
-            return lowerBound.isPresent()
-                    && upperBound.isPresent()
-                    && value >= lowerBound.get()
-                    && value <= upperBound.get();
+            return lowerBound != null
+                    && upperBound != null
+                    && value >= lowerBound
+                    && value <= upperBound;
         }
     }
 }

@@ -227,6 +227,7 @@ class MainStageChangeDataControllerTest {
     void importPerformancePack_shouldApplyIt() throws URISyntaxException, ReflectiveOperationException {
         // GIVEN
         String packFileName = fr.tduf.libunlimited.common.helper.FilesHelper.getFileNameFromResourcePath("/patches/pp.tdupk");
+        String affectedRef = verifyMiner.getContentEntryReferenceWithInternalIdentifier(1, CAR_PHYSICS_DATA).get();
 
         when(mainStageController.getDatabaseObjects()).thenReturn(databaseObjects);
         when(mainStageController.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(1));
@@ -237,7 +238,7 @@ class MainStageChangeDataControllerTest {
 
 
         // THEN
-        assertThat(verifyMiner.getContentEntryFromTopicWithReference("70033960", CAR_PHYSICS_DATA)
+        assertThat(verifyMiner.getContentEntryFromTopicWithReference(affectedRef, CAR_PHYSICS_DATA)
                 .flatMap(entry -> entry.getItemAtRank(17))
                 .map(ContentItemDto::getRawValue))
                 .contains("6210");

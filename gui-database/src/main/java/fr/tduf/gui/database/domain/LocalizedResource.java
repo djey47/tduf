@@ -6,6 +6,7 @@ import javafx.util.Pair;
 
 import java.util.Optional;
 
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 /**
@@ -19,9 +20,9 @@ public class LocalizedResource {
 
     private Optional<DbDto.Topic> topic;
 
-    public LocalizedResource(Pair<String, String> referenceValuePair, Optional<Locale> locale) {
+    public LocalizedResource(Pair<String, String> referenceValuePair, Locale locale) {
         this.referenceValuePair = referenceValuePair;
-        this.locale = locale;
+        this.locale = ofNullable(locale);
     }
 
     public LocalizedResource(DbDto.Topic topic, String reference) {

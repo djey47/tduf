@@ -18,6 +18,7 @@ import static fr.tduf.libunlimited.high.files.db.common.DatabaseConstants.*;
 import static fr.tduf.gui.installer.common.DisplayConstants.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_SHOPS;
 import static java.util.Collections.singletonList;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.*;
 
 /**
@@ -124,7 +125,9 @@ public class DealerHelper extends CommonHelper {
 
     // Ignore warning: method reference
     private Dealer dealerEntryToDomainObject(ContentEntryDto dealerEntry) {
-        String dealerReference = dealerEntry.getItemAtRank(DatabaseConstants.FIELD_RANK_DEALER_REF).get().getRawValue();
+        String dealerReference = dealerEntry.getItemAtRank(FIELD_RANK_DEALER_REF)
+                .map(ContentItemDto::getRawValue)
+                .orElseThrow(() -> new IllegalStateException("No raw value for item at rank: " + FIELD_RANK_DEALER_REF));
 
         Optional<Resource> displayedName = getResourceFromDatabaseEntry(dealerEntry, CAR_SHOPS, DatabaseConstants.FIELD_RANK_DEALER_LIBELLE);
 
@@ -136,7 +139,7 @@ public class DealerHelper extends CommonHelper {
                 .withRef(dealerReference)
                 .withDisplayedName(displayedName.orElse(null))
                 .withLocation(location.orElse(DisplayConstants.LABEL_UNKNOWN))
-                .withSlots(getActualSlots(dealerEntry, carShopsReference))
+                .withSlots(getActualSlots(dealerEntry, carShopsReference.orElse(null)))
                 .build();
     }
 
@@ -148,12 +151,13 @@ public class DealerHelper extends CommonHelper {
                 .build();
     }
 
-    private List<Dealer.Slot> getActualSlots(ContentEntryDto carShopsEntry, Optional<DbMetadataDto.DealerMetadataDto> carShopsReference) {
+    private List<Dealer.Slot> getActualSlots(ContentEntryDto carShopsEntry, DbMetadataDto.DealerMetadataDto carShopsReference) {
+        Optional<DbMetadataDto.DealerMetadataDto> potentialReference = ofNullable(carShopsReference);
         return carShopsEntry.getItems().stream()
                 .filter(item -> item.getFieldRank() >= DatabaseConstants.FIELD_RANK_DEALER_SLOT_1
                         && item.getFieldRank() <= DatabaseConstants.FIELD_RANK_DEALER_SLOT_15)
-                .filter(slotItem -> ! carShopsReference.isPresent()
-                        || carShopsReference.get().getAvailableSlots().contains(getSlotRankFromFieldRank(slotItem)))
+                .filter(slotItem -> ! potentialReference.isPresent()
+                        || potentialReference.get().getAvailableSlots().contains(getSlotRankFromFieldRank(slotItem)))
                 .map(this::slotItemToDomainObject)
                 .collect(toList());
     }

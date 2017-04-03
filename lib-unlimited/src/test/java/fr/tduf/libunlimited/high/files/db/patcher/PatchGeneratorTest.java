@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.esotericsoftware.minlog.Log.LEVEL_INFO;
 import static fr.tduf.libunlimited.common.game.domain.Locale.*;
@@ -77,7 +76,7 @@ class PatchGeneratorTest {
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
-        DbPatchDto actualPatchObject = generator.makePatch(ACHIEVEMENTS, ItemRange.fromCliOption(Optional.of("0,1")), createDefaultRange());
+        DbPatchDto actualPatchObject = generator.makePatch(ACHIEVEMENTS, ItemRange.fromCliOption("0,1"), createDefaultRange());
 
         // THEN
         assertPatchGeneratedWithinRangeForOneTopicWithoutREFSupport(actualPatchObject);
@@ -90,7 +89,7 @@ class PatchGeneratorTest {
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
-        DbPatchDto actualPatchObject = generator.makePatch(BRANDS, ItemRange.fromCliOption(Optional.of("734,735")), createDefaultRange());
+        DbPatchDto actualPatchObject = generator.makePatch(BRANDS, ItemRange.fromCliOption("734,735"), createDefaultRange());
 
         // THEN
         assertPatchGeneratedWithinRangeForOneTopic(actualPatchObject);
@@ -103,7 +102,7 @@ class PatchGeneratorTest {
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
-        DbPatchDto actualPatchObject = generator.makePatch(HAIR, ItemRange.fromCliOption(Optional.of("54522")), createDefaultRange());
+        DbPatchDto actualPatchObject = generator.makePatch(HAIR, ItemRange.fromCliOption("54522"), createDefaultRange());
 
         // THEN
         assertPatchGeneratedWithinRangeForLinkedTopics(actualPatchObject);
@@ -116,7 +115,7 @@ class PatchGeneratorTest {
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
-        DbPatchDto actualPatchObject = generator.makePatch(CAR_PHYSICS_DATA, ItemRange.fromCliOption(Optional.of("606298799")), createDefaultRange());
+        DbPatchDto actualPatchObject = generator.makePatch(CAR_PHYSICS_DATA, ItemRange.fromCliOption("606298799"), createDefaultRange());
 
         // THEN
         assertPatchGeneratedForAssociatedTopics(actualPatchObject);
@@ -129,7 +128,7 @@ class PatchGeneratorTest {
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
-        DbPatchDto actualPatchObject = generator.makePatch(PNJ, ItemRange.fromCliOption(Optional.of("540091906")), createDefaultRange());
+        DbPatchDto actualPatchObject = generator.makePatch(PNJ, ItemRange.fromCliOption("540091906"), createDefaultRange());
 
         // THEN
         assertPatchGeneratedWithinRangeForLinkedTopicsWithRemoteContentsReference(actualPatchObject);
@@ -142,7 +141,7 @@ class PatchGeneratorTest {
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
-        DbPatchDto actualPatchObject = generator.makePatch(BRANDS, ItemRange.fromCliOption(Optional.of("0..735")), createDefaultRange());
+        DbPatchDto actualPatchObject = generator.makePatch(BRANDS, ItemRange.fromCliOption("0..735"), createDefaultRange());
 
         // THEN
         assertPatchGeneratedWithinRangeForOneTopic(actualPatchObject);
@@ -151,8 +150,8 @@ class PatchGeneratorTest {
     @Test
     void makePatch_whenUsingRealDatabase_andUniqueFieldRank_shouldReturnCorrectPatchObjectWithPartialChanges() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
-        ItemRange refRange = ItemRange.fromCliOption(Optional.of("72825"));
-        ItemRange fieldRange = ItemRange.fromCliOption(Optional.of("2"));
+        ItemRange refRange = ItemRange.fromCliOption("72825");
+        ItemRange fieldRange = ItemRange.fromCliOption("2");
 
         List<DbDto> databaseObjects = createDatabaseObjectsWithTwoLinkedTopicsFromRealFiles();
         PatchGenerator generator = createPatchGenerator(databaseObjects);
@@ -169,8 +168,8 @@ class PatchGeneratorTest {
     @Test
     void makePatch_whenUsingRealDatabase_andFieldRanksAsBounds_shouldReturnCorrectPatchObjectWithPartialChanges() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
-        ItemRange refRange = ItemRange.fromCliOption(Optional.of("735"));
-        ItemRange fieldRange = ItemRange.fromCliOption(Optional.of("2..4"));
+        ItemRange refRange = ItemRange.fromCliOption("735");
+        ItemRange fieldRange = ItemRange.fromCliOption("2..4");
 
         List<DbDto> databaseObjects = createDatabaseObjectsWithTwoLinkedTopicsFromRealFiles();
         PatchGenerator generator = createPatchGenerator(databaseObjects);
@@ -187,8 +186,8 @@ class PatchGeneratorTest {
     @Test
     void makePatch_whenUsingRealDatabase_andFieldRanksAsEnumeration_shouldReturnCorrectPatchObjectWithPartialChanges() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
-        ItemRange refRange = ItemRange.fromCliOption(Optional.of("735"));
-        ItemRange fieldRange = ItemRange.fromCliOption(Optional.of("2,3,4"));
+        ItemRange refRange = ItemRange.fromCliOption("735");
+        ItemRange fieldRange = ItemRange.fromCliOption("2,3,4");
 
         List<DbDto> databaseObjects = createDatabaseObjectsWithTwoLinkedTopicsFromRealFiles();
         PatchGenerator generator = createPatchGenerator(databaseObjects);
@@ -205,7 +204,7 @@ class PatchGeneratorTest {
     @Test
     void makePatch_whenUsingRealDatabase_andSingleFieldRank_andNoREFSupport_shouldReturnCorrectPatchObjectWithPartialChanges() throws IOException, URISyntaxException, ReflectiveOperationException {
         // GIVEN
-        ItemRange fieldRange = ItemRange.fromCliOption(Optional.of("1"));
+        ItemRange fieldRange = ItemRange.fromCliOption("1");
 
         List<DbDto> databaseObjects = createDatabaseObjectsWithOneTopicFromRealFile();
         PatchGenerator generator = createPatchGenerator(databaseObjects);
@@ -239,7 +238,7 @@ class PatchGeneratorTest {
         PatchGenerator generator = createPatchGenerator(databaseObjects);
 
         // WHEN
-        DbPatchDto actualPatchObject = generator.makePatch(PNJ, ItemRange.fromCliOption(Optional.empty()), createDefaultRange());
+        DbPatchDto actualPatchObject = generator.makePatch(PNJ, createDefaultRange(), createDefaultRange());
 
         // THEN
         assertThat(actualPatchObject.getChanges()).hasSize(1346);

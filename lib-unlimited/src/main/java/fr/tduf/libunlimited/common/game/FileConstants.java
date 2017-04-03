@@ -34,7 +34,7 @@ public class FileConstants {
     public static final String FORMAT_REGULAR_SOUND = "%s.wav";
 
     public static final Pattern PATTERN_INTERIOR_MODEL_BANK_FILE = Pattern.compile(".+_I\\.bnk", CASE_INSENSITIVE);
-    public static final Pattern PATTERN_RIM_BANK_FILE = Pattern.compile(".+_(F|R)_([0-9]{2})\\.bnk", CASE_INSENSITIVE);
+    public static final Pattern PATTERN_RIM_BANK_FILE = Pattern.compile(".+_([FR])_([0-9]{2})\\.bnk", CASE_INSENSITIVE);
 
     public static final String PREFIX_SPOT_EXTERIOR_BANK = "e";
     public static final String PREFIX_SPOT_INTERIOR_BANK = "i";

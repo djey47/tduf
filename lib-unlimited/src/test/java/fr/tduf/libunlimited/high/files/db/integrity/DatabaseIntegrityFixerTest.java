@@ -26,7 +26,6 @@ import static fr.tduf.libunlimited.low.files.db.domain.IntegrityError.ErrorTypeE
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -176,7 +175,7 @@ class DatabaseIntegrityFixerTest {
                 .withRawValue("REF")
                 .build();
         List<ContentItemDto> fixedItems = asList(fixedItem1, fixedItem2, fixedItem3);
-        when(genHelperMock.buildDefaultContentItems(Optional.of("11111111"), remoteTopicObject)).thenReturn(fixedItems);
+        when(genHelperMock.buildDefaultContentItems("11111111", remoteTopicObject)).thenReturn(fixedItems);
 
 
         // WHEN
@@ -234,8 +233,8 @@ class DatabaseIntegrityFixerTest {
                 .withRawValue("200")
                 .build();
 
-        when(genHelperMock.buildDefaultContentItem(empty(), secondStructureField,  topicObject)).thenReturn(secondItem);
-        when(genHelperMock.buildDefaultContentItem(empty(), thirdStructureField,  topicObject)).thenReturn(thirdItem);
+        when(genHelperMock.buildDefaultContentItem(null, secondStructureField,  topicObject)).thenReturn(secondItem);
+        when(genHelperMock.buildDefaultContentItem(null, thirdStructureField,  topicObject)).thenReturn(thirdItem);
 
 
         // WHEN

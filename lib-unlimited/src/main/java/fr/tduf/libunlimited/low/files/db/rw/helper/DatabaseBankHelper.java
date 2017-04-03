@@ -14,11 +14,11 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway.EXTENSION_BANKS;
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_DB_CONTENTS;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -34,25 +34,22 @@ public class DatabaseBankHelper {
      * Optionally, prepares further processing by copying original bank files to targetDirectory.
      *
      * @param databaseDirectory : directory containing ALL TDU database files
-     * @param targetDirectory   : directory where to copy original bank files, if provided
+     * @param targetDirectory   : directory where to copy original bank files, if provided (can be null)
      * @param bankSupport       : module instance to unpack/repack bnks
      * @return directory where extracted contents are located for further processing.
      */
-    public static String unpackDatabaseFromDirectory(String databaseDirectory, Optional<String> targetDirectory, BankSupport bankSupport) throws IOException {
+    public static String unpackDatabaseFromDirectory(String databaseDirectory, String targetDirectory, BankSupport bankSupport) throws IOException {
         requireNonNull(databaseDirectory, "A database directory is required.");
         requireNonNull(bankSupport, "A module instance for bank support is required.");
 
         String tempDirectory = createTempDirectory();
 
         getDatabaseBankFileNames().stream()
-
                 .parallel()
-
                 .map((fileName) -> checkDatabaseFileExists(databaseDirectory, fileName))
-
                 .forEach((validFileName) -> unpackDatabaseAndGroupFiles(validFileName, tempDirectory, bankSupport));
 
-        targetDirectory.ifPresent((directory) -> {
+        ofNullable(targetDirectory).ifPresent((directory) -> {
             try {
                 copyOriginalBankFilesToTargetDirectory(tempDirectory, directory);
             } catch (IOException ioe) {
@@ -71,12 +68,12 @@ public class DatabaseBankHelper {
      * @param originalBanksDirectory        : directory where original bank files are kept, if provided
      * @param bankSupport                   : module instance to unpack/repack bnks
      */
-    public static void repackDatabaseFromDirectory(String extractedDatabaseDirectory, String targetDirectory, Optional<String> originalBanksDirectory, BankSupport bankSupport) {
+    public static void repackDatabaseFromDirectory(String extractedDatabaseDirectory, String targetDirectory, String originalBanksDirectory, BankSupport bankSupport) {
         requireNonNull(extractedDatabaseDirectory, "A database directory is required.");
         requireNonNull(targetDirectory, "A target directory is required.");
         requireNonNull(bankSupport, "A module instance for bank support is required.");
 
-        originalBanksDirectory.ifPresent((directory) -> {
+        ofNullable(originalBanksDirectory).ifPresent((directory) -> {
             try {
                 copyOriginalBankFilesToTargetDirectory(directory, extractedDatabaseDirectory);
             } catch (IOException ioe) {

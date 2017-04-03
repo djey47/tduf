@@ -39,8 +39,8 @@ public class DatabaseParser {
     private static final Pattern CONTENT_PATTERN = compile("^([0-9\\-.,]*;)+$");                        //e.g 55736935;5;20;54400734;54359455;54410835;561129540;5337472;211;
 
     private static final Pattern META_NAME_PATTERN = compile("^// (TDU_.+)\\.(.+)$");                   //e.g // TDU_Achievements.fr
-    private static final Pattern META_VERSION_PATTERN = compile("^// (?:v|V)ersion: (.+)$");            //e.g // version: 1,2 OR // Version: 1,2
-    private static final Pattern META_CATEGORY_COUNT_PATTERN = compile("^// (?:c|C)ategories: (.+)$");  //e.g // categories: 6 OR // Categories: 6
+    private static final Pattern META_VERSION_PATTERN = compile("^// (?:[vV])ersion: (.+)$");            //e.g // version: 1,2 OR // Version: 1,2
+    private static final Pattern META_CATEGORY_COUNT_PATTERN = compile("^// (?:[cC])ategories: (.+)$");  //e.g // categories: 6 OR // Categories: 6
     private static final Pattern META_FIELD_COUNT_PATTERN = compile("^// Fields: (.+)$");               //e.g // Fields: 9
     private static final Pattern RES_ENTRY_PATTERN = compile("^\\{(.*(\\n?.*)*)} (\\d+)$");           //e.g {??} 53410835
 

@@ -15,8 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -77,7 +76,7 @@ public class DatabaseChangeHelper {
         DbDataDto dataDto = topicObject.getData();
 
         ContentEntryDto newEntry = ContentEntryDto.builder()
-                .addItems(genHelper.buildDefaultContentItems(of(reference), topicObject))
+                .addItems(genHelper.buildDefaultContentItems(reference, topicObject))
                 .build();
 
         dataDto.addEntry(newEntry);
@@ -98,7 +97,7 @@ public class DatabaseChangeHelper {
         DbDataDto dataDto = topicObject.getData();
 
         ContentEntryDto newEntry = ContentEntryDto.builder()
-                .addItems(genHelper.buildDefaultContentItems(empty(), topicObject))
+                .addItems(genHelper.buildDefaultContentItems(null, topicObject))
                 .build();
 
         dataDto.addEntry(newEntry);
@@ -282,12 +281,12 @@ public class DatabaseChangeHelper {
      * @param sourceEntryRef          : reference of source entry (REF field for source topic)
      * @param potentialTargetEntryRef : reference of target entry (REF field for target topic). Mandatory.
      */
-    public static void updateAssociationEntryWithSourceAndTargetReferences(ContentEntryDto entry, String sourceEntryRef, Optional<String> potentialTargetEntryRef) {
+    public static void updateAssociationEntryWithSourceAndTargetReferences(ContentEntryDto entry, String sourceEntryRef, String potentialTargetEntryRef) {
         requireNonNull(entry, "A content entry is required.");
 
         // We assume source reference is first field ... target reference (if any) is second field  ...
         entry.updateItemValueAtRank(sourceEntryRef, 1);
-        potentialTargetEntryRef
+        ofNullable(potentialTargetEntryRef)
                 .ifPresent(ref -> entry.updateItemValueAtRank(ref, 2));
     }
 

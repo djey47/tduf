@@ -1,10 +1,9 @@
 package fr.tduf.gui.database.services;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.database.common.DisplayConstants;
-import fr.tduf.libunlimited.high.files.db.common.helper.BankHelper;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
+import fr.tduf.libunlimited.high.files.db.common.helper.BankHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import javafx.beans.property.ObjectProperty;

@@ -80,7 +80,7 @@ class UpdateDatabaseStep extends GenericStep {
 
         String ppFilePath = potentialPPFilePath.get().toString();
         Log.info(THIS_CLASS_NAME, "->Applying TDUPE Performance pack: " + ppFilePath + "...");
-        tdupeGateway.applyPerformancePackToEntryWithReference(Optional.of(slotRef), ppFilePath);
+        tdupeGateway.applyPerformancePackToEntryWithReference(slotRef, ppFilePath);
     }
 
     private void writeEffectivePatch(DbPatchDto patchObject, String targetPatchFile) throws IOException {

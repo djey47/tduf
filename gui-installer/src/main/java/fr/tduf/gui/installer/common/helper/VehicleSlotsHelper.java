@@ -14,7 +14,6 @@ import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -223,9 +222,9 @@ public class VehicleSlotsHelper extends CommonHelper {
             return realName.getValue();
         }
 
-        final String brandName = getNameFromLocalResourceValue(ofNullable(vehicleSlot.getBrand().getDisplayedName().getValue()), "");
-        final String modelName = getNameFromLocalResourceValue(ofNullable(vehicleSlot.getModelName().getValue()), "");
-        final String versionName = getNameFromLocalResourceValue(ofNullable(vehicleSlot.getVersionName().getValue()), "");
+        final String brandName = getNameFromLocalResourceValue(vehicleSlot.getBrand().getDisplayedName().getValue());
+        final String modelName = getNameFromLocalResourceValue(vehicleSlot.getModelName().getValue());
+        final String versionName = getNameFromLocalResourceValue(vehicleSlot.getVersionName().getValue());
 
         return String.format("%s %s %s", brandName, modelName, versionName).trim();
     }
@@ -362,12 +361,10 @@ public class VehicleSlotsHelper extends CommonHelper {
                 .build();
     }
 
-    private static String getNameFromLocalResourceValue(Optional<String> potentialValue, String defaultValue) {
-        return potentialValue
-
+    private static String getNameFromLocalResourceValue(String potentialValue) {
+        return ofNullable(potentialValue)
                 .map(resourceValue -> DatabaseConstants.RESOURCE_VALUE_NONE.equals(resourceValue) ? null : resourceValue)
-
-                .orElse(defaultValue);
+                .orElse("");
     }
 
     private static boolean byVehicleKind(ContentEntryDto slotEntry, VehicleKind vehicleKind) {

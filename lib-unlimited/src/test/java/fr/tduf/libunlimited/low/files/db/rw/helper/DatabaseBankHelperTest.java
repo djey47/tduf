@@ -15,7 +15,6 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -52,7 +51,7 @@ class DatabaseBankHelperTest {
 
 
         // WHEN
-        String actualDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(databaseDirectory, Optional.empty(), bankSupportMock);
+        String actualDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(databaseDirectory, null, bankSupportMock);
 
 
         // THEN
@@ -81,7 +80,7 @@ class DatabaseBankHelperTest {
 
 
         // WHEN
-        String actualDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(databaseDirectory, Optional.of(tempDir), bankSupportMock);
+        String actualDirectory = DatabaseBankHelper.unpackDatabaseFromDirectory(databaseDirectory, tempDir, bankSupportMock);
 
 
         // THEN
@@ -98,7 +97,7 @@ class DatabaseBankHelperTest {
     void unpackDatabaseFromDirectory_whenNullArgumentsShouldThrowException() throws IOException {
         // GIVEN-WHEN-THEN
         assertThrows(NullPointerException.class,
-                () -> DatabaseBankHelper.unpackDatabaseFromDirectory(null, Optional.empty(), null));
+                () -> DatabaseBankHelper.unpackDatabaseFromDirectory(null, null, null));
 
         // THEN: NPE
     }
@@ -113,7 +112,7 @@ class DatabaseBankHelperTest {
 
 
         // WHEN
-        DatabaseBankHelper.repackDatabaseFromDirectory(databaseDirectory, targetDirectory, Optional.empty(), bankSupportMock);
+        DatabaseBankHelper.repackDatabaseFromDirectory(databaseDirectory, targetDirectory, null, bankSupportMock);
 
 
         // THEN
@@ -129,7 +128,7 @@ class DatabaseBankHelperTest {
 
 
         // WHEN
-        DatabaseBankHelper.repackDatabaseFromDirectory(databaseDirectory, targetDirectory, Optional.of(originalBanksDirectory), bankSupportMock);
+        DatabaseBankHelper.repackDatabaseFromDirectory(databaseDirectory, targetDirectory, originalBanksDirectory, bankSupportMock);
 
 
         // THEN
@@ -140,7 +139,7 @@ class DatabaseBankHelperTest {
     void repackDatabaseFromDirectory_whenNullArgumentsShouldThrowException() throws IOException {
         // GIVEN-WHEN-THEN
         assertThrows(NullPointerException.class,
-                () -> DatabaseBankHelper.repackDatabaseFromDirectory(null, null, Optional.empty(), null));
+                () -> DatabaseBankHelper.repackDatabaseFromDirectory(null, null, null, null));
 
         // THEN: NPE
     }

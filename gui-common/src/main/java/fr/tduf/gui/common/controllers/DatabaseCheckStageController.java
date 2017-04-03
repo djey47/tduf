@@ -12,7 +12,6 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Label;
@@ -47,7 +46,7 @@ public class DatabaseCheckStageController extends AbstractGuiController {
     private VBox errorPanel;
 
     @FXML
-    public void handleTryFixButtonAction(ActionEvent actionEvent) {
+    public void handleTryFixButtonAction() {
         Log.trace(THIS_CLASS_NAME, "->handleTryFixButtonAction");
 
         shouldFixDatabase = true;
@@ -112,7 +111,9 @@ public class DatabaseCheckStageController extends AbstractGuiController {
     }
 
     private static TableView<IntegrityError> createErrorsTableView(Set<IntegrityError> errors) {
-        Map<IntegrityError.ErrorInfoEnum, Object> information = errors.stream().findAny().get().getInformation();
+        Map<IntegrityError.ErrorInfoEnum, Object> information = errors.stream().findAny()
+                .map(IntegrityError::getInformation)
+                .orElseThrow(() -> new IllegalStateException("No information available for integrity error!"));
         final ObservableList<IntegrityError> integrityErrors = FXCollections.observableArrayList(errors);
 
         TableView<IntegrityError> tableView = new TableView<>();
@@ -136,6 +137,7 @@ public class DatabaseCheckStageController extends AbstractGuiController {
 
                     column.setCellValueFactory((cellData) -> {
                         StringProperty prop = new SimpleStringProperty(cellData.getValue().getInformation().get(itemName).toString());
+                        //noinspection unchecked
                         return (ObservableValue) prop;
                     });
 

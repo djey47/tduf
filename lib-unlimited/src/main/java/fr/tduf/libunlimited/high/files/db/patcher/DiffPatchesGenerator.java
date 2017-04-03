@@ -5,25 +5,22 @@ import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
+import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto.fromCouple;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.*;
 
 /**
  * Used to generate patches for difference between database against reference one.
@@ -67,25 +64,21 @@ public class DiffPatchesGenerator {
 
     private Optional<DbPatchDto> seekForChanges(DbDto databaseObject) {
         DbDto.Topic currentTopic = databaseObject.getTopic();
-        Optional<DbDto> referenceTopicObject = getReferenceDatabaseMiner().getDatabaseTopic(currentTopic);
-        if (!referenceTopicObject.isPresent()) {
-            return empty();
-        }
 
-        return getDatabaseMiner().getDatabaseTopic(currentTopic)
-                .map(topicObject -> {
-                    Set<DbPatchDto.DbChangeDto> resourceChanges = seekForResourcesChanges(databaseObject.getResource(), currentTopic);
-                    Set<DbPatchDto.DbChangeDto> contentsChanges = seekForContentsChanges(databaseObject.getData(), databaseObject.getStructure().getFields(), currentTopic);
+        return getReferenceDatabaseMiner().getDatabaseTopic(currentTopic)
+                    .map(topicObject -> {
+                        Set<DbPatchDto.DbChangeDto> resourceChanges = seekForResourcesChanges(databaseObject.getResource(), currentTopic);
+                        Set<DbPatchDto.DbChangeDto> contentsChanges = seekForContentsChanges(databaseObject.getData(), databaseObject.getStructure().getFields(), currentTopic);
 
-                    return createPatchObject(currentTopic, resourceChanges, contentsChanges);
-                });
+                        return createPatchObject(currentTopic, resourceChanges, contentsChanges);
+                    });
     }
 
     private Set<DbPatchDto.DbChangeDto> seekForResourcesChanges(DbResourceDto resourceObject, DbDto.Topic currentTopic) {
         return resourceObject.getEntries().stream()
                 .flatMap(resourceEntry -> createResourceUpdates(currentTopic, resourceEntry))
                 .filter(Objects::nonNull)
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+                .collect(toCollection(LinkedHashSet::new));
     }
 
     // Ignore warning
@@ -98,13 +91,14 @@ public class DiffPatchesGenerator {
                         :
                         handleTopicWithoutREF(currentTopic, entry))
                 .filter(Objects::nonNull)
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+                .collect(toCollection(LinkedHashSet::new));
     }
 
     private DbPatchDto.DbChangeDto handleTopicWithREF(DbDto.Topic currentTopic, ContentEntryDto entry, int refFieldRank) {
         String entryRef = BulkDatabaseMiner.getContentEntryReference(entry, refFieldRank);
         final Optional<ContentEntryDto> potentialReferenceEntry = getReferenceDatabaseMiner().getContentEntryFromTopicWithReference(entryRef, currentTopic);
-
+        // Proposed refactoring does fail unit testing
+        //noinspection OptionalIsPresent
         if (potentialReferenceEntry.isPresent()) {
             return createPartialContentsUpdate(currentTopic, entryRef, entry, potentialReferenceEntry.get());
         } else {

@@ -80,7 +80,7 @@ class TdupeGatewayTest {
 
 
         // WHEN
-        gateway.applyPerformancePackToEntryWithReference(Optional.of("000000"), performancePackFile);
+        gateway.applyPerformancePackToEntryWithReference("000000", performancePackFile);
 
 
         // THEN

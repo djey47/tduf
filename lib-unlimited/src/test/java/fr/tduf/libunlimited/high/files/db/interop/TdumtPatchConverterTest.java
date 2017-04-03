@@ -14,15 +14,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Optional;
 
-import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.DELETE;
-import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
-import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
+import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -271,7 +267,7 @@ class TdumtPatchConverterTest {
         List<String> values = asList("000000", "111111", "222222");
 
         // WHEN
-        String actualValue = TdumtPatchConverter.getContentsValue(empty(), values);
+        String actualValue = TdumtPatchConverter.getContentsValue(null, values);
 
         // THEN
         assertThat(actualValue).isEqualTo("000000=111111|000000\t111111\t222222");
@@ -283,7 +279,7 @@ class TdumtPatchConverterTest {
         List<String> values = asList("000000", "111111", "222222");
 
         // WHEN
-        String actualValue = TdumtPatchConverter.getContentsValue(Optional.of("000000"), values);
+        String actualValue = TdumtPatchConverter.getContentsValue("000000", values);
 
         // THEN
         assertThat(actualValue).isEqualTo("000000|000000\t111111\t222222");

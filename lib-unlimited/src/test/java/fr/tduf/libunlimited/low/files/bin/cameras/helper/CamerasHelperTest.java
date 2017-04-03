@@ -51,10 +51,10 @@ class CamerasHelperTest {
 
     @BeforeEach
     void setUp() {
+        initMocks(this);
+        
         CamerasHelper.setCameraSupport(cameraSupportMock);
         camerasDatabase = readOnlyParser.parse();
-
-        initMocks(this);
     }
 
     @Test
@@ -405,5 +405,4 @@ class CamerasHelperTest {
         verify(camerasDatabaseMock).removeSet(1);
         verify(camerasDatabaseMock).removeSet(3);
     }
-
 }

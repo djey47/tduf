@@ -26,6 +26,7 @@ import static java.lang.Integer.valueOf;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -53,10 +54,11 @@ public class TdumtPatchConverter {
     private static final String PARAMETER_TDUMT_DATABASE_IDENTIFIER = "databaseId";
     private static final String PARAMETER_TDUMT_VEHICLE_DATABASE_IDENTIFIER = "vehicleDatabaseId";
 
+    private static final String FORMAT_COMPOSITE_REF = "%s=%s";
+    
     private static final String SEPARATOR_ENTRIES = "||";
     private static final String SEPARATOR_KEY_VALUE = "|";
     private static final String SEPARATOR_ITEMS = "\t";
-    private static final String SEPARATOR_COMPOSITE_REF = "=";
 
     private static final String REGEX_SEPARATOR_ENTRIES = "\\|\\|";
     private static final String REGEX_SEPARATOR_KEY_VALUE = "\\|";
@@ -102,9 +104,9 @@ public class TdumtPatchConverter {
      * @param values        : list of all entry values
      * @return a generated key/values contents entry.
      */
-    public static String getContentsValue(Optional<String> potentialRef, List<String> values) {
+    public static String getContentsValue(String potentialRef, List<String> values) {
 
-        String entryRef = potentialRef.orElse(values.get(0) + SEPARATOR_COMPOSITE_REF + values.get(1));
+        String entryRef = ofNullable(potentialRef).orElse(String.format(FORMAT_COMPOSITE_REF, (Object[]) values.toArray(new Object[2])));
 
         return entryRef + SEPARATOR_KEY_VALUE + String.join(SEPARATOR_ITEMS, values);
     }
@@ -156,7 +158,7 @@ public class TdumtPatchConverter {
                 .map((updateChangeObject) -> {
 
                     if (UPDATE == changeType) {
-                        return getContentsValue(Optional.ofNullable(updateChangeObject.getRef()), updateChangeObject.getValues());
+                        return getContentsValue(updateChangeObject.getRef(), updateChangeObject.getValues());
                     } else {
                         return getResourceValue(updateChangeObject.getRef(), updateChangeObject.getValue());
                     }

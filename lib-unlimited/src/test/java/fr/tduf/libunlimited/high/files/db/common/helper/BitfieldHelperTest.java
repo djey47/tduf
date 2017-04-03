@@ -70,7 +70,7 @@ class BitfieldHelperTest {
     void resolve_whenRawValueHasIllegalFormat_shouldThrowException() throws IOException, URISyntaxException {
         // GIVEN - WHEN - THEN
         assertThrows(IllegalArgumentException.class,
-                () -> bitfieldHelper.resolve(DbDto.Topic.CAR_PHYSICS_DATA, "abc").get());
+                () -> bitfieldHelper.resolve(DbDto.Topic.CAR_PHYSICS_DATA, "abc"));
     }
 
     @Test

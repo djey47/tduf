@@ -1,8 +1,8 @@
 package fr.tduf.gui.database.controllers.helper;
 
-import fr.tduf.gui.common.javafx.helper.ControlHelper;
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.ImageConstants;
-import fr.tduf.gui.database.common.DisplayConstants;
+import fr.tduf.gui.common.javafx.helper.ControlHelper;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.controllers.MainStageController;
 import fr.tduf.gui.database.listener.ErrorChangeListener;
@@ -23,14 +23,16 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 import java.util.Map;
-import java.util.Optional;
 
+import static fr.tduf.gui.database.common.DisplayConstants.TAB_NAME_DEFAULT;
+import static java.util.Optional.ofNullable;
 import static javafx.beans.binding.Bindings.not;
 
 /**
  * Provides all common features to DynamicHelpers.
  */
 abstract class AbstractDynamicControlsHelper {
+    private static final String THIS_CLASS_NAME = AbstractDynamicControlsHelper.class.getSimpleName();
 
     protected MainStageController controller;
 
@@ -38,20 +40,21 @@ abstract class AbstractDynamicControlsHelper {
         this.controller = controller;
     }
 
-    protected HBox addFieldBox(Optional<String> potentialGroupName, double boxHeight) {
+    protected HBox addFieldBox(String groupName, double boxHeight) {
         HBox fieldBox = new HBox();
         fieldBox.setPrefHeight(boxHeight);
         fieldBox.setPadding(new Insets(5.0));
 
         final Map<String, VBox> tabContentByName = controller.getViewData().getTabContentByName();
-        String effectiveGroupName = DisplayConstants.TAB_NAME_DEFAULT;
-        if (potentialGroupName.isPresent()) {
-            String groupName = potentialGroupName.get();
-            if (!tabContentByName.containsKey(groupName)) {
-                throw new IllegalArgumentException("Unknown group name: " + groupName);
-            }
-            effectiveGroupName = groupName;
-        }
+        String effectiveGroupName = ofNullable(groupName)
+                .map(name -> {
+                    if (tabContentByName.containsKey(name)) {
+                        return name;
+                    }
+                    Log.warn(THIS_CLASS_NAME, "Unknown group name: " + groupName + ", will use default.");
+                    return null;
+                })
+                .orElse(TAB_NAME_DEFAULT);
         tabContentByName.get(effectiveGroupName).getChildren().add(fieldBox);
         return fieldBox;
     }
@@ -97,12 +100,9 @@ abstract class AbstractDynamicControlsHelper {
         return contextualButton;
     }
 
-    protected static Button addContextualButtonWithActivationCondition(Pane fieldPane, String buttonLabel, String tooltipText, EventHandler<ActionEvent> action, ObservableBooleanValue activationCondition) {
+    protected static void addContextualButtonWithActivationCondition(Pane fieldPane, String buttonLabel, String tooltipText, EventHandler<ActionEvent> action, ObservableBooleanValue activationCondition) {
         Button contextualButton = addContextualButton(fieldPane, buttonLabel, tooltipText, action);
-
         contextualButton.disableProperty().bind(not(activationCondition));
-
-        return contextualButton;
     }
 
     protected static void addErrorSign(HBox hBox, BooleanProperty errorProperty, StringProperty errorMessageProperty) {

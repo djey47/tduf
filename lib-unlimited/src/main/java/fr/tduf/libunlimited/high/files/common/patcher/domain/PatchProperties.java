@@ -31,24 +31,20 @@ public class PatchProperties extends Properties {
      * @return a deep copy of this property store.
      */
     public PatchProperties makeCopy() {
-        final PatchProperties patchProperties = new PatchProperties();
+        PatchProperties patchProperties = new PatchProperties();
 
-        entrySet().forEach(property -> {
-            final String placeholder = (String) property.getKey();
-            final String value = (String) property.getValue();
-
-            patchProperties.register(placeholder, value);
-        });
-
+        cloneAllProperties(patchProperties);        
+        
         return patchProperties;
     }
 
     protected void cloneAllProperties(PatchProperties patchProperties) {
-        entrySet().forEach(property -> {
-            final String placeholder = (String) property.getKey();
-            final String value = (String) property.getValue();
+        forEach((prop, v) -> {
+            final String placeholder = (String) prop;
+            final String value = (String) v;
 
-            patchProperties.register(placeholder, value);
+            requireNonNull(patchProperties, "Patch Properties are required")
+                    .register(placeholder, value);
         });
     }
 
