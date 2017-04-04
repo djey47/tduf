@@ -44,19 +44,40 @@ TDUF aims at making Test Drive Unlmited modding easier:
 * IKS
     * Display available IK sets
     * Displays reference errors
+* FILE MAPPING
+    * Display mapping state and file availability
+    * Change names for assets BNK files
+    * Display files into default file browser
+    * Fix file mappings in Bnk1.map for BNK files 
 * ...
 
 
 ### What's in this version ? (1.12.0)
-*
+* (Editor) Misc. UI changes (shorter labels...)
+* (Editor) All plugins (cameras, iks, mapping,...) can be disabled at once via manual ops. See [WIKI](https://github.com/djey47/tdu-cp/wiki/TDUF-Editor-Tips)
+* (Editor/Cameras) Add support for new view setting
+* (Editor/Mapping) New feature as plugin to track BNK file mapping. See [WIKI](https://github.com/djey47/tdu-cp/wiki/TDUF-Database-Editor-Mapping)
+
+* (CamerasTool/remove-sets) New operation to delete all views from selected camera sets. See [WIKI](https://github.com/djey47/tdu-cp/wiki/TDUF-Customizing-Cameras#f-delete-view-sets)
+
+* (Library/Cameras) Huge parts of cameras parsing and writing have been recoded
+* (Library/Cameras) Added support for complementary view setting
+* (Library/Files) Added support for new field type: CONSTANT. See [WIKI](https://github.com/djey47/tdu-cp/wiki/TDUF-File-Structure-Reference#field-types)
+* (Library/Mapping) Added support operations (load/save)
 
 
 ### Fixed issues
-*
+* (Editor) Wrong profile name in configuration would prevent database to be loaded
+* (Editor) Tuning options (car packs) were not displayed from current vehicle slot
+* (Editor/Cameras) 'SteeringWheelTilt' view parameter changes now work properly
+* (Editor/Cameras) Changing cockpit view settings would break rear view
+
+* (Library/Files) Incorrect reading of signed integer values was resolved
 
 
 ### Known bugs
-*
+* (Editor/Mapping) Mapping errors are not properly described. Will be enhanced later.
+* You tell me!
 
 
 ### What you will need to run TDUF
