@@ -31,7 +31,7 @@ public class MainStageDesigner {
     }
 
     private static void initMainWindow(Stage primaryStage, Parent mainRoot) {
-        primaryStage.setScene(new Scene(mainRoot, 1280, 720));
+        primaryStage.setScene(new Scene(mainRoot, 1280, 360));
         primaryStage.setTitle(TITLE_APPLICATION);
     }
 }
