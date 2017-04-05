@@ -50,7 +50,7 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
 * AND MORE!
 
 
-### What's in this version ? (1.12.0)
+### What's in this version ? (1.13.0)
 * (Editor) Brings misc. UI changes (shorter, clearer labels...)
 * (Editor) All plugins (cameras, iks, mapping,...) can be disabled at once via manual ops. See [WIKI](https://github.com/djey47/tdu-cp/wiki/TDUF-Editor-Tips)
 * (Editor/Cameras) Adds support for new view setting (ComplementaryView for front/rear switch)
