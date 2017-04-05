@@ -192,7 +192,7 @@ project(':gui-database') {
     }
 }
 
-project(':gui-savegame') {
+project(':gui-launcher') {
     dependencies {
         compile project(':lib-unlimited')
         compile project(':gui-common')
@@ -201,7 +201,7 @@ project(':gui-savegame') {
     task execute(type:JavaExec) {
         group 'binaries'
 
-        main 'fr.tduf.gui.savegame.SaveGameEditor'
+        main 'fr.tduf.gui.launcher.Launcher'
         classpath sourceSets.main.runtimeClasspath
     }
 }
@@ -281,7 +281,7 @@ project(':gui-installer') {
 
 // Main tasks
 // Create a list of subprojects to include in the full jar.
-def fullProjects = [':cli',':gui-database',':gui-savegame']
+def fullProjects = [':cli',':gui-database',':gui-launcher']
 def tempJarDirectory = './tmp-jarContents'
 
 task gatherAllContentsForJar(type: Copy, dependsOn: fullProjects.collect{ it+":compileJava"}) {

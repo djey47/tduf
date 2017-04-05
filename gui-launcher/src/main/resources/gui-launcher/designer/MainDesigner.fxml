@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane fx:id="root" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.72"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.savegame.controllers.MainStageController">
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.launcher.controllers.MainStageController">
     <VBox id="mainVbox" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
           AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
 </AnchorPane>

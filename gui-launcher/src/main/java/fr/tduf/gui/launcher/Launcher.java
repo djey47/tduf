@@ -1,13 +1,13 @@
-package fr.tduf.gui.savegame;
+package fr.tduf.gui.launcher;
 
 import fr.tduf.gui.common.javafx.application.AbstractGuiApp;
-import fr.tduf.gui.savegame.stages.MainStageDesigner;
+import fr.tduf.gui.launcher.stages.MainStageDesigner;
 import javafx.stage.Stage;
 
 /**
- * SaveGameEditor Java FX Application.
+ * Launcher Java FX Application.
  */
-public class SaveGameEditor extends AbstractGuiApp {
+public class Launcher extends AbstractGuiApp {
 
     @Override
     public void startApp(Stage primaryStage) throws Exception {

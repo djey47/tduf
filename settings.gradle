@@ -1,4 +1,4 @@
-include 'lib-testing', 'lib-unlimited', 'cli', 'gui-common',  'gui-database', 'gui-installer', 'gui-savegame', 'integ-tests'
+include 'lib-testing', 'lib-unlimited', 'cli', 'gui-common',  'gui-database', 'gui-installer', 'gui-launcher', 'integ-tests'
 include 'integ-tests'
 
 // Global settings

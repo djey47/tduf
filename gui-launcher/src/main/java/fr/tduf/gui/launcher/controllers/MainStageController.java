@@ -1,4 +1,4 @@
-package fr.tduf.gui.savegame.controllers;
+package fr.tduf.gui.launcher.controllers;
 
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 
