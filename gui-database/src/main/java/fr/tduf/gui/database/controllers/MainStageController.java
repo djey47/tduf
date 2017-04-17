@@ -803,6 +803,7 @@ public class MainStageController extends AbstractGuiController {
                 .ifPresent(entryReference -> viewDataController.switchToEntryWithReference(entryReference, currentTopicProperty.getValue()));
     }
 
+    // TODO use common GUI helper
     private String askForGameLocationAndUpdateConfiguration() {
         return browseForGameDirectory()
                 .map(gameLocation -> {
