@@ -4,6 +4,7 @@ package fr.tduf.gui.common;
  * Gives all constants to be displayed by controllers.
  */
 public class DisplayConstants {
+    public static final String TITLE_BROWSE_GAME_DIRECTORY = "Browse game directory...";
     public static final String TITLE_SUB_CHECK_DB = " : Check database";
     public static final String TITLE_SUB_FIX_DB = " : Fix database";
 
