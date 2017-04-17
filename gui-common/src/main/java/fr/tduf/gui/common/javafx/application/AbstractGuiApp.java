@@ -3,7 +3,9 @@ package fr.tduf.gui.common.javafx.application;
 import com.esotericsoftware.minlog.Log;
 import javafx.application.Application;
 import javafx.application.HostServices;
+import javafx.event.EventHandler;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +28,14 @@ public abstract class AbstractGuiApp extends Application {
 
         handleLogLevel();
 
+        primaryStage.setOnCloseRequest(onExitHandler());
+
         startApp(primaryStage);
     }
 
     protected abstract void startApp(Stage primaryStage) throws Exception;
+
+    protected abstract EventHandler<WindowEvent> onExitHandler();
 
     private void handleLogLevel() {
         Optional<String> potentialVerboseSwitch = getParameters().getUnnamed().stream()

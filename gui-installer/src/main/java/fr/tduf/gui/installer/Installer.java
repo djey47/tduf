@@ -2,7 +2,9 @@ package fr.tduf.gui.installer;
 
 import fr.tduf.gui.common.javafx.application.AbstractGuiApp;
 import fr.tduf.gui.installer.stages.MainStageDesigner;
+import javafx.event.EventHandler;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * Installer Java FX Application.
@@ -10,9 +12,14 @@ import javafx.stage.Stage;
 public class Installer extends AbstractGuiApp {
 
     @Override
-    public void startApp(Stage primaryStage) throws Exception {
+    protected void startApp(Stage primaryStage) throws Exception {
         MainStageDesigner.init(primaryStage);
         primaryStage.show();
+    }
+
+    @Override
+    protected EventHandler<WindowEvent> onExitHandler() {
+        return event -> {};
     }
 
     /**

@@ -4,7 +4,9 @@ import com.esotericsoftware.minlog.Log;
 import com.sun.javafx.application.ParametersImpl;
 import fr.tduf.libtesting.common.helper.ConsoleHelper;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -125,6 +127,11 @@ class AbstractGuiAppTest extends ApplicationTest {
         @Override
         protected void startApp(Stage primaryStage) throws Exception {
             spy.invoke(primaryStage);
+        }
+
+        @Override
+        protected EventHandler<WindowEvent> onExitHandler() {
+            return event -> {};
         }
     }
 
