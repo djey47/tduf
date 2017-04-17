@@ -1,5 +1,6 @@
 package fr.tduf.gui.launcher.stages;
 
+import fr.tduf.gui.common.stages.StageHelper;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -8,6 +9,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 import static fr.tduf.gui.launcher.common.DisplayConstants.TITLE_APPLICATION;
+import static fr.tduf.gui.launcher.common.FxConstants.MAIN_HEIGHT;
+import static fr.tduf.gui.launcher.common.FxConstants.MAIN_WIDTH;
 import static fr.tduf.gui.launcher.common.FxConstants.PATH_RESOURCE_MAIN_STAGE_DESIGNER;
 
 /**
@@ -31,7 +34,9 @@ public class MainStageDesigner {
     }
 
     private static void initMainWindow(Stage primaryStage, Parent mainRoot) {
-        primaryStage.setScene(new Scene(mainRoot, 1280, 360));
+        primaryStage.setScene(new Scene(mainRoot, MAIN_WIDTH, MAIN_HEIGHT));
         primaryStage.setTitle(TITLE_APPLICATION);
+
+        StageHelper.setStandardIcon(primaryStage);
     }
 }
