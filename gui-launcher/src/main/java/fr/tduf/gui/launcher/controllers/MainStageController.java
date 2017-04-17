@@ -1,6 +1,7 @@
 package fr.tduf.gui.launcher.controllers;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.common.game.helpers.GameSettingsHelper;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.launcher.services.LauncherStepsCoordinator;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
@@ -18,6 +19,9 @@ public class MainStageController extends AbstractGuiController {
     @Override
     protected void init() throws IOException {
         configuration.load();
+
+        // Window instance is not accessible yet
+        GameSettingsHelper.askForGameLocationAndUpdateConfiguration(configuration, null);
     }
 
     @FXML
