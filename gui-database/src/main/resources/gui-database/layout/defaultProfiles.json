@@ -1343,7 +1343,7 @@
     {
       "name": "NPCs",
       "topic": "PNJ",
-      "entryLabelFieldRanks": [2,3,17],
+      "entryLabelFieldRanks": [3,2],
       "groups": ["Items"],
       "fieldSettings": [
         {
