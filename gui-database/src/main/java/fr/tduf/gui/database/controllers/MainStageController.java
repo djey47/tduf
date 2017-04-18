@@ -3,6 +3,7 @@ package fr.tduf.gui.database.controllers;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.AppConstants;
 import fr.tduf.gui.common.controllers.helper.DatabaseOpsHelper;
+import fr.tduf.gui.common.game.helpers.GameSettingsHelper;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.javafx.helper.DesktopHelper;
@@ -480,7 +481,9 @@ public class MainStageController extends AbstractGuiController {
         editorContext.setDatabaseLocation(databaseLoader.databaseLocationProperty().get());
         editorContext.setGameLocation(applicationConfiguration.getGamePath()
                 .map(Path::toString)
-                .orElseGet(this::askForGameLocationAndUpdateConfiguration));
+                .orElseGet(
+                        () -> GameSettingsHelper.askForGameLocationAndUpdateConfiguration(applicationConfiguration, getWindow())
+                ));
         editorContext.setMiner(getMiner());
         editorContext.setMainWindow(getWindow());
         editorContext.setMainStageController(this);
@@ -605,14 +608,6 @@ public class MainStageController extends AbstractGuiController {
         if (selectedDirectory != null) {
             this.databaseLocationTextField.setText(selectedDirectory.getPath());
         }
-    }    
-    
-    private Optional<String> browseForGameDirectory() {
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle(TITLE_BROWSE_GAME_DIRECTORY);
-
-        return ofNullable(directoryChooser.showDialog(getWindow()))
-                .map(File::getPath);
     }
 
     private void loadDatabaseFromDirectory(String databaseLocation) throws IOException {
@@ -802,21 +797,6 @@ public class MainStageController extends AbstractGuiController {
         CommonDialogsHelper.showInputValueDialog(TITLE_SEARCH_CONTENTS_ENTRY, LABEL_SEARCH_ENTRY, getWindow())
                 .ifPresent(entryReference -> viewDataController.switchToEntryWithReference(entryReference, currentTopicProperty.getValue()));
     }
-
-    // TODO use common GUI helper
-    private String askForGameLocationAndUpdateConfiguration() {
-        return browseForGameDirectory()
-                .map(gameLocation -> {
-                    try {
-                        applicationConfiguration.setGamePath(gameLocation);
-                        applicationConfiguration.store();
-                    } catch (IOException ioe) {
-                        Log.warn(THIS_CLASS_NAME, "Unable to save application configuration", ioe);
-                    }   
-                    return gameLocation;
-                })
-                .orElse("");
-    }    
 
     private void resetDatabaseCache(String databaseDirectory) throws IOException {
         DatabaseBanksCacheHelper.clearCache(Paths.get(databaseDirectory));
