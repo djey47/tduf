@@ -18,10 +18,7 @@ public class MainStageController extends AbstractGuiController {
 
     @Override
     protected void init() throws IOException {
-        configuration.load();
-
-        // Window instance is not accessible yet
-        GameSettingsHelper.askForGameLocationAndUpdateConfiguration(configuration, null);
+        loadAndCheckConfiguration();
     }
 
     @FXML
@@ -29,6 +26,15 @@ public class MainStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "handleRunButtonAction");
 
         runGame();
+    }
+
+    private void loadAndCheckConfiguration() throws IOException {
+        configuration.load();
+
+        if (!configuration.getGamePath().isPresent()) {
+            // Window instance is not accessible yet
+            GameSettingsHelper.askForGameLocationAndUpdateConfiguration(configuration, null);
+        }
     }
 
     private void runGame() {
