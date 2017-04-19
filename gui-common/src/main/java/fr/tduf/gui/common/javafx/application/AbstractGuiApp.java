@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static fr.tduf.gui.common.AppConstants.SWITCH_VERBOSE;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Parent of all GUI applications. Provides base services (host, logging, params...)
@@ -20,6 +21,7 @@ public abstract class AbstractGuiApp extends Application {
 
     private static List<String> parameters = new ArrayList<>(0);
     private static HostServices hostServicesInstance = null;
+    private static AbstractGuiController mainController = null;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -36,6 +38,10 @@ public abstract class AbstractGuiApp extends Application {
     protected abstract void startApp(Stage primaryStage) throws Exception;
 
     protected abstract EventHandler<WindowEvent> onExitHandler();
+    
+    protected <T extends AbstractGuiController> T retrieveMainController(Class<T> controllerClass) {
+        return (T) requireNonNull(mainController, "Main controller instance has not been set yet!");
+    }
 
     private void handleLogLevel() {
         Optional<String> potentialVerboseSwitch = getParameters().getUnnamed().stream()
@@ -66,4 +72,8 @@ public abstract class AbstractGuiApp extends Application {
     public static HostServices getHostServicesInstance() {
         return hostServicesInstance;
     }
+
+    public static void setMainController(AbstractGuiController controller) {
+        mainController = controller;
+    }    
 }
