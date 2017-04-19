@@ -2,6 +2,7 @@ package fr.tduf.gui.launcher.controllers;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.game.helpers.GameSettingsHelper;
+import fr.tduf.gui.common.javafx.application.AbstractGuiApp;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.launcher.services.LauncherStepsCoordinator;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
@@ -18,6 +19,8 @@ public class MainStageController extends AbstractGuiController {
 
     @Override
     protected void init() throws IOException {
+        AbstractGuiApp.setMainController(this);
+        
         loadAndCheckConfiguration();
     }
 
@@ -26,6 +29,14 @@ public class MainStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "handleRunButtonAction");
 
         runGame();
+    }
+
+    /**
+     * @throws IOException when configuration can't be saved because of disk IO error
+     */
+    public void saveConfiguration() throws IOException {
+        Log.trace(THIS_CLASS_NAME, "saveConfiguration");
+        configuration.store();        
     }
 
     private void loadAndCheckConfiguration() throws IOException {

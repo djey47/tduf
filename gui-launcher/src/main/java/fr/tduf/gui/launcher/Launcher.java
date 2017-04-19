@@ -2,12 +2,13 @@ package fr.tduf.gui.launcher;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.javafx.application.AbstractGuiApp;
+import fr.tduf.gui.launcher.controllers.MainStageController;
 import fr.tduf.gui.launcher.stages.MainStageDesigner;
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-import static com.esotericsoftware.minlog.Log.LEVEL_TRACE;
+import java.io.IOException;
 
 /**
  * Launcher Java FX Application.
@@ -17,8 +18,6 @@ public class Launcher extends AbstractGuiApp {
 
     @Override
     protected void startApp(Stage primaryStage) throws Exception {
-        Log.set(LEVEL_TRACE);
-
         MainStageDesigner.init(primaryStage);
         primaryStage.show();
     }
@@ -27,6 +26,12 @@ public class Launcher extends AbstractGuiApp {
     protected EventHandler<WindowEvent> onExitHandler() {
         return event -> {
             Log.trace(THIS_CLASS_NAME, "Exiting launcher...");
+
+            try {
+                retrieveMainController(MainStageController.class).saveConfiguration();
+            } catch (IOException ioe) {
+                Log.error("Application configuration couldn't be saved", ioe);
+            }
         };
     }
 
