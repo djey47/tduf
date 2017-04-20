@@ -2,10 +2,12 @@ package fr.tduf.gui.common.steps;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.domain.exceptions.StepException;
+import fr.tduf.gui.common.services.tasks.ContextKey;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.EnumMap;
 
 import static fr.tduf.gui.common.DisplayConstants.MESSAGE_STEP_KO;
 import static fr.tduf.gui.common.steps.StepKind.UNDEFINED;
@@ -17,23 +19,25 @@ import static java.util.Objects.requireNonNull;
 public abstract class GenericStep {
     private StepKind kind;
 
+    private EnumMap<ContextKey, Object> context;
     private ApplicationConfiguration applicationConfiguration;
 
     protected GenericStep() {
         kind = UNDEFINED;
     }
 
-    private GenericStep(ApplicationConfiguration applicationConfiguration) {
+    private GenericStep(ApplicationConfiguration applicationConfiguration, EnumMap<ContextKey, Object> context) {
         this();
         this.applicationConfiguration = applicationConfiguration;
+        this.context = context;
     }
 
     /**
      * @param applicationConfiguration  : optional configuration
      * @return a reference of step to begin process
      */
-    public static GenericStep starterStep(ApplicationConfiguration applicationConfiguration) throws StepException {
-        return new GenericStep(applicationConfiguration) {
+    public static GenericStep starterStep(ApplicationConfiguration applicationConfiguration, EnumMap<ContextKey, Object> context) throws StepException {
+        return new GenericStep(applicationConfiguration, context) {
             @Override
             protected void perform() throws IOException, ReflectiveOperationException {
                 // Nothing to do for now...
@@ -100,10 +104,15 @@ public abstract class GenericStep {
         requireNonNull(newStep, "New step is required.");
 
         newStep.applicationConfiguration = applicationConfiguration;
+        newStep.context = context;
     }
 
-    ApplicationConfiguration getApplicationConfiguration() {
+    protected ApplicationConfiguration getApplicationConfiguration() {
         return applicationConfiguration;
+    }    
+    
+    protected EnumMap<ContextKey, Object> getContext() {
+        return context;
     }
 
     private void setKind(StepKind kind) {
