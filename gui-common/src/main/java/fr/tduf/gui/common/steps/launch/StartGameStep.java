@@ -3,8 +3,9 @@ package fr.tduf.gui.common.steps.launch;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.domain.exceptions.StepException;
 import fr.tduf.gui.common.steps.GenericStep;
+import fr.tduf.libunlimited.common.game.domain.GameStatus;
+import javafx.application.Platform;
 import javafx.beans.property.Property;
-import javafx.beans.property.SimpleObjectProperty;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,8 +14,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static fr.tduf.gui.common.services.tasks.ContextKey.GAME_PROCESS;
+import static fr.tduf.gui.common.services.tasks.ContextKey.PROCESS_STATUS;
 import static fr.tduf.libunlimited.common.game.FileConstants.FILE_GAME_EXECUTABLE;
+import static fr.tduf.libunlimited.common.game.domain.GameStatus.*;
 
+// TODO unit test
 public class StartGameStep extends GenericStep {
     private static final String THIS_CLASS_NAME = StartGameStep.class.getSimpleName();
 
@@ -23,9 +27,10 @@ public class StartGameStep extends GenericStep {
 
         Log.debug(THIS_CLASS_NAME, "TDU root dir: " + getApplicationConfiguration().getGamePath());
 
-        Property<Process> gameProcess = new SimpleObjectProperty<>();
-        getContext().put(GAME_PROCESS, gameProcess);
-
+        Property<Process> gameProcess = (Property<Process>) getContext().get(GAME_PROCESS);
+        Property<GameStatus> processStatus = (Property<GameStatus>) getContext().get(PROCESS_STATUS);
+        
+        int exitCode = -1;
         try {
             File gamePath = resolveAndCheckGamePath();
             gameProcess.setValue(new ProcessBuilder()
@@ -34,16 +39,27 @@ public class StartGameStep extends GenericStep {
                     .start());
 
             Log.debug(THIS_CLASS_NAME, "Game process started: " + gameProcess.getValue());
-
-            int exitCode = gameProcess.getValue().waitFor();
+            
+            Platform.runLater(() -> processStatus.setValue(RUNNING));
+            
+            exitCode = gameProcess.getValue().waitFor();
+            
             Log.debug(THIS_CLASS_NAME, "Game process ended with exit code: " + exitCode);
         } catch(InterruptedException ie) {
             throw new IOException("Game process was interrupted", ie);
         } catch (Exception e) {
             throw new IOException("Unable to start game process", e);
         } finally {
-            gameProcess.setValue(null);
+            GameStatus newStatus = exitCode == 0 ? OFF : OFF_ABNORMALLY;
+            updateContext(newStatus, gameProcess, processStatus);
         }
+    }
+
+    private void updateContext(GameStatus status, Property<Process> gameProcess, Property<GameStatus> processStatus) {
+        Platform.runLater(() -> {
+            gameProcess.setValue(null);
+            processStatus.setValue(status);  
+        }); 
     }
 
     private File resolveAndCheckGamePath() throws StepException {
@@ -56,7 +72,6 @@ public class StartGameStep extends GenericStep {
         }
 
         return gamePath;
-
     }
 
     private String buildFullCommand(File gamePath) {

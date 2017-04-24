@@ -7,12 +7,18 @@ import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.launcher.services.LauncherStepsCoordinator;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.common.game.FileConstants;
+import fr.tduf.libunlimited.common.game.domain.GameStatus;
 import fr.tduf.libunlimited.common.game.helper.GameStatusHelper;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.util.StringConverter;
 
+import javax.xml.soap.Text;
 import java.io.IOException;
 import java.nio.file.Path;
+
+import static fr.tduf.libunlimited.common.game.domain.GameStatus.UNKNOWN;
 
 public class MainStageController extends AbstractGuiController {
     private static final String THIS_CLASS_NAME = MainStageController.class.getSimpleName();
@@ -26,6 +32,9 @@ public class MainStageController extends AbstractGuiController {
 
     @FXML
     private Label gameStatusLabel;
+    
+    @FXML
+    private TextField gameDirectoryTextField;
 
     @Override
     protected void init() throws IOException {
@@ -34,6 +43,8 @@ public class MainStageController extends AbstractGuiController {
         loadAndCheckConfiguration();
 
         initInfoTab();
+        
+        initSettingsTab();
     }
 
     @FXML
@@ -66,7 +77,26 @@ public class MainStageController extends AbstractGuiController {
                 .map(Path::toString)
                 .orElse(null);
         gameVersionLabel.setText(GameStatusHelper.resolveGameVersion(binaryPath).getLabel());
+        
+        gameStatusLabel.textProperty().bindBidirectional(stepsCoordinator.processStatusProperty(), new StringConverter<GameStatus>() {
+            @Override
+            public String toString(GameStatus gameStatus) {
+                return gameStatus.getLabel();
+            }
 
+            @Override
+            public GameStatus fromString(String string) {
+                return UNKNOWN;
+            }
+        });
+
+    }
+
+    private void initSettingsTab() {
+        String gameDirectory = configuration.getGamePath()
+                .map(Path::toString)
+                .orElse("");
+        gameDirectoryTextField.setText(gameDirectory);
     }
 
     private void runGame() {
