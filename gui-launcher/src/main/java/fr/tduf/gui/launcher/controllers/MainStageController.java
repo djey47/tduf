@@ -10,14 +10,16 @@ import fr.tduf.libunlimited.common.game.FileConstants;
 import fr.tduf.libunlimited.common.game.domain.GameStatus;
 import fr.tduf.libunlimited.common.game.helper.GameStatusHelper;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
 
-import javax.xml.soap.Text;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import static fr.tduf.libunlimited.common.game.domain.GameStatus.RUNNING;
 import static fr.tduf.libunlimited.common.game.domain.GameStatus.UNKNOWN;
 
 public class MainStageController extends AbstractGuiController {
@@ -32,6 +34,12 @@ public class MainStageController extends AbstractGuiController {
 
     @FXML
     private Label gameStatusLabel;
+
+    @FXML
+    private Hyperlink forceCloseLink;
+    
+    @FXML
+    private Button runButton;
     
     @FXML
     private TextField gameDirectoryTextField;
@@ -52,6 +60,13 @@ public class MainStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "handleRunButtonAction");
 
         runGame();
+    }
+
+    @FXML
+    private void handleForceCloseLinkAction() {
+        Log.trace(THIS_CLASS_NAME, "handleForceCloseLinkAction");
+        
+        stopGameProcess();
     }
 
     /**
@@ -90,6 +105,11 @@ public class MainStageController extends AbstractGuiController {
             }
         });
 
+        forceCloseLink.visibleProperty().set(false);
+        stepsCoordinator.processStatusProperty().addListener((observable, oldValue, newValue) -> {
+            forceCloseLink.visibleProperty().set(newValue == RUNNING);
+            runButton.disableProperty().set(newValue == RUNNING);
+        });
     }
 
     private void initSettingsTab() {
@@ -102,5 +122,14 @@ public class MainStageController extends AbstractGuiController {
     private void runGame() {
         stepsCoordinator.configurationProperty().setValue(configuration);
         stepsCoordinator.restart();
+    }
+
+    private void stopGameProcess() {
+        Process process = stepsCoordinator.gameProcessProperty().getValue();
+        if (process == null) {
+            return;
+        }
+        
+        process.destroyForcibly();
     }
 }

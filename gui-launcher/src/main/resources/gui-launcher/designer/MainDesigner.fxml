@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -29,7 +30,7 @@
            <items>
                <Label text="Test Drive Unlimited launcher by Djey." />
                 <Pane HBox.hgrow="ALWAYS" />
-                <Button mnemonicParsing="false" onAction="#handleRunButtonAction" text="RUN!">
+                <Button fx:id="runButton" mnemonicParsing="false" onAction="#handleRunButtonAction" text="RUN!">
                   <font>
                      <Font name="System Bold" size="13.0" />
                   </font></Button>
@@ -65,7 +66,12 @@
                                                    <Label text="Detected TDU version:" GridPane.columnIndex="1" />
                                                    <Label fx:id="gameVersionLabel" text="&lt;VERSION&gt;" GridPane.columnIndex="2" />
                                                    <Label layoutX="10.0" layoutY="17.0" text="Game status:" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                   <Label fx:id="gameStatusLabel" text="&lt;STATUS&gt;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                   <FlowPane alignment="CENTER_LEFT" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                                      <children>
+                                                         <Label fx:id="gameStatusLabel" text="&lt;STATUS&gt;" />
+                                                         <Hyperlink fx:id="forceCloseLink" onAction="#handleForceCloseLinkAction" text="Force close" />
+                                                      </children>
+                                                   </FlowPane>
                                                    <Arc fill="#1f93ff" length="270.0" radiusX="10.0" radiusY="10.0" rotate="90.0" startAngle="45.0" stroke="BLACK" strokeType="INSIDE" type="ROUND" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                                                    <Arc fill="#1f93ff" length="270.0" radiusX="10.0" radiusY="10.0" rotate="90.0" startAngle="45.0" stroke="BLACK" strokeType="INSIDE" type="ROUND" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                                                    <Arc fill="#1f93ff" layoutX="26.0" layoutY="55.0" length="270.0" radiusX="10.0" radiusY="10.0" rotate="90.0" startAngle="45.0" stroke="BLACK" strokeType="INSIDE" type="ROUND" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />

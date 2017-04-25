@@ -42,4 +42,6 @@ public class LauncherStepsCoordinator extends Service<Void> {
     }
 
     public Property<GameStatus> processStatusProperty() { return processStatus; }
+
+    public Property<Process> gameProcessProperty() { return gameProcess; }
 }
