@@ -37,10 +37,9 @@ public class MainStageController extends AbstractGuiController {
 
     @FXML
     private Hyperlink forceCloseLink;
-    
+
     @FXML
     private Button runButton;
-    
     @FXML
     private TextField gameDirectoryTextField;
 
@@ -68,6 +67,13 @@ public class MainStageController extends AbstractGuiController {
         
         stopGameProcess();
     }
+
+    @FXML
+    private void handleBrowseGameLocationButtonAction() {
+        Log.trace(THIS_CLASS_NAME, "handleBrowseGameLocationButtonAction");
+        
+        browseForGameDirectory();
+    }    
 
     /**
      * @throws IOException when configuration can't be saved because of disk IO error
@@ -116,8 +122,16 @@ public class MainStageController extends AbstractGuiController {
         String gameDirectory = configuration.getGamePath()
                 .map(Path::toString)
                 .orElse("");
+        gameDirectoryTextField.setDisable(true);
         gameDirectoryTextField.setText(gameDirectory);
     }
+
+    private void browseForGameDirectory() {
+        String selectedDirectory = GameSettingsHelper.askForGameLocationAndUpdateConfiguration(configuration, getWindow());
+        if (!selectedDirectory.isEmpty()) {
+            gameDirectoryTextField.setText(selectedDirectory);
+        }
+    }    
 
     private void runGame() {
         stepsCoordinator.configurationProperty().setValue(configuration);
