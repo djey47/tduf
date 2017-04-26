@@ -51,7 +51,7 @@
                                           <children>
                                              <GridPane layoutY="17.0" prefHeight="260.0" prefWidth="640.0" AnchorPane.bottomAnchor="29.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                <columnConstraints>
-                                                   <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="25.0" minWidth="25.0" prefWidth="25.0" />
+                                                   <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" />
                                                  <ColumnConstraints hgrow="NEVER" maxWidth="160.0" minWidth="160.0" prefWidth="160.0" />
                                                  <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="350.0" />
                                                    <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
@@ -66,7 +66,7 @@
                                                    <Label text="Detected TDU version:" GridPane.columnIndex="1" />
                                                    <Label fx:id="gameVersionLabel" text="&lt;VERSION&gt;" GridPane.columnIndex="2" />
                                                    <Label layoutX="10.0" layoutY="17.0" text="Game status:" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                   <FlowPane columnHalignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                   <FlowPane columnHalignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                       <children>
                                                          <Label fx:id="gameStatusLabel" text="&lt;STATUS&gt;" />
                                                          <Label fx:id="processExitReasonLabel" text="&lt;REASON&gt;" />
