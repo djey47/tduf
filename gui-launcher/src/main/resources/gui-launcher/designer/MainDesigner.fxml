@@ -51,9 +51,10 @@
                                           <children>
                                              <GridPane layoutY="17.0" prefHeight="260.0" prefWidth="640.0" AnchorPane.bottomAnchor="29.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                <columnConstraints>
-                                                   <ColumnConstraints hgrow="NEVER" minWidth="30.0" />
-                                                 <ColumnConstraints hgrow="NEVER" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" />
-                                                 <ColumnConstraints hgrow="ALWAYS" maxWidth="531.0" minWidth="0.0" prefWidth="424.0" />
+                                                   <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="25.0" minWidth="25.0" prefWidth="25.0" />
+                                                 <ColumnConstraints hgrow="NEVER" maxWidth="160.0" minWidth="160.0" prefWidth="160.0" />
+                                                 <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="350.0" />
+                                                   <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
                                                </columnConstraints>
                                                <rowConstraints>
                                                  <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="NEVER" />
@@ -65,10 +66,9 @@
                                                    <Label text="Detected TDU version:" GridPane.columnIndex="1" />
                                                    <Label fx:id="gameVersionLabel" text="&lt;VERSION&gt;" GridPane.columnIndex="2" />
                                                    <Label layoutX="10.0" layoutY="17.0" text="Game status:" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                   <FlowPane alignment="CENTER_LEFT" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                                   <FlowPane columnHalignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                       <children>
                                                          <Label fx:id="gameStatusLabel" text="&lt;STATUS&gt;" />
-                                                         <Hyperlink fx:id="forceCloseLink" onAction="#handleForceCloseLinkAction" text="Force close" />
                                                          <Label fx:id="processExitReasonLabel" text="&lt;REASON&gt;" />
                                                       </children>
                                                    </FlowPane>
@@ -76,6 +76,7 @@
                                                    <Arc fill="#1f93ff" length="270.0" radiusX="10.0" radiusY="10.0" rotate="90.0" startAngle="45.0" stroke="BLACK" strokeType="INSIDE" type="ROUND" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                                                    <Arc fill="#1f93ff" layoutX="26.0" layoutY="55.0" length="270.0" radiusX="10.0" radiusY="10.0" rotate="90.0" startAngle="45.0" stroke="BLACK" strokeType="INSIDE" type="ROUND" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
                                                    <Label layoutX="40.0" layoutY="17.0" text="Community addons:" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                   <Hyperlink fx:id="forceCloseLink" onAction="#handleForceCloseLinkAction" text="Force close" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                                                 </children>
                                              </GridPane>
                                           </children>
