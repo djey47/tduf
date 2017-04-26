@@ -13,6 +13,10 @@ public class FilesHelper {
 
     public static final String[] DATABASE_BANK_FILES = {"DB.bnk", "DB_CH.bnk", "DB_FR.bnk", "DB_GE.bnk", "DB_KO.bnk", "DB_US.bnk", "DB_JA.bnk", "DB_SP.bnk", "DB_IT.bnk"};
 
+    public static String createTempDirectoryForLauncher() throws IOException {
+        return Files.createTempDirectory("guiLauncher-tests").toString();
+    }    
+    
     public static String createTempDirectoryForInstaller() throws IOException {
         return Files.createTempDirectory("guiInstaller-tests").toString();
     }
