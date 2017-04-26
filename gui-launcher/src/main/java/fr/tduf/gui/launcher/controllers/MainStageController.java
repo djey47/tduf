@@ -7,7 +7,7 @@ import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.launcher.services.LauncherStepsCoordinator;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.common.game.FileConstants;
-import fr.tduf.libunlimited.common.game.domain.GameStatus;
+import fr.tduf.libunlimited.common.game.domain.bin.GameStatus;
 import fr.tduf.libunlimited.common.game.helper.GameStatusHelper;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -19,8 +19,8 @@ import javafx.util.StringConverter;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static fr.tduf.libunlimited.common.game.domain.GameStatus.RUNNING;
-import static fr.tduf.libunlimited.common.game.domain.GameStatus.UNKNOWN;
+import static fr.tduf.libunlimited.common.game.domain.bin.GameStatus.RUNNING;
+import static fr.tduf.libunlimited.common.game.domain.bin.GameStatus.UNKNOWN;
 
 public class MainStageController extends AbstractGuiController {
     private static final String THIS_CLASS_NAME = MainStageController.class.getSimpleName();

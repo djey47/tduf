@@ -1,7 +1,7 @@
 package fr.tduf.libunlimited.common.game.helper;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.libunlimited.common.game.domain.GameVersion;
+import fr.tduf.libunlimited.common.game.domain.bin.GameVersion;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.File;
@@ -13,7 +13,7 @@ import java.util.Arrays;
 
 import static fr.tduf.libunlimited.common.game.FileConstants.HASH_GAME_BINARY_1_45A;
 import static fr.tduf.libunlimited.common.game.FileConstants.HASH_GAME_BINARY_1_66A;
-import static fr.tduf.libunlimited.common.game.domain.GameVersion.*;
+import static fr.tduf.libunlimited.common.game.domain.bin.GameVersion.*;
 
 /**
  * Provides basic information about game process

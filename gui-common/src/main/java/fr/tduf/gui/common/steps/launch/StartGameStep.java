@@ -3,7 +3,7 @@ package fr.tduf.gui.common.steps.launch;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.domain.exceptions.StepException;
 import fr.tduf.gui.common.steps.GenericStep;
-import fr.tduf.libunlimited.common.game.domain.GameStatus;
+import fr.tduf.libunlimited.common.game.domain.bin.GameStatus;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
 
@@ -16,7 +16,7 @@ import java.nio.file.Paths;
 import static fr.tduf.gui.common.services.tasks.ContextKey.GAME_PROCESS;
 import static fr.tduf.gui.common.services.tasks.ContextKey.PROCESS_STATUS;
 import static fr.tduf.libunlimited.common.game.FileConstants.FILE_GAME_EXECUTABLE;
-import static fr.tduf.libunlimited.common.game.domain.GameStatus.*;
+import static fr.tduf.libunlimited.common.game.domain.bin.GameStatus.*;
 
 // TODO unit test
 public class StartGameStep extends GenericStep {

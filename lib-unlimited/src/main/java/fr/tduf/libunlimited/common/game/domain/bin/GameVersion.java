@@ -1,4 +1,4 @@
-package fr.tduf.libunlimited.common.game.domain;
+package fr.tduf.libunlimited.common.game.domain.bin;
 
 /**
  * All TDU game versions

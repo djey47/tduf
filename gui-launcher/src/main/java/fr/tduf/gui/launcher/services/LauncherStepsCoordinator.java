@@ -3,7 +3,7 @@ package fr.tduf.gui.launcher.services;
 import fr.tduf.gui.common.services.tasks.ContextKey;
 import fr.tduf.gui.common.services.tasks.launch.StartGameTask;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
-import fr.tduf.libunlimited.common.game.domain.GameStatus;
+import fr.tduf.libunlimited.common.game.domain.bin.GameStatus;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
@@ -13,7 +13,7 @@ import java.util.EnumMap;
 
 import static fr.tduf.gui.common.services.tasks.ContextKey.GAME_PROCESS;
 import static fr.tduf.gui.common.services.tasks.ContextKey.PROCESS_STATUS;
-import static fr.tduf.libunlimited.common.game.domain.GameStatus.OFF;
+import static fr.tduf.libunlimited.common.game.domain.bin.GameStatus.OFF;
 
 /**
  * Background service to orchestrate all non-interactive operations on vehicle mod.

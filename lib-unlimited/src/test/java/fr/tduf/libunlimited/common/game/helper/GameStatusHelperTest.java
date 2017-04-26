@@ -1,18 +1,16 @@
 package fr.tduf.libunlimited.common.game.helper;
 
 import fr.tduf.libtesting.common.helper.FilesHelper;
-import fr.tduf.libunlimited.common.game.domain.GameVersion;
+import fr.tduf.libunlimited.common.game.domain.bin.GameVersion;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static fr.tduf.libunlimited.common.game.domain.GameVersion.UNKNOWN;
+import static fr.tduf.libunlimited.common.game.domain.bin.GameVersion.UNKNOWN;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class GameStatusHelperTest {
     @Test
