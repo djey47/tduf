@@ -3,7 +3,6 @@ package fr.tduf.gui.common.steps.launch;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.domain.exceptions.StepException;
 import fr.tduf.gui.common.steps.GenericStep;
-import fr.tduf.libunlimited.common.game.FileConstants;
 import fr.tduf.libunlimited.common.game.domain.bin.GameStatus;
 import fr.tduf.libunlimited.common.game.domain.bin.LaunchSwitch;
 import fr.tduf.libunlimited.common.game.domain.bin.ProcessExitReason;
@@ -41,9 +40,13 @@ public class StartGameStep extends GenericStep {
         int exitCode = -1;
         try {
             File gamePath = resolveAndCheckGamePath();
+            List<String> fullCommand = buildFullCommand(gamePath, switches.getValue());
+
+            Log.info(THIS_CLASS_NAME, "Starting game with command line: " + String.join(" ", fullCommand));
+
             gameProcess.setValue(new ProcessBuilder()
                     .directory(gamePath)
-                    .command(buildFullCommand(gamePath, switches.getValue()))
+                    .command(fullCommand)
                     .start());
 
             Log.debug(THIS_CLASS_NAME, "Game process started: " + gameProcess.getValue());
