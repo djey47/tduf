@@ -20,7 +20,6 @@ import static fr.tduf.gui.common.services.tasks.ContextKey.PROCESS_STATUS;
 import static fr.tduf.libunlimited.common.game.FileConstants.FILE_GAME_EXECUTABLE;
 import static fr.tduf.libunlimited.common.game.domain.bin.GameStatus.*;
 
-// TODO unit test
 public class StartGameStep extends GenericStep {
     private static final String THIS_CLASS_NAME = StartGameStep.class.getSimpleName();
 
@@ -59,15 +58,7 @@ public class StartGameStep extends GenericStep {
         }
     }
 
-    private void updateContext(GameStatus status, ProcessExitReason exitReason, Property<Process> gameProcess, Property<GameStatus> processStatus, Property<ProcessExitReason> processExitReason) {
-        Platform.runLater(() -> {
-            gameProcess.setValue(null);
-            processStatus.setValue(status);
-            processExitReason.setValue(exitReason);
-        }); 
-    }
-
-    private File resolveAndCheckGamePath() throws StepException {
+    File resolveAndCheckGamePath() throws StepException {
         File gamePath = getApplicationConfiguration().getGamePath()
                 .map(Path::toFile)
                 .orElseThrow(() -> new IllegalStateException("Game path has not been set"));
@@ -79,7 +70,7 @@ public class StartGameStep extends GenericStep {
         return gamePath;
     }
 
-    private String buildFullCommand(File gamePath) {
+    String buildFullCommand(File gamePath) {
         Path executablePath = Paths.get(gamePath.getAbsolutePath(), FILE_GAME_EXECUTABLE);
 
         if (!executablePath.toFile().exists()) {
@@ -87,5 +78,13 @@ public class StartGameStep extends GenericStep {
         }
 
         return executablePath.toString();
+    }
+
+    private void updateContext(GameStatus status, ProcessExitReason exitReason, Property<Process> gameProcess, Property<GameStatus> processStatus, Property<ProcessExitReason> processExitReason) {
+        Platform.runLater(() -> {
+            gameProcess.setValue(null);
+            processStatus.setValue(status);
+            processExitReason.setValue(exitReason);
+        });
     }
 }
