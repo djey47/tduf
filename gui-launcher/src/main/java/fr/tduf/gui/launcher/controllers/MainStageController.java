@@ -8,6 +8,7 @@ import fr.tduf.gui.launcher.services.LauncherStepsCoordinator;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.common.game.FileConstants;
 import fr.tduf.libunlimited.common.game.domain.bin.GameStatus;
+import fr.tduf.libunlimited.common.game.domain.bin.ProcessExitReason;
 import fr.tduf.libunlimited.common.game.helper.GameStatusHelper;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -19,8 +20,8 @@ import javafx.util.StringConverter;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static fr.tduf.libunlimited.common.game.domain.bin.GameStatus.RUNNING;
-import static fr.tduf.libunlimited.common.game.domain.bin.GameStatus.UNKNOWN;
+import static fr.tduf.gui.launcher.common.DisplayConstants.FORMAT_LABEL_EXIT_REASON;
+import static fr.tduf.libunlimited.common.game.domain.bin.GameStatus.*;
 
 public class MainStageController extends AbstractGuiController {
     private static final String THIS_CLASS_NAME = MainStageController.class.getSimpleName();
@@ -39,7 +40,11 @@ public class MainStageController extends AbstractGuiController {
     private Hyperlink forceCloseLink;
 
     @FXML
+    private Label processExitReasonLabel;
+    
+    @FXML
     private Button runButton;
+    
     @FXML
     private TextField gameDirectoryTextField;
 
@@ -110,10 +115,24 @@ public class MainStageController extends AbstractGuiController {
                 return UNKNOWN;
             }
         });
+        
+        processExitReasonLabel.textProperty().bindBidirectional(stepsCoordinator.processExitReasonProperty(), new StringConverter<ProcessExitReason>() {
+            @Override
+            public String toString(ProcessExitReason exitReason) {
+                return String.format(FORMAT_LABEL_EXIT_REASON, exitReason.getLabel());
+            }
+
+            @Override
+            public ProcessExitReason fromString(String string) {
+                return null;
+            }
+        });
 
         forceCloseLink.visibleProperty().set(false);
+        processExitReasonLabel.visibleProperty().set(false);
         stepsCoordinator.processStatusProperty().addListener((observable, oldValue, newValue) -> {
             forceCloseLink.visibleProperty().set(newValue == RUNNING);
+            processExitReasonLabel.visibleProperty().set(newValue == OFF_ABNORMALLY);
             runButton.disableProperty().set(newValue == RUNNING);
         });
     }

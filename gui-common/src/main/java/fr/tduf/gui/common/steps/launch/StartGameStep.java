@@ -4,6 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.domain.exceptions.StepException;
 import fr.tduf.gui.common.steps.GenericStep;
 import fr.tduf.libunlimited.common.game.domain.bin.GameStatus;
+import fr.tduf.libunlimited.common.game.domain.bin.ProcessExitReason;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
 
@@ -14,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static fr.tduf.gui.common.services.tasks.ContextKey.GAME_PROCESS;
+import static fr.tduf.gui.common.services.tasks.ContextKey.PROCESS_EXIT_REASON;
 import static fr.tduf.gui.common.services.tasks.ContextKey.PROCESS_STATUS;
 import static fr.tduf.libunlimited.common.game.FileConstants.FILE_GAME_EXECUTABLE;
 import static fr.tduf.libunlimited.common.game.domain.bin.GameStatus.*;
@@ -29,6 +31,7 @@ public class StartGameStep extends GenericStep {
 
         Property<Process> gameProcess = (Property<Process>) getContext().get(GAME_PROCESS);
         Property<GameStatus> processStatus = (Property<GameStatus>) getContext().get(PROCESS_STATUS);
+        Property<ProcessExitReason> processExitReason = (Property<ProcessExitReason>) getContext().get(PROCESS_EXIT_REASON);
         
         int exitCode = -1;
         try {
@@ -44,21 +47,23 @@ public class StartGameStep extends GenericStep {
             
             exitCode = gameProcess.getValue().waitFor();
             
-            Log.debug(THIS_CLASS_NAME, "Game process ended with exit code: " + exitCode);
+            Log.info(THIS_CLASS_NAME, "Game process ended with exit code: " + exitCode);
         } catch(InterruptedException ie) {
             throw new IOException("Game process was interrupted", ie);
         } catch (Exception e) {
             throw new IOException("Unable to start game process", e);
         } finally {
-            GameStatus newStatus = exitCode == 0 ? OFF : OFF_ABNORMALLY;
-            updateContext(newStatus, gameProcess, processStatus);
+            ProcessExitReason exitReason = ProcessExitReason.fromCode(exitCode);
+            GameStatus newStatus = exitReason.isAbnormalTermination() ? OFF_ABNORMALLY : OFF;
+            updateContext(newStatus, exitReason, gameProcess, processStatus, processExitReason);
         }
     }
 
-    private void updateContext(GameStatus status, Property<Process> gameProcess, Property<GameStatus> processStatus) {
+    private void updateContext(GameStatus status, ProcessExitReason exitReason, Property<Process> gameProcess, Property<GameStatus> processStatus, Property<ProcessExitReason> processExitReason) {
         Platform.runLater(() -> {
             gameProcess.setValue(null);
-            processStatus.setValue(status);  
+            processStatus.setValue(status);
+            processExitReason.setValue(exitReason);
         }); 
     }
 

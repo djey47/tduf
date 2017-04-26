@@ -69,6 +69,7 @@
                                                       <children>
                                                          <Label fx:id="gameStatusLabel" text="&lt;STATUS&gt;" />
                                                          <Hyperlink fx:id="forceCloseLink" onAction="#handleForceCloseLinkAction" text="Force close" />
+                                                         <Label fx:id="processExitReasonLabel" text="&lt;REASON&gt;" />
                                                       </children>
                                                    </FlowPane>
                                                    <Arc fill="#1f93ff" length="270.0" radiusX="10.0" radiusY="10.0" rotate="90.0" startAngle="45.0" stroke="BLACK" strokeType="INSIDE" type="ROUND" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />

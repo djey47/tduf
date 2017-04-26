@@ -5,6 +5,8 @@ package fr.tduf.gui.launcher.common;
  */
 public class DisplayConstants {
     public static final String TITLE_APPLICATION = "Test Drive Unlimited Launcher by TDUF";
+    
+    public static final String FORMAT_LABEL_EXIT_REASON = "(%s)";
 
     private DisplayConstants() {}
 }
