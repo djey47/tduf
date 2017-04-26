@@ -5,7 +5,7 @@ buildscript {
         maven { url 'http://dl.bintray.com/content/aalmiray/kordamp' }
     }
     dependencies {
-        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0-M3'
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0-M4'
     }
 }
 
@@ -34,8 +34,8 @@ allprojects {
         jsonassertVersion = '1.4.0'
 
         junitVersion = '4.11'
-        junitJupiterVersion = '5.0.0-M3'
-        junitPlatformVersion = '1.0.0-M3'
+        junitJupiterVersion = '5.0.0-M4'
+        junitPlatformVersion = '1.0.0-M4'
         
         mockitoVersion = '2.2.26'
 
