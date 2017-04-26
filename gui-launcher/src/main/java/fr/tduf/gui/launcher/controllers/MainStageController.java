@@ -8,6 +8,7 @@ import fr.tduf.gui.launcher.services.LauncherStepsCoordinator;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.common.game.FileConstants;
 import fr.tduf.libunlimited.common.game.domain.bin.GameStatus;
+import fr.tduf.libunlimited.common.game.domain.bin.LaunchSwitch;
 import fr.tduf.libunlimited.common.game.domain.bin.ProcessExitReason;
 import fr.tduf.libunlimited.common.game.helper.GameStatusHelper;
 import javafx.fxml.FXML;
@@ -19,6 +20,8 @@ import javafx.util.StringConverter;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.Set;
 
 import static fr.tduf.gui.launcher.common.DisplayConstants.FORMAT_LABEL_EXIT_REASON;
 import static fr.tduf.libunlimited.common.game.domain.bin.GameStatus.*;
@@ -154,6 +157,7 @@ public class MainStageController extends AbstractGuiController {
 
     private void runGame() {
         stepsCoordinator.configurationProperty().setValue(configuration);
+        stepsCoordinator.gameSwitchesProperty().setValue(getSelectedSwitches());
         stepsCoordinator.restart();
     }
 
@@ -164,5 +168,10 @@ public class MainStageController extends AbstractGuiController {
         }
         
         process.destroyForcibly();
+    }
+
+    private Set<LaunchSwitch> getSelectedSwitches() {
+        // TODO get checked switches from tree
+        return new HashSet<>(LaunchSwitch.values().length);
     }
 }
