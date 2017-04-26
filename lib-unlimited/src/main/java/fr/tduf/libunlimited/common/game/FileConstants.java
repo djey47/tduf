@@ -9,6 +9,8 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
  * Constants for common game file names and directories
  */
 public class FileConstants {
+    public static final String PREFIX_LAUNCH_SWITCH = "-%s";
+    
     public static final String FILE_GAME_EXECUTABLE = "TestDriveUnlimited.exe";
     
     public static final String DIRECTORY_EURO = "Euro";

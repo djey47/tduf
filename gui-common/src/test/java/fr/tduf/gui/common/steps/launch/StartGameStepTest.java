@@ -3,6 +3,7 @@ package fr.tduf.gui.common.steps.launch;
 import fr.tduf.gui.common.domain.exceptions.StepException;
 import fr.tduf.libtesting.common.helper.FilesHelper;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
+import fr.tduf.libunlimited.common.game.domain.bin.LaunchSwitch;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,7 +14,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
+import static fr.tduf.libunlimited.common.game.domain.bin.LaunchSwitch.FRAMERATE;
+import static fr.tduf.libunlimited.common.game.domain.bin.LaunchSwitch.HD_PP;
+import static java.util.Arrays.asList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -77,7 +84,7 @@ class StartGameStepTest {
 
         // when-then
         assertThrows(IllegalArgumentException.class,
-                () -> step.buildFullCommand(gamePath));
+                () -> step.buildFullCommand(gamePath, new HashSet<>(0)));
     }
 
     @Test
@@ -88,9 +95,27 @@ class StartGameStepTest {
         Files.createFile(gameBinaryPath);
 
         // when
-        String actualCommand = step.buildFullCommand(gamePath.toFile());
+        List<String> actualCommand = step.buildFullCommand(gamePath.toFile(), new HashSet<>(0));
 
         // then
-        assertThat(actualCommand).isEqualTo(gameBinaryPath.toString());
+        assertThat(actualCommand).containsExactly(gameBinaryPath.toString());
+    }    
+    
+    @Test
+    void buildFullCommand_whenExistingBinary_andSwitches_shouldReturnFullCommand() throws StepException, IOException {
+        // given
+        Path gamePath = Paths.get(FilesHelper.createTempDirectoryForLauncher());
+        Path gameBinaryPath = gamePath.resolve("TestDriveUnlimited.exe");
+        Files.createFile(gameBinaryPath);
+        Set<LaunchSwitch> selectedSwitches = new HashSet<>(asList(FRAMERATE, HD_PP));
+
+        // when
+        List<String> actualCommand = step.buildFullCommand(gamePath.toFile(), selectedSwitches);
+
+        // then
+        assertThat(actualCommand)
+                .hasSize(3)
+                .startsWith(gameBinaryPath.toString())
+                .contains("-hd", "-fps");
     }
 }

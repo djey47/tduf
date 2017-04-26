@@ -3,7 +3,9 @@ package fr.tduf.gui.common.steps.launch;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.domain.exceptions.StepException;
 import fr.tduf.gui.common.steps.GenericStep;
+import fr.tduf.libunlimited.common.game.FileConstants;
 import fr.tduf.libunlimited.common.game.domain.bin.GameStatus;
+import fr.tduf.libunlimited.common.game.domain.bin.LaunchSwitch;
 import fr.tduf.libunlimited.common.game.domain.bin.ProcessExitReason;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
@@ -13,12 +15,15 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
-import static fr.tduf.gui.common.services.tasks.ContextKey.GAME_PROCESS;
-import static fr.tduf.gui.common.services.tasks.ContextKey.PROCESS_EXIT_REASON;
-import static fr.tduf.gui.common.services.tasks.ContextKey.PROCESS_STATUS;
+import static fr.tduf.gui.common.services.tasks.ContextKey.*;
 import static fr.tduf.libunlimited.common.game.FileConstants.FILE_GAME_EXECUTABLE;
+import static fr.tduf.libunlimited.common.game.FileConstants.PREFIX_LAUNCH_SWITCH;
 import static fr.tduf.libunlimited.common.game.domain.bin.GameStatus.*;
+import static java.lang.String.format;
 
 public class StartGameStep extends GenericStep {
     private static final String THIS_CLASS_NAME = StartGameStep.class.getSimpleName();
@@ -31,13 +36,14 @@ public class StartGameStep extends GenericStep {
         Property<Process> gameProcess = (Property<Process>) getContext().get(GAME_PROCESS);
         Property<GameStatus> processStatus = (Property<GameStatus>) getContext().get(PROCESS_STATUS);
         Property<ProcessExitReason> processExitReason = (Property<ProcessExitReason>) getContext().get(PROCESS_EXIT_REASON);
+        Property<Set<LaunchSwitch>> switches = (Property<Set<LaunchSwitch>>) getContext().get(GAME_SWITCHES);
         
         int exitCode = -1;
         try {
             File gamePath = resolveAndCheckGamePath();
             gameProcess.setValue(new ProcessBuilder()
                     .directory(gamePath)
-                    .command(buildFullCommand(gamePath))
+                    .command(buildFullCommand(gamePath, switches.getValue()))
                     .start());
 
             Log.debug(THIS_CLASS_NAME, "Game process started: " + gameProcess.getValue());
@@ -70,14 +76,20 @@ public class StartGameStep extends GenericStep {
         return gamePath;
     }
 
-    String buildFullCommand(File gamePath) {
+    List<String> buildFullCommand(File gamePath, Set<LaunchSwitch> switches) {
         Path executablePath = Paths.get(gamePath.getAbsolutePath(), FILE_GAME_EXECUTABLE);
 
         if (!executablePath.toFile().exists()) {
             throw new IllegalArgumentException("Game executable path does not exist: " + executablePath);
         }
 
-        return executablePath.toString();
+        List<String> commandArgs = new ArrayList<>();
+        
+        commandArgs.add(executablePath.toString());
+        switches
+                .forEach(sw -> commandArgs.add(format(PREFIX_LAUNCH_SWITCH, sw.getCode())));
+        
+        return commandArgs;
     }
 
     private void updateContext(GameStatus status, ProcessExitReason exitReason, Property<Process> gameProcess, Property<GameStatus> processStatus, Property<ProcessExitReason> processExitReason) {
