@@ -4,6 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.game.helpers.GameSettingsHelper;
 import fr.tduf.gui.common.javafx.application.AbstractGuiApp;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
+import fr.tduf.gui.launcher.domain.javafx.GameSettingDataItem;
 import fr.tduf.gui.launcher.services.LauncherStepsCoordinator;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.common.game.FileConstants;
@@ -11,11 +12,10 @@ import fr.tduf.libunlimited.common.game.domain.bin.GameStatus;
 import fr.tduf.libunlimited.common.game.domain.bin.LaunchSwitch;
 import fr.tduf.libunlimited.common.game.domain.bin.ProcessExitReason;
 import fr.tduf.libunlimited.common.game.helper.GameStatusHelper;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.util.StringConverter;
 
 import java.io.IOException;
@@ -50,6 +50,9 @@ public class MainStageController extends AbstractGuiController {
     
     @FXML
     private TextField gameDirectoryTextField;
+
+    @FXML
+    private TreeTableView<GameSettingDataItem> settingsTableView;
 
     @Override
     protected void init() throws IOException {
@@ -141,6 +144,21 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void initSettingsTab() {
+        TreeTableColumn<GameSettingDataItem, String> nameColumn = new TreeTableColumn<>("Name");
+        nameColumn.setPrefWidth(250);
+        nameColumn.setCellValueFactory(
+                (TreeTableColumn.CellDataFeatures<GameSettingDataItem, String> param) -> new ReadOnlyStringWrapper(param.getValue().getValue().getNameProperty().getValue()));
+
+        TreeTableColumn<GameSettingDataItem, Boolean> enabledColumn = new TreeTableColumn<>("Enabled?");
+        enabledColumn.setPrefWidth(75);
+        enabledColumn.setCellValueFactory(
+                (TreeTableColumn.CellDataFeatures<GameSettingDataItem, Boolean> param) -> new ReadOnlyBooleanWrapper(param.getValue().getValue().getEnabledProperty().getValue()));
+
+        settingsTableView.getColumns().addAll(nameColumn, enabledColumn);
+        final TreeItem<GameSettingDataItem> root = new TreeItem<>(new GameSettingDataItem("Settings"));
+        root.setExpanded(true);
+        settingsTableView.setRoot(root);
+
         String gameDirectory = configuration.getGamePath()
                 .map(Path::toString)
                 .orElse("");
