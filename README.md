@@ -61,8 +61,9 @@ This needs a release tag to be set, see *Releasing* section above.
 
 * Later!
 
-### Licensing
+### Licensing ###
 
+* Test resources may include old binary files from game (banks, database files). Copyright Eden Games, Atari. Don't blame please.
 * Portions of code (framework) are derivative work from [Guava library](https://github.com/google/guava) under Apache License version 2.0
 * See LICENSE.md license into this directory.
 
