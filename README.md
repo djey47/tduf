@@ -69,4 +69,4 @@ This needs a release tag to be set, see *Releasing* section above.
 
 ### Contact & useful links ###
 
-* [Project homepage @ TurboDuck community](http://forum.turboduck.net/forums/57-Mod-Tools-Support)
+* [Project homepage @ TurboDuck community](https://forum.turboduck.net/forums/tdu-mod-tools-support.57/)
