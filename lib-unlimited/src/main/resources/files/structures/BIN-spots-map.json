@@ -10,12 +10,12 @@
     {
       "name": "headerTag",
       "type": "TEXT",
-      "size": 6
+      "size": 8
     },    
     {
       "name": "spotCount",
       "type": "INTEGER",
-      "size": 4
+      "size": 2
     },
     {
       "name": "headerPad",
@@ -28,7 +28,7 @@
       "subFields": [
         {
           "name": "flag1",
-          "type": "NUMERIC",
+          "type": "INTEGER",
           "size": 4
         },        
         {
