@@ -47,12 +47,12 @@
           "size": 4
         },
         {
-          "name": "spotCoordinatesY",
+          "name": "spotCoordinatesZ",
           "type": "FPOINT",
           "size": 4
         },
         {
-          "name": "spotCoordinatesZ",
+          "name": "spotCoordinatesY",
           "type": "FPOINT",
           "size": 4
         },
