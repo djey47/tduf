@@ -1,6 +1,9 @@
 .gradle/
 .idea/
 build/
+classes/
+cli/perfs/
+gui-installer/assets/DATABASE/hidden
 integ-tests/src/test/resources/applied/
 integ-tests/src/test/resources/banks/db/out/
 integ-tests/src/test/resources/cameras/out/
@@ -14,8 +17,6 @@ integ-tests/src/test/resources/jsonified/
 integ-tests/src/test/resources/patcher/out/
 integ-tests/src/test/resources/patcher/effective-mini-template.json.properties
 integ-tests/src/test/resources/patcher/tdumt/out*/
-cli/perfs/
-gui-installer/assets/DATABASE/hidden
 lib-unlimited/perfs/
 pack/
 tmp-jarContents/

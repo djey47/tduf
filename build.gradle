@@ -53,7 +53,7 @@ subprojects {
 
     repositories {
         maven  {
-            url "http://repo1.maven.org/maven2"
+            url "https://repo1.maven.org/maven2"
         }
 
         flatDir name: 'embeddedRepository', dirs: '../lib'
