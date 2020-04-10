@@ -400,12 +400,14 @@
         {
           "name": "Cx_Length",
           "rank": 64,
-          "group": "Tuning"
+          "group": "Tuning",
+          "label": "Drag force"
         },
         {
           "name": "Cx_Height",
           "rank": 65,
-          "group": "Tuning"
+          "group": "Tuning",
+          "label": "Downforce"
         },
         {
           "name": "SteerLock",
@@ -2181,11 +2183,13 @@
         },
         {
           "name": "Cx_Length",
-          "rank": 64
+          "rank": 64,
+          "label": "Drag force"
         },
         {
           "name": "Cx_Height",
-          "rank": 65
+          "rank": 65,
+          "label": "Downforce"
         },
         {
           "name": "SteerLock",
