@@ -72,7 +72,7 @@ class MappingPluginTest {
     }
 
     @Test
-    void renderControls_whenNoCamerasLoaded_shouldReturnEmptyComponent() throws IOException {
+    void renderControls_whenNoCamerasLoaded_shouldReturnEmptyComponent() {
         // given
         context.getMappingContext().setPluginLoaded(false);
 

@@ -149,33 +149,34 @@ public class MappingPlugin implements DatabasePlugin {
         String fileName = String.format(kind.getFileNameFormat(), resourceValue);
         int lastPartIndex = fileName.lastIndexOf("_");
         int dotIndex = fileName.lastIndexOf(".");
+        Path parentPath = kind.getParentPath();
         Path filePath;
-        
+
         switch(kind) {
             case FRONT_RIMS_3D:
             case REAR_RIMS_3D:
-                filePath = kind.getParentPath().resolve(resolveRimDirectoryName(context)).resolve(fileName);
+                filePath = parentPath.resolve(resolveRimDirectoryName(context)).resolve(fileName);
                 break;
             case SHOP_EXT_3D:
             case HOUSE_EXT_3D:
             case REALTOR_EXT_3D:
-                filePath = kind.getParentPath().resolve(fileName.substring(0, lastPartIndex).toLowerCase() + fileName.substring(dotIndex));
+                filePath = parentPath.resolve(fileName.substring(0, lastPartIndex).toLowerCase() + fileName.substring(dotIndex));
                 break;
             case SHOP_INT_3D:
             case REALTOR_INT_3D:
-                filePath = kind.getParentPath().resolve(PREFIX_SPOT_INTERIOR_BANK + fileName.substring(1, lastPartIndex).toLowerCase() + fileName.substring(dotIndex));
+                filePath = parentPath.resolve(PREFIX_SPOT_INTERIOR_BANK + fileName.substring(1, lastPartIndex).toLowerCase() + fileName.substring(dotIndex));
                 break;            
             case HOUSE_LOUNGE_3D:
-                filePath = kind.getParentPath().resolve(PREFIX_SPOT_LOUNGE_BANK + fileName.substring(1, lastPartIndex).toLowerCase() + fileName.substring(dotIndex));
+                filePath = parentPath.resolve(PREFIX_SPOT_LOUNGE_BANK + fileName.substring(1, lastPartIndex).toLowerCase() + fileName.substring(dotIndex));
                 break;            
             case HOUSE_GARAGE_3D:
-                filePath = kind.getParentPath().resolve(PREFIX_SPOT_GARAGE_BANK + fileName.substring(1, lastPartIndex).toLowerCase() + fileName.substring(dotIndex));
+                filePath = parentPath.resolve(PREFIX_SPOT_GARAGE_BANK + fileName.substring(1, lastPartIndex).toLowerCase() + fileName.substring(dotIndex));
                 break;
             case CLOTHES_3D:
-                filePath = kind.getParentPath().resolve(resolveClothesBrandDirectoryName(context)).resolve(fileName);
+                filePath = parentPath.resolve(resolveClothesBrandDirectoryName(context)).resolve(fileName);
                 break;
             default:
-                filePath = kind.getParentPath().resolve(fileName);
+                filePath = parentPath.resolve(fileName);
         }
 
         boolean exists = Files.exists(resolveBankFilePath(gameLocation, filePath.toString()));
@@ -297,19 +298,9 @@ public class MappingPlugin implements DatabasePlugin {
                 default:
             }
 
-            boolean isRegistrationFailure = files.stream()
-                    .filter(entry -> !entry.isRegistered())
-                    .findFirst()
-                    .map(entry -> true)
-                    .orElse(false);
-
-            if (isRegistrationFailure) {
-                errorProperty.setValue(true);
-                errorMessageProperty.setValue(LABEL_ERROR_TOOLTIP_UNREGISTERED);
-            } else {
-                errorProperty.setValue(false);
-                errorMessageProperty.setValue("");
-            }
+            boolean isRegistrationFailure = files.stream().anyMatch(entry -> !entry.isRegistered());
+            errorProperty.setValue(isRegistrationFailure);
+            errorMessageProperty.setValue(isRegistrationFailure ? LABEL_ERROR_TOOLTIP_UNREGISTERED : "");
         };
     }
 
