@@ -60,6 +60,7 @@ subprojects {
     }
 
     dependencies {
+        compile group: 'javax.xml.bind', name: 'jaxb-api', version: "2.3.0"
         compile group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.9.13'
         compile group: 'org.apache.commons', name: 'commons-lang3', version: "$commonsLangVersion"
         compile group: 'com.esotericsoftware.minlog', name: 'minlog', version: "$minlogVersion"
