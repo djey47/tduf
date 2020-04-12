@@ -182,12 +182,12 @@
         {
           "name": "binoculars",
           "type": "INTEGER",
-          "size": 2
+          "size": 1
         },
         {
           "name": "settingsPart5",
           "type": "UNKNOWN",
-          "size": 140
+          "size": 141
         }
       ]
     }
