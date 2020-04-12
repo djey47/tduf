@@ -76,7 +76,7 @@
                             <Font name="System Bold" size="13.0" />
                         </font>
                     </Label>
-                    <ChoiceBox fx:id="profilesChoiceBox" prefWidth="175.0" />
+                    <ChoiceBox fx:id="profilesChoiceBox" prefWidth="325.0" />
                     <Label text="Locale:">
                         <font>
                             <Font name="System Bold" size="13.0" />
