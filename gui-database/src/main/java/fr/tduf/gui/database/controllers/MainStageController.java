@@ -45,7 +45,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -74,7 +73,6 @@ public class MainStageController extends AbstractGuiController {
     private BulkDatabaseMiner databaseMiner;
     private DialogsHelper dialogsHelper;
     private final BankSupport bankSupport = new GenuineBnkGateway(new CommandLineHelper());
-    private ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
     private PluginHandler pluginHandler;
 
     private MainStageViewDataController viewDataController;
@@ -90,8 +88,10 @@ public class MainStageController extends AbstractGuiController {
     private final DatabaseSaver databaseSaver = new DatabaseSaver();
     private final DatabaseChecker databaseChecker = new DatabaseChecker();
     private final DatabaseFixer databaseFixer = new DatabaseFixer();
+
     // Removing final allows it to be mocked in tests
     private DatabaseLoader databaseLoader = new DatabaseLoader();
+    private ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
 
     @FXML
     Label creditsLabel;
@@ -159,11 +159,7 @@ public class MainStageController extends AbstractGuiController {
 
         initialDatabaseDirectory.ifPresent(databaseLocation -> {
             Log.trace(THIS_CLASS_NAME, "->init: database auto load");
-            try {
-                loadDatabaseFromDirectory(databaseLocation);
-            } catch (IOException ioe) {
-                Log.error(THIS_CLASS_NAME, "Unable to load database at location: " + databaseLocation, ioe);
-            }
+            loadDatabaseFromDirectory(databaseLocation);
         });
     }
 
@@ -175,7 +171,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleLoadButtonMouseClick() throws IOException {
+    public void handleLoadButtonMouseClick() {
         Log.trace(THIS_CLASS_NAME, "->handleLoadButtonMouseClick");
 
         String databaseLocation = this.databaseLocationTextField.getText();
@@ -187,7 +183,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleSaveButtonMouseClick() throws IOException {
+    public void handleSaveButtonMouseClick() {
         Log.trace(THIS_CLASS_NAME, "->handleSaveButtonMouseClick");
 
         String databaseLocation = this.databaseLocationTextField.getText();
@@ -231,7 +227,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleHelpButtonAction() throws URISyntaxException, IOException {
+    public void handleHelpButtonAction() {
         Log.trace(THIS_CLASS_NAME, "->handleHelpButtonAction");
 
         DesktopHelper.openInBrowser(AppConstants.URL_WIKI_TOOLS_REF );
@@ -372,7 +368,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    public void handleImportEntryTdufPatchMenuAction() throws IOException {
+    public void handleImportEntryTdufPatchMenuAction() {
         Log.trace(THIS_CLASS_NAME, "->handleImportEntryTdufPatchMenuAction");
 
         ofNullable(currentTopicObject)
@@ -494,23 +490,23 @@ public class MainStageController extends AbstractGuiController {
         return (observableValue, oldState, newState) -> {
             if (SUCCEEDED == newState) {
                 final Set<IntegrityError> remainingErrors = databaseFixer.integrityErrorsProperty().get();
+                SimpleDialogOptions dialogOptions;
                 if (remainingErrors.isEmpty()) {
-                    SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                    dialogOptions = SimpleDialogOptions.builder()
                             .withContext(INFORMATION)
                             .withTitle(TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB)
                             .withMessage(fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_OK)
                             .withDescription(fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_ZERO_ERROR_AFTER_FIX)
                             .build();
-                    CommonDialogsHelper.showDialog(dialogOptions, getWindow());
                 } else {
-                    SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                    dialogOptions = SimpleDialogOptions.builder()
                             .withContext(WARNING)
                             .withTitle(TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB)
                             .withMessage(fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_KO)
                             .withDescription(fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_REMAINING_ERRORS)
                             .build();
-                    CommonDialogsHelper.showDialog(dialogOptions, getWindow());
                 }
+                CommonDialogsHelper.showDialog(dialogOptions, getWindow());
                 viewDataController.refreshAll();
             } else if (FAILED == newState) {
                 SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
@@ -610,7 +606,7 @@ public class MainStageController extends AbstractGuiController {
         }
     }
 
-    private void loadDatabaseFromDirectory(String databaseLocation) throws IOException {
+    private void loadDatabaseFromDirectory(String databaseLocation) {
         if (runningServiceProperty.get()) {
             return;
         }
@@ -623,7 +619,7 @@ public class MainStageController extends AbstractGuiController {
         databaseLoader.restart();
     }
 
-    private void saveDatabaseToDirectory(String databaseLocation) throws IOException {
+    private void saveDatabaseToDirectory(String databaseLocation) {
         if (runningServiceProperty.get()) {
             return;
         }

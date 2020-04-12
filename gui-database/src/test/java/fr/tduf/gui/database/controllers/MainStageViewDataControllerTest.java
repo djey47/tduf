@@ -200,7 +200,7 @@ class MainStageViewDataControllerTest {
     }
 
     @Test
-    void resolveInitialDatabaseDirectory_whenNoCommandLineParameter_andNoConfiguration_shouldReturnEmpty() throws Exception {
+    void resolveInitialDatabaseDirectory_whenNoCommandLineParameter_andNoConfiguration_shouldReturnEmpty() {
         // GIVEN
         when(applicationConfigurationMock.getDatabasePath()).thenReturn(empty());
 
@@ -212,7 +212,7 @@ class MainStageViewDataControllerTest {
     }
 
     @Test
-    void resolveInitialDatabaseDirectory_whenWrongCommandLineParameter_andNoConfiguration_shouldReturnEmpty() throws Exception {
+    void resolveInitialDatabaseDirectory_whenWrongCommandLineParameter_andNoConfiguration_shouldReturnEmpty() {
         // GIVEN
         DatabaseEditor.getCommandLineParameters().add("-p");
         when(applicationConfigurationMock.getDatabasePath()).thenReturn(empty());
@@ -227,7 +227,7 @@ class MainStageViewDataControllerTest {
     }
 
     @Test
-    void resolveInitialDatabaseDirectory_whenRightCommandLineParameter_shouldReturnLocation() throws Exception {
+    void resolveInitialDatabaseDirectory_whenRightCommandLineParameter_shouldReturnLocation() {
         // GIVEN
         DatabaseEditor.getCommandLineParameters().add("/tdu/euro/bnk/database");
 
@@ -243,7 +243,7 @@ class MainStageViewDataControllerTest {
     }
 
     @Test
-    void resolveInitialDatabaseDirectory_whenNoCommandLineParameter_andConfiguration_shouldReturnSavedLocation() throws Exception {
+    void resolveInitialDatabaseDirectory_whenNoCommandLineParameter_andConfiguration_shouldReturnSavedLocation() {
         // GIVEN
         when(applicationConfigurationMock.getDatabasePath()).thenReturn(of(Paths.get("/tdu/euro/bnk/database")));
 

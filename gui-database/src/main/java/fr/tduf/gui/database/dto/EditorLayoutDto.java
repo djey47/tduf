@@ -7,6 +7,8 @@ import org.codehaus.jackson.annotate.JsonTypeName;
 import java.util.ArrayList;
 import java.util.List;
 
+import static fr.tduf.gui.database.common.DisplayConstants.DATA_FORMAT_LAYOUT_OBJECT;
+
 /**
  * Represents all available profiles in Database Editor
  */
@@ -83,7 +85,7 @@ public class EditorLayoutDto {
 
         @Override
         public String toString() {
-            return String.format("[%s] %s", this.getTopic(), this.getName());
+            return String.format(DATA_FORMAT_LAYOUT_OBJECT, this.getTopic(), this.getName());
         }
     }
 }

@@ -110,5 +110,7 @@ public class DisplayConstants {
     public static final String STATUS_FORMAT_SAVED_DATABASE = "Saved database: %s";
     public static final String STATUS_FORMAT_LOADED_DATABASE = "Loaded database: %s";
 
+    public static final String DATA_FORMAT_LAYOUT_OBJECT = "[%s] %s";
+
     private DisplayConstants() {}
 }
