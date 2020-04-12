@@ -4,9 +4,6 @@ buildscript {
     repositories {
         maven { url 'http://dl.bintray.com/content/aalmiray/kordamp' }
     }
-    dependencies {
-        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0-M4'
-    }
 }
 
 plugins {
@@ -15,17 +12,17 @@ plugins {
 }
 
 // configure version
-scmVersion {
-    tag {
-        prefix = 'tduf'
-    }
-}
+//scmVersion {
+//    tag {
+//        prefix = 'tduf'
+//    }
+//}
 
 // Project definition
 allprojects {
     project.group = 'fr.tduf'
     // version defined by plugin (if changes or ahead commits: x.y.z-SNAPSHOT)
-    project.version = scmVersion.version
+//    project.version = scmVersion.version
 
     // Version for common dependencies
     ext {
@@ -34,7 +31,7 @@ allprojects {
         jsonassertVersion = '1.4.0'
 
         junitVersion = '4.11'
-        junitJupiterVersion = '5.0.0-M4'
+        junitJupiterVersion = '5.3.1'
         junitPlatformVersion = '1.0.0-M4'
         
         mockitoVersion = '2.2.26'
@@ -49,7 +46,7 @@ allprojects {
 
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'org.junit.platform.gradle.plugin'
+//    apply plugin: 'org.junit.platform.gradle.plugin'
 
     repositories {
         maven  {
@@ -57,6 +54,10 @@ subprojects {
         }
 
         flatDir name: 'embeddedRepository', dirs: '../lib'
+    }
+
+    test {
+        useJUnitPlatform()
     }
 
     dependencies {
@@ -67,8 +68,9 @@ subprojects {
 
         testCompile project(':lib-testing')
 
-        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: "$junitJupiterVersion"
-        testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: "$junitJupiterVersion"
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: "$junitJupiterVersion"
+        testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: "$junitJupiterVersion"
+
         testCompile group: 'org.mockito', name: 'mockito-core', version: "$mockitoVersion"
         testCompile group: 'org.assertj', name: 'assertj-core', version: "$assertjVersion"
         testCompile group: 'org.skyscreamer', name: 'jsonassert', version: "$jsonassertVersion"
@@ -80,13 +82,6 @@ subprojects {
     compileJava {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    junitPlatform {
-        platformVersion "$junitPlatformVersion"
-        filters {
-            includeClassNamePattern '.*Test'
-        }
     }
 
     task fatJar(type: Jar) {
@@ -103,15 +98,6 @@ subprojects {
 project(':integ-tests') {
     dependencies {
         testCompile project(':cli')
-
-        // JUNIT4 kept for system rules
-        testCompile group: 'junit', name: 'junit', version: "$junitVersion"
-    }
-
-    junitPlatform {
-        filters {
-            includeClassNamePattern '.*IntegTest'
-        }
     }
 
     task integTestReport() {
@@ -135,7 +121,6 @@ project(':cli') {
     jar {
         manifest.attributes provider: 'gradle'
     }
-
 }
 
 project('lib-testing') {
@@ -418,8 +403,4 @@ task copyIcons(type: Copy) {
     include 'TDU-256px.png'
     include 'TDU-256px.ico'
     into 'pack/icons'
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = getGradleVersion()
 }
