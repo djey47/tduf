@@ -46,9 +46,9 @@ import static fr.tduf.gui.database.plugins.common.FxConstants.*;
 import static fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto.TopicMetadataDto.FIELD_RANK_CAMERA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Collections.singletonList;
-import static java.util.Comparator.comparing;
-import static java.util.Comparator.comparingLong;
+import static java.util.Comparator.*;
 import static java.util.Map.Entry.comparingByKey;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static javafx.geometry.Orientation.VERTICAL;
 import static javafx.scene.control.Alert.AlertType.ERROR;
@@ -176,6 +176,20 @@ public class CamerasPlugin implements DatabasePlugin {
     @Override
     public Set<String> getCss() {
         return new HashSet<>(singletonList(thisClass.getResource(PATH_RESOURCE_CSS_CAMERAS).toExternalForm()));
+    }
+
+    /**
+     * Initial view is either the last view kind selected, otherwise the first view
+     */
+    static Optional<CameraView> determineInitialCameraView(List<CameraView> sortedViews, CameraView previousCameraViewSelected) {
+        CameraView initialView = ofNullable(previousCameraViewSelected)
+                .flatMap(previousView -> sortedViews.stream()
+                        .filter(view -> view.getKind().getInternalId() == previousView.getKind().getInternalId())
+                        .findFirst())
+                .orElse(sortedViews.stream()
+                        .findFirst()
+                        .orElse(null));
+        return ofNullable(initialView);
     }
 
     private VBox createMainColumn(EditorContext context, ComboBox<CameraSetInfo> cameraSelectorComboBox, ComboBox<CameraView> viewSelectorComboBox) {
@@ -315,6 +329,8 @@ public class CamerasPlugin implements DatabasePlugin {
                 return;
             }
 
+            final CameraView previousCameraViewSelected = currentCameraViewProperty.getValue();
+
             cameraViews.clear();
 
             CamerasContext camerasContext = editorContext.getCamerasContext();
@@ -325,11 +341,13 @@ public class CamerasPlugin implements DatabasePlugin {
                 camerasContext.getErrorProperty().setValue(false);
                 camerasContext.getErrorMessageProperty().setValue("");
 
-                cameraViews.addAll(CamerasHelper.fetchInformation(newValue.getCameraIdentifier(), cameraInfoEnhancedProperty.getValue()).getViews());
+                final List<CameraView> sortedViews = CamerasHelper.fetchInformation(newValue.getCameraIdentifier(), cameraInfoEnhancedProperty.getValue()).getViews().stream()
+                        .sorted(comparingInt(view -> view.getKind().getInternalId()))
+                        .collect(toList());
 
-                if (!cameraViews.isEmpty()) {
-                    currentCameraViewProperty.setValue(cameraViews.get(0));
-                }
+                cameraViews.addAll(sortedViews);
+                determineInitialCameraView(sortedViews, previousCameraViewSelected)
+                        .ifPresent(currentCameraViewProperty::setValue);
 
                 editorContext.getChangeDataController().updateContentItem(CAR_PHYSICS_DATA, FIELD_RANK_CAMERA, Integer.toString(newValue.getCameraIdentifier()));
             }
