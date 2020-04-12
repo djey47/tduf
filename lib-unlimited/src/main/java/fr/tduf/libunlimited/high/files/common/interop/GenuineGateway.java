@@ -96,7 +96,7 @@ public abstract class GenuineGateway {
         final Path sourcePath = sourceLocation.toPath();
         Log.debug(THIS_CLASS_NAME, "Source location: " + sourcePath);
 
-        if (sourcePath.endsWith(Paths.get("build", "classes", "main"))) {
+        if (sourcePath.endsWith(Paths.get("build", "classes", "java", "main"))) {
             // Run from IDE
             return sourcePath.getParent().getParent().getParent().getParent();
         } else {
