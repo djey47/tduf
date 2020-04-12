@@ -48,6 +48,7 @@ import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA
 import static java.util.Collections.singletonList;
 import static java.util.Comparator.comparing;
 import static java.util.Comparator.comparingLong;
+import static java.util.Map.Entry.comparingByKey;
 import static java.util.stream.Collectors.toList;
 import static javafx.geometry.Orientation.VERTICAL;
 import static javafx.scene.control.Alert.AlertType.ERROR;
@@ -352,7 +353,7 @@ public class CamerasPlugin implements DatabasePlugin {
 
     private List<Map.Entry<ViewProps, ?>> getSortedAndEditableViewProperties(int cameraIdentifier, ViewKind viewKind) {
         return CamerasHelper.fetchViewProperties(Long.valueOf(cameraIdentifier).intValue(), viewKind, cameraInfoEnhancedProperty.getValue()).entrySet().stream()
-                .sorted(comparing(Map.Entry::getKey))
+                .sorted(comparingByKey())
                 .collect(toList());
     }
 
@@ -367,7 +368,7 @@ public class CamerasPlugin implements DatabasePlugin {
             editedEntry.setValue(validateCellInput(newValue));
 
             ViewKind currentViewKind = currentViewProperty.getValue().getKind();
-            int cameraIdentifier = Integer.valueOf(rawValueProperty.getValue());
+            int cameraIdentifier = Integer.parseInt(rawValueProperty.getValue());
             updateViewProperties(cameraIdentifier, currentViewKind, editedEntry);
         };
     }
@@ -388,7 +389,7 @@ public class CamerasPlugin implements DatabasePlugin {
 
     private int validateCellInput(String value) {
         try {
-            return Integer.valueOf(value);
+            return Integer.parseInt(value);
         } catch(NumberFormatException nfe) {
             Log.error(THIS_CLASS_NAME, "Unsupported value was entered: " + value);
             throw nfe;
@@ -408,7 +409,7 @@ public class CamerasPlugin implements DatabasePlugin {
 
             int newCameraSetIdentifier = input.map(Integer::valueOf)
                     .orElseThrow(() -> new IllegalStateException("Should not happen"));
-            int cameraSetIdentifier = Integer.valueOf(rawValueProperty.getValue());
+            int cameraSetIdentifier = Integer.parseInt(rawValueProperty.getValue());
 
             CamerasDatabase camerasDatabase = cameraInfoEnhancedProperty.getValue();
             CamerasHelper.duplicateCameraSet(cameraSetIdentifier, newCameraSetIdentifier, camerasDatabase);
@@ -422,7 +423,7 @@ public class CamerasPlugin implements DatabasePlugin {
 
     private EventHandler<ActionEvent> handleDeleteSetButtonAction(StringProperty rawValueProperty, SingleSelectionModel<CameraSetInfo> cameraSelectorSelectionModel) {
         return event -> {
-            int cameraSetIdentifier = Integer.valueOf(rawValueProperty.getValue());
+            int cameraSetIdentifier = Integer.parseInt(rawValueProperty.getValue());
             CamerasDatabase camerasDatabase = cameraInfoEnhancedProperty.getValue();
 
             CamerasHelper.deleteCameraSet(cameraSetIdentifier, camerasDatabase);
@@ -437,19 +438,19 @@ public class CamerasPlugin implements DatabasePlugin {
     private EventHandler<ActionEvent> handleImportSetButtonAction(StringProperty rawValueProperty, Window mainWindow) {
         return event -> dialogsHelper.askForCameraPatchLocation(mainWindow)
                 .map(File::new)
-                .ifPresent(file -> importSetFromPatchFile(file, Long.valueOf(rawValueProperty.get()), mainWindow));
+                .ifPresent(file -> importSetFromPatchFile(file, Long.parseLong(rawValueProperty.get()), mainWindow));
     }
 
     private EventHandler<ActionEvent> handleExportAllViewsAction(StringProperty rawValueProperty, Window mainWindow) {
         return event -> dialogsHelper.askForCameraPatchSaveLocation(mainWindow)
                 .map(File::new)
-                .ifPresent(file -> exportSetToPatchFile(file, Long.valueOf(rawValueProperty.get()), null, mainWindow));
+                .ifPresent(file -> exportSetToPatchFile(file, Long.parseLong(rawValueProperty.get()), null, mainWindow));
     }
 
     private EventHandler<ActionEvent> handleExportCurrentViewAction(StringProperty rawValueProperty, SingleSelectionModel<CameraView> viewSelectorSelectionModel, Window mainWindow) {
         return event -> dialogsHelper.askForCameraPatchSaveLocation(mainWindow)
                 .map(File::new)
-                .ifPresent(file -> exportSetToPatchFile(file, Long.valueOf(rawValueProperty.get()), viewSelectorSelectionModel.getSelectedItem().getKind(), mainWindow));
+                .ifPresent(file -> exportSetToPatchFile(file, Long.parseLong(rawValueProperty.get()), viewSelectorSelectionModel.getSelectedItem().getKind(), mainWindow));
     }
 
     private void importSetFromPatchFile(File file, long targetSetIdentifier, Window mainWindow) {

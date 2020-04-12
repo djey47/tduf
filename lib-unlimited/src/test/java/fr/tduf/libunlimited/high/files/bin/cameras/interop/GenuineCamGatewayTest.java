@@ -43,7 +43,7 @@ class GenuineCamGatewayTest {
     private ArgumentCaptor<String> commandArgumentsCaptor;
 
     @BeforeEach
-    void setUp() throws IOException {
+    void setUp() {
         Log.set(Log.LEVEL_DEBUG);
         initMocks(this);
     }

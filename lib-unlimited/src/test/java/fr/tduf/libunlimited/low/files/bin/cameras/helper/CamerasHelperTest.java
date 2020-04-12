@@ -58,21 +58,21 @@ class CamerasHelperTest {
     }
 
     @Test
-    void duplicateCameraSet_whenNullInfo_shouldThrowNullPointerException() throws Exception {
+    void duplicateCameraSet_whenNullInfo_shouldThrowNullPointerException() {
         // GIVEN-WHEN-THEN
         assertThrows(NullPointerException.class,
                 () -> CamerasHelper.duplicateCameraSet(1, 1001, null));
     }
 
     @Test
-    void duplicateCameraSet_whenSourceDoesNotExist_shouldThrowException() throws Exception {
+    void duplicateCameraSet_whenSourceDoesNotExist_shouldThrowException() {
         // GIVEN-WHEN-THEN
         assertThrows(NoSuchElementException.class,
                 () -> CamerasHelper.duplicateCameraSet(0, 401, camerasDatabase));
     }
 
     @Test
-    void duplicateCameraSet_whenSourceExists_shouldAddSet() throws Exception {
+    void duplicateCameraSet_whenSourceExists_shouldAddSet() {
         // GIVEN-WHEN
         CamerasHelper.duplicateCameraSet(1, 401, camerasDatabase);
 
@@ -85,7 +85,7 @@ class CamerasHelperTest {
     }
 
     @Test
-    void duplicateCameraSet_whenSourceAndTargetExist_shouldDoNothing() throws Exception {
+    void duplicateCameraSet_whenSourceAndTargetExist_shouldDoNothing() {
         // GIVEN-WHEN
         CamerasHelper.duplicateCameraSet(1, 15, camerasDatabase);
 
@@ -96,16 +96,16 @@ class CamerasHelperTest {
     }
 
     @Test
-    void batchDuplicateCameraSets_whenSourceExist_shouldAddSets() throws Exception {
+    void batchDuplicateCameraSets_whenSourceExist_shouldAddSets() {
         // GIVEN-WHEN
         List<String> instructions = asList ("1;401", "1;402", "1;403");
         CamerasHelper.batchDuplicateCameraSets(instructions, camerasDatabase);
 
         // THEN
         assertThat(camerasDatabase.getIndexSize()).isEqualTo(153);
-        assertThat(camerasDatabase.cameraSetExistsInIndex(401));
-        assertThat(camerasDatabase.cameraSetExistsInIndex(402));
-        assertThat(camerasDatabase.cameraSetExistsInIndex(403));
+        assertThat(camerasDatabase.cameraSetExistsInIndex(401)).isTrue();
+        assertThat(camerasDatabase.cameraSetExistsInIndex(402)).isTrue();
+        assertThat(camerasDatabase.cameraSetExistsInIndex(403)).isTrue();
         assertThat(camerasDatabase.getSetsCount()).isEqualTo(151);
         assertThat(camerasDatabase.getViewsForCameraSet(401)).hasSize(4);
         assertThat(camerasDatabase.getViewsForCameraSet(402)).hasSize(4);
@@ -114,7 +114,7 @@ class CamerasHelperTest {
     }
 
     @Test
-    void fetchInformation_whenCameraDoesNotExist_shouldThrowException() throws Exception {
+    void fetchInformation_whenCameraDoesNotExist_shouldThrowException() {
         // GIVEN-WHEN-THEN
         assertThrows(NoSuchElementException.class,
                 () -> CamerasHelper.fetchInformation(0, camerasDatabase));
@@ -150,7 +150,7 @@ class CamerasHelperTest {
     }
 
     @Test
-    void fetchViewProperties_whenViewDoesNotExist_shouldThrowException() throws Exception {
+    void fetchViewProperties_whenViewDoesNotExist_shouldThrowException() {
         // GIVEN-WHEN-THEN
         assertThrows(NoSuchElementException.class,
                 () -> CamerasHelper.fetchViewProperties(1000, Follow_Large_Back, camerasDatabase));
@@ -278,14 +278,14 @@ class CamerasHelperTest {
     }
 
     @Test
-    void updateViews_whenNullConfiguration_shouldThrowException() throws IOException {
+    void updateViews_whenNullConfiguration_shouldThrowException() {
         // GIVEN-WHEN-THEN
         assertThrows(NullPointerException.class,
                 () -> CamerasHelper.updateViews(null, camerasDatabase));
     }
 
     @Test
-    void updateViews_whenEmptyConfiguration_shouldThrowException() throws IOException {
+    void updateViews_whenEmptyConfiguration_shouldThrowException() {
         // GIVEN
         SetConfigurationDto configuration = SetConfigurationDto.builder().build();
 
@@ -295,7 +295,7 @@ class CamerasHelperTest {
     }
 
     @Test
-    void updateViews_whenCameraDoesNotExist_shouldThrowException() throws Exception {
+    void updateViews_whenCameraDoesNotExist_shouldThrowException() {
         // GIVEN
         CameraView cameraView = CameraView.from(Bumper, 0, Bumper);
         SetConfigurationDto configuration = SetConfigurationDto.builder()
@@ -309,7 +309,7 @@ class CamerasHelperTest {
     }
 
     @Test
-    void updateViews_whenCameraExists_butViewDoesNot_shouldDoNothing() throws Exception {
+    void updateViews_whenCameraExists_butViewDoesNot_shouldDoNothing() {
         // GIVEN
         EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
         viewProps.put(BINOCULARS, 0L);
@@ -332,7 +332,7 @@ class CamerasHelperTest {
     }
 
     @Test
-    void updateViews_whenCameraExists_andViewExists_shouldUpdateSettings_andOriginalStore() throws Exception {
+    void updateViews_whenCameraExists_andViewExists_shouldUpdateSettings_andOriginalStore() {
         // GIVEN
         EnumMap<ViewProps, Object> viewProps = new EnumMap<>(ViewProps.class);
         viewProps.put(BINOCULARS, 0L);

@@ -89,7 +89,7 @@ class AdjustCameraStepTest {
     }
 
     @Test
-    void perform_whenCameraIdInProperties_andNoCustomization_shouldNotCallBankSupportComponent() throws StepException, IOException {
+    void perform_whenCameraIdInProperties_andNoCustomization_shouldNotCallBankSupportComponent() throws StepException {
         // GIVEN
         databaseContext.getPatchProperties().register("CAMERA", "200");
 
@@ -101,7 +101,7 @@ class AdjustCameraStepTest {
     }
 
     @Test
-    void perform_whenCameraIdInProperties_andInvalidCustomization_shouldThrowException() throws StepException, IOException {
+    void perform_whenCameraIdInProperties_andInvalidCustomization_shouldThrowException() {
         // GIVEN
         databaseContext.getPatchProperties().register("CAMERA", "200");
         databaseContext.getPatchProperties().register("CAMERA.HOOD", "201^25");
@@ -151,7 +151,7 @@ class AdjustCameraStepTest {
     }
 
     @Test
-    void perform_whenCameraIdNotInProperties_andSlotNotInDatabase_shouldThrowException() throws StepException, IOException {
+    void perform_whenCameraIdNotInProperties_andSlotNotInDatabase_shouldThrowException() {
         // GIVEN
         databaseContext.getPatchProperties().register("SLOTREF", SLOTREF_2);
 
@@ -162,7 +162,7 @@ class AdjustCameraStepTest {
     }
 
     @Test
-    void perform_whenCameraIdAndSlotNotInProperties_shouldThrowException() throws StepException, IOException {
+    void perform_whenCameraIdAndSlotNotInProperties_shouldThrowException() {
         // GIVEN-WHEN-THEN
         Throwable actual = assertThrows(StepException.class,
                 () -> adjustCameraStep.start());
