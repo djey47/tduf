@@ -156,7 +156,7 @@ class CameraToolIntegTest {
         String expectedJson = new String(jsonContents, FilesHelper.CHARSET_DEFAULT);
 
         String tempDirectory = fr.tduf.libtesting.common.helper.FilesHelper.createTempDirectoryForLibrary();
-        Path cameraPath = Paths.get(tempDirectory, "cameras.bin");
+        Path cameraPath = Paths.get(tempDirectory, "Cameras.bin");
         Files.copy(Paths.get(inputCameraFile), cameraPath);
 
         CamerasHelper.setCameraSupport(getGatewayWithMockedCLI());

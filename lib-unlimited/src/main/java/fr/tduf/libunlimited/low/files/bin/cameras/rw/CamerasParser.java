@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Allow to read data from cameras.bin file.
+ * Allow to read data from Cameras.bin file.
  */
 public class CamerasParser extends GenericParser<CamerasDatabase> {
 

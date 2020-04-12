@@ -87,7 +87,7 @@ class RevertCameraStepTest {
         genericStep.perform();
 
         // THEN
-        verify(camGatewayMock).resetCamera("./Euro/Bnk/Database/cameras.bin", 102);
+        verify(camGatewayMock).resetCamera("./Euro/Bnk/Database/Cameras.bin", 102);
     }
 
     @Test
@@ -108,6 +108,6 @@ class RevertCameraStepTest {
         genericStep.perform();
 
         // THEN
-        verify(camGatewayMock).resetCamera("./Euro/Bnk/Database/cameras.bin", 241);
+        verify(camGatewayMock).resetCamera("./Euro/Bnk/Database/Cameras.bin", 241);
     }
 }

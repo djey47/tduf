@@ -171,7 +171,7 @@ class CamerasHelperTest {
     void useViews_whenCameraExists_andViewExists_shouldUpdateSettings() throws Exception {
         // GIVEN
         String tempDirectory = fr.tduf.libtesting.common.helper.FilesHelper.createTempDirectoryForLibrary();
-        Path camFilePath = Paths.get(tempDirectory, "cameras.bin");
+        Path camFilePath = Paths.get(tempDirectory, "Cameras.bin");
         String camFile = camFilePath.toString();
         Files.write(camFilePath, camContents);
 

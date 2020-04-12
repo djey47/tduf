@@ -87,7 +87,7 @@ public class CamerasPlugin implements DatabasePlugin {
         String databaseLocation = context.getDatabaseLocation();
         Path cameraFile = resolveCameraFilePath(databaseLocation);
         if (!Files.exists(cameraFile)) {
-            Log.warn(THIS_CLASS_NAME, "No cameras.bin file was found in database directory: " + databaseLocation);
+            Log.warn(THIS_CLASS_NAME, "No Cameras.bin file was found in database directory: " + databaseLocation);
             return;
         }
 

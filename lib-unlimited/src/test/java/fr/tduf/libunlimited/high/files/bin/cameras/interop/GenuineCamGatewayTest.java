@@ -31,6 +31,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 class GenuineCamGatewayTest {
 
     private static final int CAMERA_ID = 326;
+    private static final String CAMERAS_FILE_NAME = "Cameras.bin";
 
     @Mock
     private CommandLineHelper commandLineHelperMock;
@@ -50,11 +51,10 @@ class GenuineCamGatewayTest {
     @Test
     void getCameraInfo_whenSuccess_shouldInvokeCommandLineCorrectly_andReturnObject() throws IOException, URISyntaxException {
         // GIVEN
-        String camFileName = "cameras.bin";
-        mockCommandLineHelperToReturnCameraViewsSuccess(camFileName, CAMERA_ID);
+        mockCommandLineHelperToReturnCameraViewsSuccess(CAMERAS_FILE_NAME, CAMERA_ID);
 
         // WHEN
-        CameraSetInfo actualCameraInfo = genuineCamGateway.getCameraInfo(camFileName, CAMERA_ID);
+        CameraSetInfo actualCameraInfo = genuineCamGateway.getCameraInfo(CAMERAS_FILE_NAME, CAMERA_ID);
 
         // THEN
         assertThat(actualCameraInfo).isNotNull();
@@ -71,15 +71,14 @@ class GenuineCamGatewayTest {
     @Test
     void customizeCamera_whenSuccess_shouldInvokeCommandLineCorrectly() throws IOException, URISyntaxException {
         // GIVEN
-        String camFileName = "cameras.bin";
         GenuineCamViewsDto customizeInput = FilesHelper.readObjectFromJsonResourceFile(GenuineCamViewsDto.class, "/files/interop/tdumt-cli/CAM-C.input.json");
-        mockCommandLineHelperToReturnCameraCustomizeSuccess(camFileName, CAMERA_ID);
+        mockCommandLineHelperToReturnCameraCustomizeSuccess(CAMERAS_FILE_NAME, CAMERA_ID);
 
         // WHEN
-        genuineCamGateway.customizeCamera(camFileName, CAMERA_ID, customizeInput);
+        genuineCamGateway.customizeCamera(CAMERAS_FILE_NAME, CAMERA_ID, customizeInput);
 
         // THEN
-        verify(commandLineHelperMock).runCliCommand(eq("mono"), anyString(), eq("CAM-C"), eq(camFileName), eq(Long.valueOf(CAMERA_ID).toString()), commandArgumentsCaptor.capture());
+        verify(commandLineHelperMock).runCliCommand(eq("mono"), anyString(), eq("CAM-C"), eq(CAMERAS_FILE_NAME), eq(Long.valueOf(CAMERA_ID).toString()), commandArgumentsCaptor.capture());
 
         String expectedInputContents = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(customizeInput);
         assertThat(new File(commandArgumentsCaptor.getValue()))
@@ -90,15 +89,14 @@ class GenuineCamGatewayTest {
     @Test
     void resetCamera_whenSuccess_shouldInvokeCommandLineCorrectly() throws IOException, URISyntaxException {
         // GIVEN
-        String camFileName = "cameras.bin";
         int CAMERA_ID = 326;
-        mockCommandLineHelperToReturnCameraResetSuccess(camFileName, CAMERA_ID);
+        mockCommandLineHelperToReturnCameraResetSuccess(CAMERAS_FILE_NAME, CAMERA_ID);
 
         // WHEN
-        genuineCamGateway.resetCamera(camFileName, CAMERA_ID);
+        genuineCamGateway.resetCamera(CAMERAS_FILE_NAME, CAMERA_ID);
 
         // THEN
-        verify(commandLineHelperMock).runCliCommand(eq("mono"), anyString(), eq("CAM-R"), eq(camFileName), eq(Integer.valueOf(CAMERA_ID).toString()));
+        verify(commandLineHelperMock).runCliCommand(eq("mono"), anyString(), eq("CAM-R"), eq(CAMERAS_FILE_NAME), eq(Integer.valueOf(CAMERA_ID).toString()));
     }
 
     private void mockCommandLineHelperToReturnCameraViewsSuccess(String bankFileName, long CAMERA_ID) throws IOException, URISyntaxException {

@@ -14,7 +14,7 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
 
 /**
- * Structure for camera patch, to be applied onto cameras.bin file
+ * Structure for camera patch, to be applied onto Cameras.bin file
  */
 @JsonTypeName("camPatch")
 @JsonSerialize(include = NON_NULL)

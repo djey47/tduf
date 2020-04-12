@@ -29,7 +29,7 @@ import static java.util.stream.Collectors.toList;
 public class CamerasHelper {
     private static final String THIS_CLASS_NAME = CamerasHelper.class.getSimpleName();
 
-    public static final String FILE_CAMERAS_BIN = "cameras.bin";
+    public static final String FILE_CAMERAS_BIN = "Cameras.bin";
 
     private static final String INSTRUCTION_SEPARATOR = ";";
 
@@ -53,8 +53,8 @@ public class CamerasHelper {
         }
 
         List<CameraView> sourceViews = camerasDatabase.getViewsForCameraSet(sourceCameraId);
-        Integer viewCount = sourceViews.size();
-        camerasDatabase.updateIndex(targetCameraId, viewCount.shortValue());
+        int viewCount = sourceViews.size();
+        camerasDatabase.updateIndex(targetCameraId, (short) viewCount);
 
         List<CameraView> clonedViews = sourceViews.stream()
                 .map(sourceView -> sourceView.cloneForNewViewSet(targetCameraId))
@@ -84,7 +84,7 @@ public class CamerasHelper {
 
         instructions.forEach(instruction -> {
             String[] compounds = instruction.split(INSTRUCTION_SEPARATOR);
-            duplicateCameraSet(Integer.valueOf(compounds[0]), Integer.valueOf(compounds[1]), camerasDatabase);
+            duplicateCameraSet(Integer.parseInt(compounds[0]), Integer.parseInt(compounds[1]), camerasDatabase);
         });
     }
 
@@ -192,7 +192,7 @@ public class CamerasHelper {
     }
 
     /**
-     * Write file according to cameras.bin file format
+     * Write file according to Cameras.bin file format
      * @param camerasDatabase    : parsed camera contents
      * @param cameraFile            : file to be written. Existing file will be replaced.
      * @throws IOException when a file system error occurs

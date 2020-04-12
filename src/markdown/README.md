@@ -33,7 +33,7 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
     * From TDUMT (.pch patches)
     * To following forms: EDEN-classic/TDUPE, TDUMT, TDUF mini-patch
 * CAMERAS [WIKI](https://github.com/djey47/tdu-cp/wiki/TDUF-Database-Editor-Cameras)
-    * Opens and saves cameras.bin file in above database directory
+    * Opens and saves Cameras.bin file in above database directory
     * Displays available camera sets and views
     * Detects and displays reference errors
     * Changes some camera view settings
