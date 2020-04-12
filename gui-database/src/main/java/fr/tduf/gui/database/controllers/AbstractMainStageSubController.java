@@ -114,7 +114,7 @@ abstract class AbstractMainStageSubController {
         return mainStageController.getDatabaseLocationTextField();
     }
 
-    protected ChoiceBox<String> getProfilesChoiceBox() {
+    protected ChoiceBox<EditorLayoutDto.EditorProfileDto> getProfilesChoiceBox() {
         // Getter kept for testing
         return mainStageController.getProfilesChoiceBox();
     }

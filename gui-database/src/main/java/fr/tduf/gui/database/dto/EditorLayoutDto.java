@@ -80,5 +80,10 @@ public class EditorLayoutDto {
         public void setTopic(DbDto.Topic topic) {
             this.topic = topic;
         }
+
+        @Override
+        public String toString() {
+            return String.format("[%s] %s", this.getTopic(), this.getName());
+        }
     }
 }

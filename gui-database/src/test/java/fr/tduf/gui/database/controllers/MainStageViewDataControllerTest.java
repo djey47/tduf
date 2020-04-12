@@ -63,6 +63,10 @@ class MainStageViewDataControllerTest {
     private static final String TEST_REMOTE_PROFILE_NAME = "Test remote profile";
     private static final String TEST_REMOTE_ASSO_PROFILE_NAME = "Test association remote profile";
     private static final String TEST_UNK_PROFILE_NAME = "profile?";
+    private static final EditorLayoutDto.EditorProfileDto TEST_PROFILE = new EditorLayoutDto.EditorProfileDto(TEST_PROFILE_NAME);
+    private static final EditorLayoutDto.EditorProfileDto TEST_REMOTE_PROFILE = new EditorLayoutDto.EditorProfileDto(TEST_REMOTE_PROFILE_NAME);
+    private static final EditorLayoutDto.EditorProfileDto TEST_REMOTE_ASSO_PROFILE = new EditorLayoutDto.EditorProfileDto(TEST_REMOTE_ASSO_PROFILE_NAME);
+    private static final EditorLayoutDto.EditorProfileDto TEST_UNEXISTING_PROFILE = new EditorLayoutDto.EditorProfileDto("My profile");
 
     @BeforeAll
     static void globalSetUp() {
@@ -91,13 +95,16 @@ class MainStageViewDataControllerTest {
     private final StringProperty currentEntryLabelProperty = new SimpleStringProperty("");
     private final Property<Integer> currentEntryIndexProperty = new SimpleObjectProperty<>(-1);
 
-    private ChoiceBox<String> profilesChoiceBox;
+    private ChoiceBox<EditorLayoutDto.EditorProfileDto> profilesChoiceBox;
     private ChoiceBox<Locale> localesChoiceBox;
     private TitledPane settingsPane;
 
     @BeforeEach
     void setUp() {
         initMocks(this);
+
+        TEST_PROFILE.setTopic(TOPIC2);
+        TEST_UNEXISTING_PROFILE.setTopic(TOPIC2);
 
         DatabaseEditor.getCommandLineParameters().clear();
 
@@ -110,16 +117,16 @@ class MainStageViewDataControllerTest {
         when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(currentEntryIndexProperty);
         when(mainStageControllerMock.getCurrentEntryLabelProperty()).thenReturn(currentEntryLabelProperty);
 
-        profilesChoiceBox = new ChoiceBox<>(observableArrayList(TEST_PROFILE_NAME, TEST_REMOTE_PROFILE_NAME, TEST_REMOTE_ASSO_PROFILE_NAME));
-        profilesChoiceBox.valueProperty().setValue(TEST_PROFILE_NAME);
+        profilesChoiceBox = new ChoiceBox<>(observableArrayList(TEST_PROFILE, TEST_REMOTE_PROFILE, TEST_REMOTE_ASSO_PROFILE));
+        profilesChoiceBox.valueProperty().setValue(TEST_PROFILE);
         profilesChoiceBox.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> {
-                    if (TEST_PROFILE_NAME.equals(newValue)) {
+                    if (TEST_PROFILE.equals(newValue)) {
                         controller.currentProfile().setValue(getSecondLayoutProfile());
-                    } else if (TEST_REMOTE_PROFILE_NAME.equals(newValue)) {
+                    } else if (TEST_REMOTE_PROFILE.equals(newValue)) {
                         controller.currentProfile().setValue(getThirdLayoutProfile());
                     } else {
-                        throw new IllegalArgumentException("Unknwown profile name!");
+                        throw new IllegalArgumentException("Unknown profile name!");
                     }
                 });
         when(mainStageControllerMock.getProfilesChoiceBox()).thenReturn(profilesChoiceBox);
@@ -248,14 +255,15 @@ class MainStageViewDataControllerTest {
     }
 
     @Test
-    void applyProfile_whenProfileDoesNotExist_shouldApplyDefaultProfile() {
+    void applyProfile_whenProfileDoesNotExist_shouldThrowException() {
         // GIVEN
         when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(topicObject));
         when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>());
         when(mainStageControllerMock.getViewData()).thenReturn(controller);
 
         // WHEN-THEN
-        controller.applyProfile("myProfile");
+        assertThrows(IllegalArgumentException.class,
+                () -> controller.applyProfile(TEST_UNEXISTING_PROFILE));
     }
 
     @Test
@@ -270,11 +278,11 @@ class MainStageViewDataControllerTest {
 
 
         // WHEN
-        controller.applyProfile(TEST_PROFILE_NAME);
+        controller.applyProfile(TEST_PROFILE);
 
 
         // THEN
-        assertThat(controller.currentProfile().getValue()).isEqualTo(profileObject);
+        assertThat(controller.currentProfile().getValue().getName()).isEqualTo(profileObject.getName());
         assertThat(currentTopicProperty.getValue()).isEqualTo(TOPIC2);
         verify(mainStageControllerMock).setCurrentTopicObject(topicObject);
 
@@ -314,7 +322,7 @@ class MainStageViewDataControllerTest {
         // THEN
         final String profileName = getSecondLayoutProfile().getName();
         assertThat(navigationHistory).isEmpty();
-        assertThat(profilesChoiceBox.getSelectionModel().getSelectedItem()).isEqualTo(profileName);
+        assertThat(profilesChoiceBox.getSelectionModel().getSelectedItem().getName()).isEqualTo(profileName);
         assertThat(controller.currentProfile().getValue()).isEqualTo(getSecondLayoutProfile());
 
         verify(applicationConfigurationMock).setDatabasePath("location");
@@ -336,7 +344,7 @@ class MainStageViewDataControllerTest {
 
 
         // THEN
-        assertThat(profilesChoiceBox.getSelectionModel().getSelectedItem()).isEqualTo(profileName);
+        assertThat(profilesChoiceBox.getSelectionModel().getSelectedItem().getName()).isEqualTo(profileName);
         assertThat(controller.currentProfile().getValue()).isEqualTo(getThirdLayoutProfile());
 
         verify(applicationConfigurationMock).setEditorProfile(profileName);
@@ -344,7 +352,7 @@ class MainStageViewDataControllerTest {
     }
 
     @Test
-    void updateDisplayWithLoadedObjects_whenUnknownProfileInProperties_shouldNotOverwriteProperty() throws IOException {
+    void updateDisplayWithLoadedObjects_whenUnknownProfileInProperties_shouldSetPropertyWithInitialProfile() throws IOException {
         // GIVEN
         when(applicationConfigurationMock.getEditorProfile()).thenReturn(of(TEST_UNK_PROFILE_NAME));
         when(mainStageControllerMock.getDatabaseObjects()).thenReturn(singletonList(createTopicObject(TOPIC2)));
@@ -354,7 +362,7 @@ class MainStageViewDataControllerTest {
         controller.updateDisplayWithLoadedObjects();
 
         // THEN
-        verify(applicationConfigurationMock, never()).setEditorProfile(anyString());
+        verify(applicationConfigurationMock).setEditorProfile(eq("Test profile"));
         verify(applicationConfigurationMock).store();
     }
 

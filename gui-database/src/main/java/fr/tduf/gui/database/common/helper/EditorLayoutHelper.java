@@ -31,7 +31,7 @@ public class EditorLayoutHelper {
     }
 
     /**
-     * @return the defaullt layout profile. Should exist.
+     * @return the default layout profile. Should exist.
      */
     public static EditorLayoutDto.EditorProfileDto getDefaultProfile(EditorLayoutDto layoutObject) {
         return getAvailableProfileByName(LAYOUT_DEFAULT, layoutObject);

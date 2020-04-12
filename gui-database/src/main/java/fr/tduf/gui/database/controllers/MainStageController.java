@@ -118,7 +118,7 @@ public class MainStageController extends AbstractGuiController {
     private ChoiceBox<Locale> localesChoiceBox;
 
     @FXML
-    private ChoiceBox<String> profilesChoiceBox;
+    private ChoiceBox<EditorLayoutDto.EditorProfileDto> profilesChoiceBox;
 
     @FXML
     private TabPane tabPane;
@@ -420,14 +420,14 @@ public class MainStageController extends AbstractGuiController {
         pluginHandler.triggerOnSaveForAllPLugins();
     }
 
-    private void handleProfileChoiceChanged(String newProfileName) {
-        Log.trace(THIS_CLASS_NAME, "->handleProfileChoiceChanged: " + newProfileName);
+    private void handleProfileChoiceChanged(EditorLayoutDto.EditorProfileDto newProfile) {
+        Log.trace(THIS_CLASS_NAME, "->handleProfileChoiceChanged: " + newProfile);
 
-        if (newProfileName == null || databaseObjects.isEmpty()) {
+        if (newProfile == null || databaseObjects.isEmpty()) {
             return;
         }
 
-        viewDataController.applyProfile(newProfileName);
+        viewDataController.applyProfile(newProfile);
     }
 
     private void handleLocaleChoiceChanged(Locale newLocale) {
@@ -920,7 +920,7 @@ public class MainStageController extends AbstractGuiController {
         return applicationConfiguration;
     }
 
-    ChoiceBox<String> getProfilesChoiceBox() {
+    ChoiceBox<EditorLayoutDto.EditorProfileDto> getProfilesChoiceBox() {
         return profilesChoiceBox;
     }
 

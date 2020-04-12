@@ -134,7 +134,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         getCreditsLabel().setText(DisplayConstants.LABEL_STATUS_VERSION);
     }
 
-    void initSettingsPane(String databaseDirectory, ChangeListener<Locale> localeChangeListener, ChangeListener<String> profileChangeListener) throws IOException {
+    void initSettingsPane(String databaseDirectory, ChangeListener<Locale> localeChangeListener, ChangeListener<EditorLayoutDto.EditorProfileDto> profileChangeListener) throws IOException {
         getSettingsPane().setExpanded(false);
 
         loadAndFillLocales(localeChangeListener);
@@ -184,21 +184,14 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                 });
     }
 
-    void applyProfile(String profileName) {
-        EditorLayoutDto.EditorProfileDto profileObject;
-        try {
-            profileObject = EditorLayoutHelper.getAvailableProfileByName(profileName, getLayoutObject());
-        } catch (IllegalArgumentException iae) {
-            Log.warn(THIS_CLASS_NAME, "Profile not found: " + profileName + ", using defaults.");
-            profileObject = EditorLayoutHelper.getDefaultProfile(getLayoutObject());
-        }
-        final DbDto.Topic topic = profileObject.getTopic();
+    void applyProfile(EditorLayoutDto.EditorProfileDto profile) {
+        final DbDto.Topic topic = profile.getTopic();
         final DbDto currentTopicObject = getMiner().getDatabaseTopic(topic)
                 .orElseThrow(() -> new IllegalStateException(MESSAGE_NO_DATABASE_OBJECT_FOR_TOPIC + topic));
 
         currentTopicProperty().setValue(topic);
 
-        currentProfileProperty.setValue(profileObject);
+        currentProfileProperty.setValue(profile);
         setCurrentTopicObject(currentTopicObject);
 
         refreshAll();
@@ -516,7 +509,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         if (currentProfile.getFieldSettings() != null) {
             dynamicFieldControlsHelper.addAllFieldsControls(
                     getLayoutObject(),
-                    getProfilesChoiceBox().getValue(),
+                    getProfilesChoiceBox().getValue().getName(),
                     getCurrentTopicObject().getTopic());
         }
 
@@ -587,7 +580,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         DbDto.Topic remoteTopic = getMiner().getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
 
         final List<Integer> remoteFieldRanks = new ArrayList<>();
-        Optional<FieldSettingsDto> fieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(structureField.getRank(), getProfilesChoiceBox().valueProperty().get(), getLayoutObject());
+        Optional<FieldSettingsDto> fieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(structureField.getRank(), getProfilesChoiceBox().valueProperty().get().getName(), getLayoutObject());
         fieldSettings
                 .map(FieldSettingsDto::getRemoteReferenceProfile)
                 .ifPresent(remoteReferenceProfile -> remoteFieldRanks.addAll(
@@ -627,12 +620,14 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     }
 
     private void switchToInitialProfile() {
-        final SingleSelectionModel<String> selectionModel = getProfilesChoiceBox().getSelectionModel();
+        final SingleSelectionModel<EditorLayoutDto.EditorProfileDto> selectionModel = getProfilesChoiceBox().getSelectionModel();
         selectionModel.clearSelection(); // ensures event will be fired even though 1st item is selected
 
-        final Optional<String> potentialProfileName = getApplicationConfiguration().getEditorProfile();
-        if (potentialProfileName.isPresent()) {
-            selectionModel.select(potentialProfileName.get());
+        final Optional<EditorLayoutDto.EditorProfileDto> potentialProfile = getApplicationConfiguration().getEditorProfile()
+                .flatMap(this::lookupChoiceboxProfileByName);
+        // TODO Java 9: https://docs.oracle.com/javase/9/docs/api/java/util/Optional.html#ifPresentOrElse-java.util.function.Consumer-java.lang.Runnable-
+        if (potentialProfile.isPresent()) {
+            selectionModel.select(potentialProfile.get());
         } else {
             selectionModel.selectFirst();
         }
@@ -647,8 +642,13 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
             getNavigationHistory().push(currentLocation);
         }
 
-        getProfilesChoiceBox().setValue(profileName);
-        switchToContentEntry(entryIndex);
+        final Optional<EditorLayoutDto.EditorProfileDto> targetProfile = lookupChoiceboxProfileByName(profileName);
+        if (targetProfile.isPresent()) {
+            getProfilesChoiceBox().setValue(targetProfile.get());
+            switchToContentEntry(entryIndex);
+        } else {
+            throw new IllegalArgumentException(String.format("Unable to switch to profile %s @entry %d", profileName, entryIndex ));
+        }
     }
 
     private void loadAndFillLocales(ChangeListener<Locale> localeChangeListener) {
@@ -665,14 +665,20 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     }
 
-    private void loadAndFillProfiles(ChangeListener<String> profileChangeListener) throws IOException {
+    private void loadAndFillProfiles(ChangeListener<EditorLayoutDto.EditorProfileDto> profileChangeListener) throws IOException {
+        // Load available profiles from internal configuration
         final EditorLayoutDto editorLayoutDto = new ObjectMapper().readValue(thisClass.getResource(SettingsConstants.PATH_RESOURCE_PROFILES), EditorLayoutDto.class);
-        editorLayoutDto.getProfiles()
-                .forEach(profileObject -> getProfilesChoiceBox().getItems().add(profileObject.getName()));
+        getProfilesChoiceBox().getItems().addAll(editorLayoutDto.getProfiles());
         setLayoutObject(editorLayoutDto);
 
         getProfilesChoiceBox().getSelectionModel().selectedItemProperty()
                 .addListener(profileChangeListener);
+    }
+
+    private Optional<EditorLayoutDto.EditorProfileDto> lookupChoiceboxProfileByName(String profileName) {
+        return getProfilesChoiceBox().getItems().stream()
+                .filter(profile -> profile.getName().equals(profileName))
+                .findFirst();
     }
 
     public Map<String, VBox> getTabContentByName() {
