@@ -28,6 +28,10 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * To run tests: execute *cleanTest test* tasks from Gradle
 * To run integration tests: execute *cleanTest integTest* tasks from Gradle
 
+#### Running Database Editor GUI in development environment
+
+Copy *tools* directory into *gui-database* to make it work properly. 
+
 
 ### Releasing ###
 

@@ -18,6 +18,7 @@ integ-tests/src/test/resources/patcher/out/
 integ-tests/src/test/resources/patcher/effective-mini-template.json.properties
 integ-tests/src/test/resources/patcher/tdumt/out*/
 lib-unlimited/perfs/
+lib-unlimited/tools/
 pack/
 tmp-jarContents/
 releases/
