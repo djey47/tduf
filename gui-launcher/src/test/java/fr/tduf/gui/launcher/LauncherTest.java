@@ -24,8 +24,9 @@ class LauncherTest {
     }
     
     @Test
-    void onExitHandler_whenNoMainController_shouldThrowException() throws IOException {
+    void onExitHandler_whenNoMainController_shouldThrowException() {
         // given
+        AbstractGuiApp.setMainController(null);
         WindowEvent event = new WindowEvent(null, ANY);
 
         // when-then
