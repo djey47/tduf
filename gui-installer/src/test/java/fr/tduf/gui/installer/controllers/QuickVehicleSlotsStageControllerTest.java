@@ -18,12 +18,12 @@ import java.util.List;
 /**
  * To display stage without running whole application.
  */
-@Disabled
+@Disabled("Interactive testing - can't be asserted automatically")
 class QuickVehicleSlotsStageControllerTest extends ApplicationTest {
     private List<DbDto> databaseObjects;
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
 
     }
 
@@ -35,7 +35,7 @@ class QuickVehicleSlotsStageControllerTest extends ApplicationTest {
     }
 
     @Test
-    void display() throws Exception {
+    void display() {
         // GIVEN-WHEN-THEN
         interact(() -> {
             try {

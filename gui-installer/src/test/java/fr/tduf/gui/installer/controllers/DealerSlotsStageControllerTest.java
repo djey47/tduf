@@ -19,12 +19,12 @@ import java.util.List;
 /**
  * To display stage without running whole application.
  */
-@Disabled
+@Disabled("Interactive testing - can't be asserted automatically")
 class DealerSlotsStageControllerTest extends ApplicationTest {
     private List<DbDto> databaseObjects;
 
     @Override
-    public void start(Stage stage) throws Exception {}
+    public void start(Stage stage) {}
 
     @BeforeEach
     void setUp() {
@@ -34,7 +34,7 @@ class DealerSlotsStageControllerTest extends ApplicationTest {
     }
 
     @Test
-    void display() throws Exception {
+    void display() {
         // GIVEN-WHEN
         interact(() -> initDealerSlotsStageController(null).initAndShowModalDialog(BulkDatabaseMiner.load(databaseObjects)));
     }

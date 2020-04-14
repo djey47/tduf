@@ -10,10 +10,10 @@ import org.testfx.framework.junit5.ApplicationTest;
 
 import java.io.IOException;
 
-@Disabled
+@Disabled("Interactive testing - can't be asserted automatically")
 class MainStageControllerTest extends ApplicationTest{
     @Override
-    public void start(Stage stage) throws Exception {}
+    public void start(Stage stage) {}
 
     @BeforeEach
     void setUp() {
@@ -21,7 +21,7 @@ class MainStageControllerTest extends ApplicationTest{
     }
 
     @Test
-    void display() throws Exception {
+    void display() {
         // GIVEN-WHEN
         interact(() -> {
             try {

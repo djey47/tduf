@@ -16,13 +16,10 @@ import java.util.Optional;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Interactive testing - can't be asserted automatically
- */
-@Disabled
+@Disabled("Interactive testing - can't be asserted automatically")
 class CommonDialogsHelperTest extends ApplicationTest {
     @Override
-    public void start(Stage stage) throws Exception {}
+    public void start(Stage stage) {}
 
     @Test
     void alertDialog() {

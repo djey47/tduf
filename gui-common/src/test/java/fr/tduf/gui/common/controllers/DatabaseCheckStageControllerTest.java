@@ -16,10 +16,10 @@ import java.util.HashSet;
 /**
  * To display stage without running whole application.
  */
-@Disabled
+@Disabled("Interactive testing - can't be asserted automatically")
 class DatabaseCheckStageControllerTest extends ApplicationTest {
     @Override
-    public void start(Stage stage) throws Exception {}
+    public void start(Stage stage) {}
 
     @BeforeEach
     void setUp() {
@@ -27,7 +27,7 @@ class DatabaseCheckStageControllerTest extends ApplicationTest {
     }
 
     @Test
-    void display_whenManyErrors() throws IOException {
+    void display_whenManyErrors() {
         // GIVEN
         final HashSet<IntegrityError> integrityErrors = new HashSet<>();
         integrityErrors.add(IntegrityError.builder().ofType(IntegrityError.ErrorTypeEnum.CONTENTS_FIELDS_COUNT_MISMATCH).build());

@@ -27,7 +27,7 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Helps with data migration
  */
-@Disabled
+@Disabled("Utility kept for historical reasons")
 class DbConverterHelper {
 
     /**
