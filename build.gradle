@@ -87,7 +87,7 @@ subprojects {
         group 'build'
         mustRunAfter 'jar'
 
-        baseName = 'tduf-' + project.name + '-all'
+        getArchiveBaseName().set('tduf-' + project.name + '-all')
         from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
         with jar
     }
@@ -281,8 +281,8 @@ task fullJar( type: Jar , dependsOn: 'gatherAllContentsForJar' ) {
     description 'Creates jar with all contents from temp directory.'
     group 'build'
 
-    destinationDir = file('./pack/tools/lib/')
-    baseName = 'tduf'
+    getDestinationDirectory().set(file('./pack/tools/lib/'))
+    getArchiveBaseName().set('tduf')
     from tempJarDirectory
 }
 
