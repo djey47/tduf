@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.high.files.bin.cameras.interop.helper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.CamPatchGenerator;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.CamPatcher;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.CamPatchDto;
@@ -9,7 +10,6 @@ import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PatchPropertiesReadWriteHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CamerasDatabase;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,7 +1,7 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 import java.util.ArrayList;
 import java.util.List;

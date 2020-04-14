@@ -1,6 +1,8 @@
 package fr.tduf.cli.tools;
 
 import com.esotericsoftware.minlog.Log;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.tduf.libtesting.common.helper.AssertionsHelper;
 import fr.tduf.libtesting.common.helper.ConsoleHelper;
 import fr.tduf.libunlimited.common.game.domain.Locale;
@@ -13,8 +15,6 @@ import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Condition;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
 import org.junit.After;
 import org.junit.Before;
@@ -31,7 +31,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -138,7 +137,7 @@ public class DatabaseToolIntegTest {
         String jsonContents = ConsoleHelper.finalizeAndGetContents(outputStream);
         JsonNode rootJsonNode = new ObjectMapper().readTree(jsonContents);
 
-        AssertionsHelper.assertJsonNodeIteratorHasItems(rootJsonNode.getElements(), 2);
+        AssertionsHelper.assertJsonNodeIteratorHasItems(rootJsonNode.elements(), 2);
         AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "writtenFiles", 54);
         final String effectivePatchPropertyFile = rootJsonNode.get("effectivePatchPropertyFile").asText();
         assertThat(effectivePatchPropertyFile).isNotNull();
@@ -185,7 +184,7 @@ public class DatabaseToolIntegTest {
         String jsonContents = ConsoleHelper.finalizeAndGetContents(outputStream);
         JsonNode rootJsonNode = new ObjectMapper().readTree(jsonContents);
 
-        AssertionsHelper.assertJsonNodeIteratorHasItems(rootJsonNode.getElements(), 1);
+        AssertionsHelper.assertJsonNodeIteratorHasItems(rootJsonNode.elements(), 1);
         AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "writtenFiles", 54);
 
 
@@ -267,7 +266,7 @@ public class DatabaseToolIntegTest {
         String jsonContents = ConsoleHelper.finalizeAndGetContents(outputStream);
         JsonNode rootJsonNode = new ObjectMapper().readTree(jsonContents);
 
-        AssertionsHelper.assertJsonNodeIteratorHasItems(rootJsonNode.getElements(), 6);
+        AssertionsHelper.assertJsonNodeIteratorHasItems(rootJsonNode.elements(), 6);
 
         AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "missingTopicContents", 18);
         AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "integrityErrors", 18);
@@ -298,7 +297,7 @@ public class DatabaseToolIntegTest {
         String jsonContents = ConsoleHelper.finalizeAndGetContents(outputStream);
         JsonNode rootJsonNode = new ObjectMapper().readTree(jsonContents);
 
-        AssertionsHelper.assertJsonNodeIteratorHasItems(rootJsonNode.getElements(), 7);
+        AssertionsHelper.assertJsonNodeIteratorHasItems(rootJsonNode.elements(), 7);
 
         AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "missingTopicContents", 18);
         AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "integrityErrors", 18);
@@ -328,7 +327,7 @@ public class DatabaseToolIntegTest {
             String jsonContents = ConsoleHelper.finalizeAndGetContents(outputStream);
             JsonNode rootJsonNode = new ObjectMapper().readTree(jsonContents);
 
-            AssertionsHelper.assertJsonNodeIteratorHasItems(rootJsonNode.getElements(), 7);
+            AssertionsHelper.assertJsonNodeIteratorHasItems(rootJsonNode.elements(), 7);
 
             AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "missingTopicContents", 18);
             AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "integrityErrors", 19);
@@ -413,7 +412,7 @@ public class DatabaseToolIntegTest {
     }
 
     @Test
-    public void diffPatches_shouldGenerateMiniPatchFiles() throws IOException, URISyntaxException, JSONException {
+    public void diffPatches_shouldGenerateMiniPatchFiles() throws IOException, JSONException {
         // GIVEN-WHEN: compute diff between 2 database files and reference
         System.out.println("-> DiffPatches!");
         OutputStream outputStream = ConsoleHelper.hijackStandardOutput();
@@ -424,7 +423,7 @@ public class DatabaseToolIntegTest {
         String jsonContents = ConsoleHelper.finalizeAndGetContents(outputStream);
         JsonNode rootJsonNode = new ObjectMapper().readTree(jsonContents);
 
-        AssertionsHelper.assertJsonNodeIteratorHasItems(rootJsonNode.getElements(), 1);
+        AssertionsHelper.assertJsonNodeIteratorHasItems(rootJsonNode.elements(), 1);
         AssertionsHelper.assertJsonChildArrayHasSize(rootJsonNode, "writtenFiles", 2);
 
 

@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.controllers;
 
 import com.esotericsoftware.minlog.Log;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.tduf.gui.common.javafx.helper.TableViewHelper;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.TopicLinkDto;
@@ -13,8 +14,8 @@ import fr.tduf.libunlimited.high.files.db.interop.TdumtPatchConverter;
 import fr.tduf.libunlimited.high.files.db.interop.tdupe.TdupeGateway;
 import fr.tduf.libunlimited.high.files.db.patcher.DatabasePatcher;
 import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PatchPropertiesReadWriteHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -28,7 +29,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.TableView;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.w3c.dom.Document;
 
 import java.io.File;
@@ -196,6 +196,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
     }
 
     boolean exportEntriesToPatchFile(DbDto.Topic currentTopic, List<String> entryReferences, List<String> entryFields, String patchFileLocation) throws IOException {
+        // TODO remove thrown exception
         return generatePatchObject(currentTopic, entryReferences, entryFields, getDatabaseObjects())
                 .map(patchObject -> {
                     try {

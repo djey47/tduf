@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.controllers;
 
 import com.esotericsoftware.minlog.Log;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.tduf.gui.common.AppConstants;
 import fr.tduf.gui.common.javafx.helper.TableViewHelper;
 import fr.tduf.gui.database.DatabaseEditor;
@@ -43,7 +44,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 import java.nio.file.Path;

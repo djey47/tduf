@@ -1,20 +1,19 @@
 package fr.tduf.cli.tools.mapper;
 
 import com.esotericsoftware.minlog.Log;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import fr.tduf.cli.tools.dto.DatabaseIntegrityErrorDto;
 import fr.tduf.cli.tools.dto.ErrorOutputDto;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectReader;
-import org.codehaus.jackson.map.ObjectWriter;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.URISyntaxException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,12 +26,12 @@ public class OutputMapperTest {
     private final ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() {
         Log.set(Log.LEVEL_INFO);
     }
 
     @Test(expected = NullPointerException.class)
-    public void errorOutputFromException_whenExceptionIsNull_shouldThrowNullPointerException() throws Exception {
+    public void errorOutputFromException_whenExceptionIsNull_shouldThrowNullPointerException() {
         // GIVEN-WHEN
         ErrorOutputDto.fromException(null);
 
@@ -40,7 +39,7 @@ public class OutputMapperTest {
     }
 
     @Test
-    public void errorOutputFromException_shouldReturnMessageAndCompleteStackTrace() throws Exception {
+    public void errorOutputFromException_shouldReturnMessageAndCompleteStackTrace() {
         // GIVEN
         Exception exception = createNestedExceptions();
 
@@ -54,7 +53,7 @@ public class OutputMapperTest {
     }
 
     @Test
-    public void errorOutputToJson_shouldReturnCorrectJson() throws IOException, URISyntaxException {
+    public void errorOutputToJson_shouldReturnCorrectJson() throws IOException {
         // GIVEN
         Exception exception = createNestedExceptions();
         Serializable errorOutputObject = ErrorOutputDto.fromException(exception);
@@ -65,8 +64,8 @@ public class OutputMapperTest {
 
         // THEN
         JsonNode actualRootNode = objectReader.readTree(actualJson);
-        assertThat(actualRootNode.get("errorMessage").getTextValue()).isEqualTo("An exception occurred");
-        assertThat(actualRootNode.get("stackTrace").getTextValue()).containsSequence("Exception", "IllegalArgumentException");
+        assertThat(actualRootNode.get("errorMessage").textValue()).isEqualTo("An exception occurred");
+        assertThat(actualRootNode.get("stackTrace").textValue()).containsSequence("Exception", "IllegalArgumentException");
     }
 
     @Test(expected = NullPointerException.class)

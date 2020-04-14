@@ -1,13 +1,13 @@
 package fr.tduf.libunlimited.low.files.research.domain;
 
 import com.esotericsoftware.minlog.Log;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.*;
 import fr.tduf.libunlimited.low.files.research.common.helper.FormulaHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.StructureHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.*;
 
 import java.io.IOException;
 import java.util.*;
@@ -382,7 +382,7 @@ public class DataStore {
                 .filter(key -> key.startsWith(repeaterFieldName))
                 .collect(Collectors.groupingBy(key -> {
                     Matcher matcher = SUB_FIELD_NAME_PATTERN.matcher(key);
-                    return matcher.matches() ? Integer.valueOf(matcher.group(2)) : 0; // extracts index part
+                    return matcher.matches() ? Integer.parseInt(matcher.group(2)) : 0; // extracts index part
                 }));
 
         List<DataStore> repeatedValues = createEmptyList(groupedKeysByIndex.size(), this.getFileStructure());
@@ -490,7 +490,7 @@ public class DataStore {
         } else if (jsonNode instanceof DoubleNode) {
 
             type = FPOINT;
-            rawValue = TypeHelper.floatingPoint32ToRaw(((Double) jsonNode.getDoubleValue()).floatValue());
+            rawValue = TypeHelper.floatingPoint32ToRaw(((Double) jsonNode.doubleValue()).floatValue());
 
         } else {
 
@@ -499,13 +499,13 @@ public class DataStore {
             if (jsonNode instanceof IntNode || jsonNode instanceof LongNode) {
 
                 type = INTEGER;
-                rawValue = TypeHelper.integerToRaw(jsonNode.getLongValue());
+                rawValue = TypeHelper.integerToRaw(jsonNode.longValue());
                 signed = fieldDefinition.isSigned();
                 size = computeValueLengthWithoutParentKey(fieldDefinition.getSizeFormula());
 
             } else if (jsonNode instanceof TextNode) {
 
-                String stringValue = jsonNode.getTextValue();
+                String stringValue = jsonNode.textValue();
                 try {
                     type = UNKNOWN;
                     rawValue = TypeHelper.hexRepresentationToByteArray(stringValue);
@@ -536,14 +536,14 @@ public class DataStore {
 
     private void readJsonArrayNode(JsonNode jsonNode, String parentKey) {
         int elementIndex = 0;
-        Iterator<JsonNode> elements = jsonNode.getElements();
+        Iterator<JsonNode> elements = jsonNode.elements();
         while (elements.hasNext()) {
             readJsonNode(elements.next(), generateKeyPrefixForRepeatedField(parentKey, elementIndex++));
         }
     }
 
     private void readJsonObjectNode(JsonNode jsonNode, String parentKey) {
-        Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.getFields();
+        Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.fields();
         while (fields.hasNext()) {
             Map.Entry<String, JsonNode> nextField = fields.next();
             readJsonNode(nextField.getValue(), parentKey + nextField.getKey());
@@ -577,7 +577,7 @@ public class DataStore {
 
     private void readRepeatedFields(List<FileStructureDto.Field> repeatedFields, ObjectNode objectNode, String repeaterFieldName) {
         ArrayNode repeaterNode = objectNode.arrayNode();
-        objectNode.put(repeaterFieldName, repeaterNode);
+        objectNode.set(repeaterFieldName, repeaterNode);
 
         int parsedCount = 0;
         boolean hasMoreItems = true;

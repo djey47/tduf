@@ -1,6 +1,8 @@
 package fr.tduf.libunlimited.low.files.db.rw;
 
 import com.esotericsoftware.minlog.Log;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.common.helper.DbHelper;
@@ -14,8 +16,6 @@ import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.SwitchValueDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceItemDto;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectWriter;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -44,7 +44,7 @@ class DatabaseParserTest {
     }
 
     @Test
-    void load_whenProvidedContents_shouldReturnParserInstanceWithoutErrors() throws Exception {
+    void load_whenProvidedContents_shouldReturnParserInstanceWithoutErrors() {
         //GIVEN
         List<String> dbLines = createValidContentsWithOneItem();
         Map<fr.tduf.libunlimited.common.game.domain.Locale, List<String>> resourceLines = new HashMap<>();
@@ -61,7 +61,7 @@ class DatabaseParserTest {
     }
 
     @Test
-    void parseAll_whenProvidedContents_andIntegrityErrorsOnItemAndFieldCount_shouldReturnErrors() throws Exception {
+    void parseAll_whenProvidedContents_andIntegrityErrorsOnItemAndFieldCount_shouldReturnErrors() {
         //GIVEN : item count != actual item count
         // field count != actual field count
         List<String> dbLines = asList(
@@ -88,7 +88,7 @@ class DatabaseParserTest {
     }
 
     @Test
-    void parseAll_whenProvidedContents_andIntegrityErrorOnResourceCount_shouldReturnError() throws Exception {
+    void parseAll_whenProvidedContents_andIntegrityErrorOnResourceCount_shouldReturnError() {
         //GIVEN : fr resource count  != it resource
         List<String> dbLines = createValidContentsWithOneItem();
         Map<Locale, List<String>> resourceLines = new HashMap<>();
@@ -121,7 +121,7 @@ class DatabaseParserTest {
     }
 
     @Test
-    void parseAll_whenProvidedContents_andDuplicateResourceReference_shouldNotReturnError() throws Exception {
+    void parseAll_whenProvidedContents_andDuplicateResourceReference_shouldNotReturnError() {
         //GIVEN : duplicate ref
         List<String> dbLines = createValidContentsWithOneItem();
         Map<Locale, List<String>> resourceLines = new HashMap<>();
@@ -138,7 +138,7 @@ class DatabaseParserTest {
     }
 
     @Test
-    void parseAll_whenProvidedContents_andIntegrityErrorOnFieldCount_shouldReturnError() throws Exception {
+    void parseAll_whenProvidedContents_andIntegrityErrorOnFieldCount_shouldReturnError() {
         //GIVEN
         List<String> dbLines = createInvalidContentsWithOneItemAndUnconsistentFieldCount();
         Map<Locale, List<String>> resourceLines = createValidResourcesForAllLocales();
@@ -155,7 +155,7 @@ class DatabaseParserTest {
     }
 
     @Test
-    void parseAll_whenProvidedContents_andRemoteReference_shouldReadAccordingly() throws Exception {
+    void parseAll_whenProvidedContents_andRemoteReference_shouldReadAccordingly() {
         //GIVEN
         List<String> dbLines = asList(
                 "// TDU_CarPhysicsData.db",
@@ -197,7 +197,7 @@ class DatabaseParserTest {
     }
 
     @Test
-    void parseAll_whenProvidedContents_andFloatNegativeValue_shouldReadAccordingly() throws Exception {
+    void parseAll_whenProvidedContents_andFloatNegativeValue_shouldReadAccordingly() {
         //GIVEN
         List<String> dbLines = asList(
                 "// TDU_CarPhysicsData.db",
@@ -235,7 +235,7 @@ class DatabaseParserTest {
     }
 
     @Test
-    void parseAll_whenProvidedContents_andEmptyValue_shouldReadAccordingly() throws Exception {
+    void parseAll_whenProvidedContents_andEmptyValue_shouldReadAccordingly() {
         //GIVEN
         List<String> dbLines = asList(
                 "// TDU_CarPhysicsData.db",
@@ -278,7 +278,7 @@ class DatabaseParserTest {
     }
 
     @Test
-    void parseAll_whenProvidedContentsAsGlobalResources_shouldReturnProperDto() throws Exception {
+    void parseAll_whenProvidedContentsAsGlobalResources_shouldReturnProperDto() {
         //GIVEN
         List<String> dbLines = createValidContentsWithOneItem();
         Map<Locale, List<String>> resourceLines = createValidResourcesForAllLocales();
@@ -307,7 +307,7 @@ class DatabaseParserTest {
     }
 
     @Test
-    void parseAll_whenProvidedContents_andBitfield_shouldReturnProperDto() throws Exception {
+    void parseAll_whenProvidedContents_andBitfield_shouldReturnProperDto() {
         //GIVEN
         List<String> dbLines = createValidContentsBitfieldOnlyWithOneItem();
         Map<Locale, List<String>> resourceLines = createResourceLinesForLocale(
@@ -334,7 +334,7 @@ class DatabaseParserTest {
     }
 
     @Test
-    void parseAll_whenProvidedContents_andMissingLocale_shouldReturnProperDto_withValidLocales() throws Exception {
+    void parseAll_whenProvidedContents_andMissingLocale_shouldReturnProperDto_withValidLocales() {
         //GIVEN
         List<String> dbLines = createValidContentsWithOneItem();
         Map<Locale, List<String>> resourceLines = createResourceLinesForLocale(

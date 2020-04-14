@@ -1,9 +1,10 @@
 package fr.tduf.cli.tools.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonTypeName;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
 
@@ -13,7 +14,8 @@ import static java.util.Objects.requireNonNull;
  * Output object for all errors.
  */
 @JsonTypeName("errorOutput")
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorOutputDto implements Serializable {
 
     @JsonProperty("errorMessage")

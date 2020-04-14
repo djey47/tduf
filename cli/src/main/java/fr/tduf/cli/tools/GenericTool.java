@@ -1,11 +1,11 @@
 package fr.tduf.cli.tools;
 
 import com.esotericsoftware.minlog.Log;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import fr.tduf.cli.common.helper.CommandHelper;
 import fr.tduf.cli.tools.dto.ErrorOutputDto;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectWriter;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -15,8 +15,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import static java.util.Comparator.comparing;
 
 /**
  * Parent class of all CLI tools
@@ -158,7 +156,7 @@ public abstract class GenericTool {
         System.err.println("  .Commands:");
         CommandHelper.getValuesAsMap(getCommand())
                 .entrySet().stream()
-                .sorted(comparing(Map.Entry::getKey))
+                .sorted(Map.Entry.comparingByKey())
                 .forEach((entry) -> {
                     System.err.println();
                     System.err.println(" " + entry.getKey() + " : " + entry.getValue());

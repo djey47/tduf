@@ -1,8 +1,8 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import org.apache.commons.lang3.SerializationUtils;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 import java.io.Serializable;
 import java.util.EnumMap;

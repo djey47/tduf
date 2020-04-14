@@ -1,7 +1,7 @@
 package fr.tduf.libunlimited.common.helper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -28,7 +28,7 @@ import static java.util.Objects.requireNonNull;
 public class FilesHelper {
 
     public static final Charset CHARSET_DEFAULT = Charset.defaultCharset();
-    public static final Charset CHARSET_UNICODE_8 = Charset.forName("UTF-8");
+    public static final Charset CHARSET_UNICODE_8 = StandardCharsets.UTF_8;
 
     private static final Class<FilesHelper> thisClass = FilesHelper.class;
 
@@ -64,7 +64,7 @@ public class FilesHelper {
      * @param resourcePath  : path of resource
      * @return an array of bytes with resource file contents.
      */
-    public static byte[] readBytesFromResourceFile(String resourcePath) throws URISyntaxException, IOException {
+    public static byte[] readBytesFromResourceFile(String resourcePath) throws IOException {
         InputStream resourceAsStream = thisClass.getResourceAsStream(resourcePath);
         return IOUtils.toByteArray(resourceAsStream);
     }
@@ -77,6 +77,7 @@ public class FilesHelper {
      * @return contents of read file as generated object instance.
      */
     public static <T> T readObjectFromJsonResourceFile(Class<T> objectClass, String resourcePath) throws URISyntaxException, IOException {
+        // TODO Remove unnecessary throws
         InputStream resourceAsStream = thisClass.getResourceAsStream(resourcePath);
         return jsonMapper.readValue(resourceAsStream, objectClass);
     }

@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.high.files.banks.interop;
 
 import com.esotericsoftware.minlog.Log;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
@@ -10,7 +11,6 @@ import fr.tduf.libunlimited.high.files.common.interop.GenuineGateway;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import fr.tduf.libunlimited.low.files.banks.dto.PackedFileInfoDto;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -113,7 +113,7 @@ public class GenuineBnkGateway extends GenuineGateway implements BankSupport {
         pathElements[pathElements.length - 2] = extension;
         pathElements[pathElements.length - 1] = name;
 
-        return PREFIX_PACKED_FILE_PATH + join(SEPARATOR_PACKED_PATH, (CharSequence[]) pathElements);
+        return PREFIX_PACKED_FILE_PATH + join(SEPARATOR_PACKED_PATH, pathElements);
     }
 
     static Path getRealFilePathFromInternalPath(String internalPath, Path basePath) {

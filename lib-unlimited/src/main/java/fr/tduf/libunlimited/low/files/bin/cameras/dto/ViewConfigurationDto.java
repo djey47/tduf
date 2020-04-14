@@ -1,10 +1,10 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonTypeName;
 
 import java.util.EnumMap;
 

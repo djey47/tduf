@@ -1,9 +1,10 @@
 package fr.tduf.cli.tools.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonTypeName;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -15,7 +16,8 @@ import static java.util.stream.Collectors.toMap;
  * Object to describe encountered database integrity errors.
  */
 @JsonTypeName("databaseIntegrityError")
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DatabaseIntegrityErrorDto implements Serializable {
 
     @JsonProperty("errorType")

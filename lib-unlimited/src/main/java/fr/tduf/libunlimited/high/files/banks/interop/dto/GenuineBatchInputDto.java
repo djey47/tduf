@@ -1,7 +1,8 @@
 package fr.tduf.libunlimited.high.files.banks.interop.dto;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonTypeName;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import java.util.Collection;
 import java.util.HashSet;

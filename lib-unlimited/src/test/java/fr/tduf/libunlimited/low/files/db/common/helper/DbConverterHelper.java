@@ -1,11 +1,11 @@
 package fr.tduf.libunlimited.low.files.db.common.helper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 

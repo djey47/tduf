@@ -1,6 +1,6 @@
 package fr.tduf.libtesting.common.helper;
 
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.json.JSONException;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -54,7 +54,7 @@ public class AssertionsHelper {
      * Ensures that specified file contents are the same as the expected one's.
      * Works with binary files.
      */
-    public static void assertFileMatchesReference(File actualFile, File expectedFile) throws URISyntaxException, IOException {
+    public static void assertFileMatchesReference(File actualFile, File expectedFile) throws IOException {
         byte[] expectedBytes = Files.readAllBytes(expectedFile.toPath());
         assertThat(actualFile).describedAs("File must match reference one: " + expectedFile.getPath())
                 .hasBinaryContent(expectedBytes);
@@ -71,7 +71,7 @@ public class AssertionsHelper {
 
         File expectedContentsFile = new File(thisClass.getResource(resourceDirectory + actualContentsFile.getName()).toURI());
         byte[] expectedEncoded = Files.readAllBytes(expectedContentsFile.toPath());
-        String expectedJson = new String(expectedEncoded, Charset.forName("UTF-8"));
+        String expectedJson = new String(expectedEncoded, StandardCharsets.UTF_8);
 
         JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.NON_EXTENSIBLE);
     }
@@ -101,7 +101,7 @@ public class AssertionsHelper {
                 .as("Child node is not an array:%s", childNode)
                 .isTrue();
 
-        assertJsonNodeIteratorHasItems(childNode.getElements(), expectedArraySize);
+        assertJsonNodeIteratorHasItems(childNode.elements(), expectedArraySize);
     }
 
     /**
@@ -160,7 +160,7 @@ public class AssertionsHelper {
     private static String assertAndReadJsonFileContents(String fileName1) throws IOException {
         File contentsFile1 = assertFileExistAndGet(fileName1);
         byte[] encoded1 = Files.readAllBytes(contentsFile1.toPath());
-        return new String(encoded1, Charset.forName("UTF-8"));
+        return new String(encoded1, StandardCharsets.UTF_8);
     }
 
     private static void finalizeOutputStream(OutputStream outputStream) throws IOException {

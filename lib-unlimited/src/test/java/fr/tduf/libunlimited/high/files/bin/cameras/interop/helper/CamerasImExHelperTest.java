@@ -1,18 +1,16 @@
 package fr.tduf.libunlimited.high.files.bin.cameras.interop.helper;
 
 import com.esotericsoftware.minlog.Log;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.tduf.libtesting.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.CamPatchDto;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CamerasDatabase;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,7 +44,7 @@ class CamerasImExHelperTest {
     }
 
     @Test
-    void importPatch_withEmptyParser_shouldThrowException() throws IOException {
+    void importPatch_withEmptyParser_shouldThrowException() {
         // given
         File patchFile = new File(thisClass.getResource("/cameras/patch/tduf-simple.cam.json").getFile());
 
@@ -56,7 +54,7 @@ class CamerasImExHelperTest {
     }
 
     @Test
-    void exportToPatch_withEmptyParser_shouldReturnEmptyPatch() throws IOException, URISyntaxException, JSONException {
+    void exportToPatch_withEmptyParser_shouldReturnEmptyPatch() throws IOException {
         // given
         File patchFile = new File(FilesHelper.createTempDirectoryForLibrary(), "tduf-export.cam.json");
 

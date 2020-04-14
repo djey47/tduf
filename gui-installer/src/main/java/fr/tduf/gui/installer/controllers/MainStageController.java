@@ -1,6 +1,7 @@
 package fr.tduf.gui.installer.controllers;
 
 import com.esotericsoftware.minlog.Log;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.tduf.gui.common.controllers.helper.DatabaseOpsHelper;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
@@ -28,11 +29,13 @@ import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import javafx.beans.property.*;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,9 +53,7 @@ import static java.util.Objects.requireNonNull;
 import static javafx.beans.binding.Bindings.when;
 import static javafx.concurrent.Worker.State.FAILED;
 import static javafx.concurrent.Worker.State.SUCCEEDED;
-import static javafx.scene.control.Alert.AlertType.ERROR;
-import static javafx.scene.control.Alert.AlertType.INFORMATION;
-import static javafx.scene.control.Alert.AlertType.WARNING;
+import static javafx.scene.control.Alert.AlertType.*;
 
 /**
  * Makes it a possible to intercept all GUI events.
@@ -119,7 +120,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    private void handleResetSlotMenuItemAction() throws Exception {
+    private void handleResetSlotMenuItemAction() {
         Log.trace(THIS_CLASS_NAME, "->handleResetSlotMenuItemAction");
 
         if (StringUtils.isEmpty(tduDirectoryProperty.getValue())) {
@@ -133,15 +134,14 @@ public class MainStageController extends AbstractGuiController {
     private void handleResetDatabaseCacheMenuItemAction() throws Exception {
         Log.trace(THIS_CLASS_NAME, "->handleResetDatabaseCacheMenuItemAction");
 
-        if (StringUtils.isEmpty(tduDirectoryProperty.getValue())) {
-            return;
+        if (!StringUtils.isEmpty(tduDirectoryProperty.getValue())) {
+            resetDatabaseCache();
         }
 
-        resetDatabaseCache();
     }
 
     @FXML
-    private void handleCheckDatabaseMenuItemAction() throws Exception {
+    private void handleCheckDatabaseMenuItemAction() {
         Log.trace(THIS_CLASS_NAME, "->handleCheckDatabaseMenuItemAction");
 
         if (StringUtils.isEmpty(tduDirectoryProperty.getValue())) {
@@ -159,7 +159,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    private void handleInstallButtonAction() throws Exception {
+    private void handleInstallButtonAction() {
         Log.trace(THIS_CLASS_NAME, "->handleInstallButtonAction");
 
         if (StringUtils.isEmpty(tduDirectoryProperty.getValue())) {
@@ -170,7 +170,7 @@ public class MainStageController extends AbstractGuiController {
     }
 
     @FXML
-    private void handleUninstallButtonAction() throws Exception {
+    private void handleUninstallButtonAction() {
         Log.trace(THIS_CLASS_NAME, "->handleUninstallButtonAction");
 
         if (StringUtils.isEmpty(tduDirectoryProperty.getValue())) {
@@ -330,7 +330,7 @@ public class MainStageController extends AbstractGuiController {
         CommonDialogsHelper.showDialog(dialogOptions, getWindow());
     }
 
-    private void resetDatabaseCache() throws IOException, ReflectiveOperationException {
+    private void resetDatabaseCache() throws IOException {
         if (runningServiceProperty.get()) {
             return;
         }
@@ -377,7 +377,7 @@ public class MainStageController extends AbstractGuiController {
         databaseFixer.restart();
     }
 
-    private void loadDatabaseForObjective(TaskType objective) throws IOException, ReflectiveOperationException {
+    private void loadDatabaseForObjective(TaskType objective) {
         if (runningServiceProperty.get()) {
             return;
         }

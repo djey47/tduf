@@ -1,22 +1,22 @@
 package fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fr.tduf.libunlimited.high.files.common.patcher.helper.PlaceholderResolver;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonTypeName;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
-import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
 
 @JsonTypeName("setChange")
-@JsonSerialize(include = NON_NULL)
+@JsonSerialize
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SetChangeDto {
 
     @JsonProperty("id")
@@ -74,7 +74,7 @@ public class SetChangeDto {
             SetChangeDto setChangeDto = new SetChangeDto();
 
             setChangeDto.id = setIdentifierPlaceholder == null ?
-                    Long.toString(requireNonNull(setIdentifier, "Identifier of camera set is required"))
+                    Long.toString(setIdentifier)
                     :
                     setIdentifierPlaceholder;
 

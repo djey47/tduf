@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.low.files.db.rw.helper;
 
 import com.esotericsoftware.minlog.Log;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.low.files.common.crypto.helper.CryptoHelper;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
@@ -10,7 +11,6 @@ import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.rw.DatabaseParser;
 import fr.tduf.libunlimited.low.files.db.rw.DatabaseWriter;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.*;
 import java.nio.file.*;
@@ -256,7 +256,7 @@ public class DatabaseReadWriteHelper {
         return new File(jsonFileName);
     }
 
-    private static Map<Locale, List<String>> readLinesFromResourceFiles(String databaseDirectory, DbDto.Topic topic) throws FileNotFoundException {
+    private static Map<Locale, List<String>> readLinesFromResourceFiles(String databaseDirectory, DbDto.Topic topic) {
         Map<Locale, List<String>> resourcesLinesByLocale = new ConcurrentHashMap<>();
         Locale.valuesAsStream()
                 .forEach(currentLocale -> {
@@ -296,7 +296,7 @@ public class DatabaseReadWriteHelper {
                 .collect(toSet()));
     }
 
-    private static String checkDatabaseContents(DbDto.Topic topic, String databaseDirectory, Set<IntegrityError> integrityErrors) throws FileNotFoundException {
+    private static String checkDatabaseContents(DbDto.Topic topic, String databaseDirectory, Set<IntegrityError> integrityErrors) {
         String contentsFileName = getDatabaseFileName(topic.getLabel(), databaseDirectory, EXTENSION_DB_CONTENTS);
         File contentsFile = new File(contentsFileName);
 
@@ -368,7 +368,7 @@ public class DatabaseReadWriteHelper {
         return outputFile.getPath();
     }
 
-    private static void encryptContents(String outputDirectory, List<String> writtenFileNames) throws IOException {
+    private static void encryptContents(String outputDirectory, List<String> writtenFileNames) {
         writtenFileNames.stream()
 
                 .filter(fileName -> fileName.toUpperCase().endsWith(EXTENSION_DB_CONTENTS.toUpperCase()))

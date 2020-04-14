@@ -1,9 +1,10 @@
 package fr.tduf.libunlimited.low.files.db.dto;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonTypeName;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -19,7 +20,8 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
  * Represents structure of TDU database topic
  */
 @JsonTypeName("dbStructure")
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DbStructureDto implements Serializable {
     @JsonProperty("ref")
     private String ref;
@@ -37,7 +39,8 @@ public class DbStructureDto implements Serializable {
     private Integer categoryCount;
 
     @JsonTypeName("dbStructureField")
-    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+    @JsonSerialize
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Field implements Serializable {
 
         @JsonProperty("name")

@@ -1,9 +1,9 @@
 package fr.tduf.libunlimited.high.files.bin.cameras.interop.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonTypeName;
 
 import java.util.ArrayList;
 import java.util.List;

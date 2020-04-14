@@ -1,14 +1,11 @@
 package fr.tduf.libunlimited.high.files.db.patcher.dto;
 
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.comparator.DbChangeDtoRenderComparator;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonTypeName;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,13 +16,13 @@ import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
-import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
 
 /**
  * Represents a patch to be applied to TDU database (TDUF format)
  */
 @JsonTypeName("dbPatch")
-@JsonSerialize(include = NON_NULL)
+@JsonSerialize()
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DbPatchDto {
 
     @JsonProperty("changes")
@@ -97,7 +94,8 @@ public class DbPatchDto {
      */
     @JsonTypeName("dbChange")
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @JsonSerialize(include = NON_NULL)
+    @JsonSerialize
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class DbChangeDto {
 
         private static final String FORMAT_PLACEHOLDER = "{%s}";

@@ -1,8 +1,8 @@
 package fr.tduf.libunlimited.low.files.db.dto.resource;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonSetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 import java.io.Serializable;
 import java.util.*;
@@ -148,7 +148,7 @@ public class DbResourceDto implements Serializable {
         public DbResourceDto build() {
             DbResourceDto dbResourceDto = new DbResourceDto();
 
-            dbResourceDto.categoryCount = requireNonNull(categoryCount, "Category count is required.");
+            dbResourceDto.categoryCount = categoryCount;
             dbResourceDto.version = requireNonNull(version, "Version is required.");
             dbResourceDto.entriesByReference = createResourceIndex(entries);
 

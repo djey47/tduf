@@ -1,11 +1,12 @@
 package fr.tduf.libunlimited.low.files.db.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonTypeName;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
 import java.util.stream.Stream;
@@ -17,7 +18,8 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 /**
  * Represents a conytainer for TDU database topic.
  */
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DbDto implements Serializable {
     @JsonProperty("structure")
     private DbStructureDto structure;

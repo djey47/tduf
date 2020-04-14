@@ -1,9 +1,9 @@
 package fr.tduf.libunlimited.common.helper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
@@ -79,7 +79,7 @@ class FilesHelperTest {
     }
 
     @Test
-    void readTextFromResourceFile_whenResourceNotFound_shouldThrowNullPointerException() throws IOException, URISyntaxException {
+    void readTextFromResourceFile_whenResourceNotFound_shouldThrowNullPointerException() {
         // GIVEN-WHEN-THEN
         assertThrows(NullPointerException.class,
                 () -> FilesHelper.readTextFromResourceFile("/not a resource/"));
@@ -95,21 +95,21 @@ class FilesHelperTest {
     }
 
     @Test
-    void readTextFromResourceFile_withNullEncoding_shouldThrowException() throws IOException, URISyntaxException {
+    void readTextFromResourceFile_withNullEncoding_shouldThrowException() {
         // GIVEN-WHEN-THEN
         assertThrows(NullPointerException.class,
                 () -> FilesHelper.readTextFromResourceFile("/files/file.txt", null));
     }
 
     @Test
-    void readBytesFromResourceFile_whenResourceNotFound_shouldThrowNullPointerException() throws IOException, URISyntaxException {
+    void readBytesFromResourceFile_whenResourceNotFound_shouldThrowNullPointerException() {
         // GIVEN-WHEN-THEN
         assertThrows(NullPointerException.class,
                 () -> FilesHelper.readBytesFromResourceFile("/not a resource/"));
     }
 
     @Test
-    void readBytesFromResourceFile_whenResourceFound_shouldReturnContents() throws IOException, URISyntaxException {
+    void readBytesFromResourceFile_whenResourceFound_shouldReturnContents() throws IOException {
         // GIVEN-WHEN
         byte[] actualContents = FilesHelper.readBytesFromResourceFile("/files/file.txt");
 
@@ -118,9 +118,9 @@ class FilesHelperTest {
     }
 
     @Test
-    void readObjectFromJsonResourceFile_whenResourceNotFound_shouldThrowException() throws IOException, URISyntaxException {
+    void readObjectFromJsonResourceFile_whenResourceNotFound_shouldThrowException() {
         // GIVEN-WHEN-THEN
-        assertThrows(EOFException.class,
+        assertThrows(IllegalArgumentException.class,
                 () -> FilesHelper.readObjectFromJsonResourceFile(DbDto.class, "/not a resource/"));
     }
 
@@ -135,7 +135,7 @@ class FilesHelperTest {
     }
 
     @Test
-    void getFileNameFromResourcePath_whenResourceNotFound_shouldThrowNullPointerException() throws URISyntaxException {
+    void getFileNameFromResourcePath_whenResourceNotFound_shouldThrowNullPointerException() {
         // GIVEN-WHEN-THEN
         assertThrows(NullPointerException.class,
                 () -> FilesHelper.getFileNameFromResourcePath("/not a resource/"));
@@ -237,7 +237,7 @@ class FilesHelperTest {
     }
 
     @Test
-    void readXMLDocumentFromFile_whenIncorrectFile_shouldThrowException() throws URISyntaxException, IOException {
+    void readXMLDocumentFromFile_whenIncorrectFile_shouldThrowException() throws URISyntaxException {
         // GIVEN
         final String sampleFile = FilesHelper.getFileNameFromResourcePath("/common/samples/sample_malformed.xml");
 

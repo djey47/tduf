@@ -1,12 +1,12 @@
 package fr.tduf.gui.installer.steps;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.tduf.gui.installer.common.helper.InstallerTestsHelper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;

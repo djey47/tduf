@@ -1,12 +1,12 @@
 package fr.tduf.libunlimited.low.files.db.mapper;
 
 import com.esotericsoftware.minlog.Log;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceItemDto;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectWriter;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

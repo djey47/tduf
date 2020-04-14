@@ -1,9 +1,9 @@
 package fr.tduf.libunlimited.low.files.db.mapper;
 
 import com.esotericsoftware.minlog.Log;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectWriter;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,6 @@ public class DbStructureMapperTest {
     private final ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
 
     @BeforeEach
-
     public void setUp() {
         Log.set(Log.LEVEL_INFO);
     }

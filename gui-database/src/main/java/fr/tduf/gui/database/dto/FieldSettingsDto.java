@@ -1,7 +1,7 @@
 package fr.tduf.gui.database.dto;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonTypeName;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 
 @JsonTypeName("fieldSettings")
 public class FieldSettingsDto {

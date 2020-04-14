@@ -1,10 +1,11 @@
 package fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonTypeName;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.EnumMap;
 
@@ -13,10 +14,10 @@ import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
-import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
 
 @JsonTypeName("setChange")
-@JsonSerialize(include = NON_NULL)
+@JsonSerialize
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ViewChangeDto {
 
     @JsonProperty("viewKind")

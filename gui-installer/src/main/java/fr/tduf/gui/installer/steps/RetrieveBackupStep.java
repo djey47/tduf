@@ -1,13 +1,13 @@
 package fr.tduf.gui.installer.steps;
 
 import com.esotericsoftware.minlog.Log;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.domain.exceptions.InternalStepException;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PatchPropertiesReadWriteHelper;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,7 +25,7 @@ class RetrieveBackupStep extends GenericStep {
     private static final String THIS_CLASS_NAME = RetrieveBackupStep.class.getSimpleName();
 
     @Override
-    protected void perform() throws IOException, ReflectiveOperationException {
+    protected void perform() throws IOException {
         requireNonNull(getInstallerConfiguration(), "Installer configuration is required.");
         requireNonNull(getDatabaseContext(), "Database context is required.");
 
@@ -35,8 +35,7 @@ class RetrieveBackupStep extends GenericStep {
             stream
                     .filter(path -> path != backupRootPath)
                     .filter(Files::isDirectory)
-                    .sorted( (path1, path2) -> path2.toString().compareTo(path1.toString()) )
-                    .findFirst()
+                    .min((path1, path2) -> path2.toString().compareTo(path1.toString()))
                     .ifPresent(backupPath -> getInstallerConfiguration().setBackupDirectory(backupPath.toString()));
         }
 

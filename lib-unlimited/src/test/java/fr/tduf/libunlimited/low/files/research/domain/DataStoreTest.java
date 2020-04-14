@@ -32,7 +32,7 @@ class DataStoreTest {
     }
 
     @Test
-    void clearAll_shouldRemoveAllEntries() throws Exception {
+    void clearAll_shouldRemoveAllEntries() {
         // GIVEN
         DataStoreFixture.putStringInStore("k1", "v1", dataStore);
         DataStoreFixture.putStringInStore("k2", "v2", dataStore);

@@ -1,8 +1,8 @@
 package fr.tduf.gui.database.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonTypeName;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.controllers;
 
 import com.esotericsoftware.minlog.Log;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.tduf.libtesting.common.helper.FilesHelper;
 import fr.tduf.libtesting.common.helper.game.DatabaseHelper;
 import fr.tduf.libunlimited.common.game.domain.Locale;
@@ -12,7 +13,6 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import javafx.beans.property.SimpleObjectProperty;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -60,7 +60,7 @@ class MainStageChangeDataControllerTest {
     private ObjectMapper objectMapper;
 
     @BeforeEach
-    void setUp() throws URISyntaxException {
+    void setUp() {
         initMocks(this);
         
         Log.set(Log.LEVEL_INFO);
@@ -245,7 +245,7 @@ class MainStageChangeDataControllerTest {
     }
 
     @Test
-    void importLegacyPatch_shouldApplyIt() throws URISyntaxException, ReflectiveOperationException, ParserConfigurationException, SAXException, IOException {
+    void importLegacyPatch_shouldApplyIt() throws URISyntaxException, ReflectiveOperationException, IOException {
         // GIVEN
         String patchFile = fr.tduf.libunlimited.common.helper.FilesHelper.getFileNameFromResourcePath("/patches/legacy.pch");
 

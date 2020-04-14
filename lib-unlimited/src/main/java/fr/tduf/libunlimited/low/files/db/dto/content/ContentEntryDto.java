@@ -1,12 +1,9 @@
 package fr.tduf.libunlimited.low.files.db.dto.content;
 
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonPropertyOrder;
-import org.codehaus.jackson.annotate.JsonTypeName;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.*;
 
@@ -17,7 +14,8 @@ import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 @JsonTypeName("dbEntry")
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "id", "items"})
 public class ContentEntryDto {
 

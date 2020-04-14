@@ -1,8 +1,9 @@
 package fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonTypeName;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,13 +12,13 @@ import java.util.List;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
-import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
 
 /**
  * Structure for camera patch, to be applied onto Cameras.bin file
  */
 @JsonTypeName("camPatch")
-@JsonSerialize(include = NON_NULL)
+@JsonSerialize
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CamPatchDto {
 
     @JsonProperty("changes")

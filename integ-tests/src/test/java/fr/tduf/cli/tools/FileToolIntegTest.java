@@ -99,7 +99,7 @@ class FileToolIntegTest {
         // THEN: file should exist and have same contents as original one
         File actualFile = new File(outputFile);
         assertThat(actualFile).exists();
-        assertThat(actualFile).hasSameContentAs(new File(sourceDirectoryForEncryption, sourceFileNameToBeEncrypted));
+        assertThat(actualFile).hasSameTextualContentAs(new File(sourceDirectoryForEncryption, sourceFileNameToBeEncrypted));
     }
 
     @Test
@@ -127,11 +127,11 @@ class FileToolIntegTest {
         // THEN: file should exist and have same contents as original one
         File actualFile = new File(outputFile);
         assertThat(actualFile).exists();
-        assertThat(actualFile).hasSameContentAs(new File(sourceDirectoryForEncryption, sourceFileNameToBeEncrypted));
+        assertThat(actualFile).hasSameTextualContentAs(new File(sourceDirectoryForEncryption, sourceFileNameToBeEncrypted));
     }
 
     @Test
-    void jsonifyApplyJson_whenEncryptedContents_shouldGiveOriginalContentsBack() throws IOException, URISyntaxException {
+    void jsonifyApplyJson_whenEncryptedContents_shouldGiveOriginalContentsBack() throws IOException {
         String researchDirectory = RESOURCES_PATH.resolve("research").toString();
         String structureFileName = Paths.get(researchDirectory, "BTRQ-map.json").toString();
 

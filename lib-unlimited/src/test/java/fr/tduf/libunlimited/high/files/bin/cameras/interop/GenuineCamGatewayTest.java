@@ -1,13 +1,13 @@
 package fr.tduf.libunlimited.high.files.bin.cameras.interop;
 
 import com.esotericsoftware.minlog.Log;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.common.system.domain.ProcessResult;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraSetInfo;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraView;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;

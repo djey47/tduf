@@ -1,10 +1,11 @@
 package fr.tduf.libunlimited.low.files.research.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.domain.Type;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonTypeName;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,7 +19,8 @@ import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCod
  * Represents contents of structure file
  */
 @JsonTypeName("fileStructure")
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize()
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class FileStructureDto implements Serializable {
 
     @JsonProperty("name")
@@ -82,7 +84,8 @@ public class FileStructureDto implements Serializable {
     }
 
     @JsonTypeName("fileStructureField")
-    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+    @JsonSerialize
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Field implements Serializable {
         @JsonProperty("name")
         private String name;

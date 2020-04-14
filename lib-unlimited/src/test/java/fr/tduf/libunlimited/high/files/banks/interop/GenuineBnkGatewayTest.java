@@ -1,12 +1,12 @@
 package fr.tduf.libunlimited.high.files.banks.interop;
 
 import com.esotericsoftware.minlog.Log;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.common.system.domain.ProcessResult;
 import fr.tduf.libunlimited.high.files.banks.interop.dto.GenuineBatchInputDto;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -72,7 +72,7 @@ class GenuineBnkGatewayTest {
     }
 
     @Test
-    void getBankInfo_whenSystemFailure_shouldInvokeCommandLineCorrectly_andThrowException() throws IOException, URISyntaxException {
+    void getBankInfo_whenSystemFailure_shouldInvokeCommandLineCorrectly_andThrowException() throws IOException {
         // GIVEN
         when(commandLineHelperMock.runCliCommand(eq("mono"), anyString(), eq("BANK-I"), eq(bankFileName))).thenThrow(new IOException());
 
@@ -82,7 +82,7 @@ class GenuineBnkGatewayTest {
     }
 
     @Test
-    void getBankInfo_whenCommandFailure_shouldInvokeCommandLineCorrectly_andThrowException() throws IOException, URISyntaxException {
+    void getBankInfo_whenCommandFailure_shouldInvokeCommandLineCorrectly_andThrowException() throws IOException {
         // GIVEN
         mockCommandLineHelperToReturnBankInformationFailure(bankFileName);
 
@@ -142,7 +142,7 @@ class GenuineBnkGatewayTest {
     }
 
     @Test
-    void getInternalPathFromRealPath() throws Exception {
+    void getInternalPathFromRealPath() {
         // GIVEN
         Path realFilePath = Paths.get("/home/bill/work/4Build/PC/EURO/Vehicules/Cars/Mercedes/CLK_55/CLK_55.2DM");
         Path basePath = Paths.get("/home/bill/work");
@@ -176,7 +176,7 @@ class GenuineBnkGatewayTest {
     }
 
     @Test
-    void searchOriginalBankFilePath_whenNoFilePresent_shouldThrowException() throws IOException {
+    void searchOriginalBankFilePath_whenNoFilePresent_shouldThrowException() {
         // GIVEN-WHEN-THEN
         assertThrows(IOException.class,
                 () -> GenuineBnkGateway.searchOriginalBankPath(tempDirectory));

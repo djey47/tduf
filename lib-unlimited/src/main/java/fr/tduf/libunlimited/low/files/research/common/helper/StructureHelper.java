@@ -1,8 +1,8 @@
 package fr.tduf.libunlimited.low.files.research.common.helper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.tduf.libunlimited.low.files.common.crypto.helper.CryptoHelper;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.*;
 import java.util.List;

@@ -1,23 +1,23 @@
 package fr.tduf.libunlimited.common.helper;
 
-import org.codehaus.jackson.JsonParseException;
+import com.fasterxml.jackson.core.JsonParseException;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class JsonHelperTest {
     @Test
-    void prettify_whenNullSON_shouldThrowException() throws IOException {
+    void prettify_whenNullSON_shouldThrowException() {
         // given-when-then
         assertThrows(NullPointerException.class,
                 () -> JsonHelper.prettify(null));
     }
 
     @Test
-    void prettify_whenInvalidJSON_shouldThrowException() throws IOException {
+    void prettify_whenInvalidJSON_shouldThrowException() {
         // given
         String source = "{\"resourceType\": \"ValueSet\",\"id\": \"example-inline\",\"meta\": {\"profile\": [\"http://hl7.org/fhir/StructureDefinition/valueset-shareable-definition\"]";
 
