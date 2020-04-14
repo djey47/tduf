@@ -65,7 +65,7 @@ public abstract class GenuineGateway {
      */
     protected String callCommandLineInterface(CommandLineOperation operation, String... args) throws IOException {
         final String interpreterCommand = getInterpreterCommand();
-        final String cliCommand = getExecutableDirectory().resolve(EXE_TDUMT_CLI).toString();
+        final String cliCommand = getRootDirectory().resolve(EXE_TDUMT_CLI).toString();
         final String binaryPath = interpreterCommand.isEmpty() ? cliCommand : interpreterCommand;
 
         List<String> allArguments = new ArrayList<>(args.length + 2);
@@ -83,7 +83,11 @@ public abstract class GenuineGateway {
         return processResult.getOut();
     }
 
-    static Path getExecutableDirectory() throws IOException {
+    /**
+     * @return Application root path in dev mode or prod mode, detecting current source path automatically
+     * @throws IOException when file system error occurs
+     */
+    static Path getRootDirectory() throws IOException {
         CodeSource codeSource = GenuineGateway.class.getProtectionDomain().getCodeSource();
 
         File sourceLocation;
@@ -96,13 +100,21 @@ public abstract class GenuineGateway {
         final Path sourcePath = sourceLocation.toPath();
         Log.debug(THIS_CLASS_NAME, "Source location: " + sourcePath);
 
-        if (sourcePath.endsWith(Paths.get("build", "classes", "java", "main"))) {
-            // Run from IDE
-            return sourcePath.getParent().getParent().getParent().getParent();
-        } else {
-            // Run from JAR
-            return sourcePath.getParent().getParent().getParent();
-        }
+        return getRootDirectory(sourcePath);
+    }
+
+    /**
+     * @return Application root path in dev mode or prod mode, knowing current source path
+     */
+    static Path getRootDirectory(Path sourcePath) {
+        // Run from dev build or JAR?
+        final Path devBuildSubPath = Paths.get("lib-unlimited","build", "classes", "java", "main");
+        final Path prodBuildSubPath = Paths.get("tools","lib", "tduf.jar");
+        final Path effectiveSubPath = sourcePath.endsWith(devBuildSubPath) ? devBuildSubPath : prodBuildSubPath;
+        final Path rootPath = sourcePath.getRoot().resolve(sourcePath.subpath(0, sourcePath.getNameCount() - effectiveSubPath.getNameCount()));
+
+        Log.debug(THIS_CLASS_NAME, "Executable location: " + rootPath);
+        return rootPath;
     }
 
     private static String getInterpreterCommand() {
