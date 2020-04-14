@@ -68,6 +68,8 @@ public abstract class GenuineGateway {
         final String cliCommand = getRootDirectory().resolve(EXE_TDUMT_CLI).toString();
         final String binaryPath = interpreterCommand.isEmpty() ? cliCommand : interpreterCommand;
 
+        Log.debug(THIS_CLASS_NAME, "TDUMT-CLI Binary or interpreter path: " + binaryPath);
+
         List<String> allArguments = new ArrayList<>(args.length + 2);
         if (!interpreterCommand.isEmpty()) {
             allArguments.add(cliCommand);
@@ -75,9 +77,7 @@ public abstract class GenuineGateway {
         allArguments.add(operation.command);
         allArguments.addAll(asList(args));
 
-        Log.debug(THIS_CLASS_NAME, "TDUMT-CLI Binary or interpreter path: " + binaryPath);
-
-        ProcessResult processResult = commandLineHelper.runCliCommand(binaryPath, allArguments.toArray(new String[allArguments.size()]));
+        ProcessResult processResult = commandLineHelper.runCliCommand(binaryPath, allArguments.toArray(new String[0]));
         handleCommandLineErrors(processResult);
 
         return processResult.getOut();
