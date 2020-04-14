@@ -596,6 +596,7 @@ public class MainStageController extends AbstractGuiController {
         DirectoryChooser directoryChooser = new DirectoryChooser();
 
         File directory = new File(this.databaseLocationTextField.getText());
+        directoryChooser.setTitle(DisplayConstants.TITLE_BROWSE_DB_DIRECTORY);
         if (directory.exists()) {
             directoryChooser.setInitialDirectory(directory);
         }
