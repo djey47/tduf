@@ -25,17 +25,29 @@ allprojects {
 
     // Version for common dependencies
     ext {
-        assertjVersion = '3.15.0'
+        args4jVersion = '2.33'
         
+        assertjVersion = '3.15.0'
+
+        commonsLangVersion = '3.10'
+
+        exp4jVersion = '0.4.8'
+
+        j5systemexitVersion = '1.0.0'
+
+        jacksonVersion = '2.10.3'
+
+        javafxVersion = '14'
+
+        jaxbapiVersion = '2.3.1'
+
         jsonassertVersion = '1.5.0'
 
         junitJupiterVersion = '5.6.2'
 
-        mockitoVersion = '3.3.3'
-
         minlogVersion = '1.3.1'
 
-        commonsLangVersion = '3.10'
+        mockitoVersion = '3.3.3'
 
         testfxVersion = '4.0.16-alpha'
     }
@@ -57,21 +69,13 @@ subprojects {
     }
 
     dependencies {
-        // TODO Replace compile with implementation or api (transitive)
-        compile group: 'javax.xml.bind', name: 'jaxb-api', version: "2.3.1"
-        compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.3'
-        compile group: 'org.apache.commons', name: 'commons-lang3', version: "$commonsLangVersion"
-        compile group: 'com.esotericsoftware', name: 'minlog', version: "$minlogVersion"
+        implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "$jacksonVersion"
+        implementation group: 'org.apache.commons', name: 'commons-lang3', version: "$commonsLangVersion"
+        implementation group: 'com.esotericsoftware', name: 'minlog', version: "$minlogVersion"
 
         testImplementation project(':lib-testing')
         testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: "$junitJupiterVersion"
         testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: "$junitJupiterVersion"
-        testImplementation group: 'org.mockito', name: 'mockito-core', version: "$mockitoVersion"
-        testImplementation group: 'org.assertj', name: 'assertj-core', version: "$assertjVersion"
-        testImplementation group: 'org.skyscreamer', name: 'jsonassert', version: "$jsonassertVersion"
-        testImplementation group: 'com.ginsberg', name: 'junit5-system-exit', version: '1.0.0'
-        testImplementation group: 'org.testfx', name: 'testfx-core', version: "$testfxVersion"
-        testImplementation group: 'org.testfx', name: 'testfx-junit5', version: "$testfxVersion"
     }
 
     compileJava {
@@ -90,46 +94,28 @@ subprojects {
     }
 }
 
-project(':integ-tests') {
+project(':lib-testing') {
+    apply plugin: 'java-library'
+
     dependencies {
-        testImplementation project(':cli')
-    }
+        api group: 'org.assertj', name: 'assertj-core', version: "$assertjVersion"
+        api group: 'org.skyscreamer', name: 'jsonassert', version: "$jsonassertVersion"
+        api group: 'org.mockito', name: 'mockito-core', version: "$mockitoVersion"
+        api group: 'org.testfx', name: 'testfx-junit5', version: "$testfxVersion"
+        api group: 'com.ginsberg', name: 'junit5-system-exit', version: "$j5systemexitVersion"
 
-    task integTestReport() {
-        group 'verification'
-
-        doLast {
-            def reportFileAbsolutePath = file('./build/reports/tests/test/index.html').toString().replaceAll('\\\\', '/')
-            Desktop.desktop.browse(('file://' + reportFileAbsolutePath).toURI())
-        }
-    }
-    // Unsupported by codeship CI
-//    tasks.test.finalizedBy tasks.integTestReport
-}
-
-project(':cli') {
-    dependencies {
-        compile project(':lib-unlimited')
-        compile group: 'args4j', name: 'args4j', version: '2.33'
-    }
-
-    jar {
-        manifest.attributes provider: 'gradle'
+        implementation project(':lib-unlimited')
     }
 }
 
-project('lib-testing') {
-    dependencies {
-        compile project(':lib-unlimited')
-        compile group: 'org.assertj', name: 'assertj-core', version: "$assertjVersion"
-        compile group: 'org.skyscreamer', name: 'jsonassert', version: "$jsonassertVersion"
-    }
-}
+project(':lib-unlimited') {
+    apply plugin: 'java-library'
 
-project('lib-unlimited') {
     dependencies {
-        compile group: 'net.objecthunter', name: 'exp4j', version: '0.4.8'
-        compile group: 'commons-io', name: 'commons-io', version: '2.6'
+        implementation group: 'net.objecthunter', name: 'exp4j', version: "$exp4jVersion"
+        implementation group: 'javax.xml.bind', name: 'jaxb-api', version: "$jaxbapiVersion"
+
+        api group: 'commons-io', name: 'commons-io', version: '2.6'
     }
 
     task copyStructures(type: Copy) {
@@ -142,18 +128,31 @@ project('lib-unlimited') {
     }
 }
 
-project(':gui-common') {
+project(':cli') {
     dependencies {
-        compile project(':lib-unlimited')
+        implementation project(':lib-unlimited')
+        implementation group: 'args4j', name: 'args4j', version: "$args4jVersion"
+    }
 
-        testImplementation group: 'com.esotericsoftware', name: 'minlog', version: "$minlogVersion"
+    jar {
+        manifest.attributes provider: 'gradle'
+    }
+}
+
+project(':gui-common') {
+    apply plugin: 'java-library'
+
+    dependencies {
+        api project(':lib-unlimited')
+        api group: 'org.openjfx', name: 'javafx', version: "$javafxVersion", ext: 'pom'
+
+        testImplementation project(':lib-testing')
     }
 }
 
 project(':gui-database') {
     dependencies {
-        compile project(':lib-unlimited')
-        compile project(':gui-common')
+        implementation project(':gui-common')
     }
 
     task execute(type:JavaExec) {
@@ -175,8 +174,7 @@ project(':gui-database') {
 
 project(':gui-launcher') {
     dependencies {
-        compile project(':lib-unlimited')
-        compile project(':gui-common')
+        implementation project(':gui-common')
     }
 
     task execute(type:JavaExec) {
@@ -191,8 +189,7 @@ project(':gui-installer') {
     apply plugin: 'org.kordamp.markdown.convert'
 
     dependencies {
-        compile project(':lib-unlimited')
-        compile project(':gui-common')
+        implementation project(':gui-common')
     }
 
     task execute(type: JavaExec) {
@@ -258,6 +255,25 @@ project(':gui-installer') {
         from '../tools/'
         into 'tools/'
     }
+}
+
+project(':integ-tests') {
+    dependencies {
+        testImplementation project(':lib-testing')
+        testImplementation project(':lib-unlimited')
+        testImplementation project(':cli')
+    }
+
+    task integTestReport() {
+        group 'verification'
+
+        doLast {
+            def reportFileAbsolutePath = file('./build/reports/tests/test/index.html').toString().replaceAll('\\\\', '/')
+            Desktop.desktop.browse(('file://' + reportFileAbsolutePath).toURI())
+        }
+    }
+    // Unsupported by codeship CI
+//    tasks.test.finalizedBy tasks.integTestReport
 }
 
 // Main tasks
