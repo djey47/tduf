@@ -9,13 +9,14 @@ import fr.tduf.cli.tools.dto.DatabaseIntegrityErrorDto;
 import fr.tduf.cli.tools.dto.ErrorOutputDto;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.Serializable;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class OutputMapperTest {
 
@@ -25,21 +26,19 @@ public class OutputMapperTest {
     private final ObjectReader objectReader = objectMapper.reader();
     private final ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
 
-    @Before
-    public void setUp() {
+    @BeforeAll
+    static void setUp() {
         Log.set(Log.LEVEL_INFO);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void errorOutputFromException_whenExceptionIsNull_shouldThrowNullPointerException() {
-        // GIVEN-WHEN
-        ErrorOutputDto.fromException(null);
-
-        // THEN: exception
+    @Test
+    void errorOutputFromException_whenExceptionIsNull_shouldThrowNullPointerException() {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class, () -> ErrorOutputDto.fromException(null));
     }
 
     @Test
-    public void errorOutputFromException_shouldReturnMessageAndCompleteStackTrace() {
+    void errorOutputFromException_shouldReturnMessageAndCompleteStackTrace() {
         // GIVEN
         Exception exception = createNestedExceptions();
 
@@ -53,7 +52,7 @@ public class OutputMapperTest {
     }
 
     @Test
-    public void errorOutputToJson_shouldReturnCorrectJson() throws IOException {
+    void errorOutputToJson_shouldReturnCorrectJson() throws IOException {
         // GIVEN
         Exception exception = createNestedExceptions();
         Serializable errorOutputObject = ErrorOutputDto.fromException(exception);
@@ -65,19 +64,17 @@ public class OutputMapperTest {
         // THEN
         JsonNode actualRootNode = objectReader.readTree(actualJson);
         assertThat(actualRootNode.get("errorMessage").textValue()).isEqualTo("An exception occurred");
-        assertThat(actualRootNode.get("stackTrace").textValue()).containsSequence("Exception", "IllegalArgumentException");
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void databaseIntegrityErrorFromDomain_whenNullError_shouldThrowNullPointerException() {
-        // GIEVN-WHEN
-        DatabaseIntegrityErrorDto.fromIntegrityError(null);
-
-        // THEN: exception
+        assertThat(actualRootNode.get("stackTrace").textValue()).containsSubsequence("Exception", "IllegalArgumentException");
     }
 
     @Test
-    public void databaseIntegrityErrorFromDomain_shouldReturnProperObject() {
+    void databaseIntegrityErrorFromDomain_whenNullError_shouldThrowNullPointerException() {
+        // GIVEN-WHEN-THEN
+        assertThrows(NullPointerException.class, () -> DatabaseIntegrityErrorDto.fromIntegrityError(null));
+    }
+
+    @Test
+    void databaseIntegrityErrorFromDomain_shouldReturnProperObject() {
         // GIVEN
         IntegrityError integrityError = IntegrityError.builder()
                 .ofType(IntegrityError.ErrorTypeEnum.CONTENT_ITEMS_COUNT_MISMATCH)

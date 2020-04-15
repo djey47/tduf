@@ -57,24 +57,21 @@ subprojects {
     }
 
     dependencies {
+        // TODO Replace compile with implementation or api (transitive)
         compile group: 'javax.xml.bind', name: 'jaxb-api', version: "2.3.1"
-
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.3'
-
         compile group: 'org.apache.commons', name: 'commons-lang3', version: "$commonsLangVersion"
         compile group: 'com.esotericsoftware', name: 'minlog', version: "$minlogVersion"
 
-        testCompile project(':lib-testing')
-
-        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: "$junitJupiterVersion"
+        testImplementation project(':lib-testing')
         testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: "$junitJupiterVersion"
-
-        testCompile group: 'org.mockito', name: 'mockito-core', version: "$mockitoVersion"
-        testCompile group: 'org.assertj', name: 'assertj-core', version: "$assertjVersion"
-        testCompile group: 'org.skyscreamer', name: 'jsonassert', version: "$jsonassertVersion"
-        testCompile group: 'com.github.stefanbirkner', name: 'system-rules', version: '1.8.0'
-        testCompile group: 'org.testfx', name: 'testfx-core', version: "$testfxVersion"
-        testCompile group: 'org.testfx', name: 'testfx-junit5', version: "$testfxVersion"
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: "$junitJupiterVersion"
+        testImplementation group: 'org.mockito', name: 'mockito-core', version: "$mockitoVersion"
+        testImplementation group: 'org.assertj', name: 'assertj-core', version: "$assertjVersion"
+        testImplementation group: 'org.skyscreamer', name: 'jsonassert', version: "$jsonassertVersion"
+        testImplementation group: 'com.ginsberg', name: 'junit5-system-exit', version: '1.0.0'
+        testImplementation group: 'org.testfx', name: 'testfx-core', version: "$testfxVersion"
+        testImplementation group: 'org.testfx', name: 'testfx-junit5', version: "$testfxVersion"
     }
 
     compileJava {
@@ -95,7 +92,7 @@ subprojects {
 
 project(':integ-tests') {
     dependencies {
-        testCompile project(':cli')
+        testImplementation project(':cli')
     }
 
     task integTestReport() {
@@ -149,7 +146,7 @@ project(':gui-common') {
     dependencies {
         compile project(':lib-unlimited')
 
-        testCompile group: 'com.esotericsoftware', name: 'minlog', version: "$minlogVersion"
+        testImplementation group: 'com.esotericsoftware', name: 'minlog', version: "$minlogVersion"
     }
 }
 

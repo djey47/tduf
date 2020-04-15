@@ -150,11 +150,11 @@ public class AssertionsHelper {
 
     /**
      * @param outputStream  : stream to analyze
-     * @param expectedItems : items which must be sequentially contained in stream.
+     * @param expectedItems : items which must be sequentially contained in stream, allowing other items in between.
      */
-    public static void assertOutputStreamContainsSequence(OutputStream outputStream, String... expectedItems) throws IOException {
+    public static void assertOutputStreamContainsSubsequence(OutputStream outputStream, String... expectedItems) throws IOException {
         finalizeOutputStream(outputStream);
-        assertThat(outputStream.toString()).containsSequence(expectedItems);
+        assertThat(outputStream.toString()).containsSubsequence(expectedItems);
     }
 
     private static String assertAndReadJsonFileContents(String fileName1) throws IOException {

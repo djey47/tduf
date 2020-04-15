@@ -1,9 +1,8 @@
 package fr.tduf.cli.tools;
 
+import com.ginsberg.junit.exit.ExpectSystemExitWithStatus;
 import fr.tduf.cli.common.helper.CommandHelper;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.contrib.java.lang.system.ExpectedSystemExit;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
@@ -17,220 +16,191 @@ import static fr.tduf.cli.tools.MappingTool.Command.*;
  */
 public class AllToolsTest {
 
-    @Rule
-    public final ExpectedSystemExit exitRule = ExpectedSystemExit.none();
-
     @Test
-    public void databaseTool_applyTdupk() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void databaseTool_applyTdupk() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new DatabaseTool(), APPLY_TDUPK);
     }
 
     @Test
-    public void databaseTool_applyPatch() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void databaseTool_applyPatch() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new DatabaseTool(), APPLY_PATCH);
     }
 
     @Test
-    public void databaseTool_applyPatches() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void databaseTool_applyPatches() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new DatabaseTool(), APPLY_PATCHES);
     }
 
     @Test
-    public void databaseTool_genPatch() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void databaseTool_genPatch() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new DatabaseTool(), GEN_PATCH);
     }
 
     @Test
-    public void databaseTool_convertPatch() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void databaseTool_convertPatch() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new DatabaseTool(), CONVERT_PATCH);
     }
 
     @Test
-    public void databaseTool_diffPatches() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void databaseTool_diffPatches() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new DatabaseTool(), DIFF_PATCHES);
     }
 
     @Test
-    public void fileTool_jsonify() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void fileTool_jsonify() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new FileTool(), JSONIFY);
     }
 
     @Test
-    public void fileTool_applyJson() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void fileTool_applyJson() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new FileTool(), APPLYJSON);
     }
 
     @Test
-    public void fileTool_decrypt() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void fileTool_decrypt() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new FileTool(), DECRYPT);
     }
 
     @Test
-    public void fileTool_encrypt() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void fileTool_encrypt() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new FileTool(), ENCRYPT);
     }
 
     @Test
-    public void fileTool_bankinfo() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void fileTool_bankinfo() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new FileTool(), BANKINFO);
     }
 
     @Test
-    public void fileTool_unpack() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void fileTool_unpack() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new FileTool(), UNPACK);
     }
 
     @Test
-    public void fileTool_repack() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void fileTool_repack() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new FileTool(), REPACK);
     }
 
     @Test
-    public void fileTool_unpackAll() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void fileTool_unpackAll() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new FileTool(), UNPACK_ALL);
     }
 
     @Test
-    public void mappingTool_info() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void mappingTool_info() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new MappingTool(), INFO);
     }
 
     @Test
-    public void mappingTool_list() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void mappingTool_list() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new MappingTool(), MappingTool.Command.LIST);
     }
 
     @Test
-    public void mappingTool_listMissing() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void mappingTool_listMissing() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new MappingTool(), LIST_MISSING);
     }
 
     @Test
-    public void mappingTool_fixMissing() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void mappingTool_fixMissing() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new MappingTool(), FIX_MISSING);
     }
 
     @Test
-    public void mappingTool_magify() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void mappingTool_magify() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new MappingTool(), MAGIFY);
     }
 
     @Test
-    public void cameraTool_list() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void cameraTool_list() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new CameraTool(), CameraTool.Command.LIST);
     }
 
     @Test
-    public void cameraTool_copySet() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void cameraTool_copySet() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new CameraTool(), COPY_SET);
     }
 
     @Test
-    public void cameraTool_copySets() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void cameraTool_copySets() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new CameraTool(), COPY_SETS);
     }
 
     @Test
-    public void cameraTool_deleteSets() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void cameraTool_deleteSets() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new CameraTool(), DELETE_SETS);
     }
 
     @Test
-    public void cameraTool_viewSet() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void cameraTool_viewSet() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new CameraTool(), VIEW_SET);
     }
 
     @Test
-    public void cameraTool_customizeSet() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void cameraTool_customizeSet() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new CameraTool(), CUSTOMIZE_SET);
     }
 
     @Test
-    public void cameraTool_useViews() throws NoSuchFieldException, IOException {
+    @ExpectSystemExitWithStatus(1)
+    void cameraTool_useViews() throws IOException {
         // GIVEN-WHEN-THEN
-        exitRule.expectSystemExitWithStatus(1);
-
         testToolCommand(new CameraTool(), USE_VIEWS);
     }
 
-    private static void testToolCommand(GenericTool toolInstance, CommandHelper.CommandEnum command) throws NoSuchFieldException, IOException {
+    private static void testToolCommand(GenericTool toolInstance, CommandHelper.CommandEnum command) throws IOException {
 
-        System.out.println("> Now testing tool " + toolInstance.getClass().getSimpleName() + ", command " + command + "...");
+        System.out.println(String.format("> Now testing tool %s, command %s...", toolInstance.getClass().getSimpleName(), command));
 
         String[] commandLine = new String[]{command.getLabel()};
 

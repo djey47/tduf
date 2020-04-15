@@ -1,6 +1,7 @@
 package fr.tduf.cli.tools.dto;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -8,19 +9,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DatabaseIntegrityErrorDtoTest {
 
     @Test
-    public void toAttributeCase_whenNullText_shouldReturnNull() throws Exception {
+    void toAttributeCase_whenNullText_shouldReturnNull() {
         // GIVEN-WHEN-THEN
         assertThat(DatabaseIntegrityErrorDto.toAttributeCase(null)).isNull();
     }
 
     @Test
-    public void toAttributeCase_whenEmptyText_shouldReturnEmptyString() throws Exception {
+    void toAttributeCase_whenEmptyText_shouldReturnEmptyString() {
         // GIVEN-WHEN-THEN
         assertThat(DatabaseIntegrityErrorDto.toAttributeCase("")).isEmpty();
     }
 
     @Test
-    public void toAttributeCase_whenComplexText_shouldReturnTextWithAttributeCase() throws Exception {
+    void toAttributeCase_whenComplexText_shouldReturnTextWithAttributeCase() {
         // GIVEN
         String text = "Abcd Efgh_Ijklm-Nopq";
 
