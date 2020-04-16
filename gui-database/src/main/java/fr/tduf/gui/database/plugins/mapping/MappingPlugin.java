@@ -4,7 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.javafx.helper.ControlHelper;
 import fr.tduf.gui.common.javafx.helper.DesktopHelper;
 import fr.tduf.gui.database.plugins.cameras.common.FxConstants;
-import fr.tduf.gui.database.plugins.common.DatabasePlugin;
+import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.gui.database.plugins.mapping.converter.BooleanStatusToDisplayConverter;
 import fr.tduf.gui.database.plugins.mapping.domain.MappingEntry;
@@ -55,7 +55,7 @@ import static javafx.geometry.Orientation.VERTICAL;
 /**
  * File mapping status plugin
  */
-public class MappingPlugin implements DatabasePlugin {
+public class MappingPlugin extends AbstractDatabasePlugin {
     private static final Class<MappingPlugin> thisClass = MappingPlugin.class;
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 
@@ -76,8 +76,10 @@ public class MappingPlugin implements DatabasePlugin {
         String gameLocation = context.getGameLocation();
         Path mappingFile = resolveMappingFilePath(gameLocation);
         if (!Files.exists(mappingFile)) {
-            Log.warn(THIS_CLASS_NAME, "No bnk1.map file was found under game directory: " + gameLocation);
-            return;
+            String warningMessage = String.format("No bnk1.map file was found under game directory: %s", gameLocation);
+            Log.warn(THIS_CLASS_NAME, warningMessage);
+
+            throw new IOException(warningMessage);
         }
 
         Log.info(THIS_CLASS_NAME, "Loading mapping info from " + mappingFile);

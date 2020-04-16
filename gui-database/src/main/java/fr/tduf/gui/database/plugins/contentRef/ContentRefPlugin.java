@@ -2,7 +2,7 @@ package fr.tduf.gui.database.plugins.contentRef;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.ImageConstants;
-import fr.tduf.gui.database.plugins.common.DatabasePlugin;
+import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
 import javafx.scene.Node;
 import javafx.scene.control.Tooltip;
@@ -23,7 +23,7 @@ import static java.util.Collections.singletonList;
 /**
  * Simple plugin to decorate content REF fields
  */
-public class ContentRefPlugin implements DatabasePlugin {
+public class ContentRefPlugin extends AbstractDatabasePlugin {
     private Class<ContentRefPlugin> thisClass = ContentRefPlugin.class;
 
     private String THIS_CLASS_NAME = thisClass.getSimpleName();

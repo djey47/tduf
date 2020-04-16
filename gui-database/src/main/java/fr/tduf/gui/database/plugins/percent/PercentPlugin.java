@@ -1,7 +1,7 @@
 package fr.tduf.gui.database.plugins.percent;
 
 import fr.tduf.gui.database.controllers.MainStageChangeDataController;
-import fr.tduf.gui.database.plugins.common.DatabasePlugin;
+import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
 import fr.tduf.gui.database.plugins.percent.converter.PercentNumberToStringConverter;
@@ -30,7 +30,7 @@ import static javafx.geometry.Orientation.VERTICAL;
  * - fieldRank
  * - mainStageController
  */
-public class PercentPlugin implements DatabasePlugin {
+public class PercentPlugin extends AbstractDatabasePlugin {
     @Override
     public void onInit(EditorContext context) {}
 

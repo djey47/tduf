@@ -2,7 +2,7 @@ package fr.tduf.gui.database.plugins.bitfield;
 
 import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.bitfield.converter.BitfieldToStringConverter;
-import fr.tduf.gui.database.plugins.common.DatabasePlugin;
+import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
 import fr.tduf.libunlimited.framework.base.Strings;
@@ -35,7 +35,7 @@ import static java.util.Collections.singletonList;
  * - fieldRank
  * - changeDataController
  */
-public class BitfieldPlugin implements DatabasePlugin {
+public class BitfieldPlugin extends AbstractDatabasePlugin {
     private BitfieldHelper bitfieldHelper;
 
     @Override

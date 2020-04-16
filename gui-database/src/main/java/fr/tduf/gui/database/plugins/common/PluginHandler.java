@@ -1,14 +1,25 @@
 package fr.tduf.gui.database.plugins.common;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.common.ImageConstants;
+import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.controllers.MainStageChangeDataController;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 
+import java.io.IOException;
+import java.util.Optional;
 import java.util.Set;
 
+import static fr.tduf.gui.database.plugins.common.FxConstants.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -58,9 +69,9 @@ public class PluginHandler {
 
         try {
             PluginIndex resolvedPlugin = PluginIndex.valueOf(pluginName);
+            DatabasePlugin pluginInstance = resolvedPlugin.getPluginInstance();
+            renderPluginInstance(pluginInstance, pluginName, parentPane);
 
-            Node renderedNode = resolvedPlugin.getPluginInstance().renderControls(context);
-            parentPane.getChildren().add(renderedNode);
         } catch(Exception e) {
             Log.error(THIS_CLASS_NAME, "Error occured while rendering plugin: " + pluginName, e);
         }
@@ -75,24 +86,43 @@ public class PluginHandler {
         return thisClass.getResource(cssResource).toExternalForm();
     }
 
+    void initializePluginInstance(DatabasePlugin pluginInstance, String pluginName) {
+        try {
+            pluginInstance.onInit(context);
+            pluginInstance.setInitError(null);
+        } catch (IOException ioe) {
+            Log.error(THIS_CLASS_NAME, "Error occured while initializing plugin: " + pluginName, ioe);
+            pluginInstance.setInitError(ioe);
+        }
+    }
+
+    void renderPluginInstance(DatabasePlugin pluginInstance, String pluginName, Pane parentPane) {
+        // Error handling
+        Optional<Exception> initError = pluginInstance.getInitError();
+        final Node renderedNode = initError
+                .map(e -> renderErrorPlaceholder(e, pluginName))
+                .orElseGet(() -> pluginInstance.renderControls(context));
+        parentPane.getChildren().add(renderedNode);
+    }
+
+    void triggerOnSaveForPluginInstance(DatabasePlugin pluginInstance) {
+        try {
+            pluginInstance.onSave(context);
+        } catch (IOException ioe) {
+            Log.error(THIS_CLASS_NAME, "Error occured while triggering onSave for plugin: " + pluginInstance, ioe);
+        }
+    }
+
     private void initializePlugin(PluginIndex pluginIndex) {
         Log.debug(THIS_CLASS_NAME, "Now initializing plugin: " + pluginIndex);
 
-        try {
-            pluginIndex.getPluginInstance().onInit(context);
-        } catch (Exception e) {
-            Log.error(THIS_CLASS_NAME, "Error occured while initializing plugin: " + pluginIndex, e);
-        }
+        initializePluginInstance(pluginIndex.getPluginInstance(), pluginIndex.name());
     }
 
     private void triggerOnSaveForPlugin(PluginIndex pluginIndex) {
         Log.debug(THIS_CLASS_NAME, "Now triggering onSave for plugin: " + pluginIndex);
 
-        try {
-            pluginIndex.getPluginInstance().onSave(context);
-        } catch (Exception e) {
-            Log.error(THIS_CLASS_NAME, "Error occured while triggering onSave for plugin: " + pluginIndex, e);
-        }
+        triggerOnSaveForPluginInstance(pluginIndex.getPluginInstance());
     }
 
     private void addPluginCss(PluginIndex pluginIndex, Parent root) {
@@ -106,6 +136,32 @@ public class PluginHandler {
         } catch (Exception e) {
             Log.error(THIS_CLASS_NAME, "Error occured while invoking getCss for plugin: " + pluginIndex, e);
         }
+    }
+
+    private Node renderErrorPlaceholder(Exception parentException, String pluginName) {
+        HBox placeholderNode = new HBox();
+        placeholderNode.getStyleClass().addAll(CSS_CLASS_PLUGIN_BOX, CSS_CLASS_PLUGIN_ERROR_PLACEHOLDER);
+
+        VBox mainColumnBox = new VBox();
+        ObservableList<Node> mainColumnChildren = mainColumnBox.getChildren();
+
+        HBox titleBox = new HBox();
+        Image errorSignImage = new Image(ImageConstants.RESOURCE_RED_WARN, 24.0, 24.0, true, true);
+        ImageView errorImageView = new ImageView(errorSignImage);
+        String errorTitle = String.format(DisplayConstants.TITLE_PLUGIN_INIT_ERROR, pluginName);
+        Label errorTitleLabel = new Label(errorTitle);
+        errorTitleLabel.getStyleClass().add(CSS_CLASS_PLUGIN_ERROR_TITLE_LABEL);
+        titleBox.getChildren().addAll(errorImageView, errorTitleLabel);
+
+        String errorMessage = parentException.getMessage();
+        Label errorMessageLabel = new Label(errorMessage);
+        errorMessageLabel.getStyleClass().add(CSS_CLASS_PLUGIN_ERROR_MESSAGE_LABEL);
+        mainColumnChildren.addAll(titleBox, errorMessageLabel);
+
+        ObservableList<Node> mainRowChildren = placeholderNode.getChildren();
+        mainRowChildren.add(mainColumnBox);
+
+        return placeholderNode;
     }
 
     public EditorContext getContext() {

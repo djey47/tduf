@@ -3,6 +3,7 @@ package fr.tduf.gui.database.plugins.common;
 import javafx.scene.Node;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -31,4 +32,15 @@ public interface DatabasePlugin {
      * @return necessary stylesheet(s). Null or empty are allowed.
      */
     Set<String> getCss();
+
+    /**
+     * Marks an initialization error onto this plugin
+     * @param initException: exception thrown at initialization
+     */
+    void setInitError(Exception initException);
+
+    /**
+     * @return exception thrown at initialization, if any
+     */
+    Optional<Exception> getInitError();
 }

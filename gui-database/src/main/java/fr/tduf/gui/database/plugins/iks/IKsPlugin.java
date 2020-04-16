@@ -1,7 +1,7 @@
 package fr.tduf.gui.database.plugins.iks;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.database.plugins.common.DatabasePlugin;
+import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.gui.database.plugins.iks.converter.IKReferenceToItemConverter;
 import fr.tduf.gui.database.plugins.iks.converter.IKReferenceToRawValueConverter;
@@ -37,7 +37,7 @@ import static javafx.collections.FXCollections.observableArrayList;
 import static javafx.geometry.Orientation.VERTICAL;
 import static javafx.scene.layout.Priority.ALWAYS;
 
-public class IKsPlugin implements DatabasePlugin {
+public class IKsPlugin extends AbstractDatabasePlugin {
     private static final Class<IKsPlugin> thisClass = IKsPlugin.class;
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 

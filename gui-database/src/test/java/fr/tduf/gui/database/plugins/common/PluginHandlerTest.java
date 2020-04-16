@@ -1,20 +1,57 @@
 package fr.tduf.gui.database.plugins.common;
 
 import fr.tduf.gui.database.controllers.MainStageChangeDataController;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.testfx.framework.junit5.ApplicationTest;
 
+import java.io.IOException;
+
+import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 
-class PluginHandlerTest {
+class PluginHandlerTest extends ApplicationTest {
 
+    @Mock
+    DatabasePlugin pluginInstanceMock;
+
+    @Mock
+    Pane parentPaneMock;
+
+    private ObservableList<Node> parentPaneChildren = FXCollections.observableArrayList();
     private PluginHandler pluginHandler = new PluginHandler(TestingParent.testingInstance(), MainStageChangeDataController.testingInstance());
 
+    /**
+     * Overriden not to launch application
+     * @param stage main stage
+     */
+    @Override
+    public void start(Stage stage) {}
+
     @BeforeEach
-    void setUp() {}
+    void setUp() {
+        initMocks(this);
+
+        when(parentPaneMock.getChildren()).thenReturn(parentPaneChildren);
+    }
+
+    @AfterEach
+    void tearDown() {
+        parentPaneChildren.clear();
+    }
 
     @Test
     void new_shouldRetrieveStylesheets() {
@@ -68,6 +105,74 @@ class PluginHandlerTest {
         // when-then
         assertThrows(NullPointerException.class,
                 () -> PluginHandler.fetchCss(resourcePath));
+    }
+
+    @Test
+    void initializePluginInstance_shouldCallOnInit_andResetErrorOnNormalBehaviour() throws IOException {
+        // given-when
+        pluginHandler.initializePluginInstance(pluginInstanceMock, "TEST_PLUGIN");
+
+        // then
+        verify(pluginInstanceMock).onInit(eq(pluginHandler.getContext()));
+        verify(pluginInstanceMock).setInitError(isNull());
+    }
+
+    @Test
+    void initializePluginInstance_shouldCallOnInit_andSetErrorOnAbnormalBehaviour() throws IOException {
+        // given
+        IOException initException = new IOException("This is an init exception");
+        doThrow(initException)
+                .when(pluginInstanceMock).onInit(eq(pluginHandler.getContext()));
+
+        // when
+        pluginHandler.initializePluginInstance(pluginInstanceMock, "TEST_PLUGIN");
+
+        // then
+        verify(pluginInstanceMock).setInitError(eq(initException));
+    }
+
+    @Test
+    void renderPluginInstance_whenNoInitError_shouldRenderWithPluginInstance() {
+        // given-when
+        pluginHandler.renderPluginInstance(pluginInstanceMock, "TEST_PLUGIN", parentPaneMock);
+
+        // then
+        verify(pluginInstanceMock).renderControls(eq(pluginHandler.getContext()));
+        assertThat(parentPaneChildren).hasSize(1);
+    }
+
+    @Test
+    void renderPluginInstance_whenInitError_shouldNotRenderWithPluginInstance() {
+        // given
+        when(pluginInstanceMock.getInitError()).thenReturn(of(new IOException()));
+
+        // when
+        pluginHandler.renderPluginInstance(pluginInstanceMock, "TEST_PLUGIN", parentPaneMock);
+
+        // then
+        verify(pluginInstanceMock, never()).renderControls(any(EditorContext.class));
+        assertThat(parentPaneChildren).hasSize(1);
+    }
+
+    @Test
+    void triggerOnSaveForPluginInstance_whenNoError() throws IOException {
+        // given-when
+        pluginHandler.triggerOnSaveForPluginInstance(pluginInstanceMock);
+
+        // then
+        verify(pluginInstanceMock).onSave(eq(pluginHandler.getContext()));
+    }
+
+    @Test
+    void triggerOnSaveForPluginInstance_whenError_shouldEndNormally() throws IOException {
+        // given
+        doThrow(new IOException()).when(pluginInstanceMock).onSave(any(EditorContext.class));
+
+        // when
+        pluginHandler.triggerOnSaveForPluginInstance(pluginInstanceMock);
+
+        // then
+        verify(pluginInstanceMock).onSave(any(EditorContext.class));
     }
 
     private static class TestingParent extends Parent {

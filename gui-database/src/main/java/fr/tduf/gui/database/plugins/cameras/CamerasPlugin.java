@@ -10,9 +10,9 @@ import fr.tduf.gui.database.plugins.cameras.converter.CameraInfoToItemConverter;
 import fr.tduf.gui.database.plugins.cameras.converter.CameraInfoToRawValueConverter;
 import fr.tduf.gui.database.plugins.cameras.converter.CameraViewToItemConverter;
 import fr.tduf.gui.database.plugins.cameras.helper.CamerasDialogsHelper;
-import fr.tduf.libunlimited.high.files.bin.cameras.interop.helper.CamerasImExHelper;
-import fr.tduf.gui.database.plugins.common.DatabasePlugin;
+import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
 import fr.tduf.gui.database.plugins.common.EditorContext;
+import fr.tduf.libunlimited.high.files.bin.cameras.interop.helper.CamerasImExHelper;
 import fr.tduf.libunlimited.high.files.db.common.helper.CameraAndIKHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.*;
 import fr.tduf.libunlimited.low.files.bin.cameras.dto.SetConfigurationDto;
@@ -59,7 +59,7 @@ import static javafx.scene.layout.Priority.ALWAYS;
 /**
  * Advanced cameras edition plugin
  */
-public class CamerasPlugin implements DatabasePlugin {
+public class CamerasPlugin extends AbstractDatabasePlugin {
     private static final Class<CamerasPlugin> thisClass = CamerasPlugin.class;
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 

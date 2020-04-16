@@ -24,6 +24,7 @@ import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -54,14 +55,12 @@ class MappingPluginTest {
     }
     
     @Test
-    void onInit_whenNoMapping_shouldNotAttemptLoading() throws IOException {
+    void onInit_whenNoMappingFile_shouldThrowException_andNotAttemptLoading() {
         // given
         context.setGameLocation(".");
 
-        // when
-        mappingPlugin.onInit(context);
-
-        // then
+        // when-then
+        assertThrows(IOException.class, () -> mappingPlugin.onInit(context));
         assertThat(context.getMappingContext().isPluginLoaded()).isFalse();
     }
 

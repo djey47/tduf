@@ -16,3 +16,18 @@
 .pluginTableView {
     -fx-pref-width: 625.0;
 }
+
+.pluginErrorPlaceholder {
+    -fx-background-color: salmon;
+    -fx-border-color: tomato;
+    -fx-pref-width: 675.0;
+}
+
+.pluginErrorTitleLabel {
+    -fx-padding: 4px;
+    -fx-font-weight: bold;
+}
+
+.pluginErrorMessageLabel {
+    -fx-padding: 8px;
+}

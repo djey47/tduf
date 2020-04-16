@@ -15,6 +15,11 @@ public class ImageConstants {
     public static final String RESOURCE_WARN = RESOURCE_PATH_IMAGES + "001_11.png";
 
     /**
+     * RED WARNING SIGN
+     */
+    public static final String RESOURCE_RED_WARN = RESOURCE_PATH_IMAGES + "001_30.png";
+
+    /**
      * TDU ICON 256px
      */
     public static final String RESOURCE_TDU_256 = RESOURCE_PATH_ICONS + "TDU-256px.png";
