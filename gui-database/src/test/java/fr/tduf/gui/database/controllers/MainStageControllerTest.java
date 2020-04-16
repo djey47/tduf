@@ -66,7 +66,7 @@ class MainStageControllerTest {
 
         // then
         assertThat(controller.getDatabaseObjects()).isEmpty();
-        verifyZeroInteractions(pluginHandlerMock, viewDataControllerMock);
+        verifyNoInteractions(pluginHandlerMock, viewDataControllerMock);
     }
 
     @Test
@@ -114,7 +114,7 @@ class MainStageControllerTest {
         controller.handleDatabaseSaverSuccess();
 
         // then
-        verifyZeroInteractions(pluginHandlerMock);
+        verifyNoInteractions(pluginHandlerMock);
     }
 
     @Test

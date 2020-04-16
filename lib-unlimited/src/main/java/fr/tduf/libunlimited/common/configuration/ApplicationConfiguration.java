@@ -33,16 +33,14 @@ public class ApplicationConfiguration extends Properties {
      * @return full path to game database if it exists, else return default location from game directory, or empty otherwise
      */
     public Optional<Path> getDatabasePath() {
-        // TODO Extract variable
-        if (getPathProperty(KEY_DATABASE_DIR).isPresent()) {
-            return getPathProperty(KEY_DATABASE_DIR);
-        }
-
-        return getGamePath()
+        Path fallbackDatabasePath = getGamePath()
                 .map(gamePath -> gamePath
                         .resolve(FileConstants.DIRECTORY_EURO)
                         .resolve(FileConstants.DIRECTORY_BANKS)
-                        .resolve(FileConstants.DIRECTORY_DATABASE));
+                        .resolve(FileConstants.DIRECTORY_DATABASE))
+                .orElse(null);
+
+        return ofNullable(resolvePathProperty(KEY_DATABASE_DIR, fallbackDatabasePath));
     }
 
     /**
@@ -56,8 +54,7 @@ public class ApplicationConfiguration extends Properties {
      * @return full path to game if it exists, or empty otherwise
      */
     public Optional<Path> getGamePath() {
-        return ofNullable(getProperty(KEY_TDU_DIR))
-                .map(Paths::get);
+        return ofNullable(resolvePathProperty(KEY_TDU_DIR, null));
     }    
     
     /**
@@ -163,10 +160,10 @@ public class ApplicationConfiguration extends Properties {
         store();
     }
 
-    // TODO Rename to resolvePathProperty and specify default value
-    private Optional<Path> getPathProperty(String propKey) {
+    private Path resolvePathProperty(String propKey, Path defaultValue) {
         return ofNullable(getProperty(propKey))
-                .map(Paths::get);
+                .map(Paths::get)
+                .orElse(defaultValue);
     }
 
     private boolean resolveBooleanProperty(String propKey, boolean defaultValue) {

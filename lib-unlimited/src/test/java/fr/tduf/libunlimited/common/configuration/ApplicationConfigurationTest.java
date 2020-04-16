@@ -9,10 +9,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ApplicationConfigurationTest {
+    private static final String TDU_ROOT_DIR = "/home/user/apps/tdu";
+
     private final ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
 
     private String configFileName;
@@ -129,4 +132,57 @@ class ApplicationConfigurationTest {
         // when-then
         assertThat(applicationConfiguration.isEditorDebuggingEnabled()).isTrue();
     }
+
+    @Test
+    void getGamePath_whenNoSetting_shouldReturnEmpty() {
+        // given-when-then
+        assertThat(applicationConfiguration.getGamePath()).isEmpty();
+    }
+
+    @Test
+    void getGamePath_whenSettingPresent_shouldReturnIt() {
+        // given
+        applicationConfiguration.setProperty("tdu.root.directory", TDU_ROOT_DIR);
+
+        // when
+        Optional<Path> actualGamePath = applicationConfiguration.getGamePath();
+
+        //then
+        assertThat(actualGamePath).contains(Paths.get(TDU_ROOT_DIR));
+    }
+
+    @Test
+    void getDatabasePath_whenNoSetting_shouldReturnEmpty() {
+        // given-when-then
+        assertThat(applicationConfiguration.getDatabasePath()).isEmpty();
+    }
+
+    @Test
+    void getDatabasePath_whenGameRootSettingPresent_shouldReturnComputed() {
+        // given
+        applicationConfiguration.setProperty("tdu.root.directory", TDU_ROOT_DIR);
+
+        // when
+        Optional<Path> actualDatabasePath = applicationConfiguration.getDatabasePath();
+
+        //then
+        Path expectedDatabasePath = Paths.get(TDU_ROOT_DIR).resolve("Euro/Bnk/Database");
+        assertThat(actualDatabasePath).contains(expectedDatabasePath);
+    }
+
+    @Test
+    void getDatabasePath_whenAllSettingsPresent_shouldReturnDatabaseDirectory() {
+        // given
+        String customDatabaseDir = "/home/user/apps/tdu-test/Euro/Bnk/Database";
+        applicationConfiguration.setProperty("tdu.root.directory", TDU_ROOT_DIR);
+        applicationConfiguration.setProperty("tdu.database.directory", customDatabaseDir);
+
+        // when
+        Optional<Path> actualDatabasePath = applicationConfiguration.getDatabasePath();
+
+        //then
+        Path expectedDatabasePath = Paths.get(customDatabaseDir);
+        assertThat(actualDatabasePath).contains(expectedDatabasePath);
+    }
+
 }
