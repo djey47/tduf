@@ -27,11 +27,13 @@ public class ApplicationConfiguration extends Properties {
     private static final String KEY_EDITOR_LOCALE = "tduf.editor.locale";
     private static final String KEY_EDITOR_PROFILE = "tduf.editor.profile";
     private static final String KEY_EDITOR_PLUGINS_ENABLED = "tduf.editor.plugins.enabled";
+    private static final String KEY_EDITOR_DEBUGGING_ENABLED = "tduf.editor.debugging.enabled";
 
     /**
      * @return full path to game database if it exists, else return default location from game directory, or empty otherwise
      */
     public Optional<Path> getDatabasePath() {
+        // TODO Extract variable
         if (getPathProperty(KEY_DATABASE_DIR).isPresent()) {
             return getPathProperty(KEY_DATABASE_DIR);
         }
@@ -95,12 +97,10 @@ public class ApplicationConfiguration extends Properties {
     }
 
     /**
-     * @return true to enable Database Editor plugins, false otherwise
+     * @return true when enabled Database Editor plugins, false otherwise
      */
     public boolean isEditorPluginsEnabled() {
-        return ofNullable(getProperty(KEY_EDITOR_PLUGINS_ENABLED))
-                .map(Boolean::parseBoolean)
-                .orElse(true);
+        return resolveBooleanProperty(KEY_EDITOR_PLUGINS_ENABLED, true);
     }
 
     /**
@@ -108,6 +108,13 @@ public class ApplicationConfiguration extends Properties {
      */
     public void setEditorPluginsEnabled(boolean enabled) {
         setProperty(KEY_EDITOR_PLUGINS_ENABLED, Boolean.toString(enabled));
+    }
+
+    /**
+     * @return true when enabled Database Editor debugging, false otherwise
+     */
+    public boolean isEditorDebuggingEnabled() {
+        return resolveBooleanProperty(KEY_EDITOR_DEBUGGING_ENABLED, false);
     }
     
     /**
@@ -156,9 +163,16 @@ public class ApplicationConfiguration extends Properties {
         store();
     }
 
+    // TODO Rename to resolvePathProperty and specify default value
     private Optional<Path> getPathProperty(String propKey) {
         return ofNullable(getProperty(propKey))
                 .map(Paths::get);
+    }
+
+    private boolean resolveBooleanProperty(String propKey, boolean defaultValue) {
+        return ofNullable(getProperty(propKey))
+                .map(Boolean::parseBoolean)
+                .orElse(defaultValue);
     }
 
     // For tests

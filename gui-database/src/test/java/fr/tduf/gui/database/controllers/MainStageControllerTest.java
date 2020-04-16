@@ -1,16 +1,20 @@
 package fr.tduf.gui.database.controllers;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
 import fr.tduf.gui.database.services.DatabaseLoader;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.SimpleStringProperty;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +41,19 @@ class MainStageControllerTest {
     @InjectMocks
     private MainStageController controller;
 
+    @BeforeAll
+    static void globalSetUp() {
+        Log.set(Log.LEVEL_INFO);
+    }
+
     @BeforeEach
     void setUp() {
         initMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        Log.set(Log.LEVEL_INFO);
     }
 
     @Test
@@ -101,5 +115,28 @@ class MainStageControllerTest {
 
         // then
         verifyZeroInteractions(pluginHandlerMock);
+    }
+
+    @Test
+    void initConfiguration_shouldLoadConfiguration_andKeepDefaultLogLevel() throws IOException {
+        // given-when
+        controller.initConfiguration();
+
+        // then
+        verify(applicationConfigurationMock).load();
+        assertThat(Log.ERROR).isTrue();
+    }
+
+    @Test
+    void initConfiguration_whenDebuggingModeEnabled_shouldLoadConfiguration_andApplyDebugLogLevel() throws IOException {
+        // given
+        when(applicationConfigurationMock.isEditorDebuggingEnabled()).thenReturn(true);
+
+        // when
+        controller.initConfiguration();
+
+        // then
+        verify(applicationConfigurationMock).load();
+        assertThat(Log.ERROR).isTrue();
     }
 }

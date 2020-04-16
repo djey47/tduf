@@ -128,7 +128,7 @@ public class MainStageController extends AbstractGuiController {
 
     @Override
     protected void init() throws IOException {
-        applicationConfiguration.load();
+        initConfiguration();
 
         viewDataController = new MainStageViewDataController(this);
         changeDataController = new MainStageChangeDataController(this);
@@ -414,6 +414,16 @@ public class MainStageController extends AbstractGuiController {
             return;
         }
         pluginHandler.triggerOnSaveForAllPLugins();
+    }
+
+    void initConfiguration() throws IOException {
+        applicationConfiguration.load();
+
+        // Debugging mode?
+        if (applicationConfiguration.isEditorDebuggingEnabled()) {
+            Log.set(Log.LEVEL_DEBUG);
+            Log.debug(THIS_CLASS_NAME, "/!\\ DEBUG mode enabled via application configuration /!\\");
+        }
     }
 
     private void handleProfileChoiceChanged(EditorLayoutDto.EditorProfileDto newProfile) {

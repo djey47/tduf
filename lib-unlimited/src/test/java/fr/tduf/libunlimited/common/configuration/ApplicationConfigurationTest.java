@@ -105,4 +105,28 @@ class ApplicationConfigurationTest {
         // when-then
         assertThat(applicationConfiguration.isEditorPluginsEnabled()).isTrue();
     }
+
+    @Test
+    void isEditorDebuggingEnabled_whenNoSetting_shouldReturnFalse() {
+        // given-when-then
+        assertThat(applicationConfiguration.isEditorDebuggingEnabled()).isFalse();
+    }
+
+    @Test
+    void isEditorDebuggingEnabled_whenSettingToFalse_shouldReturnFalse() {
+        // given
+        applicationConfiguration.setProperty("tduf.editor.debugging.enabled", "false");
+
+        // when-then
+        assertThat(applicationConfiguration.isEditorDebuggingEnabled()).isFalse();
+    }
+
+    @Test
+    void isEditorDebuggingEnabled_whenSettingToTrue_shouldReturnTrue() {
+        // given
+        applicationConfiguration.setProperty("tduf.editor.debugging.enabled", "true");
+
+        // when-then
+        assertThat(applicationConfiguration.isEditorDebuggingEnabled()).isTrue();
+    }
 }
