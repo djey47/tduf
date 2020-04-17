@@ -87,7 +87,7 @@ subprojects {
         mustRunAfter 'jar'
 
         getArchiveBaseName().set('tduf-' + project.name + '-all')
-        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+        from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
         with jar
     }
 }
@@ -275,15 +275,17 @@ project(':integ-tests') {
 
 // Main tasks
 // Create a list of subprojects to include in the full jar.
-def fullProjects = [':cli',':gui-database',':gui-launcher']
-def tempJarDirectory = './tmp-jarContents'
+def fullProjects = [':lib-unlimited', ':cli', ':gui-common', ':gui-database', ':gui-launcher']
+def tempJarDirectory = 'tmp-jarContents/'
 
 task gatherAllContentsForJar(type: Copy, dependsOn: fullProjects.collect{ it+":compileJava"}) {
     description 'Copies contents to temp directory.'
     group 'build'
 
+    // Project sources
     from files(fullProjects.collect{ project(it).sourceSets.main.output })
-    from files(fullProjects.collect{ project(it).configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } } )
+    // External libraries
+    from files(fullProjects.collect{ project(it).configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } } )
     into tempJarDirectory
 }
 
@@ -291,7 +293,7 @@ task fullJar( type: Jar , dependsOn: 'gatherAllContentsForJar' ) {
     description 'Creates jar with all contents from temp directory.'
     group 'build'
 
-    getDestinationDirectory().set(file('./pack/tools/lib/'))
+    getDestinationDirectory().set(file('pack/tools/lib/'))
     getArchiveBaseName().set('tduf')
     from tempJarDirectory
 }
@@ -329,14 +331,14 @@ task cleanPackDir(type: Delete) {
     description 'Prepares new package by removing all files in pack directory.'
     group 'packaging'
 
-    delete ['pack/']
+    delete 'pack/'
 }
 
 task cleanTempJarDir(type: Delete) {
     description 'Prepares new package by removing all files in tmp-jarContents directory.'
     group 'packaging'
 
-    delete [tempJarDirectory]
+    delete tempJarDirectory
 }
 
 task copyDoc(type: Copy) {
