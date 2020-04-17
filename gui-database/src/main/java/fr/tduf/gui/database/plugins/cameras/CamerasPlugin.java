@@ -58,8 +58,10 @@ import static javafx.scene.layout.Priority.ALWAYS;
 
 /**
  * Advanced cameras edition plugin
+ *
  */
 public class CamerasPlugin extends AbstractDatabasePlugin {
+
     private static final Class<CamerasPlugin> thisClass = CamerasPlugin.class;
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 
@@ -88,8 +90,10 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
         String databaseLocation = context.getDatabaseLocation();
         Path cameraFile = resolveCameraFilePath(databaseLocation);
         if (!Files.exists(cameraFile)) {
-            Log.warn(THIS_CLASS_NAME, "No Cameras.bin file was found in database directory: " + databaseLocation);
-            return;
+            String warningMessage = String.format(FORMAT_MESSAGE_WARN_NO_CAMBIN, databaseLocation);
+            Log.warn(THIS_CLASS_NAME, warningMessage);
+
+            throw new IOException(warningMessage);
         }
 
         camerasContext.setBinaryFileLocation(cameraFile.toString());

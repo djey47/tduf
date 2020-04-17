@@ -42,5 +42,7 @@ public class DisplayConstants {
     public static final String MESSAGE_UNABLE_IMPORT_PATCH = "Camera set could not be imported";
     public static final String MESSAGE_UNABLE_EXPORT_PATCH = "Camera set could not be exported";
 
+    public static final String FORMAT_MESSAGE_WARN_NO_CAMBIN = "No Cameras.bin file was found in database directory: %s";
+
     private DisplayConstants() {}
 }

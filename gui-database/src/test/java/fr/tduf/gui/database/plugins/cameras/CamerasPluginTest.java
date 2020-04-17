@@ -14,20 +14,19 @@ import java.util.Optional;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CamerasPluginTest {
     private final CamerasPlugin camerasPlugin = new CamerasPlugin();
     private final EditorContext context = new EditorContext();
 
     @Test
-    void onInit_whenNoCameras_shouldNotAttemptLoading() throws IOException {
+    void onInit_whenNoCameras_shouldThrowException_andNotAttemptLoading() {
         // given
         context.setDatabaseLocation(".");
 
-        // when
-        camerasPlugin.onInit(context);
-
-        // then
+        // when-then
+        assertThrows(IOException.class, () -> camerasPlugin.onInit(context));
         assertThat(context.getCamerasContext().isPluginLoaded()).isFalse();
     }
 
