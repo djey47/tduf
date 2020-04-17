@@ -10,7 +10,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,10 +30,9 @@ public class ContentRefPlugin extends AbstractDatabasePlugin {
     /**
      * Required contextual information: none
      * @param context : all required information about Database Editor
-     * @throws IOException when cameras file can't be parsed for some reason
      */
     @Override
-    public void onInit(EditorContext context) throws IOException {
+    public void onInit(EditorContext context) {
         Log.info(THIS_CLASS_NAME, "Ready!");
     }
 
@@ -43,7 +41,7 @@ public class ContentRefPlugin extends AbstractDatabasePlugin {
      * @param context : all required information about Database Editor
      */
     @Override
-    public void onSave(EditorContext context) throws IOException {}
+    public void onSave(EditorContext context) {}
 
     /**
      * Required contextual information: none

@@ -26,7 +26,7 @@ public class CameraInfoToRawValueConverter extends StringConverter<CameraSetInfo
     @Override
     public CameraSetInfo fromString(String cameraIdentifierAsString) {
         try {
-            long cameraId = Long.valueOf(cameraIdentifierAsString);
+            long cameraId = Long.parseLong(cameraIdentifierAsString);
             return allCameras.stream()
                     .filter(camera -> camera.getCameraIdentifier() == cameraId)
                     .findAny()

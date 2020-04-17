@@ -18,7 +18,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -32,7 +31,6 @@ import static fr.tduf.gui.database.plugins.iks.common.FxConstants.*;
 import static fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto.TopicMetadataDto.FIELD_RANK_IK;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Collections.singletonList;
-import static java.util.Comparator.comparing;
 import static javafx.collections.FXCollections.observableArrayList;
 import static javafx.geometry.Orientation.VERTICAL;
 import static javafx.scene.layout.Priority.ALWAYS;
@@ -47,7 +45,7 @@ public class IKsPlugin extends AbstractDatabasePlugin {
      * Required contextual information: none
      */
     @Override
-    public void onInit(EditorContext context) throws IOException {
+    public void onInit(EditorContext context) {
         ikRefHelper = new CameraAndIKHelper();
         Log.info(THIS_CLASS_NAME, "IK reference loaded");
     }
@@ -56,7 +54,7 @@ public class IKsPlugin extends AbstractDatabasePlugin {
      * Required contextual information: none
      */
     @Override
-    public void onSave(EditorContext context) throws IOException {}
+    public void onSave(EditorContext context) {}
 
     /**
      * Required contextual information:
@@ -92,7 +90,7 @@ public class IKsPlugin extends AbstractDatabasePlugin {
         Map<Integer, String> reference = ikRefHelper.getIKReference();
 
         ComboBox<Map.Entry<Integer, String>> ikSelectorComboBox = new ComboBox<>(
-                observableArrayList(reference.entrySet()).sorted(comparing(Map.Entry::getValue)));
+                observableArrayList(reference.entrySet()).sorted(Map.Entry.comparingByValue()));
         ikSelectorComboBox.getStyleClass().add(CSS_CLASS_IK_SELECTOR_COMBOBOX);
         ikSelectorComboBox.setConverter(new IKReferenceToItemConverter());
 

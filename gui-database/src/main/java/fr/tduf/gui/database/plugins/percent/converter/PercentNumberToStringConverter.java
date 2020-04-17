@@ -26,7 +26,7 @@ public class PercentNumberToStringConverter extends NumberStringConverter {
             return null;
         }
 
-        Float percentNumber = Float.valueOf(percentRawValue) * 100;
-        return super.fromString(percentNumber.toString());
+        float percentNumber = Float.parseFloat(percentRawValue) * 100;
+        return super.fromString(Float.toString(percentNumber));
     }
 }
