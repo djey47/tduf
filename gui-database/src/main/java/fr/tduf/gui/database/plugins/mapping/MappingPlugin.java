@@ -76,7 +76,7 @@ public class MappingPlugin extends AbstractDatabasePlugin {
         String gameLocation = context.getGameLocation();
         Path mappingFile = resolveMappingFilePath(gameLocation);
         if (!Files.exists(mappingFile)) {
-            String warningMessage = String.format("No bnk1.map file was found under game directory: %s", gameLocation);
+            String warningMessage = String.format(FORMAT_MESSAGE_WARN_NO_MAPPING, gameLocation);
             Log.warn(THIS_CLASS_NAME, warningMessage);
 
             throw new IOException(warningMessage);

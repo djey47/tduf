@@ -12,6 +12,8 @@ public class DisplayConstants {
     public static final String LABEL_BUTTON_REGISTER = "Register";
 
     public static final String LABEL_ERROR_TOOLTIP_UNREGISTERED = "One of listed files is not registered into Bnk1.map, may not be taken into account by the game.";
-    
+
+    public static final String FORMAT_MESSAGE_WARN_NO_MAPPING = "No bnk1.map file was found under game directory: %s";
+
     private DisplayConstants() {}
 }
