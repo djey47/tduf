@@ -6,7 +6,6 @@ import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -165,7 +164,7 @@ public class DatabaseBankHelper {
         Path databaseFilePath = Paths.get(databaseDirectory, databaseFileName);
         String fullFileName = databaseFilePath.toString();
         if (!Files.exists(databaseFilePath)) {
-            throw new RuntimeException("Source database file does not exist.", new FileNotFoundException(fullFileName));
+            throw new RuntimeException(String.format("Source database file does not exist: %s", fullFileName));
         }
 
         return fullFileName;
@@ -178,10 +177,11 @@ public class DatabaseBankHelper {
 
             groupFiles(extractedDirectory, targetDirectory);
         } catch (IOException ioe) {
-            throw new RuntimeException("Unable to unpack database bank: " + databaseFileName, ioe);
+            throw new RuntimeException(String.format("Unable to unpack database bank: %s", databaseFileName), ioe);
         }
     }
 
+    // TODO Remove unused exception declaration
     private static void groupFiles(String sourceDirectory, String targetDirectory) throws IOException {
         try {
             Files.walk(Paths.get(sourceDirectory))
@@ -193,7 +193,7 @@ public class DatabaseBankHelper {
                         try {
                             Files.move(filePath, Paths.get(targetDirectory).resolve(shortFileName), StandardCopyOption.REPLACE_EXISTING);
                         } catch (IOException ioe) {
-                            throw new RuntimeException("Unable to group file: " + shortFileName, ioe);
+                            throw new RuntimeException(String.format("Unable to group file: %s", shortFileName), ioe);
                         }
                     });
         } catch (IOException ioe) {
@@ -216,7 +216,7 @@ public class DatabaseBankHelper {
                         FilesHelper.createDirectoryIfNotExists(targetDirectory);
                         Files.copy(filePath, Paths.get(targetDirectory).resolve(shortFileName), StandardCopyOption.REPLACE_EXISTING);
                     } catch (IOException ioe) {
-                        throw new RuntimeException("Unable to copy original bank file: " + shortFileName + " to target directory.", ioe);
+                        throw new RuntimeException(String.format("Unable to copy original bank file: %s to target directory.", shortFileName), ioe);
                     }
                 });
     }
