@@ -12,6 +12,7 @@ public class FileConstants {
     public static final String PREFIX_LAUNCH_SWITCH = "-%s";
     
     public static final String FILE_GAME_EXECUTABLE = "TestDriveUnlimited.exe";
+    public static final String DATABASE_BANK_FILE_NAME = "DB.bnk";
     
     public static final String DIRECTORY_EURO = "Euro";
     public static final String DIRECTORY_BANKS = "Bnk";
@@ -34,6 +35,7 @@ public class FileConstants {
     public static final String DIRECTORY_LOW_RES = "LowRes";
 
     public static final String FORMAT_REGULAR_BANK = "%s." + EXTENSION_BANKS;
+    public static final String FORMAT_DATABASE_RES_BANK = "DB_%s." + EXTENSION_BANKS;
     public static final String FORMAT_VEHICLE_INT_BANK = "%s_I." + EXTENSION_BANKS;
     public static final String FORMAT_REGULAR_SOUND = "%s.wav";
 

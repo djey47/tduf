@@ -26,7 +26,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 class DatabaseBankHelperTest {
 
-    private static Class<DatabaseBankHelperTest> thisClass = DatabaseBankHelperTest.class;
+    private static final Class<DatabaseBankHelperTest> thisClass = DatabaseBankHelperTest.class;
 
     @Mock
     private BankSupport bankSupportMock;
@@ -94,7 +94,7 @@ class DatabaseBankHelperTest {
     }
 
     @Test
-    void unpackDatabaseFromDirectory_whenNullArgumentsShouldThrowException() throws IOException {
+    void unpackDatabaseFromDirectory_whenNullArgumentsShouldThrowException() {
         // GIVEN-WHEN-THEN
         assertThrows(NullPointerException.class,
                 () -> DatabaseBankHelper.unpackDatabaseFromDirectory(null, null, null));
@@ -103,7 +103,7 @@ class DatabaseBankHelperTest {
     }
 
     @Test
-    void repackDatabaseFromDirectory_whenNoOriginalBanksDirectory_shouldCallBankSupport_andReturnOutputDirectory() throws IOException, URISyntaxException {
+    void repackDatabaseFromDirectory_whenNoOriginalBanksDirectory_shouldCallBankSupport_andReturnOutputDirectory() throws IOException {
         // GIVEN: original banks provided in same directory
         String databaseDirectory = thisClass.getResource("/db/full/unpacked").getFile();
         String targetDirectory = tempDirectory;
@@ -120,7 +120,7 @@ class DatabaseBankHelperTest {
     }
 
     @Test
-    void repackDatabaseFromDirectory_whenOriginalBanksDirectory_shouldCallBankSupport_andReturnOutputDirectory() throws IOException, URISyntaxException {
+    void repackDatabaseFromDirectory_whenOriginalBanksDirectory_shouldCallBankSupport_andReturnOutputDirectory() throws IOException {
         // GIVEN: original banks provided in another directory
         String originalBanksDirectory = thisClass.getResource("/db/full/original-banks").getFile();
         String databaseDirectory = thisClass.getResource("/db/full/unpacked").getFile();
@@ -136,7 +136,7 @@ class DatabaseBankHelperTest {
     }
 
     @Test
-    void repackDatabaseFromDirectory_whenNullArgumentsShouldThrowException() throws IOException {
+    void repackDatabaseFromDirectory_whenNullArgumentsShouldThrowException() {
         // GIVEN-WHEN-THEN
         assertThrows(NullPointerException.class,
                 () -> DatabaseBankHelper.repackDatabaseFromDirectory(null, null, null, null));

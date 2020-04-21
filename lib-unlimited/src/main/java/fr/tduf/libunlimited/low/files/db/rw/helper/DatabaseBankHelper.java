@@ -11,9 +11,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.List;
 
+import static fr.tduf.libunlimited.common.game.FileConstants.DATABASE_BANK_FILE_NAME;
+import static fr.tduf.libunlimited.common.game.FileConstants.FORMAT_DATABASE_RES_BANK;
 import static fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway.EXTENSION_BANKS;
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_DB_CONTENTS;
 import static java.util.Objects.requireNonNull;
@@ -26,7 +27,6 @@ import static java.util.stream.Collectors.toList;
 public class DatabaseBankHelper {
 
     private static final Class<DatabaseBankHelper> thisClass = DatabaseBankHelper.class;
-    private static final String DATABASE_BANK_FILE_NAME = "DB.bnk";
 
     /**
      * Extracts all TDU database files from specified directory to a temporary location.
@@ -91,13 +91,9 @@ public class DatabaseBankHelper {
 
     static List<String> getDatabaseBankFileNames() {
 
-        List<String> resourceBankFileNames = Locale.valuesAsStream()
-
-                .map((locale) -> "DB_" + locale.getCode().toUpperCase() + "." + EXTENSION_BANKS)
-
-                        .collect(toList());
-
-        List<String> databaseBankFileNames = new ArrayList<>(resourceBankFileNames);
+        List<String> databaseBankFileNames = Locale.valuesAsStream()
+                .map((locale) -> String.format(FORMAT_DATABASE_RES_BANK, locale.getCode().toUpperCase()))
+                .collect(toList());
         databaseBankFileNames.add(DATABASE_BANK_FILE_NAME);
 
         return databaseBankFileNames;
@@ -182,7 +178,7 @@ public class DatabaseBankHelper {
     }
 
     // TODO Remove unused exception declaration
-    private static void groupFiles(String sourceDirectory, String targetDirectory) throws IOException {
+    private static void groupFiles(String sourceDirectory, String targetDirectory) {
         try {
             Files.walk(Paths.get(sourceDirectory))
 

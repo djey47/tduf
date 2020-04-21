@@ -58,7 +58,7 @@ class DatabaseBanksCacheHelperTest {
 
 
         // THEN
-        verifyZeroInteractions(bankSupportMock);
+        verifyNoInteractions(bankSupportMock);
 
         assertThat(jsonDirectory).isEqualTo(cachePath.toString());
 
@@ -104,7 +104,7 @@ class DatabaseBanksCacheHelperTest {
     }
 
     @Test
-    void repackDatabaseFromJsonWithCacheSupport_whenCacheInfoDoesNotExist_shouldCallBankSupportComponent_andSetTimestamp() throws IOException, ReflectiveOperationException {
+    void repackDatabaseFromJsonWithCacheSupport_whenCacheInfoDoesNotExist_shouldCallBankSupportComponent_andSetTimestamp() throws IOException {
         // GIVEN
         createCacheDirectory();
         String jsonDatabaseDirectory = createJsonDatabase(databaseDirectory);
@@ -132,7 +132,7 @@ class DatabaseBanksCacheHelperTest {
     }
 
     @Test
-    void repackDatabaseFromJsonWithCacheSupport_whenCacheInfoExists_shouldUpdateTimestamp() throws IOException, ReflectiveOperationException, InterruptedException {
+    void repackDatabaseFromJsonWithCacheSupport_whenCacheInfoExists_shouldUpdateTimestamp() throws IOException, InterruptedException {
         // GIVEN
         createCacheDirectory();
         String jsonDatabaseDirectory = createJsonDatabase(databaseDirectory);
