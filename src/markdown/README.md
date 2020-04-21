@@ -125,6 +125,6 @@ If you wish to donate, please head to [this](http://bit.ly/13YI3bP)
 ### Licenses
 
 * TDU application icon: [Creative Commons](https://creativecommons.org/licenses/by-nc-nd/4.0/#) - unmodified
-
+* GUI applications use *34aL Volume 3.1* icon pack from [IconJoy](http://icojam.com).
 
 -[Djey, *core* tools developer](https://github.com/djey47)-
