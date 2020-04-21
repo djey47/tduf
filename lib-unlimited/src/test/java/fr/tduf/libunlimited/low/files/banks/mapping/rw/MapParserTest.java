@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,7 +16,7 @@ class MapParserTest {
     private static final Class<MapParserTest> thisClass = MapParserTest.class;
 
     @BeforeEach
-    void setUp() throws IOException {
+    void setUp() {
         Log.set(Log.LEVEL_DEBUG);
     }
 
@@ -34,7 +33,7 @@ class MapParserTest {
     }
 
     @Test
-    void parse_whenRealFiles_shouldFillStore_andReadAllEntries() throws IOException, URISyntaxException {
+    void parse_whenRealFiles_shouldFillStore_andReadAllEntries() throws IOException {
         // GIVEN
         byte[] mapContents = FilesHelper.readBytesFromResourceFile("/banks/Bnk1.map");
 

@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,7 +24,7 @@ class MapWriterTest {
     }
 
     @Test
-    void write_whenRealFilesLoaded_shouldReturnSameAsInitialContents() throws URISyntaxException, IOException {
+    void write_whenRealFilesLoaded_shouldReturnSameAsInitialContents() throws IOException {
         //GIVEN
         byte[] mapData = FilesHelper.readBytesFromResourceFile("/banks/Bnk1.map");
         BankMap bankMap = MapParser.load(mapData).parse();

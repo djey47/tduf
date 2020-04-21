@@ -195,8 +195,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
         return TdumtPatchConverter.getContentsValue(potentialRef.orElse(null), values);
     }
 
-    boolean exportEntriesToPatchFile(DbDto.Topic currentTopic, List<String> entryReferences, List<String> entryFields, String patchFileLocation) throws IOException {
-        // TODO remove thrown exception
+    boolean exportEntriesToPatchFile(DbDto.Topic currentTopic, List<String> entryReferences, List<String> entryFields, String patchFileLocation) {
         return generatePatchObject(currentTopic, entryReferences, entryFields, getDatabaseObjects())
                 .map(patchObject -> {
                     try {

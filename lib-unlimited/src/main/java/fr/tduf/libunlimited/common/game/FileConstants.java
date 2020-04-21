@@ -51,9 +51,11 @@ public class FileConstants {
     public static final String SUFFIX_INTERIOR_BANK_FILE = "_I";
     public static final String SUFFIX_AUDIO_BANK_FILE = "_audio";
 
+    /** SHA HASHES **/
     // TODO compute hash
     public static final byte[] HASH_GAME_BINARY_1_45A = new byte[] {};
     public static final byte[] HASH_GAME_BINARY_1_66A = new byte[] {-124, -48, -115, 116, -45, -44, -50, 94, -58, 31, 33, 54, -32, 112, -79, -51, -126, 55, -26, -9};
+    // TODO add hash for TDU PLATINUM, PLATINUM + 64bit
 
     private FileConstants() {}
 }

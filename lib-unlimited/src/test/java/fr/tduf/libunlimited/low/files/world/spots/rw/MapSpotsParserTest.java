@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -15,7 +14,7 @@ class MapSpotsParserTest {
     private static final String THIS_CLASS_NAME = MapSpotsParserTest.class.getSimpleName();
 
     @Test
-    void parse_whenRealContents() throws IOException, URISyntaxException {
+    void parse_whenRealContents() throws IOException {
         // given
         byte[] bytes = FilesHelper.readBytesFromResourceFile("/spots/Hawai.spt");
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);

@@ -1,21 +1,20 @@
 package fr.tduf.gui.installer.steps.helper;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.libunlimited.high.files.db.common.DatabaseConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.db.common.AbstractDatabaseHolder;
+import fr.tduf.libunlimited.high.files.db.common.DatabaseConstants;
 import fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto;
 import fr.tduf.libunlimited.high.files.db.patcher.PatchGenerator;
-import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
+import fr.tduf.libunlimited.high.files.db.patcher.domain.ItemRange;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -80,11 +79,7 @@ public class SnapshotBuilder {
     }
 
     private List<DbPatchDto.DbChangeDto> generateCleaningOperationsTemplates() throws IOException {
-        try {
-            return FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class, InstallerConstants.RESOURCE_NAME_CLEAN_PATCH).getChanges();
-        } catch (URISyntaxException use) {
-            throw new IOException("Unable to generate cleaning operations", use);
-        }
+        return FilesHelper.readObjectFromJsonResourceFile(DbPatchDto.class, InstallerConstants.RESOURCE_NAME_CLEAN_PATCH).getChanges();
     }
 
     private List<DbPatchDto.DbChangeDto> generateSnapshotOperationsForVehicleSlot(String vehicleSlotRef) throws IOException {

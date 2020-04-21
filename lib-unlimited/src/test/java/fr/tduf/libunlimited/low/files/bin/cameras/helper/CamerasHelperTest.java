@@ -14,7 +14,6 @@ import org.mockito.Mock;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -35,13 +34,14 @@ class CamerasHelperTest {
 
     private CamerasDatabase camerasDatabase;
 
+    @SuppressWarnings("FieldMayBeFinal")
     private GenuineCamGateway cameraSupportMock = mock(GenuineCamGateway.class);
 
     @Mock
     private CamerasDatabase camerasDatabaseMock;
 
     @BeforeAll
-    static void globalSetUp() throws IOException, URISyntaxException {
+    static void globalSetUp() throws IOException {
         camContents = FilesHelper.readBytesFromResourceFile("/bin/Cameras.bin");
 
         try (ByteArrayInputStream cameraInputStream = new ByteArrayInputStream(camContents)) {

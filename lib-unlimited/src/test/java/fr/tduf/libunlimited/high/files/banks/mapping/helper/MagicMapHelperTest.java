@@ -72,7 +72,7 @@ class MagicMapHelperTest {
     }
 
     @Test
-    void fixMagicMap_whenBankDirectoryNull_shouldThrowException() throws Exception {
+    void fixMagicMap_whenBankDirectoryNull_shouldThrowException() {
         // GIVEN
         Path magicMapPath = Paths.get(tempDirectory, "Bnk1.map");
 
@@ -82,7 +82,7 @@ class MagicMapHelperTest {
     }
 
     @Test
-    void toMagicMap_whenNormalMap_shouldSetAllEntrySizesTo0() throws URISyntaxException, IOException {
+    void toMagicMap_whenNormalMap_shouldSetAllEntrySizesTo0() throws IOException {
         // GIVEN
         Path mapPath = createTemporaryMapPath();
 
@@ -95,7 +95,7 @@ class MagicMapHelperTest {
     }
 
     @Test
-    void toMagicMap_whenNullMapFile_shouldThrowException() throws IOException {
+    void toMagicMap_whenNullMapFile_shouldThrowException() {
         // GIVEN-WHEN-THEN
         assertThrows(NullPointerException.class,
                 () -> MagicMapHelper.toMagicMap(null));
@@ -105,7 +105,7 @@ class MagicMapHelperTest {
         return Paths.get(thisClass.getResource("/banks/Bnk1.no.magic.map").toURI());
     }
 
-    private Path createTemporaryMapPath() throws IOException, URISyntaxException {
+    private Path createTemporaryMapPath() throws IOException {
         Path magicMapPath = Paths.get(tempDirectory, "Bnk1.map");
 
         byte[] bytes = fr.tduf.libunlimited.common.helper.FilesHelper.readBytesFromResourceFile("/banks/Bnk1.map");

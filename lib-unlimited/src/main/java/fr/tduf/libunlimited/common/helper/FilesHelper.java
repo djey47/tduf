@@ -42,7 +42,7 @@ public class FilesHelper {
      * @param resourcePath  : path of resource
      * @return a String with resource file contents.
      */
-    public static String readTextFromResourceFile(String resourcePath) throws URISyntaxException, IOException {
+    public static String readTextFromResourceFile(String resourcePath) throws IOException {
         return readTextFromResourceFile(resourcePath, CHARSET_DEFAULT);
     }
 
@@ -52,7 +52,7 @@ public class FilesHelper {
      * @param charset       : charset to use
      * @return a String with resource file contents.
      */
-    public static String readTextFromResourceFile(String resourcePath, Charset charset) throws URISyntaxException, IOException {
+    public static String readTextFromResourceFile(String resourcePath, Charset charset) throws IOException {
         requireNonNull(charset, "A valid charset is required");
 
         byte[] bytes = readBytesFromResourceFile(resourcePath);
@@ -76,8 +76,7 @@ public class FilesHelper {
      * @param <T>           : type of object to generate
      * @return contents of read file as generated object instance.
      */
-    public static <T> T readObjectFromJsonResourceFile(Class<T> objectClass, String resourcePath) throws URISyntaxException, IOException {
-        // TODO Remove unnecessary throws
+    public static <T> T readObjectFromJsonResourceFile(Class<T> objectClass, String resourcePath) throws IOException {
         InputStream resourceAsStream = thisClass.getResourceAsStream(resourcePath);
         return jsonMapper.readValue(resourceAsStream, objectClass);
     }

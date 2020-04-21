@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 
-import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -86,7 +85,7 @@ class FilesHelperTest {
     }
 
     @Test
-    void readTextFromResourceFile_whenResourceFound_shouldReturnContents() throws IOException, URISyntaxException {
+    void readTextFromResourceFile_whenResourceFound_shouldReturnContents() throws IOException {
         // GIVEN-WHEN
         String actualContents = FilesHelper.readTextFromResourceFile("/files/file.txt");
 
@@ -125,7 +124,7 @@ class FilesHelperTest {
     }
 
     @Test
-    void readObjectFromJsonResourceFile_whenResourceFound_shouldReturnObjectContents() throws IOException, URISyntaxException {
+    void readObjectFromJsonResourceFile_whenResourceFound_shouldReturnObjectContents() throws IOException {
         // GIVEN-WHEN
         DbStructureDto actualObject = FilesHelper.readObjectFromJsonResourceFile(DbStructureDto.class, "/db/json/mapper/topicObject.structure.json");
 
@@ -151,7 +150,7 @@ class FilesHelperTest {
     }
 
     @Test
-    void writeJsonObjectToFile_whenValidObject_shouldCreateFileWithSameContents() throws IOException, URISyntaxException {
+    void writeJsonObjectToFile_whenValidObject_shouldCreateFileWithSameContents() throws IOException {
         // GIVEN
         Path outputFilePath = Paths.get(tempDirectory, "writtenJson", "TDU_Achievements.json");
         DbDataDto sourceObject = FilesHelper.readObjectFromJsonResourceFile(DbDataDto.class, "/db/json/mapper/topicObject.data.json");

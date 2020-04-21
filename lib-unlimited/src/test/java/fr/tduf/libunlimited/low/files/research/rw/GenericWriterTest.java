@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.NoSuchElementException;
 
 import static fr.tduf.libunlimited.low.files.research.domain.Type.UNKNOWN;
@@ -37,7 +36,7 @@ class GenericWriterTest {
     }
 
     @Test
-    void write_whenProvidedFiles_shouldReturnBytes() throws IOException, URISyntaxException {
+    void write_whenProvidedFiles_shouldReturnBytes() throws IOException {
         // GIVEN
         GenericWriter<String> actualWriter = createGenericWriter();
 
@@ -57,7 +56,7 @@ class GenericWriterTest {
     }
 
     @Test
-    void write_whenProvidedFiles_andModifiedTextLength_shouldReturnBytes() throws IOException, URISyntaxException {
+    void write_whenProvidedFiles_andModifiedTextLength_shouldReturnBytes() throws IOException {
         // GIVEN
         GenericWriter<String> actualWriter = createGenericWriterModifiedTextLength();
 
@@ -77,7 +76,7 @@ class GenericWriterTest {
     }
 
     @Test
-    void write_whenProvidedFiles_andEncryptedContents_shouldReturnBytes() throws IOException, URISyntaxException {
+    void write_whenProvidedFiles_andEncryptedContents_shouldReturnBytes() throws IOException {
         // GIVEN
         GenericWriter<String> actualWriter = createGenericWriterEncrypted();
 
@@ -97,7 +96,7 @@ class GenericWriterTest {
     }
 
     @Test
-    void write_whenProvidedFiles_andHalfFloatContents_shouldReturnBytes() throws IOException, URISyntaxException {
+    void write_whenProvidedFiles_andHalfFloatContents_shouldReturnBytes() throws IOException {
         // GIVEN
         GenericWriter<String> actualWriter = createGenericWriterHalfFloat();
 
@@ -115,7 +114,7 @@ class GenericWriterTest {
     }
 
     @Test
-    void write_whenProvidedFiles_andVeryShortIntContents_shouldReturnBytes() throws IOException, URISyntaxException {
+    void write_whenProvidedFiles_andVeryShortIntContents_shouldReturnBytes() throws IOException {
         // GIVEN
         GenericWriter<String> actualWriter = createGenericWriterVeryShortInt();
 
@@ -133,7 +132,7 @@ class GenericWriterTest {
     }
 
     @Test
-    void write_whenProvidedFiles_andUnsignedLongValue_shouldReturnBytes() throws IOException, URISyntaxException {
+    void write_whenProvidedFiles_andUnsignedLongValue_shouldReturnBytes() throws IOException {
         // GIVEN
         GenericWriter<String> actualWriter = createGenericWriterUnsignedLong();
 
@@ -153,7 +152,7 @@ class GenericWriterTest {
     }    
     
     @Test
-    void write_whenProvidedFiles_andConstantValues_shouldReturnBytes() throws IOException, URISyntaxException {
+    void write_whenProvidedFiles_andConstantValues_shouldReturnBytes() throws IOException {
         // GIVEN
         GenericWriter<String> actualWriter = createGenericWriterConstants();
 
@@ -175,7 +174,7 @@ class GenericWriterTest {
     }
 
     @Test
-    void write_whenProvidedFiles_andLastFieldAutoSize_shouldReturnBytes() throws IOException, URISyntaxException {
+    void write_whenProvidedFiles_andLastFieldAutoSize_shouldReturnBytes() throws IOException {
         // GIVEN
         GenericWriter<String> actualWriter = createGenericWriterLastFieldAutoSize();
 
@@ -195,7 +194,7 @@ class GenericWriterTest {
     }
 
     @Test
-    void write_whenProvidedFiles_andFormatAsLittleEndian_shouldReturnBytes() throws IOException, URISyntaxException {
+    void write_whenProvidedFiles_andFormatAsLittleEndian_shouldReturnBytes() throws IOException {
         // GIVEN
         GenericWriter<String> actualWriter = createGenericWriterLittleEndian();
 
@@ -215,7 +214,7 @@ class GenericWriterTest {
     }
 
     @Test
-    void write_whenProvidedFiles_andSizeGivenByFormula_shouldReturnBytes() throws IOException, URISyntaxException {
+    void write_whenProvidedFiles_andSizeGivenByFormula_shouldReturnBytes() throws IOException {
         // GIVEN
         GenericWriter<String> actualWriter = createGenericWriterForFormulas();
 
@@ -235,7 +234,7 @@ class GenericWriterTest {
     }
 
     @Test
-    void write_whenProvidedFiles_andMissingValue_shouldThrowException() throws IOException, URISyntaxException {
+    void write_whenProvidedFiles_andMissingValue_shouldThrowException() throws IOException {
         // GIVEN
         GenericWriter<String> actualWriter = createGenericWriterWithMissingValues();
 

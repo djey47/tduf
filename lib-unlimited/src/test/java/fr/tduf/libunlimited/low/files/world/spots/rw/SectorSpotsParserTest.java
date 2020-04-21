@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -15,7 +14,7 @@ class SectorSpotsParserTest {
     private static final String THIS_CLASS_NAME = SectorSpotsParserTest.class.getSimpleName();
 
     @Test
-    void parse_whenRealContents() throws IOException, URISyntaxException {
+    void parse_whenRealContents() throws IOException {
         // given
         byte[] file1Bytes = FilesHelper.readBytesFromResourceFile("/spots/Sector-0-2-0-7.spt");
         byte[] file2Bytes = FilesHelper.readBytesFromResourceFile("/spots/Sector-9-7-7-6.spt");

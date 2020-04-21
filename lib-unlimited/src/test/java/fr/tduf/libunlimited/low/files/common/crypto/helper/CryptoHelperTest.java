@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.InvalidKeyException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -27,7 +25,7 @@ class CryptoHelperTest {
     }
 
     @Test
-    void decryptXTEA_withProvidedContents_andLengthNotMultipleOf8_shouldThrowException() throws IOException, InvalidKeyException {
+    void decryptXTEA_withProvidedContents_andLengthNotMultipleOf8_shouldThrowException() {
         // GIVEN
         ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[10]);
 
@@ -37,7 +35,7 @@ class CryptoHelperTest {
     }
 
     @Test
-    void decryptXTEA_withRealFile_andSavegameMode_shouldGiveClearContentsBack() throws URISyntaxException, IOException, InvalidKeyException {
+    void decryptXTEA_withRealFile_andSavegameMode_shouldGiveClearContentsBack() throws IOException {
         // GIVEN
         byte[] contentBytes = FilesHelper.readBytesFromResourceFile("/common/crypto/savegame/encrypted.bin");
         ByteArrayInputStream inputStream = new ByteArrayInputStream(contentBytes);
@@ -55,7 +53,7 @@ class CryptoHelperTest {
     }
 
     @Test
-    void decryptXTEA_withRealFile_andOtherMode_shouldGiveClearContentsBack() throws IOException, URISyntaxException, InvalidKeyException {
+    void decryptXTEA_withRealFile_andOtherMode_shouldGiveClearContentsBack() throws IOException {
         // GIVEN
         byte[] contentBytes = FilesHelper.readBytesFromResourceFile("/common/crypto/other/encrypted.bin");
         ByteArrayInputStream inputStream = new ByteArrayInputStream(contentBytes);
@@ -73,7 +71,7 @@ class CryptoHelperTest {
     }
 
     @Test
-    void encryptXTEA_withProvidedContents_andLengthNotMultipleOf8_shouldThrowException() throws IOException, InvalidKeyException {
+    void encryptXTEA_withProvidedContents_andLengthNotMultipleOf8_shouldThrowException() {
         // GIVEN
         ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[10]);
 
@@ -83,7 +81,7 @@ class CryptoHelperTest {
     }
 
     @Test
-    void encryptXTEA_withRealFile_andSavegameMode_shouldGiveEncryptedContentsBack() throws URISyntaxException, IOException, InvalidKeyException {
+    void encryptXTEA_withRealFile_andSavegameMode_shouldGiveEncryptedContentsBack() throws IOException {
         // GIVEN
         byte[] contentBytes = FilesHelper.readBytesFromResourceFile("/common/crypto/clear.txt");
         ByteArrayInputStream inputStream = new ByteArrayInputStream(contentBytes);
@@ -101,7 +99,7 @@ class CryptoHelperTest {
     }
 
     @Test
-    void encryptXTEA_withRealFile_andOtherMode_shouldGiveEncryptedContentsBack() throws URISyntaxException, IOException, InvalidKeyException {
+    void encryptXTEA_withRealFile_andOtherMode_shouldGiveEncryptedContentsBack() throws IOException {
         // GIVEN
         byte[] contentBytes = FilesHelper.readBytesFromResourceFile("/common/crypto/clear.txt");
         ByteArrayInputStream inputStream = new ByteArrayInputStream(contentBytes);

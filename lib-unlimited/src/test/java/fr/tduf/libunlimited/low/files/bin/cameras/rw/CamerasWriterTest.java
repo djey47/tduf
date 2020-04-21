@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,7 +25,7 @@ class CamerasWriterTest {
     }
 
     @Test
-    void write_shouldReturnOriginalContentsBack() throws IOException, URISyntaxException {
+    void write_shouldReturnOriginalContentsBack() throws IOException {
         // To regen json input file:
         // FileTool jsonify -i [..]/tduf/lib-testing/src/main/resources/bin/Cameras.bin -s [..]/tduf/lib-unlimited/src/main/resources/files/structures/BIN-cameras-map.json
 

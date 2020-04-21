@@ -17,9 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -73,7 +71,7 @@ class MainStageChangeDataControllerTest {
     }
 
     @Test
-    void exportEntriesToPatchFile_whenIllegalOutputFile_shouldReturnFalse() throws Exception {
+    void exportEntriesToPatchFile_whenIllegalOutputFile_shouldReturnFalse() {
 
         // GIVEN
         String patchFile = "/unkdir/patch.mini.json";
@@ -227,7 +225,8 @@ class MainStageChangeDataControllerTest {
     void importPerformancePack_shouldApplyIt() throws URISyntaxException, ReflectiveOperationException {
         // GIVEN
         String packFileName = fr.tduf.libunlimited.common.helper.FilesHelper.getFileNameFromResourcePath("/patches/pp.tdupk");
-        String affectedRef = verifyMiner.getContentEntryReferenceWithInternalIdentifier(1, CAR_PHYSICS_DATA).get();
+        String affectedRef = verifyMiner.getContentEntryReferenceWithInternalIdentifier(1, CAR_PHYSICS_DATA)
+                .orElse("NO REF");
 
         when(mainStageController.getDatabaseObjects()).thenReturn(databaseObjects);
         when(mainStageController.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(1));

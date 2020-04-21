@@ -3,9 +3,9 @@ package fr.tduf.gui.installer.steps;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
-import fr.tduf.libunlimited.common.game.domain.VehicleSlot;
 import fr.tduf.gui.installer.domain.exceptions.StepException;
 import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libunlimited.common.game.domain.VehicleSlot;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.GenuineCamGateway;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
@@ -20,7 +20,6 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -58,7 +57,7 @@ class AdjustCameraStepTest {
     private AdjustCameraStep adjustCameraStep;
 
     @BeforeAll
-    static void globalSetUp() throws IOException, URISyntaxException {
+    static void globalSetUp() throws IOException {
         tduTempDirectory = FilesHelper.createTempDirectoryForInstaller();
         final Path tduDatabasePath = FilesHelper.getTduDatabasePath(tduTempDirectory);
         FilesHelper.createFakeDatabase(tduDatabasePath.toString());
@@ -97,7 +96,7 @@ class AdjustCameraStepTest {
         adjustCameraStep.start();
 
         // THEN
-        verifyZeroInteractions(cameraSupportMock);
+        verifyNoInteractions(cameraSupportMock);
     }
 
     @Test

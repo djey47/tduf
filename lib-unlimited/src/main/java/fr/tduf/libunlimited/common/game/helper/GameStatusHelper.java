@@ -46,7 +46,7 @@ public class GameStatusHelper {
 
         if (Arrays.equals(HASH_GAME_BINARY_1_66A, hash)) {
             return GENUINE_1_66A;
-            // TODO resolve Magepack version
+            // TODO resolve Megapack version
         }
 
         return UNKNOWN;

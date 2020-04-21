@@ -25,12 +25,12 @@ class CamerasParserTest {
     private static byte[] camContents;
 
     @BeforeAll
-    static void setUp() throws IOException, URISyntaxException {
+    static void setUp() throws IOException {
         camContents = FilesHelper.readBytesFromResourceFile("/bin/Cameras.bin");
     }
 
     @Test
-    void parse_whenRealFiles_shouldLoadCamerasContents_andFillCaches() throws URISyntaxException, IOException {
+    void parse_whenRealFiles_shouldLoadCamerasContents_andFillCaches() throws IOException {
         // GIVEN
         ByteArrayInputStream camInputStream = new ByteArrayInputStream(camContents);
 

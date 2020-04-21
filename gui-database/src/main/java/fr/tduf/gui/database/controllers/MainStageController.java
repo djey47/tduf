@@ -90,7 +90,9 @@ public class MainStageController extends AbstractGuiController {
     private final DatabaseFixer databaseFixer = new DatabaseFixer();
 
     // Removing final allows it to be mocked in tests
+    @SuppressWarnings("FieldMayBeFinal")
     private DatabaseLoader databaseLoader = new DatabaseLoader();
+    @SuppressWarnings("FieldMayBeFinal")
     private ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
 
     @FXML
