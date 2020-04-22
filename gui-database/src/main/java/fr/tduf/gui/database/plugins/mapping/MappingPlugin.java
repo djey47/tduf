@@ -60,9 +60,10 @@ public class MappingPlugin extends AbstractDatabasePlugin {
     private static final Class<MappingPlugin> thisClass = MappingPlugin.class;
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 
+    @SuppressWarnings("FieldMayBeFinal")
     private Property<BankMap> bankMapProperty = new SimpleObjectProperty<>();
+
     private EditorContext editorContext;
-    // TODO use this field directly
     private ObservableList<MappingEntry> files;
 
     /**
@@ -194,7 +195,7 @@ public class MappingPlugin extends AbstractDatabasePlugin {
         return new MappingEntry(kind.getDescription(), filePath.toString(), exists, registered);
     }
 
-    void refreshMapping(ObservableList<MappingEntry> files, String resourceReference) {
+    void refreshMapping(String resourceReference) {
         int fieldRank = editorContext.getFieldRank();
         StringProperty errorMessageProperty = editorContext.getMappingContext().getErrorMessageProperty();
         BooleanProperty errorProperty = editorContext.getMappingContext().getErrorProperty();
@@ -211,25 +212,25 @@ public class MappingPlugin extends AbstractDatabasePlugin {
 
         switch (editorContext.getCurrentTopic()) {
             case CAR_PHYSICS_DATA:
-                addCarPhysicsEntries(files, fieldRank, gameLocation, resourceValue);
+                addCarPhysicsEntries(fieldRank, gameLocation, resourceValue);
                 break;
             case CAR_PACKS:
-                addCarPacksEntries(files, fieldRank, gameLocation, resourceValue);
+                addCarPacksEntries(fieldRank, gameLocation, resourceValue);
                 break;
             case CAR_SHOPS:
-                addCarShopsEntries(files, fieldRank, gameLocation, resourceValue);
+                addCarShopsEntries(fieldRank, gameLocation, resourceValue);
                 break;
             case CLOTHES:
-                addClothesEntries(files, fieldRank, gameLocation, resourceValue);
+                addClothesEntries(fieldRank, gameLocation, resourceValue);
                 break;
             case HOUSES:
-                addHousesEntries(files, fieldRank, gameLocation, resourceValue);
+                addHousesEntries(fieldRank, gameLocation, resourceValue);
                 break;
             case RIMS:
-                addRimsEntries(files, fieldRank, gameLocation, resourceValue);
+                addRimsEntries(fieldRank, gameLocation, resourceValue);
                 break;
             case TUTORIALS:
-                addTutorialsEntries(files, fieldRank, gameLocation, resourceValue);
+                addTutorialsEntries(fieldRank, gameLocation, resourceValue);
                 break;
             default:
         }
@@ -325,7 +326,7 @@ public class MappingPlugin extends AbstractDatabasePlugin {
                 return;
             }
 
-            refreshMapping(files, newValue);
+            refreshMapping(newValue);
         };
     }
 
@@ -355,17 +356,17 @@ public class MappingPlugin extends AbstractDatabasePlugin {
     }
 
     private EventHandler<ActionEvent> handleRefreshButtonAction() {
-        return event -> refreshMapping(files, editorContext.getRawValueProperty().getValue());
+        return event -> refreshMapping(editorContext.getRawValueProperty().getValue());
     }
 
-    private void addTutorialsEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue) {
+    private void addTutorialsEntries(int fieldRank, String gameLocation, String resourceValue) {
         if (FIELD_RANK_VOICE_FILE == fieldRank) {
             MappingEntry tutoMappingEntry = createMappingEntry(resourceValue, TUTO_INSTRUCTION, gameLocation);
             files.add(tutoMappingEntry);
         }
     }
 
-    private void addRimsEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue) {
+    private void addRimsEntries(int fieldRank, String gameLocation, String resourceValue) {
         if (FIELD_RANK_RSC_FILE_NAME_FRONT == fieldRank) {
             MappingEntry frontMappingEntry = createMappingEntry(resourceValue, FRONT_RIMS_3D, gameLocation);
             files.add(frontMappingEntry);
@@ -375,14 +376,14 @@ public class MappingPlugin extends AbstractDatabasePlugin {
         }
     }
 
-    private void addClothesEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue) {
+    private void addClothesEntries(int fieldRank, String gameLocation, String resourceValue) {
         if (FIELD_RANK_FURNITURE_FILE == fieldRank) {
             MappingEntry clothesMappingEntry = createMappingEntry(resourceValue, CLOTHES_3D, gameLocation);
             files.add(clothesMappingEntry);
         }
     }
 
-    private void addCarShopsEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue) {
+    private void addCarShopsEntries(int fieldRank, String gameLocation, String resourceValue) {
         if (FIELD_RANK_DEALER_NAME == fieldRank) {
             MappingEntry shopExtMappingEntry = createMappingEntry(resourceValue, SHOP_EXT_3D, gameLocation);
             MappingEntry shopIntMappingEntry = createMappingEntry(resourceValue, SHOP_INT_3D, gameLocation);
@@ -391,7 +392,7 @@ public class MappingPlugin extends AbstractDatabasePlugin {
         }
     }
 
-    private void addHousesEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue) {
+    private void addHousesEntries(int fieldRank, String gameLocation, String resourceValue) {
         if (FIELD_RANK_SPOT_NAME == fieldRank) {
             MappingEntry houseExtMappingEntry = createMappingEntry(resourceValue, HOUSE_EXT_3D, gameLocation);
             MappingEntry houseLoungeMappingEntry = createMappingEntry(resourceValue, HOUSE_LOUNGE_3D, gameLocation);
@@ -406,14 +407,14 @@ public class MappingPlugin extends AbstractDatabasePlugin {
         }
     }
 
-    private void addCarPacksEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue) {
+    private void addCarPacksEntries(int fieldRank, String gameLocation, String resourceValue) {
         if (FIELD_RANK_CAR_FILE_NAME_SWAP == fieldRank) {
             MappingEntry extMappingEntry = createMappingEntry(resourceValue, EXT_3D, gameLocation);
             files.add(extMappingEntry);
         }
     }
 
-    private void addCarPhysicsEntries(ObservableList<MappingEntry> files, int fieldRank, String gameLocation, String resourceValue) {
+    private void addCarPhysicsEntries(int fieldRank, String gameLocation, String resourceValue) {
         if (FIELD_RANK_CAR_FILE_NAME == fieldRank) {
             MappingEntry extMappingEntry = createMappingEntry(resourceValue, EXT_3D, gameLocation);
             MappingEntry intMappingEntry = createMappingEntry(resourceValue, INT_3D, gameLocation);
@@ -462,5 +463,12 @@ public class MappingPlugin extends AbstractDatabasePlugin {
      */
     void setEditorContext(EditorContext context) {
         editorContext = context;
+    }
+
+    /**
+     * For testing use only
+     */
+    void setFiles(ObservableList<MappingEntry> files) {
+        this.files = files;
     }
 }

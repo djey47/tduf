@@ -54,6 +54,7 @@ class MappingPluginTest {
     private MappingPlugin mappingPlugin;
 
     private final EditorContext context = new EditorContext();
+    private final ObservableList<MappingEntry> files = FXCollections.observableArrayList();
 
     @BeforeEach
     void setUp() {
@@ -65,6 +66,7 @@ class MappingPluginTest {
         context.getMappingContext().setErrorMessageProperty(errorMessageProperty);
 
         mappingPlugin.setEditorContext(context);
+        mappingPlugin.setFiles(files);
 
         when(bankMapProperty.getValue()).thenReturn(new BankMap());
     }
@@ -205,7 +207,7 @@ class MappingPluginTest {
     void refreshMapping_whenHandledTopicAndFieldRank_shouldClearEntryList_andAddEntries_withErrors() {
         // given
         MappingEntry existingEntry = new MappingEntry("", "", true, true);
-        ObservableList<MappingEntry> files = FXCollections.observableArrayList(existingEntry);
+        files.add(existingEntry);
 
         context.setCurrentTopic(CAR_PHYSICS_DATA);
         context.setRemoteTopic(CAR_PHYSICS_DATA);
@@ -217,7 +219,7 @@ class MappingPluginTest {
 
 
         // when
-        mappingPlugin.refreshMapping(files, resourceRef);
+        mappingPlugin.refreshMapping(resourceRef);
 
 
         // then
