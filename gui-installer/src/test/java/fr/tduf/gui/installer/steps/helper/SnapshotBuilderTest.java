@@ -3,7 +3,7 @@ package fr.tduf.gui.installer.steps.helper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.tduf.gui.installer.common.helper.InstallerTestsHelper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
-import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -31,7 +31,7 @@ class SnapshotBuilderTest {
         DatabaseContext databaseContext = InstallerTestsHelper.createDatabaseContext();
         databaseContext.setPatch(DbPatchDto.builder().build(), patchProperties);
         final SnapshotBuilder snapshotBuilder = new SnapshotBuilder(databaseContext);
-        String backupDirectory = FilesHelper.createTempDirectoryForInstaller();
+        String backupDirectory = TestingFilesHelper.createTempDirectoryForInstaller();
 
 
         // WHEN

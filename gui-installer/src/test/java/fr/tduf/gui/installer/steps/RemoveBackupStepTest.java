@@ -2,7 +2,7 @@ package fr.tduf.gui.installer.steps;
 
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
-import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
@@ -17,7 +17,7 @@ class RemoveBackupStepTest {
     @Test
     void perform_shouldRemoveBackupDirectory() throws Exception {
         // GIVEN
-        final String tduTempDirectory = FilesHelper.createTempDirectoryForInstaller();
+        final String tduTempDirectory = TestingFilesHelper.createTempDirectoryForInstaller();
         Path backupPath = Paths.get(tduTempDirectory, "backup");
         Files.createDirectories(backupPath);
 

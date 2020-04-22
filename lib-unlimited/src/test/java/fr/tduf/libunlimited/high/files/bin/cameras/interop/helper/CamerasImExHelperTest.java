@@ -2,7 +2,7 @@ package fr.tduf.libunlimited.high.files.bin.cameras.interop.helper;
 
 import com.esotericsoftware.minlog.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import fr.tduf.libunlimited.high.files.bin.cameras.patcher.dto.CamPatchDto;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CamerasDatabase;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,7 +56,7 @@ class CamerasImExHelperTest {
     @Test
     void exportToPatch_withEmptyParser_shouldReturnEmptyPatch() throws IOException {
         // given
-        File patchFile = new File(FilesHelper.createTempDirectoryForLibrary(), "tduf-export.cam.json");
+        File patchFile = new File(TestingFilesHelper.createTempDirectoryForLibrary(), "tduf-export.cam.json");
 
         // when
         imExHelper.exportToPatch(patchFile, camerasDatabaseMock, 1L, null);

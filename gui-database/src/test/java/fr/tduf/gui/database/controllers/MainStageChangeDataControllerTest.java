@@ -2,7 +2,7 @@ package fr.tduf.gui.database.controllers;
 
 import com.esotericsoftware.minlog.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import fr.tduf.libtesting.common.helper.game.DatabaseHelper;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseChangeHelper;
@@ -272,6 +272,6 @@ class MainStageChangeDataControllerTest {
     }
 
     private static String createTempDirectory() throws IOException {
-        return FilesHelper.createTempDirectoryForDatabaseEditor();
+        return TestingFilesHelper.createTempDirectoryForDatabaseEditor();
     }
 }

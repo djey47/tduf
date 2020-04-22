@@ -1,6 +1,7 @@
 package fr.tduf.cli.tools;
 
 import fr.tduf.libtesting.common.helper.ConsoleHelper;
+import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.common.system.domain.ProcessResult;
@@ -155,7 +156,7 @@ class CameraToolIntegTest {
         byte[] jsonContents = Files.readAllBytes(jsonPath.resolve("use-views.mock.out.json"));
         String expectedJson = new String(jsonContents, FilesHelper.CHARSET_DEFAULT);
 
-        String tempDirectory = fr.tduf.libtesting.common.helper.FilesHelper.createTempDirectoryForLibrary();
+        String tempDirectory = TestingFilesHelper.createTempDirectoryForLibrary();
         Path cameraPath = Paths.get(tempDirectory, "Cameras.bin");
         Files.copy(Paths.get(inputCameraFile), cameraPath);
 

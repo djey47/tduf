@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.helper;
 
+import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.GenuineCamGateway;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
@@ -170,7 +171,7 @@ class CamerasHelperTest {
     @Test
     void useViews_whenCameraExists_andViewExists_shouldUpdateSettings() throws Exception {
         // GIVEN
-        String tempDirectory = fr.tduf.libtesting.common.helper.FilesHelper.createTempDirectoryForLibrary();
+        String tempDirectory = TestingFilesHelper.createTempDirectoryForLibrary();
         Path camFilePath = Paths.get(tempDirectory, "Cameras.bin");
         String camFile = camFilePath.toString();
         Files.write(camFilePath, camContents);

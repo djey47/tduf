@@ -1,6 +1,7 @@
 package fr.tduf.libtesting.common.helper.game;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper;
@@ -36,7 +37,7 @@ public class DatabaseHelper {
     public static List<DbDto> createDatabaseFromResources(String jsonDatabaseDirectory) throws IOException {
         String effectiveDirectory = jsonDatabaseDirectory;
         if (effectiveDirectory == null) {
-            effectiveDirectory = fr.tduf.libtesting.common.helper.FilesHelper.createTempDirectoryForLibrary();
+            effectiveDirectory = TestingFilesHelper.createTempDirectoryForLibrary();
         }
 
         final Path jsonDatabasePath = getJsonDatabasePath();

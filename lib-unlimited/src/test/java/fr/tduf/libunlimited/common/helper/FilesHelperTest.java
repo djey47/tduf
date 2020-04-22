@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.common.helper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.DbDataDto;
@@ -24,7 +25,7 @@ class FilesHelperTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        tempDirectory = fr.tduf.libtesting.common.helper.FilesHelper.createTempDirectoryForLibrary();
+        tempDirectory = TestingFilesHelper.createTempDirectoryForLibrary();
     }
 
     @Test

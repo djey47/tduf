@@ -2,7 +2,7 @@ package fr.tduf.gui.installer.steps;
 
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
-import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import org.junit.jupiter.api.Test;
 
@@ -19,8 +19,8 @@ class RestoreDatabaseStepTest {
     @Test
     void perform_shouldRestoreDatabaseFiles_andClearCache() throws Exception {
         // GIVEN
-        final String tduTempDirectory = FilesHelper.createTempDirectoryForInstaller();
-        final Path tduDatabasePath = FilesHelper.getTduDatabasePath(tduTempDirectory);
+        final String tduTempDirectory = TestingFilesHelper.createTempDirectoryForInstaller();
+        final Path tduDatabasePath = TestingFilesHelper.getTduDatabasePath(tduTempDirectory);
         Files.createDirectories(tduDatabasePath);
 
         Path backupDatabasePath = Paths.get(tduTempDirectory, "backup", "database");

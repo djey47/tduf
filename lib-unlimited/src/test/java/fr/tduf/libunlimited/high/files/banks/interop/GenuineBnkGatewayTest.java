@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.high.files.banks.interop;
 
 import com.esotericsoftware.minlog.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.common.system.domain.ProcessResult;
@@ -196,7 +197,7 @@ class GenuineBnkGatewayTest {
     }
 
     private static String createTempDirectory() throws IOException {
-        return fr.tduf.libtesting.common.helper.FilesHelper.createTempDirectoryForLibrary();
+        return TestingFilesHelper.createTempDirectoryForLibrary();
     }
 
     private void createRepackedFileTree(String bankFileName) throws IOException {

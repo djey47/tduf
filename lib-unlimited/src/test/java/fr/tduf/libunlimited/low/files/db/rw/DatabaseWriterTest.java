@@ -1,6 +1,6 @@
 package fr.tduf.libunlimited.low.files.db.rw;
 
-import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import fr.tduf.libtesting.common.helper.game.DatabaseHelper;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.low.files.db.common.helper.DbHelper;
@@ -32,7 +32,7 @@ class DatabaseWriterTest {
 
     @BeforeAll
     static void setUp() throws IOException {
-        tempDirectory = FilesHelper.createTempDirectoryForLibrary();
+        tempDirectory = TestingFilesHelper.createTempDirectoryForLibrary();
     }
 
     @Test

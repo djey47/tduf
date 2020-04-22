@@ -2,7 +2,7 @@ package fr.tduf.libunlimited.high.files.banks.mapping.helper;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libtesting.common.helper.AssertionsHelper;
-import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ class MagicMapHelperTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        tempDirectory = FilesHelper.createTempDirectoryForLibrary();
+        tempDirectory = TestingFilesHelper.createTempDirectoryForLibrary();
     }
 
     @Test

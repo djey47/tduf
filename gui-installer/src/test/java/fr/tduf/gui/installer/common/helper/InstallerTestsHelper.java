@@ -1,6 +1,7 @@
 package fr.tduf.gui.installer.common.helper;
 
 import fr.tduf.gui.installer.domain.DatabaseContext;
+import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import fr.tduf.libtesting.common.helper.game.DatabaseHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 
@@ -12,7 +13,7 @@ import java.util.List;
  */
 public class InstallerTestsHelper {
     public static String createTempDirectory() throws IOException {
-        return fr.tduf.libtesting.common.helper.FilesHelper.createTempDirectoryForInstaller();
+        return TestingFilesHelper.createTempDirectoryForInstaller();
     }
 
     public static DatabaseContext createDatabaseContext() throws IOException {

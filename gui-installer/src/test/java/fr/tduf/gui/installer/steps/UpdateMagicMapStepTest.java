@@ -2,7 +2,7 @@ package fr.tduf.gui.installer.steps;
 
 import fr.tduf.gui.installer.common.helper.InstallerTestsHelper;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
-import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ class UpdateMagicMapStepTest {
     void setUp() throws IOException {
         tempDirectory = InstallerTestsHelper.createTempDirectory();
 
-        FilesHelper.prepareTduDirectoryLayout(tempDirectory);
+        TestingFilesHelper.prepareTduDirectoryLayout(tempDirectory);
     }
 
     @Test

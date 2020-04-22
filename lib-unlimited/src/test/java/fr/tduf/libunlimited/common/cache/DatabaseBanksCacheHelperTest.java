@@ -1,7 +1,7 @@
 package fr.tduf.libunlimited.common.cache;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,7 @@ class DatabaseBanksCacheHelperTest {
     void setUp() throws IOException {
         initMocks(this);
 
-        tempDirectory = FilesHelper.createTempDirectoryForLibrary();
+        tempDirectory = TestingFilesHelper.createTempDirectoryForLibrary();
 
         databaseDirectory = Paths.get(tempDirectory, "Euro", "Bnk", "Database").toString();
 

@@ -4,7 +4,7 @@ import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.gui.installer.domain.exceptions.StepException;
-import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import fr.tduf.libunlimited.common.game.domain.VehicleSlot;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.GenuineCamGateway;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
@@ -58,9 +58,9 @@ class AdjustCameraStepTest {
 
     @BeforeAll
     static void globalSetUp() throws IOException {
-        tduTempDirectory = FilesHelper.createTempDirectoryForInstaller();
-        final Path tduDatabasePath = FilesHelper.getTduDatabasePath(tduTempDirectory);
-        FilesHelper.createFakeDatabase(tduDatabasePath.toString());
+        tduTempDirectory = TestingFilesHelper.createTempDirectoryForInstaller();
+        final Path tduDatabasePath = TestingFilesHelper.getTduDatabasePath(tduTempDirectory);
+        TestingFilesHelper.createFakeDatabase(tduDatabasePath.toString());
 
         byte[] camBytes = fr.tduf.libunlimited.common.helper.FilesHelper.readBytesFromResourceFile("/bin/Cameras.bin");
         Files.write(tduDatabasePath.resolve("Cameras.bin"), camBytes);

@@ -2,7 +2,7 @@ package fr.tduf.gui.installer.steps;
 
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
-import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
@@ -18,15 +18,15 @@ class BackupDatabaseStepTest {
     @Test
     void perform_shouldCopyDatabaseFilesToBackupLocation() throws Exception {
         // GIVEN
-        final String tduTempDirectory = FilesHelper.createTempDirectoryForInstaller();
-        final Path tduDatabasePath = FilesHelper.getTduDatabasePath(tduTempDirectory);
+        final String tduTempDirectory = TestingFilesHelper.createTempDirectoryForInstaller();
+        final Path tduDatabasePath = TestingFilesHelper.getTduDatabasePath(tduTempDirectory);
         Files.createDirectories(tduDatabasePath);
 
         final Path backupPath = Paths.get(tduTempDirectory, "backup");
         Files.createDirectories(backupPath);
         String actualBackupDir = backupPath.toString();
 
-        FilesHelper.createFakeDatabase(tduDatabasePath.toString());
+        TestingFilesHelper.createFakeDatabase(tduDatabasePath.toString());
         InstallerConfiguration installerConfiguration = InstallerConfiguration.builder()
                 .withTestDriveUnlimitedDirectory(tduTempDirectory)
                 .build();
@@ -41,7 +41,7 @@ class BackupDatabaseStepTest {
 
 
         // THEN
-        Stream.of(FilesHelper.DATABASE_BANK_FILES)
+        Stream.of(TestingFilesHelper.DATABASE_BANK_FILES)
                 .forEach((fileName) -> assertThat(Paths.get(actualBackupDir, fileName)).exists());
     }
 }

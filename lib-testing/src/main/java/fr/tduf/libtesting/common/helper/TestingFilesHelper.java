@@ -8,9 +8,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
-// TODO Javadoc + rename to TestingFilesHelper
-public class FilesHelper {
-    private static final Class<FilesHelper> thisClass = FilesHelper.class;
+/**
+ * Static methods to help with handling file system ops during tests
+ */
+public class TestingFilesHelper {
+    private static final Class<TestingFilesHelper> thisClass = TestingFilesHelper.class;
 
     public static final String[] DATABASE_BANK_FILES = {"DB.bnk", "DB_CH.bnk", "DB_FR.bnk", "DB_GE.bnk", "DB_KO.bnk", "DB_US.bnk", "DB_JA.bnk", "DB_SP.bnk", "DB_IT.bnk"};
 

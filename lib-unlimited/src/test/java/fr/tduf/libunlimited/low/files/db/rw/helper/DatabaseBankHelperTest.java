@@ -1,7 +1,7 @@
 package fr.tduf.libunlimited.low.files.db.rw.helper;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +39,7 @@ class DatabaseBankHelperTest {
         
         Log.set(Log.LEVEL_INFO);
 
-        tempDirectory = FilesHelper.createTempDirectoryForLibrary();
+        tempDirectory = TestingFilesHelper.createTempDirectoryForLibrary();
     }
 
     @Test
@@ -73,7 +73,7 @@ class DatabaseBankHelperTest {
     @Test
     void unpackDatabaseFromDirectory_whenTargetDirectory_shouldCopyOriginalBankFiles() throws IOException, URISyntaxException {
         // GIVEN
-        String tempDir = FilesHelper.createTempDirectoryForLibrary();
+        String tempDir = TestingFilesHelper.createTempDirectoryForLibrary();
         String databaseDirectory = new File(thisClass.getResource("/db/full/DB.bnk").toURI()).getParent();
 
         mockBankSupportToExtract();

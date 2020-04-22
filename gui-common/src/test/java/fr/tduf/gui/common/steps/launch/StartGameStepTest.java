@@ -1,7 +1,7 @@
 package fr.tduf.gui.common.steps.launch;
 
 import fr.tduf.gui.common.domain.exceptions.StepException;
-import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.common.game.domain.bin.LaunchSwitch;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,7 +64,7 @@ class StartGameStepTest {
     @Test
     void resolveAndCheckGamePath_whenExistingPath_shouldReturnIt() throws StepException, IOException {
         // given
-        Path gamePath = Paths.get(FilesHelper.createTempDirectoryForLauncher());
+        Path gamePath = Paths.get(TestingFilesHelper.createTempDirectoryForLauncher());
         when(applicationConfigurationMock.getGamePath()).thenReturn(of(gamePath));
         
         // when
@@ -90,7 +90,7 @@ class StartGameStepTest {
     @Test
     void buildFullCommand_whenExistingBinary_shouldReturnFullCommand() throws StepException, IOException {
         // given
-        Path gamePath = Paths.get(FilesHelper.createTempDirectoryForLauncher());
+        Path gamePath = Paths.get(TestingFilesHelper.createTempDirectoryForLauncher());
         Path gameBinaryPath = gamePath.resolve("TestDriveUnlimited.exe");
         Files.createFile(gameBinaryPath);
 
@@ -104,7 +104,7 @@ class StartGameStepTest {
     @Test
     void buildFullCommand_whenExistingBinary_andSwitches_shouldReturnFullCommand() throws StepException, IOException {
         // given
-        Path gamePath = Paths.get(FilesHelper.createTempDirectoryForLauncher());
+        Path gamePath = Paths.get(TestingFilesHelper.createTempDirectoryForLauncher());
         Path gameBinaryPath = gamePath.resolve("TestDriveUnlimited.exe");
         Files.createFile(gameBinaryPath);
         Set<LaunchSwitch> selectedSwitches = new HashSet<>(asList(FRAMERATE, HD_PP));

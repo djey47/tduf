@@ -4,7 +4,7 @@ import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.gui.installer.domain.exceptions.StepException;
 import fr.tduf.gui.installer.steps.GenericStep;
-import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.stage.Stage;
@@ -30,7 +30,7 @@ class InstallTaskTest extends ApplicationTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        tempDirectory = FilesHelper.createTempDirectoryForInstaller();
+        tempDirectory = TestingFilesHelper.createTempDirectoryForInstaller();
         Files.createDirectories(Paths.get(tempDirectory, "files"));
     }
 

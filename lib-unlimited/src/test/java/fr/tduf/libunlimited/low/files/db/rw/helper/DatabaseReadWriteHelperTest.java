@@ -1,7 +1,7 @@
 package fr.tduf.libunlimited.low.files.db.rw.helper;
 
 
-import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import fr.tduf.libtesting.common.helper.game.DatabaseHelper;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
@@ -35,7 +35,7 @@ class DatabaseReadWriteHelperTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        tempDirectory = FilesHelper.createTempDirectoryForLibrary();
+        tempDirectory = TestingFilesHelper.createTempDirectoryForLibrary();
         existingAsFile = Files.createFile(Paths.get(tempDirectory, "file")).toString();
     }
 

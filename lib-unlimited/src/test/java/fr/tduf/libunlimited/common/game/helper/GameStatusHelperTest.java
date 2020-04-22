@@ -1,6 +1,6 @@
 package fr.tduf.libunlimited.common.game.helper;
 
-import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import fr.tduf.libunlimited.common.game.domain.bin.GameVersion;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +31,7 @@ class GameStatusHelperTest {
     @Test
     void resolveGameVersion_whenEmptyFile_shouldReturnUnknown() throws IOException {
         // given
-        Path path = Paths.get(FilesHelper.createTempDirectoryForLibrary(), "foo.exe");
+        Path path = Paths.get(TestingFilesHelper.createTempDirectoryForLibrary(), "foo.exe");
         Files.createFile(path);
         String binaryPath = path.toString();
 

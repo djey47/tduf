@@ -1,6 +1,6 @@
 package fr.tduf.libunlimited.low.files.banks.mapping.helper;
 
-import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import org.junit.jupiter.api.Test;
 
@@ -140,7 +140,7 @@ class MapHelperTest {
     @Test
     void saveBankMap() throws IOException {
         // given
-        String outputFile = Paths.get(FilesHelper.createTempDirectoryForLibrary(), "bnk1.map").toString();
+        String outputFile = Paths.get(TestingFilesHelper.createTempDirectoryForLibrary(), "bnk1.map").toString();
 
         // when
         MapHelper.saveBankMap(new BankMap(), outputFile);

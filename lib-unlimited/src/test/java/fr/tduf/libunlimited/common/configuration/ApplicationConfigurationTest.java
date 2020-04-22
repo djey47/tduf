@@ -1,6 +1,6 @@
 package fr.tduf.libunlimited.common.configuration;
 
-import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,8 +23,8 @@ class ApplicationConfigurationTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        configFileName = Paths.get(FilesHelper.createTempDirectoryForLibrary(), ".tduf", "test.properties").toString();
-        genuineConfigFileName = Paths.get(FilesHelper.createTempDirectoryForLibrary(), "test.properties").toString();
+        configFileName = Paths.get(TestingFilesHelper.createTempDirectoryForLibrary(), ".tduf", "test.properties").toString();
+        genuineConfigFileName = Paths.get(TestingFilesHelper.createTempDirectoryForLibrary(), "test.properties").toString();
         ApplicationConfiguration.setConfigurationFile(configFileName);
         ApplicationConfiguration.setGenuineConfigurationFile(genuineConfigFileName);
     }

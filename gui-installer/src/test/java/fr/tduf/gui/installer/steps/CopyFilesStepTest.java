@@ -4,7 +4,7 @@ import fr.tduf.gui.installer.common.helper.InstallerTestsHelper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.gui.installer.domain.exceptions.StepException;
-import fr.tduf.libtesting.common.helper.FilesHelper;
+import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import fr.tduf.libunlimited.high.files.db.patcher.domain.DatabasePatchProperties;
 import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +33,7 @@ class CopyFilesStepTest {
     void setUp() throws IOException {
         tempDirectory = InstallerTestsHelper.createTempDirectory();
 
-        FilesHelper.prepareTduDirectoryLayout(tempDirectory);
+        TestingFilesHelper.prepareTduDirectoryLayout(tempDirectory);
 
         backupPath = Paths.get(tempDirectory, "backup");
         Files.createDirectories(backupPath);
