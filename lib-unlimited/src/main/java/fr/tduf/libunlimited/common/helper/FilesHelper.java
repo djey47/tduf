@@ -19,6 +19,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.function.BiPredicate;
 
 import static java.util.Objects.requireNonNull;
 
@@ -34,6 +37,24 @@ public class FilesHelper {
 
     private static final ObjectMapper jsonMapper = new ObjectMapper();
     private static final DocumentBuilderFactory xmlDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
+    private static final BiPredicate<Path, Path> containsSubPathPredicate = (realPath, subPath) -> {
+        Iterator<Path> realPathIterator = realPath.normalize().iterator();
+        Path normalizedSubPath = subPath.normalize();
+        Iterator<Path> subPathIterator = normalizedSubPath.iterator();
+
+        while (realPathIterator.hasNext()) {
+            Path realPathSegment = realPathIterator.next();
+            if (subPathIterator.hasNext()) {
+                Path subPathSegment = subPathIterator.next();
+                if (!Objects.equals(realPathSegment, subPathSegment)) {
+                    subPathIterator = normalizedSubPath.iterator();
+                }
+            } else {
+                break;
+            }
+        }
+        return !subPathIterator.hasNext();
+    };
 
     private FilesHelper() {}
 
@@ -160,6 +181,13 @@ public class FilesHelper {
         String fileName = new File(fullName).getName();
         int dotIndex = fileName.lastIndexOf('.');
         return (dotIndex == -1) ? fileName : fileName.substring(0, dotIndex);
+    }
+
+    /**
+     * @return true if subPath is a real sub path of fullPath
+     */
+    public static boolean isPathContained(Path subPath, Path fullPath) {
+        return containsSubPathPredicate.test(fullPath, subPath);
     }
 
     /* Only applies to extracted files (test via ide) - not valid if inside a jar. */

@@ -244,4 +244,24 @@ class FilesHelperTest {
         assertThrows(IOException.class,
                 () -> FilesHelper.readXMLDocumentFromFile(sampleFile));
     }
+
+    @Test
+    void isPathContained_whenSubPathInRealPath_shouldReturnTrue() {
+        // given
+        Path subPath = Paths.get("some/path");
+        Path fullPath = Paths.get("/tmp/some/path/to/somewhere");
+
+        // when-then
+        assertThat(FilesHelper.isPathContained(subPath, fullPath)).isTrue();
+    }
+
+    @Test
+    void isPathContained_whenSubPathNotInRealPath_shouldReturnFalse() {
+        // given
+        Path subPath = Paths.get("me/pa");
+        Path fullPath = Paths.get("/tmp/some/path/to/somewhere");
+
+        // when-then
+        assertThat(FilesHelper.isPathContained(subPath, fullPath)).isFalse();
+    }
 }
