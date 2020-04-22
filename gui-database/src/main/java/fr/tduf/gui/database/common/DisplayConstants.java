@@ -22,6 +22,7 @@ public class DisplayConstants {
     public static final String LABEL_BUTTON_PLUS = "+";
     public static final String LABEL_BUTTON_CLOSE = "Close";
     public static final String LABEL_BUTTON_SAVE = "Save...";
+    public static final String LABEL_BUTTON_REFRESH = "Refresh";
     public static final String LABEL_ITEM_DATABASE_ENTRY = "%s : %s";
     public static final String LABEL_ITEM_ENTRY_COUNT = "/ %d";
     public static final String LABEL_ITEM_ENTRY_COUNT_DEFAULT = "";

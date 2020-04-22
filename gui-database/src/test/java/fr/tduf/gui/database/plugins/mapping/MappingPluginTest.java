@@ -5,10 +5,15 @@ import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.gui.database.plugins.mapping.domain.MappingEntry;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.Property;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,14 +24,15 @@ import org.mockito.Mock;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 class MappingPluginTest {
@@ -39,6 +45,12 @@ class MappingPluginTest {
     @Mock
     private Property<BankMap> bankMapProperty;
 
+    @Mock
+    private StringProperty errorMessageProperty;
+
+    @Mock
+    private BooleanProperty errorProperty;
+
     @InjectMocks
     private MappingPlugin mappingPlugin;
 
@@ -50,6 +62,10 @@ class MappingPluginTest {
 
         context.setMainStageController(controllerMock);
         context.setMiner(minerMock);
+        context.getMappingContext().setErrorProperty(errorProperty);
+        context.getMappingContext().setErrorMessageProperty(errorMessageProperty);
+
+        mappingPlugin.setEditorContext(context);
 
         when(bankMapProperty.getValue()).thenReturn(new BankMap());
     }
@@ -64,6 +80,7 @@ class MappingPluginTest {
         assertThat(context.getMappingContext().isPluginLoaded()).isFalse();
     }
 
+    // TODO rename test cases!
     @Test
     void onSave_whenNoCamerasLoaded_shouldNotAttemptSaving() throws IOException {
         // given-when-then
@@ -106,7 +123,7 @@ class MappingPluginTest {
         // given
 
         // when
-        MappingEntry actualEntry = mappingPlugin.createMappingEntry("A3_V6", EXT_3D, "/tdu", context);
+        MappingEntry actualEntry = mappingPlugin.createMappingEntry("A3_V6", EXT_3D, "/tdu");
         
         // then
         assertThat(actualEntry.getKind()).isEqualTo(EXT_3D.getDescription());
@@ -118,7 +135,7 @@ class MappingPluginTest {
     @Test
     void createMappingEntry_forShopModelBank() {
         // given-when
-        MappingEntry actualEntry = mappingPlugin.createMappingEntry("ECD_2B2_7555", SHOP_EXT_3D, "/tdu", context);
+        MappingEntry actualEntry = mappingPlugin.createMappingEntry("ECD_2B2_7555", SHOP_EXT_3D, "/tdu");
         
         // then
         assertThat(actualEntry.getKind()).isEqualTo(SHOP_EXT_3D.getDescription());
@@ -149,7 +166,7 @@ class MappingPluginTest {
 
 
         // when
-        MappingEntry actualEntry = mappingPlugin.createMappingEntry("M_SHIRT_ELLSON", CLOTHES_3D, "/tdu", context);
+        MappingEntry actualEntry = mappingPlugin.createMappingEntry("M_SHIRT_ELLSON", CLOTHES_3D, "/tdu");
 
 
         // then
@@ -176,7 +193,7 @@ class MappingPluginTest {
 
 
         // when
-        MappingEntry actualEntry = mappingPlugin.createMappingEntry("AC_427_F01", FRONT_RIMS_3D, "/tdu", context);
+        MappingEntry actualEntry = mappingPlugin.createMappingEntry("AC_427_F01", FRONT_RIMS_3D, "/tdu");
 
 
         // then
@@ -184,5 +201,37 @@ class MappingPluginTest {
         assertThat(actualEntry.getPath()).isEqualTo(Paths.get("Vehicules", "Rim", "AC", "AC_427_F01.bnk").toString());
         assertThat(actualEntry.isExists()).isFalse();
         assertThat(actualEntry.isRegistered()).isFalse();
+    }
+
+    @Test
+    void refreshMapping_whenHandledTopicAndFieldRank_shouldClearEntryList_andAddEntries_withErrors() {
+        // given
+        MappingEntry existingEntry = new MappingEntry("", "", true, true);
+        ObservableList<MappingEntry> files = FXCollections.observableArrayList(existingEntry);
+
+        context.setCurrentTopic(CAR_PHYSICS_DATA);
+        context.setRemoteTopic(CAR_PHYSICS_DATA);
+        context.setFieldRank(9); //FIELD_RANK_CAR_FILE_NAME
+
+        String resourceRef = "RES";
+        ResourceEntryDto resourceEntry = ResourceEntryDto.builder().forReference(resourceRef).withDefaultItem("VALUE").build();
+        when(minerMock.getResourceEntryFromTopicAndReference(CAR_PHYSICS_DATA, resourceRef)).thenReturn(of(resourceEntry));
+
+
+        // when
+        mappingPlugin.refreshMapping(files, resourceRef);
+
+
+        // then
+        assertThat(files).hasSize(3);
+        final Optional<MappingEntry> firstEntry = files.stream().findFirst();
+        assertThat(firstEntry).isPresent();
+        firstEntry.ifPresent((entry) -> {
+            assertThat(entry.getKind()).isEqualTo("Exterior 3D model");
+            assertThat(entry.getPath()).isEqualTo("Vehicules/VALUE.bnk");
+        });
+
+        verify(errorProperty).setValue(true);
+        verify(errorMessageProperty).setValue("One of listed files is not registered into Bnk1.map, may not be taken into account by the game.");
     }
 }
