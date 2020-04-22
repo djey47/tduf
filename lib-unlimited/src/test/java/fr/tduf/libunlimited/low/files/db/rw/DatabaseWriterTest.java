@@ -36,7 +36,7 @@ class DatabaseWriterTest {
     }
 
     @Test
-    public void load_whenProvidedContents_shouldReturnWriterInstance() throws Exception {
+    public void load_whenProvidedContents_shouldReturnWriterInstance() {
         //GIVEN
         DbDto dbDto = DbDto.builder()
                 .withStructure(DbStructureDto.builder()
@@ -127,7 +127,7 @@ class DatabaseWriterTest {
     }
 
     @Test
-    public void writeAll_whenRealContents_shouldCreateContentsFile_withSizeMultipleOf8() throws IOException, URISyntaxException {
+    public void writeAll_whenRealContents_shouldCreateContentsFile_withSizeMultipleOf8() throws IOException {
         //GIVEN
         DbDto initialDbDto = readObjectFromJsonResourceFile(DbDto.class, "/db/json/parsing/TDU_Achievements.json");
 

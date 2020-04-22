@@ -17,7 +17,6 @@ import org.mockito.Mockito;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -72,7 +71,7 @@ class CameraToolIntegTest {
     }
 
     @Test
-    void copySet_shouldProduceCorrectFile() throws IOException, URISyntaxException {
+    void copySet_shouldProduceCorrectFile() throws IOException {
         String referenceCameraFile = camerasIntegTestPath.resolve("Cameras.set108CopiedTo109.bin").toString();
 
         // WHEN: copy-set
@@ -84,7 +83,7 @@ class CameraToolIntegTest {
     }
 
     @Test
-    void copySets_shouldProduceCorrectFile() throws IOException, URISyntaxException {
+    void copySets_shouldProduceCorrectFile() throws IOException {
         String referenceCameraFile = camerasIntegTestPath.resolve("Cameras.set108CopiedTo109.bin").toString();
 
         // WHEN: copy-sets
@@ -96,7 +95,7 @@ class CameraToolIntegTest {
     }
 
     @Test
-    void deleteSets_withSingleSet_shouldProduceCorrectFile() throws IOException, URISyntaxException {
+    void deleteSets_withSingleSet_shouldProduceCorrectFile() throws IOException {
         String startCameraFile = camerasIntegTestPath.resolve("Cameras.set108CopiedTo109.bin").toString();
 
         // WHEN: delete-sets
@@ -108,7 +107,7 @@ class CameraToolIntegTest {
     }
 
     @Test
-    void deleteSets_withTwoSets_shouldProduceCorrectFile() throws IOException, URISyntaxException {
+    void deleteSets_withTwoSets_shouldProduceCorrectFile() throws IOException {
         String startCameraFile = camerasIntegTestPath.resolve("Cameras.set108CopiedTo109.bin").toString();
         String referenceCameraFile = camerasIntegTestPath.resolve("Cameras.sets108And109Deleted.bin").toString();
 

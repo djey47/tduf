@@ -17,7 +17,7 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MapHelperTest {
-    private static Class<MapHelperTest> thisClass = MapHelperTest.class;
+    private static final Class<MapHelperTest> thisClass = MapHelperTest.class;
 
     @Test
     void parseBanks_whenEmptyFiles_shouldReturnFileNameList() throws URISyntaxException, IOException {
@@ -33,7 +33,7 @@ class MapHelperTest {
         assertThat(actualFileList)
                 .isNotNull()
                 .hasSameSizeAs(expectedFileList)
-                .contains(expectedFileList.toArray(new String[expectedFileList.size()]));
+                .contains(expectedFileList.toArray(new String[0]));
     }
 
     @Test

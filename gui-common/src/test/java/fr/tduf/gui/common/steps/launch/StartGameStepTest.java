@@ -41,7 +41,7 @@ class StartGameStepTest {
     }
     
     @Test
-    void resolveAndCheckGamePath_whenNoSetting_shouldThrowException() throws StepException, IOException {
+    void resolveAndCheckGamePath_whenNoSetting_shouldThrowException() {
         // given
         when(applicationConfigurationMock.getGamePath()).thenReturn(empty());
         
@@ -51,7 +51,7 @@ class StartGameStepTest {
     }    
     
     @Test
-    void resolveAndCheckGamePath_whenNonExistingPath_shouldThrowException() throws StepException, IOException {
+    void resolveAndCheckGamePath_whenNonExistingPath_shouldThrowException() {
         // given
         Path gamePath = Paths.get("/games/tdu");
         when(applicationConfigurationMock.getGamePath()).thenReturn(of(gamePath));
@@ -88,7 +88,7 @@ class StartGameStepTest {
     }
 
     @Test
-    void buildFullCommand_whenExistingBinary_shouldReturnFullCommand() throws StepException, IOException {
+    void buildFullCommand_whenExistingBinary_shouldReturnFullCommand() throws IOException {
         // given
         Path gamePath = Paths.get(TestingFilesHelper.createTempDirectoryForLauncher());
         Path gameBinaryPath = gamePath.resolve("TestDriveUnlimited.exe");
@@ -102,7 +102,7 @@ class StartGameStepTest {
     }    
     
     @Test
-    void buildFullCommand_whenExistingBinary_andSwitches_shouldReturnFullCommand() throws StepException, IOException {
+    void buildFullCommand_whenExistingBinary_andSwitches_shouldReturnFullCommand() throws IOException {
         // given
         Path gamePath = Paths.get(TestingFilesHelper.createTempDirectoryForLauncher());
         Path gameBinaryPath = gamePath.resolve("TestDriveUnlimited.exe");

@@ -24,9 +24,7 @@ class InstallTaskTest extends ApplicationTest {
     private String tempDirectory;
 
     @Override
-    public void start(Stage stage) throws Exception {
-
-    }
+    public void start(Stage stage) {}
 
     @BeforeEach
     void setUp() throws IOException {
@@ -35,7 +33,7 @@ class InstallTaskTest extends ApplicationTest {
     }
 
     @Test
-    void handleStepExceptionInInstallTask_whenNonCriticalError_shouldRethrowException() throws StepException {
+    void handleStepExceptionInInstallTask_whenNonCriticalError_shouldRethrowException() {
         // GIVEN
         ObjectProperty<InstallerConfiguration> configuration = createInstallerConfiguration();
         ObjectProperty<DatabaseContext> context = createDatabaseContext();
@@ -49,7 +47,7 @@ class InstallTaskTest extends ApplicationTest {
     }
 
     @Test
-    void handleStepExceptionInInstallTask_whenDatabaseCriticalError_shouldRethrowException() throws StepException {
+    void handleStepExceptionInInstallTask_whenDatabaseCriticalError_shouldRethrowException() {
         // GIVEN
         ObjectProperty<InstallerConfiguration> configuration = createInstallerConfiguration();
         ObjectProperty<DatabaseContext> context = createDatabaseContext();

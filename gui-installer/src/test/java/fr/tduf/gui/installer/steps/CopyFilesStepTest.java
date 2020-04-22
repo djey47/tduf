@@ -70,28 +70,28 @@ class CopyFilesStepTest {
         Path vehicleModelAssetsPath = Paths.get(configuration.getAssetsDirectory(), "3D");
         assertThat(vehicleBanksPath.resolve("AC_427.bnk").toFile())
                 .exists()
-                .hasSameContentAs(vehicleModelAssetsPath.resolve("AC_289.bnk").toFile());
+                .hasSameTextualContentAs(vehicleModelAssetsPath.resolve("AC_289.bnk").toFile());
         assertThat(vehicleBanksPath.resolve("AC_427_I.bnk").toFile())
                 .exists()
-                .hasSameContentAs(vehicleModelAssetsPath.resolve("AC_289_I.bnk").toFile());
+                .hasSameTextualContentAs(vehicleModelAssetsPath.resolve("AC_289_I.bnk").toFile());
 
         Path soundAssetsPath = Paths.get(configuration.getAssetsDirectory(), "SOUND");
         assertThat(soundBanksPath.resolve("AC_427_audio.bnk").toFile())
                 .exists()
-                .hasSameContentAs(soundAssetsPath.resolve("AC_289_audio.bnk").toFile());
+                .hasSameTextualContentAs(soundAssetsPath.resolve("AC_289_audio.bnk").toFile());
 
         Path hudAssetsPath = Paths.get(configuration.getAssetsDirectory(), "GAUGES");
         assertThat(highHudBanksPath.resolve("AC_427.bnk").toFile())
                 .exists()
-                .hasSameContentAs(hudAssetsPath.resolve("HI").resolve("AC_289.bnk").toFile());
+                .hasSameTextualContentAs(hudAssetsPath.resolve("HI").resolve("AC_289.bnk").toFile());
         assertThat(lowHudBanksPath.resolve("AC_427.bnk").toFile())
                 .exists()
-                .hasSameContentAs(hudAssetsPath.resolve("LOW").resolve("AC_289.bnk").toFile());
+                .hasSameTextualContentAs(hudAssetsPath.resolve("LOW").resolve("AC_289.bnk").toFile());
 
         Path rimAssetsPath = vehicleModelAssetsPath.resolve("RIMS");
         assertThat(rimBanksPath.resolve("AC_427_F_01.bnk").toFile())
                 .exists()
-                .hasSameContentAs(rimAssetsPath.resolve("AC_289_F_01.bnk").toFile());
+                .hasSameTextualContentAs(rimAssetsPath.resolve("AC_289_F_01.bnk").toFile());
 
         Path backupVehicleBanksPath = Paths.get(configuration.resolveFilesBackupDirectory(), "Vehicules");
         assertThat(backupVehicleBanksPath.resolve("AC_427.bnk"))
@@ -155,10 +155,10 @@ class CopyFilesStepTest {
         Path rimAssetsPath = Paths.get(configuration.getAssetsDirectory(), "3D", "RIMS");
         assertThat(rimBanksPath.resolve("DAYTONA_955I_F.bnk").toFile())
                 .exists()
-                .hasSameContentAs(rimAssetsPath.resolve("BIKE_F_01.bnk").toFile());
+                .hasSameTextualContentAs(rimAssetsPath.resolve("BIKE_F_01.bnk").toFile());
         assertThat(rimBanksPath.resolve("DAYTONA_955I_R.bnk").toFile())
                 .exists()
-                .hasSameContentAs(rimAssetsPath.resolve("BIKE_R_01.bnk").toFile());
+                .hasSameTextualContentAs(rimAssetsPath.resolve("BIKE_R_01.bnk").toFile());
     }
 
     @Test
@@ -189,10 +189,10 @@ class CopyFilesStepTest {
         Path rimAssetsPath = Paths.get(configuration.getAssetsDirectory(), "3D", "RIMS");
         assertThat(frontRimBankPath.toFile())
                 .exists()
-                .hasSameContentAs(rimAssetsPath.resolve("BIKE_F_01.bnk").toFile());
+                .hasSameTextualContentAs(rimAssetsPath.resolve("BIKE_F_01.bnk").toFile());
         assertThat(rearRimBankPath.toFile())
                 .exists()
-                .hasSameContentAs(rimAssetsPath.resolve("BIKE_R_01.bnk").toFile());
+                .hasSameTextualContentAs(rimAssetsPath.resolve("BIKE_R_01.bnk").toFile());
     }
 
     @Test
@@ -243,10 +243,10 @@ class CopyFilesStepTest {
         Path rimAssetsPath = Paths.get(configuration.getAssetsDirectory(), "3D", "RIMS");
         assertThat(rimBanksPath.resolve("DB9_Cpe_F_01.bnk").toFile())
                 .exists()
-                .hasSameContentAs(rimAssetsPath.resolve("AC_289_F_01.bnk").toFile());
+                .hasSameTextualContentAs(rimAssetsPath.resolve("AC_289_F_01.bnk").toFile());
         assertThat(rimBanksPath.resolve("DB9_Vol_F_02.bnk").toFile())
                 .exists()
-                .hasSameContentAs(rimAssetsPath.resolve("AC_289_F_02.bnk").toFile());
+                .hasSameTextualContentAs(rimAssetsPath.resolve("AC_289_F_02.bnk").toFile());
     }
 
     @Test
@@ -272,10 +272,10 @@ class CopyFilesStepTest {
         Path rimAssetsPath = Paths.get(configuration.getAssetsDirectory(), "3D", "RIMS");
         assertThat(rimBanksPath.resolve("DAYTONA_955I_F.bnk").toFile())
                 .exists()
-                .hasSameContentAs(rimAssetsPath.resolve("AC_289_F_01.bnk").toFile());
+                .hasSameTextualContentAs(rimAssetsPath.resolve("AC_289_F_01.bnk").toFile());
         assertThat(rimBanksPath.resolve("DAYTONA_955I_R.bnk").toFile())
                 .exists()
-                .hasSameContentAs(rimAssetsPath.resolve("AC_289_F_01.bnk").toFile());
+                .hasSameTextualContentAs(rimAssetsPath.resolve("AC_289_F_01.bnk").toFile());
     }
 
     @Test
@@ -305,10 +305,10 @@ class CopyFilesStepTest {
         Path rimAssetsPath = Paths.get(configuration.getAssetsDirectory(), "3D", "RIMS");
         assertThat(rimBanksPath.resolve("DAYTONA_955I_F.bnk").toFile())
                 .exists()
-                .hasSameContentAs(rimAssetsPath.resolve("AC_289_F_01.bnk").toFile());
+                .hasSameTextualContentAs(rimAssetsPath.resolve("AC_289_F_01.bnk").toFile());
         assertThat(rimBanksPath.resolve("DAYTONA_955I_R.bnk").toFile())
                 .exists()
-                .hasSameContentAs(rimAssetsPath.resolve("AC_289_F_01.bnk").toFile());
+                .hasSameTextualContentAs(rimAssetsPath.resolve("AC_289_F_01.bnk").toFile());
     }
 
     private Path getTargetBikeRimPath() {

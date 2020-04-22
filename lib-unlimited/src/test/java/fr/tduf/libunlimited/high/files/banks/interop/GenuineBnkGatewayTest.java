@@ -58,7 +58,7 @@ class GenuineBnkGatewayTest {
     }
 
     @Test
-    void getBankInfo_whenSuccess_shouldInvokeCommandLineCorrectly_andReturnObject() throws IOException, URISyntaxException {
+    void getBankInfo_whenSuccess_shouldInvokeCommandLineCorrectly_andReturnObject() throws IOException {
         // GIVEN
         mockCommandLineHelperToReturnBankInformationSuccess(bankFileName);
 
@@ -93,7 +93,7 @@ class GenuineBnkGatewayTest {
     }
 
     @Test
-    void extractAll_whenSuccess_shouldInvokeCommandLineCorrectly() throws IOException, URISyntaxException {
+    void extractAll_whenSuccess_shouldInvokeCommandLineCorrectly() throws IOException {
         // GIVEN
         mockCommandLineHelperToReturnBankInformationSuccess(bankFileName);
         mockCommandLineHelperToReturnExtractionSuccess(bankFileName);
@@ -117,7 +117,7 @@ class GenuineBnkGatewayTest {
     }
 
     @Test
-    void packAll_whenSuccess_shouldInvokeCommandLineCorrectly() throws IOException, URISyntaxException {
+    void packAll_whenSuccess_shouldInvokeCommandLineCorrectly() throws IOException {
         // GIVEN
         String bankShortName = "CLK_55.bnk";
         createRepackedFileTree(bankShortName);
@@ -211,7 +211,7 @@ class GenuineBnkGatewayTest {
         Files.createFile(contentsPath.resolve("A3_V6.2DM"));
     }
 
-    private void mockCommandLineHelperToReturnBankInformationSuccess(String bankFileName) throws URISyntaxException, IOException {
+    private void mockCommandLineHelperToReturnBankInformationSuccess(String bankFileName) throws IOException {
         String jsonOutput = FilesHelper.readTextFromResourceFile("/files/interop/tdumt-cli/BANK-I.output.json");
         ProcessResult processResult = new ProcessResult("BANK-I", 0, jsonOutput, "");
         when(commandLineHelperMock.runCliCommand(eq("mono"), anyString(), eq("BANK-I"), eq(bankFileName))).thenReturn(processResult);
