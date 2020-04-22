@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
+// TODO Javadoc + rename to TestingFilesHelper
 public class FilesHelper {
     private static final Class<FilesHelper> thisClass = FilesHelper.class;
 
