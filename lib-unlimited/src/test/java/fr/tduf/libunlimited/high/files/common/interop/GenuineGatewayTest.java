@@ -29,7 +29,7 @@ class GenuineGatewayTest {
     }
 
     @Test
-    void getRootDirectory_whenProvidedProdSourcePath_shouldRetrieveRootDirectory() {
+    void getRootDirectory_whenProvidedProdSourcePath_asProdBuild_shouldRetrieveRootDirectory() {
         // GIVEN
         final Path sourcePath = Paths.get("/", "home", "user", "apps", "tduf", "tools", "lib", "tduf.jar");
 
@@ -38,6 +38,19 @@ class GenuineGatewayTest {
 
         // THEN
         final Path expectedPath = Paths.get("/", "home", "user", "apps", "tduf");
+        assertThat(actualDirectory).isEqualTo(expectedPath);
+    }
+
+    @Test
+    void getRootDirectory_whenProvidedProdSourcePath_asDevBuild_shouldRetrieveRootDirectory() {
+        // GIVEN
+        final Path sourcePath = Paths.get("/", "home", "user", "dev", "tduf", "lib-unlimited", "build", "libs", "lib-unlimited-1.13.0-SNAPSHOT.jar");
+
+        // WHEN
+        final Path actualDirectory = GenuineGateway.getRootDirectory(sourcePath);
+
+        // THEN
+        final Path expectedPath = Paths.get("/", "home", "user", "dev", "tduf");
         assertThat(actualDirectory).isEqualTo(expectedPath);
     }
 }

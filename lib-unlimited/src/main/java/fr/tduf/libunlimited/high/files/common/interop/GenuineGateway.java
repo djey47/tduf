@@ -2,8 +2,8 @@ package fr.tduf.libunlimited.high.files.common.interop;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.common.system.domain.ProcessResult;
-import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
@@ -22,7 +22,7 @@ import static java.util.Arrays.asList;
  * Uses TDUMT-CLI application to provide genuine services.
  */
 public abstract class GenuineGateway {
-    private static final String THIS_CLASS_NAME = GenuineBnkGateway.class.getSimpleName();
+    private static final String THIS_CLASS_NAME = GenuineGateway.class.getSimpleName();
 
     private static final String INTERPRETER_BINARY = "mono";
     private static final Path EXE_TDUMT_CLI = Paths.get("tools", "tdumt-cli", "tdumt-cli.exe");
@@ -51,6 +51,7 @@ public abstract class GenuineGateway {
         }
     }
 
+    @SuppressWarnings("FieldMayBeFinal")
     private CommandLineHelper commandLineHelper;
 
     protected GenuineGateway(CommandLineHelper commandLineHelper) {
@@ -108,9 +109,16 @@ public abstract class GenuineGateway {
      */
     static Path getRootDirectory(Path sourcePath) {
         // Run from dev build or JAR?
-        final Path devBuildSubPath = Paths.get("lib-unlimited","build", "classes", "java", "main");
+        final Path devSrcBuildSubPath = Paths.get("lib-unlimited","build", "classes", "java", "main");
+        final Path devJarBuildSubPath = Paths.get("lib-unlimited","build", "libs", "lib-unlimited-x.y.z-SNAPSHOT.jar");
         final Path prodBuildSubPath = Paths.get("tools","lib", "tduf.jar");
-        final Path effectiveSubPath = sourcePath.endsWith(devBuildSubPath) ? devBuildSubPath : prodBuildSubPath;
+
+        Path effectiveSubPath;
+        if (sourcePath.endsWith(prodBuildSubPath)) {
+            effectiveSubPath = prodBuildSubPath;
+        } else {
+            effectiveSubPath = FilesHelper.isPathContained(devSrcBuildSubPath, sourcePath) ? devSrcBuildSubPath : devJarBuildSubPath;
+        }
         final Path rootPath = sourcePath.getRoot().resolve(sourcePath.subpath(0, sourcePath.getNameCount() - effectiveSubPath.getNameCount()));
 
         Log.debug(THIS_CLASS_NAME, "Executable location: " + rootPath);
