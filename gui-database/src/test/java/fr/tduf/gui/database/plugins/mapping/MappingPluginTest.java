@@ -5,7 +5,6 @@ import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.gui.database.plugins.mapping.domain.MappingEntry;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
@@ -80,15 +79,14 @@ class MappingPluginTest {
         assertThat(context.getMappingContext().isPluginLoaded()).isFalse();
     }
 
-    // TODO rename test cases!
     @Test
-    void onSave_whenNoCamerasLoaded_shouldNotAttemptSaving() throws IOException {
+    void onSave_whenNoMappingLoaded_shouldNotAttemptSaving() throws IOException {
         // given-when-then
         mappingPlugin.onSave(context);
     }
 
     @Test
-    void renderControls_whenNoCamerasLoaded_shouldReturnEmptyComponent() {
+    void renderControls_whenNoMappingLoaded_shouldReturnEmptyComponent() {
         // given
         context.getMappingContext().setPluginLoaded(false);
 
