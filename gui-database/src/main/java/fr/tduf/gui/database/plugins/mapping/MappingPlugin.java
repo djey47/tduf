@@ -48,7 +48,8 @@ import static fr.tduf.gui.database.plugins.mapping.common.FxConstants.*;
 import static fr.tduf.libunlimited.common.game.FileConstants.*;
 import static fr.tduf.libunlimited.high.files.db.common.DatabaseConstants.*;
 import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.*;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.BRANDS;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static javafx.geometry.Orientation.HORIZONTAL;
 import static javafx.geometry.Orientation.VERTICAL;
@@ -59,6 +60,10 @@ import static javafx.geometry.Orientation.VERTICAL;
 public class MappingPlugin extends AbstractDatabasePlugin {
     private static final Class<MappingPlugin> thisClass = MappingPlugin.class;
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
+
+    private static final Set<DbDto.Topic> HANDLED_TOPICS = new HashSet<>(asList(
+            CAR_PHYSICS_DATA, CAR_PACKS, CAR_SHOPS, CLOTHES, HOUSES, RIMS, TUTORIALS
+    ));
 
     @SuppressWarnings("FieldMayBeFinal")
     private Property<BankMap> bankMapProperty = new SimpleObjectProperty<>();
@@ -196,19 +201,23 @@ public class MappingPlugin extends AbstractDatabasePlugin {
     }
 
     void refreshMapping(String resourceReference) {
-        int fieldRank = editorContext.getFieldRank();
         StringProperty errorMessageProperty = editorContext.getMappingContext().getErrorMessageProperty();
         BooleanProperty errorProperty = editorContext.getMappingContext().getErrorProperty();
 
         files.clear();
 
-        // TODO do nothing when unhndled topic!
+        if (!HANDLED_TOPICS.contains(editorContext.getCurrentTopic())) {
+            errorMessageProperty.setValue(null);
+            errorProperty.setValue(null);
+            return;
+        }
 
         BulkDatabaseMiner miner = editorContext.getMiner();
-        String gameLocation = editorContext.getGameLocation();
         String resourceValue = miner.getResourceEntryFromTopicAndReference(editorContext.getRemoteTopic(), resourceReference)
                 .flatMap(ResourceEntryDto::pickValue)
                 .orElse(VALUE_RESOURCE_DEFAULT);
+        int fieldRank = editorContext.getFieldRank();
+        String gameLocation = editorContext.getGameLocation();
 
         switch (editorContext.getCurrentTopic()) {
             case CAR_PHYSICS_DATA:

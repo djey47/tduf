@@ -234,4 +234,49 @@ class MappingPluginTest {
         verify(errorProperty).setValue(true);
         verify(errorMessageProperty).setValue("One of listed files is not registered into Bnk1.map, may not be taken into account by the game.");
     }
+
+    @Test
+    void refreshMapping_whenHandledTopicAndUnhandledFieldRank_shouldClearEntryList_andInitErrorProps() {
+        // given
+        MappingEntry existingEntry = new MappingEntry("", "", true, true);
+        files.add(existingEntry);
+
+        context.setCurrentTopic(CAR_PHYSICS_DATA);
+        context.setRemoteTopic(CAR_PHYSICS_DATA);
+        context.setFieldRank(0);
+
+        String resourceRef = "RES";
+
+
+        // when
+        mappingPlugin.refreshMapping(resourceRef);
+
+
+        // then
+        assertThat(files).isEmpty();
+
+        verify(errorProperty).setValue(false);
+        verify(errorMessageProperty).setValue("");
+    }
+
+    @Test
+    void refreshMapping_whenUnhandledTopic_shouldClearEntryList_andResetErrorProps() {
+        // given
+        MappingEntry existingEntry = new MappingEntry("", "", true, true);
+        files.add(existingEntry);
+
+        context.setCurrentTopic(BRANDS);
+
+
+        // when
+        mappingPlugin.refreshMapping("RES");
+
+
+        // then
+        assertThat(files).isEmpty();
+
+        verifyNoInteractions(minerMock);
+        verify(errorProperty).setValue(isNull());
+        verify(errorMessageProperty).setValue(isNull());
+    }
 }
