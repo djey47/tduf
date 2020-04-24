@@ -39,7 +39,7 @@ public class DiffPatchesGenerator {
      * @param referenceDatabaseObjects : database topics acting as reference
      * @return a generator instance.
      */
-    public static DiffPatchesGenerator prepare(List<DbDto> databaseObjects, List<DbDto> referenceDatabaseObjects) throws ReflectiveOperationException {
+    public static DiffPatchesGenerator prepare(List<DbDto> databaseObjects, List<DbDto> referenceDatabaseObjects) {
         DiffPatchesGenerator holderInstance = new DiffPatchesGenerator();
 
         holderInstance.databaseObjects = requireNonNull(databaseObjects, "Database objects are required.");
@@ -184,7 +184,7 @@ public class DiffPatchesGenerator {
                         .enableStrictMode(true)
                         .asReference(resourceEntry.getReference())
                         .forLocale(locale)
-                        .withValue(resourceEntry.getValueForLocale(locale).orElse("??"))
+                        .withValue(resourceEntry.getValueForLocale(locale).orElse("??")) // TODO See to use DatabaseConstants instead
                         .forTopic(currentTopic)
                         .build());
     }
