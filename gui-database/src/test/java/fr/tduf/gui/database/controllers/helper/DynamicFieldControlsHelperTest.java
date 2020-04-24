@@ -5,8 +5,9 @@ import fr.tduf.gui.database.controllers.MainStageViewDataController;
 import fr.tduf.gui.database.domain.ItemViewModel;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
-import fr.tduf.gui.database.plugins.common.EditorContext;
+import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
+import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import fr.tduf.libtesting.common.helper.javafx.ApplicationTestHelper;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -86,7 +87,7 @@ class DynamicFieldControlsHelperTest {
         HBox fieldBox = new HBox();
 
         EditorContext editorContext = new EditorContext();
-        when(pluginHandlerMock.getContext()).thenReturn(editorContext);
+        when(pluginHandlerMock.getEditorContext()).thenReturn(editorContext);
         when(applicationConfigurationMock.isEditorPluginsEnabled()).thenReturn(true);
 
 
@@ -95,7 +96,7 @@ class DynamicFieldControlsHelperTest {
 
 
         // then
-        verify(pluginHandlerMock).renderPluginByName("PLUGIN", fieldBox);
+        verify(pluginHandlerMock).renderPluginByName(eq("PLUGIN"), eq(fieldBox), any(OnTheFlyContext.class));
     }
 
     @Test
@@ -104,7 +105,7 @@ class DynamicFieldControlsHelperTest {
         HBox fieldBox = new HBox();
 
         EditorContext editorContext = new EditorContext();
-        when(pluginHandlerMock.getContext()).thenReturn(editorContext);
+        when(pluginHandlerMock.getEditorContext()).thenReturn(editorContext);
         when(applicationConfigurationMock.isEditorPluginsEnabled()).thenReturn(false);
 
 

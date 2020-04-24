@@ -4,6 +4,8 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.ImageConstants;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.controllers.MainStageChangeDataController;
+import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
+import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -29,17 +31,17 @@ public class PluginHandler {
     private static final Class<PluginHandler> thisClass = PluginHandler.class;
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 
-    private final EditorContext context = new EditorContext();
+    private final EditorContext editorContext = new EditorContext();
 
     /**
      * Creates plugin handler for specified database editor controller
      */
     public PluginHandler(Parent root, MainStageChangeDataController changeDataController) {
-        context.setChangeDataController(requireNonNull(changeDataController, "Change data controller instance is required."));
+        editorContext.setChangeDataController(requireNonNull(changeDataController, "Change data controller instance is required."));
 
         Scene scene = requireNonNull(root, "Root FX component instance is required.").getScene();
         if (scene != null) {
-            context.setMainWindow(scene.getWindow());
+            editorContext.setMainWindow(scene.getWindow());
         }
 
         PluginIndex.allAsStream().forEach(p -> addPluginCss(p, root));
@@ -63,14 +65,16 @@ public class PluginHandler {
      * Renders plugin controls and attach to provided parent node.
      * @param pluginName    : must match a valid name in PluginIndex
      * @param parentPane    : required
+     * @param onTheFlyContext : required
      */
-    public void renderPluginByName(String pluginName, Pane parentPane) {
+    public void renderPluginByName(String pluginName, Pane parentPane, OnTheFlyContext onTheFlyContext) {
         requireNonNull(parentPane, "A parent node to attach rendered component to is required");
+        requireNonNull(onTheFlyContext, "\"On The fly\" context is required");
 
         try {
             PluginIndex resolvedPlugin = PluginIndex.valueOf(pluginName);
             DatabasePlugin pluginInstance = resolvedPlugin.getPluginInstance();
-            renderPluginInstance(pluginInstance, pluginName, parentPane);
+            renderPluginInstance(pluginInstance, pluginName, parentPane, onTheFlyContext);
 
         } catch(Exception e) {
             Log.error(THIS_CLASS_NAME, "Error occured while rendering plugin: " + pluginName, e);
@@ -88,7 +92,7 @@ public class PluginHandler {
 
     void initializePluginInstance(DatabasePlugin pluginInstance, String pluginName) {
         try {
-            pluginInstance.onInit(context);
+            pluginInstance.onInit(editorContext);
             pluginInstance.setInitError(null);
         } catch (IOException ioe) {
             Log.error(THIS_CLASS_NAME, "Error occured while initializing plugin: " + pluginName, ioe);
@@ -96,18 +100,18 @@ public class PluginHandler {
         }
     }
 
-    void renderPluginInstance(DatabasePlugin pluginInstance, String pluginName, Pane parentPane) {
+    void renderPluginInstance(DatabasePlugin pluginInstance, String pluginName, Pane parentPane, OnTheFlyContext onTheFlyContext) {
         // Error handling
         Optional<Exception> initError = pluginInstance.getInitError();
         final Node renderedNode = initError
                 .map(e -> renderErrorPlaceholder(e, pluginName))
-                .orElseGet(() -> pluginInstance.renderControls(context));
+                .orElseGet(() -> pluginInstance.renderControls(onTheFlyContext));
         parentPane.getChildren().add(renderedNode);
     }
 
     void triggerOnSaveForPluginInstance(DatabasePlugin pluginInstance) {
         try {
-            pluginInstance.onSave(context);
+            pluginInstance.onSave();
         } catch (IOException ioe) {
             Log.error(THIS_CLASS_NAME, "Error occured while triggering onSave for plugin: " + pluginInstance, ioe);
         }
@@ -164,7 +168,7 @@ public class PluginHandler {
         return placeholderNode;
     }
 
-    public EditorContext getContext() {
-        return context;
+    public EditorContext getEditorContext() {
+        return editorContext;
     }
 }

@@ -11,7 +11,8 @@ import fr.tduf.gui.database.plugins.cameras.converter.CameraInfoToRawValueConver
 import fr.tduf.gui.database.plugins.cameras.converter.CameraViewToItemConverter;
 import fr.tduf.gui.database.plugins.cameras.helper.CamerasDialogsHelper;
 import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
-import fr.tduf.gui.database.plugins.common.EditorContext;
+import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
+import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.helper.CamerasImExHelper;
 import fr.tduf.libunlimited.high.files.db.common.helper.CameraAndIKHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.*;
@@ -77,17 +78,19 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
      * Required contextual information:
      * - databaseLocation
      * - camerasContext->allCameras
-     * @param context : all required information about Database Editor
+     * @param editorContext : all required information about Database Editor
      * @throws IOException when cameras file can't be parsed for some reason
      */
     @Override
-    public void onInit(EditorContext context) throws IOException {
-        CamerasContext camerasContext = context.getCamerasContext();
+    public void onInit(EditorContext editorContext) throws IOException {
+        super.onInit(editorContext);
+
+        CamerasContext camerasContext = editorContext.getCamerasContext();
         camerasContext.reset();
 
         cameraInfoEnhancedProperty.setValue(null);
 
-        String databaseLocation = context.getDatabaseLocation();
+        String databaseLocation = editorContext.getDatabaseLocation();
         Path cameraFile = resolveCameraFilePath(databaseLocation);
         if (!Files.exists(cameraFile)) {
             String warningMessage = String.format(FORMAT_MESSAGE_WARN_NO_CAMBIN, databaseLocation);
@@ -114,11 +117,10 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
      * Required contextual information:
      * - camerasContext->pluginLoaded
      * - camerasContext->binaryFileLocation
-     * @param context : all required information about Database Editor
      */
     @Override
-    public void onSave(EditorContext context) throws IOException {
-        CamerasContext camerasContext = context.getCamerasContext();
+    public void onSave() throws IOException {
+        CamerasContext camerasContext = getEditorContext().getCamerasContext();
         if (!camerasContext.isPluginLoaded()) {
             Log.warn(THIS_CLASS_NAME, "Cameras plugin not loaded, no saving will be performed");
             return;
@@ -137,18 +139,19 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
      * - errorMessageProperty
      * - camerasContext->allCameras
      * - camerasContext->viewTypeProperty
-     * @param context : all required information about Database Editor
+     * @param onTheFlyContext : all required information about Database Editor
      */
     @Override
-    public Node renderControls(EditorContext context) {
-        CamerasContext camerasContext = context.getCamerasContext();
-        camerasContext.setErrorProperty(context.getErrorProperty());
-        camerasContext.setErrorMessageProperty(context.getErrorMessageProperty());
+    public Node renderControls(OnTheFlyContext onTheFlyContext) {
+        EditorContext editorContext = getEditorContext();
+        CamerasContext camerasContext = editorContext.getCamerasContext();
+        camerasContext.setErrorProperty(onTheFlyContext.getErrorProperty());
+        camerasContext.setErrorMessageProperty(onTheFlyContext.getErrorMessageProperty());
 
         HBox hBox = new HBox();
         hBox.getStyleClass().add(CSS_CLASS_PLUGIN_BOX);
 
-        if (!context.getCamerasContext().isPluginLoaded()) {
+        if (!camerasContext.isPluginLoaded()) {
             Log.warn(THIS_CLASS_NAME, "Cameras plugin not loaded, no rendering will be performed");
             return hBox;
         }
@@ -157,10 +160,10 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
         cameraViews = FXCollections.observableArrayList();
         ComboBox<CameraSetInfo> cameraSelectorComboBox = new ComboBox<>(cameraSetInfos.sorted(comparingLong(CameraSetInfo::getCameraIdentifier)));
         ComboBox<CameraView> viewSelectorComboBox = new ComboBox<>(cameraViews.sorted(comparing(CameraView::getKind)));
-        VBox mainColumnBox = createMainColumn(context, cameraSelectorComboBox, viewSelectorComboBox);
+        VBox mainColumnBox = createMainColumn(onTheFlyContext, cameraSelectorComboBox, viewSelectorComboBox);
 
-        StringProperty rawValueProperty = context.getRawValueProperty();
-        Window mainWindow = context.getMainWindow();
+        StringProperty rawValueProperty = onTheFlyContext.getRawValueProperty();
+        Window mainWindow = editorContext.getMainWindow();
         VBox buttonColumnBox = createButtonColumn(
                 handleAddSetButtonAction(rawValueProperty, cameraSelectorComboBox.getSelectionModel(), mainWindow),
                 handleDeleteSetButtonAction(rawValueProperty, cameraSelectorComboBox.getSelectionModel()),
@@ -196,7 +199,7 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
         return ofNullable(initialView);
     }
 
-    private VBox createMainColumn(EditorContext context, ComboBox<CameraSetInfo> cameraSelectorComboBox, ComboBox<CameraView> viewSelectorComboBox) {
+    private VBox createMainColumn(OnTheFlyContext onTheFlyContext, ComboBox<CameraSetInfo> cameraSelectorComboBox, ComboBox<CameraView> viewSelectorComboBox) {
         ObservableList<Map.Entry<ViewProps, ?>> allViewProps = FXCollections.observableArrayList();
 
         cameraSelectorComboBox.getStyleClass().add(CSS_CLASS_CAM_SELECTOR_COMBOBOX);
@@ -209,9 +212,9 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
         mainColumnBox.getStyleClass().add(FxConstants.CSS_CLASS_MAIN_COLUMN);
         ObservableList<Node> mainColumnChildren = mainColumnBox.getChildren();
 
-        HBox camSelectorBox = createCamSelectorBox(context, cameraSelectorComboBox, viewSelectorComboBox.valueProperty());
+        HBox camSelectorBox = createCamSelectorBox(onTheFlyContext, cameraSelectorComboBox, viewSelectorComboBox.valueProperty());
         HBox viewSelectorBox = createViewSelectorBox(viewSelectorComboBox, cameraSelectorComboBox.valueProperty(), allViewProps);
-        TableView<Map.Entry<ViewProps, ?>> setPropertyTableView = createPropertiesTableView(context, allViewProps, viewSelectorComboBox.valueProperty());
+        TableView<Map.Entry<ViewProps, ?>> setPropertyTableView = createPropertiesTableView(onTheFlyContext, allViewProps, viewSelectorComboBox.valueProperty());
 
         mainColumnChildren.add(camSelectorBox);
         mainColumnChildren.add(viewSelectorBox);
@@ -258,7 +261,7 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
         return buttonColumnBox;
     }
 
-    private TableView<Map.Entry<ViewProps, ?>> createPropertiesTableView(EditorContext context, ObservableList<Map.Entry<ViewProps, ?>> viewProps, ObjectProperty<CameraView> currentViewProperty) {
+    private TableView<Map.Entry<ViewProps, ?>> createPropertiesTableView(OnTheFlyContext context, ObservableList<Map.Entry<ViewProps, ?>> viewProps, ObjectProperty<CameraView> currentViewProperty) {
         TableView<Map.Entry<ViewProps, ?>> setPropertyTableView = new TableView<>(viewProps);
         setPropertyTableView.getStyleClass().addAll(CSS_CLASS_TABLEVIEW, CSS_CLASS_SET_PROPERTY_TABLEVIEW);
         setPropertyTableView.setEditable(true);
@@ -283,14 +286,14 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
         return setPropertyTableView;
     }
 
-    private HBox createCamSelectorBox(EditorContext context, ComboBox<CameraSetInfo> cameraSelectorComboBox, ObjectProperty<CameraView> currentCameraViewProperty) {
+    private HBox createCamSelectorBox(OnTheFlyContext onTheFlyContext, ComboBox<CameraSetInfo> cameraSelectorComboBox, ObjectProperty<CameraView> currentCameraViewProperty) {
         HBox camSelectorBox = new HBox();
         camSelectorBox.getStyleClass().add(CSS_CLASS_CAM_SELECTOR_BOX);
 
         cameraSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
-                getCameraSelectorChangeListener(context, currentCameraViewProperty));
+                getCameraSelectorChangeListener(currentCameraViewProperty));
         Bindings.bindBidirectional(
-                context.getRawValueProperty(), cameraSelectorComboBox.valueProperty(), new CameraInfoToRawValueConverter(cameraSetInfos));
+                onTheFlyContext.getRawValueProperty(), cameraSelectorComboBox.valueProperty(), new CameraInfoToRawValueConverter(cameraSetInfos));
 
         Label availableCamerasLabel = new Label(LABEL_AVAILABLE_CAMERAS);
         availableCamerasLabel.setLabelFor(cameraSelectorComboBox);
@@ -327,7 +330,7 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
         return viewSelectorBox;
     }
 
-    private ChangeListener<CameraSetInfo> getCameraSelectorChangeListener(EditorContext editorContext, ObjectProperty<CameraView> currentCameraViewProperty) {
+    private ChangeListener<CameraSetInfo> getCameraSelectorChangeListener(ObjectProperty<CameraView> currentCameraViewProperty) {
         return (ObservableValue<? extends CameraSetInfo> observable, CameraSetInfo oldValue, CameraSetInfo newValue) -> {
             if (Objects.equals(oldValue, newValue)) {
                 return;
@@ -337,6 +340,7 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
 
             cameraViews.clear();
 
+            EditorContext editorContext = getEditorContext();
             CamerasContext camerasContext = editorContext.getCamerasContext();
             if (newValue == null) {
                 camerasContext.getErrorProperty().setValue(true);
@@ -353,7 +357,7 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
                 determineInitialCameraView(sortedViews, previousCameraViewSelected)
                         .ifPresent(currentCameraViewProperty::setValue);
 
-                editorContext.getChangeDataController().updateContentItem(CAR_PHYSICS_DATA, FIELD_RANK_CAMERA, Integer.toString(newValue.getCameraIdentifier()));
+                getEditorContext().getChangeDataController().updateContentItem(CAR_PHYSICS_DATA, FIELD_RANK_CAMERA, Integer.toString(newValue.getCameraIdentifier()));
             }
         };
     }
@@ -526,5 +530,12 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
         }
 
         CommonDialogsHelper.showDialog(dialogOptions, mainWindow);
+    }
+
+    /**
+     * Visible for testing
+     */
+    protected void setEditorContext(EditorContext editorContext) {
+        super.setEditorContext(editorContext);
     }
 }

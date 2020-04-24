@@ -3,7 +3,8 @@ package fr.tduf.gui.database.plugins.contentRef;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.ImageConstants;
 import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
-import fr.tduf.gui.database.plugins.common.EditorContext;
+import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
+import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import javafx.scene.Node;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -38,17 +39,16 @@ public class ContentRefPlugin extends AbstractDatabasePlugin {
 
     /**
      * Required contextual information: none
-     * @param context : all required information about Database Editor
      */
     @Override
-    public void onSave(EditorContext context) {}
+    public void onSave() {}
 
     /**
      * Required contextual information: none
-     * @param context : all required information about Database Editor
+     * @param onTheFlyContext : all required information about Database Editor
      */
     @Override
-    public Node renderControls(EditorContext context) {
+    public Node renderControls(OnTheFlyContext onTheFlyContext) {
         HBox hBox = new HBox();
         hBox.getStyleClass().addAll(CSS_CLASS_PLUGIN_BOX, CSS_CLASS_CONTENT_REF_PLUGIN_BOX);
 

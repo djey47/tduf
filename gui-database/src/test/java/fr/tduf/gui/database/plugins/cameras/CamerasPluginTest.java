@@ -1,10 +1,12 @@
 package fr.tduf.gui.database.plugins.cameras;
 
-import fr.tduf.gui.database.plugins.common.EditorContext;
+import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
+import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraView;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -18,31 +20,37 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CamerasPluginTest {
     private final CamerasPlugin camerasPlugin = new CamerasPlugin();
-    private final EditorContext context = new EditorContext();
+    private final EditorContext editorContext = new EditorContext();
+
+    @BeforeEach
+    void setUp() {
+        camerasPlugin.setEditorContext(editorContext);
+    }
 
     @Test
     void onInit_whenNoCameras_shouldThrowException_andNotAttemptLoading() {
         // given
-        context.setDatabaseLocation(".");
+        editorContext.setDatabaseLocation(".");
 
         // when-then
-        assertThrows(IOException.class, () -> camerasPlugin.onInit(context));
-        assertThat(context.getCamerasContext().isPluginLoaded()).isFalse();
+        assertThrows(IOException.class, () -> camerasPlugin.onInit(editorContext));
+        assertThat(editorContext.getCamerasContext().isPluginLoaded()).isFalse();
     }
 
     @Test
     void onSave_whenNoCamerasLoaded_shouldNotAttemptSaving() throws IOException {
         // given-when-then
-        camerasPlugin.onSave(context);
+        camerasPlugin.onSave();
     }
 
     @Test
     void renderControls_whenNoCamerasLoaded_shouldReturnEmptyComponent() {
         // given
-        context.getCamerasContext().setPluginLoaded(false);
+        editorContext.getCamerasContext().setPluginLoaded(false);
+        OnTheFlyContext onTheFlyContext = new OnTheFlyContext();
 
         // when
-        Node actualNode = camerasPlugin.renderControls(context);
+        Node actualNode = camerasPlugin.renderControls(onTheFlyContext);
 
         // then
         assertThat(actualNode).isInstanceOf(HBox.class);

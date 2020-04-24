@@ -1,4 +1,4 @@
-package fr.tduf.gui.database.plugins.common;
+package fr.tduf.gui.database.plugins.common.contexts;
 
 public interface PluginContext {
     /**

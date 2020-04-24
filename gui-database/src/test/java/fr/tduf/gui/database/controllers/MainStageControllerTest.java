@@ -1,7 +1,7 @@
 package fr.tduf.gui.database.controllers;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.database.plugins.common.EditorContext;
+import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
 import fr.tduf.gui.database.services.DatabaseLoader;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
@@ -78,7 +78,7 @@ class MainStageControllerTest {
         when(databaseLoaderMock.fetchValue()).thenReturn(loadedObjects);
         when(databaseLoaderMock.databaseLocationProperty()).thenReturn(new SimpleStringProperty("/db"));
         EditorContext pluginContext = new EditorContext();
-        when(pluginHandlerMock.getContext()).thenReturn(pluginContext);
+        when(pluginHandlerMock.getEditorContext()).thenReturn(pluginContext);
         when(applicationConfigurationMock.getGamePath()).thenReturn(of(Paths.get("/tdu")));
         when(applicationConfigurationMock.isEditorPluginsEnabled()).thenReturn(true);
 

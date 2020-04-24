@@ -1,7 +1,8 @@
 package fr.tduf.gui.database.plugins.nope;
 
 import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
-import fr.tduf.gui.database.plugins.common.EditorContext;
+import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
+import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 
@@ -15,10 +16,10 @@ public class NopePlugin extends AbstractDatabasePlugin {
     public void onInit(EditorContext context) {}
 
     @Override
-    public void onSave(EditorContext context) {}
+    public void onSave() {}
 
     @Override
-    public Node renderControls(EditorContext context) {
+    public Node renderControls(OnTheFlyContext onTheFlyContext) {
         return new VBox();
     }
 

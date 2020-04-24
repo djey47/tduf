@@ -2,7 +2,8 @@ package fr.tduf.gui.database.plugins.iks;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
-import fr.tduf.gui.database.plugins.common.EditorContext;
+import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
+import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import fr.tduf.gui.database.plugins.iks.converter.IKReferenceToItemConverter;
 import fr.tduf.gui.database.plugins.iks.converter.IKReferenceToRawValueConverter;
 import fr.tduf.libunlimited.high.files.db.common.helper.CameraAndIKHelper;
@@ -18,6 +19,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -45,7 +47,9 @@ public class IKsPlugin extends AbstractDatabasePlugin {
      * Required contextual information: none
      */
     @Override
-    public void onInit(EditorContext context) {
+    public void onInit(EditorContext editorContext) throws IOException {
+        super.onInit(editorContext);
+
         ikRefHelper = new CameraAndIKHelper();
         Log.info(THIS_CLASS_NAME, "IK reference loaded");
     }
@@ -54,25 +58,25 @@ public class IKsPlugin extends AbstractDatabasePlugin {
      * Required contextual information: none
      */
     @Override
-    public void onSave(EditorContext context) {}
+    public void onSave() {}
 
     /**
      * Required contextual information:
      * - rawValueProperty
      * - errorProperty
      * - errorMessageProperty
-     * @param context : all required information about Database Editor
+     * @param onTheFlyContext : all required information about Database Editor
      */
     @Override
-    public Node renderControls(EditorContext context) {
-        IKsContext iksContext = context.getIKsContext();
-        iksContext.setErrorProperty(context.getErrorProperty());
-        iksContext.setErrorMessageProperty(context.getErrorMessageProperty());
+    public Node renderControls(OnTheFlyContext onTheFlyContext) {
+        IKsContext iksContext = getEditorContext().getIKsContext();
+        iksContext.setErrorProperty(onTheFlyContext.getErrorProperty());
+        iksContext.setErrorMessageProperty(onTheFlyContext.getErrorMessageProperty());
 
         HBox hBox = new HBox();
         hBox.getStyleClass().add(CSS_CLASS_PLUGIN_BOX);
 
-        VBox mainColumnBox = createMainColumn(context);
+        VBox mainColumnBox = createMainColumn(onTheFlyContext);
 
         ObservableList<Node> mainRowChildren = hBox.getChildren();
         mainRowChildren.add(mainColumnBox);
@@ -86,7 +90,7 @@ public class IKsPlugin extends AbstractDatabasePlugin {
         return new HashSet<>(singletonList(thisClass.getResource(PATH_RESOURCE_CSS_IKS).toExternalForm()));
     }
 
-    private VBox createMainColumn(EditorContext context) {
+    private VBox createMainColumn(OnTheFlyContext onTheFlyContext) {
         Map<Integer, String> reference = ikRefHelper.getIKReference();
 
         ComboBox<Map.Entry<Integer, String>> ikSelectorComboBox = new ComboBox<>(
@@ -97,20 +101,20 @@ public class IKsPlugin extends AbstractDatabasePlugin {
         VBox mainColumnBox = new VBox();
         ObservableList<Node> mainColumnChildren = mainColumnBox.getChildren();
 
-        HBox ikSelectorBox = createIkSelectorBox(context, reference, ikSelectorComboBox);
+        HBox ikSelectorBox = createIkSelectorBox(onTheFlyContext, reference, ikSelectorComboBox);
 
         mainColumnChildren.add(ikSelectorBox);
         return mainColumnBox;
     }
 
-    private HBox createIkSelectorBox(EditorContext context, Map<Integer, String> reference, ComboBox<Map.Entry<Integer, String>> ikSelectorComboBox) {
+    private HBox createIkSelectorBox(OnTheFlyContext onTheFlyContext, Map<Integer, String> reference, ComboBox<Map.Entry<Integer, String>> ikSelectorComboBox) {
         HBox camSelectorBox = new HBox();
         camSelectorBox.getStyleClass().add(CSS_CLASS_IK_SELECTOR_BOX);
 
         ikSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
-                getIKSelectorChangeListener(context));
+                getIKSelectorChangeListener());
         Bindings.bindBidirectional(
-                context.getRawValueProperty(), ikSelectorComboBox.valueProperty(), new IKReferenceToRawValueConverter(reference));
+                onTheFlyContext.getRawValueProperty(), ikSelectorComboBox.valueProperty(), new IKReferenceToRawValueConverter(reference));
 
         Label availableIKsLabel = new Label(LABEL_AVAILABLE_IKS);
         availableIKsLabel.setLabelFor(ikSelectorComboBox);
@@ -126,13 +130,14 @@ public class IKsPlugin extends AbstractDatabasePlugin {
         return camSelectorBox;
     }
 
-    private ChangeListener<Map.Entry<Integer, String>> getIKSelectorChangeListener(EditorContext context) {
+    private ChangeListener<Map.Entry<Integer, String>> getIKSelectorChangeListener() {
         return (ObservableValue<? extends Map.Entry<Integer, String>> observable, Map.Entry<Integer, String> oldValue, Map.Entry<Integer, String> newValue) -> {
             if (Objects.equals(oldValue, newValue)) {
                 return;
             }
 
-            IKsContext iKsContext = context.getIKsContext();
+            EditorContext editorContext = getEditorContext();
+            IKsContext iKsContext = editorContext.getIKsContext();
             if (newValue == null) {
                 iKsContext.getErrorProperty().setValue(true);
                 iKsContext.getErrorMessageProperty().setValue(LABEL_ERROR_TOOLTIP);
@@ -140,7 +145,7 @@ public class IKsPlugin extends AbstractDatabasePlugin {
                 iKsContext.getErrorProperty().setValue(false);
                 iKsContext.getErrorMessageProperty().setValue("");
 
-                context.getChangeDataController().updateContentItem(CAR_PHYSICS_DATA, FIELD_RANK_IK, Integer.toString(newValue.getKey()));
+                editorContext.getChangeDataController().updateContentItem(CAR_PHYSICS_DATA, FIELD_RANK_IK, Integer.toString(newValue.getKey()));
             }
         };
     }

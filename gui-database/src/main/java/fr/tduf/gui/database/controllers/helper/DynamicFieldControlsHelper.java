@@ -9,12 +9,15 @@ import fr.tduf.gui.database.domain.ItemViewModel;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.gui.database.listener.ErrorChangeListener;
-import fr.tduf.gui.database.plugins.common.EditorContext;
+import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 
 import java.util.List;
@@ -140,17 +143,17 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     }
 
     private void addPluginControls(String pluginName, DbDto.Topic currentTopic, HBox fieldBox, FieldSettingsDto fieldSettings, StringProperty rawValueProperty, StringProperty errorMessageProperty, BooleanProperty errorProperty, String fieldTargetRef) {
-        EditorContext editorContext = controller.getPluginHandler().getContext();
-        editorContext.setCurrentTopic(currentTopic);
-        editorContext.setContentEntryIndex(controller.getCurrentEntryIndex());
-        editorContext.setRemoteTopic(getEffectiveTopic(currentTopic, fieldTargetRef));
-        editorContext.setFieldRank(fieldSettings.getRank());
-        editorContext.setFieldReadOnly(fieldSettings.isReadOnly());
-        editorContext.setRawValueProperty(rawValueProperty);
-        editorContext.setErrorMessageProperty(errorMessageProperty);
-        editorContext.setErrorProperty(errorProperty);
+        OnTheFlyContext onTheFlyContext = new OnTheFlyContext();
+        onTheFlyContext.setCurrentTopic(currentTopic);
+        onTheFlyContext.setContentEntryIndex(controller.getCurrentEntryIndex());
+        onTheFlyContext.setRemoteTopic(getEffectiveTopic(currentTopic, fieldTargetRef));
+        onTheFlyContext.setFieldRank(fieldSettings.getRank());
+        onTheFlyContext.setFieldReadOnly(fieldSettings.isReadOnly());
+        onTheFlyContext.setRawValueProperty(rawValueProperty);
+        onTheFlyContext.setErrorMessageProperty(errorMessageProperty);
+        onTheFlyContext.setErrorProperty(errorProperty);
 
-        controller.getPluginHandler().renderPluginByName(pluginName, fieldBox);
+        controller.getPluginHandler().renderPluginByName(pluginName, fieldBox, onTheFlyContext);
     }
 
     private void addReferenceValueControls(HBox fieldBox, boolean fieldReadOnly, DbStructureDto.Field field) {

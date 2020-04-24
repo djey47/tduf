@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.plugins.common;
 
 import fr.tduf.gui.database.controllers.MainStageChangeDataController;
+import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import fr.tduf.libtesting.common.helper.javafx.ApplicationTestHelper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,6 +31,9 @@ class PluginHandlerTest {
 
     @Mock
     Pane parentPaneMock;
+
+    @Mock
+    private OnTheFlyContext onTheFlyContextMock;
 
     private ObservableList<Node> parentPaneChildren = FXCollections.observableArrayList();
     private PluginHandler pluginHandler = new PluginHandler(TestingParent.testingInstance(), MainStageChangeDataController.testingInstance());
@@ -66,7 +70,7 @@ class PluginHandlerTest {
     @Test
     void renderPluginByName_whenUnknownPlugin_shouldNotThrowException() {
         // given-when-then
-        pluginHandler.renderPluginByName("foo", new HBox());
+        pluginHandler.renderPluginByName("foo", new HBox(), onTheFlyContextMock);
     }
 
     @Test
@@ -75,7 +79,7 @@ class PluginHandlerTest {
         HBox parentNode = new HBox();
 
         // when
-        pluginHandler.renderPluginByName("NOPE", parentNode);
+        pluginHandler.renderPluginByName("NOPE", parentNode, onTheFlyContextMock);
 
         // then
         assertThat(parentNode.getChildren()).hasSize(1);
@@ -111,7 +115,7 @@ class PluginHandlerTest {
         pluginHandler.initializePluginInstance(pluginInstanceMock, "TEST_PLUGIN");
 
         // then
-        verify(pluginInstanceMock).onInit(eq(pluginHandler.getContext()));
+        verify(pluginInstanceMock).onInit(eq(pluginHandler.getEditorContext()));
         verify(pluginInstanceMock).setInitError(isNull());
     }
 
@@ -120,7 +124,7 @@ class PluginHandlerTest {
         // given
         IOException initException = new IOException("This is an init exception");
         doThrow(initException)
-                .when(pluginInstanceMock).onInit(eq(pluginHandler.getContext()));
+                .when(pluginInstanceMock).onInit(eq(pluginHandler.getEditorContext()));
 
         // when
         pluginHandler.initializePluginInstance(pluginInstanceMock, "TEST_PLUGIN");
@@ -132,10 +136,10 @@ class PluginHandlerTest {
     @Test
     void renderPluginInstance_whenNoInitError_shouldRenderWithPluginInstance() {
         // given-when
-        pluginHandler.renderPluginInstance(pluginInstanceMock, "TEST_PLUGIN", parentPaneMock);
+        pluginHandler.renderPluginInstance(pluginInstanceMock, "TEST_PLUGIN", parentPaneMock, onTheFlyContextMock);
 
         // then
-        verify(pluginInstanceMock).renderControls(eq(pluginHandler.getContext()));
+        verify(pluginInstanceMock).renderControls(eq(onTheFlyContextMock));
         assertThat(parentPaneChildren).hasSize(1);
     }
 
@@ -145,10 +149,10 @@ class PluginHandlerTest {
         when(pluginInstanceMock.getInitError()).thenReturn(of(new IOException()));
 
         // when
-        pluginHandler.renderPluginInstance(pluginInstanceMock, "TEST_PLUGIN", parentPaneMock);
+        pluginHandler.renderPluginInstance(pluginInstanceMock, "TEST_PLUGIN", parentPaneMock, onTheFlyContextMock);
 
         // then
-        verify(pluginInstanceMock, never()).renderControls(any(EditorContext.class));
+        verify(pluginInstanceMock, never()).renderControls(any(OnTheFlyContext.class));
         assertThat(parentPaneChildren).hasSize(1);
     }
 
@@ -158,19 +162,19 @@ class PluginHandlerTest {
         pluginHandler.triggerOnSaveForPluginInstance(pluginInstanceMock);
 
         // then
-        verify(pluginInstanceMock).onSave(eq(pluginHandler.getContext()));
+        verify(pluginInstanceMock).onSave();
     }
 
     @Test
     void triggerOnSaveForPluginInstance_whenError_shouldEndNormally() throws IOException {
         // given
-        doThrow(new IOException()).when(pluginInstanceMock).onSave(any(EditorContext.class));
+        doThrow(new IOException()).when(pluginInstanceMock).onSave();
 
         // when
         pluginHandler.triggerOnSaveForPluginInstance(pluginInstanceMock);
 
         // then
-        verify(pluginInstanceMock).onSave(any(EditorContext.class));
+        verify(pluginInstanceMock).onSave();
     }
 
     private static class TestingParent extends Parent {

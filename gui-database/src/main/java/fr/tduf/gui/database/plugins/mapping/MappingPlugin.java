@@ -5,7 +5,8 @@ import fr.tduf.gui.common.javafx.helper.ControlHelper;
 import fr.tduf.gui.common.javafx.helper.DesktopHelper;
 import fr.tduf.gui.database.plugins.cameras.common.FxConstants;
 import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
-import fr.tduf.gui.database.plugins.common.EditorContext;
+import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
+import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import fr.tduf.gui.database.plugins.mapping.converter.BooleanStatusToDisplayConverter;
 import fr.tduf.gui.database.plugins.mapping.domain.MappingEntry;
 import fr.tduf.libunlimited.common.game.FileConstants;
@@ -68,22 +69,21 @@ public class MappingPlugin extends AbstractDatabasePlugin {
     @SuppressWarnings("FieldMayBeFinal")
     private Property<BankMap> bankMapProperty = new SimpleObjectProperty<>();
 
-    private EditorContext editorContext;
-    private ObservableList<MappingEntry> files;
-
     /**
      * Required contextual information:
-     * @param context : all required information about Database Editor
+     * @param editorContext : all required information about Database Editor
      * @throws IOException when cameras file can't be parsed for some reason
      */
     @Override
-    public void onInit(EditorContext context) throws IOException {
-        MappingContext mappingContext = context.getMappingContext();
+    public void onInit(EditorContext editorContext) throws IOException {
+        super.onInit(editorContext);
+
+        MappingContext mappingContext = editorContext.getMappingContext();
         mappingContext.reset();
         
         bankMapProperty.setValue(null);
 
-        String gameLocation = context.getGameLocation();
+        String gameLocation = editorContext.getGameLocation();
         Path mappingFile = resolveMappingFilePath(gameLocation);
         if (!Files.exists(mappingFile)) {
             String warningMessage = String.format(FORMAT_MESSAGE_WARN_NO_MAPPING, gameLocation);
@@ -101,14 +101,11 @@ public class MappingPlugin extends AbstractDatabasePlugin {
         Log.info(THIS_CLASS_NAME, "Mapping info loaded");        
         mappingContext.setPluginLoaded(true);
         mappingContext.setBinaryFileLocation(mapFileName);
-
-        // Store context to use it in actions
-        editorContext = context;
     }
 
     @Override
-    public void onSave(EditorContext context) throws IOException {
-        MappingContext mappingContext = context.getMappingContext();
+    public void onSave() throws IOException {
+        MappingContext mappingContext = this.getEditorContext().getMappingContext();
         if (!mappingContext.isPluginLoaded()) {
             Log.warn(THIS_CLASS_NAME, "Mapping plugin not loaded, no saving will be performed");
             return;
@@ -120,24 +117,23 @@ public class MappingPlugin extends AbstractDatabasePlugin {
     }
 
     @Override
-    public Node renderControls(EditorContext context) {
-        MappingContext mappingContext = context.getMappingContext();
-        mappingContext.setErrorProperty(context.getErrorProperty());
-        mappingContext.setErrorMessageProperty(context.getErrorMessageProperty());
+    public Node renderControls(OnTheFlyContext onTheFlyContext) {
+        MappingContext mappingContext = getEditorContext().getMappingContext();
+        mappingContext.setErrorProperty(onTheFlyContext.getErrorProperty());
+        mappingContext.setErrorMessageProperty(onTheFlyContext.getErrorMessageProperty());
 
         HBox hBox = new HBox();
         hBox.getStyleClass().add(CSS_CLASS_PLUGIN_BOX);
 
-        if (!context.getMappingContext().isPluginLoaded()) {
+        if (!mappingContext.isPluginLoaded()) {
             Log.warn(THIS_CLASS_NAME, "Mapping plugin not loaded, no rendering will be performed");
             return hBox;
         }
         
-        TableView<MappingEntry> filesTableView = createFilesTableView();
-        files = filesTableView.getItems();
-        
-        VBox mainColumnBox = createMainColumn(filesTableView);
-        VBox buttonColumnBox = createButtonColumn(filesTableView.getSelectionModel());
+        TableView<MappingEntry> filesTableView = createFilesTableView(onTheFlyContext);
+
+        VBox mainColumnBox = createMainColumn(filesTableView, onTheFlyContext);
+        VBox buttonColumnBox = createButtonColumn(filesTableView.getSelectionModel(), onTheFlyContext);
         
         ObservableList<Node> mainRowChildren = hBox.getChildren();
         mainRowChildren.add(mainColumnBox);
@@ -161,7 +157,7 @@ public class MappingPlugin extends AbstractDatabasePlugin {
         return Paths.get(gameLocation, FileConstants.DIRECTORY_EURO, FileConstants.DIRECTORY_BANKS, filePath);
     }
 
-    MappingEntry createMappingEntry(String resourceValue, MappedFileKind kind, String gameLocation) {
+    MappingEntry createMappingEntry(String resourceValue, MappedFileKind kind, OnTheFlyContext onTheFlyContext) {
         String fileName = String.format(kind.getFileNameFormat(), resourceValue);
         int lastPartIndex = fileName.lastIndexOf("_");
         int dotIndex = fileName.lastIndexOf(".");
@@ -171,7 +167,7 @@ public class MappingPlugin extends AbstractDatabasePlugin {
         switch(kind) {
             case FRONT_RIMS_3D:
             case REAR_RIMS_3D:
-                filePath = parentPath.resolve(resolveRimDirectoryName()).resolve(fileName);
+                filePath = parentPath.resolve(resolveRimDirectoryName(onTheFlyContext)).resolve(fileName);
                 break;
             case SHOP_EXT_3D:
             case HOUSE_EXT_3D:
@@ -189,57 +185,58 @@ public class MappingPlugin extends AbstractDatabasePlugin {
                 filePath = parentPath.resolve(PREFIX_SPOT_GARAGE_BANK + fileName.substring(1, lastPartIndex).toLowerCase() + fileName.substring(dotIndex));
                 break;
             case CLOTHES_3D:
-                filePath = parentPath.resolve(resolveClothesBrandDirectoryName()).resolve(fileName);
+                filePath = parentPath.resolve(resolveClothesBrandDirectoryName(onTheFlyContext)).resolve(fileName);
                 break;
             default:
                 filePath = parentPath.resolve(fileName);
         }
 
-        boolean exists = Files.exists(resolveBankFilePath(gameLocation, filePath.toString()));
+        boolean exists = Files.exists(resolveBankFilePath(getEditorContext().getGameLocation(), filePath.toString()));
         boolean registered = MapHelper.hasEntryForPath(bankMapProperty.getValue(), filePath.toString());
         return new MappingEntry(kind.getDescription(), filePath.toString(), exists, registered);
     }
 
-    void refreshMapping(String resourceReference) {
-        StringProperty errorMessageProperty = editorContext.getMappingContext().getErrorMessageProperty();
-        BooleanProperty errorProperty = editorContext.getMappingContext().getErrorProperty();
+    void refreshMapping(String resourceReference, OnTheFlyContext onTheFlyContext) {
+        EditorContext editorContext = getEditorContext();
+        MappingContext mappingContext = editorContext.getMappingContext();
+        StringProperty errorMessageProperty = mappingContext.getErrorMessageProperty();
+        BooleanProperty errorProperty = mappingContext.getErrorProperty();
 
+        ObservableList<MappingEntry> files = onTheFlyContext.getFiles();
         files.clear();
 
-        if (!HANDLED_TOPICS.contains(editorContext.getCurrentTopic())) {
+        if (!HANDLED_TOPICS.contains(onTheFlyContext.getCurrentTopic())) {
             errorMessageProperty.setValue(null);
             errorProperty.setValue(null);
             return;
         }
 
         BulkDatabaseMiner miner = editorContext.getMiner();
-        String resourceValue = miner.getResourceEntryFromTopicAndReference(editorContext.getRemoteTopic(), resourceReference)
+        String resourceValue = miner.getResourceEntryFromTopicAndReference(onTheFlyContext.getRemoteTopic(), resourceReference)
                 .flatMap(ResourceEntryDto::pickValue)
                 .orElse(VALUE_RESOURCE_DEFAULT);
-        int fieldRank = editorContext.getFieldRank();
-        String gameLocation = editorContext.getGameLocation();
 
-        switch (editorContext.getCurrentTopic()) {
+        switch (onTheFlyContext.getCurrentTopic()) {
             case CAR_PHYSICS_DATA:
-                addCarPhysicsEntries(fieldRank, gameLocation, resourceValue);
+                addCarPhysicsEntries(resourceValue, onTheFlyContext);
                 break;
             case CAR_PACKS:
-                addCarPacksEntries(fieldRank, gameLocation, resourceValue);
+                addCarPacksEntries(resourceValue, onTheFlyContext);
                 break;
             case CAR_SHOPS:
-                addCarShopsEntries(fieldRank, gameLocation, resourceValue);
+                addCarShopsEntries(resourceValue, onTheFlyContext);
                 break;
             case CLOTHES:
-                addClothesEntries(fieldRank, gameLocation, resourceValue);
+                addClothesEntries(resourceValue, onTheFlyContext);
                 break;
             case HOUSES:
-                addHousesEntries(fieldRank, gameLocation, resourceValue);
+                addHousesEntries(resourceValue, onTheFlyContext);
                 break;
             case RIMS:
-                addRimsEntries(fieldRank, gameLocation, resourceValue);
+                addRimsEntries(resourceValue, onTheFlyContext);
                 break;
             case TUTORIALS:
-                addTutorialsEntries(fieldRank, gameLocation, resourceValue);
+                addTutorialsEntries(resourceValue, onTheFlyContext);
                 break;
             default:
         }
@@ -249,31 +246,32 @@ public class MappingPlugin extends AbstractDatabasePlugin {
         errorMessageProperty.setValue(isRegistrationFailure ? LABEL_ERROR_TOOLTIP_UNREGISTERED : "");
     }
 
-    private VBox createMainColumn(TableView<MappingEntry> filesTableView) {
+    private VBox createMainColumn(TableView<MappingEntry> filesTableView, OnTheFlyContext onTheFlyContext) {
         VBox mainColumnBox = new VBox();
         mainColumnBox.getStyleClass().add(FxConstants.CSS_CLASS_MAIN_COLUMN);
         ObservableList<Node> mainColumnChildren = mainColumnBox.getChildren();
 
         mainColumnChildren.add(filesTableView);
 
-        editorContext.getRawValueProperty().addListener(handleResourceValueChange());
+        onTheFlyContext.getRawValueProperty().addListener(handleResourceValueChange(onTheFlyContext));
 
         return mainColumnBox;
     }
 
-    private VBox createButtonColumn(TableView.TableViewSelectionModel<MappingEntry> selectionModel) {
+    private VBox createButtonColumn(TableView.TableViewSelectionModel<MappingEntry> selectionModel, OnTheFlyContext onTheFlyContext) {
         VBox buttonColumnBox = new VBox();
         buttonColumnBox.getStyleClass().add(fr.tduf.gui.database.common.FxConstants.CSS_CLASS_VERTICAL_BUTTON_BOX);
 
         Button refreshMappingButton = new Button(LABEL_BUTTON_REFRESH);
         refreshMappingButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
-        refreshMappingButton.setOnAction(handleRefreshButtonAction());
+        refreshMappingButton.setOnAction(handleRefreshButtonAction(onTheFlyContext));
 
         Button browseResourceButton = new Button(LABEL_BUTTON_BROWSE);
         browseResourceButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
         ControlHelper.setTooltipText(browseResourceButton, TOOLTIP_BUTTON_BROWSE_RESOURCES);
+        EditorContext editorContext = getEditorContext();
         browseResourceButton.setOnAction(
-                editorContext.getMainStageController().getViewData().handleBrowseResourcesButtonMouseClick(editorContext.getRemoteTopic(), editorContext.getRawValueProperty(), editorContext.getFieldRank()));
+                editorContext.getMainStageController().getViewData().handleBrowseResourcesButtonMouseClick(onTheFlyContext.getRemoteTopic(), onTheFlyContext.getRawValueProperty(), onTheFlyContext.getFieldRank()));
 
         Button seeDirectoryButton = new Button(LABEL_BUTTON_GOTO);
         seeDirectoryButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
@@ -295,7 +293,7 @@ public class MappingPlugin extends AbstractDatabasePlugin {
         return buttonColumnBox;
     }
 
-    private TableView<MappingEntry> createFilesTableView() {
+    private TableView<MappingEntry> createFilesTableView(OnTheFlyContext onTheFlyContext) {
         TableView<MappingEntry> mappingInfoTableView = new TableView<>(FXCollections.observableArrayList());
         mappingInfoTableView.getStyleClass().addAll(CSS_CLASS_TABLEVIEW, CSS_CLASS_MAPPING_TABLEVIEW);
 
@@ -326,16 +324,18 @@ public class MappingPlugin extends AbstractDatabasePlugin {
         columns.add(existsColumn);
         columns.add(registeredColumn);
 
+        onTheFlyContext.setFiles(mappingInfoTableView.getItems());
+
         return mappingInfoTableView;
     }
 
-    private ChangeListener<String> handleResourceValueChange() {
+    private ChangeListener<String> handleResourceValueChange(OnTheFlyContext onTheFlyContext) {
         return (observable, oldValue, newValue) ->  {
             if (Objects.equals(oldValue, newValue)) {
                 return;
             }
 
-            refreshMapping(newValue);
+            refreshMapping(newValue, onTheFlyContext);
         };
     }
 
@@ -364,82 +364,89 @@ public class MappingPlugin extends AbstractDatabasePlugin {
         };
     }
 
-    private EventHandler<ActionEvent> handleRefreshButtonAction() {
-        return event -> refreshMapping(editorContext.getRawValueProperty().getValue());
+    private EventHandler<ActionEvent> handleRefreshButtonAction(OnTheFlyContext onTheFlyContext) {
+        return event -> refreshMapping(onTheFlyContext.getRawValueProperty().getValue(), onTheFlyContext);
     }
 
-    private void addTutorialsEntries(int fieldRank, String gameLocation, String resourceValue) {
-        if (FIELD_RANK_VOICE_FILE == fieldRank) {
-            MappingEntry tutoMappingEntry = createMappingEntry(resourceValue, TUTO_INSTRUCTION, gameLocation);
+    private void addTutorialsEntries(String resourceValue, OnTheFlyContext onTheFlyContext) {
+        if (FIELD_RANK_VOICE_FILE == onTheFlyContext.getFieldRank()) {
+            MappingEntry tutoMappingEntry = createMappingEntry(resourceValue, TUTO_INSTRUCTION, onTheFlyContext);
+            ObservableList<MappingEntry> files = onTheFlyContext.getFiles();
             files.add(tutoMappingEntry);
         }
     }
 
-    private void addRimsEntries(int fieldRank, String gameLocation, String resourceValue) {
+    private void addRimsEntries(String resourceValue, OnTheFlyContext onTheFlyContext) {
+        ObservableList<MappingEntry> files = onTheFlyContext.getFiles();
+        int fieldRank = onTheFlyContext.getFieldRank();
         if (FIELD_RANK_RSC_FILE_NAME_FRONT == fieldRank) {
-            MappingEntry frontMappingEntry = createMappingEntry(resourceValue, FRONT_RIMS_3D, gameLocation);
+            MappingEntry frontMappingEntry = createMappingEntry(resourceValue, FRONT_RIMS_3D, onTheFlyContext);
             files.add(frontMappingEntry);
         } else if (FIELD_RANK_RSC_FILE_NAME_REAR == fieldRank) {
-            MappingEntry rearMappingEntry = createMappingEntry(resourceValue, REAR_RIMS_3D, gameLocation);
+            MappingEntry rearMappingEntry = createMappingEntry(resourceValue, REAR_RIMS_3D, onTheFlyContext);
             files.add(rearMappingEntry);
         }
     }
 
-    private void addClothesEntries(int fieldRank, String gameLocation, String resourceValue) {
-        if (FIELD_RANK_FURNITURE_FILE == fieldRank) {
-            MappingEntry clothesMappingEntry = createMappingEntry(resourceValue, CLOTHES_3D, gameLocation);
-            files.add(clothesMappingEntry);
+    private void addClothesEntries(String resourceValue, OnTheFlyContext onTheFlyContext) {
+        if (FIELD_RANK_FURNITURE_FILE == onTheFlyContext.getFieldRank()) {
+            MappingEntry clothesMappingEntry = createMappingEntry(resourceValue, CLOTHES_3D, onTheFlyContext);
+            onTheFlyContext.getFiles().add(clothesMappingEntry);
         }
     }
 
-    private void addCarShopsEntries(int fieldRank, String gameLocation, String resourceValue) {
-        if (FIELD_RANK_DEALER_NAME == fieldRank) {
-            MappingEntry shopExtMappingEntry = createMappingEntry(resourceValue, SHOP_EXT_3D, gameLocation);
-            MappingEntry shopIntMappingEntry = createMappingEntry(resourceValue, SHOP_INT_3D, gameLocation);
-            MappingEntry shopThumbMappingEntry = createMappingEntry(resourceValue, SPOT_MAP_SCREEN, gameLocation);
-            files.addAll(shopExtMappingEntry, shopIntMappingEntry, shopThumbMappingEntry);
+    private void addCarShopsEntries(String resourceValue, OnTheFlyContext onTheFlyContext) {
+        if (FIELD_RANK_DEALER_NAME == onTheFlyContext.getFieldRank()) {
+            MappingEntry shopExtMappingEntry = createMappingEntry(resourceValue, SHOP_EXT_3D, onTheFlyContext);
+            MappingEntry shopIntMappingEntry = createMappingEntry(resourceValue, SHOP_INT_3D, onTheFlyContext);
+            MappingEntry shopThumbMappingEntry = createMappingEntry(resourceValue, SPOT_MAP_SCREEN, onTheFlyContext);
+            onTheFlyContext.getFiles().addAll(shopExtMappingEntry, shopIntMappingEntry, shopThumbMappingEntry);
         }
     }
 
-    private void addHousesEntries(int fieldRank, String gameLocation, String resourceValue) {
+    private void addHousesEntries(String resourceValue, OnTheFlyContext onTheFlyContext) {
+        int fieldRank = onTheFlyContext.getFieldRank();
+        ObservableList<MappingEntry> files = onTheFlyContext.getFiles();
         if (FIELD_RANK_SPOT_NAME == fieldRank) {
-            MappingEntry houseExtMappingEntry = createMappingEntry(resourceValue, HOUSE_EXT_3D, gameLocation);
-            MappingEntry houseLoungeMappingEntry = createMappingEntry(resourceValue, HOUSE_LOUNGE_3D, gameLocation);
-            MappingEntry houseGarageMappingEntry = createMappingEntry(resourceValue, HOUSE_GARAGE_3D, gameLocation);
-            MappingEntry thumbMappingEntry = createMappingEntry(resourceValue, SPOT_MAP_SCREEN, gameLocation);
+            MappingEntry houseExtMappingEntry = createMappingEntry(resourceValue, HOUSE_EXT_3D, onTheFlyContext);
+            MappingEntry houseLoungeMappingEntry = createMappingEntry(resourceValue, HOUSE_LOUNGE_3D, onTheFlyContext);
+            MappingEntry houseGarageMappingEntry = createMappingEntry(resourceValue, HOUSE_GARAGE_3D, onTheFlyContext);
+            MappingEntry thumbMappingEntry = createMappingEntry(resourceValue, SPOT_MAP_SCREEN, onTheFlyContext);
             files.addAll(houseExtMappingEntry, houseLoungeMappingEntry, houseGarageMappingEntry, thumbMappingEntry);
         } else if (FIELD_RANK_REALTOR == fieldRank) {
-            MappingEntry realtorExtMappingEntry = createMappingEntry(resourceValue, REALTOR_EXT_3D, gameLocation);
-            MappingEntry realtorIntMappingEntry = createMappingEntry(resourceValue, REALTOR_INT_3D, gameLocation);
-            MappingEntry thumbMappingEntry = createMappingEntry(resourceValue, SPOT_MAP_SCREEN, gameLocation);
+            MappingEntry realtorExtMappingEntry = createMappingEntry(resourceValue, REALTOR_EXT_3D, onTheFlyContext);
+            MappingEntry realtorIntMappingEntry = createMappingEntry(resourceValue, REALTOR_INT_3D, onTheFlyContext);
+            MappingEntry thumbMappingEntry = createMappingEntry(resourceValue, SPOT_MAP_SCREEN, onTheFlyContext);
             files.addAll(realtorExtMappingEntry, realtorIntMappingEntry,  thumbMappingEntry);
         }
     }
 
-    private void addCarPacksEntries(int fieldRank, String gameLocation, String resourceValue) {
-        if (FIELD_RANK_CAR_FILE_NAME_SWAP == fieldRank) {
-            MappingEntry extMappingEntry = createMappingEntry(resourceValue, EXT_3D, gameLocation);
-            files.add(extMappingEntry);
+    private void addCarPacksEntries(String resourceValue, OnTheFlyContext onTheFlyContext) {
+        if (FIELD_RANK_CAR_FILE_NAME_SWAP == onTheFlyContext.getFieldRank()) {
+            MappingEntry extMappingEntry = createMappingEntry(resourceValue, EXT_3D, onTheFlyContext);
+            onTheFlyContext.getFiles().add(extMappingEntry);
         }
     }
 
-    private void addCarPhysicsEntries(int fieldRank, String gameLocation, String resourceValue) {
+    private void addCarPhysicsEntries(String resourceValue, OnTheFlyContext onTheFlyContext) {
+        int fieldRank = onTheFlyContext.getFieldRank();
+        ObservableList<MappingEntry> files = onTheFlyContext.getFiles();
         if (FIELD_RANK_CAR_FILE_NAME == fieldRank) {
-            MappingEntry extMappingEntry = createMappingEntry(resourceValue, EXT_3D, gameLocation);
-            MappingEntry intMappingEntry = createMappingEntry(resourceValue, INT_3D, gameLocation);
-            MappingEntry sndMappingEntry = createMappingEntry(resourceValue, SOUND, gameLocation);
+            MappingEntry extMappingEntry = createMappingEntry(resourceValue, EXT_3D, onTheFlyContext);
+            MappingEntry intMappingEntry = createMappingEntry(resourceValue, INT_3D, onTheFlyContext);
+            MappingEntry sndMappingEntry = createMappingEntry(resourceValue, SOUND, onTheFlyContext);
             files.addAll(extMappingEntry, intMappingEntry, sndMappingEntry);
         } else if (FIELD_RANK_HUD_FILE_NAME == fieldRank) {
-            MappingEntry lgeMappingEntry = createMappingEntry(resourceValue, HUD_LOW, gameLocation);
-            MappingEntry hgeMappingEntry = createMappingEntry(resourceValue, HUD_HIGH, gameLocation);
+            MappingEntry lgeMappingEntry = createMappingEntry(resourceValue, HUD_LOW, onTheFlyContext);
+            MappingEntry hgeMappingEntry = createMappingEntry(resourceValue, HUD_HIGH, onTheFlyContext);
             files.addAll(lgeMappingEntry, hgeMappingEntry);
         }
     }
 
-    private String resolveRimDirectoryName() {
-        int entryId = editorContext.getMainStageController().getCurrentEntryIndex();
-        DbDto.Topic currentTopic = editorContext.getCurrentTopic();
-        BulkDatabaseMiner miner = editorContext.getMiner();
+    private String resolveRimDirectoryName(OnTheFlyContext onTheFlyContext) {
+        int entryId = onTheFlyContext.getContentEntryIndex();
+        DbDto.Topic currentTopic = onTheFlyContext.getCurrentTopic();
+        BulkDatabaseMiner miner = getEditorContext().getMiner();
         ContentEntryDto contentEntry = miner.getContentEntryFromTopicWithInternalIdentifier(entryId, currentTopic)
                 .orElseThrow(() -> new IllegalStateException("No content entry for identifier: " + entryId));
         String directoryRef = contentEntry.getItemAtRank(FIELD_RANK_RSC_PATH)
@@ -450,10 +457,10 @@ public class MappingPlugin extends AbstractDatabasePlugin {
                 .orElseThrow(() -> new IllegalStateException("No resource value for ref: " + directoryRef));
     }
 
-    private String resolveClothesBrandDirectoryName() {
-        int entryId = editorContext.getMainStageController().getCurrentEntryIndex();
-        DbDto.Topic currentTopic = editorContext.getCurrentTopic();
-        BulkDatabaseMiner miner = editorContext.getMiner();
+    private String resolveClothesBrandDirectoryName(OnTheFlyContext onTheFlyContext) {
+        int entryId = onTheFlyContext.getContentEntryIndex();
+        DbDto.Topic currentTopic = onTheFlyContext.getCurrentTopic();
+        BulkDatabaseMiner miner = getEditorContext().getMiner();
         ContentEntryDto clothesContentEntry = miner.getContentEntryFromTopicWithInternalIdentifier(entryId, currentTopic)
                 .orElseThrow(() -> new IllegalStateException("No content entry for identifier: " + entryId));
         String brandRef = clothesContentEntry.getItemAtRank(FIELD_RANK_FURNITURE_BRAND)
@@ -468,16 +475,9 @@ public class MappingPlugin extends AbstractDatabasePlugin {
     }
 
     /**
-     * For testing use only
+     * Visible for testing
      */
-    void setEditorContext(EditorContext context) {
-        editorContext = context;
-    }
-
-    /**
-     * For testing use only
-     */
-    void setFiles(ObservableList<MappingEntry> files) {
-        this.files = files;
+    protected void setEditorContext(EditorContext editorContext) {
+        super.setEditorContext(editorContext);
     }
 }

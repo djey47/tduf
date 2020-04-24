@@ -16,7 +16,7 @@ import fr.tduf.gui.database.controllers.helper.DialogsHelper;
 import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
-import fr.tduf.gui.database.plugins.common.EditorContext;
+import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
 import fr.tduf.gui.database.services.DatabaseLoader;
 import fr.tduf.gui.database.services.DatabaseSaver;
@@ -485,7 +485,7 @@ public class MainStageController extends AbstractGuiController {
             return;
         }
         
-        EditorContext editorContext = pluginHandler.getContext();
+        EditorContext editorContext = pluginHandler.getEditorContext();
         editorContext.setDatabaseLocation(databaseLoader.databaseLocationProperty().get());
         editorContext.setGameLocation(applicationConfiguration.getGamePath()
                 .map(Path::toString)

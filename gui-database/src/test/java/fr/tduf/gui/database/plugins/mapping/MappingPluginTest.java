@@ -1,7 +1,8 @@
 package fr.tduf.gui.database.plugins.mapping;
 
 import fr.tduf.gui.database.controllers.MainStageController;
-import fr.tduf.gui.database.plugins.common.EditorContext;
+import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
+import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import fr.tduf.gui.database.plugins.mapping.domain.MappingEntry;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
@@ -50,50 +51,57 @@ class MappingPluginTest {
     @Mock
     private BooleanProperty errorProperty;
 
+    @Mock
+    private OnTheFlyContext onTheFlyContextMock;
+
     @InjectMocks
     private MappingPlugin mappingPlugin;
 
-    private final EditorContext context = new EditorContext();
+    private final EditorContext editorContext = new EditorContext();
     private final ObservableList<MappingEntry> files = FXCollections.observableArrayList();
 
     @BeforeEach
     void setUp() {
         initMocks(this);
 
-        context.setMainStageController(controllerMock);
-        context.setMiner(minerMock);
-        context.getMappingContext().setErrorProperty(errorProperty);
-        context.getMappingContext().setErrorMessageProperty(errorMessageProperty);
+        editorContext.setMainStageController(controllerMock);
+        editorContext.setMiner(minerMock);
+        editorContext.getMappingContext().setErrorProperty(errorProperty);
+        editorContext.getMappingContext().setErrorMessageProperty(errorMessageProperty);
 
-        mappingPlugin.setEditorContext(context);
-        mappingPlugin.setFiles(files);
+        mappingPlugin.setEditorContext(editorContext);
 
         when(bankMapProperty.getValue()).thenReturn(new BankMap());
+
+        files.clear();
+
+        when(onTheFlyContextMock.getFiles()).thenReturn(files);
     }
     
     @Test
     void onInit_whenNoMappingFile_shouldThrowException_andNotAttemptLoading() {
         // given
-        context.setGameLocation(".");
+        editorContext.setGameLocation(".");
 
         // when-then
-        assertThrows(IOException.class, () -> mappingPlugin.onInit(context));
-        assertThat(context.getMappingContext().isPluginLoaded()).isFalse();
+        assertThrows(IOException.class, () -> mappingPlugin.onInit(editorContext));
+        assertThat(editorContext.getMappingContext().isPluginLoaded()).isFalse();
     }
 
     @Test
     void onSave_whenNoMappingLoaded_shouldNotAttemptSaving() throws IOException {
         // given-when-then
-        mappingPlugin.onSave(context);
+        mappingPlugin.onSave();
     }
 
     @Test
     void renderControls_whenNoMappingLoaded_shouldReturnEmptyComponent() {
         // given
-        context.getMappingContext().setPluginLoaded(false);
+        editorContext.getMappingContext().setPluginLoaded(false);
+        OnTheFlyContext onTheFlyContext = new OnTheFlyContext();
 
         // when
-        Node actualNode = mappingPlugin.renderControls(context);
+        Node actualNode = mappingPlugin.renderControls(onTheFlyContext);
 
         // then
         assertThat(actualNode).isInstanceOf(HBox.class);
@@ -123,7 +131,7 @@ class MappingPluginTest {
         // given
 
         // when
-        MappingEntry actualEntry = mappingPlugin.createMappingEntry("A3_V6", EXT_3D, "/tdu");
+        MappingEntry actualEntry = mappingPlugin.createMappingEntry("A3_V6", EXT_3D, onTheFlyContextMock);
         
         // then
         assertThat(actualEntry.getKind()).isEqualTo(EXT_3D.getDescription());
@@ -135,7 +143,7 @@ class MappingPluginTest {
     @Test
     void createMappingEntry_forShopModelBank() {
         // given-when
-        MappingEntry actualEntry = mappingPlugin.createMappingEntry("ECD_2B2_7555", SHOP_EXT_3D, "/tdu");
+        MappingEntry actualEntry = mappingPlugin.createMappingEntry("ECD_2B2_7555", SHOP_EXT_3D, onTheFlyContextMock);
         
         // then
         assertThat(actualEntry.getKind()).isEqualTo(SHOP_EXT_3D.getDescription());
@@ -166,7 +174,7 @@ class MappingPluginTest {
 
 
         // when
-        MappingEntry actualEntry = mappingPlugin.createMappingEntry("M_SHIRT_ELLSON", CLOTHES_3D, "/tdu");
+        MappingEntry actualEntry = mappingPlugin.createMappingEntry("M_SHIRT_ELLSON", CLOTHES_3D, onTheFlyContextMock);
 
 
         // then
@@ -193,7 +201,7 @@ class MappingPluginTest {
 
 
         // when
-        MappingEntry actualEntry = mappingPlugin.createMappingEntry("AC_427_F01", FRONT_RIMS_3D, "/tdu");
+        MappingEntry actualEntry = mappingPlugin.createMappingEntry("AC_427_F01", FRONT_RIMS_3D, onTheFlyContextMock);
 
 
         // then
@@ -209,9 +217,9 @@ class MappingPluginTest {
         MappingEntry existingEntry = new MappingEntry("", "", true, true);
         files.add(existingEntry);
 
-        context.setCurrentTopic(CAR_PHYSICS_DATA);
-        context.setRemoteTopic(CAR_PHYSICS_DATA);
-        context.setFieldRank(9); //FIELD_RANK_CAR_FILE_NAME
+        when(onTheFlyContextMock.getCurrentTopic()).thenReturn(CAR_PHYSICS_DATA);
+        when(onTheFlyContextMock.getRemoteTopic()).thenReturn(CAR_PHYSICS_DATA);
+        when(onTheFlyContextMock.getFieldRank()).thenReturn(9); //FIELD_RANK_CAR_FILE_NAME
 
         String resourceRef = "RES";
         ResourceEntryDto resourceEntry = ResourceEntryDto.builder().forReference(resourceRef).withDefaultItem("VALUE").build();
@@ -219,7 +227,7 @@ class MappingPluginTest {
 
 
         // when
-        mappingPlugin.refreshMapping(resourceRef);
+        mappingPlugin.refreshMapping(resourceRef, onTheFlyContextMock);
 
 
         // then
@@ -241,15 +249,15 @@ class MappingPluginTest {
         MappingEntry existingEntry = new MappingEntry("", "", true, true);
         files.add(existingEntry);
 
-        context.setCurrentTopic(CAR_PHYSICS_DATA);
-        context.setRemoteTopic(CAR_PHYSICS_DATA);
-        context.setFieldRank(0);
+        when(onTheFlyContextMock.getCurrentTopic()).thenReturn(CAR_PHYSICS_DATA);
+        when(onTheFlyContextMock.getRemoteTopic()).thenReturn(CAR_PHYSICS_DATA);
+        when(onTheFlyContextMock.getFieldRank()).thenReturn(0);
 
         String resourceRef = "RES";
 
 
         // when
-        mappingPlugin.refreshMapping(resourceRef);
+        mappingPlugin.refreshMapping(resourceRef, onTheFlyContextMock);
 
 
         // then
@@ -265,11 +273,11 @@ class MappingPluginTest {
         MappingEntry existingEntry = new MappingEntry("", "", true, true);
         files.add(existingEntry);
 
-        context.setCurrentTopic(BRANDS);
+        when(onTheFlyContextMock.getCurrentTopic()).thenReturn(BRANDS);
 
 
         // when
-        mappingPlugin.refreshMapping("RES");
+        mappingPlugin.refreshMapping("RES", onTheFlyContextMock);
 
 
         // then

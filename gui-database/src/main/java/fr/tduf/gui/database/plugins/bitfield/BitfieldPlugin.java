@@ -1,14 +1,13 @@
 package fr.tduf.gui.database.plugins.bitfield;
 
-import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.bitfield.converter.BitfieldToStringConverter;
 import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
-import fr.tduf.gui.database.plugins.common.EditorContext;
+import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
+import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import fr.tduf.libunlimited.framework.base.Strings;
 import fr.tduf.libunlimited.high.files.db.common.helper.BitfieldHelper;
 import fr.tduf.libunlimited.high.files.db.dto.DbMetadataDto;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -18,6 +17,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,20 +39,22 @@ public class BitfieldPlugin extends AbstractDatabasePlugin {
     private BitfieldHelper bitfieldHelper;
 
     @Override
-    public void onInit(EditorContext context) {
+    public void onInit(EditorContext editorContext) throws IOException {
+        super.onInit(editorContext);
+
         bitfieldHelper = new BitfieldHelper();
     }
 
     @Override
-    public void onSave(EditorContext context) {}
+    public void onSave() {}
 
     @Override
-    public Node renderControls(EditorContext context) {
+    public Node renderControls(OnTheFlyContext onTheFlyContext) {
         VBox vbox = new VBox();
 
-        bitfieldHelper.getBitfieldReferenceForTopic(context.getCurrentTopic())
+        bitfieldHelper.getBitfieldReferenceForTopic(onTheFlyContext.getCurrentTopic())
                 .ifPresent(refs -> refs
-                        .forEach(ref -> addBitValueCheckbox(context, vbox, ref)));
+                        .forEach(ref -> addBitValueCheckbox(onTheFlyContext, vbox, ref)));
 
         return vbox;
     }
@@ -63,35 +65,35 @@ public class BitfieldPlugin extends AbstractDatabasePlugin {
         return new HashSet<>(singletonList(css));
     }
 
-    private void addBitValueCheckbox(EditorContext context, VBox vbox, DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto ref) {
+    private void addBitValueCheckbox(OnTheFlyContext onTheFlyContext, VBox vbox, DbMetadataDto.TopicMetadataDto.BitfieldMetadataDto ref) {
         int bitIndex = ref.getIndex();
         String displayedIndex = Strings.padStart(Integer.toString(bitIndex), 2, '0');
         String label = String.format(LABEL_FORMAT_BITFIELD_CHECKBOX, displayedIndex, ref.getLabel());
 
         CheckBox checkBox = new CheckBox(label);
         checkBox.getStyleClass().add(CSS_CLASS_BITFIELD_CHECKBOX);
-        boolean fieldReadOnly = context.isFieldReadOnly();
+        boolean fieldReadOnly = onTheFlyContext.isFieldReadOnly();
         checkBox.setDisable(fieldReadOnly);
 
         if (StringUtils.isNotEmpty(ref.getComment())) {
             checkBox.setTooltip(new Tooltip(ref.getComment()));
         }
 
-        StringProperty rawValueProperty = context.getRawValueProperty();
-        Bindings.bindBidirectional(rawValueProperty, checkBox.selectedProperty(), new BitfieldToStringConverter(context.getCurrentTopic(), bitIndex, rawValueProperty, bitfieldHelper));
+        StringProperty rawValueProperty = onTheFlyContext.getRawValueProperty();
+        Bindings.bindBidirectional(rawValueProperty, checkBox.selectedProperty(), new BitfieldToStringConverter(onTheFlyContext.getCurrentTopic(), bitIndex, rawValueProperty, bitfieldHelper));
         if (!fieldReadOnly) {
-            checkBox.selectedProperty().addListener(handleBitfieldCheckboxSelectionChange(context.getFieldRank(), rawValueProperty, context.getCurrentTopic(), context.getChangeDataController()));
+            checkBox.selectedProperty().addListener(handleBitfieldCheckboxSelectionChange(onTheFlyContext));
         }
 
         vbox.getChildren().add(checkBox);
     }
 
-    private ChangeListener<Boolean> handleBitfieldCheckboxSelectionChange(int fieldRank, StringProperty rawValueProperty, DbDto.Topic topic, MainStageChangeDataController changeDataController) {
+    private ChangeListener<Boolean> handleBitfieldCheckboxSelectionChange(OnTheFlyContext onTheFlyContext) {
         return (observable, oldCheckedState, newCheckedState) -> {
             if (newCheckedState == oldCheckedState) {
                 return;
             }
-            changeDataController.updateContentItem(topic, fieldRank, rawValueProperty.get());
+            getEditorContext().getChangeDataController().updateContentItem(onTheFlyContext.getCurrentTopic(), onTheFlyContext.getFieldRank(), onTheFlyContext.getRawValueProperty().get());
         };
     }
 }

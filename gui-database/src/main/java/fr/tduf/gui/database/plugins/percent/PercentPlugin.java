@@ -1,19 +1,18 @@
 package fr.tduf.gui.database.plugins.percent;
 
-import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
-import fr.tduf.gui.database.plugins.common.EditorContext;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
+import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
+import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import fr.tduf.gui.database.plugins.percent.converter.PercentNumberToStringConverter;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,15 +31,16 @@ import static javafx.geometry.Orientation.VERTICAL;
  */
 public class PercentPlugin extends AbstractDatabasePlugin {
     @Override
-    public void onInit(EditorContext context) {}
+    public void onInit(EditorContext editorContext) throws IOException {
+        super.onInit(editorContext);
+    }
 
     @Override
-    public void onSave(EditorContext context) {}
+    public void onSave() {}
 
     @Override
-    public Node renderControls(EditorContext context) {
-        boolean fieldReadOnly = context.isFieldReadOnly();
-        StringProperty rawValueProperty = context.getRawValueProperty();
+    public Node renderControls(OnTheFlyContext onTheFlyContext) {
+        boolean fieldReadOnly = onTheFlyContext.isFieldReadOnly();
 
         HBox hBox = new HBox();
         Slider slider = new Slider(0.0, 100.0, 0.0);
@@ -52,10 +52,10 @@ public class PercentPlugin extends AbstractDatabasePlugin {
         slider.setBlockIncrement(1);
         slider.setDisable(fieldReadOnly);
 
-        Bindings.bindBidirectional(rawValueProperty, slider.valueProperty(), new PercentNumberToStringConverter());
+        Bindings.bindBidirectional(onTheFlyContext.getRawValueProperty(), slider.valueProperty(), new PercentNumberToStringConverter());
         if (!fieldReadOnly) {
             slider.valueChangingProperty().addListener(
-                    handleSliderValueChange(context.getFieldRank(), context.getCurrentTopic(), rawValueProperty, context.getChangeDataController()));
+                    handleSliderValueChange(onTheFlyContext));
         }
 
         hBox.getChildren().add(slider);
@@ -70,12 +70,12 @@ public class PercentPlugin extends AbstractDatabasePlugin {
         return new HashSet<>(singletonList(css));
     }
 
-    private ChangeListener<Boolean> handleSliderValueChange(int fieldRank, DbDto.Topic topic, StringProperty rawValueProperty, MainStageChangeDataController changeDataController) {
+    private ChangeListener<Boolean> handleSliderValueChange(OnTheFlyContext onTheFlyContext) {
         return (observable, oldState, newState) -> {
             if (oldState == newState) {
                 return;
             }
-            changeDataController.updateContentItem(topic, fieldRank, rawValueProperty.get());
+            getEditorContext().getChangeDataController().updateContentItem(onTheFlyContext.getCurrentTopic(), onTheFlyContext.getFieldRank(), onTheFlyContext.getRawValueProperty().get());
         };
     }
 }

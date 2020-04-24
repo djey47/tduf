@@ -1,6 +1,6 @@
 package fr.tduf.gui.database.plugins.mapping;
 
-import fr.tduf.gui.database.plugins.common.PluginContext;
+import fr.tduf.gui.database.plugins.common.contexts.PluginContext;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
 

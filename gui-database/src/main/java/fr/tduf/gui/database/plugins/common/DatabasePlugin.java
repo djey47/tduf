@@ -1,5 +1,7 @@
 package fr.tduf.gui.database.plugins.common;
 
+import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
+import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import javafx.scene.Node;
 
 import java.io.IOException;
@@ -18,15 +20,14 @@ public interface DatabasePlugin {
 
     /**
      * Performs saving tasks or processing drawn by database saving
-     * @param context : all required information about Database Editor
      */
-    void onSave(EditorContext context) throws IOException;
+    void onSave() throws IOException;
 
     /**
-     * @param context : all required information about Database Editor
+     * @param onTheFlyContext : all required information about current context
      * @return rendered FX controls
      */
-    Node renderControls(EditorContext context);
+    Node renderControls(OnTheFlyContext onTheFlyContext);
 
     /**
      * @return necessary stylesheet(s). Null or empty are allowed.
@@ -43,4 +44,6 @@ public interface DatabasePlugin {
      * @return exception thrown at initialization, if any
      */
     Optional<Exception> getInitError();
+
+    EditorContext getEditorContext();
 }
