@@ -58,7 +58,7 @@ class DynamicFieldControlsHelperTest {
     }
 
     @Test
-    void addAllFieldsControls_whenNoFieldSettings_shouldDoNothing() throws Exception {
+    void addAllFieldsControls_whenNoFieldSettings_shouldDoNothing() {
         // GIVEN
         String profileName = "Profile 1";
         EditorLayoutDto layout = new EditorLayoutDto();
@@ -114,7 +114,7 @@ class DynamicFieldControlsHelperTest {
 
 
         // then
-        verifyZeroInteractions(pluginHandlerMock);
+        verifyNoInteractions(pluginHandlerMock);
     }
 
     @Test
@@ -126,7 +126,7 @@ class DynamicFieldControlsHelperTest {
         helper.addCustomControls(new HBox(), createField(), new FieldSettingsDto(), CAR_PHYSICS_DATA, new SimpleStringProperty("RAW_VALUE"));
 
         // then
-        verifyZeroInteractions(pluginHandlerMock);
+        verifyNoInteractions(pluginHandlerMock);
     }
 
     private static DbStructureDto.Field createField() {
