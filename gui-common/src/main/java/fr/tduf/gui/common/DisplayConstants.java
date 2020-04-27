@@ -16,6 +16,7 @@ public class DisplayConstants {
     public static final String MESSAGE_DB_FIX_KO = "Database could not be fixed.";
     public static final String MESSAGE_DB_REMAINING_ERRORS = "Integrity error(s) do remain.\nGame might be playable, though.";
     public static final String MESSAGE_STEP_KO = "Current step could not be performed";
+    public static final String FORMAT_MESSAGE_SERVICE_ERROR = "%s\rCheck logs for details.";
 
     public static final String LABEL_FMT_ERROR_CPL = "(%d)";
     public static final String LABEL_BUTTON_OK = "OK";

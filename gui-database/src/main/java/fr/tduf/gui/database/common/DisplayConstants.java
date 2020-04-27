@@ -105,7 +105,6 @@ public class DisplayConstants {
     public static final String MESSAGE_RESTART_APP = "Please restart application.";
     public static final String MESSAGE_FILE_EXPORT_OK = "Contents were exported to file.";
     public static final String MESSAGE_FILE_EXPORT_KO = "Contents could not be exported to file.";
-    public static final String FORMAT_MESSAGE_SERVICE_ERROR = "%s\rCheck logs for details.";
 
     public static final String TAB_NAME_DEFAULT = "Default";
 

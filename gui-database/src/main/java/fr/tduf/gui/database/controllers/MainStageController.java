@@ -34,7 +34,6 @@ import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
-import javafx.concurrent.Service;
 import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
@@ -427,11 +426,6 @@ public class MainStageController extends AbstractGuiController {
             Log.set(Log.LEVEL_DEBUG);
             Log.debug(THIS_CLASS_NAME, "/!\\ DEBUG mode enabled via application configuration /!\\");
         }
-    }
-
-    // TODO move to gui-common?
-    private static String getServiceErrorMessage(Service<?> service) {
-        return String.format(FORMAT_MESSAGE_SERVICE_ERROR, service.getMessage());
     }
 
     private void handleProfileChoiceChanged(EditorLayoutDto.EditorProfileDto newProfile) {
