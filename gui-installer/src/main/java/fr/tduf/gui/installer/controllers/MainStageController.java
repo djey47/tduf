@@ -514,6 +514,7 @@ public class MainStageController extends AbstractGuiController {
             causeMessage = throwable.getCause().getMessage();
         }
 
+        // TODO use common service error message formatter (getServiceErrorMessage)
         SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
                 .withContext(ERROR)
                 .withTitle(DisplayConstants.TITLE_APPLICATION + subTitle)
