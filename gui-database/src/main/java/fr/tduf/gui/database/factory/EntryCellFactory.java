@@ -1,6 +1,6 @@
 package fr.tduf.gui.database.factory;
 
-import fr.tduf.gui.database.common.DisplayConstants;
+import fr.tduf.gui.database.converter.ContentEntryToStringConverter;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -12,13 +12,8 @@ public class EntryCellFactory implements Callback<ListView<ContentEntryDataItem>
         return new ListCell<ContentEntryDataItem>() {
             @Override
             protected void updateItem(ContentEntryDataItem item, boolean empty) {
-
-                if (item == null) {
-                    setText(null);
-                } else {
-                    // TODO Replace ?? with new DisplayConstant
-                    setText(String.format(DisplayConstants.VALUE_ENTRY_CELL, item.internalEntryIdProperty().get() + 1, item.valueProperty().get()));
-                }
+                String displayedText = ContentEntryToStringConverter.getLabelFromEntry(item);
+                setText(displayedText);
 
                 super.updateItem(item, empty);
             }

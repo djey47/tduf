@@ -5,10 +5,11 @@ package fr.tduf.gui.database.common;
  */
 public class DisplayConstants {
     public static final String SEPARATOR_VALUES = " ";
-    public static final String VALUE_ENTRY_CELL = "%d:%s";
+    public static final String VALUE_ENTRY_CELL = "%d: %s";
     public static final String VALUE_UNKNOWN = "<%s>";
     public static final String VALUE_FIELD_DEFAULT = "";
     public static final String VALUE_RESOURCE_DEFAULT = "";
+    public static final String VALUE_RESOURCE_NONE = "_";
     public static final String VALUE_YES = "Y";
     public static final String VALUE_NO = "N";
 
