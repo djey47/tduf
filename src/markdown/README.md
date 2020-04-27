@@ -27,12 +27,12 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
     * Searches particular entry given its REF
     * Deletes/edits particular entry
     * Adds new resource entry
-* IMPORT/EXPORT [WIKI](https://github.com/djey47/tdu-cp/wiki/TDUF-Database-Editor#import--export-data)
+* IMPORT/EXPORT [WIKI](https://github.com/djey47/tduf/wiki/Quick-Tour-Editor#import--export-data)
     * From TDUF (.json mini-patch file) with additional properties file
     * From TDUPE (.tdupk Performance Pack)
     * From TDUMT (.pch patches)
     * To following forms: EDEN-classic/TDUPE, TDUMT, TDUF mini-patch
-* CAMERAS [WIKI](https://github.com/djey47/tdu-cp/wiki/TDUF-Database-Editor-Cameras)
+* CAMERAS [WIKI](https://github.com/djey47/tduf/wiki/Adjust-Cameras-Editor)
     * Opens and saves Cameras.bin file in above database directory
     * Displays available camera sets and views
     * Detects and displays reference errors
@@ -42,7 +42,7 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
 * IKS
     * Displays available IK sets
     * Detects and displays reference errors
-* FILE MAPPING [WIKI](https://github.com/djey47/tdu-cp/wiki/TDUF-Database-Editor-Mapping)
+* FILE MAPPING [WIKI](https://github.com/djey47/tduf/wiki/File-Mapping-Editor)
     * Displays mapping state and file availability
     * Allows to change names for assets BNK files
     * Displays files into default file browser
@@ -52,15 +52,15 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
 
 ### What's in this version ? (1.13.0)
 * (Editor) Brings misc. UI changes (shorter, clearer labels...)
-* (Editor) All plugins (cameras, iks, mapping,...) can be disabled at once via manual ops. See [WIKI](https://github.com/djey47/tdu-cp/wiki/TDUF-Editor-Tips)
+* (Editor) All plugins (cameras, iks, mapping,...) can be disabled at once via manual ops. See [WIKI](https://github.com/djey47/tduf/wiki/Advanced-Editor)
 * (Editor/Cameras) Adds support for new view setting (ComplementaryView for front/rear switch)
-* (Editor/Mapping) Adds feature as plugin to track BNK file mapping. See [WIKI](https://github.com/djey47/tdu-cp/wiki/TDUF-Database-Editor-Mapping)
+* (Editor/Mapping) Adds feature as plugin to track BNK file mapping. See [WIKI](https://github.com/djey47/tduf/wiki/File-Mapping-Editor)
 
-* (CamerasTool/remove-sets) New operation to delete all views from selected camera sets. See [WIKI](https://github.com/djey47/tdu-cp/wiki/TDUF-Customizing-Cameras#f-delete-view-sets)
+* (CamerasTool/remove-sets) New operation to delete all views from selected camera sets. See [WIKI](https://github.com/djey47/tduf/wiki/Cameras-Tool-CLI#f-delete-view-sets)
 
 * (Library/Cameras) Huge parts of cameras parsing and writing have been refactored
 * (Library/Cameras) Added support for complementary view setting
-* (Library/Files) Added support for new field type: CONSTANT. See [WIKI](https://github.com/djey47/tdu-cp/wiki/TDUF-File-Structure-Reference#field-types)
+* (Library/Files) Added support for new field type: CONSTANT. See [WIKI](https://github.com/djey47/tduf/wiki/Reverse-Engineering-Structure#field-types)
 * (Library/Files) Updated structures to take benefit of CONSTANT field type
 * (Library/Mapping) Added support operations (load/save)
 * (Library/Game) Added new domain Objects and Helpers (Vehicle Slots...)
@@ -92,8 +92,9 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
 
 ### Running Database Editor!
 - Launch TDUF-database-gui.cmd from Windows explorer / TDUF-database-gui.sh from Linux
-- From 1.12.0 version, at first launch, select real TDU game path when asked 
 - In DatabaseEditor, browse location of TDU database BNK or JSON files. Load (may take a while)
+- From 1.12.0 version, at first launch, select real TDU game path when asked 
+- IMPORTANT: if you just updated TDU Database files with a mod, you should always *Clear database cache* from advanced settings! Then reload.
 - Make your changes. Save (may take a while)
 - Database is repacked automatically.
 
@@ -104,7 +105,9 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
 
 
 ### Troubleshooting
-If you encounter some issues to run tools under Windows, launch -noadmin.cmd files instead.
+Now hosted on WIKI:
+- [CLI Tools](https://github.com/djey47/tduf/wiki/Troubleshooting)
+- [Database Editor](https://github.com/djey47/tduf/wiki/Troubleshooting-Editor)
 
 
 ### Using JAR library and/or CLI Tools in your projects
@@ -118,8 +121,9 @@ If you wish to donate, please head to [this](http://bit.ly/13YI3bP)
 
 #### Contact & useful links
 
-* [Project homepage @ TurboDuck community](http://forum.turboduck.net/forums/57-Mod-Tools-Support)
-* [Tools Reference: TDUCP WIKI @ GitHub](https://github.com/djey47/tdu-cp/wiki/Tools-reference)
+* [Project homepage @ TurboDuck community](http://forum.turboduck.net/forums/79-tdu-mod-tools-support)
+* [TDUF WIKI](https://github.com/djey47/tduf/wiki)
+* [Other tools Reference: TDUCP WIKI @ GitHub](https://github.com/djey47/tdu-cp/wiki/Tools-reference)
 
 
 ### Licenses
