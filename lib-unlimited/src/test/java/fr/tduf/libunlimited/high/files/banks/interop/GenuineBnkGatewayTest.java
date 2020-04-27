@@ -117,19 +117,53 @@ class GenuineBnkGatewayTest {
     }
 
     @Test
+    void extractAll_whenCLIExtractFailure_shouldThrowException() throws IOException {
+        // given
+        mockCommandLineHelperToReturnBankInformationSuccess(bankFileName);
+        mockCommandLineHelperToReturnExtractionFailure(bankFileName);
+
+        // when-then
+        IOException actualException = assertThrows(IOException.class,
+                () -> genuineBnkGateway.extractAll(bankFileName, tempDirectory));
+        assertThat(actualException)
+                .hasMessageMatching("Error while extracting from file: (.*)/resources/test/banks/Vehicules/A3_V6.bnk")
+                .hasCauseInstanceOf(IOException.class);
+    }
+
+    @Test
     void packAll_whenSuccess_shouldInvokeCommandLineCorrectly() throws IOException {
         // GIVEN
-        String bankShortName = "CLK_55.bnk";
-        createRepackedFileTree(bankShortName);
-
-        String originalBankFileName = Paths.get(tempDirectory, "original-" + bankShortName).toString();
-        String outputBankFileName = Paths.get(tempDirectory, "repacked-" + bankShortName).toString();
-        mockCommandLineHelperToReturnBankInformationSuccess(originalBankFileName);
+        String outputBankFileName = prepareRepackingWithBankInfo();
         mockCommandLineHelperToReturnReplaceSuccess(outputBankFileName);
 
 
         // WHEN
         genuineBnkGateway.packAll(Paths.get(tempDirectory).toString(), outputBankFileName);
+
+
+        // THEN
+        Log.info("Directory for repacked contents: " + tempDirectory);
+
+        assertThat(new File(outputBankFileName)).exists();
+
+        verify(commandLineHelperMock, times(1)).runCliCommand(eq("mono"), anyString(), eq("BANK-RX"), eq(outputBankFileName),  commandArgumentsCaptor.capture());
+
+        assertBatchInputFileExists();
+    }
+
+    @Test
+    void packAll_whenCLIRepackingFailure_shouldThrowException() throws IOException {
+        // given
+        String outputBankFileName = prepareRepackingWithBankInfo();
+        mockCommandLineHelperToReturnReplaceFailure(outputBankFileName);
+
+
+        // when-then
+        IOException actualException = assertThrows(IOException.class,
+                () -> genuineBnkGateway.packAll(Paths.get(tempDirectory).toString(), outputBankFileName));
+        assertThat(actualException)
+                .hasMessageMatching("Error while repacking to file: (.*)/repacked-CLK_55.bnk")
+                .hasCauseInstanceOf(IOException.class);
 
 
         // THEN
@@ -211,6 +245,16 @@ class GenuineBnkGatewayTest {
         Files.createFile(contentsPath.resolve("A3_V6.2DM"));
     }
 
+    private String prepareRepackingWithBankInfo() throws IOException {
+        String bankShortName = "CLK_55.bnk";
+        createRepackedFileTree(bankShortName);
+
+        String originalBankFileName = Paths.get(tempDirectory, "original-" + bankShortName).toString();
+        String outputBankFileName = Paths.get(tempDirectory, "repacked-" + bankShortName).toString();
+        mockCommandLineHelperToReturnBankInformationSuccess(originalBankFileName);
+        return outputBankFileName;
+    }
+
     private void mockCommandLineHelperToReturnBankInformationSuccess(String bankFileName) throws IOException {
         String jsonOutput = FilesHelper.readTextFromResourceFile("/files/interop/tdumt-cli/BANK-I.output.json");
         ProcessResult processResult = new ProcessResult("BANK-I", 0, jsonOutput, "");
@@ -227,8 +271,18 @@ class GenuineBnkGatewayTest {
         when(commandLineHelperMock.runCliCommand(eq("mono"), anyString(), eq("BANK-UX"), eq(bankFileName), anyString())).thenReturn(processResult);
     }
 
+    private void mockCommandLineHelperToReturnExtractionFailure(String bankFileName) throws IOException {
+        ProcessResult processResult = new ProcessResult("BANK-UX", 1, "", "ERROR OUTPUT");
+        when(commandLineHelperMock.runCliCommand(eq("mono"), anyString(), eq("BANK-UX"), eq(bankFileName), anyString())).thenReturn(processResult);
+    }
+
     private void mockCommandLineHelperToReturnReplaceSuccess(String bankFileName) throws IOException {
         ProcessResult processResult = new ProcessResult("BANK-RX", 0, "{}", "");
+        when(commandLineHelperMock.runCliCommand(eq("mono"), anyString(), eq("BANK-RX"), eq(bankFileName), anyString())).thenReturn(processResult);
+    }
+
+    private void mockCommandLineHelperToReturnReplaceFailure(String bankFileName) throws IOException {
+        ProcessResult processResult = new ProcessResult("BANK-RX", 1, "", "ERROR OUTPUT");
         when(commandLineHelperMock.runCliCommand(eq("mono"), anyString(), eq("BANK-RX"), eq(bankFileName), anyString())).thenReturn(processResult);
     }
 

@@ -19,7 +19,7 @@ import static fr.tduf.libunlimited.common.helper.CommandLineHelper.EXIT_CODE_SUC
 import static java.util.Arrays.asList;
 
 /**
- * Uses TDUMT-CLI application to provide genuine services.
+ * Uses TDUMT-CLI application to provide genuine services written with .net framework.
  */
 public abstract class GenuineGateway {
     private static final String THIS_CLASS_NAME = GenuineGateway.class.getSimpleName();
@@ -81,6 +81,8 @@ public abstract class GenuineGateway {
         ProcessResult processResult = commandLineHelper.runCliCommand(binaryPath, allArguments.toArray(new String[0]));
         handleCommandLineErrors(processResult);
 
+        Log.debug(THIS_CLASS_NAME, String.format("Genuine CLI command: '%s' > %s", processResult.getCommandName(), processResult.getOut()));
+
         return processResult.getOut();
     }
 
@@ -131,8 +133,9 @@ public abstract class GenuineGateway {
 
     private static void handleCommandLineErrors(ProcessResult processResult) throws IOException {
         if (processResult.getReturnCode() != EXIT_CODE_SUCCESS) {
-            Exception parentException = new Exception(processResult.getErr());
-            throw new IOException("Unable to execute genuine CLI command: " + processResult.getCommandName(), parentException);
+            String errorMessage = String.format("Unable to execute genuine CLI command: '%s' > (%d) %s", processResult.getCommandName(), processResult.getReturnCode(), processResult.getErr());
+            Log.error(THIS_CLASS_NAME, errorMessage);
+            throw new IOException(errorMessage);
         }
     }
 }

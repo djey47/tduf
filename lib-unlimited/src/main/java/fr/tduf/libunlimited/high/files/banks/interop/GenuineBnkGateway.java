@@ -163,7 +163,7 @@ public class GenuineBnkGateway extends GenuineGateway implements BankSupport {
                 .build();
     }
 
-    private void batchExtractPackedFilesWithFullPath(String bankFile, GenuineBatchInputDto batchInputObject) {
+    private void batchExtractPackedFilesWithFullPath(String bankFile, GenuineBatchInputDto batchInputObject) throws IOException {
         try {
             Log.debug(THIS_CLASS_NAME, "bankFile: " + bankFile);
             Log.debug(THIS_CLASS_NAME, "batchInputObject: " + batchInputObject);
@@ -173,12 +173,12 @@ public class GenuineBnkGateway extends GenuineGateway implements BankSupport {
             String batchInputFileName = createBatchInputFile(batchInputObject);
 
             callCommandLineInterface(CommandLineOperation.BANK_BATCH_UNPACK, bankFile, batchInputFileName);
-        } catch (IOException e) {
-            Log.error(ExceptionUtils.getStackTrace(e));
+        } catch (IOException ioe) {
+            throw new IOException(String.format("Error while extracting from file: %s", bankFile), ioe);
         }
     }
 
-    private void batchRepackFilesWithFullPath(String outputBankFile, GenuineBatchInputDto batchInputObject) {
+    private void batchRepackFilesWithFullPath(String outputBankFile, GenuineBatchInputDto batchInputObject) throws IOException {
         try {
             Log.debug(THIS_CLASS_NAME, "outputBankFile: " + outputBankFile);
             Log.debug(THIS_CLASS_NAME, "batchInputObject: " + batchInputObject);
@@ -187,7 +187,7 @@ public class GenuineBnkGateway extends GenuineGateway implements BankSupport {
 
             callCommandLineInterface(CommandLineOperation.BANK_BATCH_REPLACE, outputBankFile, batchInputFileName);
         } catch (IOException ioe) {
-            throw new RuntimeException("Error while repacking to file: " + outputBankFile, ioe);
+            throw new IOException(String.format("Error while repacking to file: %s", outputBankFile), ioe);
         }
     }
 
@@ -214,10 +214,13 @@ public class GenuineBnkGateway extends GenuineGateway implements BankSupport {
     private static void createExtractTargetDirectories(GenuineBatchInputDto batchInputObject) {
         batchInputObject.getItems()
                 .forEach(item -> {
+                    Path parentDirectory = Paths.get(".");
                     try {
-                        Files.createDirectories(Paths.get(item.getExternalFile()).getParent());
-                    } catch (IOException e) {
-                        Log.error(ExceptionUtils.getStackTrace(e));
+                        parentDirectory = Paths.get(item.getExternalFile()).getParent();
+                        Files.createDirectories(parentDirectory);
+                    } catch (IOException ioe) {
+                        Log.error(ExceptionUtils.getStackTrace(ioe));
+                        throw new RuntimeException(String.format("Unable to create directory to extract to: %s", parentDirectory.toAbsolutePath()), ioe);
                     }
                 });
     }
