@@ -35,8 +35,8 @@ class PluginHandlerTest {
     @Mock
     private OnTheFlyContext onTheFlyContextMock;
 
-    private ObservableList<Node> parentPaneChildren = FXCollections.observableArrayList();
-    private PluginHandler pluginHandler = new PluginHandler(TestingParent.testingInstance(), MainStageChangeDataController.testingInstance());
+    private final ObservableList<Node> parentPaneChildren = FXCollections.observableArrayList();
+    private final PluginHandler pluginHandler = new PluginHandler(TestingParent.testingInstance(), MainStageChangeDataController.testingInstance());
 
     @BeforeAll
     static void globalSetUp() {
@@ -146,7 +146,8 @@ class PluginHandlerTest {
     @Test
     void renderPluginInstance_whenInitError_shouldNotRenderWithPluginInstance() {
         // given
-        when(pluginInstanceMock.getInitError()).thenReturn(of(new IOException()));
+        IOException initError = new IOException();
+        when(pluginInstanceMock.getInitError()).thenReturn(of(initError));
 
         // when
         pluginHandler.renderPluginInstance(pluginInstanceMock, "TEST_PLUGIN", parentPaneMock, onTheFlyContextMock);
@@ -157,24 +158,27 @@ class PluginHandlerTest {
     }
 
     @Test
-    void triggerOnSaveForPluginInstance_whenNoError() throws IOException {
+    void triggerOnSaveForPluginInstance_whenNoError_shouldClearPreviousError() throws IOException {
         // given-when
         pluginHandler.triggerOnSaveForPluginInstance(pluginInstanceMock);
 
         // then
         verify(pluginInstanceMock).onSave();
+        verify(pluginInstanceMock).setSaveError(isNull());
     }
 
     @Test
-    void triggerOnSaveForPluginInstance_whenError_shouldEndNormally() throws IOException {
+    void triggerOnSaveForPluginInstance_whenError_shouldTriggerErrorAndEndNormally() throws IOException {
         // given
-        doThrow(new IOException()).when(pluginInstanceMock).onSave();
+        IOException saveError = new IOException("Tis is a save error");
+        doThrow(saveError).when(pluginInstanceMock).onSave();
 
         // when
         pluginHandler.triggerOnSaveForPluginInstance(pluginInstanceMock);
 
         // then
         verify(pluginInstanceMock).onSave();
+        verify(pluginInstanceMock).setSaveError(eq(saveError));
     }
 
     private static class TestingParent extends Parent {

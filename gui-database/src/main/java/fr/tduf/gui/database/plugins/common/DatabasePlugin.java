@@ -41,9 +41,20 @@ public interface DatabasePlugin {
     void setInitError(Exception initException);
 
     /**
+     * Marks a save error onto this plugin
+     * @param saveException: exception thrown at initialization
+     */
+    void setSaveError(Exception saveException);
+
+    /**
      * @return exception thrown at initialization, if any
      */
     Optional<Exception> getInitError();
+
+    /**
+     * @return exception thrown at initialization, if any
+     */
+    Optional<Exception> getSaveError();
 
     EditorContext getEditorContext();
 }

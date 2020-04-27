@@ -13,6 +13,7 @@ import static java.util.Optional.ofNullable;
 public abstract class AbstractDatabasePlugin implements DatabasePlugin {
     private EditorContext editorContext;
     private Exception initError = null;
+    private Exception saveError = null;
 
     @Override
     public void onInit(EditorContext editorContext) throws IOException {
@@ -25,8 +26,18 @@ public abstract class AbstractDatabasePlugin implements DatabasePlugin {
     }
 
     @Override
+    public void setSaveError(Exception saveException) {
+        saveError = saveException;
+    }
+
+    @Override
     public Optional<Exception> getInitError() {
         return ofNullable(initError);
+    }
+
+    @Override
+    public Optional<Exception> getSaveError() {
+        return ofNullable(saveError);
     }
 
     @Override

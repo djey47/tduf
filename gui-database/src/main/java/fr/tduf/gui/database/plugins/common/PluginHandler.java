@@ -77,7 +77,7 @@ public class PluginHandler {
             renderPluginInstance(pluginInstance, pluginName, parentPane, onTheFlyContext);
 
         } catch(Exception e) {
-            Log.error(THIS_CLASS_NAME, "Error occured while rendering plugin: " + pluginName, e);
+            Log.error(THIS_CLASS_NAME, "Error occurred while rendering plugin: " + pluginName, e);
         }
     }
 
@@ -95,7 +95,7 @@ public class PluginHandler {
             pluginInstance.onInit(editorContext);
             pluginInstance.setInitError(null);
         } catch (IOException ioe) {
-            Log.error(THIS_CLASS_NAME, "Error occured while initializing plugin: " + pluginName, ioe);
+            Log.error(THIS_CLASS_NAME, "Error occurred while initializing plugin: " + pluginName, ioe);
             pluginInstance.setInitError(ioe);
         }
     }
@@ -112,8 +112,10 @@ public class PluginHandler {
     void triggerOnSaveForPluginInstance(DatabasePlugin pluginInstance) {
         try {
             pluginInstance.onSave();
+            pluginInstance.setSaveError(null);
         } catch (IOException ioe) {
-            Log.error(THIS_CLASS_NAME, "Error occured while triggering onSave for plugin: " + pluginInstance, ioe);
+            Log.error(THIS_CLASS_NAME, "Error occurred while triggering onSave for plugin: " + pluginInstance, ioe);
+            pluginInstance.setSaveError(ioe);
         }
     }
 
@@ -138,7 +140,7 @@ public class PluginHandler {
                 root.getStylesheets().addAll(allCss);
             }
         } catch (Exception e) {
-            Log.error(THIS_CLASS_NAME, "Error occured while invoking getCss for plugin: " + pluginIndex, e);
+            Log.error(THIS_CLASS_NAME, "Error occurred while invoking getCss for plugin: " + pluginIndex, e);
         }
     }
 
