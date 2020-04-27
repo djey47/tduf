@@ -27,8 +27,8 @@ import static java.util.Objects.requireNonNull;
 public class DatabaseLoader extends Service<List<DbDto>> {
     private static final String THIS_CLASS_NAME = DatabaseLoader.class.getSimpleName();
 
-    private StringProperty databaseLocation = new SimpleStringProperty();
-    private SimpleObjectProperty<BankSupport> bankSupport = new SimpleObjectProperty<>();
+    private final StringProperty databaseLocation = new SimpleStringProperty();
+    private final SimpleObjectProperty<BankSupport> bankSupport = new SimpleObjectProperty<>();
 
     /**
      * Created for advanced features and easier testing

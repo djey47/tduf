@@ -13,7 +13,6 @@ import javafx.beans.property.StringProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -28,9 +27,9 @@ import static java.util.Objects.requireNonNull;
 public class DatabaseSaver extends Service<String> {
     private static final String THIS_CLASS_NAME = DatabaseSaver.class.getSimpleName();
 
-    private StringProperty databaseLocation = new SimpleStringProperty();
-    private ObjectProperty<BankSupport> bankSupport = new SimpleObjectProperty<>();
-    private ObjectProperty<List<DbDto>> databaseObjects = new SimpleObjectProperty<>();
+    private final StringProperty databaseLocation = new SimpleStringProperty();
+    private final ObjectProperty<BankSupport> bankSupport = new SimpleObjectProperty<>();
+    private final ObjectProperty<List<DbDto>> databaseObjects = new SimpleObjectProperty<>();
 
     /**
      * Created for advanced features and easier testing
@@ -81,7 +80,7 @@ public class DatabaseSaver extends Service<String> {
         return new SaverTask();
     }
 
-    private static String resolveJsonDatabaseLocation(String realDatabaseLocation) throws IOException {
+    private static String resolveJsonDatabaseLocation(String realDatabaseLocation) {
         final Path realDatabasePath = Paths.get(realDatabaseLocation);
         return BankHelper.isPackedDatabase(realDatabasePath) ?
                 DatabaseBanksCacheHelper.resolveCachePath(realDatabasePath).toString() :
