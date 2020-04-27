@@ -27,7 +27,7 @@ public class DatabaseChecker extends AbstractDatabaseService {
         return new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-
+                // TODO handle errors like Loader/Saver services
                 if (loadedDatabaseObjects.getValue() == null) {
                     updateMessage(String.format(DisplayConstants.STATUS_FMT_CHECK_IN_PROGRESS, "1/3"));
                     String jsonDirectory = resolveJsonDatabaseLocationAndUnpack(databaseLocation.get(), bankSupport.get());
