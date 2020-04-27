@@ -12,12 +12,14 @@ import static java.util.Optional.ofNullable;
  */
 public abstract class AbstractDatabasePlugin implements DatabasePlugin {
     private EditorContext editorContext;
-    private Exception initError = null;
-    private Exception saveError = null;
+    private Exception initError;
+    private Exception saveError;
+    private String name;
 
     @Override
-    public void onInit(EditorContext editorContext) throws IOException {
+    public void onInit(String pluginName, EditorContext editorContext) throws IOException {
         this.editorContext = editorContext;
+        name = pluginName;
     }
 
     @Override
@@ -43,6 +45,11 @@ public abstract class AbstractDatabasePlugin implements DatabasePlugin {
     @Override
     public EditorContext getEditorContext() {
         return editorContext;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     /**

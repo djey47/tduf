@@ -78,12 +78,14 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
      * Required contextual information:
      * - databaseLocation
      * - camerasContext->allCameras
+     *
+     * @param pluginName : name of plugin to initialize
      * @param editorContext : all required information about Database Editor
      * @throws IOException when cameras file can't be parsed for some reason
      */
     @Override
-    public void onInit(EditorContext editorContext) throws IOException {
-        super.onInit(editorContext);
+    public void onInit(String pluginName, EditorContext editorContext) throws IOException {
+        super.onInit(pluginName, editorContext);
 
         CamerasContext camerasContext = editorContext.getCamerasContext();
         camerasContext.reset();

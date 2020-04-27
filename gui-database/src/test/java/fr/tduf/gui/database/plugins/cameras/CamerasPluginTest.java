@@ -33,7 +33,7 @@ class CamerasPluginTest {
         editorContext.setDatabaseLocation(".");
 
         // when-then
-        assertThrows(IOException.class, () -> camerasPlugin.onInit(editorContext));
+        assertThrows(IOException.class, () -> camerasPlugin.onInit("CAMERAS", editorContext));
         assertThat(editorContext.getCamerasContext().isPluginLoaded()).isFalse();
     }
 

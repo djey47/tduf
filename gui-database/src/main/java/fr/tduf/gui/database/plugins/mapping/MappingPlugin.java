@@ -71,12 +71,14 @@ public class MappingPlugin extends AbstractDatabasePlugin {
 
     /**
      * Required contextual information:
+     *
+     * @param pluginName : name of plugin to initialize
      * @param editorContext : all required information about Database Editor
      * @throws IOException when cameras file can't be parsed for some reason
      */
     @Override
-    public void onInit(EditorContext editorContext) throws IOException {
-        super.onInit(editorContext);
+    public void onInit(String pluginName, EditorContext editorContext) throws IOException {
+        super.onInit(pluginName, editorContext);
 
         MappingContext mappingContext = editorContext.getMappingContext();
         mappingContext.reset();

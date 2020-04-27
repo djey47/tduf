@@ -74,7 +74,7 @@ public class PluginHandler {
         try {
             PluginIndex resolvedPlugin = PluginIndex.valueOf(pluginName);
             DatabasePlugin pluginInstance = resolvedPlugin.getPluginInstance();
-            renderPluginInstance(pluginInstance, pluginName, parentPane, onTheFlyContext);
+            renderPluginInstance(pluginInstance, parentPane, onTheFlyContext);
 
         } catch(Exception e) {
             Log.error(THIS_CLASS_NAME, "Error occurred while rendering plugin: " + pluginName, e);
@@ -92,7 +92,7 @@ public class PluginHandler {
 
     void initializePluginInstance(DatabasePlugin pluginInstance, String pluginName) {
         try {
-            pluginInstance.onInit(editorContext);
+            pluginInstance.onInit(pluginName, editorContext);
             pluginInstance.setInitError(null);
         } catch (IOException ioe) {
             Log.error(THIS_CLASS_NAME, "Error occurred while initializing plugin: " + pluginName, ioe);
@@ -100,11 +100,11 @@ public class PluginHandler {
         }
     }
 
-    void renderPluginInstance(DatabasePlugin pluginInstance, String pluginName, Pane parentPane, OnTheFlyContext onTheFlyContext) {
+    void renderPluginInstance(DatabasePlugin pluginInstance, Pane parentPane, OnTheFlyContext onTheFlyContext) {
         // Error handling
         Optional<Exception> initError = pluginInstance.getInitError();
         final Node renderedNode = initError
-                .map(e -> renderErrorPlaceholder(e, pluginName))
+                .map(e -> renderErrorPlaceholder(e, pluginInstance.getName()))
                 .orElseGet(() -> pluginInstance.renderControls(onTheFlyContext));
         parentPane.getChildren().add(renderedNode);
     }

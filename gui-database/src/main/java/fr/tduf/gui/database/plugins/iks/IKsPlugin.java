@@ -47,8 +47,8 @@ public class IKsPlugin extends AbstractDatabasePlugin {
      * Required contextual information: none
      */
     @Override
-    public void onInit(EditorContext editorContext) throws IOException {
-        super.onInit(editorContext);
+    public void onInit(String pluginName, EditorContext editorContext) throws IOException {
+        super.onInit(pluginName, editorContext);
 
         ikRefHelper = new CameraAndIKHelper();
         Log.info(THIS_CLASS_NAME, "IK reference loaded");

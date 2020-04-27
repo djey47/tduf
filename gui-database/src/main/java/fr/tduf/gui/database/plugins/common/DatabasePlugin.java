@@ -14,9 +14,10 @@ import java.util.Set;
 public interface DatabasePlugin {
     /**
      * Performs initialization tasks. Will be invoked once database loaded.
+     * @param pluginName : name of plugin
      * @param context : all required information about Database Editor
      */
-    void onInit(EditorContext context) throws IOException;
+    void onInit(String pluginName, EditorContext context) throws IOException;
 
     /**
      * Performs saving tasks or processing drawn by database saving
@@ -52,9 +53,17 @@ public interface DatabasePlugin {
     Optional<Exception> getInitError();
 
     /**
-     * @return exception thrown at initialization, if any
+     * @return exception thrown at saving, if any
      */
     Optional<Exception> getSaveError();
 
+    /**
+     * @return application context
+     */
     EditorContext getEditorContext();
+
+    /**
+     * @return plugin name
+     */
+    String getName();
 }

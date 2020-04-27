@@ -31,8 +31,8 @@ import static javafx.geometry.Orientation.VERTICAL;
  */
 public class PercentPlugin extends AbstractDatabasePlugin {
     @Override
-    public void onInit(EditorContext editorContext) throws IOException {
-        super.onInit(editorContext);
+    public void onInit(String pluginName, EditorContext editorContext) throws IOException {
+        super.onInit(pluginName, editorContext);
     }
 
     @Override

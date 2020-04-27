@@ -84,7 +84,7 @@ class MappingPluginTest {
         editorContext.setGameLocation(".");
 
         // when-then
-        assertThrows(IOException.class, () -> mappingPlugin.onInit(editorContext));
+        assertThrows(IOException.class, () -> mappingPlugin.onInit("MAPPING", editorContext));
         assertThat(editorContext.getMappingContext().isPluginLoaded()).isFalse();
     }
 

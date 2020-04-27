@@ -13,7 +13,7 @@ import java.util.Set;
  */
 public class NopePlugin extends AbstractDatabasePlugin {
     @Override
-    public void onInit(EditorContext context) {}
+    public void onInit(String pluginName, EditorContext context) {}
 
     @Override
     public void onSave() {}

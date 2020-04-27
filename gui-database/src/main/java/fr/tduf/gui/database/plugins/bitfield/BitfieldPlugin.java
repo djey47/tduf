@@ -39,8 +39,8 @@ public class BitfieldPlugin extends AbstractDatabasePlugin {
     private BitfieldHelper bitfieldHelper;
 
     @Override
-    public void onInit(EditorContext editorContext) throws IOException {
-        super.onInit(editorContext);
+    public void onInit(String pluginName, EditorContext editorContext) throws IOException {
+        super.onInit(pluginName, editorContext);
 
         bitfieldHelper = new BitfieldHelper();
     }

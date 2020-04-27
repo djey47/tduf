@@ -115,7 +115,7 @@ class PluginHandlerTest {
         pluginHandler.initializePluginInstance(pluginInstanceMock, "TEST_PLUGIN");
 
         // then
-        verify(pluginInstanceMock).onInit(eq(pluginHandler.getEditorContext()));
+        verify(pluginInstanceMock).onInit(eq("TEST_PLUGIN"), eq(pluginHandler.getEditorContext()));
         verify(pluginInstanceMock).setInitError(isNull());
     }
 
@@ -124,7 +124,7 @@ class PluginHandlerTest {
         // given
         IOException initException = new IOException("This is an init exception");
         doThrow(initException)
-                .when(pluginInstanceMock).onInit(eq(pluginHandler.getEditorContext()));
+                .when(pluginInstanceMock).onInit(eq("TEST_PLUGIN"), eq(pluginHandler.getEditorContext()));
 
         // when
         pluginHandler.initializePluginInstance(pluginInstanceMock, "TEST_PLUGIN");
@@ -136,7 +136,7 @@ class PluginHandlerTest {
     @Test
     void renderPluginInstance_whenNoInitError_shouldRenderWithPluginInstance() {
         // given-when
-        pluginHandler.renderPluginInstance(pluginInstanceMock, "TEST_PLUGIN", parentPaneMock, onTheFlyContextMock);
+        pluginHandler.renderPluginInstance(pluginInstanceMock, parentPaneMock, onTheFlyContextMock);
 
         // then
         verify(pluginInstanceMock).renderControls(eq(onTheFlyContextMock));
@@ -150,7 +150,7 @@ class PluginHandlerTest {
         when(pluginInstanceMock.getInitError()).thenReturn(of(initError));
 
         // when
-        pluginHandler.renderPluginInstance(pluginInstanceMock, "TEST_PLUGIN", parentPaneMock, onTheFlyContextMock);
+        pluginHandler.renderPluginInstance(pluginInstanceMock, parentPaneMock, onTheFlyContextMock);
 
         // then
         verify(pluginInstanceMock, never()).renderControls(any(OnTheFlyContext.class));

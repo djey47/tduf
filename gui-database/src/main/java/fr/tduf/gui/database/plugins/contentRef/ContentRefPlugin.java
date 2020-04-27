@@ -30,10 +30,11 @@ public class ContentRefPlugin extends AbstractDatabasePlugin {
 
     /**
      * Required contextual information: none
+     * @param pluginName : name of plugin
      * @param context : all required information about Database Editor
      */
     @Override
-    public void onInit(EditorContext context) {
+    public void onInit(String pluginName, EditorContext context) {
         Log.info(THIS_CLASS_NAME, "Ready!");
     }
 
