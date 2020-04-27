@@ -40,6 +40,7 @@ public class DisplayConstants {
     public static final String LABEL_TEXTFIELD_VALUE = "Value@Locale:";
     public static final String LABEL_ENTRY_SELECT_SINGLE = "Click an entry below to use it.";
     public static final String LABEL_ENTRY_SELECT_MANY = "CTRL-Pick one or many entries below.";
+
     static final String LABEL_EXTENSION_MINI_JSON = "TDUF patch files (.mini.json)";
     static final String LABEL_EXTENSION_PCH = "TDUMT patch files (.PCH)";
     static final String LABEL_EXTENSION_TDUPK = "TDUPE Performance Packs (.tdupk)";
@@ -104,13 +105,16 @@ public class DisplayConstants {
     public static final String MESSAGE_RESTART_APP = "Please restart application.";
     public static final String MESSAGE_FILE_EXPORT_OK = "Contents were exported to file.";
     public static final String MESSAGE_FILE_EXPORT_KO = "Contents could not be exported to file.";
+    public static final String FORMAT_MESSAGE_SERVICE_ERROR = "%s\rCheck logs for details.";
 
     public static final String TAB_NAME_DEFAULT = "Default";
 
     public static final String STATUS_SAVING = "Saving data, please wait...";
     public static final String STATUS_LOADING_DATA = "Loading data, please wait...";
     public static final String STATUS_FORMAT_SAVED_DATABASE = "Saved database: %s";
+    public static final String STATUS_FORMAT_NOT_SAVED_DATABASE = "Database was not saved due to errors: %s";
     public static final String STATUS_FORMAT_LOADED_DATABASE = "Loaded database: %s";
+    public static final String STATUS_FORMAT_NOT_LOADED_DATABASE = "Database was not loaded due to errors: %s";
 
     public static final String DATA_FORMAT_LAYOUT_OBJECT = "[%s] %s";
 

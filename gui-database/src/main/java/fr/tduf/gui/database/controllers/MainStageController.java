@@ -34,6 +34,7 @@ import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
+import javafx.concurrent.Service;
 import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
@@ -428,6 +429,11 @@ public class MainStageController extends AbstractGuiController {
         }
     }
 
+    // TODO move to gui-common?
+    private static String getServiceErrorMessage(Service<?> service) {
+        return String.format(FORMAT_MESSAGE_SERVICE_ERROR, service.getMessage());
+    }
+
     private void handleProfileChoiceChanged(EditorLayoutDto.EditorProfileDto newProfile) {
         Log.trace(THIS_CLASS_NAME, "->handleProfileChoiceChanged: " + newProfile);
 
@@ -525,7 +531,7 @@ public class MainStageController extends AbstractGuiController {
                         .withContext(ERROR)
                         .withTitle(TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB)
                         .withMessage(fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_KO)
-                        .withDescription(databaseFixer.getException().getMessage())
+                        .withDescription(getServiceErrorMessage(databaseFixer))
                         .build();
                 CommonDialogsHelper.showDialog(dialogOptions, getWindow());
             }
@@ -554,7 +560,7 @@ public class MainStageController extends AbstractGuiController {
                         .withContext(ERROR)
                         .withTitle(TITLE_APPLICATION + fr.tduf.gui.common.DisplayConstants.TITLE_SUB_CHECK_DB)
                         .withMessage(fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_CHECK_KO)
-                        .withDescription(databaseChecker.getException().getMessage())
+                        .withDescription(getServiceErrorMessage(databaseChecker))
                         .build();
                 CommonDialogsHelper.showDialog(dialogOptions, getWindow());
             }
@@ -577,7 +583,7 @@ public class MainStageController extends AbstractGuiController {
                         .withContext(ERROR)
                         .withTitle(TITLE_APPLICATION + DisplayConstants.TITLE_SUB_SAVE)
                         .withMessage(DisplayConstants.MESSAGE_DATABASE_SAVE_KO)
-                        .withDescription(databaseSaver.getException().getMessage())
+                        .withDescription(getServiceErrorMessage(databaseSaver))
                         .build();
                 CommonDialogsHelper.showDialog(dialogOptions, getWindow());
             }
@@ -593,7 +599,7 @@ public class MainStageController extends AbstractGuiController {
                         .withContext(ERROR)
                         .withTitle(TITLE_APPLICATION + DisplayConstants.TITLE_SUB_LOAD)
                         .withMessage(DisplayConstants.MESSAGE_DATABASE_LOAD_KO)
-                        .withDescription(databaseLoader.getException().getMessage())
+                        .withDescription(getServiceErrorMessage(databaseLoader))
                         .build();
                 CommonDialogsHelper.showDialog(dialogOptions, getWindow());
             }

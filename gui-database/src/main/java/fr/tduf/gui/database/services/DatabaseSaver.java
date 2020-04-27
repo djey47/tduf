@@ -16,10 +16,11 @@ import javafx.concurrent.Task;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
-import static fr.tduf.gui.database.common.DisplayConstants.STATUS_FORMAT_SAVED_DATABASE;
-import static fr.tduf.gui.database.common.DisplayConstants.STATUS_SAVING;
+import static fr.tduf.gui.database.common.DisplayConstants.*;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Background service to save database objects to banks or json files
@@ -31,29 +32,53 @@ public class DatabaseSaver extends Service<String> {
     private ObjectProperty<BankSupport> bankSupport = new SimpleObjectProperty<>();
     private ObjectProperty<List<DbDto>> databaseObjects = new SimpleObjectProperty<>();
 
-    @Override
-    protected Task<String> createTask() {
-        return new Task<String>() {
-            @Override
-            protected String call() throws Exception {
+    /**
+     * Created for advanced features and easier testing
+     */
+    class SaverTask extends Task<String> {
+        private final List<String> messageHistory = new ArrayList<>();
 
-                updateMessage(STATUS_SAVING);
+        @Override
+        protected String call() throws Exception {
+            updateMessage(STATUS_SAVING);
 
-                String databasePath = databaseLocation.get();
+            String databasePath = databaseLocation.get();
+
+            try {
                 String jsonDatabaseLocation = resolveJsonDatabaseLocation(databasePath);
                 Log.debug(THIS_CLASS_NAME, "jsonDatabaseLocation=" + jsonDatabaseLocation);
 
                 DatabaseReadWriteHelper.writeDatabaseTopicsToJson(databaseObjects.get(), jsonDatabaseLocation);
 
-                if(!Paths.get(databasePath).toAbsolutePath().equals(Paths.get(jsonDatabaseLocation).toAbsolutePath())) {
+                if (!Paths.get(databasePath).toAbsolutePath().equals(Paths.get(jsonDatabaseLocation).toAbsolutePath())) {
                     DatabaseBanksCacheHelper.repackDatabaseFromJsonWithCacheSupport(Paths.get(databasePath), bankSupport.get());
                 }
-
-                updateMessage(String.format(STATUS_FORMAT_SAVED_DATABASE, databasePath));
-
-                return databasePath;
+            } catch (RuntimeException re) {
+                updateMessage(String.format(STATUS_FORMAT_NOT_SAVED_DATABASE, databasePath));
+                throw re;
             }
-        };
+
+            updateMessage(String.format(STATUS_FORMAT_SAVED_DATABASE, databasePath));
+
+            return databasePath;
+        }
+
+        @Override
+        protected void updateMessage(String s) {
+            requireNonNull(s, "Message cannot be null");
+
+            messageHistory.add(s);
+            super.updateMessage(s);
+        }
+
+        protected List<String> getMessageHistory() {
+            return messageHistory;
+        }
+    }
+
+    @Override
+    protected Task<String> createTask() {
+        return new SaverTask();
     }
 
     private static String resolveJsonDatabaseLocation(String realDatabaseLocation) throws IOException {
