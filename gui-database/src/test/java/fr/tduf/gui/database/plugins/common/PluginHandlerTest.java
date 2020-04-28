@@ -2,17 +2,16 @@ package fr.tduf.gui.database.plugins.common;
 
 import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
-import fr.tduf.libtesting.common.helper.javafx.ApplicationTestHelper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.testfx.framework.junit5.ApplicationTest;
 
 import java.io.IOException;
 
@@ -23,8 +22,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-class PluginHandlerTest {
-
+class PluginHandlerTest extends ApplicationTest {
     @Mock
     DatabasePlugin pluginInstanceMock;
 
@@ -36,11 +34,6 @@ class PluginHandlerTest {
 
     private final ObservableList<Node> parentPaneChildren = FXCollections.observableArrayList();
     private final PluginHandler pluginHandler = new PluginHandler(TestingParent.testingInstance(), MainStageChangeDataController.testingInstance());
-
-    @BeforeAll
-    static void globalSetUp() {
-        ApplicationTestHelper.initJavaFX();
-    }
 
     @BeforeEach
     void setUp() {
@@ -179,15 +172,15 @@ class PluginHandlerTest {
     }
 
     @Test
-    void triggerOnSaveForPluginInstance_whenError_shouldTriggerErrorAndEndNormally() throws IOException {
+    void triggerOnSaveForPluginInstance_whenError_shouldTriggerError_andRethrowException() throws IOException {
         // given
         IOException saveError = new IOException("This is a save error");
         doThrow(saveError).when(pluginInstanceMock).onSave();
 
-        // when
-        pluginHandler.triggerOnSaveForPluginInstance(pluginInstanceMock);
-
-        // then
+        // when-then
+        IOException actualError = assertThrows(IOException.class,
+                () -> pluginHandler.triggerOnSaveForPluginInstance(pluginInstanceMock));
+        assertThat(actualError).isSameAs(saveError);
         verify(pluginInstanceMock).onSave();
         verify(pluginInstanceMock).setSaveError(eq(saveError));
     }

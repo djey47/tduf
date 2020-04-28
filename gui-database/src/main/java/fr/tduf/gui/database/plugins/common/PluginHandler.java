@@ -2,6 +2,8 @@ package fr.tduf.gui.database.plugins.common;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.ImageConstants;
+import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
+import fr.tduf.gui.common.javafx.helper.options.SimpleDialogOptions;
 import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
@@ -19,10 +21,10 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
 
-import static fr.tduf.gui.database.common.DisplayConstants.FORMAT_TITLE_PLUGIN_INIT_ERROR;
-import static fr.tduf.gui.database.common.DisplayConstants.FORMAT_TITLE_PLUGIN_RENDER_ERROR;
+import static fr.tduf.gui.database.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.common.FxConstants.*;
 import static java.util.Objects.requireNonNull;
+import static javafx.scene.control.Alert.AlertType.WARNING;
 
 /**
  * Ensures support for database editor plugins.
@@ -115,13 +117,15 @@ public class PluginHandler {
         onTheFlyContext.getParentPane().getChildren().add(renderedNode);
     }
 
-    void triggerOnSaveForPluginInstance(DatabasePlugin pluginInstance) {
+    void triggerOnSaveForPluginInstance(DatabasePlugin pluginInstance) throws IOException {
         try {
             pluginInstance.onSave();
             pluginInstance.setSaveError(null);
         } catch (IOException ioe) {
             Log.error(THIS_CLASS_NAME, "Error occurred while triggering onSave for plugin: " + pluginInstance, ioe);
             pluginInstance.setSaveError(ioe);
+            // Rethrown to be catched by caller (Dialog display cannot be tested properly)
+            throw ioe;
         }
     }
 
@@ -134,7 +138,17 @@ public class PluginHandler {
     private void triggerOnSaveForPlugin(PluginIndex pluginIndex) {
         Log.debug(THIS_CLASS_NAME, "Now triggering onSave for plugin: " + pluginIndex);
 
-        triggerOnSaveForPluginInstance(pluginIndex.getPluginInstance());
+        try {
+            triggerOnSaveForPluginInstance(pluginIndex.getPluginInstance());
+        } catch (IOException ioe) {
+            SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                    .withContext(WARNING)
+                    .withTitle(TITLE_APPLICATION)
+                    .withMessage(MESSAGE_PLUGIN_SAVE_KO)
+                    .forException(ioe)
+                    .build();
+            CommonDialogsHelper.showDialog(dialogOptions, editorContext.getMainWindow());
+        }
     }
 
     private void addPluginCss(PluginIndex pluginIndex, Parent root) {
