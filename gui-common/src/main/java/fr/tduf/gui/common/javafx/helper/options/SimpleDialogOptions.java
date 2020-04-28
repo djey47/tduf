@@ -3,13 +3,10 @@ package fr.tduf.gui.common.javafx.helper.options;
 import fr.tduf.gui.common.helper.MessagesHelper;
 import javafx.scene.control.Alert;
 
-import java.io.IOException;
-
 /**
  * Specifies single dialog appearance and behaviour.
  */
 public class SimpleDialogOptions {
-    public static final SimpleDialogOptions defaultSettings = new SimpleDialogOptions();
 
     private SimpleDialogOptions() {}
 
