@@ -1,6 +1,9 @@
 package fr.tduf.gui.common.javafx.helper.options;
 
+import fr.tduf.gui.common.helper.MessagesHelper;
 import javafx.scene.control.Alert;
+
+import java.io.IOException;
 
 /**
  * Specifies single dialog appearance and behaviour.
@@ -56,6 +59,11 @@ public class SimpleDialogOptions {
 
         public SimpleDialogOptionsBuilder withDescription(String description) {
             this.description = description;
+            return this;
+        }
+
+        public SimpleDialogOptionsBuilder forException(Exception e) {
+            this.description = MessagesHelper.getGenericErrorMessage(e);
             return this;
         }
 
