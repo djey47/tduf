@@ -96,7 +96,7 @@ class DynamicFieldControlsHelperTest {
 
 
         // then
-        verify(pluginHandlerMock).renderPluginByName(eq("PLUGIN"), eq(fieldBox), any(OnTheFlyContext.class));
+        verify(pluginHandlerMock).renderPluginByName(eq("PLUGIN"), any(OnTheFlyContext.class));
     }
 
     @Test

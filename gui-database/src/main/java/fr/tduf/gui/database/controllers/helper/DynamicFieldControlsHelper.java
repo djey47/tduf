@@ -152,8 +152,9 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         onTheFlyContext.setRawValueProperty(rawValueProperty);
         onTheFlyContext.setErrorMessageProperty(errorMessageProperty);
         onTheFlyContext.setErrorProperty(errorProperty);
+        onTheFlyContext.setParentPane(fieldBox);
 
-        controller.getPluginHandler().renderPluginByName(pluginName, fieldBox, onTheFlyContext);
+        controller.getPluginHandler().renderPluginByName(pluginName, onTheFlyContext);
     }
 
     private void addReferenceValueControls(HBox fieldBox, boolean fieldReadOnly, DbStructureDto.Field field) {

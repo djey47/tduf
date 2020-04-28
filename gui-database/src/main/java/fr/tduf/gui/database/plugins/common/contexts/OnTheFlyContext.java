@@ -5,6 +5,7 @@ import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
+import javafx.scene.layout.Pane;
 
 /**
  * Contains on-the-fly context for correct plugin execution
@@ -15,8 +16,9 @@ public class OnTheFlyContext {
 
     private int contentEntryIndex;
     private int fieldRank;
-
     private boolean fieldReadOnly;
+
+    private Pane parentPane;
 
     private StringProperty rawValueProperty;
     private StringProperty errorMessageProperty;
@@ -94,5 +96,13 @@ public class OnTheFlyContext {
 
     public ObservableList<MappingEntry> getFiles() {
         return files;
+    }
+
+    public Pane getParentPane() {
+        return parentPane;
+    }
+
+    public void setParentPane(Pane parentPane) {
+        this.parentPane = parentPane;
     }
 }

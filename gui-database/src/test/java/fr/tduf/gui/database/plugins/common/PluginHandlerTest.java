@@ -7,7 +7,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -47,6 +46,7 @@ class PluginHandlerTest {
     void setUp() {
         initMocks(this);
 
+        when(onTheFlyContextMock.getParentPane()).thenReturn(parentPaneMock);
         when(parentPaneMock.getChildren()).thenReturn(parentPaneChildren);
     }
 
@@ -70,19 +70,16 @@ class PluginHandlerTest {
     @Test
     void renderPluginByName_whenUnknownPlugin_shouldNotThrowException() {
         // given-when-then
-        pluginHandler.renderPluginByName("foo", new HBox(), onTheFlyContextMock);
+        pluginHandler.renderPluginByName("foo", onTheFlyContextMock);
     }
 
     @Test
     void renderPluginByName_whenDefaultPlugin_shouldRenderAndAttach() {
-        // given
-        HBox parentNode = new HBox();
-
-        // when
-        pluginHandler.renderPluginByName("NOPE", parentNode, onTheFlyContextMock);
+        // given-when
+        pluginHandler.renderPluginByName("NOPE", onTheFlyContextMock);
 
         // then
-        assertThat(parentNode.getChildren()).hasSize(1);
+        assertThat(parentPaneChildren).hasSize(1);
     }
 
     @Test
@@ -136,7 +133,7 @@ class PluginHandlerTest {
     @Test
     void renderPluginInstance_whenNoInitError_shouldRenderWithPluginInstance() {
         // given-when
-        pluginHandler.renderPluginInstance(pluginInstanceMock, parentPaneMock, onTheFlyContextMock);
+        pluginHandler.renderPluginInstance(pluginInstanceMock, onTheFlyContextMock);
 
         // then
         verify(pluginInstanceMock).renderControls(eq(onTheFlyContextMock));
@@ -150,7 +147,7 @@ class PluginHandlerTest {
         when(pluginInstanceMock.getInitError()).thenReturn(of(initError));
 
         // when
-        pluginHandler.renderPluginInstance(pluginInstanceMock, parentPaneMock, onTheFlyContextMock);
+        pluginHandler.renderPluginInstance(pluginInstanceMock, onTheFlyContextMock);
 
         // then
         verify(pluginInstanceMock, never()).renderControls(any(OnTheFlyContext.class));

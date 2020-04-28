@@ -14,7 +14,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
@@ -64,17 +63,15 @@ public class PluginHandler {
     /**
      * Renders plugin controls and attach to provided parent node.
      * @param pluginName    : must match a valid name in PluginIndex
-     * @param parentPane    : required
      * @param onTheFlyContext : required
      */
-    public void renderPluginByName(String pluginName, Pane parentPane, OnTheFlyContext onTheFlyContext) {
-        requireNonNull(parentPane, "A parent node to attach rendered component to is required");
+    public void renderPluginByName(String pluginName, OnTheFlyContext onTheFlyContext) {
         requireNonNull(onTheFlyContext, "\"On The fly\" context is required");
 
         try {
             PluginIndex resolvedPlugin = PluginIndex.valueOf(pluginName);
             DatabasePlugin pluginInstance = resolvedPlugin.getPluginInstance();
-            renderPluginInstance(pluginInstance, parentPane, onTheFlyContext);
+            renderPluginInstance(pluginInstance, onTheFlyContext);
 
         } catch(Exception e) {
             Log.error(THIS_CLASS_NAME, "Error occurred while rendering plugin: " + pluginName, e);
@@ -100,13 +97,13 @@ public class PluginHandler {
         }
     }
 
-    void renderPluginInstance(DatabasePlugin pluginInstance, Pane parentPane, OnTheFlyContext onTheFlyContext) {
+    void renderPluginInstance(DatabasePlugin pluginInstance, OnTheFlyContext onTheFlyContext) {
         // Error handling
         Optional<Exception> initError = pluginInstance.getInitError();
         final Node renderedNode = initError
                 .map(e -> renderErrorPlaceholder(e, pluginInstance.getName()))
                 .orElseGet(() -> pluginInstance.renderControls(onTheFlyContext));
-        parentPane.getChildren().add(renderedNode);
+        onTheFlyContext.getParentPane().getChildren().add(renderedNode);
     }
 
     void triggerOnSaveForPluginInstance(DatabasePlugin pluginInstance) {
