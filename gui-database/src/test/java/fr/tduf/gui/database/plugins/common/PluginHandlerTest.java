@@ -48,6 +48,7 @@ class PluginHandlerTest {
 
         when(onTheFlyContextMock.getParentPane()).thenReturn(parentPaneMock);
         when(parentPaneMock.getChildren()).thenReturn(parentPaneChildren);
+        when(pluginInstanceMock.getName()).thenReturn("UNIT TESTS PLUGIN");
     }
 
     @AfterEach
@@ -155,6 +156,19 @@ class PluginHandlerTest {
     }
 
     @Test
+    void renderPluginInstance_whenRenderError_shouldRenderErrorPlaceholder() {
+        // given
+        RuntimeException renderError = new RuntimeException();
+        when(pluginInstanceMock.renderControls(any(OnTheFlyContext.class))).thenThrow(renderError);
+
+        // when
+        pluginHandler.renderPluginInstance(pluginInstanceMock, onTheFlyContextMock);
+
+        // then
+        assertThat(parentPaneChildren).hasSize(1);
+    }
+
+    @Test
     void triggerOnSaveForPluginInstance_whenNoError_shouldClearPreviousError() throws IOException {
         // given-when
         pluginHandler.triggerOnSaveForPluginInstance(pluginInstanceMock);
@@ -167,7 +181,7 @@ class PluginHandlerTest {
     @Test
     void triggerOnSaveForPluginInstance_whenError_shouldTriggerErrorAndEndNormally() throws IOException {
         // given
-        IOException saveError = new IOException("Tis is a save error");
+        IOException saveError = new IOException("This is a save error");
         doThrow(saveError).when(pluginInstanceMock).onSave();
 
         // when

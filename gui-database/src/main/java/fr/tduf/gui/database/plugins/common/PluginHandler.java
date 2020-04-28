@@ -2,7 +2,6 @@ package fr.tduf.gui.database.plugins.common;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.ImageConstants;
-import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.controllers.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
@@ -20,6 +19,8 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
 
+import static fr.tduf.gui.database.common.DisplayConstants.FORMAT_TITLE_PLUGIN_INIT_ERROR;
+import static fr.tduf.gui.database.common.DisplayConstants.FORMAT_TITLE_PLUGIN_RENDER_ERROR;
 import static fr.tduf.gui.database.plugins.common.FxConstants.*;
 import static java.util.Objects.requireNonNull;
 
@@ -72,9 +73,8 @@ public class PluginHandler {
             PluginIndex resolvedPlugin = PluginIndex.valueOf(pluginName);
             DatabasePlugin pluginInstance = resolvedPlugin.getPluginInstance();
             renderPluginInstance(pluginInstance, onTheFlyContext);
-
-        } catch(Exception e) {
-            Log.error(THIS_CLASS_NAME, "Error occurred while rendering plugin: " + pluginName, e);
+        } catch(IllegalArgumentException e) {
+            Log.error(THIS_CLASS_NAME, "An invalid plugin could not be rendered: " + pluginName, e);
         }
     }
 
@@ -98,11 +98,20 @@ public class PluginHandler {
     }
 
     void renderPluginInstance(DatabasePlugin pluginInstance, OnTheFlyContext onTheFlyContext) {
-        // Error handling
-        Optional<Exception> initError = pluginInstance.getInitError();
-        final Node renderedNode = initError
-                .map(e -> renderErrorPlaceholder(e, pluginInstance.getName()))
-                .orElseGet(() -> pluginInstance.renderControls(onTheFlyContext));
+        String pluginName = pluginInstance.getName();
+        Node renderedNode;
+        try {
+            // Init error handling
+            Optional<Exception> initError = pluginInstance.getInitError();
+            renderedNode = initError
+                    .map(e -> renderErrorPlaceholder(e, pluginName, FORMAT_TITLE_PLUGIN_INIT_ERROR))
+                    .orElseGet(() -> pluginInstance.renderControls(onTheFlyContext));
+
+        } catch(Exception e) {
+            // Render error handling
+            Log.error(THIS_CLASS_NAME, "Error occurred while rendering plugin: " + pluginName, e);
+            renderedNode = renderErrorPlaceholder(e, pluginName, FORMAT_TITLE_PLUGIN_RENDER_ERROR);
+        }
         onTheFlyContext.getParentPane().getChildren().add(renderedNode);
     }
 
@@ -141,7 +150,7 @@ public class PluginHandler {
         }
     }
 
-    private Node renderErrorPlaceholder(Exception parentException, String pluginName) {
+    private Node renderErrorPlaceholder(Exception parentException, String pluginName, String errorMessageFormat) {
         HBox placeholderNode = new HBox();
         placeholderNode.getStyleClass().addAll(CSS_CLASS_PLUGIN_BOX, CSS_CLASS_PLUGIN_ERROR_PLACEHOLDER);
 
@@ -151,7 +160,7 @@ public class PluginHandler {
         HBox titleBox = new HBox();
         Image errorSignImage = new Image(ImageConstants.RESOURCE_RED_WARN, 24.0, 24.0, true, true);
         ImageView errorImageView = new ImageView(errorSignImage);
-        String errorTitle = String.format(DisplayConstants.TITLE_PLUGIN_INIT_ERROR, pluginName);
+        String errorTitle = String.format(errorMessageFormat, pluginName);
         Label errorTitleLabel = new Label(errorTitle);
         errorTitleLabel.getStyleClass().add(CSS_CLASS_PLUGIN_ERROR_TITLE_LABEL);
         titleBox.getChildren().addAll(errorImageView, errorTitleLabel);

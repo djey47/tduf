@@ -82,7 +82,8 @@ public class DisplayConstants {
     public static final String TITLE_FORMAT_SAVE = "Save to %s file...";
     public static final String TITLE_SEARCH_CONTENTS_ENTRY = "Search for contents entry";
     public static final String TITLE_SEARCH_RESOURCE_ENTRY = "Search for resource entry";
-    public static final String TITLE_PLUGIN_INIT_ERROR = "An error has occurred during init of %s plugin";
+    public static final String FORMAT_TITLE_PLUGIN_INIT_ERROR = "An error has occurred during init of %s plugin";
+    public static final String FORMAT_TITLE_PLUGIN_RENDER_ERROR = "An error has occurred during rendering of %s plugin";
 
     public static final String MESSAGE_ADDED_RESOURCE = "Add resource in topic: ";
     public static final String MESSAGE_DATABASE_SAVED = "Current database was saved.";
