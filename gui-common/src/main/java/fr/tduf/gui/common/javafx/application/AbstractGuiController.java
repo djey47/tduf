@@ -75,6 +75,7 @@ public abstract class AbstractGuiController implements Initializable {
      * @return error message to be displayed
      */
     protected static String getServiceErrorMessage(Service<?> service) {
+        // TODO move to MessagesHelper
         return String.format(FORMAT_MESSAGE_SERVICE_ERROR, service.getMessage());
     }
 
