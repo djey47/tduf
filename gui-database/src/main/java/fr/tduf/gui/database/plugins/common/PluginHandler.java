@@ -1,7 +1,6 @@
 package fr.tduf.gui.database.plugins.common;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.common.ImageConstants;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.javafx.helper.options.SimpleDialogOptions;
 import fr.tduf.gui.database.controllers.MainStageChangeDataController;
@@ -21,6 +20,8 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
 
+import static fr.tduf.gui.common.ImageConstants.RESOURCE_RED_WARN;
+import static fr.tduf.gui.common.ImageConstants.SIZE_DEFAULT_PICTO;
 import static fr.tduf.gui.database.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.common.FxConstants.*;
 import static java.util.Objects.requireNonNull;
@@ -172,7 +173,7 @@ public class PluginHandler {
         ObservableList<Node> mainColumnChildren = mainColumnBox.getChildren();
 
         HBox titleBox = new HBox();
-        Image errorSignImage = new Image(ImageConstants.RESOURCE_RED_WARN, 24.0, 24.0, true, true);
+        Image errorSignImage = new Image(RESOURCE_RED_WARN, SIZE_DEFAULT_PICTO, SIZE_DEFAULT_PICTO, true, true);
         ImageView errorImageView = new ImageView(errorSignImage);
         String errorTitle = String.format(errorMessageFormat, pluginName);
         Label errorTitleLabel = new Label(errorTitle);

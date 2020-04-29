@@ -2,7 +2,6 @@ package fr.tduf.gui.database.controllers;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.AppConstants;
-import fr.tduf.gui.common.ImageConstants;
 import fr.tduf.gui.common.controllers.helper.DatabaseOpsHelper;
 import fr.tduf.gui.common.game.helpers.GameSettingsHelper;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
@@ -17,8 +16,8 @@ import fr.tduf.gui.database.controllers.helper.DialogsHelper;
 import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
-import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
+import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.services.DatabaseLoader;
 import fr.tduf.gui.database.services.DatabaseSaver;
 import fr.tduf.gui.database.stages.EntriesDesigner;
@@ -52,8 +51,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static fr.tduf.gui.common.ImageConstants.RESOURCE_BLUE_MAGNIFIER;
-import static fr.tduf.gui.common.ImageConstants.SIZE_BUTTON_PICTO;
+import static fr.tduf.gui.common.ImageConstants.*;
 import static fr.tduf.gui.database.common.DisplayConstants.*;
 import static java.util.Optional.ofNullable;
 import static javafx.beans.binding.Bindings.when;
@@ -469,7 +467,7 @@ public class MainStageController extends AbstractGuiController {
         Image filterImage = new Image(RESOURCE_BLUE_MAGNIFIER, SIZE_BUTTON_PICTO, SIZE_BUTTON_PICTO, true, true);
         entryFilterButton.setGraphic(new ImageView(filterImage));
 
-        Image emptyFilterImage = new Image(ImageConstants.RESOURCE_BLUE_EMPTY_BOX, SIZE_BUTTON_PICTO, SIZE_BUTTON_PICTO, true, true);
+        Image emptyFilterImage = new Image(RESOURCE_BLUE_EMPTY_BOX, SIZE_BUTTON_PICTO, SIZE_BUTTON_PICTO, true, true);
         entryEmptyFilterButton.setGraphic(new ImageView(emptyFilterImage));
     }
 

@@ -1,7 +1,6 @@
 package fr.tduf.gui.database.controllers.helper;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.common.ImageConstants;
 import fr.tduf.gui.common.javafx.helper.ControlHelper;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.controllers.MainStageController;
@@ -24,6 +23,8 @@ import javafx.scene.layout.VBox;
 
 import java.util.Map;
 
+import static fr.tduf.gui.common.ImageConstants.RESOURCE_ERROR;
+import static fr.tduf.gui.common.ImageConstants.SIZE_DEFAULT_PICTO;
 import static fr.tduf.gui.database.common.DisplayConstants.TAB_NAME_DEFAULT;
 import static java.util.Optional.ofNullable;
 import static javafx.beans.binding.Bindings.not;
@@ -106,7 +107,7 @@ abstract class AbstractDynamicControlsHelper {
     }
 
     protected static void addErrorSign(HBox hBox, BooleanProperty errorProperty, StringProperty errorMessageProperty) {
-        Image errorSignImage = new Image(ImageConstants.RESOURCE_ERROR, 24.0, 24.0, true, true);
+        Image errorSignImage = new Image(RESOURCE_ERROR, SIZE_DEFAULT_PICTO, SIZE_DEFAULT_PICTO, true, true);
 
         ImageView imageView = new ImageView(errorSignImage);
         imageView.visibleProperty().bindBidirectional(errorProperty);

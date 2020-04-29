@@ -1,7 +1,6 @@
 package fr.tduf.gui.database.plugins.contentRef;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.common.ImageConstants;
 import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
@@ -14,6 +13,8 @@ import javafx.scene.layout.HBox;
 import java.util.HashSet;
 import java.util.Set;
 
+import static fr.tduf.gui.common.ImageConstants.RESOURCE_WARN;
+import static fr.tduf.gui.common.ImageConstants.SIZE_DEFAULT_PICTO;
 import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_PLUGIN_BOX;
 import static fr.tduf.gui.database.plugins.contentRef.common.DisplayConstants.TOOLTIP_WARNING;
 import static fr.tduf.gui.database.plugins.contentRef.common.FxConstants.CSS_CLASS_CONTENT_REF_PLUGIN_BOX;
@@ -24,9 +25,8 @@ import static java.util.Collections.singletonList;
  * Simple plugin to decorate content REF fields
  */
 public class ContentRefPlugin extends AbstractDatabasePlugin {
-    private Class<ContentRefPlugin> thisClass = ContentRefPlugin.class;
-
-    private String THIS_CLASS_NAME = thisClass.getSimpleName();
+    private static final Class<ContentRefPlugin> thisClass = ContentRefPlugin.class;
+    private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 
     /**
      * Required contextual information: none
@@ -53,7 +53,7 @@ public class ContentRefPlugin extends AbstractDatabasePlugin {
         HBox hBox = new HBox();
         hBox.getStyleClass().addAll(CSS_CLASS_PLUGIN_BOX, CSS_CLASS_CONTENT_REF_PLUGIN_BOX);
 
-        Image warnSignImage = new Image(ImageConstants.RESOURCE_WARN, 24.0, 24.0, true, true);
+        Image warnSignImage = new Image(RESOURCE_WARN, SIZE_DEFAULT_PICTO, SIZE_DEFAULT_PICTO, true, true);
         ImageView imageView = new ImageView(warnSignImage);
 
         Tooltip tooltip = new Tooltip(TOOLTIP_WARNING);

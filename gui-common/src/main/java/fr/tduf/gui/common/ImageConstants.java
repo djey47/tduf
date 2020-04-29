@@ -7,7 +7,6 @@ public class ImageConstants {
     // Sizes
 
     public static final double SIZE_BUTTON_PICTO = 12.0;
-    // TODO use constant where applicable
     public static final double SIZE_DEFAULT_PICTO = 24.0;
 
     // Resource paths
