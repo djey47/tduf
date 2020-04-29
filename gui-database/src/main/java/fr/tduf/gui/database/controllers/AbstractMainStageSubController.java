@@ -17,7 +17,7 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Parent of all sub controllers
+ * Parent of all sub controllers, providing common resources to them.
  */
 abstract class AbstractMainStageSubController {
     private final MainStageController mainStageController;
@@ -149,5 +149,17 @@ abstract class AbstractMainStageSubController {
 
     protected ComboBox<ContentEntryDataItem> getEntryNumberComboBox() {
         return mainStageController.entryNumberComboBox;
+    }
+
+    protected Label getUnfilteredEntryItemsCountLabel() {
+        return mainStageController.unfilteredEntryItemsCountLabel;
+    }
+
+    protected Label getFilteredEntryItemsCountLabel() {
+        return mainStageController.filteredEntryItemsCountLabel;
+    }
+
+    protected TextField getEntryFilterTextField() {
+        return mainStageController.getEntryFilterTextField();
     }
 }

@@ -37,6 +37,7 @@ import org.mockito.Mock;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Predicate;
 
 import static fr.tduf.libunlimited.common.game.domain.Locale.FRANCE;
 import static fr.tduf.libunlimited.common.game.domain.Locale.UNITED_STATES;
@@ -98,6 +99,7 @@ class MainStageViewDataControllerTest {
     private ChoiceBox<EditorLayoutDto.EditorProfileDto> profilesChoiceBox;
     private ChoiceBox<Locale> localesChoiceBox;
     private TitledPane settingsPane;
+    private TextField entryFilterTextField;
 
     @BeforeEach
     void setUp() {
@@ -113,6 +115,7 @@ class MainStageViewDataControllerTest {
         when(mainStageControllerMock.getMiner()).thenReturn(minerMock);
         when(mainStageControllerMock.getLayoutObject()).thenReturn(layoutObject);
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(topicObject);
+        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>());
 
         when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(currentEntryIndexProperty);
         when(mainStageControllerMock.getCurrentEntryLabelProperty()).thenReturn(currentEntryLabelProperty);
@@ -140,6 +143,9 @@ class MainStageViewDataControllerTest {
         when(mainStageControllerMock.getLocalesChoiceBox()).thenReturn(localesChoiceBox);
 
         when(mainStageControllerMock.getDatabaseLocationTextField()).thenReturn(new TextField("location"));
+
+        entryFilterTextField = new TextField();
+        when(mainStageControllerMock.getEntryFilterTextField()).thenReturn(entryFilterTextField);
 
         when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(topicObject));
 
@@ -258,7 +264,6 @@ class MainStageViewDataControllerTest {
     void applyProfile_whenProfileDoesNotExist_shouldThrowException() {
         // GIVEN
         when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(topicObject));
-        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>());
         when(mainStageControllerMock.getViewData()).thenReturn(controller);
 
         // WHEN-THEN
@@ -270,8 +275,6 @@ class MainStageViewDataControllerTest {
     void applyProfile_whenProfileExists_shouldSwitchProperties_andUpdateConfiguration() throws IOException {
         // GIVEN
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(createTopicObjectWithoutStructureFields());
-        Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>();
-        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
         when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>());
         final EditorLayoutDto.EditorProfileDto profileObject = getSecondLayoutProfile();
         when(minerMock.getContentEntryFromTopicWithInternalIdentifier(0, TOPIC2)).thenReturn(empty());
@@ -283,7 +286,7 @@ class MainStageViewDataControllerTest {
 
         // THEN
         assertThat(controller.currentProfile().getValue().getName()).isEqualTo(profileObject.getName());
-        assertThat(currentTopicProperty.getValue()).isEqualTo(TOPIC2);
+        assertThat(controller.currentTopicProperty().getValue()).isEqualTo(TOPIC2);
         verify(mainStageControllerMock).setCurrentTopicObject(topicObject);
 
         verify(applicationConfigurationMock).setEditorProfile(TEST_PROFILE_NAME);
@@ -382,8 +385,11 @@ class MainStageViewDataControllerTest {
     @Test
     void updateEntriesAndSwitchTo_whenEntries_shouldPopulateEntryList() {
         // GIVEN
+        ObservableList<ContentEntryDataItem> browsableEntries = controller.getBrowsableEntries();
+        browsableEntries.add(new ContentEntryDataItem());
         controller.currentProfile().setValue(getSecondLayoutProfile());
-        controller.getBrowsableEntries().add(new ContentEntryDataItem());
+
+        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(TOPIC2));
 
         when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(createTopicObjectWithDataEntryAndRef()));
         when(minerMock.getContentEntryReferenceWithInternalIdentifier(0, TOPIC2)).thenReturn(empty());
@@ -394,8 +400,8 @@ class MainStageViewDataControllerTest {
 
 
         // THEN
-        assertThat(controller.getBrowsableEntries()).hasSize(1);
-        final ContentEntryDataItem actualEntry = controller.getBrowsableEntries().get(0);
+        assertThat(browsableEntries).hasSize(1);
+        final ContentEntryDataItem actualEntry = browsableEntries.get(0);
         assertThat(actualEntry.referenceProperty().get()).isEqualTo("0");
         assertThat(actualEntry.internalEntryIdProperty().get()).isEqualTo(0);
         assertThat(actualEntry.valueProperty().get()).isEqualTo("<?>");
@@ -837,6 +843,78 @@ class MainStageViewDataControllerTest {
         return layoutObject;
     }
 
+    @Test
+    void switchToFirstFilteredEntry_whenNotEmptyList_shouldSetCurrentIndexProperty() {
+        // given
+        ObservableList<ContentEntryDataItem> browsableEntries = controller.getBrowsableEntries();
+        ContentEntryDataItem item1 = new ContentEntryDataItem();
+        item1.setInternalEntryId(1);
+        ContentEntryDataItem item2 = new ContentEntryDataItem();
+        item2.setInternalEntryId(10);
+        browsableEntries.addAll(item1, item2);
+        controller.currentProfileProperty.setValue(getFirstLayoutProfile());
+
+        // when
+        controller.switchToFirstFilteredEntry();
+
+
+        // then
+        assertThat(controller.currentEntryIndexProperty().getValue()).isEqualTo(1);
+    }
+
+    @Test
+    void switchToFirstFilteredEntry_whenEmptyList_shouldNotSetCurrentIndexProperty() {
+        // given
+        controller.currentEntryIndexProperty().setValue(10);
+
+        // when
+        controller.switchToFirstFilteredEntry();
+
+        // then
+        assertThat(controller.currentEntryIndexProperty().getValue()).isEqualTo(10);
+    }
+
+    @Test
+    void applyEntryFilter_whenCriteriaGiven_shouldSetPredicateFilter() {
+        // given
+        Predicate<? super ContentEntryDataItem> defaultPredicate = controller.getFilteredEntries().getPredicate();
+        entryFilterTextField.textProperty().setValue("foo");
+
+        // when
+        controller.applyEntryFilter();
+
+        // then
+        assertThat(controller.getFilteredEntries().getPredicate()).isNotSameAs(defaultPredicate);
+    }
+
+    @Test
+    void applyEntryFilter_whenNoCriteriaGiven_shouldSetPredicateFilterToDefault() {
+        // given
+        Predicate<? super ContentEntryDataItem> defaultPredicate = controller.getFilteredEntries().getPredicate();
+        entryFilterTextField.textProperty().setValue("");
+
+        // when
+        controller.applyEntryFilter();
+
+        // then
+        assertThat(controller.getFilteredEntries().getPredicate()).isSameAs(defaultPredicate);
+    }
+
+    @Test
+    void resetEntryFilter_shouldResetProperty_andSetPredicateFilterToDefault() {
+        // given
+        Predicate<? super ContentEntryDataItem> defaultPredicate = controller.getFilteredEntries().getPredicate();
+        entryFilterTextField.textProperty().setValue("foo");
+        controller.applyEntryFilter();
+
+        // when
+        controller.resetEntryFilter();
+
+        // then
+        assertThat(controller.getFilteredEntries().getPredicate()).isSameAs(defaultPredicate);
+        assertThat(entryFilterTextField.textProperty().getValue()).isEmpty();
+    }
+
     private DbDto createTopicObject(DbDto.Topic topic) {
         return DbDto.builder()
                 .withStructure(DbStructureDto.builder()
@@ -995,6 +1073,10 @@ class MainStageViewDataControllerTest {
                 .ofFieldRank(1)
                 .withRawValue("rawValue")
                 .build();
+    }
+
+    private EditorLayoutDto.EditorProfileDto getFirstLayoutProfile() {
+        return layoutObject.getProfiles().get(0);
     }
 
     private EditorLayoutDto.EditorProfileDto getSecondLayoutProfile() {

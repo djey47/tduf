@@ -7,12 +7,14 @@ import fr.tduf.gui.database.services.DatabaseLoader;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.Button;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.testfx.framework.junit5.ApplicationTest;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -25,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-class MainStageControllerTest {
+class MainStageControllerTest extends ApplicationTest {
     @Mock
     private DatabaseLoader databaseLoaderMock;
 
@@ -49,6 +51,9 @@ class MainStageControllerTest {
     @BeforeEach
     void setUp() {
         initMocks(this);
+
+        controller.entryFilterButton = new Button();
+        controller.entryEmptyFilterButton = new Button();
     }
 
     @AfterEach
@@ -138,5 +143,33 @@ class MainStageControllerTest {
         // then
         verify(applicationConfigurationMock).load();
         assertThat(Log.ERROR).isTrue();
+    }
+
+    @Test
+    void initGUIComponentsGraphics_shouldSetButtonGraphics() {
+        // given-when
+        controller.initGUIComponentsGraphics();
+
+        // then
+        assertThat(controller.entryFilterButton.getGraphic()).isNotNull();
+        assertThat(controller.entryEmptyFilterButton.getGraphic()).isNotNull();
+    }
+
+    @Test
+    void handleEntryFilterButtonAction_shouldInvokeViewDataController() {
+        // given-when
+        controller.handleEntryFilterButtonAction();
+
+        // then
+        verify(viewDataControllerMock).applyEntryFilter();
+    }
+
+    @Test
+    void handleEmptyEntryFilterButtonAction_shouldInvokeViewDataController() {
+        // given-when
+        controller.handleEmptyEntryFilterButtonAction();
+
+        // then
+        verify(viewDataControllerMock).resetEntryFilter();
     }
 }

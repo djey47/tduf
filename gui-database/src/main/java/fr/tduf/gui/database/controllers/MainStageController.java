@@ -2,6 +2,7 @@ package fr.tduf.gui.database.controllers;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.AppConstants;
+import fr.tduf.gui.common.ImageConstants;
 import fr.tduf.gui.common.controllers.helper.DatabaseOpsHelper;
 import fr.tduf.gui.common.game.helpers.GameSettingsHelper;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
@@ -38,6 +39,8 @@ import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.DirectoryChooser;
@@ -49,6 +52,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static fr.tduf.gui.common.ImageConstants.RESOURCE_BLUE_MAGNIFIER;
+import static fr.tduf.gui.common.ImageConstants.SIZE_BUTTON_PICTO;
 import static fr.tduf.gui.database.common.DisplayConstants.*;
 import static java.util.Optional.ofNullable;
 import static javafx.beans.binding.Bindings.when;
@@ -105,10 +110,25 @@ public class MainStageController extends AbstractGuiController {
     Label entryItemsCountLabel;
 
     @FXML
+    Label filteredEntryItemsCountLabel;
+
+    @FXML
+    Label unfilteredEntryItemsCountLabel;
+
+    @FXML
     Label currentTopicLabel;
 
     @FXML
     ComboBox<ContentEntryDataItem> entryNumberComboBox;
+
+    @FXML
+    TextField entryFilterTextField;
+
+    @FXML
+    Button entryFilterButton;
+
+    @FXML
+    Button entryEmptyFilterButton;
 
     @FXML
     private TextField databaseLocationTextField;
@@ -142,6 +162,7 @@ public class MainStageController extends AbstractGuiController {
 
         pluginHandler = new PluginHandler(root, changeDataController);
 
+        // TODO move inits to ViewDataController
         viewDataController.initTopToolbar();
 
         Optional<String> initialDatabaseDirectory = viewDataController.resolveInitialDatabaseDirectory();
@@ -158,6 +179,8 @@ public class MainStageController extends AbstractGuiController {
         initServicePropertiesAndListeners();
 
         initGUIComponentsProperties();
+
+        initGUIComponentsGraphics();
 
         initialDatabaseDirectory.ifPresent(databaseLocation -> {
             Log.trace(THIS_CLASS_NAME, "->init: database auto load");
@@ -397,6 +420,20 @@ public class MainStageController extends AbstractGuiController {
                 .ifPresent(topicObject -> askForGenuinePatchLocationAndImportDataFromFile());
     }
 
+    @FXML
+    public void handleEntryFilterButtonAction() {
+        Log.trace(THIS_CLASS_NAME, "->handleEntryFilterButtonAction");
+
+        viewDataController.applyEntryFilter();
+    }
+
+    @FXML
+    public void handleEmptyEntryFilterButtonAction() {
+        Log.trace(THIS_CLASS_NAME, "->handleEmptyEntryFilterButtonAction");
+
+        viewDataController.resetEntryFilter();
+    }
+
     void handleDatabaseLoaderSuccess() {
         if (databaseLoader.fetchValue().isEmpty()) {
             return;
@@ -426,6 +463,14 @@ public class MainStageController extends AbstractGuiController {
             Log.set(Log.LEVEL_DEBUG);
             Log.debug(THIS_CLASS_NAME, "/!\\ DEBUG mode enabled via application configuration /!\\");
         }
+    }
+
+    void initGUIComponentsGraphics() {
+        Image filterImage = new Image(RESOURCE_BLUE_MAGNIFIER, SIZE_BUTTON_PICTO, SIZE_BUTTON_PICTO, true, true);
+        entryFilterButton.setGraphic(new ImageView(filterImage));
+
+        Image emptyFilterImage = new Image(ImageConstants.RESOURCE_BLUE_EMPTY_BOX, SIZE_BUTTON_PICTO, SIZE_BUTTON_PICTO, true, true);
+        entryEmptyFilterButton.setGraphic(new ImageView(emptyFilterImage));
     }
 
     private void handleProfileChoiceChanged(EditorLayoutDto.EditorProfileDto newProfile) {
@@ -948,6 +993,8 @@ public class MainStageController extends AbstractGuiController {
     TextField getDatabaseLocationTextField() {
         return databaseLocationTextField;
     }
+
+    TextField getEntryFilterTextField() { return entryFilterTextField; }
 
     public PluginHandler getPluginHandler() {
         return pluginHandler;

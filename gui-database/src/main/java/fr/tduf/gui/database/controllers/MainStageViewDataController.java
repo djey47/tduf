@@ -35,12 +35,10 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SingleSelectionModel;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
@@ -48,6 +46,7 @@ import javafx.scene.layout.VBox;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Predicate;
 
 import static fr.tduf.gui.database.common.SupportConstants.LOG_TARGET_PROFILE_NAME;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.REFERENCE;
@@ -67,6 +66,8 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     private static final String MESSAGE_NO_DATABASE_OBJECT_FOR_TOPIC = "No database object for topic: ";
 
+    private static final Predicate<ContentEntryDataItem> PREDICATE_DEFAULT_ENTRY_FILTER = (ContentEntryDataItem item) -> true;
+
     final Property<Locale> currentLocaleProperty = new SimpleObjectProperty<>(SettingsConstants.DEFAULT_LOCALE);
     final Property<EditorLayoutDto.EditorProfileDto> currentProfileProperty = new SimpleObjectProperty<>();
 
@@ -74,6 +75,9 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     private final DynamicLinkControlsHelper dynamicLinkControlsHelper;
 
     private final ObservableList<ContentEntryDataItem> browsableEntries = FXCollections.observableArrayList();
+
+    private final FilteredList<ContentEntryDataItem> filteredEntries = browsableEntries.filtered(PREDICATE_DEFAULT_ENTRY_FILTER);
+
     private final Map<String, VBox> tabContentByName = new HashMap<>();
     private final Map<TopicLinkDto, ObservableList<ContentEntryDataItem>> resourcesByTopicLink = new HashMap<>();
 
@@ -147,13 +151,18 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     void initTopicEntryHeaderPane(ChangeListener<ContentEntryDataItem> entryChangeListener) {
         getCurrentTopicLabel().textProperty().bindBidirectional(currentTopicProperty(), new DatabaseTopicToStringConverter());
 
-        getEntryNumberComboBox().setItems(browsableEntries);
+        ComboBox<ContentEntryDataItem> entrySelectorComboBox = getEntryNumberComboBox();
+        entrySelectorComboBox.setItems(filteredEntries);
         ContentEntryToStringConverter converter = new ContentEntryToStringConverter(browsableEntries, currentEntryIndexProperty(), currentEntryLabelProperty());
-        getEntryNumberComboBox().setConverter(converter);
-        bindBidirectional(currentEntryLabelProperty(), getEntryNumberComboBox().valueProperty(), converter);
-        getEntryNumberComboBox().getSelectionModel().selectedItemProperty()
+        entrySelectorComboBox.setConverter(converter);
+        bindBidirectional(currentEntryLabelProperty(), entrySelectorComboBox.valueProperty(), converter);
+        entrySelectorComboBox.getSelectionModel().selectedItemProperty()
                 .addListener(entryChangeListener);
-        getEntryNumberComboBox().setCellFactory(new EntryCellFactory());
+        entrySelectorComboBox.setCellFactory(new EntryCellFactory());
+        entrySelectorComboBox.setVisibleRowCount(15);
+
+        getFilteredEntryItemsCountLabel().textProperty().bind(size(filteredEntries).asString());
+        getUnfilteredEntryItemsCountLabel().textProperty().bind(size(browsableEntries).asString(DisplayConstants.LABEL_ITEM_ENTRY_COUNT));
     }
 
     void initStatusBar() {
@@ -288,7 +297,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     }
 
     void switchToContentEntry(int entryIndex) {
-        if (entryIndex < 0 || entryIndex >= getCurrentTopicObject().getData().getEntries().size()) {
+        if (entryIndex < 0 || entryIndex >= browsableEntries.size()) {
             return;
         }
 
@@ -298,6 +307,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     void switchToNextEntry() {
         int currentEntryIndex = currentEntryIndexProperty().getValue();
+        // TODO see to use browsable entries instead
         if (currentEntryIndex >= getCurrentTopicObject().getData().getEntries().size() - 1) {
             return;
         }
@@ -307,6 +317,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     void switchToNext10Entry() {
         int currentEntryIndex = currentEntryIndexProperty().getValue();
+        // TODO see to use browsable entries instead
         int lastEntryIndex = getCurrentTopicObject().getData().getEntries().size() - 1;
         if (currentEntryIndex + 10 >= lastEntryIndex) {
             currentEntryIndex = lastEntryIndex;
@@ -341,7 +352,15 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         switchToContentEntry(0);
     }
 
+    void switchToFirstFilteredEntry() {
+        filteredEntries.stream()
+                .findFirst()
+                .map(item -> item.internalEntryIdProperty().get())
+                .ifPresent(this::switchToContentEntry);
+    }
+
     void switchToLastEntry() {
+        // TODO see to use browsable entries instead
         switchToContentEntry(getCurrentTopicObject().getData().getEntries().size() - 1);
     }
 
@@ -435,6 +454,34 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                 .set(DisplayConstants.TOOLTIP_ERROR_CONTENT_NOT_FOUND);
 
         return DisplayConstants.VALUE_FIELD_DEFAULT;
+    }
+
+    void applyEntryFilter() {
+        String filterCriteria = getEntryFilterTextField().textProperty().getValueSafe().toLowerCase();
+        if (filterCriteria.isEmpty()) {
+            resetEntryFilter();
+            return;
+        }
+
+        filteredEntries.setPredicate((ContentEntryDataItem item) -> {
+            String entryRank = String.valueOf(item.internalEntryIdProperty().get() + 1);
+            String entryLabel = item.valueProperty().get().toLowerCase();
+            String entryReference = item.referenceProperty().get();
+
+            return entryRank.equals(filterCriteria)
+                    || entryLabel.contains(filterCriteria)
+                    || entryReference.equals(filterCriteria);
+        });
+
+        switchToFirstFilteredEntry();
+    }
+
+    void resetEntryFilter() {
+        getEntryFilterTextField().textProperty().setValue("");
+
+        filteredEntries.setPredicate(PREDICATE_DEFAULT_ENTRY_FILTER);
+
+        switchToFirstEntry();
     }
 
     private void switchToProfileAndRemoteEntry(String profileName, int localEntryIndex, int fieldRank, DbDto.Topic localTopic, DbDto.Topic remoteTopic) {
@@ -695,6 +742,10 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     ObservableList<ContentEntryDataItem> getBrowsableEntries() {
         return browsableEntries;
+    }
+
+    FilteredList<ContentEntryDataItem> getFilteredEntries() {
+        return filteredEntries;
     }
 
     public ItemViewModel getItemPropsByFieldRank() {
