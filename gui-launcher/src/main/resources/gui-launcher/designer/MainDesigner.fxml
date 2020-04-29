@@ -25,100 +25,121 @@
 <AnchorPane fx:id="root" prefHeight="360.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.launcher.controllers.MainStageController">
    <BorderPane layoutX="14.0" layoutY="28.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <bottom>
-         <ToolBar BorderPane.alignment="TOP_LEFT">
-           <items>
-               <Label text="Test Drive Unlimited launcher by Djey." />
-                <Pane HBox.hgrow="ALWAYS" />
-                <Button fx:id="runButton" mnemonicParsing="false" onAction="#handleRunButtonAction" text="RUN!">
-                  <font>
-                     <Font name="System Bold" size="13.0" />
-                  </font></Button>
-           </items>
-         </ToolBar>
+          <ToolBar BorderPane.alignment="TOP_LEFT">
+              <Label text="Test Drive Unlimited launcher by Djey."/>
+              <Pane HBox.hgrow="ALWAYS"/>
+              <Button fx:id="runButton" mnemonicParsing="false" onAction="#handleRunButtonAction" text="RUN!">
+                <font>
+                    <Font name="System Bold" size="13.0"/>
+                </font>
+              </Button>
+          </ToolBar>
       </bottom>
       <center>
          <Accordion style="-fx-background-color: black;" BorderPane.alignment="CENTER">
            <panes>
-             <TitledPane animated="false" text="More">
-               <content>
-                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                        <children>
-                           <TabPane prefHeight="200.0" prefWidth="200.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                             <tabs>
-                               <Tab text="Info">
-                                 <content>
-                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                          <children>
-                                             <GridPane layoutY="17.0" prefHeight="260.0" prefWidth="640.0" AnchorPane.bottomAnchor="29.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                               <columnConstraints>
-                                                   <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" />
-                                                 <ColumnConstraints hgrow="NEVER" maxWidth="160.0" minWidth="160.0" prefWidth="160.0" />
-                                                 <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="350.0" />
-                                                   <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
-                                               </columnConstraints>
-                                               <rowConstraints>
-                                                 <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="NEVER" />
-                                                 <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="NEVER" />
-                                                 <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="NEVER" />
-                                                   <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="NEVER" />
-                                               </rowConstraints>
-                                                <children>
-                                                   <Label text="Detected TDU version:" GridPane.columnIndex="1" />
-                                                   <Label fx:id="gameVersionLabel" text="&lt;VERSION&gt;" GridPane.columnIndex="2" />
-                                                   <Label layoutX="10.0" layoutY="17.0" text="Game status:" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                   <FlowPane columnHalignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
-                                                      <children>
-                                                         <Label fx:id="gameStatusLabel" text="&lt;STATUS&gt;" />
-                                                         <Label fx:id="processExitReasonLabel" text="&lt;REASON&gt;" />
-                                                      </children>
-                                                   </FlowPane>
-                                                   <Arc fill="#1f93ff" length="270.0" radiusX="10.0" radiusY="10.0" rotate="90.0" startAngle="45.0" stroke="BLACK" strokeType="INSIDE" type="ROUND" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                                                   <Arc fill="#1f93ff" length="270.0" radiusX="10.0" radiusY="10.0" rotate="90.0" startAngle="45.0" stroke="BLACK" strokeType="INSIDE" type="ROUND" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                                                   <Arc fill="#1f93ff" layoutX="26.0" layoutY="55.0" length="270.0" radiusX="10.0" radiusY="10.0" rotate="90.0" startAngle="45.0" stroke="BLACK" strokeType="INSIDE" type="ROUND" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
-                                                   <Label layoutX="40.0" layoutY="17.0" text="Community addons:" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                   <Hyperlink fx:id="forceCloseLink" onAction="#handleForceCloseLinkAction" text="Force close" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                                                </children>
-                                             </GridPane>
-                                          </children>
-                                       </AnchorPane>
-                                 </content>
-                               </Tab>
-                                 <Tab text="Settings">
-                                   <content>
-                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                          <children>
-                                             <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                <children>
-                                                   <TreeTableView fx:id="settingsTableView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-                                                   <FlowPane prefWidth="200.0" VBox.vgrow="NEVER">
-                                                      <children>
-                                                         <Label text="Game directory:" />
-                                                         <TextField fx:id="gameDirectoryTextField" prefHeight="26.0" prefWidth="405.0" />
-                                                         <Button fx:id="browseGameLocationButton" mnemonicParsing="false" onAction="#handleBrowseGameLocationButtonAction" text="..." />
-                                                      </children>
-                                                   </FlowPane>
-                                                </children>
-                                             </VBox>
-                                          </children>
-                                       </AnchorPane>
-                                   </content>
-                                 </Tab>
-                               <Tab text="Advanced">
-                                 <content>
-                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                                 </content>
-                               </Tab>
-                                 <Tab text="Console">
-                                   <content>
-                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                                   </content>
-                                 </Tab>
-                             </tabs>
-                           </TabPane>
-                        </children>
-                     </AnchorPane>
-               </content>
-             </TitledPane>
+               <TitledPane animated="false" text="More">
+                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                       <TabPane prefHeight="200.0" prefWidth="200.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE"
+                                AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <Tab text="Info">
+                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
+                                           prefWidth="200.0">
+                                   <GridPane layoutY="17.0" prefHeight="260.0" prefWidth="640.0"
+                                             AnchorPane.bottomAnchor="29.0" AnchorPane.leftAnchor="0.0"
+                                             AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <columnConstraints>
+                                           <ColumnConstraints halignment="CENTER" hgrow="NEVER"
+                                                              maxWidth="30.0" minWidth="30.0"
+                                                              prefWidth="30.0"/>
+                                           <ColumnConstraints hgrow="NEVER" maxWidth="160.0"
+                                                              minWidth="160.0" prefWidth="160.0"/>
+                                           <ColumnConstraints hgrow="ALWAYS"
+                                                              maxWidth="1.7976931348623157E308"
+                                                              minWidth="0.0" prefWidth="350.0"/>
+                                           <ColumnConstraints halignment="CENTER" hgrow="NEVER"/>
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                           <RowConstraints minHeight="30.0" prefHeight="30.0"
+                                                           vgrow="NEVER"/>
+                                           <RowConstraints minHeight="30.0" prefHeight="30.0"
+                                                           vgrow="NEVER"/>
+                                           <RowConstraints minHeight="30.0" prefHeight="30.0"
+                                                           vgrow="NEVER"/>
+                                           <RowConstraints minHeight="30.0" prefHeight="30.0"
+                                                           vgrow="NEVER"/>
+                                       </rowConstraints>
+                                       <Label text="Detected TDU version:"
+                                              GridPane.columnIndex="1"/>
+                                       <Label fx:id="gameVersionLabel" text="&lt;VERSION&gt;"
+                                              GridPane.columnIndex="2"/>
+                                       <Label layoutX="10.0" layoutY="17.0" text="Game status:"
+                                              GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                       <FlowPane columnHalignment="CENTER" maxHeight="-Infinity"
+                                                 minHeight="-Infinity" GridPane.columnIndex="2"
+                                                 GridPane.halignment="CENTER" GridPane.rowIndex="1"
+                                                 GridPane.valignment="CENTER"
+                                                 GridPane.vgrow="NEVER">
+                                           <Label fx:id="gameStatusLabel"
+                                                  text="&lt;STATUS&gt;"/>
+                                           <Label fx:id="processExitReasonLabel"
+                                                  text="&lt;REASON&gt;"/>
+                                       </FlowPane>
+                                       <Arc fill="#1f93ff" length="270.0" radiusX="10.0"
+                                            radiusY="10.0" rotate="90.0" startAngle="45.0"
+                                            stroke="BLACK" strokeType="INSIDE" type="ROUND"
+                                            GridPane.halignment="CENTER"
+                                            GridPane.valignment="CENTER"/>
+                                       <Arc fill="#1f93ff" length="270.0" radiusX="10.0"
+                                            radiusY="10.0" rotate="90.0" startAngle="45.0"
+                                            stroke="BLACK" strokeType="INSIDE" type="ROUND"
+                                            GridPane.halignment="CENTER" GridPane.rowIndex="1"
+                                            GridPane.valignment="CENTER"/>
+                                       <Arc fill="#1f93ff" layoutX="26.0" layoutY="55.0"
+                                            length="270.0" radiusX="10.0" radiusY="10.0"
+                                            rotate="90.0" startAngle="45.0" stroke="BLACK"
+                                            strokeType="INSIDE" type="ROUND"
+                                            GridPane.halignment="CENTER" GridPane.rowIndex="2"
+                                            GridPane.valignment="CENTER"/>
+                                       <Label layoutX="40.0" layoutY="17.0" text="Community addons:"
+                                              GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                                       <Hyperlink fx:id="forceCloseLink"
+                                                  onAction="#handleForceCloseLinkAction"
+                                                  text="Force close" GridPane.columnIndex="3"
+                                                  GridPane.rowIndex="1"/>
+                                   </GridPane>
+                               </AnchorPane>
+                           </Tab>
+                           <Tab text="Settings">
+                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
+                                           prefWidth="200.0">
+                                   <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                         AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <TreeTableView fx:id="settingsTableView" prefHeight="200.0"
+                                                      prefWidth="200.0" VBox.vgrow="ALWAYS"/>
+                                       <FlowPane prefWidth="200.0" VBox.vgrow="NEVER">
+                                           <Label text="Game directory:"/>
+                                           <TextField fx:id="gameDirectoryTextField"
+                                                      prefHeight="26.0" prefWidth="405.0"/>
+                                           <Button mnemonicParsing="false"
+                                                   onAction="#handleBrowseGameLocationButtonAction"
+                                                   text="..."/>
+                                       </FlowPane>
+                                   </VBox>
+                               </AnchorPane>
+                           </Tab>
+                           <Tab text="Advanced">
+                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
+                                           prefWidth="200.0"/>
+                           </Tab>
+                           <Tab text="Console">
+                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
+                                           prefWidth="200.0"/>
+                           </Tab>
+                       </TabPane>
+                   </AnchorPane>
+               </TitledPane>
            </panes>
          </Accordion>
       </center>
