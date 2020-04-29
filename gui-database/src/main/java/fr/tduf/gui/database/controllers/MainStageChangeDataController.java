@@ -84,7 +84,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
                     .getStructure().getFields();
             if (DatabaseStructureQueryHelper.getUidFieldRank(structureFields).isPresent()) {
                 // Association topic -> browse remote entries in target topic
-                getEntriesStageController().initAndShowModalDialog(null, targetTopic, targetProfileName)
+                getEntriesStageController().initAndShowModalDialog(targetTopic, targetProfileName)
                         .ifPresent(selectedEntry -> addLinkedEntryWithTargetRefAndUpdateStage(tableViewSelectionModel, topicLinkObject.getTopic(), selectedEntry, topicLinkObject));
             } else {
                 // Direct topic link -> add default entry in target topic

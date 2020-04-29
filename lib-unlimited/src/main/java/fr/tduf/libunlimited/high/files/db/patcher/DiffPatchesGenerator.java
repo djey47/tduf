@@ -98,7 +98,6 @@ public class DiffPatchesGenerator {
         String entryRef = BulkDatabaseMiner.getContentEntryReference(entry, refFieldRank);
         final Optional<ContentEntryDto> potentialReferenceEntry = getReferenceDatabaseMiner().getContentEntryFromTopicWithReference(entryRef, currentTopic);
         // Proposed refactoring does fail unit testing
-        //noinspection OptionalIsPresent
         if (potentialReferenceEntry.isPresent()) {
             return createPartialContentsUpdate(currentTopic, entryRef, entry, potentialReferenceEntry.get());
         } else {

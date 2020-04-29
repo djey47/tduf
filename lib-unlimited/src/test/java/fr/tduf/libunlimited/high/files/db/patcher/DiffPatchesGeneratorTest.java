@@ -35,7 +35,7 @@ class DiffPatchesGeneratorTest {
     }
 
     @Test
-    void prepare_shouldReturnInstance() throws Exception {
+    void prepare_shouldReturnInstance() {
         // GIVEN-WHEN
         DiffPatchesGenerator actualGenerator = DiffPatchesGenerator.prepare(new ArrayList<>(), new ArrayList<>());
 
@@ -48,7 +48,7 @@ class DiffPatchesGeneratorTest {
     }
 
     @Test
-    void makePatches_whenNoDifference_shouldReturnEmptySet() throws Exception {
+    void makePatches_whenNoDifference_shouldReturnEmptySet() {
         // GIVEN
         DiffPatchesGenerator generator = DiffPatchesGenerator.prepare(referenceDatabaseObjects, referenceDatabaseObjects);
 
