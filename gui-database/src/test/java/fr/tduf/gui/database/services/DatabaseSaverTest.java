@@ -1,19 +1,21 @@
 package fr.tduf.gui.database.services;
 
-import javafx.stage.Stage;
+import fr.tduf.libtesting.common.helper.javafx.ApplicationTestHelper;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.testfx.framework.junit5.ApplicationTest;
 
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class DatabaseSaverTest extends ApplicationTest {
+class DatabaseSaverTest {
 
     private DatabaseSaver saverService;
 
-    @Override
-    public void start(Stage stage) {}
+    @BeforeAll
+    static void globalSetUp() {
+        ApplicationTestHelper.initJavaFX();
+    }
 
     @BeforeEach
     void setUp() {
