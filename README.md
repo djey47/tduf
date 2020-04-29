@@ -39,7 +39,7 @@ Copy *tools* directory into *gui-database* to make it work properly.
 * Update and commit *dist/version.info* file according to desired version
 * Make working directory clean (commit/push or stash changes)
 * Check version: execute *currentVersion* task from Gradle
-* Execute *release* task from Gradle to automatically select release tag version, or *release -Prelease.forceVersion=[version]* to specify version.
+* Execute *release* task from Gradle to automatically select release tag version, or *release -Prelease.forceVersion=[version]* to specify a version.
 
 ...it will:
 

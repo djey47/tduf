@@ -14,10 +14,10 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
 * Provides user interface profiles to address different modding use cases (car editing, tuning kits, rims ...)
 * Checks database and proposes to fix errors (advanced feature)
 * CONTENTS
-    * Displays all fields within a topic, in an ordered manner
+    * Displays all fields within a topic, with customizable order
     * Displays missing reference errors
     * Displays shared data among topics (paintjobs, tuning kits, rims)
-    * Makes changes easier for special values (resources, percent, bitfields, links etc.)
+    * Makes change easier for special values (resources, percent, bitfields, links etc.)
     * Enables navigation over entries in same or different topics
     * Searches/Clones/Deletes particular entry
     * Adds new content entry
@@ -44,9 +44,9 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
     * Detects and displays reference errors
 * FILE MAPPING [WIKI](https://github.com/djey47/tduf/wiki/File-Mapping-Editor)
     * Displays mapping state and file availability
-    * Allows to change names for assets BNK files
+    * Allows changing names for assets BNK files
     * Displays files into default file browser
-    * Allows to fix BNK file mappings in Bnk1.map 
+    * Allows fixing BNK file mappings in Bnk1.map 
 * AND MORE!
 
 
@@ -54,7 +54,7 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
 * (Editor) Brings misc. UI changes (shorter, clearer labels...)
 * (Editor) All plugins (cameras, iks, mapping,...) can be disabled at once via manual ops. See [WIKI](https://github.com/djey47/tduf/wiki/Advanced-Editor)
 * (Editor/Cameras) Adds support for new view setting (ComplementaryView for front/rear switch)
-* (Editor/Mapping) Adds feature as plugin to track BNK file mapping. See [WIKI](https://github.com/djey47/tduf/wiki/File-Mapping-Editor)
+* (Editor/Mapping) Adds a feature as plugin to track BNK file mapping. See [WIKI](https://github.com/djey47/tduf/wiki/File-Mapping-Editor)
 
 * (CamerasTool/remove-sets) New operation to delete all views from selected camera sets. See [WIKI](https://github.com/djey47/tduf/wiki/Cameras-Tool-CLI#f-delete-view-sets)
 
@@ -67,12 +67,12 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
 
 
 ### Fixed issues
-* (Editor) Wrong profile name in configuration would prevent database to be loaded
+* (Editor) Wrong profile name in the configuration would prevent the database from being loaded
 * (Editor) Tuning options (car packs) were not displayed from current vehicle slot
 * (Editor/Cameras) 'SteeringWheelTilt' view parameter changes now work properly
 * (Editor/Cameras) Changing cockpit view settings would break rear view
 
-* (Library/Files) Incorrect reading of signed integer values was resolved
+* (Library/Files) Incorrect reading of signed integer values
 
 
 ### Known bugs
@@ -105,7 +105,7 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
 
 
 ### Troubleshooting
-Now hosted on WIKI:
+Now hosted on the WIKI:
 - [CLI Tools](https://github.com/djey47/tduf/wiki/Troubleshooting)
 - [Database Editor](https://github.com/djey47/tduf/wiki/Troubleshooting-Editor)
 
