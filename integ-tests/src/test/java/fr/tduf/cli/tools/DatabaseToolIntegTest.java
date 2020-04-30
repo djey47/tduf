@@ -322,7 +322,7 @@ public class DatabaseToolIntegTest {
         // WHEN unpack-all (with deep-check and fix)
         System.out.println("-> UnpackAll!");
 
-        // TODO implement assertion with new functions
+        // TODO [2.0] See to implement assertions
 //        OutputStream outputStream = ConsoleHelper.hijackStandardOutput();
 //        exitRule.checkAssertionAfterwards(() -> {
 //            String jsonContents = ConsoleHelper.finalizeAndGetContents(outputStream);

@@ -177,7 +177,6 @@ public class DatabaseBankHelper {
         }
     }
 
-    // TODO Remove unused exception declaration
     private static void groupFiles(String sourceDirectory, String targetDirectory) {
         try {
             Files.walk(Paths.get(sourceDirectory))

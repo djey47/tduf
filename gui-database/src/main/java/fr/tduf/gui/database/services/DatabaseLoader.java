@@ -34,7 +34,7 @@ public class DatabaseLoader extends Service<List<DbDto>> {
      * Created for advanced features and easier testing
      */
     class LoaderTask extends Task<List<DbDto>> {
-        // TODO create abstract generic task or advanced features
+        // TODO [2.0] create abstract generic task for advanced features
         private final List<String> messageHistory = new ArrayList<>();
 
         @Override

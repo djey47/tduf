@@ -108,7 +108,7 @@ public class GenericToolTest {
     @ExpectSystemExitWithStatus(1)
     void doMain_whenFailCommand_andNormalizedOutputMode_shouldWriteProperErrorJsonToConsole() throws IOException {
         // GIVEN
-        // TODO See to implement assertion with new functions
+        // TODO [2.0] See to implement assertions
 //        final OutputStream errContents = ConsoleHelper.hijackErrorOutput();
 //        exitRule.checkAssertionAfterwards(() -> AssertionsHelper.assertOutputStreamContainsSequence(errContents, "{", "errorMessage", "Exception", "stackTrace", "}"));
 

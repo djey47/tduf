@@ -29,7 +29,7 @@ public class DatabaseFixer extends AbstractDatabaseService {
         return new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                // TODO handle errors like Loader/Saver services
+                // TODO [2.0] handle errors like Loader/Saver services
                 final Path realDatabasePath = Paths.get(requireNonNull(databaseLocation.get(), "Database location is required."));
                 final List<DbDto> databaseObjects = requireNonNull(loadedDatabaseObjects.get(), "Loaded database objects are required.");
                 final String jsonDirectory = requireNonNull(jsonDatabaseLocation.get(), "JSON database location is required.");
