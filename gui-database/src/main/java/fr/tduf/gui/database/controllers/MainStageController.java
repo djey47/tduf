@@ -51,7 +51,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static fr.tduf.gui.common.ImageConstants.*;
+import static fr.tduf.gui.common.ImageConstants.Resource.BOX_EMPTY_BLUE;
+import static fr.tduf.gui.common.ImageConstants.Resource.MAGNIFIER_BLUE;
+import static fr.tduf.gui.common.ImageConstants.SIZE_BUTTON_PICTO;
 import static fr.tduf.gui.common.helper.MessagesHelper.getServiceErrorMessage;
 import static fr.tduf.gui.database.common.DisplayConstants.*;
 import static java.util.Optional.ofNullable;
@@ -465,10 +467,10 @@ public class MainStageController extends AbstractGuiController {
     }
 
     void initGUIComponentsGraphics() {
-        Image filterImage = new Image(RESOURCE_BLUE_MAGNIFIER, SIZE_BUTTON_PICTO, SIZE_BUTTON_PICTO, true, true);
+        Image filterImage = new Image(MAGNIFIER_BLUE.getStream(), SIZE_BUTTON_PICTO, SIZE_BUTTON_PICTO, true, true);
         entryFilterButton.setGraphic(new ImageView(filterImage));
 
-        Image emptyFilterImage = new Image(RESOURCE_BLUE_EMPTY_BOX, SIZE_BUTTON_PICTO, SIZE_BUTTON_PICTO, true, true);
+        Image emptyFilterImage = new Image(BOX_EMPTY_BLUE.getStream(), SIZE_BUTTON_PICTO, SIZE_BUTTON_PICTO, true, true);
         entryEmptyFilterButton.setGraphic(new ImageView(emptyFilterImage));
     }
 

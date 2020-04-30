@@ -13,7 +13,7 @@ import javafx.scene.layout.HBox;
 import java.util.HashSet;
 import java.util.Set;
 
-import static fr.tduf.gui.common.ImageConstants.RESOURCE_WARN;
+import static fr.tduf.gui.common.ImageConstants.Resource.WARN_ORANGE;
 import static fr.tduf.gui.common.ImageConstants.SIZE_DEFAULT_PICTO;
 import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_PLUGIN_BOX;
 import static fr.tduf.gui.database.plugins.contentRef.common.DisplayConstants.TOOLTIP_WARNING;
@@ -53,7 +53,7 @@ public class ContentRefPlugin extends AbstractDatabasePlugin {
         HBox hBox = new HBox();
         hBox.getStyleClass().addAll(CSS_CLASS_PLUGIN_BOX, CSS_CLASS_CONTENT_REF_PLUGIN_BOX);
 
-        Image warnSignImage = new Image(RESOURCE_WARN, SIZE_DEFAULT_PICTO, SIZE_DEFAULT_PICTO, true, true);
+        Image warnSignImage = new Image(WARN_ORANGE.getStream(), SIZE_DEFAULT_PICTO, SIZE_DEFAULT_PICTO, true, true);
         ImageView imageView = new ImageView(warnSignImage);
 
         Tooltip tooltip = new Tooltip(TOOLTIP_WARNING);

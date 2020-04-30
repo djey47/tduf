@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
 
-import static fr.tduf.gui.common.ImageConstants.RESOURCE_RED_WARN;
+import static fr.tduf.gui.common.ImageConstants.Resource.WARN_RED;
 import static fr.tduf.gui.common.ImageConstants.SIZE_DEFAULT_PICTO;
 import static fr.tduf.gui.database.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.common.FxConstants.*;
@@ -173,7 +173,7 @@ public class PluginHandler {
         ObservableList<Node> mainColumnChildren = mainColumnBox.getChildren();
 
         HBox titleBox = new HBox();
-        Image errorSignImage = new Image(RESOURCE_RED_WARN, SIZE_DEFAULT_PICTO, SIZE_DEFAULT_PICTO, true, true);
+        Image errorSignImage = new Image(WARN_RED.getStream(), SIZE_DEFAULT_PICTO, SIZE_DEFAULT_PICTO, true, true);
         ImageView errorImageView = new ImageView(errorSignImage);
         String errorTitle = String.format(errorMessageFormat, pluginName);
         Label errorTitleLabel = new Label(errorTitle);

@@ -23,7 +23,7 @@ import javafx.scene.layout.VBox;
 
 import java.util.Map;
 
-import static fr.tduf.gui.common.ImageConstants.RESOURCE_ERROR;
+import static fr.tduf.gui.common.ImageConstants.Resource.ERROR;
 import static fr.tduf.gui.common.ImageConstants.SIZE_DEFAULT_PICTO;
 import static fr.tduf.gui.database.common.DisplayConstants.TAB_NAME_DEFAULT;
 import static java.util.Optional.ofNullable;
@@ -107,7 +107,7 @@ abstract class AbstractDynamicControlsHelper {
     }
 
     protected static void addErrorSign(HBox hBox, BooleanProperty errorProperty, StringProperty errorMessageProperty) {
-        Image errorSignImage = new Image(RESOURCE_ERROR, SIZE_DEFAULT_PICTO, SIZE_DEFAULT_PICTO, true, true);
+        Image errorSignImage = new Image(ERROR.getStream(), SIZE_DEFAULT_PICTO, SIZE_DEFAULT_PICTO, true, true);
 
         ImageView imageView = new ImageView(errorSignImage);
         imageView.visibleProperty().bindBidirectional(errorProperty);
