@@ -16,6 +16,7 @@ import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static fr.tduf.libunlimited.high.files.db.common.DatabaseConstants.RESOURCE_VALUE_NONE;
 import static fr.tduf.libunlimited.high.files.db.dto.DbFieldValueDto.fromCouple;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE;
 import static fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto.DbChangeDto.ChangeTypeEnum.UPDATE_RES;
@@ -183,7 +184,7 @@ public class DiffPatchesGenerator {
                         .enableStrictMode(true)
                         .asReference(resourceEntry.getReference())
                         .forLocale(locale)
-                        .withValue(resourceEntry.getValueForLocale(locale).orElse("??")) // TODO See to use DatabaseConstants instead
+                        .withValue(resourceEntry.getValueForLocale(locale).orElse(RESOURCE_VALUE_NONE))
                         .forTopic(currentTopic)
                         .build());
     }
