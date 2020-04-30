@@ -5,7 +5,7 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
 * Providing base modding features to save time in a command line interface (aka. CLI)
 * Making database and cameras editing less harmful with a new Database Editor (aka. GUI)
 * Helping with reverse-engineering
-* Bringing new desktop applications for end-users, in the future
+* Bringing and powering new desktop applications for end-users
 * ...
 
 
@@ -13,7 +13,7 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
 * Opens and saves a database from/to either regular BNK or JSON form
 * Provides user interface profiles to address different modding use cases (car editing, tuning kits, rims ...)
 * Checks database and proposes to fix errors (advanced feature)
-* CONTENTS
+* CONTENTS [WIKI](https://github.com/djey47/tduf/wiki/Quick-Tour-Editor)
     * Displays all fields within a topic, with customizable order
     * Displays missing reference errors
     * Displays shared data among topics (paintjobs, tuning kits, rims)
@@ -51,28 +51,26 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
 
 
 ### What's in this version ? (1.13.0)
-* (Editor) Brings misc. UI changes (shorter, clearer labels...)
-* (Editor) All plugins (cameras, iks, mapping,...) can be disabled at once via manual ops. See [WIKI](https://github.com/djey47/tduf/wiki/Advanced-Editor)
-* (Editor/Cameras) Adds support for new view setting (ComplementaryView for front/rear switch)
-* (Editor/Mapping) Adds a feature as plugin to track BNK file mapping. See [WIKI](https://github.com/djey47/tduf/wiki/File-Mapping-Editor)
+* (Editor) Brings misc. UI changes (displayed error messages, topic in profile selector...)
+* (Editor) Introduces new search engine for entry value
+* (Editor) Displays placeholder or message when plugin failed (e.g invisible file mapping syndrome)
+* (Editor) Enhance database metadata: new labels for *drag force* and *downforce* items in CAR_PHYSICS_DATA
+* (Editor) Debugging mode now can be enabled via settings [WIKI](https://github.com/djey47/tduf/wiki/Advanced-Editor#enable-debugging-mode-via-tduf-settings-file)
 
-* (CamerasTool/remove-sets) New operation to delete all views from selected camera sets. See [WIKI](https://github.com/djey47/tduf/wiki/Cameras-Tool-CLI#f-delete-view-sets)
+* (Library/Cameras) Adds reference for 'Binoculars' setting (thanks to all people involved in research!)
 
-* (Library/Cameras) Huge parts of cameras parsing and writing have been refactored
-* (Library/Cameras) Added support for complementary view setting
-* (Library/Files) Added support for new field type: CONSTANT. See [WIKI](https://github.com/djey47/tduf/wiki/Reverse-Engineering-Structure#field-types)
-* (Library/Files) Updated structures to take benefit of CONSTANT field type
-* (Library/Mapping) Added support operations (load/save)
-* (Library/Game) Added new domain Objects and Helpers (Vehicle Slots...)
+* (Technical) Huge code cleaning (without side-effects, I hope! ^^")
+* (Technical) Upgrade of development tools (some versions were 5 years old!)
 
 
 ### Fixed issues
-* (Editor) Wrong profile name in the configuration would prevent the database from being loaded
-* (Editor) Tuning options (car packs) were not displayed from current vehicle slot
-* (Editor/Cameras) 'SteeringWheelTilt' view parameter changes now work properly
-* (Editor/Cameras) Changing cockpit view settings would break rear view
+* (Editor/Cameras) Default selected camera view was not the first on the list
+* (Editor/Mapping) No entries were appearing due to corrupted contexts
 
-* (Library/Files) Incorrect reading of signed integer values
+* (Library/Cameras) Incorrect Cameras.bin file name was used
+* (Library/Cameras) Added missing cameras and iks sets (F40)
+
+* (Technical) Now includes XML APIs to run under Java JRE 9 without script patch
 
 
 ### Known bugs
@@ -93,7 +91,7 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
 ### Running Database Editor!
 - Launch TDUF-database-gui.cmd from Windows explorer / TDUF-database-gui.sh from Linux
 - In DatabaseEditor, browse location of TDU database BNK or JSON files. Load (may take a while)
-- From 1.12.0 version, at first launch, select real TDU game path when asked 
+- At first loading, select real TDU game path when asked 
 - IMPORTANT: if you just updated TDU Database files with a mod, you should always *Clear database cache* from advanced settings! Then reload.
 - Make your changes. Save (may take a while)
 - Database is repacked automatically.
@@ -105,13 +103,13 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
 
 
 ### Troubleshooting
-Now hosted on the WIKI:
+Now hosted on its own WIKI:
 - [CLI Tools](https://github.com/djey47/tduf/wiki/Troubleshooting)
 - [Database Editor](https://github.com/djey47/tduf/wiki/Troubleshooting-Editor)
 
 
 ### Using JAR library and/or CLI Tools in your projects
-It's for free, but you ought to put a mention (kinda 'Powered By TDUF project') and give a link to thread @ [TurboDuck](http://forum.turboduck.net/threads/32570-Djey-Discussion-about-new-modding-possibilities)
+It's for free and without any guarantee, but you ought to put a mention (kinda 'Powered By TDUF project') and give a link to thread @ [TurboDuck](http://forum.turboduck.net/threads/32570-Djey-Discussion-about-new-modding-possibilities)
 
 
 ### And especially...
@@ -122,7 +120,7 @@ If you wish to donate, please head to [this](http://bit.ly/13YI3bP)
 #### Contact & useful links
 
 * [Project homepage @ TurboDuck community](http://forum.turboduck.net/forums/79-tdu-mod-tools-support)
-* [TDUF WIKI](https://github.com/djey47/tduf/wiki)
+* [TDUF WIKI @ GitHub](https://github.com/djey47/tduf/wiki)
 * [Other tools Reference: TDUCP WIKI @ GitHub](https://github.com/djey47/tdu-cp/wiki/Tools-reference)
 
 
