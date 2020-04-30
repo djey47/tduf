@@ -52,6 +52,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import static fr.tduf.gui.common.ImageConstants.*;
+import static fr.tduf.gui.common.helper.MessagesHelper.getServiceErrorMessage;
 import static fr.tduf.gui.database.common.DisplayConstants.*;
 import static java.util.Optional.ofNullable;
 import static javafx.beans.binding.Bindings.when;
