@@ -1,7 +1,5 @@
 package fr.tduf.gui.common.helper;
 
-import fr.tduf.libtesting.common.helper.javafx.ApplicationTestHelper;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -9,10 +7,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class MessagesHelperTest {
 
-    @BeforeAll
-    static void globalSetUp() {
-        ApplicationTestHelper.initJavaFX();
-    }
+//    @BeforeAll
+//    static void globalSetUp() {
+//        ApplicationTestHelper.initJavaFX();
+//    }
 
     @Test
     void getGenericErrorMessage() {
