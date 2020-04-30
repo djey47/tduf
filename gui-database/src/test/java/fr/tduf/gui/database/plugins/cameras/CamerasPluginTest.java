@@ -34,7 +34,7 @@ class CamerasPluginTest {
 
         // when-then
         assertThrows(IOException.class, () -> camerasPlugin.onInit("CAMERAS", editorContext));
-        assertThat(editorContext.getCamerasContext().isPluginLoaded()).isFalse();
+        assertThat(camerasPlugin.getCamerasContext().isPluginLoaded()).isFalse();
     }
 
     @Test
@@ -46,7 +46,7 @@ class CamerasPluginTest {
     @Test
     void renderControls_whenNoCamerasLoaded_shouldReturnEmptyComponent() {
         // given
-        editorContext.getCamerasContext().setPluginLoaded(false);
+        camerasPlugin.getCamerasContext().setPluginLoaded(false);
         OnTheFlyContext onTheFlyContext = new OnTheFlyContext();
 
         // when

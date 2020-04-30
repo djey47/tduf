@@ -66,6 +66,8 @@ public class MappingPlugin extends AbstractDatabasePlugin {
             CAR_PHYSICS_DATA, CAR_PACKS, CAR_SHOPS, CLOTHES, HOUSES, RIMS, TUTORIALS
     ));
 
+    private final MappingContext mappingContext = new MappingContext();
+
     @SuppressWarnings("FieldMayBeFinal")
     private Property<BankMap> bankMapProperty = new SimpleObjectProperty<>();
 
@@ -80,7 +82,6 @@ public class MappingPlugin extends AbstractDatabasePlugin {
     public void onInit(String pluginName, EditorContext editorContext) throws IOException {
         super.onInit(pluginName, editorContext);
 
-        MappingContext mappingContext = editorContext.getMappingContext();
         mappingContext.reset();
         
         bankMapProperty.setValue(null);
@@ -107,7 +108,6 @@ public class MappingPlugin extends AbstractDatabasePlugin {
 
     @Override
     public void onSave() throws IOException {
-        MappingContext mappingContext = this.getEditorContext().getMappingContext();
         if (!mappingContext.isPluginLoaded()) {
             Log.warn(THIS_CLASS_NAME, "Mapping plugin not loaded, no saving will be performed");
             return;
@@ -120,7 +120,6 @@ public class MappingPlugin extends AbstractDatabasePlugin {
 
     @Override
     public Node renderControls(OnTheFlyContext onTheFlyContext) {
-        MappingContext mappingContext = getEditorContext().getMappingContext();
         mappingContext.setErrorProperty(onTheFlyContext.getErrorProperty());
         mappingContext.setErrorMessageProperty(onTheFlyContext.getErrorMessageProperty());
 
@@ -199,8 +198,6 @@ public class MappingPlugin extends AbstractDatabasePlugin {
     }
 
     void refreshMapping(String resourceReference, OnTheFlyContext onTheFlyContext) {
-        EditorContext editorContext = getEditorContext();
-        MappingContext mappingContext = editorContext.getMappingContext();
         StringProperty errorMessageProperty = mappingContext.getErrorMessageProperty();
         BooleanProperty errorProperty = mappingContext.getErrorProperty();
 
@@ -213,7 +210,7 @@ public class MappingPlugin extends AbstractDatabasePlugin {
             return;
         }
 
-        BulkDatabaseMiner miner = editorContext.getMiner();
+        BulkDatabaseMiner miner = getEditorContext().getMiner();
         String resourceValue = miner.getResourceEntryFromTopicAndReference(onTheFlyContext.getRemoteTopic(), resourceReference)
                 .flatMap(ResourceEntryDto::pickValue)
                 .orElse(VALUE_RESOURCE_DEFAULT);
@@ -481,5 +478,9 @@ public class MappingPlugin extends AbstractDatabasePlugin {
      */
     protected void setEditorContext(EditorContext editorContext) {
         super.setEditorContext(editorContext);
+    }
+
+    public MappingContext getMappingContext() {
+        return mappingContext;
     }
 }

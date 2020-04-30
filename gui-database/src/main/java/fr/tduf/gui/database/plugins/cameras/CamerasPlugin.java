@@ -66,6 +66,8 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
     private static final Class<CamerasPlugin> thisClass = CamerasPlugin.class;
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 
+    private final CamerasContext camerasContext = new CamerasContext();
+
     private CameraAndIKHelper cameraRefHelper;
     private CamerasDialogsHelper dialogsHelper;
     private CamerasImExHelper imExHelper;
@@ -87,7 +89,6 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
     public void onInit(String pluginName, EditorContext editorContext) throws IOException {
         super.onInit(pluginName, editorContext);
 
-        CamerasContext camerasContext = editorContext.getCamerasContext();
         camerasContext.reset();
 
         cameraInfoEnhancedProperty.setValue(null);
@@ -122,7 +123,6 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
      */
     @Override
     public void onSave() throws IOException {
-        CamerasContext camerasContext = getEditorContext().getCamerasContext();
         if (!camerasContext.isPluginLoaded()) {
             Log.warn(THIS_CLASS_NAME, "Cameras plugin not loaded, no saving will be performed");
             return;
@@ -145,8 +145,6 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
      */
     @Override
     public Node renderControls(OnTheFlyContext onTheFlyContext) {
-        EditorContext editorContext = getEditorContext();
-        CamerasContext camerasContext = editorContext.getCamerasContext();
         camerasContext.setErrorProperty(onTheFlyContext.getErrorProperty());
         camerasContext.setErrorMessageProperty(onTheFlyContext.getErrorMessageProperty());
 
@@ -165,7 +163,7 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
         VBox mainColumnBox = createMainColumn(onTheFlyContext, cameraSelectorComboBox, viewSelectorComboBox);
 
         StringProperty rawValueProperty = onTheFlyContext.getRawValueProperty();
-        Window mainWindow = editorContext.getMainWindow();
+        Window mainWindow = getEditorContext().getMainWindow();
         VBox buttonColumnBox = createButtonColumn(
                 handleAddSetButtonAction(rawValueProperty, cameraSelectorComboBox.getSelectionModel(), mainWindow),
                 handleDeleteSetButtonAction(rawValueProperty, cameraSelectorComboBox.getSelectionModel()),
@@ -342,8 +340,6 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
 
             cameraViews.clear();
 
-            EditorContext editorContext = getEditorContext();
-            CamerasContext camerasContext = editorContext.getCamerasContext();
             if (newValue == null) {
                 camerasContext.getErrorProperty().setValue(true);
                 camerasContext.getErrorMessageProperty().setValue(LABEL_ERROR_TOOLTIP);
@@ -539,5 +535,9 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
      */
     protected void setEditorContext(EditorContext editorContext) {
         super.setEditorContext(editorContext);
+    }
+
+    public CamerasContext getCamerasContext() {
+        return camerasContext;
     }
 }

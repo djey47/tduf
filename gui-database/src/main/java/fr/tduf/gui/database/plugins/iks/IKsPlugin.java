@@ -41,6 +41,8 @@ public class IKsPlugin extends AbstractDatabasePlugin {
     private static final Class<IKsPlugin> thisClass = IKsPlugin.class;
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 
+    private final IKsContext iksContext = new IKsContext();
+
     private CameraAndIKHelper ikRefHelper;
 
     /**
@@ -69,7 +71,6 @@ public class IKsPlugin extends AbstractDatabasePlugin {
      */
     @Override
     public Node renderControls(OnTheFlyContext onTheFlyContext) {
-        IKsContext iksContext = getEditorContext().getIKsContext();
         iksContext.setErrorProperty(onTheFlyContext.getErrorProperty());
         iksContext.setErrorMessageProperty(onTheFlyContext.getErrorMessageProperty());
 
@@ -137,13 +138,12 @@ public class IKsPlugin extends AbstractDatabasePlugin {
             }
 
             EditorContext editorContext = getEditorContext();
-            IKsContext iKsContext = editorContext.getIKsContext();
             if (newValue == null) {
-                iKsContext.getErrorProperty().setValue(true);
-                iKsContext.getErrorMessageProperty().setValue(LABEL_ERROR_TOOLTIP);
+                iksContext.getErrorProperty().setValue(true);
+                iksContext.getErrorMessageProperty().setValue(LABEL_ERROR_TOOLTIP);
             } else {
-                iKsContext.getErrorProperty().setValue(false);
-                iKsContext.getErrorMessageProperty().setValue("");
+                iksContext.getErrorProperty().setValue(false);
+                iksContext.getErrorMessageProperty().setValue("");
 
                 editorContext.getChangeDataController().updateContentItem(CAR_PHYSICS_DATA, FIELD_RANK_IK, Integer.toString(newValue.getKey()));
             }

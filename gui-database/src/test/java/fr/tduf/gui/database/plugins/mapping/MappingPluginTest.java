@@ -66,9 +66,9 @@ class MappingPluginTest {
 
         editorContext.setMainStageController(controllerMock);
         editorContext.setMiner(minerMock);
-        editorContext.getMappingContext().setErrorProperty(errorProperty);
-        editorContext.getMappingContext().setErrorMessageProperty(errorMessageProperty);
 
+        mappingPlugin.getMappingContext().setErrorProperty(errorProperty);
+        mappingPlugin.getMappingContext().setErrorMessageProperty(errorMessageProperty);
         mappingPlugin.setEditorContext(editorContext);
 
         when(bankMapProperty.getValue()).thenReturn(new BankMap());
@@ -85,7 +85,7 @@ class MappingPluginTest {
 
         // when-then
         assertThrows(IOException.class, () -> mappingPlugin.onInit("MAPPING", editorContext));
-        assertThat(editorContext.getMappingContext().isPluginLoaded()).isFalse();
+        assertThat(mappingPlugin.getMappingContext().isPluginLoaded()).isFalse();
     }
 
     @Test
@@ -97,7 +97,7 @@ class MappingPluginTest {
     @Test
     void renderControls_whenNoMappingLoaded_shouldReturnEmptyComponent() {
         // given
-        editorContext.getMappingContext().setPluginLoaded(false);
+        mappingPlugin.getMappingContext().setPluginLoaded(false);
         OnTheFlyContext onTheFlyContext = new OnTheFlyContext();
 
         // when
