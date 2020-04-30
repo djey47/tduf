@@ -1,6 +1,6 @@
 # TDUF(orever) #
 
-[![Codeship Status for djey47/tduf](https://app.codeship.com/projects/b5716970-4ace-0136-c149-7a9f28d40fd1/status?branch=master)](https://app.codeship.com/projects/292761)
+[![Codeship Status for djey47/tduf](https://app.codeship.com/projects/b5716970-4ace-0136-c149-7a9f28d40fd1/status?branch=tduf-2.0.x)](https://app.codeship.com/projects/292761)
 
 This repository hosts all Java projects linked to TDUForever initiative.
 
