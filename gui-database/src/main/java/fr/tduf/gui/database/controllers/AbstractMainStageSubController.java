@@ -7,8 +7,11 @@ import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.StringProperty;
+import javafx.scene.Cursor;
 import javafx.scene.control.*;
 
 import java.util.Deque;
@@ -110,6 +113,10 @@ abstract class AbstractMainStageSubController {
         return mainStageController.getCurrentEntryLabelProperty();
     }
 
+    protected ObjectProperty<Cursor> getMouseCursorProperty() {
+        return mainStageController.getMouseCursorProperty();
+    }
+
     protected TextField getDatabaseLocationTextField() {
         return mainStageController.getDatabaseLocationTextField();
     }
@@ -139,7 +146,7 @@ abstract class AbstractMainStageSubController {
         return mainStageController.entryItemsCountLabel;
     }
 
-    protected  Label getCurrentTopicLabel() {
+    protected Label getCurrentTopicLabel() {
         return mainStageController.currentTopicLabel;
     }
 
@@ -161,5 +168,17 @@ abstract class AbstractMainStageSubController {
 
     protected TextField getEntryFilterTextField() {
         return mainStageController.getEntryFilterTextField();
+    }
+
+    protected Button getEntryEmptyFilterButton() {
+        return mainStageController.getEntryEmptyFilterButton();
+    }
+
+    protected Button getEntryFilterButton() {
+        return mainStageController.getEntryFilterButton();
+    }
+
+    protected BooleanProperty getRunningServiceProperty() {
+        return mainStageController.getRunningServiceProperty();
     }
 }

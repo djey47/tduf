@@ -38,7 +38,10 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
@@ -48,14 +51,16 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
 
+import static fr.tduf.gui.common.ImageConstants.Resource.BOX_EMPTY_BLUE;
+import static fr.tduf.gui.common.ImageConstants.Resource.MAGNIFIER_BLUE;
+import static fr.tduf.gui.common.ImageConstants.SIZE_BUTTON_PICTO;
 import static fr.tduf.gui.database.common.SupportConstants.LOG_TARGET_PROFILE_NAME;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.REFERENCE;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
-import static javafx.beans.binding.Bindings.bindBidirectional;
-import static javafx.beans.binding.Bindings.size;
+import static javafx.beans.binding.Bindings.*;
 
 /**
  * Specialized controller to display database contents.
@@ -132,6 +137,38 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
             switchToProfileAndRemoteEntry(targetProfileName, currentEntryIndexProperty().getValue(), fieldRank, currentTopicProperty().getValue(), targetTopic);
         };
+    }
+
+    /**
+     * @return initial database directory
+     */
+    Optional<String> initSubController() throws IOException {
+        initGUIComponentsProperties();
+
+        initGUIComponentsGraphics();
+
+        initTopToolbar();
+
+        Optional<String> initialDatabaseDirectory = resolveInitialDatabaseDirectory();
+        initSettingsPane(
+                initialDatabaseDirectory.orElse(SettingsConstants.DATABASE_DIRECTORY_DEFAULT),
+                (observable, oldValue, newValue) -> handleLocaleChoiceChanged(newValue),
+                (observable, oldValue, newValue) -> handleProfileChoiceChanged(newValue));
+
+        initTopicEntryHeaderPane(
+                (observable, oldValue, newValue) -> handleEntryChoiceChanged(newValue));
+
+        initStatusBar();
+
+        return initialDatabaseDirectory;
+    }
+
+    void initGUIComponentsGraphics() {
+        Image filterImage = new Image(MAGNIFIER_BLUE.getStream(), SIZE_BUTTON_PICTO, SIZE_BUTTON_PICTO, true, true);
+        getEntryFilterButton().setGraphic(new ImageView(filterImage));
+
+        Image emptyFilterImage = new Image(BOX_EMPTY_BLUE.getStream(), SIZE_BUTTON_PICTO, SIZE_BUTTON_PICTO, true, true);
+        getEntryEmptyFilterButton().setGraphic(new ImageView(emptyFilterImage));
     }
 
     void initTopToolbar() {
@@ -484,6 +521,34 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         switchToFirstEntry();
     }
 
+    private void handleProfileChoiceChanged(EditorLayoutDto.EditorProfileDto newProfile) {
+        Log.trace(THIS_CLASS_NAME, "->handleProfileChoiceChanged: " + newProfile);
+
+        if (newProfile == null || getDatabaseObjects().isEmpty()) {
+            return;
+        }
+
+        applyProfile(newProfile);
+    }
+
+    private void handleLocaleChoiceChanged(Locale newLocale) {
+        Log.trace(THIS_CLASS_NAME, "->handleLocaleChoiceChanged: " + newLocale.name());
+
+        if (getDatabaseObjects().isEmpty()) {
+            return;
+        }
+
+        applySelectedLocale();
+    }
+
+    private void handleEntryChoiceChanged(ContentEntryDataItem newEntry) {
+        Log.trace(THIS_CLASS_NAME, "->handleEntryChoiceChanged: " + newEntry);
+
+        ofNullable(newEntry)
+                .map(entry -> entry.internalEntryIdProperty().get())
+                .ifPresent(this::switchToContentEntry);
+    }
+
     private void switchToProfileAndRemoteEntry(String profileName, int localEntryIndex, int fieldRank, DbDto.Topic localTopic, DbDto.Topic remoteTopic) {
         getMiner().getRemoteContentEntryWithInternalIdentifier(localTopic, fieldRank, localEntryIndex, remoteTopic)
                 .ifPresent(remoteContentEntry -> switchToProfileAndEntry(profileName, remoteContentEntry.getId(), true));
@@ -520,6 +585,14 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         } catch (IOException ioe) {
             Log.warn(THIS_CLASS_NAME, "Unable to save application configuration", ioe);
         }
+    }
+
+    private void initGUIComponentsProperties() {
+        getMouseCursorProperty().bind(
+                when(getRunningServiceProperty())
+                        .then(Cursor.WAIT)
+                        .otherwise(Cursor.DEFAULT)
+        );
     }
 
     private void initTabPane() {

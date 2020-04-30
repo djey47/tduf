@@ -1,13 +1,12 @@
 package fr.tduf.gui.database.controllers;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
+import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.services.DatabaseLoader;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.scene.control.Button;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,9 +50,6 @@ class MainStageControllerTest extends ApplicationTest {
     @BeforeEach
     void setUp() {
         initMocks(this);
-
-        controller.entryFilterButton = new Button();
-        controller.entryEmptyFilterButton = new Button();
     }
 
     @AfterEach
@@ -143,16 +139,6 @@ class MainStageControllerTest extends ApplicationTest {
         // then
         verify(applicationConfigurationMock).load();
         assertThat(Log.ERROR).isTrue();
-    }
-
-    @Test
-    void initGUIComponentsGraphics_shouldSetButtonGraphics() {
-        // given-when
-        controller.initGUIComponentsGraphics();
-
-        // then
-        assertThat(controller.entryFilterButton.getGraphic()).isNotNull();
-        assertThat(controller.entryEmptyFilterButton.getGraphic()).isNotNull();
     }
 
     @Test

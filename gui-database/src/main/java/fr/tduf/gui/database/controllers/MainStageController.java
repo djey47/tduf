@@ -11,7 +11,6 @@ import fr.tduf.gui.common.javafx.helper.options.SimpleDialogOptions;
 import fr.tduf.gui.common.services.DatabaseChecker;
 import fr.tduf.gui.common.services.DatabaseFixer;
 import fr.tduf.gui.database.common.DisplayConstants;
-import fr.tduf.gui.database.common.SettingsConstants;
 import fr.tduf.gui.database.controllers.helper.DialogsHelper;
 import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
@@ -38,8 +37,6 @@ import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.DirectoryChooser;
@@ -51,13 +48,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static fr.tduf.gui.common.ImageConstants.Resource.BOX_EMPTY_BLUE;
-import static fr.tduf.gui.common.ImageConstants.Resource.MAGNIFIER_BLUE;
-import static fr.tduf.gui.common.ImageConstants.SIZE_BUTTON_PICTO;
 import static fr.tduf.gui.common.helper.MessagesHelper.getServiceErrorMessage;
 import static fr.tduf.gui.database.common.DisplayConstants.*;
 import static java.util.Optional.ofNullable;
-import static javafx.beans.binding.Bindings.when;
 import static javafx.concurrent.Worker.State.FAILED;
 import static javafx.concurrent.Worker.State.SUCCEEDED;
 import static javafx.scene.control.Alert.AlertType.*;
@@ -163,25 +156,9 @@ public class MainStageController extends AbstractGuiController {
 
         pluginHandler = new PluginHandler(root, changeDataController);
 
-        // TODO move inits to ViewDataController
-        viewDataController.initTopToolbar();
-
-        Optional<String> initialDatabaseDirectory = viewDataController.resolveInitialDatabaseDirectory();
-        viewDataController.initSettingsPane(
-                initialDatabaseDirectory.orElse(SettingsConstants.DATABASE_DIRECTORY_DEFAULT),
-                (observable, oldValue, newValue) -> handleLocaleChoiceChanged(newValue),
-                (observable, oldValue, newValue) -> handleProfileChoiceChanged(newValue));
-
-        viewDataController.initTopicEntryHeaderPane(
-                (observable, oldValue, newValue) -> handleEntryChoiceChanged(newValue));
-
-        viewDataController.initStatusBar();
+        Optional<String> initialDatabaseDirectory = viewDataController.initSubController();
 
         initServicePropertiesAndListeners();
-
-        initGUIComponentsProperties();
-
-        initGUIComponentsGraphics();
 
         initialDatabaseDirectory.ifPresent(databaseLocation -> {
             Log.trace(THIS_CLASS_NAME, "->init: database auto load");
@@ -464,50 +441,6 @@ public class MainStageController extends AbstractGuiController {
             Log.set(Log.LEVEL_DEBUG);
             Log.debug(THIS_CLASS_NAME, "/!\\ DEBUG mode enabled via application configuration /!\\");
         }
-    }
-
-    void initGUIComponentsGraphics() {
-        Image filterImage = new Image(MAGNIFIER_BLUE.getStream(), SIZE_BUTTON_PICTO, SIZE_BUTTON_PICTO, true, true);
-        entryFilterButton.setGraphic(new ImageView(filterImage));
-
-        Image emptyFilterImage = new Image(BOX_EMPTY_BLUE.getStream(), SIZE_BUTTON_PICTO, SIZE_BUTTON_PICTO, true, true);
-        entryEmptyFilterButton.setGraphic(new ImageView(emptyFilterImage));
-    }
-
-    private void handleProfileChoiceChanged(EditorLayoutDto.EditorProfileDto newProfile) {
-        Log.trace(THIS_CLASS_NAME, "->handleProfileChoiceChanged: " + newProfile);
-
-        if (newProfile == null || databaseObjects.isEmpty()) {
-            return;
-        }
-
-        viewDataController.applyProfile(newProfile);
-    }
-
-    private void handleLocaleChoiceChanged(Locale newLocale) {
-        Log.trace(THIS_CLASS_NAME, "->handleLocaleChoiceChanged: " + newLocale.name());
-
-        if (databaseObjects.isEmpty()) {
-            return;
-        }
-
-        viewDataController.applySelectedLocale();
-    }
-
-    private void handleEntryChoiceChanged(ContentEntryDataItem newEntry) {
-        Log.trace(THIS_CLASS_NAME, "->handleEntryChoiceChanged: " + newEntry);
-
-        ofNullable(newEntry)
-                .map(entry -> entry.internalEntryIdProperty().get())
-                .ifPresent(viewDataController::switchToContentEntry);
-    }
-
-    private void initGUIComponentsProperties() {
-        mouseCursorProperty().bind(
-                when(runningServiceProperty)
-                        .then(Cursor.WAIT)
-                        .otherwise(Cursor.DEFAULT)
-        );
     }
 
     private void initServicePropertiesAndListeners() {
@@ -999,5 +932,21 @@ public class MainStageController extends AbstractGuiController {
 
     public PluginHandler getPluginHandler() {
         return pluginHandler;
+    }
+
+    ObjectProperty<Cursor> getMouseCursorProperty() {
+        return mouseCursorProperty();
+    }
+
+    BooleanProperty getRunningServiceProperty() {
+        return runningServiceProperty;
+    }
+
+    Button getEntryEmptyFilterButton() {
+        return entryEmptyFilterButton;
+    }
+
+    Button getEntryFilterButton() {
+        return entryFilterButton;
     }
 }

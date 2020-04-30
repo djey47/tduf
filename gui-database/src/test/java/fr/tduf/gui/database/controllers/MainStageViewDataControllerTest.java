@@ -22,10 +22,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
+import javafx.scene.control.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -147,6 +144,12 @@ class MainStageViewDataControllerTest {
         entryFilterTextField = new TextField();
         when(mainStageControllerMock.getEntryFilterTextField()).thenReturn(entryFilterTextField);
 
+        Button entryFilterButton = new Button();
+        when(mainStageControllerMock.getEntryFilterButton()).thenReturn(entryFilterButton);
+
+        Button emptyEntryFilterButton = new Button();
+        when(mainStageControllerMock.getEntryEmptyFilterButton()).thenReturn(emptyEntryFilterButton);
+
         when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(topicObject));
 
         when(applicationConfigurationMock.getEditorProfile()).thenReturn(empty());
@@ -206,6 +209,16 @@ class MainStageViewDataControllerTest {
     }
 
     @Test
+    void initGUIComponentsGraphics_shouldSetButtonGraphics() {
+        // given-when
+        controller.initGUIComponentsGraphics();
+
+        // then
+        assertThat(controller.getEntryFilterButton().getGraphic()).isNotNull();
+        assertThat(controller.getEntryEmptyFilterButton().getGraphic()).isNotNull();
+    }
+
+    @Test
     void resolveInitialDatabaseDirectory_whenNoCommandLineParameter_andNoConfiguration_shouldReturnEmpty() {
         // GIVEN
         when(applicationConfigurationMock.getDatabasePath()).thenReturn(empty());
@@ -223,10 +236,8 @@ class MainStageViewDataControllerTest {
         DatabaseEditor.getCommandLineParameters().add("-p");
         when(applicationConfigurationMock.getDatabasePath()).thenReturn(empty());
 
-
         // WHEN
         final Optional<String> actualDirectory = controller.resolveInitialDatabaseDirectory();
-
 
         // THEN
         assertThat(actualDirectory).isEmpty();
@@ -237,15 +248,13 @@ class MainStageViewDataControllerTest {
         // GIVEN
         DatabaseEditor.getCommandLineParameters().add("/tdu/euro/bnk/database");
 
-
         // WHEN
         final Optional<String> actualDirectory = controller.resolveInitialDatabaseDirectory();
-
 
         // THEN
         assertThat(actualDirectory).contains("/tdu/euro/bnk/database");
 
-        verifyZeroInteractions(mainStageControllerMock, applicationConfigurationMock);
+        verifyNoInteractions(mainStageControllerMock, applicationConfigurationMock);
     }
 
     @Test
