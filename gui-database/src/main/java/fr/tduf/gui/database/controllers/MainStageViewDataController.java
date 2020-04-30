@@ -224,8 +224,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                             currentProfileProperty.getValue().getName(),
                             getLayoutObject());
 
-                    final DbDto.Topic currentTopic = getCurrentTopicObject().getTopic();
-                    String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(internalEntryId, currentTopic, currentLocaleProperty.getValue(), labelFieldRanks, getMiner(), getLayoutObject());
+                    String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(internalEntryId, getCurrentTopic(), currentLocaleProperty.getValue(), labelFieldRanks, getMiner(), getLayoutObject());
                     entry.setValue(entryValue);
                 });
     }
@@ -344,8 +343,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     void switchToNextEntry() {
         int currentEntryIndex = currentEntryIndexProperty().getValue();
-        // TODO see to use browsable entries instead
-        if (currentEntryIndex >= getCurrentTopicObject().getData().getEntries().size() - 1) {
+        if (currentEntryIndex >= getBrowsableEntries().size() - 1) {
             return;
         }
 
@@ -354,8 +352,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     void switchToNext10Entry() {
         int currentEntryIndex = currentEntryIndexProperty().getValue();
-        // TODO see to use browsable entries instead
-        int lastEntryIndex = getCurrentTopicObject().getData().getEntries().size() - 1;
+        int lastEntryIndex = getBrowsableEntries().size() - 1;
         if (currentEntryIndex + 10 >= lastEntryIndex) {
             currentEntryIndex = lastEntryIndex;
         } else {
@@ -397,8 +394,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     }
 
     void switchToLastEntry() {
-        // TODO see to use browsable entries instead
-        switchToContentEntry(getCurrentTopicObject().getData().getEntries().size() - 1);
+        switchToContentEntry(getBrowsableEntries().size() - 1);
     }
 
     void switchToEntryWithReference(String entryReference, DbDto.Topic topic) {
@@ -630,7 +626,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
             dynamicFieldControlsHelper.addAllFieldsControls(
                     getLayoutObject(),
                     getProfilesChoiceBox().getValue().getName(),
-                    getCurrentTopicObject().getTopic());
+                    getCurrentTopic());
         }
 
         if (currentProfile.getTopicLinks() != null) {
@@ -643,7 +639,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                 currentProfileProperty.getValue().getName(),
                 getLayoutObject());
 
-        final DbDto.Topic currentTopic = getCurrentTopicObject().getTopic();
+        final DbDto.Topic currentTopic = getCurrentTopic();
         browsableEntries.setAll(
                 getMiner().getDatabaseTopic(currentTopic)
                         .map(topicObject -> topicObject.getData().getEntries().stream()
@@ -673,7 +669,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     private void updateResourceProperties(ContentItemDto resourceItem, DbStructureDto.Field structureField) {
         Locale locale = currentLocaleProperty.getValue();
-        DbDto.Topic resourceTopic = getCurrentTopicObject().getTopic();
+        DbDto.Topic resourceTopic = getCurrentTopic();
         if (structureField.getTargetRef() != null) {
             resourceTopic = getMiner().getDatabaseTopicFromReference(structureField.getTargetRef()).getTopic();
         }
@@ -745,7 +741,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
         final Optional<EditorLayoutDto.EditorProfileDto> potentialProfile = getApplicationConfiguration().getEditorProfile()
                 .flatMap(this::lookupChoiceboxProfileByName);
-        // TODO Java 9: https://docs.oracle.com/javase/9/docs/api/java/util/Optional.html#ifPresentOrElse-java.util.function.Consumer-java.lang.Runnable-
+        // TODO [2.0] Java 9: https://docs.oracle.com/javase/9/docs/api/java/util/Optional.html#ifPresentOrElse-java.util.function.Consumer-java.lang.Runnable-
         if (potentialProfile.isPresent()) {
             selectionModel.select(potentialProfile.get());
         } else {
