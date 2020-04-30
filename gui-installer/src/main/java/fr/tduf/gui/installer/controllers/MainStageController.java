@@ -3,6 +3,7 @@ package fr.tduf.gui.installer.controllers;
 import com.esotericsoftware.minlog.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.tduf.gui.common.controllers.helper.DatabaseOpsHelper;
+import fr.tduf.gui.common.helper.MessagesHelper;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.javafx.helper.options.SimpleDialogOptions;
@@ -508,18 +509,11 @@ public class MainStageController extends AbstractGuiController {
             stepName = ((StepException) throwable).getStepName();
         }
 
-        String causeMessage = "";
-        if (throwable.getCause() != null
-                && throwable.getCause() != throwable) {
-            causeMessage = throwable.getCause().getMessage();
-        }
-
-        // TODO use common service error message formatter (getServiceErrorMessage)
         SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
                 .withContext(ERROR)
                 .withTitle(DisplayConstants.TITLE_APPLICATION + subTitle)
                 .withMessage(mainMessage)
-                .withDescription(String.format(DisplayConstants.MESSAGE_FMT_ERROR, throwable.getMessage(), causeMessage, stepName))
+                .withDescription(MessagesHelper.getAdvancedErrorMessage(throwable, String.format(DisplayConstants.FORMAT_MESSAGE_STEP, stepName)))
                 .build();
         CommonDialogsHelper.showDialog(dialogOptions, getWindow());
     }

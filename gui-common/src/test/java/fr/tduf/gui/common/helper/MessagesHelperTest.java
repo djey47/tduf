@@ -23,11 +23,36 @@ class MessagesHelperTest {
         String actual = MessagesHelper.getGenericErrorMessage(exception);
 
         // then
-        assertThat(actual).isEqualTo("This is an exception\rCheck logs for details.");
+        assertThat(actual).isEqualTo("This is an exception\nCheck logs for details.");
     }
 
     @Test
-    @Disabled
+    void getGenericErrorMessage_withoutAdditionalMessage_shouldWriteMessageAndCauseMessage() {
+        // given
+        Throwable throwable = new Throwable("This is a throwable", new Throwable("This is the cause"));
+
+        // when
+        String actual = MessagesHelper.getAdvancedErrorMessage(throwable, null);
+
+        // then
+        assertThat(actual).isEqualTo("This is a throwable\nThis is the cause\n\nCheck logs for details.");
+    }
+
+    @Test
+    void getGenericErrorMessage_withAdditionalMessage_shouldWriteMessages() {
+        // given
+        Throwable throwable = new Throwable("This is a throwable");
+        String additionalMessage = "Additional message";
+
+        // when
+        String actual = MessagesHelper.getAdvancedErrorMessage(throwable, additionalMessage);
+
+        // then
+        assertThat(actual).isEqualTo("This is a throwable\n\nAdditional message\nCheck logs for details.");
+    }
+
+    @Test
+    @Disabled("No async way of testing")
     void getServiceErrorMessage() {
         // TODO Find a way to unit test (async issues)
         // given
