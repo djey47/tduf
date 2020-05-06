@@ -155,7 +155,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
 
             case CONSTANT:
                 String constantValue = field.getConstantValue();
-                readResult = readConstantValue(constantValue);
+                readResult = readConstantValue(field);
                 dumpConstantValue(readResult.readValueAsBytes, constantValue, key);
                 break;
 
@@ -225,9 +225,19 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
         return new ReadResult(parsedCount, readValueAsBytes);
     }
 
-    private ReadResult readConstantValue(String constantValue) {
-        byte[] readValueAsBytes = TypeHelper.hexRepresentationToByteArray(constantValue);
+    private ReadResult readConstantValue(FileStructureDto.Field fieldSettings) {
+        String constantValue = fieldSettings.getConstantValue();
+        byte[] expectedValueAsBytes = TypeHelper.hexRepresentationToByteArray(constantValue);
+        byte[] readValueAsBytes = new byte[expectedValueAsBytes.length];
         long parsedCount = inputStream.read(readValueAsBytes, 0, readValueAsBytes.length);
+
+        // Perform check
+        if (fieldSettings.isConstantChecked()) {
+            if (!Arrays.equals(expectedValueAsBytes, readValueAsBytes)) {
+                String actualValueAsString = TypeHelper.byteArrayToHexRepresentation(readValueAsBytes);
+                throw new IllegalStateException(String.format("Constant check failed for field: %s - expected: %s, read: %s", fieldSettings.getName(), constantValue, actualValueAsString));
+            }
+        }
 
         return new ReadResult(parsedCount, readValueAsBytes);
     }

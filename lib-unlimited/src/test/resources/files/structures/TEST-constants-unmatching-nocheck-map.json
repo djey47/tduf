@@ -1,0 +1,16 @@
+{
+  "name" : "TEST file format with constants - failing check",
+  "fields" : [
+    {
+      "name": "tag1",
+      "type": "CONSTANT",
+      "constantValue": "0x[41 42 43 44 44 46 47 48 49 4A]",
+      "comment": "Unmatching provided binary file, checking disabled",
+      "constantChecked": false
+    },{
+      "name" : "tag2",
+      "type" : "CONSTANT",
+      "constantValue": "0x[01 02 03 04 05 FF]"
+    }
+  ]
+}

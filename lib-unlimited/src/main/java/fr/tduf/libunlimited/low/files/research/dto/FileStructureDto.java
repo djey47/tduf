@@ -2,9 +2,9 @@ package fr.tduf.libunlimited.low.files.research.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.domain.Type;
 
@@ -108,6 +108,9 @@ public class FileStructureDto implements Serializable {
         @JsonProperty("constantValue")
         private String constantValue;
 
+        @JsonProperty("constantChecked")
+        private Boolean constantChecked;
+
         @JsonProperty("subFields")
         private List<Field> subFields;
 
@@ -132,6 +135,7 @@ public class FileStructureDto implements Serializable {
                     ", signed=" + signed +
                     ", sizeFormula=" + sizeFormula +
                     ", constantValue=" + constantValue +
+                    ", constantChecked=" + constantChecked +
                     ", condition=" + condition +
                     '}';
         }
@@ -171,6 +175,10 @@ public class FileStructureDto implements Serializable {
             return constantValue;
         }
 
+        public boolean isConstantChecked() {
+            return constantChecked == null || constantChecked;
+        }
+
         public String getCondition() { return condition; }
 
         public static class FieldBuilder {
@@ -181,6 +189,7 @@ public class FileStructureDto implements Serializable {
             private String sizeFormula;
             private String name;
             private String condition;
+            private boolean constantChecked;
 
             public FieldBuilder forName(String name) {
                 this.name = name;
@@ -192,11 +201,20 @@ public class FileStructureDto implements Serializable {
                 return this;
             }
 
-            public FieldBuilder withConstantValue(byte[] value) {
+            private FieldBuilder withConstantValue(byte[] value, boolean checked) {
                 this.type = CONSTANT;
                 this.constantValueAsByteArray = value;
                 this.sizeFormula = Integer.toString(value.length);
+                this.constantChecked = checked;
                 return this;
+            }
+
+            public FieldBuilder withConstantValueChecked(byte[] value) {
+                return this.withConstantValue(value, true);
+            }
+
+            public FieldBuilder withConstantValueUnchecked(byte[] value) {
+                return this.withConstantValue(value, false);
             }
 
             public FieldBuilder signed(boolean isSigned) {
@@ -233,6 +251,7 @@ public class FileStructureDto implements Serializable {
                 field.subFields = this.subFields;
                 field.signed = this.signed;
                 field.constantValue = TypeHelper.byteArrayToHexRepresentation(constantValueAsByteArray);
+                field.constantChecked = this.constantChecked;
                 field.condition = this.condition;
 
                 return field;

@@ -195,6 +195,26 @@ class GenericParserTest {
     }
 
     @Test
+    void parse_whenProvidedContentsAsConstants_andNonMatchingValues_shouldThrowException() throws IOException {
+        // GIVEN
+        GenericParser<String> actualParser = createGenericParserWithConstantsUnmatching();
+
+        // WHEN-THEN
+        IllegalStateException actualException = assertThrows(IllegalStateException.class,
+                actualParser::parse);
+        assertThat(actualException).hasMessage("Constant check failed for field: tag1 - expected: 0x[41 42 43 44 44 46 47 48 49 4A], read: 0x[41 42 43 44 45 46 47 48 49 4A]");
+    }
+
+    @Test
+    void parse_whenProvidedContentsAsConstants_andNonMatchingValues_butCheckDisabled_shouldNotThrowException() throws IOException {
+        // GIVEN
+        GenericParser<String> actualParser = createGenericParserWithConstantsUnmatchingAndCheckDisabled();
+
+        // WHEN-THEN
+        actualParser.parse();
+    }
+
+    @Test
     void parse_whenProvidedContentsWithConditionSatisfied_shouldReturnParsedData() throws IOException {
         // GIVEN
         GenericParser<String> actualParser = createGenericParserWithConditionSatisfied();
@@ -549,6 +569,42 @@ class GenericParserTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-constants-map.json";
+            }
+        };
+    }
+
+    private GenericParser<String> createGenericParserWithConstantsUnmatching() throws IOException {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-constants.bin"));
+
+        return new GenericParser<String>(inputStream) {
+            @Override
+            protected String generate() {
+                assertThat(getDataStore().isEmpty());
+
+                return DATA;
+            }
+
+            @Override
+            public String getStructureResource() {
+                return "/files/structures/TEST-constants-unmatching-map.json";
+            }
+        };
+    }
+
+    private GenericParser<String> createGenericParserWithConstantsUnmatchingAndCheckDisabled() throws IOException {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-constants.bin"));
+
+        return new GenericParser<String>(inputStream) {
+            @Override
+            protected String generate() {
+                assertThat(getDataStore().isEmpty());
+
+                return DATA;
+            }
+
+            @Override
+            public String getStructureResource() {
+                return "/files/structures/TEST-constants-unmatching-nocheck-map.json";
             }
         };
     }
