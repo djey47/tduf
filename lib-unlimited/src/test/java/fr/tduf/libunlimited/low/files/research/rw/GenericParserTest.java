@@ -195,6 +195,24 @@ class GenericParserTest {
     }
 
     @Test
+    void parse_whenProvidedContentsWithConditionSatisfied_shouldReturnParsedData() throws IOException {
+        // GIVEN
+        GenericParser<String> actualParser = createGenericParserWithConditionSatisfied();
+
+        // WHEN-THEN
+        actualParser.parse();
+    }
+
+    @Test
+    void parse_whenProvidedContentsWithConditionUnsatisfied_shouldReturnParsedData() throws IOException {
+        // GIVEN
+        GenericParser<String> actualParser = createGenericParserWithConditionUnsatisfied();
+
+        // WHEN-THEN
+        actualParser.parse();
+    }
+
+    @Test
     void getNumeric_whenValueExistInStore_shouldReturnIt() {
         // GIVEN
         DataStore viewStoreMock = mock(DataStore.class);
@@ -519,6 +537,48 @@ class GenericParserTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-constants-map.json";
+            }
+        };
+    }
+
+    private GenericParser<String> createGenericParserWithConditionSatisfied() throws IOException {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-conditional-with.bin"));
+
+        return new GenericParser<String>(inputStream) {
+            @Override
+            protected String generate() {
+                assertThat(getDataStore().size()).isEqualTo(3);
+                assertThat(getDataStore().getText("tag")).contains("ABCDE");
+                assertThat(getDataStore().getInteger("flag")).contains(1L);
+                assertThat(getDataStore().getRawValue("optional")).isPresent();
+
+                return DATA;
+            }
+
+            @Override
+            public String getStructureResource() {
+                return "/files/structures/TEST-conditional-map.json";
+            }
+        };
+    }
+
+    private GenericParser<String> createGenericParserWithConditionUnsatisfied() throws IOException {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-conditional-without.bin"));
+
+        return new GenericParser<String>(inputStream) {
+            @Override
+            protected String generate() {
+                assertThat(getDataStore().size()).isEqualTo(2);
+                assertThat(getDataStore().getText("tag")).contains("ABCDE");
+                assertThat(getDataStore().getInteger("flag")).contains(0L);
+                assertThat(getDataStore().getRawValue("optional")).isEmpty();
+
+                return DATA;
+            }
+
+            @Override
+            public String getStructureResource() {
+                return "/files/structures/TEST-conditional-map.json";
             }
         };
     }

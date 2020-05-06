@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.research.rw;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.low.files.common.domain.DataStoreProps;
 import fr.tduf.libunlimited.low.files.research.common.helper.FormulaHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.StructureHelper;
@@ -101,6 +102,14 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
         for(FileStructureDto.Field field : fields) {
 
             String key = repeaterKey + field.getName();
+
+            // First evaluate condition, if any
+            String condition = field.getCondition();
+            if (condition != null && !FormulaHelper.resolveCondition(condition, repeaterKey, dataStore)) {
+                Log.debug(String.format("Unsatisfied condition '%s' for field: %s, skipping", condition, field.getName()));
+                continue;
+            }
+
             Integer length = FormulaHelper.resolveToInteger(field.getSizeFormula(), repeaterKey, dataStore);
             ReadResult readResult = readAndDumpValue(key, field, length);
 

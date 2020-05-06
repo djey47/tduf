@@ -111,6 +111,9 @@ public class FileStructureDto implements Serializable {
         @JsonProperty("subFields")
         private List<Field> subFields;
 
+        @JsonProperty("condition")
+        private String condition;
+
         @JsonIgnore
         @JsonProperty("comment")
         private String comment;
@@ -126,7 +129,10 @@ public class FileStructureDto implements Serializable {
             return "Field{" +
                     "name='" + name + '\'' +
                     ", type=" + type +
+                    ", signed=" + signed +
                     ", sizeFormula=" + sizeFormula +
+                    ", constantValue=" + constantValue +
+                    ", condition=" + condition +
                     '}';
         }
 
@@ -165,6 +171,8 @@ public class FileStructureDto implements Serializable {
             return constantValue;
         }
 
+        public String getCondition() { return condition; }
+
         public static class FieldBuilder {
             private byte[] constantValueAsByteArray;
             private boolean signed;
@@ -172,6 +180,7 @@ public class FileStructureDto implements Serializable {
             private Type type;
             private String sizeFormula;
             private String name;
+            private String condition;
 
             public FieldBuilder forName(String name) {
                 this.name = name;
@@ -210,6 +219,11 @@ public class FileStructureDto implements Serializable {
                 return this;
             }
 
+            public FieldBuilder atCondition(String condition) {
+                this.condition = condition;
+                return this;
+            }
+
             public Field build() {
                 Field field = new Field();
 
@@ -219,6 +233,7 @@ public class FileStructureDto implements Serializable {
                 field.subFields = this.subFields;
                 field.signed = this.signed;
                 field.constantValue = TypeHelper.byteArrayToHexRepresentation(constantValueAsByteArray);
+                field.condition = this.condition;
 
                 return field;
             }
