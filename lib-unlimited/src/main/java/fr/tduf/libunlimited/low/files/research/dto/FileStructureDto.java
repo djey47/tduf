@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.research.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -35,6 +36,10 @@ public class FileStructureDto implements Serializable {
     @JsonProperty("fields")
     private List<Field> fields;
 
+    @JsonIgnore
+    @JsonProperty("comment")
+    private String comment;
+
     /**
      * @return builder, used to generate custom values.
      */
@@ -42,6 +47,7 @@ public class FileStructureDto implements Serializable {
         return new FileStructureDtoBuilder();
     }
 
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override
     public boolean equals(Object o) {
         return reflectionEquals(this, o);
@@ -105,6 +111,10 @@ public class FileStructureDto implements Serializable {
         @JsonProperty("subFields")
         private List<Field> subFields;
 
+        @JsonIgnore
+        @JsonProperty("comment")
+        private String comment;
+
         private Field() {}
 
         public static FieldBuilder builder() {
@@ -120,6 +130,7 @@ public class FileStructureDto implements Serializable {
                     '}';
         }
 
+        @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
         @Override
         public boolean equals(Object o) {
             return reflectionEquals(this, o);
