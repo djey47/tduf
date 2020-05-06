@@ -14,7 +14,7 @@ class TypeHelperTest {
         byte[] bytes = {(byte) 0xcd, 0x4d, 0x41, 0x50, 0x34,  0x00};
 
         // WHEN-THEN
-        assertThat(TypeHelper.rawToText(bytes, 6)).isEqualTo("\u00cdMAP4\0");
+        assertThat(TypeHelper.rawToText(bytes)).isEqualTo("\u00cdMAP4\0");
     }
 
     @Test

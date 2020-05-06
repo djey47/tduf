@@ -19,7 +19,18 @@ public class TypeHelper {
     private static final String CHARSET = "ISO-8859-1";
 
     /**
-     * Converts a raw value to TEXT.
+     * Converts a raw value to TEXT, using array length.
+     *
+     * @param rawValueBytes : raw value to convert
+     * @return corresponding value as String
+     */
+    public static String rawToText(byte[] rawValueBytes) {
+        // TODO convert all other usages with simplified signature
+        return rawToText(rawValueBytes, rawValueBytes.length);
+    }
+
+    /**
+     * Converts a raw value to TEXT, with a specific length.
      *
      * @param rawValueBytes : raw value to convert
      * @param length        : length of String. Actual String will be truncated / followed by 0 when necessary.
