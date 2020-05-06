@@ -15,7 +15,7 @@ public class FormulaHelper {
 
     private static final String FORMULA_PREFIX = "=" ;
     private static final String POINTER_FORMAT = "?%s?";
-    private static final Pattern POINTER_PATTERN = Pattern.compile(".*\\?(.+)\\?.*");     // e.g '?myValue?'
+    private static final Pattern POINTER_PATTERN = Pattern.compile("\\?(\\w+)\\?");     // e.g '?myValue?-?myOtherValue?'
 
     /**
      * Evaluates given formula and returns result as integer.
@@ -41,8 +41,8 @@ public class FormulaHelper {
 
     private static String handlePatternWithStore(String formula, String potentialRepeaterKeyPrefix, DataStore dataStore) {
         Matcher matcher = POINTER_PATTERN.matcher(formula);
-
-        if(!matcher.matches()) {
+        boolean hasMatch = matcher.find();
+        if (!hasMatch) {
             return formula;
         }
 
@@ -50,10 +50,12 @@ public class FormulaHelper {
             throw new IllegalArgumentException("A valid datastore is required to compute provided formula.");
         }
 
-        String pointerReference = matcher.group(1);
-
-        String dataStoreValue = seekForLongValueInStore(pointerReference, potentialRepeaterKeyPrefix, dataStore);
-        formula = formula.replace(String.format(POINTER_FORMAT, pointerReference), dataStoreValue);
+        while (hasMatch) {
+            String pointerReference = matcher.group(1);
+            String dataStoreValue = seekForLongValueInStore(pointerReference, potentialRepeaterKeyPrefix, dataStore);
+            formula = formula.replace(String.format(POINTER_FORMAT, pointerReference), dataStoreValue);
+            hasMatch = matcher.find();
+        }
 
         return formula;
     }

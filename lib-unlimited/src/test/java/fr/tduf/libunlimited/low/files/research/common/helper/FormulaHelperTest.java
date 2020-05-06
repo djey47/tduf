@@ -64,6 +64,18 @@ class FormulaHelperTest {
     }
 
     @Test
+    void resolveToInteger_whenSimpleFormulaWithManyPointers_shouldReturnValue() {
+        // GIVEN
+        DataStore dataStore = createDefaultDataStore();
+        dataStore.addInteger32("sizeIndicator", 500);
+        dataStore.addInteger32("other", 500);
+        dataStore.addInteger32("lastOne", 100);
+
+        // WHEN-THEN
+        assertThat(FormulaHelper.resolveToInteger("=?sizeIndicator?*4+?other?-?lastOne?", null, dataStore)).isEqualTo(2400);
+    }
+
+    @Test
     void resolveToInteger_whenFormulaWithPointerAndValueNotInStore_shouldThrowException() {
         // GIVEN
         DataStore dataStore = createDefaultDataStore();
