@@ -261,7 +261,19 @@ class GenericParserTest {
                 () -> actualParser.readRawValue(5));
 
         // then
-        assertThat(actualException).hasMessage("Cannot read raw value - end of file was reached");
+        assertThat(actualException).hasMessage("Cannot read raw value of size 5 - end of file was reached");
+    }
+
+    @Test
+    void readRawValue_whenEndOfStreamReached_andAutomaticLength_shouldReturnEmptyByteArray() throws IOException {
+        // given
+        GenericParser<String> actualParser = createGenericParserWithSimulatedEOS();
+
+        // when-then
+        GenericParser.ReadResult actualResult = actualParser.readRawValue(null);
+
+        // then
+        assertThat(actualResult.getReadValueAsBytes()).isEmpty();
     }
 
     private String getExpectedDump() throws IOException {

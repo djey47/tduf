@@ -81,8 +81,8 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
 
     ReadResult readRawValue(Integer length) {
         int availableBytes = inputStream.available();
-        if (availableBytes == 0) {
-            throw new IllegalArgumentException("Cannot read raw value - end of file was reached");
+        if (availableBytes == 0 && length != null) {
+            throw new IllegalArgumentException(String.format("Cannot read raw value of size %d - end of file was reached", length));
         }
 
         // Autosize handle
@@ -325,7 +325,10 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
         return inputStream;
     }
 
-    private static class ReadResult {
+    /**
+     * Encapsulates result of reading in stream
+     */
+    static class ReadResult {
         private final byte[] readValueAsBytes;
         private final long parsedCount;
 
@@ -336,6 +339,10 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
 
         ReadResult(long parsedCount) {
             this(parsedCount, new byte[0]);
+        }
+
+        byte[] getReadValueAsBytes() {
+            return this.readValueAsBytes;
         }
     }
 }
