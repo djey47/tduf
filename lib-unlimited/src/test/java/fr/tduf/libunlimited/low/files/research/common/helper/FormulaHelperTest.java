@@ -113,6 +113,41 @@ class FormulaHelperTest {
                 () -> FormulaHelper.resolveToInteger("=AZERTY", null, null));
     }
 
+    @Test
+    void resolveCondition_whenNullCondition_shouldThrowException() {
+        // given-when-then
+        NullPointerException actualException = assertThrows(NullPointerException.class,
+                () -> FormulaHelper.resolveCondition(null, null, null));
+        assertThat(actualException).hasMessage("Condition to evaluate is required");
+    }
+
+    @Test
+    void resolveCondition_whenVerySimpleCondition_shouldReturnTrue() {
+        // given-when-then
+        assertThat(FormulaHelper.resolveCondition("5 > 3", null, null)).isTrue();
+    }
+
+    @Test
+    void resolveToInteger_whenVerySimpleConditionWithPointer_shouldReturnFalse() {
+        // GIVEN
+        DataStore dataStore = createDefaultDataStore();
+        dataStore.addInteger32("itemsCount", 5);
+
+        // WHEN-THEN
+        assertThat(FormulaHelper.resolveCondition("?itemsCount?=0", null, dataStore)).isFalse();
+    }
+
+    @Test
+    void resolveToInteger_whenVerySimpleConditionWithOnlyPointers_shouldReturnTrue() {
+        // GIVEN
+        DataStore dataStore = createDefaultDataStore();
+        dataStore.addInteger32("itemsCount", 5);
+        dataStore.addInteger32("otherItemsCount", 10);
+
+        // WHEN-THEN
+        assertThat(FormulaHelper.resolveCondition("?itemsCount?<?otherItemsCount?", null, dataStore)).isTrue();
+    }
+
     private DataStore createDefaultDataStore() {
         return new DataStore(FileStructureDto.builder().build());
     }
