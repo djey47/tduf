@@ -224,7 +224,7 @@ public class TypeHelper {
             return null;
         }
 
-        Pattern hexRepresentationPattern = Pattern.compile("0x\\[([0-9a-fA-F]{2}\\s?)*([0-9a-fA-F]{2})]");
+        Pattern hexRepresentationPattern = Pattern.compile("0x\\[([0-9a-fA-F]{2}\\s?)*([0-9a-fA-F]{2})?]");
         if(!hexRepresentationPattern.matcher(hexRepresentation).matches()) {
             throw new IllegalArgumentException("Provided hexadecimal representation is invalid.");
         }

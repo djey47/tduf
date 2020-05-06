@@ -306,6 +306,12 @@ class TypeHelperTest {
     }
 
     @Test
+    void hexRepresentationToByteArray_whenEmpty_shouldReturnEmptyArray(){
+        // GIVEN-WHEN-THEN
+        assertThat(TypeHelper.hexRepresentationToByteArray("0x[]")).isEmpty();
+    }
+
+    @Test
     void hexRepresentationToByteArray_shouldReturnArray(){
         // GIVEN-WHEN-THEN
         assertThat(TypeHelper.hexRepresentationToByteArray("0x[00 AA ff]")).containsExactly((byte)0x0, (byte)0xAA, (byte)0xFF);
