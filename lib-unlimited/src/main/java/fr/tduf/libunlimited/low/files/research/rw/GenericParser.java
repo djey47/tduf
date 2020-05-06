@@ -78,6 +78,24 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
      */
     protected abstract T generate();
 
+    ReadResult readRawValue(Integer length) {
+        int availableBytes = inputStream.available();
+        if (availableBytes == 0) {
+            throw new IllegalArgumentException("Cannot read raw value - end of file was reached");
+        }
+
+        // Autosize handle
+        int actualSize = length == null ? availableBytes : length;
+        if (actualSize < 0) {
+            throw new IllegalArgumentException("Invalid raw value size supplied: " + length);
+        }
+
+        byte[] readValueAsBytes = new byte[actualSize];
+        long parsedCount = inputStream.read(readValueAsBytes, 0, actualSize);
+
+        return new ReadResult(parsedCount, readValueAsBytes);
+    }
+
     private void readFields(List<FileStructureDto.Field> fields, String repeaterKey) {
 
         for(FileStructureDto.Field field : fields) {
@@ -194,15 +212,6 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
     private ReadResult readDelimiterOrTextValue(Integer length) {
         byte[] readValueAsBytes = new byte[length];
         long parsedCount = inputStream.read(readValueAsBytes, 0, length);
-
-        return new ReadResult(parsedCount, readValueAsBytes);
-    }
-
-    private ReadResult readRawValue(Integer length) {
-        // Autosize handle
-        int actualSize = length == null ? inputStream.available() : length;
-        byte[] readValueAsBytes = new byte[actualSize];
-        long parsedCount = inputStream.read(readValueAsBytes, 0, actualSize);
 
         return new ReadResult(parsedCount, readValueAsBytes);
     }

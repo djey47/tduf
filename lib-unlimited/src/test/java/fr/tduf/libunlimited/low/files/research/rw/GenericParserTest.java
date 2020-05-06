@@ -15,6 +15,7 @@ import java.util.Optional;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -217,6 +218,32 @@ class GenericParserTest {
 
         // THEN
         assertThat(actualValue).isEmpty();
+    }
+
+    @Test
+    void readRawValue_whenNegativeLength_shouldThrowException() throws IOException {
+        // given
+        GenericParser<String> actualParser = createGenericParser();
+
+        // when
+        IllegalArgumentException actualException = assertThrows(IllegalArgumentException.class,
+                () -> actualParser.readRawValue(-1));
+
+        // then
+        assertThat(actualException).hasMessage("Invalid raw value size supplied: -1");
+    }
+
+    @Test
+    void readRawValue_whenEndOfStreamReached_shouldThrowException() throws IOException {
+        // given
+        GenericParser<String> actualParser = createGenericParserWithSimulatedEOS();
+
+        // when
+        IllegalArgumentException actualException = assertThrows(IllegalArgumentException.class,
+                () -> actualParser.readRawValue(5));
+
+        // then
+        assertThat(actualException).hasMessage("Cannot read raw value - end of file was reached");
     }
 
     private String getExpectedDump() throws IOException {
@@ -492,6 +519,22 @@ class GenericParserTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-constants-map.json";
+            }
+        };
+    }
+
+    private GenericParser<String> createGenericParserWithSimulatedEOS() throws IOException {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[0]);
+
+        return new GenericParser<String>(inputStream) {
+            @Override
+            protected String generate() {
+                return DATA;
+            }
+
+            @Override
+            public String getStructureResource() {
+                return "/files/structures/TEST-map.json";
             }
         };
     }
