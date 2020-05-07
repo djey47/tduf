@@ -30,7 +30,7 @@
     {
       "name": "layersSectionMagic",
       "type": "CONSTANT",
-      "constantValue": "0x[16 00 00 00]"
+      "constantValue": "0x[10 00 00 00]"
     },
     {
       "name": "layerGroups",
@@ -52,10 +52,9 @@
           "size": 4
         },
         {
-          "name": "layerGroupMagic1",
-          "type": "UNKNOWN",
-          "size": 12,
-          "comment": "See to replace with gap if always 0"
+          "name": "layerGroupZero",
+          "type": "GAP",
+          "size": 12
         },
         {
           "name": "layersCount",
@@ -120,7 +119,7 @@
     {
       "name": "paramsSectionMagic",
       "type": "CONSTANT",
-      "constantValue": "0x[16 00 00 00]"
+      "constantValue": "0x[10 00 00 00]"
     },
     {
       "name": "params",
@@ -223,7 +222,7 @@
     {
       "name": "materialsSectionMagic",
       "type": "CONSTANT",
-      "constantValue": "0x[16 00 00 00]"
+      "constantValue": "0x[10 00 00 00]"
     },
     {
       "name": "materialsHashesTag",
@@ -393,9 +392,8 @@
         },
         {
           "name": "rest",
-          "comment": "See to convert to GAP size=12",
-          "type": "UNKNOWN",
-          "size": "=?materialsDefsSize1Bytes?-16-212"
+          "type": "GAP",
+          "size": 12
         }]
     },
     {
