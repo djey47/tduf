@@ -76,6 +76,15 @@ class DataStoreTest {
     }
 
     @Test
+    void generateKeyPrefixForRepeatedFieldUnderRepeater() {
+        // GIVEN-WHEN
+        String actualKeyPrefix = DataStore.generateKeyPrefixForRepeatedField("entry_list", 1, "myEntries[5].");
+
+        // THEN
+        assertThat(actualKeyPrefix).isEqualTo("myEntries[5].entry_list[1].");
+    }
+
+    @Test
     void toJsonString_whenProvidedStore_shouldReturnJsonRepresentation() throws IOException, URISyntaxException, JSONException {
         // GIVEN
         String expectedJson = getStoreContentsAsJson("/files/json/store.json");

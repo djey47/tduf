@@ -36,6 +36,7 @@ public class DataStore {
     private static final Pattern SUB_FIELD_NAME_PATTERN = Pattern.compile("^(.+)\\[(\\d+)]\\.(.+)$"); // e.g 'entry_list[1].my_field'
 
     private static final String SUB_FIELD_PREFIX_FORMAT = "%s[%d]" + REPEATER_FIELD_SEPARATOR;
+    private static final String SUB_FIELD_WITH_PARENT_KEY_PREFIX_FORMAT = "%s" + SUB_FIELD_PREFIX_FORMAT;
 
     private final Map<String, Entry> store = new HashMap<>();
 
@@ -469,6 +470,21 @@ public class DataStore {
      * @return a prefix allowing to parse sub-fields.
      */
     public static String generateKeyPrefixForRepeatedField(String repeaterFieldName, long index) {
+        return generateKeyPrefixForRepeatedField(repeaterFieldName, index, null);
+    }
+
+    /**
+     * Returns key prefix for repeated (under repeater) field.
+     *
+     * @param repeaterFieldName : name of parent, repeater field
+     * @param index             : item rank in repeater
+     * @param parentRepeaterKey : (optional) key to beb used as prefix if already under a repeater
+     * @return a prefix allowing to parse sub-fields.
+     */
+    public static String generateKeyPrefixForRepeatedField(String repeaterFieldName, long index, String parentRepeaterKey) {
+        if (parentRepeaterKey != null && !parentRepeaterKey.isEmpty()) {
+            return String.format(SUB_FIELD_WITH_PARENT_KEY_PREFIX_FORMAT, parentRepeaterKey, repeaterFieldName, index);
+        }
         return String.format(SUB_FIELD_PREFIX_FORMAT, repeaterFieldName, index);
     }
 
