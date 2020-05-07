@@ -73,7 +73,7 @@ public class FileStructureDto implements Serializable {
     }
 
     public static class FileStructureDtoBuilder {
-        private List<Field> fields = new ArrayList<>();
+        private final List<Field> fields = new ArrayList<>();
 
         public FileStructureDtoBuilder addFields(List<Field> fields) {
             this.fields.addAll(fields);

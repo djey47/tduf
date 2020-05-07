@@ -9,6 +9,7 @@ import java.nio.ByteBuffer;
 import java.util.regex.Pattern;
 
 import static fr.tduf.libunlimited.framework.primitives.Ints.asList;
+import static java.lang.Math.min;
 
 /**
  * Helper to class to handle differences between value representations.
@@ -125,7 +126,7 @@ public class TypeHelper {
         }
 
         byte[] targetByteArray = new byte[length];
-        System.arraycopy(valueBytes, 0, targetByteArray, 0, valueBytes.length <= length ? valueBytes.length : length);
+        System.arraycopy(valueBytes, 0, targetByteArray, 0, min(valueBytes.length, length));
 
         return targetByteArray;
     }

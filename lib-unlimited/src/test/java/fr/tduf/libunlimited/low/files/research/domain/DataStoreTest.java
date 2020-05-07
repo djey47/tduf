@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,7 +19,7 @@ import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
 
 class DataStoreTest {
 
-    private static Class<DataStoreTest> thisClass = DataStoreTest.class;
+    private static final Class<DataStoreTest> thisClass = DataStoreTest.class;
 
     private DataStore dataStore;
 
@@ -85,7 +84,7 @@ class DataStoreTest {
     }
 
     @Test
-    void toJsonString_whenProvidedStore_shouldReturnJsonRepresentation() throws IOException, URISyntaxException, JSONException {
+    void toJsonString_whenProvidedStore_shouldReturnJsonRepresentation() throws IOException, JSONException {
         // GIVEN
         String expectedJson = getStoreContentsAsJson("/files/json/store.json");
         DataStoreFixture.createStoreEntries(dataStore);
@@ -100,7 +99,7 @@ class DataStoreTest {
     }
 
     @Test
-    void toJsonString_whenProvidedStore_andSizeAsReference_shouldReturnJsonRepresentation() throws IOException, URISyntaxException, JSONException {
+    void toJsonString_whenProvidedStore_andSizeAsReference_shouldReturnJsonRepresentation() throws IOException, JSONException {
         // GIVEN
         DataStore specialDataStore = new DataStore(DataStoreFixture.getFileStructure("/files/structures/TEST-datastoreAndFormula-map.json"));
         String expectedJson = getStoreContentsAsJson("/files/json/store_formula.json");
@@ -115,7 +114,7 @@ class DataStoreTest {
     }
 
     @Test
-    void fromJsonString_whenProvidedJson_shouldSetStore() throws IOException, URISyntaxException {
+    void fromJsonString_whenProvidedJson_shouldSetStore() throws IOException {
         // GIVEN
         String jsonInput = getStoreContentsAsJson("/files/json/store.json");
 
@@ -126,16 +125,16 @@ class DataStoreTest {
         assertThat(dataStore.getStore()).hasSize(12);
         assertThat(dataStore.getIntegerListOf("my_field")).containsAll(asList(10L, 20L, 30L));
         assertThat(dataStore.getFloatingPointListOf("my_fp_field")).containsAll(asList(235.666667f, 335.666667f, 435.666667f));
-        assertThat(dataStore.getText("entry_list[0].a_field").get()).isEqualTo("az");
-        assertThat(dataStore.getText("entry_list[1].a_field").get()).isEqualTo("bz");
-        assertThat(dataStore.getText("entry_list[2].a_field").get()).isEqualTo("cz");
-        assertThat(dataStore.getRawValue("entry_list[0].another_field").get()).isEqualTo(new byte[]{0x1, 0x2, 0x3, 0x4});
-        assertThat(dataStore.getRawValue("entry_list[1].another_field").get()).isEqualTo(new byte[]{0x5, 0x6, 0x7, 0x8});
-        assertThat(dataStore.getRawValue("entry_list[2].another_field").get()).isEqualTo(new byte[]{0x9, 0xA, 0xB, 0xC});
+        assertThat(dataStore.getText("entry_list[0].a_field")).contains("az");
+        assertThat(dataStore.getText("entry_list[1].a_field")).contains("bz");
+        assertThat(dataStore.getText("entry_list[2].a_field")).contains("cz");
+        assertThat(dataStore.getRawValue("entry_list[0].another_field")).contains(new byte[]{0x1, 0x2, 0x3, 0x4});
+        assertThat(dataStore.getRawValue("entry_list[1].another_field")).contains(new byte[]{0x5, 0x6, 0x7, 0x8});
+        assertThat(dataStore.getRawValue("entry_list[2].another_field")).contains(new byte[]{0x9, 0xA, 0xB, 0xC});
     }
 
     @Test
-    void fromJsonString_whenProvidedJson_andLongIntegerValues_shouldSetStore() throws IOException, URISyntaxException {
+    void fromJsonString_whenProvidedJson_andLongIntegerValues_shouldSetStore() throws IOException {
         // GIVEN
         dataStore = new DataStore(DataStoreFixture.getFileStructure("/files/structures/TEST-unsignedLong-map.json"));
         String jsonInput = getStoreContentsAsJson("/files/json/store_longInteger.json");
@@ -249,7 +248,7 @@ class DataStoreTest {
                 .isNotSameAs(pickedOriginalEntry);
     }
 
-    private static String getStoreContentsAsJson(String resourcePath) throws URISyntaxException, IOException {
+    private static String getStoreContentsAsJson(String resourcePath) throws IOException {
         return FilesHelper.readTextFromResourceFile(resourcePath);
     }
 
