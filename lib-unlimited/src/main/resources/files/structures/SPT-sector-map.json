@@ -42,14 +42,9 @@
           "size": 8
         },
         {
-          "name": "spotZero1",
-          "type": "GAP",
-          "size": 4
-        },
-        {
           "name": "spotUnknown1",
           "type": "UNKNOWN",
-          "size": 4
+          "size": 8
         },
         {
           "name": "spotStaticBlock",

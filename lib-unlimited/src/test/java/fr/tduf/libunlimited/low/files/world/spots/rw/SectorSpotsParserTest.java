@@ -3,6 +3,7 @@ package fr.tduf.libunlimited.low.files.world.spots.rw;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.world.spots.domain.SectorSpotsInfo;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -12,6 +13,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class SectorSpotsParserTest {
     private static final String THIS_CLASS_NAME = SectorSpotsParserTest.class.getSimpleName();
+
+    @BeforeAll
+    static void globalSetUp() {
+        Log.set(Log.LEVEL_INFO);
+    }
 
     @Test
     void parse_whenRealContents() throws IOException {
@@ -26,8 +32,9 @@ class SectorSpotsParserTest {
         SectorSpotsInfo actualInfo2 = parser2.parse();
 
         // then
-        Log.info(THIS_CLASS_NAME, parser1.dump());
-        Log.info(THIS_CLASS_NAME, parser2.dump());
+        Log.debug(THIS_CLASS_NAME, parser1.dump());
+        Log.debug(THIS_CLASS_NAME, parser2.dump());
+
         assertThat(actualInfo1).isNotNull();
         assertThat(actualInfo1.getSectorSpots()).hasSize(1);
         assertThat(actualInfo2).isNotNull();
