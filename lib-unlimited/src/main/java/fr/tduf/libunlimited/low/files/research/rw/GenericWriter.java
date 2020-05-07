@@ -53,7 +53,7 @@ public abstract class GenericWriter<T> implements StructureBasedProcessor {
      */
     protected abstract void fillStore();
 
-    private boolean writeFields(List<FileStructureDto.Field> fields, ByteArrayOutputStream outputStream, String repeaterKey) throws IOException {
+    private void writeFields(List<FileStructureDto.Field> fields, ByteArrayOutputStream outputStream, String repeaterKey) throws IOException {
         for(FileStructureDto.Field field : fields) {
 
             byte[] valueBytes = retrieveValueFromStore(field, repeaterKey);
@@ -92,8 +92,6 @@ public abstract class GenericWriter<T> implements StructureBasedProcessor {
                     throw new IllegalArgumentException("Unknown field type: " + type);
             }
         }
-
-        return true;
     }
 
     private void writeRepeatedFields(FileStructureDto.Field repeaterField, String parentRepeaterKey, ByteArrayOutputStream outputStream) throws IOException {
