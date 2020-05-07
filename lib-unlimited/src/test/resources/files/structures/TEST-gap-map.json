@@ -1,0 +1,10 @@
+{
+  "name" : "TEST file format with gap",
+  "fields" : [
+    {
+      "name": "gap",
+      "type": "GAP",
+      "size": 10
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name" : "TEST file format with gap, checking disabled",
+  "fields" : [
+    {
+      "name": "gap",
+      "type": "GAP",
+      "size": 10,
+      "constantChecked": false
+    }
+  ]
+}

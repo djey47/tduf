@@ -128,7 +128,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
         Type type = field.getType();
         switch(type) {
             case GAP:
-                readResult = jumpGap(length);
+                readResult = jumpGap(field, length);
                 dumpGap(length, key);
                 break;
 
@@ -154,9 +154,8 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
                 break;
 
             case CONSTANT:
-                String constantValue = field.getConstantValue();
                 readResult = readConstantValue(field);
-                dumpConstantValue(readResult.readValueAsBytes, constantValue, key);
+                dumpConstantValue(readResult.readValueAsBytes, field.getConstantValue(), key);
                 break;
 
             case REPEATER:
@@ -187,10 +186,9 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
         return new ReadResult(parsedCount);
     }
 
-    private ReadResult jumpGap(Integer length) {
-        long parsedCount = inputStream.skip(length);
-
-        return new ReadResult(parsedCount, new byte[length]);
+    private ReadResult jumpGap(FileStructureDto.Field fieldSettings, Integer length) {
+        byte[] gapValue = new byte[length];
+        return readConstantValue(fieldSettings, gapValue);
     }
 
     private ReadResult readIntegerValue(Integer length) {
@@ -228,6 +226,13 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
     private ReadResult readConstantValue(FileStructureDto.Field fieldSettings) {
         String constantValue = fieldSettings.getConstantValue();
         byte[] expectedValueAsBytes = TypeHelper.hexRepresentationToByteArray(constantValue);
+
+        return readConstantValue(fieldSettings, expectedValueAsBytes);
+    }
+
+    private ReadResult readConstantValue(FileStructureDto.Field fieldSettings, byte[] expectedValueAsBytes) {
+        requireNonNull(expectedValueAsBytes, "Expected values as byte array must be provided");
+
         byte[] readValueAsBytes = new byte[expectedValueAsBytes.length];
         long parsedCount = inputStream.read(readValueAsBytes, 0, readValueAsBytes.length);
 
@@ -235,7 +240,8 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
         if (fieldSettings.isConstantChecked()) {
             if (!Arrays.equals(expectedValueAsBytes, readValueAsBytes)) {
                 String actualValueAsString = TypeHelper.byteArrayToHexRepresentation(readValueAsBytes);
-                throw new IllegalStateException(String.format("Constant check failed for field: %s - expected: %s, read: %s", fieldSettings.getName(), constantValue, actualValueAsString));
+                String expectedValueAsString = TypeHelper.byteArrayToHexRepresentation(expectedValueAsBytes);
+                throw new IllegalStateException(String.format("Constant check failed for field: %s - expected: %s, read: %s", fieldSettings.getName(), expectedValueAsString, actualValueAsString));
             }
         }
 

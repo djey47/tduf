@@ -215,6 +215,35 @@ class GenericParserTest {
     }
 
     @Test
+    void parse_whenProvidedContentsAsGap_andMatchingValue_shouldNotThrowException() throws IOException {
+        // GIVEN
+        GenericParser<String> actualParser = createGenericParserWithGap();
+
+        // WHEN-THEN
+        actualParser.parse();
+    }
+
+    @Test
+    void parse_whenProvidedContentsAsGap_andNonMatchingValue_shouldThrowException() throws IOException {
+        // GIVEN
+        GenericParser<String> actualParser = createGenericParserWithGapUnmatching();
+
+        // WHEN-THEN
+        IllegalStateException actualException = assertThrows(IllegalStateException.class,
+                actualParser::parse);
+        assertThat(actualException).hasMessage("Constant check failed for field: gap - expected: 0x[00 00 00 00 00 00 00 00 00 00], read: 0x[00 00 00 00 00 42 00 00 00 00]");
+    }
+
+    @Test
+    void parse_whenProvidedContentsAsGap_andNonMatchingValues_butCheckDisabled_shouldNotThrowException() throws IOException {
+        // GIVEN
+        GenericParser<String> actualParser = createGenericParserWithGapUnmatchingAndCheckDisabled();
+
+        // WHEN-THEN
+        actualParser.parse();
+    }
+
+    @Test
     void parse_whenProvidedContentsWithConditionSatisfied_shouldReturnParsedData() throws IOException {
         // GIVEN
         GenericParser<String> actualParser = createGenericParserWithConditionSatisfied();
@@ -573,6 +602,24 @@ class GenericParserTest {
         };
     }
 
+    private GenericParser<String> createGenericParserWithGap() throws IOException {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-gap.bin"));
+
+        return new GenericParser<String>(inputStream) {
+            @Override
+            protected String generate() {
+                assertThat(getDataStore().isEmpty());
+
+                return DATA;
+            }
+
+            @Override
+            public String getStructureResource() {
+                return "/files/structures/TEST-gap-map.json";
+            }
+        };
+    }
+
     private GenericParser<String> createGenericParserWithConstantsUnmatching() throws IOException {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-constants.bin"));
 
@@ -605,6 +652,42 @@ class GenericParserTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-constants-unmatching-nocheck-map.json";
+            }
+        };
+    }
+
+    private GenericParser<String> createGenericParserWithGapUnmatching() throws IOException {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-gap-mismatch.bin"));
+
+        return new GenericParser<String>(inputStream) {
+            @Override
+            protected String generate() {
+                assertThat(getDataStore().isEmpty());
+
+                return DATA;
+            }
+
+            @Override
+            public String getStructureResource() {
+                return "/files/structures/TEST-gap-map.json";
+            }
+        };
+    }
+
+    private GenericParser<String> createGenericParserWithGapUnmatchingAndCheckDisabled() throws IOException {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-gap-mismatch.bin"));
+
+        return new GenericParser<String>(inputStream) {
+            @Override
+            protected String generate() {
+                assertThat(getDataStore().isEmpty());
+
+                return DATA;
+            }
+
+            @Override
+            public String getStructureResource() {
+                return "/files/structures/TEST-gap-nocheck-map.json";
             }
         };
     }
