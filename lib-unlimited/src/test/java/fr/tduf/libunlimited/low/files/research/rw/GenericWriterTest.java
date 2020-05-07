@@ -243,6 +243,26 @@ class GenericWriterTest {
                 actualWriter::write);
     }
 
+    @Test
+    void write_whenProvidedFiles_withLevel2Repeater_shouldReturnBytes() throws IOException {
+        // GIVEN
+        GenericWriter<String> actualWriter = createGenericWriterWithLevel2Repeater();
+
+        // WHEN
+        ByteArrayOutputStream actualOutputStream = actualWriter.write();
+        // Uncomment below to regen output file
+//        Files.write(Paths.get("src/test/resources/files/samples/TEST-repeater-lvl2.bin"), actualOutputStream.toByteArray());
+
+        // THEN
+        assertThat(actualOutputStream).isNotNull();
+
+        byte[] actualBytes = actualOutputStream.toByteArray();
+        assertThat(actualBytes).hasSize(2*2*4); // 2*2*4 bytes
+
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-repeater-lvl2.bin");
+        assertThat(actualBytes).isEqualTo(expectedBytes);
+    }
+
     private GenericWriter<String> createGenericWriter() throws IOException {
         return new GenericWriter<String>(DATA) {
             @Override
@@ -269,6 +289,27 @@ class GenericWriterTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-map.json";
+            }
+        };
+    }
+
+    private GenericWriter<String> createGenericWriterWithLevel2Repeater() throws IOException {
+        return new GenericWriter<String>(DATA) {
+            @Override
+            protected void fillStore() {
+                // Field 1 - sub items (lvl2), ranks 0-0
+                getDataStore().addRepeatedInteger32("repeaterLvl1[0].repeaterLvl2", "number", 0, 500L);
+                // Field 2 - sub items (lvl2), ranks 0-1
+                getDataStore().addRepeatedInteger32("repeaterLvl1[0].repeaterLvl2", "number", 1, 501L);
+                // Field 3 - sub items (lvl2), ranks 1-0
+                getDataStore().addRepeatedInteger32("repeaterLvl1[1].repeaterLvl2", "number", 0, 502L);
+                // Field 4 - sub items (lvl2), ranks 1-1
+                getDataStore().addRepeatedInteger32("repeaterLvl1[1].repeaterLvl2", "number", 1, 503L);
+            }
+
+            @Override
+            public String getStructureResource() {
+                return "/files/structures/TEST-repeater-lvl2-map.json";
             }
         };
     }

@@ -85,7 +85,7 @@ public abstract class GenericWriter<T> implements StructureBasedProcessor {
                     break;
 
                 case REPEATER:
-                    writeRepeatedFields(field, outputStream);
+                    writeRepeatedFields(field, repeaterKey, outputStream);
                     break;
 
                 default:
@@ -96,22 +96,18 @@ public abstract class GenericWriter<T> implements StructureBasedProcessor {
         return true;
     }
 
-    private void writeRepeatedFields(FileStructureDto.Field repeaterField, ByteArrayOutputStream outputStream) throws IOException {
-        int itemIndex = 0;
-        boolean hasMoreFields = true;
+    private void writeRepeatedFields(FileStructureDto.Field repeaterField, String parentRepeaterKey, ByteArrayOutputStream outputStream) throws IOException {
+        Integer repeatedItemsCount = FormulaHelper.resolveToInteger(repeaterField.getSizeFormula(), parentRepeaterKey, this.dataStore);
 
-        while (hasMoreFields) {
-
-            String newRepeaterKeyPrefix = DataStore.generateKeyPrefixForRepeatedField(repeaterField.getName(), itemIndex);
-            try {
+        try {
+            for (int itemIndex = 0 ; repeatedItemsCount == null || itemIndex < repeatedItemsCount ; itemIndex++) {
+                String newRepeaterKeyPrefix = DataStore.generateKeyPrefixForRepeatedField(repeaterField.getName(), itemIndex, parentRepeaterKey);
                 ByteArrayOutputStream temporayOutputStream = new ByteArrayOutputStream();
                 writeFields(repeaterField.getSubFields(), temporayOutputStream, newRepeaterKeyPrefix);
                 outputStream.write(temporayOutputStream.toByteArray());
-            } catch (NoSuchElementException nsee) {
-                hasMoreFields = false;
             }
-
-            itemIndex++;
+        } catch (NoSuchElementException nsee) {
+            // Ignoring exception is normal, no more items in this repeater
         }
     }
 
