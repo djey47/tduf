@@ -840,20 +840,44 @@ public class MainStageController extends AbstractGuiController {
         return this.currentTopicObject;
     }
 
-    void setCurrentTopicObject(DbDto currentTopicObject) {
-        this.currentTopicObject = currentTopicObject;
-    }
-
     public EditorLayoutDto getLayoutObject() {
         return layoutObject;
     }
 
-    void setLayoutObject(EditorLayoutDto layoutObject) {
-        this.layoutObject = layoutObject;
-    }
-
     public BulkDatabaseMiner getMiner() {
         return databaseMiner;
+    }
+
+    public Property<Integer> getCurrentEntryIndexProperty() {
+        return currentEntryIndexProperty;
+    }
+
+    public MainStageViewDataController getViewData() {
+        return viewDataController;
+    }
+
+    public MainStageChangeDataController getChangeData() {
+        return changeDataController;
+    }
+
+    public int getCurrentEntryIndex() {
+        return currentEntryIndexProperty.getValue();
+    }
+
+    public ApplicationConfiguration getApplicationConfiguration() {
+        return applicationConfiguration;
+    }
+
+    public PluginHandler getPluginHandler() {
+        return pluginHandler;
+    }
+
+    void setCurrentTopicObject(DbDto currentTopicObject) {
+        this.currentTopicObject = currentTopicObject;
+    }
+
+    void setLayoutObject(EditorLayoutDto layoutObject) {
+        this.layoutObject = layoutObject;
     }
 
     void setMiner(BulkDatabaseMiner databaseMiner) {
@@ -868,20 +892,8 @@ public class MainStageController extends AbstractGuiController {
         return currentTopicProperty;
     }
 
-    Property<Integer> getCurrentEntryIndexProperty() {
-        return currentEntryIndexProperty;
-    }
-
     StringProperty getCurrentEntryLabelProperty() {
         return currentEntryLabelProperty;
-    }
-
-    public MainStageViewDataController getViewData() {
-        return viewDataController;
-    }
-
-    public MainStageChangeDataController getChangeData() {
-        return changeDataController;
     }
 
     EntriesStageController getEntriesStageController() {
@@ -898,14 +910,6 @@ public class MainStageController extends AbstractGuiController {
 
     List<DbDto> getDatabaseObjects() {
         return databaseObjects;
-    }
-
-    public int getCurrentEntryIndex() {
-        return currentEntryIndexProperty.getValue();
-    }
-
-    public ApplicationConfiguration getApplicationConfiguration() {
-        return applicationConfiguration;
     }
 
     ChoiceBox<EditorLayoutDto.EditorProfileDto> getProfilesChoiceBox() {
@@ -929,10 +933,6 @@ public class MainStageController extends AbstractGuiController {
     }
 
     TextField getEntryFilterTextField() { return entryFilterTextField; }
-
-    public PluginHandler getPluginHandler() {
-        return pluginHandler;
-    }
 
     ObjectProperty<Cursor> getMouseCursorProperty() {
         return mouseCursorProperty();

@@ -50,31 +50,18 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
 * AND MORE!
 
 
-### What's in this version ? (1.13.0)
-* (Editor) Brings misc. UI changes (displayed error messages, topic in profile selector...)
-* (Editor) Introduces new search engine for entry value
-* (Editor) Displays placeholder or message when plugin failed (e.g invisible file mapping syndrome)
-* (Editor) Enhance database metadata: new labels for *drag force* and *downforce* items in CAR_PHYSICS_DATA
-* (Editor) Debugging mode now can be enabled via settings [WIKI](https://github.com/djey47/tduf/wiki/Advanced-Editor#enable-debugging-mode-via-tduf-settings-file)
-
-* (Library/Cameras) Adds reference for 'Binoculars' setting (thanks to all people involved in research!)
-
-* (Technical) Huge code cleaning (without side-effects, I hope! ^^")
-* (Technical) Upgrade of development tools (some versions were 5 years old!)
+### What's in this version ? (1.13.1)
+* Just a maintenance release.
 
 
 ### Fixed issues
-* (Editor/Cameras) Default selected camera view was not the first on the list
-* (Editor/Mapping) No entries were appearing due to corrupted contexts
-
-* (Library/Cameras) Incorrect Cameras.bin file name was used
-* (Library/Cameras) Added missing cameras and iks sets (F40)
-
-* (Technical) Now includes XML APIs to run under Java JRE 9 without script patch
+* (Editor/Mapping) Wrong information was appearing in paths due to invalid context.
 
 
 ### Known bugs
-* (Editor/Mapping) Mapping errors are not properly described. Will be enhanced later.
+* (Editor) Entry list may keep invalid names after changing. Switch topic or use filter to force refreshing
+* (Editor/Mapping) Mapping errors are not properly described. Will be enhanced later
+* (Editor/Mapping) Entry paths may keep invalid names after changing. Hit *Refresh* button to display latest values.
 * You tell me!
 
 

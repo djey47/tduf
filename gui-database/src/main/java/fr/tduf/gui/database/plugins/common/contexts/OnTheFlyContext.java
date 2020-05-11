@@ -3,6 +3,7 @@ package fr.tduf.gui.database.plugins.common.contexts;
 import fr.tduf.gui.database.plugins.mapping.domain.MappingEntry;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.Property;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.Pane;
@@ -14,16 +15,17 @@ public class OnTheFlyContext {
     private DbDto.Topic currentTopic;
     private DbDto.Topic remoteTopic;
 
-    private int contentEntryIndex;
     private int fieldRank;
     private boolean fieldReadOnly;
 
     private Pane parentPane;
 
+    private Property<Integer> contentEntryIndexProperty;
     private StringProperty rawValueProperty;
     private StringProperty errorMessageProperty;
     private BooleanProperty errorProperty;
 
+    // TODO See to move to mapping context
     private ObservableList<MappingEntry> files;
 
     public DbDto.Topic getCurrentTopic() {
@@ -82,12 +84,12 @@ public class OnTheFlyContext {
         this.remoteTopic = remoteTopic;
     }
 
-    public int getContentEntryIndex() {
-        return contentEntryIndex;
+    public Property<Integer> getContentEntryIndexProperty() {
+        return contentEntryIndexProperty;
     }
 
-    public void setContentEntryIndex(int contentEntryIndex) {
-        this.contentEntryIndex = contentEntryIndex;
+    public void setContentEntryIndexProperty(Property<Integer> contentEntryIndexProperty) {
+        this.contentEntryIndexProperty = contentEntryIndexProperty;
     }
 
     public void setFiles(ObservableList<MappingEntry> files) {

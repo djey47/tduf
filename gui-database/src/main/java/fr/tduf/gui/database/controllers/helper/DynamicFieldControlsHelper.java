@@ -145,7 +145,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     private void addPluginControls(String pluginName, DbDto.Topic currentTopic, HBox fieldBox, FieldSettingsDto fieldSettings, StringProperty rawValueProperty, StringProperty errorMessageProperty, BooleanProperty errorProperty, String fieldTargetRef) {
         OnTheFlyContext onTheFlyContext = new OnTheFlyContext();
         onTheFlyContext.setCurrentTopic(currentTopic);
-        onTheFlyContext.setContentEntryIndex(controller.getCurrentEntryIndex());
+        onTheFlyContext.setContentEntryIndexProperty(controller.getCurrentEntryIndexProperty());
         onTheFlyContext.setRemoteTopic(getEffectiveTopic(currentTopic, fieldTargetRef));
         onTheFlyContext.setFieldRank(fieldSettings.getRank());
         onTheFlyContext.setFieldReadOnly(fieldSettings.isReadOnly());
