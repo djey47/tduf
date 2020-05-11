@@ -11,6 +11,7 @@ import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.Property;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -76,6 +77,7 @@ class MappingPluginTest {
         files.clear();
 
         when(onTheFlyContextMock.getFiles()).thenReturn(files);
+        when(onTheFlyContextMock.getContentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0));
     }
     
     @Test
@@ -167,7 +169,6 @@ class MappingPluginTest {
         when(brandsItemMock.getRawValue()).thenReturn("R");
         when(brandsResourceMock.pickValue()).thenReturn(of("ELLSON"));
 
-        when(controllerMock.getCurrentEntryIndex()).thenReturn(0);
         when(minerMock.getContentEntryFromTopicWithInternalIdentifier(0, null)).thenReturn(of(clothesEntryMock));
         when(minerMock.getContentEntryFromTopicWithReference("B", BRANDS)).thenReturn(of(brandsEntryMock));
         when(minerMock.getResourceEntryFromTopicAndReference(BRANDS, "R")).thenReturn(of(brandsResourceMock));
@@ -195,7 +196,6 @@ class MappingPluginTest {
         when(rimsItemMock.getRawValue()).thenReturn("B");
         when(rimsResourceMock.pickValue()).thenReturn(of("AC"));
 
-        when(controllerMock.getCurrentEntryIndex()).thenReturn(0);
         when(minerMock.getContentEntryFromTopicWithInternalIdentifier(0, null)).thenReturn(of(rimsEntryMock));
         when(minerMock.getResourceEntryFromTopicAndReference(null, "B")).thenReturn(of(rimsResourceMock));
 

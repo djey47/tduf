@@ -443,7 +443,8 @@ public class MappingPlugin extends AbstractDatabasePlugin {
     }
 
     private String resolveRimDirectoryName(OnTheFlyContext onTheFlyContext) {
-        int entryId = onTheFlyContext.getContentEntryIndex();
+        // TODO Extract to method
+        int entryId = onTheFlyContext.getContentEntryIndexProperty().getValue();
         DbDto.Topic currentTopic = onTheFlyContext.getCurrentTopic();
         BulkDatabaseMiner miner = getEditorContext().getMiner();
         ContentEntryDto contentEntry = miner.getContentEntryFromTopicWithInternalIdentifier(entryId, currentTopic)
@@ -457,7 +458,8 @@ public class MappingPlugin extends AbstractDatabasePlugin {
     }
 
     private String resolveClothesBrandDirectoryName(OnTheFlyContext onTheFlyContext) {
-        int entryId = onTheFlyContext.getContentEntryIndex();
+        // TODO Extract to method
+        int entryId = onTheFlyContext.getContentEntryIndexProperty().getValue();
         DbDto.Topic currentTopic = onTheFlyContext.getCurrentTopic();
         BulkDatabaseMiner miner = getEditorContext().getMiner();
         ContentEntryDto clothesContentEntry = miner.getContentEntryFromTopicWithInternalIdentifier(entryId, currentTopic)

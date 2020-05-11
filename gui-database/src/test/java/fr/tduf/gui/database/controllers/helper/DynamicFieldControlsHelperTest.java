@@ -18,11 +18,14 @@ import javafx.scene.layout.HBox;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.INTEGER;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -44,6 +47,9 @@ class DynamicFieldControlsHelperTest {
     @Mock
     private ApplicationConfiguration applicationConfigurationMock;
 
+    @Captor
+    private ArgumentCaptor<OnTheFlyContext> onTheFlyContextCaptor;
+
     @InjectMocks
     private DynamicFieldControlsHelper helper;
 
@@ -55,6 +61,7 @@ class DynamicFieldControlsHelperTest {
         when(controllerMock.getViewData()).thenReturn(viewDataMock);
         when(controllerMock.getApplicationConfiguration()).thenReturn(applicationConfigurationMock);
         when(viewDataMock.getItemPropsByFieldRank()).thenReturn(new ItemViewModel());
+        when(pluginHandlerMock.getEditorContext()).thenReturn(new EditorContext());
     }
 
     @Test
@@ -82,36 +89,37 @@ class DynamicFieldControlsHelperTest {
     }
 
     @Test
-    void addCustomControls_whenPluginNamePresent_andPluginsEnabled_shouldInvokeHandler() {
+    void addCustomControls_whenPluginNamePresent_andPluginsEnabled_shouldInvokeHandler_withProvisionedContext() {
         // given
         HBox fieldBox = new HBox();
-
-        EditorContext editorContext = new EditorContext();
-        when(pluginHandlerMock.getEditorContext()).thenReturn(editorContext);
         when(applicationConfigurationMock.isEditorPluginsEnabled()).thenReturn(true);
-
+        when(controllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(1));
 
         // when
         helper.addCustomControls(fieldBox, createField(), createFieldSettingsForPlugin(), CAR_PHYSICS_DATA, new SimpleStringProperty("RAW_VALUE"));
 
-
         // then
-        verify(pluginHandlerMock).renderPluginByName(eq("PLUGIN"), any(OnTheFlyContext.class));
+        verify(pluginHandlerMock).renderPluginByName(eq("PLUGIN"), onTheFlyContextCaptor.capture());
+        OnTheFlyContext actualContext = onTheFlyContextCaptor.getValue();
+        assertThat(actualContext.getContentEntryIndexProperty().getValue()).isEqualTo(1);
+        assertThat(actualContext.getCurrentTopic()).isEqualTo(CAR_PHYSICS_DATA);
+        assertThat(actualContext.getRemoteTopic()).isEqualTo(CAR_PHYSICS_DATA);
+        assertThat(actualContext.getFieldRank()).isEqualTo(1);
+        assertThat(actualContext.isFieldReadOnly()).isFalse();
+        assertThat(actualContext.getRawValueProperty().getValue()).isEqualTo("RAW_VALUE");
+        assertThat(actualContext.getParentPane()).isSameAs(fieldBox);
+        assertThat(actualContext.getErrorProperty().get()).isFalse();
+        assertThat(actualContext.getErrorMessageProperty()).isNotNull();
     }
 
     @Test
     void addCustomControls_whenPluginNamePresent_andPluginsDisabled_shouldNotInvokeHandler() {
         // given
         HBox fieldBox = new HBox();
-
-        EditorContext editorContext = new EditorContext();
-        when(pluginHandlerMock.getEditorContext()).thenReturn(editorContext);
         when(applicationConfigurationMock.isEditorPluginsEnabled()).thenReturn(false);
-
 
         // when
         helper.addCustomControls(fieldBox, createField(), createFieldSettingsForPlugin(), CAR_PHYSICS_DATA, new SimpleStringProperty("RAW_VALUE"));
-
 
         // then
         verifyNoInteractions(pluginHandlerMock);
@@ -139,6 +147,7 @@ class DynamicFieldControlsHelperTest {
     private FieldSettingsDto createFieldSettingsForPlugin() {
         FieldSettingsDto fieldSettings = new FieldSettingsDto();
         fieldSettings.setPluginName("PLUGIN");
+        fieldSettings.setRank(1);
         return fieldSettings;
     }
 }
