@@ -114,6 +114,21 @@ class DataStoreTest {
     }
 
     @Test
+    void toJsonString_whenProvidedStore_andLevel2Repeater_shouldReturnJsonRepresentation() throws IOException, JSONException {
+        // GIVEN
+        DataStore specialDataStore = new DataStore(DataStoreFixture.getFileStructure("/files/structures/TEST-datastoreAndLevel2Repeater-map.json"));
+        String expectedJson = getStoreContentsAsJson("/files/json/store_lvl2Repeater.json");
+        DataStoreFixture.createStoreEntriesForLevel2Repeater(specialDataStore);
+
+        // WHEN
+        String actualJson = specialDataStore.toJsonString();
+
+        // THEN
+        assertThat(actualJson).isNotNull();
+        assertEquals(expectedJson, actualJson, JSONCompareMode.STRICT);
+    }
+
+    @Test
     void fromJsonString_whenProvidedJson_shouldSetStore() throws IOException {
         // GIVEN
         String jsonInput = getStoreContentsAsJson("/files/json/store.json");

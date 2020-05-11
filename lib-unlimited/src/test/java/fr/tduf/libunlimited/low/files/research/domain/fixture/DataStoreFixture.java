@@ -41,6 +41,15 @@ public class DataStoreFixture {
         putRawValueInStore("entry_list[0].another_field", new byte[0], dataStore);
     }
 
+    public static void createStoreEntriesForLevel2Repeater(DataStore dataStore) {
+        dataStore.clearAll();
+
+        putLongInStore("repeaterLvl1[0].repeaterLvl2[0].number", 500L, false, dataStore);
+        putLongInStore("repeaterLvl1[0].repeaterLvl2[1].number", 501L, false, dataStore);
+        putLongInStore("repeaterLvl1[1].repeaterLvl2[0].number", 502L, false, dataStore);
+        putLongInStore("repeaterLvl1[1].repeaterLvl2[1].number", 503L, false, dataStore);
+    }
+
     public static void putRawValueInStore(String key, byte[] bytes, DataStore dataStore) {
         dataStore.addValue(key, UNKNOWN, bytes);
     }

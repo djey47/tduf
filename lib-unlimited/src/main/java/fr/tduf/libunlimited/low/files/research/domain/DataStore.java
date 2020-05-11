@@ -566,7 +566,7 @@ public class DataStore {
         }
     }
 
-    private boolean readStructureFields(List<FileStructureDto.Field> fields, ObjectNode currentObjectNode, String repeaterKey) {
+    private void readStructureFields(List<FileStructureDto.Field> fields, ObjectNode currentObjectNode, String parentRepeaterKey) {
 
         for (FileStructureDto.Field field : fields) {
 
@@ -575,36 +575,41 @@ public class DataStore {
 
             if (REPEATER == fieldType) {
 
-                readRepeatedFields(field.getSubFields(), currentObjectNode, fieldName);
+                if (repeaterHasSubItems(fieldName, parentRepeaterKey)) {
+                    readRepeatedFields(field, currentObjectNode, parentRepeaterKey);
+                }
 
             } else if (fieldType.isValueToBeStored()) {
 
-                Entry storeEntry = this.getStore().get(repeaterKey + fieldName);
+                Entry storeEntry = fetchEntry(fieldName, parentRepeaterKey);
                 if (storeEntry == null) {
-                    return false;
+                    break;
                 }
 
                 readRegularField(field, currentObjectNode, storeEntry);
             }
-        }
 
-        return true;
+        }
     }
 
-    private void readRepeatedFields(List<FileStructureDto.Field> repeatedFields, ObjectNode objectNode, String repeaterFieldName) {
+    private void readRepeatedFields(FileStructureDto.Field repeaterField, ObjectNode objectNode, String parentRepeaterKey) {
+        List<FileStructureDto.Field> repeatedFields = repeaterField.getSubFields();
+        Integer repeatedCount = FormulaHelper.resolveToInteger(repeaterField.getSizeFormula(), parentRepeaterKey, this);
+        String repeaterFieldName = repeaterField.getName();
         ArrayNode repeaterNode = objectNode.arrayNode();
         objectNode.set(repeaterFieldName, repeaterNode);
 
         int parsedCount = 0;
-        boolean hasMoreItems = true;
-        while (hasMoreItems) {
+        while (repeatedCount == null || parsedCount < repeatedCount) {
             ObjectNode itemNode = objectNode.objectNode();
 
-            hasMoreItems = readStructureFields(repeatedFields, itemNode, DataStore.generateKeyPrefixForRepeatedField(repeaterFieldName, parsedCount++));
+            String newRepeaterKeyPrefix = DataStore.generateKeyPrefixForRepeatedField(repeaterFieldName, parsedCount, parentRepeaterKey);
 
-            if (hasMoreItems) {
-                repeaterNode.add(itemNode);
-            }
+            readStructureFields(repeatedFields, itemNode, newRepeaterKeyPrefix);
+
+            repeaterNode.add(itemNode);
+
+            parsedCount++;
         }
     }
 
@@ -632,6 +637,15 @@ public class DataStore {
                 currentObjectNode.put(fieldName, byteArrayToHexRepresentation(rawValue));
                 break;
         }
+    }
+
+    private boolean repeaterHasSubItems(String repeaterFieldName, String parentRepeaterKey) {
+        return parentRepeaterKey.isEmpty() || getStore().keySet().parallelStream()
+                .anyMatch(k -> k.startsWith(parentRepeaterKey + repeaterFieldName));
+    }
+
+    private Entry fetchEntry(String fieldName, String parentRepeaterKey) {
+        return getStore().get(parentRepeaterKey + fieldName);
     }
 
     private static String generateKeyForRepeatedField(String repeaterFieldName, String repeatedFieldName, long index) {

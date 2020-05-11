@@ -1,0 +1,24 @@
+{
+  "repeaterLvl1": [
+    {
+      "repeaterLvl2": [
+        {
+          "number": 500
+        },
+        {
+          "number": 501
+        }
+      ]
+    },
+    {
+      "repeaterLvl2": [
+        {
+          "number": 502
+        },
+        {
+          "number": 503
+        }
+      ]
+    }
+  ]
+}
