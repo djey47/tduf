@@ -16,7 +16,6 @@ import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import fr.tduf.libunlimited.low.files.banks.mapping.helper.MapHelper;
 import fr.tduf.libunlimited.low.files.banks.mapping.rw.MapParser;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import javafx.beans.binding.Bindings;
@@ -40,6 +39,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import static fr.tduf.gui.database.common.DisplayConstants.*;
@@ -443,36 +443,33 @@ public class MappingPlugin extends AbstractDatabasePlugin {
     }
 
     private String resolveRimDirectoryName(OnTheFlyContext onTheFlyContext) {
-        // TODO Extract to method
-        int entryId = onTheFlyContext.getContentEntryIndexProperty().getValue();
-        DbDto.Topic currentTopic = onTheFlyContext.getCurrentTopic();
-        BulkDatabaseMiner miner = getEditorContext().getMiner();
-        ContentEntryDto contentEntry = miner.getContentEntryFromTopicWithInternalIdentifier(entryId, currentTopic)
-                .orElseThrow(() -> new IllegalStateException("No content entry for identifier: " + entryId));
-        String directoryRef = contentEntry.getItemAtRank(FIELD_RANK_RSC_PATH)
-                .map(ContentItemDto::getRawValue)
+        String directoryRef = retrieveCurrentRawValueFromContext(onTheFlyContext, FIELD_RANK_RSC_PATH)
                 .orElseThrow(() -> new IllegalStateException("No content item for directory name"));
-        return miner.getResourceEntryFromTopicAndReference(currentTopic, directoryRef)
+        return getEditorContext().getMiner().getResourceEntryFromTopicAndReference(onTheFlyContext.getCurrentTopic(), directoryRef)
                 .flatMap(ResourceEntryDto::pickValue)
                 .orElseThrow(() -> new IllegalStateException("No resource value for ref: " + directoryRef));
     }
 
     private String resolveClothesBrandDirectoryName(OnTheFlyContext onTheFlyContext) {
-        // TODO Extract to method
-        int entryId = onTheFlyContext.getContentEntryIndexProperty().getValue();
-        DbDto.Topic currentTopic = onTheFlyContext.getCurrentTopic();
-        BulkDatabaseMiner miner = getEditorContext().getMiner();
-        ContentEntryDto clothesContentEntry = miner.getContentEntryFromTopicWithInternalIdentifier(entryId, currentTopic)
-                .orElseThrow(() -> new IllegalStateException("No content entry for identifier: " + entryId));
-        String brandRef = clothesContentEntry.getItemAtRank(FIELD_RANK_FURNITURE_BRAND)
-                .map(ContentItemDto::getRawValue)
+        String brandRef =  retrieveCurrentRawValueFromContext(onTheFlyContext, FIELD_RANK_FURNITURE_BRAND)
                 .orElseThrow(() -> new IllegalStateException("No content item for brand reference"));
-        ContentEntryDto brandsContentEntry = miner.getContentEntryFromTopicWithReference(brandRef, BRANDS)
-                .orElseThrow(() -> new IllegalStateException("No brand content entry for ref: " + brandRef));
-        return brandsContentEntry.getItemAtRank(FIELD_RANK_MANUFACTURER_ID)
+        BulkDatabaseMiner miner = getEditorContext().getMiner();
+        return miner.getContentEntryFromTopicWithReference(brandRef, BRANDS)
+                .orElseThrow(() -> new IllegalStateException("No brand content entry for ref: " + brandRef))
+                .getItemAtRank(FIELD_RANK_MANUFACTURER_ID)
                 .flatMap(item -> miner.getResourceEntryFromTopicAndReference(BRANDS, item.getRawValue()))
                 .flatMap(ResourceEntryDto::pickValue)
                 .orElseThrow(() -> new IllegalStateException("No manufacturer id available"));
+    }
+
+    private Optional<String> retrieveCurrentRawValueFromContext(OnTheFlyContext onTheFlyContext, int itemRank) {
+        BulkDatabaseMiner miner = getEditorContext().getMiner();
+        DbDto.Topic currentTopic = onTheFlyContext.getCurrentTopic();
+        int entryId = onTheFlyContext.getContentEntryIndexProperty().getValue();
+        return miner.getContentEntryFromTopicWithInternalIdentifier(entryId, currentTopic)
+                .orElseThrow(() -> new IllegalStateException("No content entry for identifier: " + entryId))
+                .getItemAtRank(itemRank)
+                .map(ContentItemDto::getRawValue);
     }
 
     /**
