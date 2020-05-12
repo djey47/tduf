@@ -1,0 +1,36 @@
+{
+  "name": "TEST file format with repeater level 2 - complex",
+  "comment": "Repeater Level 2 has no items, but should not prevent reading following fields from repeater Level 1",
+  "littleEndian": false,
+  "fields": [
+    {
+      "name": "repeaterLvl1",
+      "type": "REPEATER",
+      "size": 2,
+      "subFields": [
+        {
+          "name": "number1Lvl2",
+          "type": "INTEGER",
+          "size": 4
+        },
+        {
+          "name": "repeaterLvl2",
+          "type": "REPEATER",
+          "size": 0,
+          "subFields": [
+            {
+              "name": "numberLvl2",
+              "type": "INTEGER",
+              "size": 4
+            }
+          ]
+        },
+        {
+          "name": "number2Lvl2",
+          "type": "INTEGER",
+          "size": 4
+        }
+      ]
+    }
+  ]
+}

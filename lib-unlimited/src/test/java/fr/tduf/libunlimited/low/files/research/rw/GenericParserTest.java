@@ -60,7 +60,7 @@ class GenericParserTest {
     @Test
     void newParser_whenProvidedContents_andStructureAsFilePath_shouldReturnParserInstance() throws Exception {
         // GIVEN
-        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile();
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile("/files/samples/TEST.bin");
 
         // WHEN
         GenericParser<String> actualParser = createGenericParserWithExternalStructure(inputStream);
@@ -85,8 +85,21 @@ class GenericParserTest {
     @Test
     void parse_whenProvidedFiles_andEncryptedContents_shouldReturnDomainObject() throws IOException {
         // GIVEN
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-encrypted.bin"));
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile("/files/samples/TEST-encrypted.bin");
         GenericParser<String> actualParser = createGenericParserEncrypted(inputStream);
+
+        // WHEN
+        String actualObject = actualParser.parse();
+
+        // THEN
+        assertThat(actualObject).isNotNull();
+        assertThat(actualObject).isEqualTo(DATA);
+    }
+
+    @Test
+    void parse_whenProvidedFiles_andComplexRepeaterLevel2_shouldReturnDomainObject() throws IOException {
+        // GIVEN
+        GenericParser<String> actualParser = createGenericParserWithLevel2RepeaterComplex();
 
         // WHEN
         String actualObject = actualParser.parse();
@@ -350,7 +363,7 @@ class GenericParserTest {
     }
 
     private GenericParser<String> createGenericParser() throws IOException {
-        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile();
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile("/files/samples/TEST.bin");
 
         return new GenericParser<String>(inputStream) {
             @Override
@@ -381,6 +394,30 @@ class GenericParserTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-map.json";
+            }
+        };
+    }
+
+    private GenericParser<String> createGenericParserWithLevel2RepeaterComplex() throws IOException {
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile("/files/samples/TEST-repeater-lvl2-complex.bin");
+
+        return new GenericParser<String>(inputStream) {
+            @Override
+            protected String generate() {
+
+                assertThat(getDataStore().size()).isEqualTo(4);
+                assertThat(getDataStore().getInteger("repeaterLvl1[0].number1Lvl2")).contains(101L);
+                assertThat(getDataStore().getInteger("repeaterLvl1[0].number2Lvl2")).contains(102L);
+                assertThat(getDataStore().getInteger("repeaterLvl1[1].number1Lvl2")).contains(201L);
+                assertThat(getDataStore().getInteger("repeaterLvl1[1].number2Lvl2")).contains(202L);
+                assertThat(getDataStore().getRepeatedValues("repeaterLvl2", "repeaterLvl1[0].")).hasSize(0);
+                assertThat(getDataStore().getRepeatedValues("repeaterLvl2", "repeaterLvl1[1].")).hasSize(0);
+                return DATA;
+            }
+
+            @Override
+            public String getStructureResource() {
+                return "/files/structures/TEST-repeater-lvl2-complex-map.json";
             }
         };
     }
@@ -420,7 +457,7 @@ class GenericParserTest {
     }
 
     private GenericParser<String> createGenericParserHalfFloat() throws IOException {
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-halfFloat.bin"));
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile("/files/samples/TEST-halfFloat.bin");
 
         return new GenericParser<String>(inputStream) {
             @Override
@@ -448,7 +485,7 @@ class GenericParserTest {
     }
 
     private GenericParser<String> createGenericParserVeryShortInt() throws IOException {
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-veryShortInt.bin"));
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile("/files/samples/TEST-veryShortInt.bin");
 
         return new GenericParser<String>(inputStream) {
             @Override
@@ -476,7 +513,7 @@ class GenericParserTest {
     }
 
     private GenericParser<String> createGenericParserLittleEndian() throws IOException {
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-littleEndian.bin"));
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile("/files/samples/TEST-littleEndian.bin");
 
         return new GenericParser<String>(inputStream) {
             @Override
@@ -526,7 +563,7 @@ class GenericParserTest {
     }
 
     private GenericParser<String> createGenericParserForFormulas() throws IOException {
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-formulas.bin"));
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile("/files/samples/TEST-formulas.bin");
 
         return new GenericParser<String>(inputStream) {
             @Override
@@ -558,7 +595,7 @@ class GenericParserTest {
     }
 
     private GenericParser<String> createGenericParserSigned() throws IOException {
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-signedInteger.bin"));
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile("/files/samples/TEST-signedInteger.bin");
 
         return new GenericParser<String>(inputStream) {
             @Override
@@ -585,7 +622,7 @@ class GenericParserTest {
     }
 
     private GenericParser<String> createGenericParserWithConstants() throws IOException {
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-constants.bin"));
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile("/files/samples/TEST-constants.bin");
 
         return new GenericParser<String>(inputStream) {
             @Override
@@ -603,7 +640,7 @@ class GenericParserTest {
     }
 
     private GenericParser<String> createGenericParserWithGap() throws IOException {
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-gap.bin"));
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile("/files/samples/TEST-gap.bin");
 
         return new GenericParser<String>(inputStream) {
             @Override
@@ -621,7 +658,7 @@ class GenericParserTest {
     }
 
     private GenericParser<String> createGenericParserWithConstantsUnmatching() throws IOException {
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-constants.bin"));
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile("/files/samples/TEST-constants.bin");
 
         return new GenericParser<String>(inputStream) {
             @Override
@@ -639,7 +676,7 @@ class GenericParserTest {
     }
 
     private GenericParser<String> createGenericParserWithConstantsUnmatchingAndCheckDisabled() throws IOException {
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-constants.bin"));
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile("/files/samples/TEST-constants.bin");
 
         return new GenericParser<String>(inputStream) {
             @Override
@@ -657,7 +694,7 @@ class GenericParserTest {
     }
 
     private GenericParser<String> createGenericParserWithGapUnmatching() throws IOException {
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-gap-mismatch.bin"));
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile("/files/samples/TEST-gap-mismatch.bin");
 
         return new GenericParser<String>(inputStream) {
             @Override
@@ -675,7 +712,7 @@ class GenericParserTest {
     }
 
     private GenericParser<String> createGenericParserWithGapUnmatchingAndCheckDisabled() throws IOException {
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-gap-mismatch.bin"));
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile("/files/samples/TEST-gap-mismatch.bin");
 
         return new GenericParser<String>(inputStream) {
             @Override
@@ -693,7 +730,7 @@ class GenericParserTest {
     }
 
     private GenericParser<String> createGenericParserWithConditionSatisfied() throws IOException {
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-conditional-with.bin"));
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile("/files/samples/TEST-conditional-with.bin");
 
         return new GenericParser<String>(inputStream) {
             @Override
@@ -714,7 +751,7 @@ class GenericParserTest {
     }
 
     private GenericParser<String> createGenericParserWithConditionUnsatisfied() throws IOException {
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST-conditional-without.bin"));
+        ByteArrayInputStream inputStream = createInputStreamFromReferenceFile("/files/samples/TEST-conditional-without.bin");
 
         return new GenericParser<String>(inputStream) {
             @Override
@@ -750,7 +787,7 @@ class GenericParserTest {
         };
     }
 
-    private ByteArrayInputStream createInputStreamFromReferenceFile() throws IOException {
-        return new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile("/files/samples/TEST.bin"));
+    private ByteArrayInputStream createInputStreamFromReferenceFile(String referenceResource) throws IOException {
+        return new ByteArrayInputStream(FilesHelper.readBytesFromResourceFile(referenceResource));
     }
 }
