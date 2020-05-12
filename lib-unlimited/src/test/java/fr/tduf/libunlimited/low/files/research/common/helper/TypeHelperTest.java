@@ -1,7 +1,10 @@
 package fr.tduf.libunlimited.low.files.research.common.helper;
 
 
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -301,8 +304,17 @@ class TypeHelperTest {
     @Test
     void hexRepresentationToByteArray_whenInvalid_shouldThrowIllegalArgumentException(){
         // GIVEN-WHEN-THEN
-        assertThrows(IllegalArgumentException.class,
+        IllegalArgumentException actualException = assertThrows(IllegalArgumentException.class,
                 () -> TypeHelper.hexRepresentationToByteArray("xxx"));
+        assertThat(actualException).hasMessage("Provided hexadecimal representation is invalid.");
+    }
+
+    @Test
+    void hexRepresentationToByteArray_whenInvalidAsWell_shouldThrowIllegalArgumentException(){
+        // GIVEN-WHEN-THEN
+        IllegalArgumentException actualException = assertThrows(IllegalArgumentException.class,
+                () -> TypeHelper.hexRepresentationToByteArray("0x[IN VA LI D0]"));
+        assertThat(actualException).hasMessage("Provided hexadecimal representation is invalid.");
     }
 
     @Test
@@ -315,5 +327,17 @@ class TypeHelperTest {
     void hexRepresentationToByteArray_shouldReturnArray(){
         // GIVEN-WHEN-THEN
         assertThat(TypeHelper.hexRepresentationToByteArray("0x[00 AA ff]")).containsExactly((byte)0x0, (byte)0xAA, (byte)0xFF);
+    }
+
+    @Test
+    void hexRepresentationToByteArray_whenLargeString_shouldReturnArray() throws IOException {
+        // given
+        String representation = FilesHelper.readTextFromResourceFile("/files/dumps/EXTRACT-largeRepresentation.txt");
+
+        // when
+        byte[] actualBytes = TypeHelper.hexRepresentationToByteArray(representation);
+
+        // then
+        assertThat(actualBytes).hasSize(6288);
     }
 }

@@ -236,16 +236,21 @@ public class TypeHelper {
             return null;
         }
 
-        Pattern hexRepresentationPattern = Pattern.compile("0x\\[([0-9a-fA-F]{2}\\s?)*([0-9a-fA-F]{2})?]");
+        Pattern hexRepresentationPattern = Pattern.compile("0x\\[.*]");
+        String errorMessage = "Provided hexadecimal representation is invalid.";
         if(!hexRepresentationPattern.matcher(hexRepresentation).matches()) {
-            throw new IllegalArgumentException("Provided hexadecimal representation is invalid.");
+            throw new IllegalArgumentException(errorMessage);
         }
 
         String extractedBytes = hexRepresentation
                 .substring(3, hexRepresentation.length() - 1)
                 .replace(" ", "");
 
-        return DatatypeConverter.parseHexBinary(extractedBytes);
+        try {
+            return DatatypeConverter.parseHexBinary(extractedBytes);
+        } catch (IllegalArgumentException iae) {
+            throw new IllegalArgumentException(errorMessage, iae);
+        }
     }
 
     private static void checkRegularSize(int size) {
