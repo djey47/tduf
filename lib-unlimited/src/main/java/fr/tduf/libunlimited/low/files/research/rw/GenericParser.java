@@ -24,6 +24,7 @@ import static java.util.Objects.requireNonNull;
  * Make it possible to extract values from them.
  */
 public abstract class GenericParser<T> implements StructureBasedProcessor {
+    private static final String THIS_CLASS_NAME = GenericParser.class.getSimpleName();
 
     private static final String DUMP_START_ENTRY_FORMAT = "%s\t<%s%s: %d bytes>\t%s\t%s\n";
     private static final String DUMP_REPEATER_START_ENTRY_FORMAT = "%s\t<%s>\t>>\n";
