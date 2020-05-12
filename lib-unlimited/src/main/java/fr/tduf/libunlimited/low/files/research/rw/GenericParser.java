@@ -107,7 +107,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
             // First evaluate condition, if any
             String condition = field.getCondition();
             if (condition != null && !FormulaHelper.resolveCondition(condition, repeaterKey, dataStore)) {
-                Log.debug(String.format("Unsatisfied condition '%s' for field: %s, skipping", condition, field.getName()));
+                Log.debug(THIS_CLASS_NAME, String.format("Unsatisfied condition '%s' for field: %s, skipping", condition, field.getName()));
                 continue;
             }
 
