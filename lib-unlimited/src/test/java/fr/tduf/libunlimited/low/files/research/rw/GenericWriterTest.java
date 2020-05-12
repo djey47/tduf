@@ -234,6 +234,26 @@ class GenericWriterTest {
     }
 
     @Test
+    void write_whenProvidedFiles_andConditionedField_shouldReturnBytes() throws IOException {
+        // GIVEN
+        GenericWriter<String> actualWriter = createGenericWriterForCondition();
+
+
+        // WHEN
+        ByteArrayOutputStream actualOutputStream = actualWriter.write();
+
+
+        // THEN
+        assertThat(actualOutputStream).isNotNull();
+
+        byte[] actualBytes = actualOutputStream.toByteArray();
+        assertThat(actualBytes).hasSize(6);
+
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-conditional-without.bin");
+        assertThat(actualBytes).isEqualTo(expectedBytes);
+    }
+
+    @Test
     void write_whenProvidedFiles_andMissingValue_shouldThrowException() throws IOException {
         // GIVEN
         GenericWriter<String> actualWriter = createGenericWriterWithMissingValues();
@@ -540,6 +560,26 @@ class GenericWriterTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-formulas-map.json";
+            }
+        };
+    }
+
+    private GenericWriter<String> createGenericWriterForCondition() throws IOException {
+        return new GenericWriter<String>(DATA) {
+            @Override
+            protected void fillStore() {
+                // Field 1
+                getDataStore().addText("tag", "ABCDE");
+
+                // Field 2
+                getDataStore().addInteger("flag", 0, 1);
+
+                // Field 3 - is omitted as unsatisfied condition when parsing
+            }
+
+            @Override
+            public String getStructureResource() {
+                return "/files/structures/TEST-conditional-map.json";
             }
         };
     }

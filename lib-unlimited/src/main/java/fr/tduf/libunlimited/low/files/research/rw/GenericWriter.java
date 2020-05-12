@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.research.rw;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.AssertorHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.FormulaHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.StructureHelper;
@@ -20,6 +21,7 @@ import static java.util.Objects.requireNonNull;
  * Helper to write files whose file structure is available as separate asset.
  */
 public abstract class GenericWriter<T> implements StructureBasedProcessor {
+    private static final String THIS_CLASS_NAME = GenericWriter.class.getSimpleName();
 
     private final DataStore dataStore;
 
@@ -55,6 +57,15 @@ public abstract class GenericWriter<T> implements StructureBasedProcessor {
 
     private void writeFields(List<FileStructureDto.Field> fields, ByteArrayOutputStream outputStream, String repeaterKey) throws IOException {
         for(FileStructureDto.Field field : fields) {
+
+            // Check for satisfied condition first
+            String condition = field.getCondition();
+            String fieldKey = repeaterKey + field.getName();
+            boolean isConditionSatisfied = condition == null || FormulaHelper.resolveCondition(condition, repeaterKey, getDataStore());
+            if (!isConditionSatisfied) {
+                Log.debug(THIS_CLASS_NAME, String.format("Unsatisfied condition for field at key %s: '%s', skipping", fieldKey, condition));
+                continue;
+            }
 
             byte[] valueBytes = retrieveValueFromStore(field, repeaterKey);
             Integer length = FormulaHelper.resolveToInteger(field.getSizeFormula(), repeaterKey, this.dataStore);
