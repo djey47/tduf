@@ -10,6 +10,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
@@ -261,6 +262,35 @@ class DataStoreTest {
         assertThat(pickedActualEntry)
                 .isEqualTo(pickedOriginalEntry)
                 .isNotSameAs(pickedOriginalEntry);
+    }
+
+    @Test
+    void getRepeatedValues_withLevel2Repeater_shouldExtractValuesCorrectly() {
+        // given
+        DataStoreFixture.createStoreEntriesForLevel2Repeater(dataStore);
+
+        // when
+        List<DataStore> actualStoresLvl1 = dataStore.getRepeatedValues("repeaterLvl1");
+        List<DataStore> actualStoresLvl2 = dataStore.getRepeatedValues("repeaterLvl2", "repeaterLvl1[0].");
+
+        // then
+        assertThat(actualStoresLvl1).hasSize(2);
+        DataStore subStoreAtIndex0 = actualStoresLvl1.get(0);
+        assertThat(subStoreAtIndex0.size()).isEqualTo(2);
+        assertThat(subStoreAtIndex0.getInteger("repeaterLvl2[0].number")).contains(500L);
+        assertThat(subStoreAtIndex0.getInteger("repeaterLvl2[1].number")).contains(501L);
+        DataStore subStoreAtIndex1 = actualStoresLvl1.get(1);
+        assertThat(subStoreAtIndex1.size()).isEqualTo(2);
+        assertThat(subStoreAtIndex1.getInteger("repeaterLvl2[0].number")).contains(502L);
+        assertThat(subStoreAtIndex1.getInteger("repeaterLvl2[1].number")).contains(503L);
+
+        assertThat(actualStoresLvl2).hasSize(2);
+        DataStore subStoreLvl2AtIndex0 = actualStoresLvl2.get(0);
+        assertThat(subStoreLvl2AtIndex0.size()).isEqualTo(1);
+        assertThat(subStoreLvl2AtIndex0.getInteger("number")).contains(500L);
+        DataStore subStoreLvl2AtIndex1 = actualStoresLvl2.get(1);
+        assertThat(subStoreLvl2AtIndex1.size()).isEqualTo(1);
+        assertThat(subStoreLvl2AtIndex1.getInteger("number")).contains(501L);
     }
 
     private static String getStoreContentsAsJson(String resourcePath) throws IOException {

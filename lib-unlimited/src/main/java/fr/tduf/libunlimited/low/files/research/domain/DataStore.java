@@ -33,7 +33,6 @@ public class DataStore {
     private static final String REPEATER_FIELD_SEPARATOR = ".";
 
     private static final Pattern FIELD_NAME_PATTERN = Pattern.compile("^(?:.*\\.)?(.+)$");              // e.g 'entry_list[1].my_field', 'my_field'
-    private static final Pattern SUB_FIELD_NAME_PATTERN = Pattern.compile("^(.+)\\[(\\d+)]\\.(.+)$"); // e.g 'entry_list[1].my_field'
 
     private static final String SUB_FIELD_PREFIX_FORMAT = "%s[%d]" + REPEATER_FIELD_SEPARATOR;
     private static final String SUB_FIELD_WITH_PARENT_KEY_PREFIX_FORMAT = "%s" + SUB_FIELD_PREFIX_FORMAT;
@@ -374,28 +373,45 @@ public class DataStore {
     }
 
     /**
-     * Returns sub-DataStores of items contained by a repeater field.
+     * Returns sub-DataStores of items contained by a repeater field (level 1).
      *
      * @param repeaterFieldName : name of repeater field
      */
     public List<DataStore> getRepeatedValues(String repeaterFieldName) {
+        return getRepeatedValues(repeaterFieldName, "");
+    }
+
+    /**
+     * Returns sub-DataStores of items contained by a repeater field under parent repeater(s) (level 2+).
+     *
+     * @param repeaterFieldName : name of repeater field
+     * @param parentRepeaterKey : key of parent repeater(s), e.g "lvl1[0].lvl2[1]."
+     */
+    public List<DataStore> getRepeatedValues(String repeaterFieldName, String parentRepeaterKey) {
         Map<Integer, List<String>> groupedKeysByIndex = store.keySet().stream()
-                .filter(key -> key.startsWith(repeaterFieldName))
+                .filter(key -> key.startsWith(parentRepeaterKey + repeaterFieldName))
                 .collect(Collectors.groupingBy(key -> {
-                    Matcher matcher = SUB_FIELD_NAME_PATTERN.matcher(key);
-                    return matcher.matches() ? Integer.parseInt(matcher.group(2)) : 0; // extracts index part
+                    int repeaterFieldPosition = key.indexOf(repeaterFieldName);
+                    int indexPositionStart = key.indexOf("[", repeaterFieldPosition);
+                    int indexPositionEnd = key.indexOf("]", indexPositionStart);
+
+                    if (indexPositionStart == indexPositionEnd || indexPositionStart == -1 || indexPositionEnd == -1) {
+                        return 0;
+                    }
+
+                    String lastIndexAsString = key.substring(indexPositionStart + 1, indexPositionEnd);
+                    return Integer.parseInt(lastIndexAsString);
                 }));
 
         List<DataStore> repeatedValues = createEmptyList(groupedKeysByIndex.size(), this.getFileStructure());
 
         for (Map.Entry<Integer, List<String>> entry: groupedKeysByIndex.entrySet()) {
-            DataStore subDataStore = repeatedValues.get(entry.getKey());
+            int currentIndex = entry.getKey();
+            DataStore subDataStore = repeatedValues.get(currentIndex);
 
             for (String key : entry.getValue()) {
-                Matcher matcher = SUB_FIELD_NAME_PATTERN.matcher(key);
-                if (matcher.matches()) {
-                    subDataStore.getStore().put(matcher.group(3), store.get(key)); // extracts field name part
-                }
+                String parentKey = String.format(SUB_FIELD_WITH_PARENT_KEY_PREFIX_FORMAT, parentRepeaterKey, repeaterFieldName, currentIndex);
+                subDataStore.getStore().put(key.replace(parentKey, ""), store.get(key)); // extracts field name part
             }
         }
 
