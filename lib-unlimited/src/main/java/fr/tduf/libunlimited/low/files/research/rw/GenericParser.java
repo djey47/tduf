@@ -249,72 +249,79 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
     }
 
     private void dumpGap(Integer length, String key) {
-        dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT,
+        String currentDump = String.format(DUMP_START_ENTRY_FORMAT,
                 key,
                 "",
                 GAP.name(),
                 length,
                 TypeHelper.byteArrayToHexRepresentation(new byte[length]),
-                ""));
+                "");
+        updateDump(currentDump);
     }
 
     private void dumpIntegerValue(byte[] readValueAsBytes, int length, boolean signedValue, String key) {
         byte[] displayedBytes = Arrays.copyOfRange(readValueAsBytes, 8 - length, 8);
-        dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT,
+        String currentDump = String.format(DUMP_START_ENTRY_FORMAT,
                 key,
                 signedValue ? DUMP_LABEL_SIGNED : DUMP_LABEL_UNSIGNED,
                 INTEGER.name(),
                 length,
                 TypeHelper.byteArrayToHexRepresentation(displayedBytes),
-                TypeHelper.rawToInteger(readValueAsBytes, signedValue, length)));
+                TypeHelper.rawToInteger(readValueAsBytes, signedValue, length));
+        updateDump(currentDump);
     }
 
     private void dumpFloatingPointValue(byte[] readValueAsBytes, Integer length,  String key) {
-        dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT,
+        String currentDump = String.format(DUMP_START_ENTRY_FORMAT,
                 key,
                 "",
                 FPOINT.name(),
                 length,
                 TypeHelper.byteArrayToHexRepresentation(readValueAsBytes),
-                TypeHelper.rawToFloatingPoint(readValueAsBytes)));
+                TypeHelper.rawToFloatingPoint(readValueAsBytes));
+        updateDump(currentDump);
     }
 
     private void dumpDelimiterOrTextValue(byte[] readValueAsBytes, Integer length, String key, Type type) {
         int effectiveLength = length == null ? readValueAsBytes.length : length;
-        dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT,
+        String currentDump = String.format(DUMP_START_ENTRY_FORMAT,
                 key,
                 "",
                 type.name(),
                 effectiveLength,
                 TypeHelper.byteArrayToHexRepresentation(readValueAsBytes),
-                "\"" + TypeHelper.rawToText(readValueAsBytes, effectiveLength) + "\""));
+                "\"" + TypeHelper.rawToText(readValueAsBytes, effectiveLength) + "\"");
+        updateDump(currentDump);
     }
 
     private void dumpRawValue(byte[] readValueAsBytes, Integer length, String key) {
-        dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT,
+        String currentDump = String.format(DUMP_START_ENTRY_FORMAT,
                 key,
                 "",
                 UNKNOWN.name(),
                 length == null ? readValueAsBytes.length : length,
                 TypeHelper.byteArrayToHexRepresentation(readValueAsBytes),
-                ""));
+                "");
+        updateDump(currentDump);
     }
 
     private void dumpConstantValue(byte[] readValueAsBytes, String constantValue, String key) {
         int length = readValueAsBytes.length;
-        dumpBuilder.append(String.format(DUMP_START_ENTRY_FORMAT,
+        String currentDump = String.format(DUMP_START_ENTRY_FORMAT,
                 key,
                 "",
                 CONSTANT.name(),
                 length,
                 constantValue,
-                "\"" + TypeHelper.rawToText(readValueAsBytes, length) + "\""));
+                "\"" + TypeHelper.rawToText(readValueAsBytes, length) + "\"");
+        updateDump(currentDump);
     }
 
     private void dumpRepeaterStart(String key) {
-        dumpBuilder.append(String.format(DUMP_REPEATER_START_ENTRY_FORMAT,
+        String currentDump = String.format(DUMP_REPEATER_START_ENTRY_FORMAT,
                 key,
-                REPEATER.name()));
+                REPEATER.name());
+        updateDump(currentDump);
     }
 
     private void dumpRepeaterFinish(String key, ReadResult readResult) {
@@ -323,10 +330,18 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
             return;
         }
 
-        dumpBuilder.append(String.format(DUMP_REPEATER_FINISH_ENTRY_FORMAT,
+        String currentDump = String.format(DUMP_REPEATER_FINISH_ENTRY_FORMAT,
                 key,
                 REPEATER.name(),
-                readResult.parsedCount));
+                readResult.parsedCount);
+        updateDump(currentDump);
+    }
+
+    private void updateDump(String dumpExtract) {
+        dumpBuilder.append(dumpExtract);
+        if (Log.DEBUG) {
+            Log.debug(THIS_CLASS_NAME, dumpExtract);
+        }
     }
 
     public DataStore getDataStore() {
