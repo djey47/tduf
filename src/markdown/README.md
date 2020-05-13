@@ -51,26 +51,17 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
 
 
 ### What's in this version ? (2.0.0)
-* (Editor) Brings misc. UI changes (displayed error messages, topic in profile selector...)
-* (Editor) Introduces new search engine for entry value
-* (Editor) Displays placeholder or message when plugin failed (e.g invisible file mapping syndrome)
-* (Editor) Enhance database metadata: new labels for *drag force* and *downforce* items in CAR_PHYSICS_DATA
-* (Editor) Debugging mode now can be enabled via settings [WIKI](https://github.com/djey47/tduf/wiki/Advanced-Editor#enable-debugging-mode-via-tduf-settings-file)
+* (CLI/FileTool) jsonify: verbose mode now displays dumped items during parsing (not only after succesful parsing)
 
-* (Library/Cameras) Adds reference for 'Binoculars' setting (thanks to all people involved in research!)
-
-* (Technical) Huge code cleaning (without side-effects, I hope! ^^")
-* (Technical) Upgrade of development tools (some versions were 5 years old!)
+* (Library/Files) 2DM files preliminary support (thanks to Speeder, Lean and TDUZoqqer)
+* (Library/Files) Global and field comment support [WIKI](https://github.com/djey47/tduf/wiki/Reverse-Engineering-Structure)
+* (Library/Files) When parsing, CONSTANT and GAP field values are now checked by default, can be disabled on demand [WIKI](https://github.com/djey47/tduf/wiki/Reverse-Engineering-Structure)
+* (Library/Files) Conditioned fields support [WIKI](https://github.com/djey47/tduf/wiki/Reverse-Engineering-Structure#conditions)
+* (Library/Files) Repeated contents size (bytes) support [WIKI](https://github.com/djey47/tduf/wiki/Reverse-Engineering-Structure#contentssize-attribute)
 
 
 ### Fixed issues
-* (Editor/Cameras) Default selected camera view was not the first on the list
-* (Editor/Mapping) No entries were appearing due to corrupted contexts
-
-* (Library/Cameras) Incorrect Cameras.bin file name was used
-* (Library/Cameras) Added missing cameras and iks sets (F40)
-
-* (Technical) Now includes XML APIs to run under Java JRE 9 without script patch
+* (Library/Files) Some parsing and writing errors have been found and fixed
 
 
 ### Known bugs
