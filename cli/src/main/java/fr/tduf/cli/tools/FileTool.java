@@ -4,6 +4,7 @@ import fr.tduf.cli.common.helper.CommandHelper;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.common.helper.JsonHelper;
+import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
@@ -15,7 +16,10 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -360,7 +364,7 @@ public class FileTool extends GenericTool {
 
         CryptoHelper.EncryptionModeEnum encryptionModeEnum = CryptoHelper.EncryptionModeEnum.fromIdentifier(Integer.valueOf(cryptoMode));
 
-        ByteArrayInputStream inputStream = getInputStreamForFile(sourceFile);
+        XByteArrayInputStream inputStream = getInputStreamForFile(sourceFile);
         ByteArrayOutputStream outputStream;
         if (withEncryption) {
             outputStream = CryptoHelper.encryptXTEA(inputStream, encryptionModeEnum);
@@ -370,8 +374,8 @@ public class FileTool extends GenericTool {
         return outputStream.toByteArray();
     }
 
-    private ByteArrayInputStream getInputStreamForFile(String sourceFile) throws IOException {
+    private XByteArrayInputStream getInputStreamForFile(String sourceFile) throws IOException {
         Path inputFilePath = new File(sourceFile).toPath();
-        return new ByteArrayInputStream(Files.readAllBytes(inputFilePath));
+        return new XByteArrayInputStream(Files.readAllBytes(inputFilePath));
     }
 }

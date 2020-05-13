@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.low.files.research.common.helper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.low.files.common.crypto.helper.CryptoHelper;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 
@@ -58,7 +59,7 @@ public class StructureHelper {
      * @param cryptoMode    : integer value indicating which decryption mode to use. May be null.
      * @return original input stream if no encryption has been performed, else an encrypted input stream.
      */
-    public static ByteArrayInputStream decryptIfNeeded (ByteArrayInputStream inputStream, Integer cryptoMode) throws IOException {
+    public static XByteArrayInputStream decryptIfNeeded (XByteArrayInputStream inputStream, Integer cryptoMode) throws IOException {
         if (cryptoMode == null) {
             return inputStream;
         }
@@ -67,7 +68,7 @@ public class StructureHelper {
 
         ByteArrayOutputStream outputStream = CryptoHelper.decryptXTEA(inputStream, encryptionModeEnum);
 
-        return new ByteArrayInputStream(outputStream.toByteArray());
+        return new XByteArrayInputStream(outputStream.toByteArray());
     }
 
     /**

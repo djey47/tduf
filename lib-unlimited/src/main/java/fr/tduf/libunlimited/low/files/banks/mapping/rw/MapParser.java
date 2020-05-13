@@ -1,9 +1,9 @@
 package fr.tduf.libunlimited.low.files.banks.mapping.rw;
 
+import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
 import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -15,7 +15,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class MapParser extends GenericParser<BankMap> {
 
-    private MapParser(ByteArrayInputStream inputStream) throws IOException {
+    private MapParser(XByteArrayInputStream inputStream) throws IOException {
         super(inputStream);
     }
 
@@ -27,7 +27,7 @@ public class MapParser extends GenericParser<BankMap> {
     public static MapParser load(byte[] mapData) throws IOException {
         requireNonNull(mapData, "An array containing map contents is required");
 
-        return new MapParser(new ByteArrayInputStream(mapData));
+        return new MapParser(new XByteArrayInputStream(mapData));
     }
 
     /**

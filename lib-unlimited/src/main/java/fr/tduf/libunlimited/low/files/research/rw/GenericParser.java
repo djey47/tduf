@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.low.files.research.rw;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.low.files.common.domain.DataStoreProps;
 import fr.tduf.libunlimited.low.files.research.common.helper.FormulaHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.StructureHelper;
@@ -32,13 +33,13 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
     private static final String DUMP_LABEL_SIGNED = "signed ";
     private static final String DUMP_LABEL_UNSIGNED = "unsigned ";
 
-    private final ByteArrayInputStream inputStream;
+    private final XByteArrayInputStream inputStream;
 
     private final DataStore dataStore;
 
     private final StringBuilder dumpBuilder = new StringBuilder();
 
-    protected GenericParser(ByteArrayInputStream inputStream) throws IOException {
+    protected GenericParser(XByteArrayInputStream inputStream) throws IOException {
         requireNonNull(inputStream, "Data stream is required");
         requireNonNull(getStructureResource(), "Data structure resource is required");
 
@@ -125,6 +126,11 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
     }
 
     private ReadResult readAndDumpValue(String key, FileStructureDto.Field field, Integer length) {
+        if (Log.DEBUG) {
+            int currentPosition = inputStream.position();
+            Log.debug(THIS_CLASS_NAME, String.format("Parsing@0x%08X (%d) bytes...", currentPosition, currentPosition));
+        }
+
         ReadResult readResult;
         Type type = field.getType();
         switch(type) {

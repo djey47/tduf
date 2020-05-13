@@ -1,9 +1,9 @@
 package fr.tduf.libunlimited.low.files.world.spots.rw;
 
+import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
 import fr.tduf.libunlimited.low.files.world.spots.domain.SectorSpotsInfo;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import static java.util.Objects.requireNonNull;
@@ -13,14 +13,14 @@ import static java.util.stream.Collectors.toList;
  * Reads contents of Sector_xxxx.spt file (driving spots?)
  */
 public class SectorSpotsParser extends GenericParser<SectorSpotsInfo> {
-    private SectorSpotsParser(ByteArrayInputStream inputStream) throws IOException {
+    private SectorSpotsParser(XByteArrayInputStream inputStream) throws IOException {
         super(inputStream);
     }
 
     /**
      * Loads data from a byte array stream.
      */
-    public static SectorSpotsParser load(ByteArrayInputStream inputStream) throws IOException {
+    public static SectorSpotsParser load(XByteArrayInputStream inputStream) throws IOException {
         return new SectorSpotsParser(
                 requireNonNull(inputStream, "A stream containing spot contents is required"));
     }

@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.research.common.helper;
 
+import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.junit.jupiter.api.Test;
 
@@ -70,7 +71,7 @@ class StructureHelperTest {
     @Test
     void decryptIfNeeded_whenNoCryptoMode_shouldReturnInitialContents() throws IOException {
         // GIVEN
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[]{ 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8 });
+        XByteArrayInputStream inputStream = new XByteArrayInputStream(new byte[]{ 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8 });
 
         // WHEN
         ByteArrayInputStream actualInputStream = StructureHelper.decryptIfNeeded(inputStream, null);
@@ -82,7 +83,7 @@ class StructureHelperTest {
     @Test
     void decryptIfNeeded_whenCryptoMode_shouldReturnEncryptedContents() throws IOException {
         // GIVEN
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[]{ 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8 });
+        XByteArrayInputStream inputStream = new XByteArrayInputStream(new byte[]{ 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8 });
 
         // WHEN
         ByteArrayInputStream actualInputStream = StructureHelper.decryptIfNeeded(inputStream, 0);

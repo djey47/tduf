@@ -1,7 +1,9 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.helper;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libtesting.common.helper.TestingFilesHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
+import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.GenuineCamGateway;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.*;
@@ -13,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,9 +46,11 @@ class CamerasHelperTest {
     static void globalSetUp() throws IOException {
         camContents = FilesHelper.readBytesFromResourceFile("/bin/Cameras.bin");
 
-        try (ByteArrayInputStream cameraInputStream = new ByteArrayInputStream(camContents)) {
+        try (XByteArrayInputStream cameraInputStream = new XByteArrayInputStream(camContents)) {
             readOnlyParser = CamerasParser.load(cameraInputStream);
         }
+
+        Log.set(Log.LEVEL_INFO);
     }
 
     @BeforeEach

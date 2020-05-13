@@ -2,11 +2,11 @@ package fr.tduf.libunlimited.low.files.world.spots.rw;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
+import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.low.files.world.spots.domain.SectorSpotsInfo;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,8 +24,8 @@ class SectorSpotsParserTest {
         // given
         byte[] file1Bytes = FilesHelper.readBytesFromResourceFile("/spots/Sector-0-2-0-7.spt");
         byte[] file2Bytes = FilesHelper.readBytesFromResourceFile("/spots/Sector-9-7-7-6.spt");
-        SectorSpotsParser parser1 = SectorSpotsParser.load(new ByteArrayInputStream(file1Bytes));
-        SectorSpotsParser parser2 = SectorSpotsParser.load(new ByteArrayInputStream(file2Bytes));
+        SectorSpotsParser parser1 = SectorSpotsParser.load(new XByteArrayInputStream(file1Bytes));
+        SectorSpotsParser parser2 = SectorSpotsParser.load(new XByteArrayInputStream(file2Bytes));
 
         // when
         SectorSpotsInfo actualInfo1 = parser1.parse();

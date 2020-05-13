@@ -1,13 +1,13 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.rw;
 
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CamerasDatabase;
+import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraView;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CamerasDatabase;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.function.Consumer;
@@ -19,14 +19,14 @@ import static java.util.Objects.requireNonNull;
  */
 public class CamerasParser extends GenericParser<CamerasDatabase> {
 
-    private CamerasParser(ByteArrayInputStream inputStream) throws IOException {
+    private CamerasParser(XByteArrayInputStream inputStream) throws IOException {
         super(inputStream);
     }
 
     /**
      * Loads data from a byte array stream.
      */
-    public static CamerasParser load(ByteArrayInputStream inputStream) throws IOException {
+    public static CamerasParser load(XByteArrayInputStream inputStream) throws IOException {
         return new CamerasParser(
                 requireNonNull(inputStream, "A stream containing cameras contents is required"));
     }
