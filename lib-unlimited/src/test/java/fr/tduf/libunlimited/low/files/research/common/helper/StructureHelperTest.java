@@ -95,7 +95,7 @@ class StructureHelperTest {
     }
 
     @Test
-    void getFieldDefinitionFromFullName_whenFieldExist_shouldReturnDef() {
+    void getFieldDefinitionFromFullName_whenFieldExist_shouldReturnDef() throws Exception {
         // GIVEN
         FileStructureDto.Field field = FileStructureDto.Field.builder()
                 .forName("my_field")
@@ -112,7 +112,8 @@ class StructureHelperTest {
                 .build();
 
         // WHEN
-        FileStructureDto.Field actualField = StructureHelper.getFieldDefinitionFromFullName("entry_list[0].my_field", fileStructureObject).get();
+        FileStructureDto.Field actualField = StructureHelper.getFieldDefinitionFromFullName("entry_list[0].my_field", fileStructureObject)
+                .orElseThrow(() -> new Exception("Field definition not found."));
 
         // THEN
         assertThat(actualField.isSigned()).isTrue();

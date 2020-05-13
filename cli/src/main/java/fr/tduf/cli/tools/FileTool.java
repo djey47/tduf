@@ -42,14 +42,17 @@ public class FileTool extends GenericTool {
     @Option(name="-o", aliases = "--outputFile", usage = "File to generate, defaults to inputFile.extension according to context." )
     private String outputFile;
 
+    @SuppressWarnings("unused")
     @Option(name="-s", aliases = "--structureFile", usage = "File describing input file structure, as JSON (required for jsonify and applyjson operations)." )
     private String structureFile;
 
+    @SuppressWarnings("unused")
     @Option(name="-c", aliases = "--cryptoMode", usage = "Value indicating encrypting method used (required for decrypt and encrypt operations). VAL:  0=savegames, 1=database/btrq..." )
     private String cryptoMode;
 
     private Command command;
 
+    @SuppressWarnings("FieldMayBeFinal")
     private BankSupport bankSupport;
 
     /**
@@ -362,7 +365,7 @@ public class FileTool extends GenericTool {
 
     private byte[] processInputStream(String sourceFile, boolean withEncryption) throws IOException {
 
-        CryptoHelper.EncryptionModeEnum encryptionModeEnum = CryptoHelper.EncryptionModeEnum.fromIdentifier(Integer.valueOf(cryptoMode));
+        CryptoHelper.EncryptionModeEnum encryptionModeEnum = CryptoHelper.EncryptionModeEnum.fromIdentifier(Integer.parseInt(cryptoMode));
 
         XByteArrayInputStream inputStream = getInputStreamForFile(sourceFile);
         ByteArrayOutputStream outputStream;

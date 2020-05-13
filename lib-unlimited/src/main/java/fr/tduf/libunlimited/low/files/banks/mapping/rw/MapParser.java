@@ -46,16 +46,21 @@ public class MapParser extends GenericParser<BankMap> {
     @Override
     protected BankMap generate() {
         BankMap bankMap = new BankMap();
+        String errorMessageFormat = "Data store sub-entry not found: %s";
         getDataStore().getRepeatedValues("entry_list")
                 .forEach(subDataStore -> {
-                    long checksum = subDataStore.getInteger("file_name_hash").get();
-                    long size1 = subDataStore.getInteger("size_bytes_1").get();
-                    long size2 = subDataStore.getInteger("size_bytes_2").get();
+                    long checksum = subDataStore.getInteger("file_name_hash")
+                            .orElseThrow(() -> new IllegalStateException(String.format(errorMessageFormat, "file_name_hash")));
+                    long size1 = subDataStore.getInteger("size_bytes_1")
+                            .orElseThrow(() -> new IllegalStateException(String.format(errorMessageFormat, "size_bytes_1")));
+                    long size2 = subDataStore.getInteger("size_bytes_2")
+                            .orElseThrow(() -> new IllegalStateException(String.format(errorMessageFormat, "size_bytes_2")));
 
                     bankMap.addEntry(checksum, size1, size2);
 
                     if (bankMap.getEntrySeparator() == null) {
-                        bankMap.setEntrySeparator(subDataStore.getRawValue("entry_end").get());
+                        bankMap.setEntrySeparator(subDataStore.getRawValue("entry_end")
+                                .orElseThrow(() -> new IllegalStateException(String.format(errorMessageFormat, "entry_end"))));
                     }
                 });
 
