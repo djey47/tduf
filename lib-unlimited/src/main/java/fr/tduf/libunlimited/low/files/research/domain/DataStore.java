@@ -609,19 +609,18 @@ public class DataStore {
     }
 
     private void readRepeatedFields(FileStructureDto.Field repeaterField, ObjectNode objectNode, String parentRepeaterKey) {
-        List<FileStructureDto.Field> repeatedFields = repeaterField.getSubFields();
-        Integer repeatedCount = FormulaHelper.resolveToInteger(repeaterField.getSizeFormula(), parentRepeaterKey, this);
         String repeaterFieldName = repeaterField.getName();
         ArrayNode repeaterNode = objectNode.arrayNode();
         objectNode.set(repeaterFieldName, repeaterNode);
 
         int parsedCount = 0;
-        while (repeatedCount == null || parsedCount < repeatedCount) {
+        int repeatedCount = getRepeatedValues(repeaterField.getName(), parentRepeaterKey).size();
+        while (parsedCount < repeatedCount) {
             ObjectNode itemNode = objectNode.objectNode();
 
             String newRepeaterKeyPrefix = DataStore.generateKeyPrefixForRepeatedField(repeaterFieldName, parsedCount, parentRepeaterKey);
 
-            readStructureFields(repeatedFields, itemNode, newRepeaterKeyPrefix);
+            readStructureFields(repeaterField.getSubFields(), itemNode, newRepeaterKeyPrefix);
 
             repeaterNode.add(itemNode);
 
