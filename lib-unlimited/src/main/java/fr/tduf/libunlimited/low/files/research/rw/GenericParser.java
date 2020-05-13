@@ -178,13 +178,14 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
     }
 
     private ReadResult readRepeatedValues(FileStructureDto.Field repeaterField, Integer length, String parentRepeaterKey) {
-        List<FileStructureDto.Field> subFields = repeaterField.getSubFields();
-
         long parsedCount = 0;
-        while (inputStream.available() > 0                        // auto
-                && (length == null || parsedCount < length)) {    // specified
+        Integer repeaterContentsSize = FormulaHelper.resolveToInteger(repeaterField.getContentsSizeFormula(), parentRepeaterKey, dataStore);
+        int endStreamPosition = repeaterContentsSize == null ? 0 : inputStream.position() + repeaterContentsSize;
+        while (inputStream.available() > 0                                                          // auto, till EOS
+                && (length == null || parsedCount < length)                                         // specified in items count
+                && (repeaterContentsSize == null || inputStream.position() < endStreamPosition) ) { // specified in contents bytes
             String newRepeaterKeyPrefix = DataStore.generateKeyPrefixForRepeatedField(parentRepeaterKey, parsedCount);
-            readFields(subFields, newRepeaterKeyPrefix);
+            readFields(repeaterField.getSubFields(), newRepeaterKeyPrefix);
 
             parsedCount++;
         }

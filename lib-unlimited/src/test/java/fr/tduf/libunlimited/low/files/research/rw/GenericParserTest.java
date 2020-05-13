@@ -97,7 +97,19 @@ class GenericParserTest {
     }
 
     @Test
-    void parse_whenProvidedFiles_andComplexRepeaterLevel2_shouldReturnDomainObject() throws IOException {
+    void parse_whenProvidedContents_andRepeaterContentsSizeGiven_shouldReturnDomainObject() throws IOException {
+        // GIVEN
+        GenericParser<String> actualParser = createGenericParserWithRepeaterContentsSizeGiven();
+
+        // WHEN
+        String actualObject = actualParser.parse();
+
+        // THEN
+        assertThat(actualObject).isNotNull();
+    }
+
+    @Test
+    void parse_whenProvidedContents_andComplexRepeaterLevel2_shouldReturnDomainObject() throws IOException {
         // GIVEN
         GenericParser<String> actualParser = createGenericParserWithLevel2RepeaterComplex();
 
@@ -418,6 +430,30 @@ class GenericParserTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-repeater-lvl2-complex-map.json";
+            }
+        };
+    }
+
+    private GenericParser<String> createGenericParserWithRepeaterContentsSizeGiven() throws IOException {
+        XByteArrayInputStream inputStream = createInputStreamFromReferenceFile("/files/samples/TEST-repeater-contents-size.bin");
+
+        return new GenericParser<String>(inputStream) {
+            @Override
+            protected String generate() {
+
+                assertThat(getDataStore().size()).isEqualTo(5);
+                assertThat(getDataStore().getInteger("sectionSizeBytes")).contains(16L);
+
+                assertThat(getDataStore().getInteger("repeater[0].number1")).contains(101L);
+                assertThat(getDataStore().getInteger("repeater[0].number2")).contains(102L);
+                assertThat(getDataStore().getInteger("repeater[1].number1")).contains(201L);
+                assertThat(getDataStore().getInteger("repeater[1].number2")).contains(202L);
+                return DATA;
+            }
+
+            @Override
+            public String getStructureResource() {
+                return "/files/structures/TEST-repeater-contents-size-map.json";
             }
         };
     }

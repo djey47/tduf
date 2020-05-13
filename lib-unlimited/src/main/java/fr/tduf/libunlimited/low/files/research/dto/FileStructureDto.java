@@ -105,6 +105,9 @@ public class FileStructureDto implements Serializable {
         @JsonProperty("size")
         private String sizeFormula;
 
+        @JsonProperty("contentsSize")
+        private String contentsSizeFormula;
+
         @JsonProperty("constantValue")
         private String constantValue;
 
@@ -134,6 +137,7 @@ public class FileStructureDto implements Serializable {
                     ", type=" + type +
                     ", signed=" + signed +
                     ", sizeFormula=" + sizeFormula +
+                    ", contentsSizeFormula=" + contentsSizeFormula +
                     ", constantValue=" + constantValue +
                     ", constantChecked=" + constantChecked +
                     ", condition=" + condition +
@@ -153,6 +157,10 @@ public class FileStructureDto implements Serializable {
 
         public String getSizeFormula() {
             return sizeFormula;
+        }
+
+        public String getContentsSizeFormula() {
+            return contentsSizeFormula;
         }
 
         public Type getType() {
@@ -187,6 +195,7 @@ public class FileStructureDto implements Serializable {
             private List<Field> subFields;
             private Type type;
             private String sizeFormula;
+            private String contentsSizeFormula;
             private String name;
             private String condition;
             private boolean constantChecked;
@@ -227,6 +236,11 @@ public class FileStructureDto implements Serializable {
                 return this;
             }
 
+            public FieldBuilder ofContentsSize(String contentsSizeFormula) {
+                this.contentsSizeFormula = contentsSizeFormula;
+                return this;
+            }
+
             public FieldBuilder withSubFields(List<Field> subFields) {
                 this.subFields = subFields;
                 return this;
@@ -247,6 +261,7 @@ public class FileStructureDto implements Serializable {
 
                 field.name = this.name;
                 field.sizeFormula = this.sizeFormula;
+                field.contentsSizeFormula = this.contentsSizeFormula;
                 field.type = this.type;
                 field.subFields = this.subFields;
                 field.signed = this.signed;

@@ -124,8 +124,7 @@
     {
       "name": "params",
       "type": "REPEATER",
-      "size": "=(?paramsSectionSizeBytes?-16)/352",
-      "comment": "352 = Magic number....",
+      "contentsSize": "=?paramsSectionSizeBytes?-16",
       "subFields": [{
           "name": "paramTag",
           "type": "TEXT",
