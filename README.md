@@ -48,7 +48,7 @@ Copy *tools* directory into *gui-database* to make it work properly.
 
 ### Preparing next development version ###
 
-* Execute *markNextVersionTask -Prelease.forceVersion=[version]* task from Gradle to specify next dev version.
+* Execute *markNextVersion -Prelease.forceVersion=[version]* task from Gradle to specify next dev version.
 
 ### Packaging ###
 
