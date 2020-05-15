@@ -58,6 +58,7 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
 * (Library/Files) When parsing, CONSTANT and GAP field values are now checked by default, can be disabled on demand [WIKI](https://github.com/djey47/tduf/wiki/Reverse-Engineering-Structure)
 * (Library/Files) Conditioned fields support [WIKI](https://github.com/djey47/tduf/wiki/Reverse-Engineering-Structure#conditions)
 * (Library/Files) Repeated contents size (bytes) support [WIKI](https://github.com/djey47/tduf/wiki/Reverse-Engineering-Structure#contentssize-attribute)
+* (Library/Files) References support [WIKI](https://github.com/djey47/tduf/wiki/Reverse-Engineering-Structure#references)
 
 
 ### Fixed issues
