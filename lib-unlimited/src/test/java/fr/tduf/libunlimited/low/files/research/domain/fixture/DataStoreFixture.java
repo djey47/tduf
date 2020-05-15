@@ -50,6 +50,20 @@ public class DataStoreFixture {
         putLongInStore("repeaterLvl1[1].repeaterLvl2[1].number", 503L, false, dataStore);
     }
 
+    public static void createStoreEntriesForLinkSources(DataStore dataStore) {
+        dataStore.clearAll();
+
+        putLongInStore("linkSource1", 10L, false, dataStore);
+        putLongInStore("linkSource2", 14L, false, dataStore);
+        putLongInStore("linkedEntries[0].linkTarget", 100, false, dataStore);
+        putLongInStore("linkedEntries[1].linkTarget", 200, false, dataStore);
+
+        dataStore.getLinksContainer().registerSource("linkSource1", 10);
+        dataStore.getLinksContainer().registerSource("linkSource2", 14);
+        dataStore.getLinksContainer().registerTarget("linkedEntries[0].", 10);
+        dataStore.getLinksContainer().registerTarget("linkedEntries[1].", 14);
+    }
+
     public static void putRawValueInStore(String key, byte[] bytes, DataStore dataStore) {
         dataStore.addValue(key, UNKNOWN, bytes);
     }

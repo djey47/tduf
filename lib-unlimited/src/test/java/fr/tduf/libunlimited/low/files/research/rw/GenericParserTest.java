@@ -220,6 +220,20 @@ class GenericParserTest {
     }
 
     @Test
+    void dump_whenProvidedContentsAsLinkSourcesAndTargets_shouldReturnAllParsedData() throws IOException {
+        // GIVEN
+        GenericParser<String> actualParser = createGenericParserWithLinks();
+        actualParser.parse();
+
+        // WHEN
+        String actualDump = actualParser.dump();
+        Log.debug(thisClass.getSimpleName(), "Dumped contents:\n" + actualDump);
+
+        // THEN
+        assertThat(actualDump).isEqualTo(getExpectedDumpForLinks());
+    }
+
+    @Test
     void parse_whenProvidedContentsAsConstants_andNonMatchingValues_shouldThrowException() throws IOException {
         // GIVEN
         GenericParser<String> actualParser = createGenericParserWithConstantsUnmatching();
@@ -372,6 +386,10 @@ class GenericParserTest {
 
     private String getExpectedDumpForConstants() throws IOException {
         return FilesHelper.readTextFromResourceFile("/files/dumps/TEST-constants.txt");
+    }
+
+    private String getExpectedDumpForLinks() throws IOException {
+        return FilesHelper.readTextFromResourceFile("/files/dumps/TEST-links.txt");
     }
 
     private GenericParser<String> createGenericParser() throws IOException {
@@ -671,6 +689,24 @@ class GenericParserTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-constants-map.json";
+            }
+        };
+    }
+
+    private GenericParser<String> createGenericParserWithLinks() throws IOException {
+        XByteArrayInputStream inputStream = createInputStreamFromReferenceFile("/files/samples/TEST-links.bin");
+
+        return new GenericParser<String>(inputStream) {
+            @Override
+            protected String generate() {
+                assertThat(getDataStore().isEmpty());
+
+                return DATA;
+            }
+
+            @Override
+            public String getStructureResource() {
+                return "/files/structures/TEST-links-map.json";
             }
         };
     }

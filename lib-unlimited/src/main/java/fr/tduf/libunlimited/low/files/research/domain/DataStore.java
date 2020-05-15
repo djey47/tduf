@@ -37,10 +37,16 @@ public class DataStore {
     private static final String SUB_FIELD_PREFIX_FORMAT = "%s[%d]" + REPEATER_FIELD_SEPARATOR;
     private static final String SUB_FIELD_WITH_PARENT_KEY_PREFIX_FORMAT = "%s" + SUB_FIELD_PREFIX_FORMAT;
 
+    public static final String LINKS_FIELD_NAME = "#links#";
+    public static final String LINK_SOURCE_KEY_FIELD_NAME = "sourceKey";
+    public static final String LINK_TARGET_KEY_FIELD_NAME = "targetKey";
+
     private final Map<String, Entry> store = new HashMap<>();
 
     private final FileStructureDto fileStructure;
     private final int repeatIndex;
+
+    private final LinksContainer linksContainer = new LinksContainer();
 
     /**
      * Creates a datastore.
@@ -69,6 +75,7 @@ public class DataStore {
      */
     public void clearAll() {
         this.store.clear();
+        this.getLinksContainer().clear();
     }
 
     /**
@@ -426,6 +433,10 @@ public class DataStore {
 
         readStructureFields(getFileStructure().getFields(), rootNode, "");
 
+        if (getLinksContainer().hasLinks()) {
+            followAndAddLinks(rootNode);
+        }
+
         return rootNode.toString();
     }
 
@@ -558,6 +569,21 @@ public class DataStore {
         }
     }
 
+    private void readLinksNode(ArrayNode linksArrayNode) {
+        Iterator<JsonNode> elements = linksArrayNode.elements();
+        while (elements.hasNext()) {
+            JsonNode linkNode = elements.next();
+            String sourceKey = linkNode.get(LINK_SOURCE_KEY_FIELD_NAME).asText();
+            String targetKey = linkNode.get(LINK_TARGET_KEY_FIELD_NAME).asText();
+            int targetAddress = getInteger(sourceKey)
+                    .orElseThrow(() -> new IllegalStateException(String.format("No target address found for link source: %s", sourceKey)))
+                    .intValue();
+            LinksContainer linksContainer = getLinksContainer();
+            linksContainer.registerSource(sourceKey, targetAddress);
+            linksContainer.registerTarget(targetKey, targetAddress);
+        }
+    }
+
     private int computeValueLengthWithoutParentKey(String sizeFormula) {
         return FormulaHelper.resolveToInteger(sizeFormula, null, this);
     }
@@ -578,7 +604,12 @@ public class DataStore {
         Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.fields();
         while (fields.hasNext()) {
             Map.Entry<String, JsonNode> nextField = fields.next();
-            readJsonNode(nextField.getValue(), parentKey + nextField.getKey());
+
+            if (LINKS_FIELD_NAME.equals(nextField.getKey())) {
+                readLinksNode((ArrayNode) nextField.getValue());
+            } else {
+                readJsonNode(nextField.getValue(), parentKey + nextField.getKey());
+            }
         }
     }
 
@@ -663,6 +694,24 @@ public class DataStore {
         return getStore().get(parentRepeaterKey + fieldName);
     }
 
+    private void followAndAddLinks(ObjectNode rootNode) {
+        requireNonNull(rootNode, "A JSON root node must be provided");
+
+        ArrayNode linksArrayNode = rootNode.arrayNode();
+        getLinksContainer().getSourcesSortedByAddress().parallelStream()
+                .forEachOrdered(sourceEntry -> {
+                    int address = sourceEntry.getKey();
+                    String targetKey = getLinksContainer().getTargetFieldKeyWithAddress(address)
+                            .orElseThrow(() -> new IllegalStateException(String.format("No target link found with address: %d", address)));
+                    ObjectNode linkNode = rootNode.objectNode();
+                    linkNode.put(LINK_SOURCE_KEY_FIELD_NAME, sourceEntry.getValue());
+                    linkNode.put(LINK_TARGET_KEY_FIELD_NAME, targetKey);
+                    linksArrayNode.add(linkNode);
+                });
+
+        rootNode.set(LINKS_FIELD_NAME, linksArrayNode);
+    }
+
     private static String generateKeyForRepeatedField(String repeaterFieldName, String repeatedFieldName, long index) {
         String keyPrefix = generateKeyPrefixForRepeatedField(repeaterFieldName, index);
         return keyPrefix + repeatedFieldName;
@@ -693,5 +742,9 @@ public class DataStore {
 
     public FileStructureDto getFileStructure() {
         return fileStructure;
+    }
+
+    public LinksContainer getLinksContainer() {
+        return linksContainer;
     }
 }

@@ -11,6 +11,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
@@ -130,6 +131,21 @@ class DataStoreTest {
     }
 
     @Test
+    void toJsonString_whenProvidedStore_andLinkSources_shouldReturnJsonRepresentation() throws IOException, JSONException {
+        // GIVEN
+        DataStore specialDataStore = new DataStore(DataStoreFixture.getFileStructure("/files/structures/TEST-links-map.json"));
+        String expectedJson = getStoreContentsAsJson("/files/json/store_links.json");
+        DataStoreFixture.createStoreEntriesForLinkSources(specialDataStore);
+
+        // WHEN
+        String actualJson = specialDataStore.toJsonString();
+
+        // THEN
+        assertThat(actualJson).isNotNull();
+        assertEquals(expectedJson, actualJson, JSONCompareMode.STRICT);
+    }
+
+    @Test
     void fromJsonString_whenProvidedJson_shouldSetStore() throws IOException {
         // GIVEN
         String jsonInput = getStoreContentsAsJson("/files/json/store.json");
@@ -162,6 +178,29 @@ class DataStoreTest {
         assertThat(dataStore.getStore()).hasSize(2);
         assertThat(dataStore.getInteger("my_int_field")).contains(10L);
         assertThat(dataStore.getInteger("my_long_field")).contains(4286700000L);
+    }
+
+    @Test
+    void fromJsonString_whenProvidedJson_andLinks_shouldSetStore() throws IOException {
+        // GIVEN
+        dataStore = new DataStore(DataStoreFixture.getFileStructure("/files/structures/TEST-links-map.json"));
+        String jsonInput = getStoreContentsAsJson("/files/json/store_links.json");
+
+        // WHEN
+        dataStore.fromJsonString(jsonInput);
+
+        // THEN
+        assertThat(dataStore.getStore()).hasSize(4);
+        Map<Integer, String> actualSources = dataStore.getLinksContainer().getSources();
+        Map<Integer, String> actualTargets = dataStore.getLinksContainer().getTargets();
+        assertThat(actualSources).hasSize(2);
+        assertThat(actualSources).containsKeys(10, 14);
+        assertThat(actualSources.get(10)).isEqualTo("linkSource1");
+        assertThat(actualSources.get(14)).isEqualTo("linkSource2");
+        assertThat(actualTargets).hasSize(2);
+        assertThat(actualTargets).containsKeys(10, 14);
+        assertThat(actualTargets.get(10)).isEqualTo("linkedEntries[0].");
+        assertThat(actualTargets.get(14)).isEqualTo("linkedEntries[1].");
     }
 
     @Test

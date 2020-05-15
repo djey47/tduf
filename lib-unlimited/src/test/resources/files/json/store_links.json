@@ -1,0 +1,22 @@
+{
+  "linkSource1": 10,
+  "linkSource2": 14,
+  "linkedEntries": [
+    {
+      "linkTarget": 100
+    },
+    {
+      "linkTarget": 200
+    }
+  ],
+  "#links#": [
+    {
+      "sourceKey": "linkSource1",
+      "targetKey": "linkedEntries[0]."
+    },
+    {
+      "sourceKey": "linkSource2",
+      "targetKey": "linkedEntries[1]."
+    }
+  ]
+}

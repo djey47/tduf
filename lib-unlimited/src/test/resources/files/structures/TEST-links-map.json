@@ -1,0 +1,35 @@
+{
+  "name": "TEST file format with link sources from INTEGER fields",
+  "fields": [
+    {
+      "name": "linkSource1",
+      "type": "INTEGER",
+      "size": 4,
+      "isLinkSource": true
+    },
+    {
+      "name": "tag",
+      "type": "CONSTANT",
+      "constantValue": "0x[41 42 43 44]"
+    },
+    {
+      "name": "linkSource2",
+      "type": "INTEGER",
+      "size": 2,
+      "isLinkSource": true
+    },
+    {
+      "name": "linkedEntries",
+      "type": "REPEATER",
+      "size": 2,
+      "isLinkTarget": true,
+      "subFields": [
+        {
+          "name": "linkTarget",
+          "type": "INTEGER",
+          "size": 4
+        }
+      ]
+    }
+  ]
+}

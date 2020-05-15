@@ -24,18 +24,22 @@ import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCod
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FileStructureDto implements Serializable {
 
+    @SuppressWarnings("unused")
     @JsonProperty("name")
     private String name;
 
+    @SuppressWarnings("unused")
     @JsonProperty("littleEndian")
     private Boolean littleEndian;
 
+    @SuppressWarnings("unused")
     @JsonProperty("cryptoMode")
     private Integer cryptoMode;
 
     @JsonProperty("fields")
     private List<Field> fields;
 
+    @SuppressWarnings("unused")
     @JsonIgnore
     @JsonProperty("comment")
     private String comment;
@@ -120,9 +124,16 @@ public class FileStructureDto implements Serializable {
         @JsonProperty("condition")
         private String condition;
 
+        @SuppressWarnings("unused")
         @JsonIgnore
         @JsonProperty("comment")
         private String comment;
+
+        @JsonProperty("isLinkSource")
+        private Boolean linkSource;
+
+        @JsonProperty("isLinkTarget")
+        private Boolean linkTarget;
 
         private Field() {}
 
@@ -136,6 +147,8 @@ public class FileStructureDto implements Serializable {
                     "name='" + name + '\'' +
                     ", type=" + type +
                     ", signed=" + signed +
+                    ", linkSource=" + linkSource +
+                    ", linkTarget=" + linkTarget +
                     ", sizeFormula=" + sizeFormula +
                     ", contentsSizeFormula=" + contentsSizeFormula +
                     ", constantValue=" + constantValue +
@@ -189,6 +202,14 @@ public class FileStructureDto implements Serializable {
 
         public String getCondition() { return condition; }
 
+        public boolean isLinkSource() {
+            return Boolean.TRUE.equals(linkSource);
+        }
+
+        public boolean isLinkTarget() {
+            return Boolean.TRUE.equals(linkTarget);
+        }
+
         public static class FieldBuilder {
             private byte[] constantValueAsByteArray;
             private boolean signed;
@@ -199,6 +220,8 @@ public class FileStructureDto implements Serializable {
             private String name;
             private String condition;
             private boolean constantChecked;
+            private boolean linkSource;
+            private boolean linkTarget;
 
             public FieldBuilder forName(String name) {
                 this.name = name;
@@ -256,6 +279,16 @@ public class FileStructureDto implements Serializable {
                 return this;
             }
 
+            public FieldBuilder linkSource() {
+                this.linkSource = true;
+                return this;
+            }
+
+            public FieldBuilder linkTarget() {
+                this.linkTarget = true;
+                return this;
+            }
+
             public Field build() {
                 Field field = new Field();
 
@@ -268,6 +301,8 @@ public class FileStructureDto implements Serializable {
                 field.constantValue = TypeHelper.byteArrayToHexRepresentation(constantValueAsByteArray);
                 field.constantChecked = this.constantChecked;
                 field.condition = this.condition;
+                field.linkSource = this.linkSource;
+                field.linkTarget = this.linkTarget;
 
                 return field;
             }

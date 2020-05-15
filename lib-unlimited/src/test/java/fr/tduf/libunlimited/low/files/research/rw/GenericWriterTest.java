@@ -283,6 +283,24 @@ class GenericWriterTest {
         assertThat(actualBytes).isEqualTo(expectedBytes);
     }
 
+    @Test
+    void write_whenProvidedFiles_withLinks_shouldReturnBytes() throws IOException {
+        // GIVEN
+        GenericWriter<String> actualWriter = createGenericWriterWithLinks();
+
+        // WHEN
+        ByteArrayOutputStream actualOutputStream = actualWriter.write();
+
+        // THEN
+        assertThat(actualOutputStream).isNotNull();
+
+        byte[] actualBytes = actualOutputStream.toByteArray();
+        assertThat(actualBytes).hasSize(4+4+2+2*4);
+
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-links.bin");
+        assertThat(actualBytes).isEqualTo(expectedBytes);
+    }
+
     private GenericWriter<String> createGenericWriter() throws IOException {
         return new GenericWriter<String>(DATA) {
             @Override
@@ -330,6 +348,23 @@ class GenericWriterTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-repeater-lvl2-map.json";
+            }
+        };
+    }
+
+    private GenericWriter<String> createGenericWriterWithLinks() throws IOException {
+        return new GenericWriter<String>(DATA) {
+            @Override
+            protected void fillStore() {
+                getDataStore().addInteger("linkSource1", 10, 4);
+                getDataStore().addInteger("linkSource2", 14, 2);
+                getDataStore().addInteger("linkedEntries[0].linkTarget", 100, 4);
+                getDataStore().addInteger("linkedEntries[1].linkTarget", 200, 4);
+            }
+
+            @Override
+            public String getStructureResource() {
+                return "/files/structures/TEST-links-map.json";
             }
         };
     }

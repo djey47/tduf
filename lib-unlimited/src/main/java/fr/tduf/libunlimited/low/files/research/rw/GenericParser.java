@@ -58,6 +58,8 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
 
         readFields(getFileStructure().getFields(), "");
 
+        dataStore.getLinksContainer().validate();
+
         return generate();
     }
 
@@ -141,7 +143,14 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
 
             case INTEGER:
                 readResult = readIntegerValue(length);
-                dumpIntegerValue(readResult.readValueAsBytes, length, field.isSigned(), key);
+                long readValue = TypeHelper.rawToInteger(readResult.readValueAsBytes, field.isSigned(), length);
+
+                // Links handling
+                if (field.isLinkSource()) {
+                    handleLinkSource(key, (int) readValue);
+                }
+
+                dumpIntegerValue(field, readResult.readValueAsBytes, readValue, length, key);
                 break;
 
             case FPOINT:
@@ -166,9 +175,10 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
                 break;
 
             case REPEATER:
-                dumpRepeaterStart(key);
+                boolean isLinkTarget = field.isLinkTarget();
+                dumpRepeaterStart(key, isLinkTarget);
                 readResult = readRepeatedValues(field, length, key);
-                dumpRepeaterFinish(key, readResult);
+                dumpRepeaterFinish(key, readResult, isLinkTarget);
                 break;
 
             default:
@@ -184,7 +194,14 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
         while (inputStream.available() > 0                                                          // auto, till EOS
                 && (length == null || parsedCount < length)                                         // specified in items count
                 && (repeaterContentsSize == null || inputStream.position() < endStreamPosition) ) { // specified in contents bytes
+
             String newRepeaterKeyPrefix = DataStore.generateKeyPrefixForRepeatedField(parentRepeaterKey, parsedCount);
+
+            // Target links support
+            if (repeaterField.isLinkTarget()) {
+                dataStore.getLinksContainer().registerTarget(newRepeaterKeyPrefix, inputStream.position());
+            }
+
             readFields(repeaterField.getSubFields(), newRepeaterKeyPrefix);
 
             parsedCount++;
@@ -255,6 +272,10 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
         return new ReadResult(parsedCount, readValueAsBytes);
     }
 
+    private void handleLinkSource(String fieldKey, int targetAddress) {
+        dataStore.getLinksContainer().registerSource(fieldKey, targetAddress);
+    }
+
     private void dumpGap(Integer length, String key) {
         String currentDump = String.format(DUMP_START_ENTRY_FORMAT,
                 key,
@@ -266,15 +287,15 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
         updateDump(currentDump);
     }
 
-    private void dumpIntegerValue(byte[] readValueAsBytes, int length, boolean signedValue, String key) {
+    private void dumpIntegerValue(FileStructureDto.Field field, byte[] readValueAsBytes, long readValue, Integer length, String key) {
         byte[] displayedBytes = Arrays.copyOfRange(readValueAsBytes, 8 - length, 8);
         String currentDump = String.format(DUMP_START_ENTRY_FORMAT,
                 key,
-                signedValue ? DUMP_LABEL_SIGNED : DUMP_LABEL_UNSIGNED,
+                field.isSigned() ? DUMP_LABEL_SIGNED : DUMP_LABEL_UNSIGNED,
                 INTEGER.name(),
                 length,
                 TypeHelper.byteArrayToHexRepresentation(displayedBytes),
-                TypeHelper.rawToInteger(readValueAsBytes, signedValue, length));
+                field.isLinkSource() ? String.format("Link source to @0x%08X (%d)", readValue, readValue) : readValue);
         updateDump(currentDump);
     }
 
@@ -324,16 +345,17 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
         updateDump(currentDump);
     }
 
-    private void dumpRepeaterStart(String key) {
+    private void dumpRepeaterStart(String key, boolean isLinkTarget) {
+        String linkTargetMention = isLinkTarget ? " (link target)" : "";
         String currentDump = String.format(DUMP_REPEATER_START_ENTRY_FORMAT,
                 key,
-                REPEATER.name());
+                REPEATER.name() + linkTargetMention);
         updateDump(currentDump);
     }
 
-    private void dumpRepeaterFinish(String key, ReadResult readResult) {
+    private void dumpRepeaterFinish(String key, ReadResult readResult, boolean isLinkTarget) {
         if (readResult == null) {
-            dumpRepeaterStart(key);
+            dumpRepeaterStart(key, isLinkTarget);
             return;
         }
 
