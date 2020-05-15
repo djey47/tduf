@@ -36,6 +36,7 @@
       "name": "layerGroups",
       "type": "REPEATER",
       "size": "=(?layersSectionSizeBytes?-16)/288",
+      "isLinkTarget": true,
       "subFields": [{
           "name": "layerGroupTag",
           "type": "TEXT",
@@ -102,7 +103,8 @@
             }, {
               "name": "layerAnimSettingsAddress",
               "type": "INTEGER",
-              "size": 4
+              "size": 4,
+              "isLinkSource": true
             }]
         }]
     },
@@ -125,6 +127,7 @@
       "name": "params",
       "type": "REPEATER",
       "contentsSize": "=?paramsSectionSizeBytes?-16",
+      "isLinkTarget": true,
       "subFields": [{
           "name": "paramTag",
           "type": "TEXT",
@@ -154,7 +157,8 @@
         {
           "name": "layerGroupAddress",
           "type": "INTEGER",
-          "size": 4
+          "size": 4,
+          "isLinkSource": true
         },
         {
           "name": "unk",
@@ -251,7 +255,8 @@
         {
           "name": "materialAddress",
           "type": "INTEGER",
-          "size": 4
+          "size": 4,
+          "isLinkSource": true
         },
         {
           "name": "zero",
@@ -263,6 +268,7 @@
       "name": "defs",
       "type": "REPEATER",
       "size": "=(?materialsHashesSize1Bytes?-16)/16",
+      "isLinkTarget": true,
       "subFields": [
         {
           "name": "materialsDefsTag",
@@ -387,7 +393,8 @@
         {
           "name": "parameterAddress",
           "type": "INTEGER",
-          "size": 4
+          "size": 4,
+          "isLinkSource": true
         },
         {
           "name": "rest",
