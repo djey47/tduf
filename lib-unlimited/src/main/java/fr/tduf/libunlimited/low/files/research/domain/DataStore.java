@@ -66,6 +66,26 @@ public class DataStore {
     }
 
     /**
+     * Adds generic entry to the store
+     * @param key       : key under which value must be stored
+     * @param type      : value type
+     * @param signed    : true indicated numeric value must be signed
+     * @param size      : optional, indicates length or size of the value. By default, size of rawValue arry is used.
+     * @param rawValue  : value to store
+     */
+    public void putEntry(String key, Type type, boolean signed, Integer size, byte[] rawValue) {
+        Entry entry = new Entry(type, signed, size == null ? rawValue.length : size, rawValue);
+        this.getStore().put(key, entry);
+    }
+
+    /**
+     * @return generic entry, or empty if it does not exist
+     */
+    public Optional<Entry> fetchEntry(String fieldName, String parentRepeaterKey) {
+        return ofNullable(getStore().get(parentRepeaterKey + fieldName));
+    }
+
+    /**
      * Adds provided bytes to the store, if type is stor-able. Length is automatically determined by raw value length.
      * @param fieldName : identifier of field hosting the value, should not exist already
      * @param type      : value type
@@ -449,6 +469,17 @@ public class DataStore {
     }
 
     /**
+     * @return true if specified repeater with provided field name and parent repeater key has sub items
+     */
+    public boolean repeaterHasSubItems(String repeaterFieldName, String parentRepeaterKey) {
+        requireNonNull(repeaterFieldName, "Repeater field name is required");
+        requireNonNull(repeaterFieldName, "Parent repeater key is required (may be empty)");
+
+        return parentRepeaterKey.isEmpty() || getStore().keySet().parallelStream()
+                .anyMatch(k -> k.startsWith(parentRepeaterKey + repeaterFieldName));
+    }
+
+    /**
      * Returns key prefix for repeated (under repeater) field.
      *
      * @param repeaterFieldName : name of parent, repeater field
@@ -473,12 +504,6 @@ public class DataStore {
         }
         return String.format(SUB_FIELD_PREFIX_FORMAT, repeaterFieldName, index);
     }
-
-    void putEntry(String key, Type type, boolean signed, Integer size, byte[] rawValue) {
-        Entry entry = new Entry(type, signed, size == null ? rawValue.length : size, rawValue);
-        this.getStore().put(key, entry);
-    }
-
 
     private static String generateKeyForRepeatedField(String repeaterFieldName, String repeatedFieldName, long index) {
         String keyPrefix = generateKeyPrefixForRepeatedField(repeaterFieldName, index);

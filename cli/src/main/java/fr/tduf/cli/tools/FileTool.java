@@ -9,7 +9,7 @@ import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import fr.tduf.libunlimited.low.files.common.crypto.helper.CryptoHelper;
-import fr.tduf.libunlimited.low.files.research.domain.JsonAdapter;
+import fr.tduf.libunlimited.low.files.research.rw.JsonAdapter;
 import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
 import fr.tduf.libunlimited.low.files.research.rw.GenericWriter;
 import org.apache.commons.lang3.StringUtils;

@@ -1,4 +1,4 @@
-package fr.tduf.libunlimited.low.files.research.domain;
+package fr.tduf.libunlimited.low.files.research.rw;
 
 import com.esotericsoftware.minlog.Log;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -7,6 +7,10 @@ import com.fasterxml.jackson.databind.node.*;
 import fr.tduf.libunlimited.low.files.research.common.helper.FormulaHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.StructureHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
+import fr.tduf.libunlimited.low.files.research.domain.DataStore;
+import fr.tduf.libunlimited.low.files.research.domain.Entry;
+import fr.tduf.libunlimited.low.files.research.domain.LinksContainer;
+import fr.tduf.libunlimited.low.files.research.domain.Type;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 
 import java.io.IOException;
@@ -66,16 +70,11 @@ public class JsonAdapter {
      * @param jsonInput : json String containing all values
      */
     public void fromJsonString(String jsonInput) throws IOException {
-        dataStore.getStore().clear();
+        dataStore.clearAll();
 
         JsonNode rootNode = new ObjectMapper().readTree(jsonInput);
 
         readJsonNode(rootNode, "");
-    }
-
-    boolean repeaterHasSubItems(String repeaterFieldName, String parentRepeaterKey) {
-        return parentRepeaterKey.isEmpty() || dataStore.getStore().keySet().parallelStream()
-                .anyMatch(k -> k.startsWith(parentRepeaterKey + repeaterFieldName));
     }
 
     private void readStructureFields(List<FileStructureDto.Field> fields, ObjectNode currentObjectNode, String parentRepeaterKey) {
@@ -87,18 +86,18 @@ public class JsonAdapter {
 
             if (REPEATER == fieldType) {
 
-                if (repeaterHasSubItems(fieldName, parentRepeaterKey)) {
+                if (dataStore.repeaterHasSubItems(fieldName, parentRepeaterKey)) {
                     readRepeatedFields(field, currentObjectNode, parentRepeaterKey);
                 }
 
             } else if (fieldType.isValueToBeStored()) {
 
-                Entry storeEntry = fetchEntry(fieldName, parentRepeaterKey);
-                if (storeEntry == null) {
+                Optional<Entry> storeEntry = dataStore.fetchEntry(fieldName, parentRepeaterKey);
+                if (!storeEntry.isPresent()) {
                     break;
                 }
 
-                readRegularField(field, currentObjectNode, storeEntry);
+                readRegularField(field, currentObjectNode, storeEntry.get());
             }
 
         }
@@ -153,10 +152,6 @@ public class JsonAdapter {
         metaNode.put(META_ACCESS_KEY_FIELD_NAME, repeaterKeyPrefix);
 
         itemNode.set(META_FIELD_NAME, metaNode);
-    }
-
-    private Entry fetchEntry(String fieldName, String parentRepeaterKey) {
-        return dataStore.getStore().get(parentRepeaterKey + fieldName);
     }
 
     private void followAndAddLinks(ObjectNode rootNode) {

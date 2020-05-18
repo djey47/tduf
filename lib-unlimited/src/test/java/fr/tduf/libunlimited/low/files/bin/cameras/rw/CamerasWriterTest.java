@@ -4,7 +4,7 @@ package fr.tduf.libunlimited.low.files.bin.cameras.rw;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CamerasDatabase;
-import fr.tduf.libunlimited.low.files.research.domain.JsonAdapter;
+import fr.tduf.libunlimited.low.files.research.rw.JsonAdapter;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;

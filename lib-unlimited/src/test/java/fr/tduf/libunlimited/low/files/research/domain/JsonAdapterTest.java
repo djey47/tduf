@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.low.files.research.domain;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.low.files.research.domain.fixture.DataStoreFixture;
+import fr.tduf.libunlimited.low.files.research.rw.JsonAdapter;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
