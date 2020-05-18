@@ -25,6 +25,7 @@ public class DataStore {
 
     private static final Pattern FIELD_NAME_PATTERN = Pattern.compile("^(?:.*\\.)?(.+)$");              // e.g 'entry_list[1].my_field', 'my_field'
 
+    private static final String REST_STORE_KEY = "#rest#";
     private static final String SUB_FIELD_PREFIX_FORMAT = "%s[%d]" + REPEATER_FIELD_SEPARATOR;
     private static final String SUB_FIELD_WITH_PARENT_KEY_PREFIX_FORMAT = "%s" + SUB_FIELD_PREFIX_FORMAT;
 
@@ -120,6 +121,14 @@ public class DataStore {
         }
 
         putEntry(fieldName, type, signed, length, rawValue);
+    }
+
+    /**
+     * Adds provided bytes to the store, as remaining value.
+     * @param rawValue  : value to store
+     */
+    public void addRemainingValue(byte[] rawValue) {
+        putEntry(REST_STORE_KEY, UNKNOWN, false, rawValue.length, rawValue);
     }
 
     /**
@@ -286,6 +295,7 @@ public class DataStore {
      * @return the stored raw value whose key match provided identifier, or empty if it does not exist
      */
     public Optional<byte[]> getRawValue(String fieldName) {
+        // TODO simplify by chaining
         Entry entry = this.store.get(fieldName);
 
         if (entry == null) {
@@ -293,6 +303,15 @@ public class DataStore {
         }
 
         return ofNullable(entry.getRawValue());
+    }
+
+    /**
+     * Returns all remaining bytes from the store.
+     *
+     * @return the stored raw value which might remain in contents, or empty if it does not exist
+     */
+    public Optional<byte[]> getRemainingValue() {
+        return getRawValue(REST_STORE_KEY);
     }
 
     /**

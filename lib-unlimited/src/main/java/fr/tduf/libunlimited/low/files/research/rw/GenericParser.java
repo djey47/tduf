@@ -123,7 +123,12 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
             assertSimpleCondition(() -> length == null || parsedCount == length,
                     String.format(messageFormat, key, type.toString(), length, parsedCount));
 
-            this.dataStore.addValue(key, type, field.isSigned(), length, readResult.readValueAsBytes);
+            dataStore.addValue(key, type, field.isSigned(), length, readResult.readValueAsBytes);
+        }
+
+        // Handle remaining bytes at level 0
+        if (repeaterKey.isEmpty() && inputStream.available() > 0) {
+            readAndStoreRemainingBytes();
         }
     }
 
@@ -270,6 +275,12 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
         }
 
         return new ReadResult(parsedCount, readValueAsBytes);
+    }
+
+    private void readAndStoreRemainingBytes() {
+        FileStructureDto.Field unknownField = FileStructureDto.Field.builder().withType(UNKNOWN).build();
+        ReadResult readResult = readAndDumpValue("#rest#(remaining bytes)", unknownField, inputStream.available());
+        dataStore.addRemainingValue(readResult.readValueAsBytes);
     }
 
     private void handleLinkSource(String fieldKey, int targetAddress) {

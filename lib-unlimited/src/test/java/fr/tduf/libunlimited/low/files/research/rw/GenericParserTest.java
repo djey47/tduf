@@ -6,6 +6,7 @@ import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.low.files.common.domain.DataStoreProps;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 
@@ -20,8 +21,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class GenericParserTest {
-
-    private static final Class<GenericParserTest> thisClass = GenericParserTest.class;
+    private static final String THIS_CLASS_NAME = GenericParserTest.class.getSimpleName();
 
     private static final String DATA = "data";
     private static final String FIELD_NAME = "fieldName";
@@ -41,10 +41,13 @@ class GenericParserTest {
     }
 
     @BeforeAll
-    static void setUp() {
+    static void globalSetUp() {
         Log.set(Log.LEVEL_INFO);
+    }
 
-        MockitoAnnotations.initMocks(thisClass);
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.initMocks(this);
     }
 
     @Test
@@ -97,18 +100,6 @@ class GenericParserTest {
     }
 
     @Test
-    void parse_whenProvidedContents_andRepeaterContentsSizeGiven_shouldReturnDomainObject() throws IOException {
-        // GIVEN
-        GenericParser<String> actualParser = createGenericParserWithRepeaterContentsSizeGiven();
-
-        // WHEN
-        String actualObject = actualParser.parse();
-
-        // THEN
-        assertThat(actualObject).isNotNull();
-    }
-
-    @Test
     void parse_whenProvidedContents_andComplexRepeaterLevel2_shouldReturnDomainObject() throws IOException {
         // GIVEN
         GenericParser<String> actualParser = createGenericParserWithLevel2RepeaterComplex();
@@ -122,6 +113,20 @@ class GenericParserTest {
     }
 
     @Test
+    void dump_whenProvidedContents_andRepeaterContentsSizeGiven_shouldReturnAllParsedData_andRemainingBytes() throws IOException {
+        // GIVEN
+        GenericParser<String> actualParser = createGenericParserWithRepeaterContentsSizeGiven();
+        actualParser.parse();
+
+        // WHEN
+        String actualDump = actualParser.dump();
+        Log.debug(THIS_CLASS_NAME, "Dumped contents:\n" + actualDump);
+
+        // THEN
+        assertThat(actualDump).isEqualTo(getExpectedDumpRepeaterContentsSize());
+    }
+
+    @Test
     void dump_whenProvidedContents_andSizeGivenByAnotherField_shouldReturnAllParsedData() throws IOException {
         // GIVEN
         GenericParser<String> actualParser = createGenericParserForFormulas();
@@ -129,7 +134,7 @@ class GenericParserTest {
 
         // WHEN
         String actualDump = actualParser.dump();
-        Log.debug(thisClass.getSimpleName(), "Dumped contents:\n" + actualDump);
+        Log.debug(THIS_CLASS_NAME, "Dumped contents:\n" + actualDump);
 
         // THEN
         assertThat(actualDump).isEqualTo(getExpectedDumpSizeByField());
@@ -143,7 +148,7 @@ class GenericParserTest {
 
         // WHEN
         String actualDump = actualParser.dump();
-        Log.debug(thisClass.getSimpleName(), "Dumped contents:\n" + actualDump);
+        Log.debug(THIS_CLASS_NAME, "Dumped contents:\n" + actualDump);
 
         // THEN
         assertThat(actualDump).isEqualTo(getExpectedDump());
@@ -157,7 +162,7 @@ class GenericParserTest {
 
         // WHEN
         String actualDump = actualParser.dump();
-        Log.debug(thisClass.getSimpleName(), "Dumped contents:\n" + actualDump);
+        Log.debug(THIS_CLASS_NAME, "Dumped contents:\n" + actualDump);
 
         // THEN
         assertThat(actualDump).isEqualTo(getExpectedDumpHalfFloat());
@@ -171,7 +176,7 @@ class GenericParserTest {
 
         // WHEN
         String actualDump = actualParser.dump();
-        Log.debug(thisClass.getSimpleName(), "Dumped contents:\n" + actualDump);
+        Log.debug(THIS_CLASS_NAME, "Dumped contents:\n" + actualDump);
 
         // THEN
         assertThat(actualDump).isEqualTo(getExpectedDumpVeryShortInt());
@@ -185,7 +190,7 @@ class GenericParserTest {
 
         // WHEN
         String actualDump = actualParser.dump();
-        Log.debug(thisClass.getSimpleName(), "Dumped contents:\n" + actualDump);
+        Log.debug(THIS_CLASS_NAME, "Dumped contents:\n" + actualDump);
 
         // THEN
         assertThat(actualDump).isEqualTo(getExpectedDump());
@@ -199,7 +204,7 @@ class GenericParserTest {
 
         // WHEN
         String actualDump = actualParser.dump();
-        Log.debug(thisClass.getSimpleName(), "Dumped contents:\n" + actualDump);
+        Log.debug(THIS_CLASS_NAME, "Dumped contents:\n" + actualDump);
 
         // THEN
         assertThat(actualDump).isEqualTo(getExpectedDumpSignedInteger());
@@ -213,7 +218,7 @@ class GenericParserTest {
 
         // WHEN
         String actualDump = actualParser.dump();
-        Log.debug(thisClass.getSimpleName(), "Dumped contents:\n" + actualDump);
+        Log.debug(THIS_CLASS_NAME, "Dumped contents:\n" + actualDump);
 
         // THEN
         assertThat(actualDump).isEqualTo(getExpectedDumpForConstants());
@@ -227,7 +232,7 @@ class GenericParserTest {
 
         // WHEN
         String actualDump = actualParser.dump();
-        Log.debug(thisClass.getSimpleName(), "Dumped contents:\n" + actualDump);
+        Log.debug(THIS_CLASS_NAME, "Dumped contents:\n" + actualDump);
 
         // THEN
         assertThat(actualDump).isEqualTo(getExpectedDumpForLinks());
@@ -368,6 +373,10 @@ class GenericParserTest {
         return FilesHelper.readTextFromResourceFile("/files/dumps/TEST-basicFields.txt");
     }
 
+    private String getExpectedDumpRepeaterContentsSize() throws IOException {
+        return FilesHelper.readTextFromResourceFile("/files/dumps/TEST-repeater-contentsSize.txt");
+    }
+
     private String getExpectedDumpSizeByField() throws IOException {
         return FilesHelper.readTextFromResourceFile("/files/dumps/TEST-sizeFromField.txt");
     }
@@ -459,13 +468,16 @@ class GenericParserTest {
             @Override
             protected String generate() {
 
-                assertThat(getDataStore().size()).isEqualTo(5);
-                assertThat(getDataStore().getInteger("sectionSizeBytes")).contains(16L);
+                DataStore actualStore = getDataStore();
+                assertThat(actualStore.size()).isEqualTo(6);
+                assertThat(actualStore.getInteger("sectionSizeBytes")).contains(16L);
 
-                assertThat(getDataStore().getInteger("repeater[0].number1")).contains(101L);
-                assertThat(getDataStore().getInteger("repeater[0].number2")).contains(102L);
-                assertThat(getDataStore().getInteger("repeater[1].number1")).contains(201L);
-                assertThat(getDataStore().getInteger("repeater[1].number2")).contains(202L);
+                assertThat(actualStore.getInteger("repeater[0].number1")).contains(101L);
+                assertThat(actualStore.getInteger("repeater[0].number2")).contains(102L);
+                assertThat(actualStore.getInteger("repeater[1].number1")).contains(201L);
+                assertThat(actualStore.getInteger("repeater[1].number2")).contains(202L);
+
+                assertThat(actualStore.getRemainingValue()).contains(new byte[]{ 0x0, 0x0, 0x1, 0x2d });
                 return DATA;
             }
 
