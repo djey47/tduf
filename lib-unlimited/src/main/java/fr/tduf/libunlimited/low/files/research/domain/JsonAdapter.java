@@ -31,6 +31,8 @@ public class JsonAdapter {
     private static final String LINKS_FIELD_NAME = "#links#";
     private static final String LINK_SOURCE_KEY_FIELD_NAME = "sourceKey";
     private static final String LINK_TARGET_KEY_FIELD_NAME = "targetKey";
+    private static final String META_FIELD_NAME = "#meta#";
+    private static final String META_ACCESS_KEY_FIELD_NAME = "accessKeyPrefix";
 
     @SuppressWarnings("FieldMayBeFinal")
     private DataStore dataStore;
@@ -135,12 +137,22 @@ public class JsonAdapter {
 
             String newRepeaterKeyPrefix = generateKeyPrefixForRepeatedField(repeaterFieldName, parsedCount, parentRepeaterKey);
 
+            addRepeaterMetaNode(itemNode, newRepeaterKeyPrefix);
+
             readStructureFields(repeaterField.getSubFields(), itemNode, newRepeaterKeyPrefix);
 
             repeaterNode.add(itemNode);
 
             parsedCount++;
         }
+    }
+
+    private void addRepeaterMetaNode(ObjectNode itemNode, String repeaterKeyPrefix) {
+        ObjectNode metaNode = itemNode.objectNode();
+
+        metaNode.put(META_ACCESS_KEY_FIELD_NAME, repeaterKeyPrefix);
+
+        itemNode.set(META_FIELD_NAME, metaNode);
     }
 
     private Entry fetchEntry(String fieldName, String parentRepeaterKey) {
@@ -171,10 +183,11 @@ public class JsonAdapter {
         while (fields.hasNext()) {
             Map.Entry<String, JsonNode> nextField = fields.next();
 
-            if (LINKS_FIELD_NAME.equals(nextField.getKey())) {
+            String nextFieldKey = nextField.getKey();
+            if (LINKS_FIELD_NAME.equals(nextFieldKey)) {
                 readLinksNode((ArrayNode) nextField.getValue());
-            } else {
-                readJsonNode(nextField.getValue(), parentKey + nextField.getKey());
+            } else if (!META_FIELD_NAME.equals(nextFieldKey)) {
+                readJsonNode(nextField.getValue(), parentKey + nextFieldKey);
             }
         }
     }
