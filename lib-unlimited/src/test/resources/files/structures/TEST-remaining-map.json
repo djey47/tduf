@@ -1,0 +1,28 @@
+{
+  "name": "TEST file format with remaining contents at the end of file (handled automatically)",
+  "littleEndian": false,
+  "fields": [
+    {
+      "name": "sectionSizeBytes",
+      "type": "INTEGER",
+      "size": 4
+    },
+    {
+      "name": "repeater",
+      "type": "REPEATER",
+      "contentsSize": "=?sectionSizeBytes?",
+      "subFields": [
+        {
+          "name": "number1",
+          "type": "INTEGER",
+          "size": 4
+        },
+        {
+          "name": "number2",
+          "type": "INTEGER",
+          "size": 4
+        }
+      ]
+    }
+  ]
+}

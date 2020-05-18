@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.low.files.research.rw;
 
 import fr.tduf.libunlimited.common.helper.FilesHelper;
+import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -301,6 +302,24 @@ class GenericWriterTest {
         assertThat(actualBytes).isEqualTo(expectedBytes);
     }
 
+    @Test
+    void write_whenProvidedFiles_withRemainingBytes_shouldReturnBytes() throws IOException {
+        // GIVEN
+        GenericWriter<String> actualWriter = createGenericWriterWithRemainingBytes();
+
+        // WHEN
+        ByteArrayOutputStream actualOutputStream = actualWriter.write();
+
+        // THEN
+        assertThat(actualOutputStream).isNotNull();
+
+        byte[] actualBytes = actualOutputStream.toByteArray();
+        assertThat(actualBytes).hasSize(24);
+
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-remaining.bin");
+        assertThat(actualBytes).isEqualTo(expectedBytes);
+    }
+
     private GenericWriter<String> createGenericWriter() throws IOException {
         return new GenericWriter<String>(DATA) {
             @Override
@@ -365,6 +384,28 @@ class GenericWriterTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-links-map.json";
+            }
+        };
+    }
+
+    private GenericWriter<String> createGenericWriterWithRemainingBytes() throws IOException {
+        return new GenericWriter<String>(DATA) {
+            @Override
+            protected void fillStore() {
+                DataStore store = getDataStore();
+                store.addInteger32("sectionSizeBytes", 16L);
+
+                store.addInteger32("repeater[0].number1", 101L);
+                store.addInteger32("repeater[0].number2", 102L);
+                store.addInteger32("repeater[1].number1", 201L);
+                store.addInteger32("repeater[1].number2", 202L);
+                
+                store.addRemainingValue(new byte[] { 0x0, 0x0, 0x1, 0x2d });
+            }
+
+            @Override
+            public String getStructureResource() {
+                return "/files/structures/TEST-remaining-map.json";
             }
         };
     }

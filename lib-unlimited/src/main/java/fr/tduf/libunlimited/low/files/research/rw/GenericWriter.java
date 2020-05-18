@@ -45,9 +45,10 @@ public abstract class GenericWriter<T> implements StructureBasedProcessor {
         fillStore();
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        writeFields(this.getFileStructure().getFields(), outputStream, "");
+        FileStructureDto fileStructure = getFileStructure();
+        writeFields(fileStructure.getFields(), outputStream, "");
 
-        return StructureHelper.encryptIfNeeded(outputStream, this.getFileStructure().getCryptoMode());
+        return StructureHelper.encryptIfNeeded(outputStream, fileStructure.getCryptoMode());
     }
 
     /**
@@ -103,8 +104,13 @@ public abstract class GenericWriter<T> implements StructureBasedProcessor {
                     throw new IllegalArgumentException("Unknown field type: " + type);
             }
         }
-    }
 
+        // Handle remaining bytes, if any
+        if (repeaterKey.isEmpty()) {
+            fetchAndWriteRemainingBytes(outputStream);
+        }        
+    }
+    
     private void writeRepeatedFields(FileStructureDto.Field repeaterField, String parentRepeaterKey, ByteArrayOutputStream outputStream) throws IOException {
         Integer repeatedItemsCount = FormulaHelper.resolveToInteger(repeaterField.getSizeFormula(), parentRepeaterKey, this.dataStore);
 
@@ -160,6 +166,17 @@ public abstract class GenericWriter<T> implements StructureBasedProcessor {
         } else {
             outputStream.write(valueBytes, 8 - length, length);
         }
+    }
+
+    private void fetchAndWriteRemainingBytes(ByteArrayOutputStream outputStream) {
+        dataStore.getRemainingValue()
+                .ifPresent(remainingBytes -> {
+                    try {
+                        writeRawValue(remainingBytes, null, outputStream);
+                    } catch (IOException ioe) {
+                        throw new IllegalStateException("Unable to write remaining bytes", ioe);
+                    }
+                });
     }
 
     FileStructureDto getFileStructure() {
