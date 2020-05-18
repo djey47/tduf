@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.research.domain.fixture;
 
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.StructureHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
@@ -14,6 +15,14 @@ import static fr.tduf.libunlimited.low.files.research.domain.Type.*;
  * Provides data for data store tests.
  */
 public class DataStoreFixture {
+
+    public static DataStore createEmptyStore() throws IOException {
+        return new DataStore(DataStoreFixture.getFileStructure("/files/structures/TEST-datastore-map.json"));
+    }
+
+    public static String getStoreContentsAsJson(String resourcePath) throws IOException {
+        return FilesHelper.readTextFromResourceFile(resourcePath);
+    }
 
     public static void createStoreEntries(DataStore dataStore) {
         dataStore.clearAll();

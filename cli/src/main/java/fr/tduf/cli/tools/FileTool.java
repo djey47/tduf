@@ -9,6 +9,7 @@ import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import fr.tduf.libunlimited.low.files.common.crypto.helper.CryptoHelper;
+import fr.tduf.libunlimited.low.files.research.domain.JsonAdapter;
 import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
 import fr.tduf.libunlimited.low.files.research.rw.GenericWriter;
 import org.apache.commons.lang3.StringUtils;
@@ -344,13 +345,13 @@ public class FileTool extends GenericTool {
     }
 
     private void writerToBinaryFile(GenericWriter<String> genericWriter, String jsonContents) throws IOException {
-        genericWriter.getDataStore().fromJsonString(jsonContents);
+        new JsonAdapter(genericWriter.getDataStore()).fromJsonString(jsonContents);
 
         Files.write(Paths.get(outputFile), genericWriter.write().toByteArray());
     }
 
     private void parserToJsonFile(String targetJsonFile, GenericParser<String> genericParser) throws IOException {
-        String rawJsonOutput = genericParser.getDataStore().toJsonString();
+        String rawJsonOutput = new JsonAdapter(genericParser.getDataStore()).toJsonString();
         String formattedJsonOutput = JsonHelper.prettify(rawJsonOutput);
 
         try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(targetJsonFile), StandardCharsets.UTF_8)) {

@@ -25,7 +25,7 @@ class DataStore_focusOnGettingValuesTest {
     @Test
     void getRawValue_whenNoItem_shouldReturnAbsent() {
         // GIVEN-WHEN-THEN
-        assertThat(dataStore.getRawValue("f1").isPresent()).isEqualTo(false);
+        assertThat(dataStore.getRawValue("f1")).isEmpty();
     }
 
     @Test
@@ -35,7 +35,7 @@ class DataStore_focusOnGettingValuesTest {
         DataStoreFixture.putRawValueInStore("f1", expectedBytes, dataStore);
 
         // WHEN-THEN
-        assertThat(dataStore.getRawValue("f1").get()).containsExactly(expectedBytes);
+        assertThat(dataStore.getRawValue("f1")).contains(expectedBytes);
     }
 
     @Test
@@ -60,7 +60,7 @@ class DataStore_focusOnGettingValuesTest {
         DataStoreFixture.putStringInStore("f1", "v1", dataStore);
 
         // WHEN-THEN
-        assertThat(dataStore.getText("f1").get()).isEqualTo("v1");
+        assertThat(dataStore.getText("f1")).contains("v1");
     }
 
     @Test
@@ -84,7 +84,7 @@ class DataStore_focusOnGettingValuesTest {
         DataStoreFixture.putLongInStore("f1", 100L, false, dataStore);
 
         // WHEN-THEN
-        assertThat(dataStore.getInteger("f1").get()).isEqualTo(100L);
+        assertThat(dataStore.getInteger("f1")).contains(100L);
     }
 
     @Test
@@ -93,7 +93,7 @@ class DataStore_focusOnGettingValuesTest {
         DataStoreFixture.putLongInStore("f1", -100L, true, dataStore);
 
         // WHEN-THEN
-        assertThat(dataStore.getInteger("f1").get()).isEqualTo(-100L);
+        assertThat(dataStore.getInteger("f1")).contains(-100L);
     }
 
     @Test
@@ -117,7 +117,7 @@ class DataStore_focusOnGettingValuesTest {
         DataStoreFixture.putFloatInStore("f1", 691.44006f, dataStore);
 
         // WHEN-THEN
-        assertThat(dataStore.getFloatingPoint("f1").get()).isEqualTo(691.44006f);
+        assertThat(dataStore.getFloatingPoint("f1")).contains(691.44006f);
     }
 
     @Test
@@ -126,7 +126,7 @@ class DataStore_focusOnGettingValuesTest {
         DataStoreFixture.putHalfFloatInStore("f1", 691.5f, dataStore);
 
         // WHEN-THEN
-        assertThat(dataStore.getFloatingPoint("f1").get()).isEqualTo(691.5f);
+        assertThat(dataStore.getFloatingPoint("f1")).contains(691.5f);
     }
 
     @Test
@@ -183,5 +183,34 @@ class DataStore_focusOnGettingValuesTest {
         assertThat(subStore.get("my_fp_field")).isEqualTo(new Entry(Type.FPOINT, TypeHelper.floatingPoint32ToRaw(235.666667f)));
         assertThat(subStore.get("a_field")).isEqualTo(new Entry(Type.TEXT, TypeHelper.textToRaw("az", 2)));
         assertThat(subStore.get("another_field")).isEqualTo(new Entry(UNKNOWN, new byte[] {0x1, 0x2, 0x3, 0x4}));
+    }
+
+    @Test
+    void getRepeatedValues_withLevel2Repeater_shouldExtractValuesCorrectly() {
+        // given
+        DataStoreFixture.createStoreEntriesForLevel2Repeater(dataStore);
+
+        // when
+        List<DataStore> actualStoresLvl1 = dataStore.getRepeatedValues("repeaterLvl1");
+        List<DataStore> actualStoresLvl2 = dataStore.getRepeatedValues("repeaterLvl2", "repeaterLvl1[0].");
+
+        // then
+        assertThat(actualStoresLvl1).hasSize(2);
+        DataStore subStoreAtIndex0 = actualStoresLvl1.get(0);
+        assertThat(subStoreAtIndex0.size()).isEqualTo(2);
+        assertThat(subStoreAtIndex0.getInteger("repeaterLvl2[0].number")).contains(500L);
+        assertThat(subStoreAtIndex0.getInteger("repeaterLvl2[1].number")).contains(501L);
+        DataStore subStoreAtIndex1 = actualStoresLvl1.get(1);
+        assertThat(subStoreAtIndex1.size()).isEqualTo(2);
+        assertThat(subStoreAtIndex1.getInteger("repeaterLvl2[0].number")).contains(502L);
+        assertThat(subStoreAtIndex1.getInteger("repeaterLvl2[1].number")).contains(503L);
+
+        assertThat(actualStoresLvl2).hasSize(2);
+        DataStore subStoreLvl2AtIndex0 = actualStoresLvl2.get(0);
+        assertThat(subStoreLvl2AtIndex0.size()).isEqualTo(1);
+        assertThat(subStoreLvl2AtIndex0.getInteger("number")).contains(500L);
+        DataStore subStoreLvl2AtIndex1 = actualStoresLvl2.get(1);
+        assertThat(subStoreLvl2AtIndex1.size()).isEqualTo(1);
+        assertThat(subStoreLvl2AtIndex1.getInteger("number")).contains(501L);
     }
 }
