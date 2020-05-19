@@ -119,6 +119,7 @@ public class DisplayConstants {
     public static final String STATUS_FORMAT_NOT_LOADED_DATABASE = "Database was not loaded due to errors: %s";
 
     public static final String DATA_FORMAT_LAYOUT_OBJECT = "[%s] %s";
+    public static final String DATA_FORMAT_LOCALE_OBJECT = "[%s] %s";
 
     private DisplayConstants() {}
 }

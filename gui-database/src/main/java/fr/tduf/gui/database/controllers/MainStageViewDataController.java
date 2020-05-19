@@ -13,6 +13,7 @@ import fr.tduf.gui.database.controllers.helper.DynamicFieldControlsHelper;
 import fr.tduf.gui.database.controllers.helper.DynamicLinkControlsHelper;
 import fr.tduf.gui.database.converter.ContentEntryToStringConverter;
 import fr.tduf.gui.database.converter.CurrentEntryIndexToStringConverter;
+import fr.tduf.gui.database.converter.DatabaseLocaleToStringConverter;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.ItemViewModel;
@@ -770,15 +771,17 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     private void loadAndFillLocales(ChangeListener<Locale> localeChangeListener) {
         getApplicationConfiguration().getEditorLocale().ifPresent(currentLocaleProperty::setValue);
 
+        ChoiceBox<Locale> localesChoiceBox = getLocalesChoiceBox();
         //noinspection ResultOfMethodCallIgnored
         Locale.valuesAsStream()
-                .collect(toCollection(() -> getLocalesChoiceBox().getItems()));
+                .collect(toCollection(localesChoiceBox::getItems));
 
-        getLocalesChoiceBox().valueProperty().bindBidirectional(currentLocaleProperty);
+        localesChoiceBox.valueProperty().bindBidirectional(currentLocaleProperty);
 
-        getLocalesChoiceBox().getSelectionModel().selectedItemProperty()
+        localesChoiceBox.getSelectionModel().selectedItemProperty()
                 .addListener(localeChangeListener);
-
+        
+        localesChoiceBox.setConverter(new DatabaseLocaleToStringConverter());
     }
 
     private void loadAndFillProfiles(ChangeListener<EditorLayoutDto.EditorProfileDto> profileChangeListener) throws IOException {
