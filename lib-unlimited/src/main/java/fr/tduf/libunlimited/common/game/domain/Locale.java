@@ -6,21 +6,23 @@ import java.util.stream.Stream;
  * All culture variants for i18n
  */
 public enum Locale {
-    DEFAULT("*", -1),
-    FRANCE("fr", 1),
-    GERMANY("ge", 2),
-    UNITED_STATES("us", 3),
-    KOREA("ko", 4),
-    CHINA("ch", 5),
-    JAPAN("ja", 6),
-    ITALY("it", 7),
-    SPAIN("sp", 8);
+    DEFAULT("*", "any", -1),
+    FRANCE("fr", "Français", 1),
+    GERMANY("ge", "Deutsch", 2),
+    UNITED_STATES("us", "English (united states)", 3),
+    KOREA("ko", "한국어", 4),
+    CHINA("ch", "中文", 5),
+    JAPAN("ja", "日本語", 6),
+    ITALY("it", "Italiano", 7),
+    SPAIN("sp", "Español", 8);
 
     private final String code;
+    private final String language;
     private final int order;
 
-    Locale(String code, int order) {
+    Locale(String code, String language, int order) {
         this.code = code;
+        this.language = language;
         this.order = order;
     }
 
@@ -50,6 +52,10 @@ public enum Locale {
         return code;
     }
 
+    public String getLanguage() {
+        return language;
+    }
+    
     /**
      * @return all locale values as a stream, except special 'any'
      */
