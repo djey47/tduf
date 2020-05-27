@@ -59,11 +59,12 @@ This needs a release tag to be set, see *Releasing* section above.
 
 ...it will:
 
-* Create release packages in zip archive, into *releases* directory.
+* Create release packages in zip archive, into *releases* directory
+* Windows OS is the default target; otherwise you can override using the `target` parameter, e.g: `packFull -Ptarget=linux`
 
 ### Contributing to project ###
 
-* Later!
+* Feel free to file issues in this repository, or create PRs.
 
 ### Licensing ###
 

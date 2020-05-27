@@ -1,0 +1,35 @@
+// Build helpers script
+
+/**
+ * Available values for target argument
+ */
+def PARAM_LINUX_TARGET = 'linux'
+def PARAM_WINDOWS_TARGET = 'windows'
+
+/**
+ * @returns List of tasks to depend on for packaging, according to target (linux or windows)
+ */
+def packDependencies = { String target ->
+    def commonCleanDeps = [ 'cleanTempJarDir', 'cleanPackDir' ]
+
+    def commonPackDeps = [ 'markdownToHtml',
+                           'copyDoc', 'copyExternalTools', 'copyVersionInfo', 'copyIcons',
+                           ':lib-unlimited:copyStructures',
+                           ':gui-database:copyProfiles',
+                           'fullJar' ]
+
+    def winPackDeps = [ 'copyMainScripts', 'copyUserScripts', 'copyUtilScripts' ]
+
+    def linuxPackDeps = [ 'copyMainScripts', 'copyUserScripts', 'copyUtilScripts' ]
+
+    def isLinuxPackaging = target == PARAM_LINUX_TARGET
+    return [ *commonCleanDeps,
+             *(isLinuxPackaging ? linuxPackDeps : winPackDeps),
+             *commonPackDeps ]
+}
+
+ext {
+    getPackDependencies = packDependencies
+    LINUX_TARGET = PARAM_LINUX_TARGET
+    WINDOWS_TARGET = PARAM_WINDOWS_TARGET
+}

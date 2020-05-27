@@ -16,6 +16,9 @@ scmVersion {
     }
 }
 
+// Helper script
+apply from: './src/main/groovy/helper.gradle'
+
 // Project definition
 allprojects {
     project.group = 'fr.tduf'
@@ -298,17 +301,14 @@ task fullJar( type: Jar , dependsOn: 'gatherAllContentsForJar' ) {
     from tempJarDirectory
 }
 
-task packFull(dependsOn: [  'cleanTempJarDir', 'cleanPackDir',
-                            'copyMainScripts', 'copyUserScripts', 'copyUtilScripts',
-                            'markdownToHtml',
-                            'copyDoc', 'copyExternalTools', 'copyVersionInfo', 'copyIcons',
-                            ':lib-unlimited:copyStructures',
-                            ':gui-database:copyProfiles',
-                            'fullJar'], type: Zip) {
+task packFull(dependsOn: getPackDependencies(project.hasProperty('target') ? target : WINDOWS_TARGET), type: Zip) {
     description 'Create single release Zip with ALL components except InstallerKit in releases directory.'
     group 'packaging'
-
-    archiveName  "tduf-" + project.version + ".zip"
+    
+    def targetName = (project.hasProperty('target') && target == LINUX_TARGET) ? 'linux' : 'windows'
+    println("(i) Full packaging for target *$targetName*")
+    
+    archiveName "tduf-$project.version-${targetName}.zip"
     destinationDir new File('releases/')
     from  'pack/'
 }
@@ -356,9 +356,15 @@ task copyMainScripts(type: Copy) {
     group 'packaging'
     mustRunAfter ':cleanPackDir'
 
-    from 'src/main/shell/'
-    include '*.cmd'
-    include '*.sh'
+    if (project.hasProperty('target') && target == LINUX_TARGET) {
+        from 'src/main/shell/linux/'
+        include '*.sh'
+        include 'linux-aliases'
+    } else {
+        from 'src/main/shell/windows/'
+        include '*.cmd'
+    }
+    
     into 'pack/'
 }
 
@@ -367,9 +373,13 @@ task copyUserScripts(type: Copy) {
     group 'packaging'
     mustRunAfter ':cleanPackDir'
 
-    from 'src/main/shell/user-scripts'
-    include '*.cmd'
-    include '*.sh'
+    if (project.hasProperty('target') && target == LINUX_TARGET) {
+        from 'src/main/shell/linux/user-scripts/'
+        include '*.sh'
+    } else {
+        from 'src/main/shell/windows/user-scripts/'
+        include '*.cmd'
+    }
     into 'pack/user-scripts'
 }
 
@@ -378,10 +388,14 @@ task copyUtilScripts(type: Copy) {
     group 'packaging'
     mustRunAfter 'cleanPackDir'
 
-    from 'src/main/shell/cli-util/'
-    include '*.cmd'
-    include '*.sh'
-    include 'linux-aliases'
+    if (project.hasProperty('target') && target == LINUX_TARGET) {
+        from 'src/main/shell/linux/cli-util/'
+        include '*.sh'
+    } else {
+        from 'src/main/shell/windows/cli-util/'
+        include '*.cmd'
+    }
+    
     into 'pack/tools/cli'
 }
 

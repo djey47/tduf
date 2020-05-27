@@ -95,8 +95,11 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
 - Database is repacked automatically.
 
 
-### Running Advanced tools!
-- Launch TDUF-cli.cmd from Windows explorer / TDUF-cli.sh from Linux
+### (Advanced) Running Command Line tools!
+- Open console (cmd in Windows or sh-compatible in Linux)
+- `cd` to TDUF directory
+- For Linux users, apply aliases: `source ./linux-aliases`
+- Type and launch `help`
 - Follow instructions.
 
 
