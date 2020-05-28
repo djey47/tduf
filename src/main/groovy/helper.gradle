@@ -18,9 +18,9 @@ def packDependencies = { String target ->
                            ':gui-database:copyProfiles',
                            'fullJar' ]
 
-    def winPackDeps = [ 'copyMainScripts', 'copyUserScripts', 'copyUtilScripts' ]
+    def winPackDeps = [ 'copyMainScripts', 'copyUtilScripts' ]
 
-    def linuxPackDeps = [ 'copyMainScripts', 'copyUserScripts', 'copyUtilScripts' ]
+    def linuxPackDeps = [ 'copyMainScripts', 'copyUtilScripts' ]
 
     def isLinuxPackaging = target == PARAM_LINUX_TARGET
     return [ *commonCleanDeps,

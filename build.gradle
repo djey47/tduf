@@ -368,21 +368,6 @@ task copyMainScripts(type: Copy) {
     into 'pack/'
 }
 
-task copyUserScripts(type: Copy) {
-    description 'Copies CLI main scripts to pack/user-scripts directory.'
-    group 'packaging'
-    mustRunAfter ':cleanPackDir'
-
-    if (project.hasProperty('target') && target == LINUX_TARGET) {
-        from 'src/main/shell/linux/user-scripts/'
-        include '*.sh'
-    } else {
-        from 'src/main/shell/windows/user-scripts/'
-        include '*.cmd'
-    }
-    into 'pack/user-scripts'
-}
-
 task copyUtilScripts(type: Copy) {
     description 'Copies CLI utility scripts to release/tools/cli directory.'
     group 'packaging'
@@ -405,6 +390,7 @@ task copyExternalTools(type: Copy) {
     mustRunAfter 'cleanPackDir'
 
     from 'tools'
+    exclude 'readme'
     into 'pack/tools'
 }
 
