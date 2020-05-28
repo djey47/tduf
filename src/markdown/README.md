@@ -54,6 +54,10 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
 * Starts Test Drive Unlimited.
 
 ### What's in this version ? (2.0.0)
+* (GUI/Database) Enhanced item display in locales list
+
+* (CLI) Intro interface has been removed as it's not used. It has been replaced with `help` command.
+* (CLI) `logs`: new command to display all log files in default editor
 * (CLI/FileTool) jsonify: verbose mode now displays dumped items during parsing (not only after succesful parsing)
 * (CLI/FileTool) jsonify: adds access key to repeated item in new meta section
 * (CLI/FileTool) jsonify/applyjson: support remaining bytes
