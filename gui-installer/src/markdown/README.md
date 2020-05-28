@@ -7,7 +7,7 @@ Here is a new vehicle mod installer:
 * Makes new files to be accepted by updating Magic Map
 * and more!
 
-Using this with TDUCP 2.00A is strongly recommended.
+Using this with TDUCP 2.00A / TDU Platinum is strongly recommended.
 
 
 ### What's in this version ? (ALPHA-7)
@@ -95,7 +95,7 @@ to:  *assets\DATABASE*
 
 #### TESTING
 
-- Launch TDUF-installer.cmd
+- Launch VehicleInstaller.cmd (Windows) / VehicleInstaller.sh (Linux)
 
 - Enter or browse TDU location
 
@@ -109,7 +109,7 @@ to:  *assets\DATABASE*
 
 - Installer will look unresponsive for a few seconds, so please wait
 
-- Check install events in logs\TDUF-Installer.log file
+- Check install events in logs\VehicleInstaller.log file
 
 - Check for generated values in effective properties file: backup\DATE\installed.properties
 
@@ -127,7 +127,7 @@ to:  *assets\DATABASE*
 - assets
 - tools
 
-(3) Rename TDUF-installer.cmd to name of your choice, BUT keep .cmd extension !
+(3) Rename *VehicleInstaller.cmd* or *VehicleInstaller.sh* to name of your choice, BUT keep .cmd or .sh extension !
 
 (4) Zip project directory and distribute.
 

@@ -90,6 +90,7 @@ subprojects {
         mustRunAfter 'jar'
 
         getArchiveBaseName().set('tduf-' + project.name + '-all')
+        getArchiveVersion().set('')
         from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
         with jar
     }
@@ -226,8 +227,15 @@ project(':gui-installer') {
         description 'Copies CLI main scripts to release directory.'
         mustRunAfter ':cleanPackDir'
 
-        from 'src/main/shell/'
-        include '*.cmd'
+        if (project.hasProperty('target') && target == LINUX_TARGET) {
+            from 'src/main/shell/linux/'
+            include '*.sh'
+            include 'linux-aliases'
+        } else {
+            from 'src/main/shell/windows/'
+            include '*.cmd'
+        }
+
         into '../pack/'
     }
 
@@ -235,10 +243,14 @@ project(':gui-installer') {
         description 'Copies CLI utility scripts to pack/tools/cli directory.'
         mustRunAfter ':cleanPackDir'
 
-        from '../src/main/shell/cli-util/'
-        include 'AdminRun.cmd'
-        include 'CheckJava.cmd'
-        include 'SetVersion.cmd'
+        if (project.hasProperty('target') && target == LINUX_TARGET) {
+            from '../src/main/shell/linux/cli-util/'
+            include '*.sh'
+        } else {
+            from '../src/main/shell/windows/cli-util/'
+            include '*.cmd'
+        }
+
         into '../pack/tools/cli'
     }
 
@@ -313,16 +325,14 @@ task packFull(dependsOn: getPackDependencies(project.hasProperty('target') ? tar
     from  'pack/'
 }
 
-task packInstallerKit(dependsOn: [  'cleanPackDir',
-                                    ':gui-installer:copyMainScripts',
-                                    ':gui-installer:markdownToHtml',
-                                    ':gui-installer:copyDoc', 'copyExternalTools', ':gui-installer:copyUtilScripts', 'copyVersionInfo',
-                                    ':gui-installer:copyAssets', ':gui-installer:copyTemplates',
-                                    ':gui-installer:copyJar'], type: Zip) {
+task packInstallerKit(dependsOn: getInstallerPackDependencies(project.hasProperty('target') ? target : WINDOWS_TARGET), type: Zip) {
     description 'Zips only IK, LIB files from pack folder.'
     group 'packaging'
 
-    archiveName "tduf-IK-" + project.version + ".zip"
+    def targetName = (project.hasProperty('target') && target == LINUX_TARGET) ? 'linux' : 'windows'
+    println("(i) Installer Kit packaging for target *$targetName*")
+
+    archiveName "tduf-IK-$project.version-${targetName}.zip"
     destinationDir new File('releases/')
     from  'pack/'
 }

@@ -10,8 +10,8 @@ MKDIR logs 2>NUL
 PUSHD tools\cli 2>NUL
 
 ECHO ...Starting Vehicle Installer...
-CALL .\CheckJava.cmd
-CALL .\SetVersion.cmd
+CALL .\SetEnv.cmd
 
 POPD 2>NUL
-java -cp .\tools\lib\tduf-gui-installer-all-%TDUF_VERSION%.jar fr.tduf.gui.installer.Installer %* >> .\logs\TDUF-Installer.log 2>>&1
+
+java -cp .\tools\lib\tduf-gui-installer-all.jar fr.tduf.gui.installer.Installer %* >> .\logs\TDUF-Installer.log 2>>&1

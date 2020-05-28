@@ -7,7 +7,7 @@ def PARAM_LINUX_TARGET = 'linux'
 def PARAM_WINDOWS_TARGET = 'windows'
 
 /**
- * @returns List of tasks to depend on for packaging, according to target (linux or windows)
+ * @returns List of tasks to depend on for FULL packaging, according to target (linux or windows)
  */
 def packDependencies = { String target ->
     def commonCleanDeps = [ 'cleanTempJarDir', 'cleanPackDir' ]
@@ -28,8 +28,30 @@ def packDependencies = { String target ->
              *commonPackDeps ]
 }
 
+/**
+ * @returns List of tasks to depend on for IK packaging, according to target (linux or windows)
+ */
+def installerPackDependencies = { String target ->
+    def commonCleanDeps = [ 'cleanPackDir' ]
+
+    def commonPackDeps = [ 'markdownToHtml',
+                           ':gui-installer:copyDoc', 'copyExternalTools', 'copyVersionInfo',
+                           ':gui-installer:copyAssets', ':gui-installer:copyTemplates',
+                           ':gui-installer:copyJar' ]
+
+    def winPackDeps = [ ':gui-installer:copyMainScripts', ':gui-installer:copyUtilScripts' ]
+
+    def linuxPackDeps = [ ':gui-installer:copyMainScripts', ':gui-installer:copyUtilScripts' ]
+
+    def isLinuxPackaging = target == PARAM_LINUX_TARGET
+    return [ *commonCleanDeps,
+             *(isLinuxPackaging ? linuxPackDeps : winPackDeps),
+             *commonPackDeps ]
+}
+
 ext {
     getPackDependencies = packDependencies
+    getInstallerPackDependencies = installerPackDependencies
     LINUX_TARGET = PARAM_LINUX_TARGET
     WINDOWS_TARGET = PARAM_WINDOWS_TARGET
 }
