@@ -12,6 +12,9 @@ ls -1 *Editor.sh
 echo "Launcher.sh"
 echo "--- (Advanced) CLI tools ---"
 ls -1 *Tool.sh
+echo "--- Help and troubleshooting ---"
+echo "help: this page"
+echo "logs: open all log files in default editor"
 echo
 echo "Just type and run any of these scripts to get usage details. Enjoy!"
 echo

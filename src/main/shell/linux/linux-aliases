@@ -1,4 +1,5 @@
 alias help="./Help.sh"
+alias logs="./Logs.sh"
 alias CameraTool="./CameraTool.sh"
 alias DatabaseEditor="./DatabaseEditor.sh"
 alias DatabaseTool="./DatabaseTool.sh"
