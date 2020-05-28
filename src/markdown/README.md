@@ -5,7 +5,7 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
 * Providing base modding features to save time in a command line interface (aka. CLI)
 * Making database and cameras editing less harmful with a new Database Editor (aka. GUI)
 * Helping with reverse-engineering
-* Bringing and powering new desktop applications for end-users
+* Bringing and powering new desktop applications for end-users (Database Editor, TDU Launcher)
 * ...
 
 
@@ -49,6 +49,9 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
     * Allows fixing BNK file mappings in Bnk1.map 
 * AND MORE!
 
+### Launcher Main features (in development)
+* Identifies installed game version
+* Starts Test Drive Unlimited.
 
 ### What's in this version ? (2.0.0)
 * (CLI/FileTool) jsonify: verbose mode now displays dumped items during parsing (not only after succesful parsing)
@@ -87,12 +90,16 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
 
 
 ### Running Database Editor!
-- Launch TDUF-database-gui.cmd from Windows explorer / TDUF-database-gui.sh from Linux
+- Launch DatabaseEditor.cmd from Windows explorer / DatabaseEditor.sh from Linux
 - In DatabaseEditor, browse location of TDU database BNK or JSON files. Load (may take a while)
 - At first loading, select real TDU game path when asked 
 - IMPORTANT: if you just updated TDU Database files with a mod, you should always *Clear database cache* from advanced settings! Then reload.
 - Make your changes. Save (may take a while)
 - Database is repacked automatically.
+
+
+### Running Launcher!
+- Launch Launcher.cmd from Windows explorer / Launcher.sh from Linux
 
 
 ### (Advanced) Running Command Line tools!

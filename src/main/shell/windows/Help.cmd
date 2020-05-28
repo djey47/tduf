@@ -1,13 +1,10 @@
 @ECHO OFF
 
-CLS
-
-CALL .\CheckJava.cmd
-CALL .\SetVersion.cmd
+CALL .\tools\cli\CheckJava.cmd
+CALL .\tools\cli\SetVersion.cmd
 
 ECHO *** Welcome to TDUF: Command Line Interface v%TDUF_VERSION% ***
 ECHO.
-DIR Intro.cmd /B
 ECHO --- Visual tools ---
 DIR *Editor.cmd /B
 ECHO --- Advanced tools ---
