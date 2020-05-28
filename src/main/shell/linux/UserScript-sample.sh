@@ -5,9 +5,11 @@ shopt -s expand_aliases
 echo "*** Initializing... ***"
 echo
 source ./linux-aliases
+
 cd ./tools/cli
-./CheckJava.sh
-source ./SetVersion.sh
+source ./SetEnv.sh
+cd - >/dev/null
+
 echo "*** User script will run with TDUF v${TDUF_VERSION} ***"
 echo
 

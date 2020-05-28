@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# 1-Java check
 java -version
 
 if [ $? -eq 0 ]
@@ -12,3 +13,6 @@ else
     read -p "Press ENTER to continue..."
     exit 1
 fi
+
+# 2-TDUF version as env var
+TDUF_VERSION=`cat ../lib/version.info`

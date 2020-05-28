@@ -103,7 +103,7 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
 
 
 ### (Advanced) Running Command Line tools!
-- Open console (cmd in Windows or sh-compatible in Linux)
+- Open console (cmd in Windows or bash-compatible in Linux)
 - `cd` to TDUF directory
 - For Linux users, apply aliases: `source ./linux-aliases`
 - Type and launch `help`

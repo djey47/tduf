@@ -3,10 +3,11 @@
 REM TDUF USER SCRIPT SAMPLE
 ECHO *** Initializing... ***
 ECHO.
-PUSHD ..\tools\cli
-CALL .CheckJava.cmd
-CALL .\SetVersion.cmd
+
+PUSHD .\tools\cli
+CALL SetEnv.cmd
 POPD
+
 ECHO *** User script will run with TDUF v%TDUF_VERSION% ***
 ECHO.
 

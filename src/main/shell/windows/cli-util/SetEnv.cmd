@@ -1,5 +1,6 @@
 @ECHO OFF
 
+REM 1-Java check
 java -version
 ECHO.
 IF %ERRORLEVEL% EQU 0 (
@@ -10,3 +11,6 @@ IF %ERRORLEVEL% EQU 0 (
 	PAUSE
 	EXIT 1
 )
+
+REM 2-TDUF version as env var
+SET /P TDUF_VERSION=<..\lib\version.info
