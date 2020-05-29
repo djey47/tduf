@@ -14,7 +14,7 @@ CALL .\SetEnv.cmd
 
 POPD 2>NUL
 
-java -cp .\tools\lib\tduf-gui-installer-all.jar fr.tduf.gui.installer.Installer %* >> .\logs\TDUF-Installer.log 2>>&1
+java -cp .\tools\lib\tduf.jar fr.tduf.gui.installer.Installer %* >> .\logs\TDUF-Installer.log 2>>&1
 
 ECHO Please check in logs directory for details.
 ECHO.

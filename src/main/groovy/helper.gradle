@@ -6,24 +6,30 @@
 def PARAM_LINUX_TARGET = 'linux'
 def PARAM_WINDOWS_TARGET = 'windows'
 
+def fullCleanDeps = [ 'cleanTempJarDir', 'cleanPackDir' ]
+def singleCleanDeps = [ 'cleanPackDir' ]
+def externalDeps = [ 'copyExternalTools', 'copyVersionInfo', 'copyIcons' ]
+
+// List of subprojects to include in the full jar.
+def fullProjects = [':lib-unlimited', ':cli', ':gui-common', ':gui-database', ':gui-launcher']
+
 /**
  * @returns List of tasks to depend on for FULL packaging, according to target (linux or windows)
  */
-def packDependencies = { String target ->
-    def commonCleanDeps = [ 'cleanTempJarDir', 'cleanPackDir' ]
-
-    def commonPackDeps = [ 'markdownToHtml',
-                           'copyDoc', 'copyExternalTools', 'copyVersionInfo', 'copyIcons',
+def fullPackDependencies = { String target ->
+    def commonPackDeps = [ ':gui-database:markdownToHtml', ':gui-launcher:markdownToHtml', 'markdownToHtml',
+                           ':gui-database:copyDoc', ':gui-launcher:copyDoc', 'copyDoc',
+                           *externalDeps,
                            ':lib-unlimited:copyStructures',
                            ':gui-database:copyProfiles',
                            'fullJar' ]
 
-    def winPackDeps = [ 'copyMainScripts', 'copyUtilScripts' ]
+    def winPackDeps = [ ':gui-database:copyMainScripts', ':gui-launcher:copyMainScripts', 'copyMainScripts', 'copyUtilScripts' ]
 
-    def linuxPackDeps = [ 'copyMainScripts', 'copyUtilScripts' ]
+    def linuxPackDeps = [ ':gui-database:copyMainScripts', ':gui-launcher:copyMainScripts', 'copyMainScripts', 'copyUtilScripts' ]
 
     def isLinuxPackaging = target == PARAM_LINUX_TARGET
-    return [ *commonCleanDeps,
+    return [ *fullCleanDeps,
              *(isLinuxPackaging ? linuxPackDeps : winPackDeps),
              *commonPackDeps ]
 }
@@ -32,10 +38,9 @@ def packDependencies = { String target ->
  * @returns List of tasks to depend on for IK packaging, according to target (linux or windows)
  */
 def installerPackDependencies = { String target ->
-    def commonCleanDeps = [ 'cleanPackDir' ]
-
-    def commonPackDeps = [ 'markdownToHtml',
-                           ':gui-installer:copyDoc', 'copyExternalTools', 'copyVersionInfo',
+    def commonPackDeps = [ ':gui-installer:markdownToHtml',
+                           ':gui-installer:copyDoc',
+                           *externalDeps,
                            ':gui-installer:copyAssets', ':gui-installer:copyTemplates',
                            ':gui-installer:copyJar' ]
 
@@ -44,14 +49,36 @@ def installerPackDependencies = { String target ->
     def linuxPackDeps = [ ':gui-installer:copyMainScripts', ':gui-installer:copyUtilScripts' ]
 
     def isLinuxPackaging = target == PARAM_LINUX_TARGET
-    return [ *commonCleanDeps,
+    return [ *singleCleanDeps,
+             *(isLinuxPackaging ? linuxPackDeps : winPackDeps),
+             *commonPackDeps ]
+}
+
+/**
+ * @returns List of tasks to depend on for DatabaseEditor packaging, according to target (linux or windows)
+ */
+def databaseEditorPackDependencies = { String target ->
+    def commonPackDeps = [ ':gui-database:markdownToHtml',
+                           ':gui-database:copyDoc',
+                           *externalDeps,
+                           ':gui-database:copyProfiles',
+                           ':gui-database:copyJar' ]
+
+    def winPackDeps = [ ':gui-database:copyMainScripts', ':gui-database:copyUtilScripts' ]
+
+    def linuxPackDeps = [ ':gui-database:copyMainScripts', ':gui-database:copyUtilScripts' ]
+
+    def isLinuxPackaging = target == PARAM_LINUX_TARGET
+    return [ *singleCleanDeps,
              *(isLinuxPackaging ? linuxPackDeps : winPackDeps),
              *commonPackDeps ]
 }
 
 ext {
-    getPackDependencies = packDependencies
-    getInstallerPackDependencies = installerPackDependencies
+    getFullProjects = { -> fullProjects }
+    getFullDependencies = fullPackDependencies
+    getInstallerDependencies = installerPackDependencies
+    getDatabaseEditorDependencies = databaseEditorPackDependencies
     LINUX_TARGET = PARAM_LINUX_TARGET
     WINDOWS_TARGET = PARAM_WINDOWS_TARGET
 }
