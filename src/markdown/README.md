@@ -43,10 +43,25 @@ See **README-launcher.md*
 
 
 ### What you will need to run TDUF
-* Make sure Java apps can be run:
+
+#### Java Runtime
+
+Make sure Java apps can be run.
+
+**Old way - with Java 8 to 10 on your system**
     - Please uninstall any Java Runtime < 8
-    - [Update / Install Java 8 Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)
+    - Update / Install Java 8 to 10 Runtime Environment
     - Linux users with OpenJDK8: you'll need to get **openjfx** package.
+
+**New way - using embedded Runtime**
+    - Download compatible Runtime (current edition: *8*):
+        - Windows: [8u241](https://bit.ly/2yOta0C)
+        - Linux: [8u251](https://bit.ly/3dfBRzL)
+     - Extract downloaded zip file to TDUF directory
+     - If all went well, you should see *java* executable (and many other things) into *tools/jre/bin* directory
+     - Important: TDUF won't be released with the Runtime, so you should keep runtime zip in a safe place for future use.
+
+#### .net Runtime
 * Make sure .net apps can be run, as well (if TDUMT/TDUPE actually run, you're fine):
     - Windows: check if .net Framework 2.0 is installed
     - Linux: check if Mono 2.0 is installed, otherwise you will have to get **mono-complete** package.
@@ -55,7 +70,7 @@ See **README-launcher.md*
 ### Running Command Line tools!
 - Open console (cmd in Windows or bash-compatible in Linux)
 - `cd` to TDUF directory
-- For Linux users, apply aliases: `source ./linux-aliases`
+- For Linux users, apply aliases: `source ./tools/cli/linux-aliases`
 - Type and launch `help`
 - Follow instructions.
 

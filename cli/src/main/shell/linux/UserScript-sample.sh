@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
-shopt -s expand_aliases
+shopt -s expand_aliases && source ./cli/linux-aliases
 
 # TDUF USER SCRIPT SAMPLE
 echo "*** Initializing... ***"
 echo
-source ./linux-aliases
 
 cd ./tools/cli
 source ./SetEnv.sh

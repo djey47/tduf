@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
-# 1-Java check
-java -version
+# 1-CLI aliases
+shopt -s expand_aliases && source ./linux-aliases
+
+# 2-Java check
+./Java.sh -version
 
 if [ $? -eq 0 ]
 then
@@ -14,5 +17,7 @@ else
     exit 1
 fi
 
-# 2-TDUF version as env var
+# 3-TDUF version as env var
 TDUF_VERSION=`cat ../lib/version.info`
+
+

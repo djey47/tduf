@@ -8,7 +8,7 @@ cd - >/dev/null
 
 echo "...Starting Database Editor..."
 
-java -cp ./tools/lib/tduf.jar fr.tduf.gui.database.DatabaseEditor "$@" >> ${LOGS_PATH} 2>&1
+jre -cp ./tools/lib/tduf.jar fr.tduf.gui.database.DatabaseEditor "$@" >> ${LOGS_PATH} 2>&1
 echo
 echo "Please check in logs directory for details."
 echo

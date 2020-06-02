@@ -1,7 +1,7 @@
 @ECHO OFF
 
 REM 1-Java check
-java -version
+.\JavaAuto -version
 ECHO.
 IF %ERRORLEVEL% EQU 0 (
 	ECHO.

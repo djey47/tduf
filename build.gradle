@@ -85,17 +85,6 @@ subprojects {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    task fatJar(type: Jar) {
-        description 'Generates jar with all dependencies bundled into it.'
-        group 'build'
-        mustRunAfter 'jar'
-
-        getArchiveBaseName().set('tduf')
-        getArchiveVersion().set('')
-        from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-        with jar
-    }
-
     task copyMainScripts(type: Copy) {
         description 'Copies CLI main scripts to release directory (for single module packaging).'
         mustRunAfter ':cleanPackDir'
@@ -103,7 +92,6 @@ subprojects {
         if (project.hasProperty('target') && target == LINUX_TARGET) {
             from 'src/main/shell/linux/'
             include '*.sh'
-            include 'linux-aliases'
         } else {
             from 'src/main/shell/windows/'
             include '*.cmd'
@@ -119,6 +107,7 @@ subprojects {
         if (project.hasProperty('target') && target == LINUX_TARGET) {
             from '../src/main/shell/linux/cli-util/'
             include '*.sh'
+            include 'linux-aliases'
         } else {
             from '../src/main/shell/windows/cli-util/'
             include '*.cmd'
@@ -134,13 +123,6 @@ subprojects {
         from "$buildDir/gen-html"
         include '*.html'
         into '../pack/'
-    }
-
-    task copyJar(type: Copy) {
-        description 'Copies jar file to release directory (for single module packaging).'
-
-        from fatJar
-        into '../pack/tools/lib/'
     }
 
     task updateExternalTools(type: Copy) {
@@ -290,8 +272,8 @@ project(':integ-tests') {
 // Main tasks
 def tempJarDirectory = 'tmp-jarContents/'
 
-task gatherAllContentsForJar(type: Copy, dependsOn: getFullProjects().collect{ it+":compileJava"}) {
-    description 'Copies contents to temp directory.'
+task gatherFullContentsForJar(type: Copy, dependsOn: getFullProjects().collect{ it+":compileJava"}) {
+    description 'Copies contents to temp directory (full packaging).'
     group 'build'
 
     // Project sources
@@ -301,50 +283,89 @@ task gatherAllContentsForJar(type: Copy, dependsOn: getFullProjects().collect{ i
     into tempJarDirectory
 }
 
-task fullJar( type: Jar , dependsOn: 'gatherAllContentsForJar' ) {
+task gatherDatabaseEditorContentsForJar(type: Copy, dependsOn: getDatabaseEditorProjects().collect{ it+":compileJava"}) {
+    description 'Copies contents to temp directory (Database Editor packaging).'
+    group 'build'
+
+    // Project sources
+    from files(getDatabaseEditorProjects().collect{ project(it).sourceSets.main.output })
+    // External libraries
+    from files(getDatabaseEditorProjects().collect{ project(it).configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } } )
+    into tempJarDirectory
+}
+
+task gatherIKContentsForJar(type: Copy, dependsOn: getIKProjects().collect{ it+":compileJava"}) {
+    description 'Copies contents to temp directory (Installer Kit packaging).'
+    group 'build'
+
+    // Project sources
+    from files(getIKProjects().collect{ project(it).sourceSets.main.output })
+    // External libraries
+    from files(getIKProjects().collect{ project(it).configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } } )
+    into tempJarDirectory
+}
+
+// Common operations
+def jarOps = {
     description 'Creates jar with all contents from temp directory.'
     group 'build'
 
-    getDestinationDirectory().set(file('pack/tools/lib/'))
-    getArchiveBaseName().set('tduf')
-    from tempJarDirectory
+    archiveName 'tduf.jar'
+    destinationDir new File('pack/tools/lib/')
+    from tempJarDirectory 
 }
+
+def packOps = {
+    group 'packaging'
+    
+    destinationDir new File('releases/')
+    from  'pack/'
+}
+
+task fullJar( type: Jar , dependsOn: 'gatherFullContentsForJar' )
+fullJar jarOps
+
+task databaseEditorJar( type: Jar , dependsOn: 'gatherDatabaseEditorContentsForJar' )
+databaseEditorJar jarOps
+
+task ikJar( type: Jar , dependsOn: 'gatherIKContentsForJar' )
+ikJar jarOps
 
 task packFull(dependsOn: getFullDependencies(project.hasProperty('target') ? target : WINDOWS_TARGET), type: Zip) {
     description 'Create single release Zip with ALL components except InstallerKit in releases directory.'
-    group 'packaging'
-    
+
     def targetName = (project.hasProperty('target') && target == LINUX_TARGET) ? 'linux' : 'windows'
-    println("(i) Full packaging for target *$targetName*")
-    
     archiveName "tduf-$project.version-${targetName}.zip"
-    destinationDir new File('releases/')
-    from  'pack/'
+
+    doLast {
+        println("(i) Full packaging for target *$targetName*")
+    }
 }
+packFull packOps
 
 task packInstallerKit(dependsOn: getInstallerDependencies(project.hasProperty('target') ? target : WINDOWS_TARGET), type: Zip) {
     description 'Zips only IK, LIB files from pack folder.'
-    group 'packaging'
-
+    
     def targetName = (project.hasProperty('target') && target == LINUX_TARGET) ? 'linux' : 'windows'
-    println("(i) Installer Kit packaging for target *$targetName*")
-
-    archiveName "tduf-IK-$project.version-${targetName}.zip"
-    destinationDir new File('releases/')
-    from  'pack/'
+    archiveName "tduf-InstallerKit-$project.version-${targetName}.zip"
+    
+    doLast {
+        println("(i) Installer Kit packaging for target *$targetName*")
+    }
 }
+packInstallerKit packOps
 
 task packDatabaseEditor(dependsOn: getDatabaseEditorDependencies(project.hasProperty('target') ? target : WINDOWS_TARGET), type: Zip) {
     description 'Zips only DatabaseEditor, LIB files from pack folder.'
-    group 'packaging'
-
+    
     def targetName = (project.hasProperty('target') && target == LINUX_TARGET) ? 'linux' : 'windows'
-    println("(i) DatabaseEditor packaging for target *$targetName*")
-
     archiveName "tduf-DatabaseEditor-$project.version-${targetName}.zip"
-    destinationDir new File('releases/')
-    from  'pack/'
+    
+    doLast {
+        println("(i) DatabaseEditor packaging for target *$targetName*")
+    }
 }
+packDatabaseEditor packOps
 
 task cleanPackDir(type: Delete) {
     description 'Prepares new package by removing all files in pack directory.'
@@ -370,15 +391,14 @@ task copyDoc(type: Copy) {
     into 'pack/'
 }
 
-task copyMainScripts(type: Copy) {
-    description 'Copies CLI main scripts to release directory.'
+task copySharedScripts(type: Copy) {
+    description 'Copies project-shared scripts to release directory.'
     group 'packaging'
     mustRunAfter ':cleanPackDir'
 
     if (project.hasProperty('target') && target == LINUX_TARGET) {
         from 'src/main/shell/linux/'
         include '*.sh'
-        include 'linux-aliases'
     } else {
         from 'src/main/shell/windows/'
         include '*.cmd'
@@ -388,13 +408,14 @@ task copyMainScripts(type: Copy) {
 }
 
 task copyUtilScripts(type: Copy) {
-    description 'Copies CLI utility scripts to release/tools/cli directory.'
+    description 'Copies support scripts to release/tools/cli directory.'
     group 'packaging'
     mustRunAfter 'cleanPackDir'
 
     if (project.hasProperty('target') && target == LINUX_TARGET) {
         from 'src/main/shell/linux/cli-util/'
         include '*.sh'
+        include 'linux-aliases'
     } else {
         from 'src/main/shell/windows/cli-util/'
         include '*.cmd'
