@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class FilesHelperTest {
+    private static final Path TOOL_PATH = Paths.get("tools", "tdumt-cli");
 
     private String tempDirectory;
 
@@ -283,5 +284,40 @@ class FilesHelperTest {
 
         // then
         assertThat(actualResources).isEmpty();
+    }
+
+    @Test
+    void getRootDirectory_whenInTestMode_shouldRetrieveToolsDirectoryAtRoot() throws Exception {
+        // GIVEN-WHEN
+        final Path actualDirectory = FilesHelper.getRootDirectory();
+
+        // THEN
+        assertThat(actualDirectory.resolve(TOOL_PATH)).exists();
+    }
+
+    @Test
+    void getRootDirectory_whenProvidedProdSourcePath_asProdBuild_shouldRetrieveRootDirectory() {
+        // GIVEN
+        final Path sourcePath = Paths.get("/", "home", "user", "apps", "tduf", "tools", "lib", "tduf.jar");
+
+        // WHEN
+        final Path actualDirectory = FilesHelper.getRootDirectory(sourcePath);
+
+        // THEN
+        final Path expectedPath = Paths.get("/", "home", "user", "apps", "tduf");
+        assertThat(actualDirectory).isEqualTo(expectedPath);
+    }
+
+    @Test
+    void getRootDirectory_whenProvidedProdSourcePath_asDevBuild_shouldRetrieveRootDirectory() {
+        // GIVEN
+        final Path sourcePath = Paths.get("/", "home", "user", "dev", "tduf", "lib-unlimited", "build", "libs", "lib-unlimited-1.13.0-SNAPSHOT.jar");
+
+        // WHEN
+        final Path actualDirectory = FilesHelper.getRootDirectory(sourcePath);
+
+        // THEN
+        final Path expectedPath = Paths.get("/", "home", "user", "dev", "tduf");
+        assertThat(actualDirectory).isEqualTo(expectedPath);
     }
 }

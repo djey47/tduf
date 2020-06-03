@@ -1,6 +1,8 @@
 package fr.tduf.libunlimited.common.helper;
 
+import com.esotericsoftware.minlog.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.tduf.libunlimited.high.files.common.interop.GenuineGateway;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
 import org.apache.commons.io.IOUtils;
@@ -19,6 +21,7 @@ import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
+import java.security.CodeSource;
 import java.util.*;
 import java.util.function.BiPredicate;
 
@@ -33,6 +36,7 @@ public class FilesHelper {
     public static final Charset CHARSET_UNICODE_8 = StandardCharsets.UTF_8;
 
     private static final Class<FilesHelper> thisClass = FilesHelper.class;
+    private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 
     private static final ObjectMapper jsonMapper = new ObjectMapper();
     private static final DocumentBuilderFactory xmlDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -204,6 +208,47 @@ public class FilesHelper {
                     .getPaths();
             return new HashSet<>(resourcePaths);
         }
+    }
+
+    /**
+     * @return Application root path in dev mode or prod mode, detecting current source path automatically
+     * @throws IOException when file system error occurs
+     */
+    public static Path getRootDirectory() throws IOException {
+        CodeSource codeSource = GenuineGateway.class.getProtectionDomain().getCodeSource();
+
+        File sourceLocation;
+        try {
+            sourceLocation = new File(codeSource.getLocation().toURI().getPath());
+        } catch (URISyntaxException e) {
+            throw new IOException("Unable to resolve executable directory", e);
+        }
+
+        final Path sourcePath = sourceLocation.toPath();
+        Log.debug(THIS_CLASS_NAME, "Source location: " + sourcePath);
+
+        return getRootDirectory(sourcePath);
+    }
+
+    /**
+     * @return Application root path in dev mode or prod mode, knowing current source path
+     */
+    public static Path getRootDirectory(Path sourcePath) {
+        // Run from dev build or JAR?
+        final Path devSrcBuildSubPath = Paths.get("lib-unlimited","build", "classes", "java", "main");
+        final Path devJarBuildSubPath = Paths.get("lib-unlimited","build", "libs", "lib-unlimited-x.y.z-SNAPSHOT.jar");
+        final Path prodBuildSubPath = Paths.get("tools","lib", "tduf.jar");
+
+        Path effectiveSubPath;
+        if (sourcePath.endsWith(prodBuildSubPath)) {
+            effectiveSubPath = prodBuildSubPath;
+        } else {
+            effectiveSubPath = FilesHelper.isPathContained(devSrcBuildSubPath, sourcePath) ? devSrcBuildSubPath : devJarBuildSubPath;
+        }
+        final Path rootPath = sourcePath.getRoot().resolve(sourcePath.subpath(0, sourcePath.getNameCount() - effectiveSubPath.getNameCount()));
+
+        Log.debug(THIS_CLASS_NAME, "Executable location: " + rootPath);
+        return rootPath;
     }
 
     /* Only applies to extracted files (test via ide) - not valid if inside a jar. */
