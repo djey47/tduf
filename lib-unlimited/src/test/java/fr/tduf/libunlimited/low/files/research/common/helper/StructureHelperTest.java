@@ -150,4 +150,20 @@ class StructureHelperTest {
         assertThrows(NullPointerException.class,
                 () -> StructureHelper.getFieldDefinitionFromFullName("entry_list[0].my_field", null));
     }
+
+    @Test
+    void retrieveStructureFromSupportedFileName_whenNoCandidate_shouldReturnEmpty() throws IOException {
+        // given-when-then
+        assertThat(StructureHelper.retrieveStructureFromSupportedFileName("hello.txt")).isEmpty();
+    }
+
+    @Test
+    void retrieveStructureFromSupportedFileName_whenEmbeddedCandidate_shouldReturnStructure() throws IOException {
+        // given-when
+        Optional<FileStructureDto> actualStructure = StructureHelper.retrieveStructureFromSupportedFileName("Bnk1.map");
+
+        // then
+        assertThat(actualStructure).isNotEmpty();
+        assertThat(actualStructure.get().getName()).isEqualTo("TDU BNK Mapping");
+    }
 }
