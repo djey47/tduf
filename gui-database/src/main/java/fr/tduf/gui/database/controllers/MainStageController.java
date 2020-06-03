@@ -116,7 +116,7 @@ public class MainStageController extends AbstractGuiController {
     ComboBox<ContentEntryDataItem> entryNumberComboBox;
 
     @FXML
-    TextField entryFilterTextField;
+    private TextField entryFilterTextField;
 
     @FXML
     Button entryFilterButton;
@@ -396,6 +396,18 @@ public class MainStageController extends AbstractGuiController {
 
         ofNullable(currentTopicObject)
                 .ifPresent(topicObject -> askForGenuinePatchLocationAndImportDataFromFile());
+    }
+
+    @FXML
+    public void handleFilterTextFieldKeyPressed(KeyEvent ke) {
+        Log.trace(THIS_CLASS_NAME, "->handleFilterTextFieldKeyPressed");
+
+        if (ke.getCode() != KeyCode.ENTER)
+        {
+            return;
+        }
+
+        viewDataController.applyEntryFilter();
     }
 
     @FXML

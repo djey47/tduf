@@ -7,6 +7,8 @@ import fr.tduf.gui.database.services.DatabaseLoader;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -157,5 +159,23 @@ class MainStageControllerTest extends ApplicationTest {
 
         // then
         verify(viewDataControllerMock).resetEntryFilter();
+    }
+
+    @Test
+    void handleFilterTextFieldKeyPressed_whenNonEnterKey_shouldDoNothing() {
+        // given-when
+        controller.handleFilterTextFieldKeyPressed(new KeyEvent(KeyEvent.KEY_PRESSED, "", "", KeyCode.COLON, false, false, false, false ));
+
+        // then
+        verifyNoInteractions(viewDataControllerMock);
+    }
+
+    @Test
+    void handleFilterTextFieldKeyPressed_whenEnterKey_shouldInvokeViewDataController() {
+        // given-when
+        controller.handleFilterTextFieldKeyPressed(new KeyEvent(KeyEvent.KEY_PRESSED, "", "", KeyCode.ENTER, false, false, false, false ));
+
+        // then
+        verify(viewDataControllerMock).applyEntryFilter();
     }
 }

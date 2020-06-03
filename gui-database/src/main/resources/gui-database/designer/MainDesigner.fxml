@@ -151,7 +151,7 @@
                 </tooltip>
             </ComboBox>
          <Pane HBox.hgrow="ALWAYS" />
-         <TextField fx:id="entryFilterTextField" prefWidth="175.0">
+         <TextField fx:id="entryFilterTextField" prefWidth="175.0" onKeyPressed="#handleFilterTextFieldKeyPressed">
             <tooltip>
                 <Tooltip text="Search criteria: either rank, or part of label, or internal reference." />
             </tooltip>
