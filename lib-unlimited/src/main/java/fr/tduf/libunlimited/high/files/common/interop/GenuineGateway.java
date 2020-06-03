@@ -3,6 +3,7 @@ package fr.tduf.libunlimited.high.files.common.interop;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
+import fr.tduf.libunlimited.common.helper.JsonHelper;
 import fr.tduf.libunlimited.common.system.domain.ProcessResult;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -81,9 +82,10 @@ public abstract class GenuineGateway {
         ProcessResult processResult = commandLineHelper.runCliCommand(binaryPath, allArguments.toArray(new String[0]));
         handleCommandLineErrors(processResult);
 
-        Log.debug(THIS_CLASS_NAME, String.format("Genuine CLI command: '%s' > %s", processResult.getCommandName(), processResult.getOut()));
+        String processOutput = processResult.getOut();
+        Log.debug(THIS_CLASS_NAME, String.format("Genuine CLI command: '%s' > %s", processResult.getCommandName(), processOutput));
 
-        return processResult.getOut();
+        return cleanCommandOutput(processOutput);
     }
 
     /**
@@ -136,6 +138,28 @@ public abstract class GenuineGateway {
             String errorMessage = String.format("Unable to execute genuine CLI command: '%s' > (%d) %s", processResult.getCommandName(), processResult.getReturnCode(), processResult.getErr());
             Log.error(THIS_CLASS_NAME, errorMessage);
             throw new IOException(errorMessage);
+        }
+    }
+
+    private static String cleanCommandOutput(String processOutput) throws IOException {
+        try {
+            int jsonStartIndex = processOutput.indexOf("{");
+            int jsonEndIndex = processOutput.lastIndexOf("}");
+            if (jsonStartIndex == -1 || jsonEndIndex == -1) {
+                throw new IOException();
+            }
+
+            String cleanedOutput = processOutput.substring(jsonStartIndex, jsonEndIndex + 1);
+
+            if (!JsonHelper.isValid(cleanedOutput)) {
+                throw new IOException();
+            }
+
+            return cleanedOutput;
+        } catch (IOException ioe) {
+            String errorMessage = String.format("CLI command output is not valid JSON: %s", processOutput);
+            Log.error(THIS_CLASS_NAME, errorMessage);
+            throw new IOException(errorMessage, ioe);
         }
     }
 }

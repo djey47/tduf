@@ -85,14 +85,26 @@ class GenuineGatewayTest {
     @Test
     void callCommandLineInterface_whenCommandSuccess_shouldReturnOutput() throws IOException {
         // given
-        ProcessResult succesProcessResult = new ProcessResult("TEST", 0, "OUTPUT", "");
-        when(commandLineHelperMock.runCliCommand(anyString(), any())).thenReturn(succesProcessResult);
+        ProcessResult successProcessResult = new ProcessResult("TEST", 0, "{}", "");
+        when(commandLineHelperMock.runCliCommand(anyString(), any())).thenReturn(successProcessResult);
 
         // when
         String actualOutput = genuineGateway.callCommandLineInterface(GenuineGateway.CommandLineOperation.BANK_INFO);
 
         // then
-        assertThat(actualOutput).isEqualTo("OUTPUT");
+        assertThat(actualOutput).isEqualTo("{}");
+    }
+
+    @Test
+    void callCommandLineInterface_whenCommandSuccess_butInvalidJson_shouldThrowException() throws IOException {
+        // given
+        ProcessResult successProcessResult = new ProcessResult("TEST", 0, "NOJSON", "");
+        when(commandLineHelperMock.runCliCommand(anyString(), any())).thenReturn(successProcessResult);
+
+        // when-then
+        IOException actualException = assertThrows(IOException.class,
+                () -> genuineGateway.callCommandLineInterface(GenuineGateway.CommandLineOperation.BANK_INFO));
+        assertThat(actualException).hasMessage("CLI command output is not valid JSON: NOJSON");
     }
 
     @Test
