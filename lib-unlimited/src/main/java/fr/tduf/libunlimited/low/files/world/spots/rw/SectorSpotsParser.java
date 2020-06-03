@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.low.files.world.spots.rw;
 
 import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
+import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
 import fr.tduf.libunlimited.low.files.world.spots.domain.SectorSpotsInfo;
 
@@ -28,6 +29,11 @@ public class SectorSpotsParser extends GenericParser<SectorSpotsInfo> {
     @Override
     public String getStructureResource() {
         return "/files/structures/SPT-sector-map.json";
+    }
+
+    @Override
+    public FileStructureDto getStructure() {
+        return null;
     }
 
     @Override

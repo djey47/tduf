@@ -41,9 +41,14 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
 
     protected GenericParser(XByteArrayInputStream inputStream) throws IOException {
         requireNonNull(inputStream, "Data stream is required");
-        requireNonNull(getStructureResource(), "Data structure resource is required");
 
-        FileStructureDto fileStructure = StructureHelper.retrieveStructureFromLocation(getStructureResource());
+        FileStructureDto fileStructure;
+        if (getStructureResource() == null) {
+            fileStructure = requireNonNull(getStructure(), "Data structure object is required");
+        } else {
+            fileStructure = StructureHelper.retrieveStructureFromLocation(getStructureResource());
+        }
+
         this.dataStore = new DataStore(fileStructure);
         this.inputStream = StructureHelper.decryptIfNeeded(inputStream, fileStructure.getCryptoMode());
     }
@@ -388,6 +393,7 @@ public abstract class GenericParser<T> implements StructureBasedProcessor {
         return dataStore;
     }
 
+    // Visible for testing use
     FileStructureDto getFileStructure() {
         return this.dataStore.getFileStructure();
     }

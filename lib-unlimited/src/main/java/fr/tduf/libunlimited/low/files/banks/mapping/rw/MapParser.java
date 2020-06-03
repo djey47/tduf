@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.low.files.banks.mapping.rw;
 
 import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
+import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
 
 import java.io.IOException;
@@ -70,5 +71,10 @@ public class MapParser extends GenericParser<BankMap> {
     @Override
     public String getStructureResource() {
         return "/files/structures/MAP4-map.json";
+    }
+
+    @Override
+    public FileStructureDto getStructure() {
+        return null;
     }
 }

@@ -6,6 +6,7 @@ import fr.tduf.libunlimited.low.files.bin.cameras.domain.CamerasDatabase;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewKind;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
+import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
 
 import java.io.IOException;
@@ -111,5 +112,10 @@ public class CamerasParser extends GenericParser<CamerasDatabase> {
     @Override
     public String getStructureResource() {
         return "/files/structures/BIN-cameras-map.json";
+    }
+
+    @Override
+    public FileStructureDto getStructure() {
+        return null;
     }
 }

@@ -17,7 +17,6 @@ import org.mockito.Mock;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -178,6 +177,38 @@ class FileToolIntegTest {
 
         assertThat(actualFile).exists();
         assertThat(expectedFile).exists();
+        AssertionsHelper.assertFileMatchesReference(actualFile, expectedFile);
+    }
+
+    @Test
+    void jsonifyApplyJson_whenAutoStructure_shouldGiveOriginalContentsBack() throws IOException {
+        String researchDirectory = RESOURCES_PATH.resolve("research").toString();
+
+        // GIVEN
+        String sourceFileNameToBeJsonified = "Bnk1.map";
+        String inputFileName = Paths.get(researchDirectory, sourceFileNameToBeJsonified).toString();
+        File expectedFile = new File(inputFileName);
+        String jsonifiedFileName = "Bnk1.json";
+        String outputFileName = Paths.get(jsonifyDirectory, jsonifiedFileName).toString();
+
+        // WHEN: jsonify
+        System.out.println("-> Jsonify!");
+        FileTool.main(new String[]{"jsonify", "-n", "-i", inputFileName, "-o", outputFileName});
+
+        // THEN: file should exist
+        assertThat(new File(outputFileName)).exists();
+
+
+        // GIVEN
+        inputFileName = outputFileName;
+        outputFileName = Paths.get(applyjsonDirectory, sourceFileNameToBeJsonified).toString();
+
+        // WHEN: applyJson
+        System.out.println("-> Applyjson!");
+        FileTool.main(new String[]{"applyjson", "-n", "-i", inputFileName, "-o", outputFileName});
+
+        // THEN: file should match reference one
+        File actualFile = new File(outputFileName);
         AssertionsHelper.assertFileMatchesReference(actualFile, expectedFile);
     }
 

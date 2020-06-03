@@ -5,6 +5,7 @@ import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.low.files.common.domain.DataStoreProps;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
+import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -434,6 +435,11 @@ class GenericParserTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -457,6 +463,11 @@ class GenericParserTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-repeater-lvl2-complex-map.json";
+            }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
             }
         };
     }
@@ -484,6 +495,11 @@ class GenericParserTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-repeater-contents-size-map.json";
+            }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
             }
         };
     }
@@ -519,6 +535,11 @@ class GenericParserTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-encrypted-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -547,6 +568,11 @@ class GenericParserTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-halfFloat-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -574,6 +600,11 @@ class GenericParserTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-veryShortInt-map.json";
+            }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
             }
         };
     }
@@ -611,6 +642,11 @@ class GenericParserTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-littleEndian-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -624,6 +660,11 @@ class GenericParserTest {
             @Override
             public String getStructureResource() {
                 return "./src/test/resources/files/structures/TEST-map.json";
+            }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
             }
         };
     }
@@ -657,6 +698,11 @@ class GenericParserTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-formulas-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -684,6 +730,11 @@ class GenericParserTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-signedInteger-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -701,6 +752,11 @@ class GenericParserTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-constants-map.json";
+            }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
             }
         };
     }
@@ -720,6 +776,11 @@ class GenericParserTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-links-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -737,6 +798,11 @@ class GenericParserTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-gap-map.json";
+            }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
             }
         };
     }
@@ -756,6 +822,11 @@ class GenericParserTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-constants-unmatching-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -773,6 +844,11 @@ class GenericParserTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-constants-unmatching-nocheck-map.json";
+            }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
             }
         };
     }
@@ -792,6 +868,11 @@ class GenericParserTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-gap-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -809,6 +890,11 @@ class GenericParserTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-gap-nocheck-map.json";
+            }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
             }
         };
     }
@@ -831,6 +917,11 @@ class GenericParserTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-conditional-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -852,6 +943,11 @@ class GenericParserTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-conditional-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -867,6 +963,11 @@ class GenericParserTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-map.json";
+            }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
             }
         };
     }

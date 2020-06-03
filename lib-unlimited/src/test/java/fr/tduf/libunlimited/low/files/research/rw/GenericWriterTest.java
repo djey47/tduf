@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.low.files.research.rw;
 
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
+import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -347,6 +348,11 @@ class GenericWriterTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -368,6 +374,11 @@ class GenericWriterTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-repeater-lvl2-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -384,6 +395,11 @@ class GenericWriterTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-links-map.json";
+            }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
             }
         };
     }
@@ -406,6 +422,11 @@ class GenericWriterTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-remaining-map.json";
+            }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
             }
         };
     }
@@ -438,6 +459,11 @@ class GenericWriterTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -468,6 +494,11 @@ class GenericWriterTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-encrypted-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -488,6 +519,11 @@ class GenericWriterTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-halfFloat-map.json";
+            }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
             }
         };
     }
@@ -510,6 +546,11 @@ class GenericWriterTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-veryShortInt-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -525,6 +566,11 @@ class GenericWriterTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-unsignedLong-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }    
     
@@ -536,6 +582,11 @@ class GenericWriterTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-constants-map.json";
+            }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
             }
         };
     }
@@ -570,6 +621,11 @@ class GenericWriterTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-auto-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -581,6 +637,11 @@ class GenericWriterTest {
             @Override
             public String getStructureResource() {
                 return "./src/test/resources/files/structures/TEST-map.json";
+            }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
             }
         };
     }
@@ -612,6 +673,11 @@ class GenericWriterTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-littleEndian-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -637,6 +703,11 @@ class GenericWriterTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-formulas-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -657,6 +728,11 @@ class GenericWriterTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-conditional-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -668,6 +744,11 @@ class GenericWriterTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-map.json";
+            }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
             }
         };
     }

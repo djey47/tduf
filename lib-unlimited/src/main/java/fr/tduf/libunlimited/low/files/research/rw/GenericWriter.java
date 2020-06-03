@@ -29,10 +29,16 @@ public abstract class GenericWriter<T> implements StructureBasedProcessor {
 
     protected GenericWriter(T data) throws IOException {
         requireNonNull(data, "Data is required");
-        requireNonNull(getStructureResource(), "Data structure resource is required");
+
+        FileStructureDto fileStructure;
+        if (getStructureResource() == null) {
+            fileStructure = requireNonNull(getStructure(), "Data structure object is required");
+        } else {
+            fileStructure = StructureHelper.retrieveStructureFromLocation(getStructureResource());
+        }
 
         this.data = data;
-        this.dataStore = new DataStore(StructureHelper.retrieveStructureFromLocation(getStructureResource()));
+        this.dataStore = new DataStore(fileStructure);
     }
 
     /**
@@ -179,6 +185,7 @@ public abstract class GenericWriter<T> implements StructureBasedProcessor {
                 });
     }
 
+    // Visible for testing use
     FileStructureDto getFileStructure() {
         return this.dataStore.getFileStructure();
     }

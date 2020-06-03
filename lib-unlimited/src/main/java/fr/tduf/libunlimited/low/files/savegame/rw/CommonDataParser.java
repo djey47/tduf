@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.low.files.savegame.rw;
 
 import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
+import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
 import fr.tduf.libunlimited.low.files.savegame.domain.SaveGame;
 
@@ -32,5 +33,10 @@ public class CommonDataParser extends GenericParser<SaveGame> {
     @Override
     public String getStructureResource() {
         return "/files/structures/PLAYERSAVE-COMMONDT-map.json";
+    }
+
+    @Override
+    public FileStructureDto getStructure() {
+        return null;
     }
 }
