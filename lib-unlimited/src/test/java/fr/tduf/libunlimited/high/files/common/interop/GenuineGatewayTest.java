@@ -11,8 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -29,8 +27,6 @@ class GenuineGatewayTest {
         }
     }
 
-    private static final Path TOOL_PATH = Paths.get("tools", "tdumt-cli");
-
     @Mock
     private CommandLineHelper commandLineHelperMock;
 
@@ -45,41 +41,6 @@ class GenuineGatewayTest {
     @BeforeEach
     void setUp() {
         initMocks(this);
-    }
-
-    @Test
-    void getRootDirectory_whenInTestMode_shouldRetrieveToolsDirectoryAtRoot() throws Exception {
-        // GIVEN-WHEN
-        final Path actualDirectory = GenuineGateway.getRootDirectory();
-
-        // THEN
-        assertThat(actualDirectory.resolve(TOOL_PATH)).exists();
-    }
-
-    @Test
-    void getRootDirectory_whenProvidedProdSourcePath_asProdBuild_shouldRetrieveRootDirectory() {
-        // GIVEN
-        final Path sourcePath = Paths.get("/", "home", "user", "apps", "tduf", "tools", "lib", "tduf.jar");
-
-        // WHEN
-        final Path actualDirectory = GenuineGateway.getRootDirectory(sourcePath);
-
-        // THEN
-        final Path expectedPath = Paths.get("/", "home", "user", "apps", "tduf");
-        assertThat(actualDirectory).isEqualTo(expectedPath);
-    }
-
-    @Test
-    void getRootDirectory_whenProvidedProdSourcePath_asDevBuild_shouldRetrieveRootDirectory() {
-        // GIVEN
-        final Path sourcePath = Paths.get("/", "home", "user", "dev", "tduf", "lib-unlimited", "build", "libs", "lib-unlimited-1.13.0-SNAPSHOT.jar");
-
-        // WHEN
-        final Path actualDirectory = GenuineGateway.getRootDirectory(sourcePath);
-
-        // THEN
-        final Path expectedPath = Paths.get("/", "home", "user", "dev", "tduf");
-        assertThat(actualDirectory).isEqualTo(expectedPath);
     }
 
     @Test
