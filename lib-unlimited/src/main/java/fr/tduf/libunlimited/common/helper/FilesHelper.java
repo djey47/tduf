@@ -1,6 +1,8 @@
 package fr.tduf.libunlimited.common.helper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ScanResult;
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -16,11 +18,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Iterator;
-import java.util.Objects;
+import java.nio.file.*;
+import java.util.*;
 import java.util.function.BiPredicate;
 
 import static java.util.Objects.requireNonNull;
@@ -55,6 +54,8 @@ public class FilesHelper {
         }
         return !subPathIterator.hasNext();
     };
+
+    private static final ClassGraph classGraph = new ClassGraph().enableClassInfo();
 
     private FilesHelper() {}
 
@@ -188,6 +189,21 @@ public class FilesHelper {
      */
     public static boolean isPathContained(Path subPath, Path fullPath) {
         return containsSubPathPredicate.test(fullPath, subPath);
+    }
+
+    /**
+     * @return all resource paths contained in internal directory, having specified extension
+     */
+    public static Set<String> getResourcesFromDirectory(String internalDirectory, String extension) {
+        requireNonNull(internalDirectory, "Internal directory must be provided");
+        requireNonNull(extension, "Resource extension must be provided");
+
+        try (ScanResult scanResult = classGraph.scan()) {
+            List<String> resourcePaths = scanResult.getResourcesWithExtension(extension)
+                    .filter(resource -> resource.getPath().startsWith(internalDirectory))
+                    .getPaths();
+            return new HashSet<>(resourcePaths);
+        }
     }
 
     /* Only applies to extracted files (test via ide) - not valid if inside a jar. */

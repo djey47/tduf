@@ -15,6 +15,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -264,5 +265,23 @@ class FilesHelperTest {
 
         // when-then
         assertThat(FilesHelper.isPathContained(subPath, fullPath)).isFalse();
+    }
+
+    @Test
+    void getResourcesFromDirectory_whenMatchingResources_shouldReturnPopulatedSet() {
+        // given-when
+        Set<String> actualResources = FilesHelper.getResourcesFromDirectory("files/structures", "json");
+
+        // then
+        assertThat(actualResources).isNotEmpty();
+    }
+
+    @Test
+    void getResourcesFromDirectory_whenNonMatchingResources_shouldReturnEmptySet() {
+        // given-when
+        Set<String> actualResources = FilesHelper.getResourcesFromDirectory("files/structures", "foo");
+
+        // then
+        assertThat(actualResources).isEmpty();
     }
 }

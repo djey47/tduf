@@ -159,6 +159,7 @@ project(':lib-unlimited') {
     dependencies {
         implementation group: 'net.objecthunter', name: 'exp4j', version: "$exp4jVersion"
         implementation group: 'javax.xml.bind', name: 'jaxb-api', version: "$jaxbapiVersion"
+        implementation group: 'io.github.classgraph', name: 'classgraph', version: "4.8.80"
 
         api group: 'commons-io', name: 'commons-io', version: '2.6'
     }
