@@ -15,7 +15,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -26,21 +25,23 @@ import static java.util.stream.Collectors.toList;
  * Utility class to provide common operations on Structures.
  */
 public class StructureHelper {
-    private static final String THIS_CLASS_NAME = StructureHelper.class.getSimpleName();
+    private static final Class<StructureHelper> THIS_CLASS = StructureHelper.class;
+    private static final String THIS_CLASS_NAME = THIS_CLASS.getSimpleName();
 
     /**
-     * @param resource : resource name or file location.
+     * @param location : resource name or file location.
      * @return file structure, according to specified location
      */
-    public static FileStructureDto retrieveStructureFromLocation(String resource) throws IOException {
-        InputStream fileStructureStream = StructureHelper.class.getResourceAsStream(resource);
+    public static FileStructureDto retrieveStructureFromLocation(String location) throws IOException {
+        InputStream fileStructureStream = THIS_CLASS.getResourceAsStream(location);
+        ObjectMapper objectMapper = new ObjectMapper();
         if (fileStructureStream == null) {
             // Regular file
-            File file = new File(resource);
-            return new ObjectMapper().readValue(file, FileStructureDto.class);
+            File file = new File(location);
+            return objectMapper.readValue(file, FileStructureDto.class);
         }
         // Classpath resource
-        return new ObjectMapper().readValue(fileStructureStream, FileStructureDto.class);
+        return objectMapper.readValue(fileStructureStream, FileStructureDto.class);
     }
 
     /**
@@ -54,34 +55,18 @@ public class StructureHelper {
         Path externalStructuresPath = Paths.get(FileConstants.DIRECTORY_EXTERNAL_STRUCTURES);
         if (Files.exists(externalStructuresPath)) {
             try (Stream<Path> paths = Files.walk(externalStructuresPath)) {
-                externalStructures = paths
+                externalStructures.addAll(paths
                         .filter(Files::isRegularFile)
-                        .map(externalFilePath -> {
-                            try {
-                                return retrieveStructureFromLocation(externalFilePath.toString());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                return null;
-                            }
-                        })
-                        .filter(Objects::nonNull)
-                        .filter(s -> s.getFileNamePattern() != null)
-                        .collect(toList());
+                        .map(resourcePath -> retrieveStructureFromLocationFailSafe(resourcePath.toString()))
+                        .filter(StructureHelper::isStructureEligibleToAuto)
+                        .collect(toList()));
             }
         }
 
         // Load all embedded structures
         List<FileStructureDto> embeddedStructures = FilesHelper.getResourcesFromDirectory("files/structures", "json").parallelStream()
-                .map(resourcePath -> {
-                    try {
-                        return retrieveStructureFromLocation("/" + resourcePath);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        return null;
-                    }
-                })
-                .filter(Objects::nonNull)
-                .filter(s -> s.getFileNamePattern() != null)
+                .map(resourcePath -> retrieveStructureFromLocationFailSafe("/" + resourcePath))
+                .filter(StructureHelper::isStructureEligibleToAuto)
                 .collect(toList());
 
         return findFileStructureCandidate(fileName, externalStructures, embeddedStructures);
@@ -142,6 +127,15 @@ public class StructureHelper {
                 .collect(toList());
 
         return searchFieldWithNameRecursively(compounds, fileStructureObject.getFields());
+    }
+
+    private static FileStructureDto retrieveStructureFromLocationFailSafe(String location) {
+        try {
+            return retrieveStructureFromLocation(location);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private static String removeArrayArtefacts(String compoundName) {
@@ -205,5 +199,9 @@ public class StructureHelper {
                     return fileName.toLowerCase().matches(regexPattern);
                 })
                 .findAny();
+    }
+
+    private static boolean isStructureEligibleToAuto(FileStructureDto fileStructureDto) {
+        return fileStructureDto != null && fileStructureDto.getFileNamePattern() != null;
     }
 }
