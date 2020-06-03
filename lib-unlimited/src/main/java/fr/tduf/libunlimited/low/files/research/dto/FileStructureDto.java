@@ -44,6 +44,9 @@ public class FileStructureDto implements Serializable {
     @JsonProperty("comment")
     private String comment;
 
+    @JsonProperty("fileName")
+    private String fileNamePattern;
+
     /**
      * @return builder, used to generate custom values.
      */
@@ -74,6 +77,14 @@ public class FileStructureDto implements Serializable {
 
     public Integer getCryptoMode() {
         return cryptoMode;
+    }
+
+    public String getFileNamePattern() {
+        return fileNamePattern;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public static class FileStructureDtoBuilder {

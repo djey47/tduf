@@ -1,5 +1,6 @@
 {
   "name": "Cameras and views settings",
+  "fileName": "cameras.bin",
   "littleEndian": true,
   "fields": [
     {

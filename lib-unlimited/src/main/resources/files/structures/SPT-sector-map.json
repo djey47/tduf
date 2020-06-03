@@ -1,5 +1,6 @@
 {
   "name": "Spots database for cruising mode",
+  "fileName": "sector-*.spt",
   "littleEndian": true,
   "fields": [
     {

@@ -1,5 +1,6 @@
 {
   "name": "Materials definition for 3D modeling",
+  "fileName": "*.2dm",
   "littleEndian": true,
   "fields": [
     {

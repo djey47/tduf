@@ -1,5 +1,6 @@
 {
   "name": "TDU Savegame - Common data",
+  "fileName": "commondt.sav",
   "littleEndian": false,
   "cryptoMode": 0,
   "fields": [

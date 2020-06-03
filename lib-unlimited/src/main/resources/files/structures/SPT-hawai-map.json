@@ -1,5 +1,6 @@
 {
   "name": "Spots database on Hawaii map",
+  "fileName": "hawai.spt",
   "littleEndian": true,
   "fields": [
     {
