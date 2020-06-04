@@ -45,7 +45,7 @@ public class MessagesHelper {
      * @return error message to be displayed
      */
     public static String getServiceErrorMessage(Service<?> service) {
-        requireNonNull(service, "Exception must not be null");
+        requireNonNull(service, "Service instance must not be null");
         return String.format(FORMAT_MESSAGE_SERVICE_ERROR, service.getMessage());
     }
 }
