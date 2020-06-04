@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.services;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.common.services.tasks.GenericServiceTask;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.db.common.helper.BankHelper;
@@ -15,11 +16,9 @@ import javafx.concurrent.Task;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 import static fr.tduf.gui.database.common.DisplayConstants.*;
-import static java.util.Objects.requireNonNull;
 
 /**
  * Background service to load database objects from banks or json files
@@ -33,10 +32,7 @@ public class DatabaseLoader extends Service<List<DbDto>> {
     /**
      * Created for advanced features and easier testing
      */
-    class LoaderTask extends Task<List<DbDto>> {
-        // TODO [2.0] create abstract generic task for advanced features
-        private final List<String> messageHistory = new ArrayList<>();
-
+    class LoaderTask extends GenericServiceTask<List<DbDto>> {
         @Override
         protected List<DbDto> call() throws Exception {
             updateMessage(STATUS_LOADING_DATA);
@@ -62,19 +58,6 @@ public class DatabaseLoader extends Service<List<DbDto>> {
             updateMessage(String.format(STATUS_FORMAT_LOADED_DATABASE, realDatabaseLocation));
 
             return databaseObjects;
-
-        }
-
-        @Override
-        protected void updateMessage(String s) {
-            requireNonNull(s, "Message cannot be null");
-
-            messageHistory.add(s);
-            super.updateMessage(s);
-        }
-
-        protected List<String> getMessageHistory() {
-            return messageHistory;
         }
     }
 
