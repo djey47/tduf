@@ -7,6 +7,7 @@ import fr.tduf.gui.database.plugins.cameras.common.FxConstants;
 import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
+import fr.tduf.gui.database.plugins.common.contexts.PluginContext;
 import fr.tduf.gui.database.plugins.mapping.converter.BooleanStatusToDisplayConverter;
 import fr.tduf.gui.database.plugins.mapping.domain.MappingEntry;
 import fr.tduf.libunlimited.common.game.FileConstants;
@@ -66,7 +67,7 @@ public class MappingPlugin extends AbstractDatabasePlugin {
             CAR_PHYSICS_DATA, CAR_PACKS, CAR_SHOPS, CLOTHES, HOUSES, RIMS, TUTORIALS
     ));
 
-    private final MappingContext mappingContext = new MappingContext();
+    private final PluginContext mappingContext = new PluginContext();
 
     @SuppressWarnings("FieldMayBeFinal")
     private Property<BankMap> bankMapProperty = new SimpleObjectProperty<>();
@@ -479,7 +480,7 @@ public class MappingPlugin extends AbstractDatabasePlugin {
         super.setEditorContext(editorContext);
     }
 
-    public MappingContext getMappingContext() {
+    PluginContext getMappingContext() {
         return mappingContext;
     }
 }

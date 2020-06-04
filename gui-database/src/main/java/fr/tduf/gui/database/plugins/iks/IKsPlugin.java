@@ -4,6 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
+import fr.tduf.gui.database.plugins.common.contexts.PluginContext;
 import fr.tduf.gui.database.plugins.iks.converter.IKReferenceToItemConverter;
 import fr.tduf.gui.database.plugins.iks.converter.IKReferenceToRawValueConverter;
 import fr.tduf.libunlimited.high.files.db.common.helper.CameraAndIKHelper;
@@ -41,7 +42,7 @@ public class IKsPlugin extends AbstractDatabasePlugin {
     private static final Class<IKsPlugin> thisClass = IKsPlugin.class;
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 
-    private final IKsContext iksContext = new IKsContext();
+    private final PluginContext iksContext = new PluginContext();
 
     private CameraAndIKHelper ikRefHelper;
 

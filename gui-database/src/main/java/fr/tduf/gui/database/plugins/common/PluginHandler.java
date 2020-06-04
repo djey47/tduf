@@ -82,6 +82,20 @@ public class PluginHandler {
     }
 
     /**
+     * @return right "On The Fly" context for given plugin name
+     */
+    public static OnTheFlyContext initializeOnTheFlyContextForPlugin(String pluginName) {
+        try {
+            PluginIndex resolvedPlugin = PluginIndex.valueOf(pluginName);
+            Class<? extends OnTheFlyContext> contextClass = resolvedPlugin.getOnTheFlyContextClass();
+            return contextClass.newInstance();
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException ie) {
+            Log.error(THIS_CLASS_NAME, "Unable to initialize \"On The Fly\" context for plugin: " + pluginName, ie);
+            return new OnTheFlyContext();
+        }
+    }
+
+    /**
      * Utility method to extract CSS from given resource
      * @param cssResource : resource path
      * @return CSS contents to be provided to FX engine

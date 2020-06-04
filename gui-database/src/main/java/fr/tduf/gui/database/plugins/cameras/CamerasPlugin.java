@@ -13,6 +13,7 @@ import fr.tduf.gui.database.plugins.cameras.helper.CamerasDialogsHelper;
 import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
+import fr.tduf.gui.database.plugins.common.contexts.PluginContext;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.helper.CamerasImExHelper;
 import fr.tduf.libunlimited.high.files.db.common.helper.CameraAndIKHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.*;
@@ -66,7 +67,7 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
     private static final Class<CamerasPlugin> thisClass = CamerasPlugin.class;
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 
-    private final CamerasContext camerasContext = new CamerasContext();
+    private final PluginContext camerasContext = new PluginContext();
 
     private CameraAndIKHelper cameraRefHelper;
     private CamerasDialogsHelper dialogsHelper;
@@ -537,7 +538,7 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
         super.setEditorContext(editorContext);
     }
 
-    public CamerasContext getCamerasContext() {
+    PluginContext getCamerasContext() {
         return camerasContext;
     }
 }

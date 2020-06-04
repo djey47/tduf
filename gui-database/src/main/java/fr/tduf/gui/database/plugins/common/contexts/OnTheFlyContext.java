@@ -9,7 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.layout.Pane;
 
 /**
- * Contains on-the-fly context for correct plugin execution
+ * Contains on-the-fly context for correct plugin execution. Can be extended to provide specific information.
  */
 public class OnTheFlyContext {
     private DbDto.Topic currentTopic;

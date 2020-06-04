@@ -4,9 +4,9 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
 
 /**
- * To be extended by any plugin context
+ * Piece of information required by any plugin
  */
-public abstract class AbstractPluginContext {
+public class PluginContext {
     private boolean pluginLoaded = false;
 
     private String binaryFileLocation;

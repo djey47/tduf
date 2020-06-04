@@ -9,6 +9,7 @@ import fr.tduf.gui.database.domain.ItemViewModel;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
 import fr.tduf.gui.database.listener.ErrorChangeListener;
+import fr.tduf.gui.database.plugins.common.PluginHandler;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
@@ -143,7 +144,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     }
 
     private void addPluginControls(String pluginName, DbDto.Topic currentTopic, HBox fieldBox, FieldSettingsDto fieldSettings, StringProperty rawValueProperty, StringProperty errorMessageProperty, BooleanProperty errorProperty, String fieldTargetRef) {
-        OnTheFlyContext onTheFlyContext = new OnTheFlyContext();
+        OnTheFlyContext onTheFlyContext = PluginHandler.initializeOnTheFlyContextForPlugin(pluginName);
         onTheFlyContext.setCurrentTopic(currentTopic);
         onTheFlyContext.setContentEntryIndexProperty(controller.getCurrentEntryIndexProperty());
         onTheFlyContext.setRemoteTopic(getEffectiveTopic(currentTopic, fieldTargetRef));

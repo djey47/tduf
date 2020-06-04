@@ -191,6 +191,25 @@ class PluginHandlerTest {
         verify(pluginInstanceMock).setSaveError(eq(saveError));
     }
 
+    @Test
+    void initializeOnTheFlyContextForPlugin_whenExistingPlugin_shouldReturnNewContextInstance() {
+        // given-when
+        OnTheFlyContext actualContext1 = PluginHandler.initializeOnTheFlyContextForPlugin("NOPE");
+        OnTheFlyContext actualContext2 = PluginHandler.initializeOnTheFlyContextForPlugin("NOPE");
+
+        // then
+        assertThat(actualContext1).isNotSameAs(actualContext2);
+    }
+
+    @Test
+    void initializeOnTheFlyContextForPlugin_whenNonExistingPlugin_shouldNotThrowException() {
+        // given-when
+        OnTheFlyContext actualContext = PluginHandler.initializeOnTheFlyContextForPlugin("NONE");
+
+        // then
+        assertThat(actualContext).isNotNull();
+    }
+
     private static class TestingParent extends Parent {
         private static Parent testingInstance() {
             return new TestingParent();
