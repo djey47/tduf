@@ -53,7 +53,7 @@ class MappingPluginTest {
     private BooleanProperty errorProperty;
 
     @Mock
-    private OnTheFlyContext onTheFlyContextMock;
+    private OnTheFlyMappingContext onTheFlyContextMock;
 
     @InjectMocks
     private MappingPlugin mappingPlugin;
@@ -100,7 +100,7 @@ class MappingPluginTest {
     void renderControls_whenNoMappingLoaded_shouldReturnEmptyComponent() {
         // given
         mappingPlugin.getMappingContext().setPluginLoaded(false);
-        OnTheFlyContext onTheFlyContext = new OnTheFlyContext();
+        OnTheFlyContext onTheFlyContext = new OnTheFlyMappingContext();
 
         // when
         Node actualNode = mappingPlugin.renderControls(onTheFlyContext);
