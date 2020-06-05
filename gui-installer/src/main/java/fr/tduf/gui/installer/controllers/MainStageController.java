@@ -17,7 +17,7 @@ import fr.tduf.gui.installer.controllers.helper.VehicleSlotUserInputHelper;
 import fr.tduf.gui.installer.domain.DatabaseContext;
 import fr.tduf.gui.installer.domain.InstallerConfiguration;
 import fr.tduf.gui.installer.domain.exceptions.StepException;
-import fr.tduf.gui.installer.services.DatabaseLoader;
+import fr.tduf.gui.installer.services.InstallerDatabaseLoader;
 import fr.tduf.gui.installer.services.StepsCoordinator;
 import fr.tduf.gui.installer.services.tasks.TaskType;
 import fr.tduf.gui.installer.steps.GenericStep;
@@ -66,7 +66,7 @@ public class MainStageController extends AbstractGuiController {
 
     private LongProperty progressProperty = new SimpleLongProperty();
     private BooleanProperty runningServiceProperty = new SimpleBooleanProperty();
-    private DatabaseLoader databaseLoader = new DatabaseLoader();
+    private InstallerDatabaseLoader databaseLoader = new InstallerDatabaseLoader();
     private DatabaseChecker databaseChecker = new DatabaseChecker();
     private DatabaseFixer databaseFixer = new DatabaseFixer();
     private StepsCoordinator stepsCoordinator = new StepsCoordinator();
