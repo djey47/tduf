@@ -51,6 +51,7 @@ public class DisplayConstants {
 
     public static final String STATUS_FMT_LOAD_IN_PROGRESS = "Performing database load %s, please wait...";
     public static final String STATUS_LOAD_DONE = "Done loading database.";
+    public static final String STATUS_LOAD_FAILED = "Could not load database.";
     public static final String STATUS_INSTALL_IN_PROGRESS = "Performing install, please wait...";
     public static final String STATUS_UNINSTALL_IN_PROGRESS = "Performing uninstall, please wait...";
     public static final String STATUS_RESET_IN_PROGRESS = "Performing TDUCP slot reset, please wait...";

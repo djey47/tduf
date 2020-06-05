@@ -35,6 +35,8 @@ public class DisplayConstants {
     public static final String STATUS_FMT_CHECK_DONE = "Done checking database, %d error(s).";
     public static final String STATUS_FMT_FIX_IN_PROGRESS = "Performing database fix %s, please wait...";
     public static final String STATUS_FMT_FIX_DONE = "Done fixing database, %d error(s) remaining.";
+    public static final String STATUS_CHECK_FAILED = "Could not check database.";
+    public static final String STATUS_FIX_FAILED = "Could not fix database.";
 
     private DisplayConstants() {}
 }

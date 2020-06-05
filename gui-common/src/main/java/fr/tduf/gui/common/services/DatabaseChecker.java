@@ -18,6 +18,9 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 
+import static fr.tduf.gui.common.DisplayConstants.STATUS_CHECK_FAILED;
+import static fr.tduf.gui.common.DisplayConstants.STATUS_FMT_CHECK_DONE;
+
 /**
  * Background service to load and check TDU database from banks directory.
  */
@@ -29,26 +32,32 @@ public class DatabaseChecker extends AbstractDatabaseService {
     class CheckerTask extends GenericServiceTask<Void> {
         @Override
         protected Void call() throws Exception {
-            // TODO [2.0] handle errors like Loader/Saver services
-            if (loadedDatabaseObjects.getValue() == null) {
-                updateMessage(String.format(DisplayConstants.STATUS_FMT_CHECK_IN_PROGRESS, "1/3"));
-                String jsonDirectory = resolveJsonDatabaseLocationAndUnpack(databaseLocation.get(), bankSupport.get());
-                jsonDatabaseLocation.setValue(jsonDirectory);
+            Set<IntegrityError> integrityErrorsFromExtensiveCheck;
 
-                updateMessage(String.format(DisplayConstants.STATUS_FMT_CHECK_IN_PROGRESS, "2/3"));
-                List<DbDto> fullDatabase = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDatabaseLocation.getValue());
-                loadedDatabaseObjects.setValue(fullDatabase);
-            } else {
-                jsonDatabaseLocation.setValue(databaseLocation.get());
+            try {
+                if (loadedDatabaseObjects.getValue() == null) {
+                    updateMessage(String.format(DisplayConstants.STATUS_FMT_CHECK_IN_PROGRESS, "1/3"));
+                    String jsonDirectory = resolveJsonDatabaseLocationAndUnpack(databaseLocation.get(), bankSupport.get());
+                    jsonDatabaseLocation.setValue(jsonDirectory);
+
+                    updateMessage(String.format(DisplayConstants.STATUS_FMT_CHECK_IN_PROGRESS, "2/3"));
+                    List<DbDto> fullDatabase = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDatabaseLocation.getValue());
+                    loadedDatabaseObjects.setValue(fullDatabase);
+                } else {
+                    jsonDatabaseLocation.setValue(databaseLocation.get());
+                }
+
+                updateMessage(String.format(DisplayConstants.STATUS_FMT_CHECK_IN_PROGRESS, "3/3"));
+                final DatabaseIntegrityChecker checkerComponent = AbstractDatabaseHolder.prepare(DatabaseIntegrityChecker.class, loadedDatabaseObjects.getValue());
+                integrityErrorsFromExtensiveCheck = checkerComponent.checkAllContentsObjects();
+
+                integrityErrors.setValue(integrityErrorsFromExtensiveCheck);
+            } catch (Exception e) {
+                updateMessage(STATUS_CHECK_FAILED);
+                throw e;
             }
 
-            updateMessage(String.format(DisplayConstants.STATUS_FMT_CHECK_IN_PROGRESS, "3/3"));
-            final DatabaseIntegrityChecker checkerComponent = AbstractDatabaseHolder.prepare(DatabaseIntegrityChecker.class, loadedDatabaseObjects.getValue());
-            final Set<IntegrityError> integrityErrorsFromExtensiveCheck = checkerComponent.checkAllContentsObjects();
-
-            integrityErrors.setValue(integrityErrorsFromExtensiveCheck);
-
-            updateMessage(String.format(DisplayConstants.STATUS_FMT_CHECK_DONE, integrityErrorsFromExtensiveCheck.size()));
+            updateMessage(String.format(STATUS_FMT_CHECK_DONE, integrityErrorsFromExtensiveCheck.size()));
 
             return null;
         }

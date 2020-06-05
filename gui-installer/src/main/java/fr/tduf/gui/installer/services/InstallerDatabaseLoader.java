@@ -20,6 +20,9 @@ import javafx.concurrent.Task;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static fr.tduf.gui.installer.common.DisplayConstants.STATUS_LOAD_DONE;
+import static fr.tduf.gui.installer.common.DisplayConstants.STATUS_LOAD_FAILED;
+
 /**
  * Background service to load TDU database from banks directory.
  */
@@ -34,17 +37,27 @@ public class InstallerDatabaseLoader extends Service<DatabaseContext> {
     class InstallerLoaderTask extends GenericServiceTask<DatabaseContext> {
         @Override
         protected DatabaseContext call() throws Exception {
-            updateMessage(String.format(DisplayConstants.STATUS_FMT_LOAD_IN_PROGRESS, "1/2"));
-            String jsonDirectory = DatabaseBanksCacheHelper.unpackDatabaseToJsonWithCacheSupport(Paths.get(databaseLocation.get()), bankSupport.get());
+            List<DbDto> databaseObjects;
+            String jsonDirectory;
 
-            updateMessage(String.format(DisplayConstants.STATUS_FMT_LOAD_IN_PROGRESS, "2/2"));
-            final List<DbDto> databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDirectory);
+            try {
+                updateMessage(String.format(DisplayConstants.STATUS_FMT_LOAD_IN_PROGRESS, "1/2"));
 
-            if (databaseObjects.isEmpty()) {
-                throw new StepException(GenericStep.StepType.LOAD_DATABASE, "Database could not be read", new IllegalArgumentException("Invalid location: " + databaseLocation.get()));
+                jsonDirectory = DatabaseBanksCacheHelper.unpackDatabaseToJsonWithCacheSupport(Paths.get(databaseLocation.get()), bankSupport.get());
+
+                updateMessage(String.format(DisplayConstants.STATUS_FMT_LOAD_IN_PROGRESS, "2/2"));
+
+                databaseObjects = DatabaseReadWriteHelper.readFullDatabaseFromJson(jsonDirectory);
+
+                if (databaseObjects.isEmpty()) {
+                    throw new StepException(GenericStep.StepType.LOAD_DATABASE, "Database could not be read", new IllegalArgumentException("Invalid location: " + databaseLocation.get()));
+                }
+            } catch (Exception e) {
+                updateMessage(STATUS_LOAD_FAILED);
+                throw e;
             }
 
-            updateMessage(DisplayConstants.STATUS_LOAD_DONE);
+            updateMessage(STATUS_LOAD_DONE);
 
             return new DatabaseContext(databaseObjects, jsonDirectory);
         }

@@ -18,6 +18,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 
+import static fr.tduf.gui.common.DisplayConstants.STATUS_FIX_FAILED;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -31,22 +32,29 @@ public class DatabaseFixer extends AbstractDatabaseService {
     class FixerTask extends GenericServiceTask<Void> {
         @Override
         protected Void call() throws Exception {
-            // TODO [2.0] handle errors like Loader/Saver services
-            final Path realDatabasePath = Paths.get(requireNonNull(databaseLocation.get(), "Database location is required."));
-            final List<DbDto> databaseObjects = requireNonNull(loadedDatabaseObjects.get(), "Loaded database objects are required.");
-            final String jsonDirectory = requireNonNull(jsonDatabaseLocation.get(), "JSON database location is required.");
+            Set<IntegrityError> remainingErrors;
 
-            updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_IN_PROGRESS, "1/3"));
-            final DatabaseIntegrityFixer fixerComponent = AbstractDatabaseHolder.prepare(DatabaseIntegrityFixer.class, databaseObjects);
-            Set<IntegrityError> remainingErrors = fixerComponent.fixAllContentsObjects(integrityErrors.get());
+            try {
+                final Path realDatabasePath = Paths.get(requireNonNull(databaseLocation.get(), "Database location is required."));
+                final List<DbDto> databaseObjects = requireNonNull(loadedDatabaseObjects.get(), "Loaded database objects are required.");
+                final String jsonDirectory = requireNonNull(jsonDatabaseLocation.get(), "JSON database location is required.");
 
-            updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_IN_PROGRESS, "2/3"));
-            DatabaseReadWriteHelper.writeDatabaseTopicsToJson(databaseObjects, jsonDirectory);
+                updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_IN_PROGRESS, "1/3"));
 
-            updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_IN_PROGRESS, "3/3"));
-            repackIfNecessary(realDatabasePath.toString(), bankSupport.get());
+                final DatabaseIntegrityFixer fixerComponent = AbstractDatabaseHolder.prepare(DatabaseIntegrityFixer.class, databaseObjects);
+                remainingErrors = fixerComponent.fixAllContentsObjects(integrityErrors.get());
 
-            integrityErrors.setValue(remainingErrors);
+                updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_IN_PROGRESS, "2/3"));
+                DatabaseReadWriteHelper.writeDatabaseTopicsToJson(databaseObjects, jsonDirectory);
+
+                updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_IN_PROGRESS, "3/3"));
+                repackIfNecessary(realDatabasePath.toString(), bankSupport.get());
+
+                integrityErrors.setValue(remainingErrors);
+            } catch (Exception e) {
+                updateMessage(STATUS_FIX_FAILED);
+                throw e;
+            }
 
             updateMessage(String.format(DisplayConstants.STATUS_FMT_FIX_DONE, remainingErrors.size()));
 
