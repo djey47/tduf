@@ -9,7 +9,6 @@ import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.javafx.helper.options.SimpleDialogOptions;
 import fr.tduf.gui.common.services.DatabaseChecker;
 import fr.tduf.gui.common.services.DatabaseFixer;
-import fr.tduf.gui.installer.common.DisplayConstants;
 import fr.tduf.gui.installer.common.InstallerConstants;
 import fr.tduf.gui.installer.common.helper.VehicleSlotsHelper;
 import fr.tduf.gui.installer.controllers.helper.DealerSlotUserInputHelper;
@@ -28,12 +27,11 @@ import fr.tduf.libunlimited.high.files.db.patcher.dto.DbPatchDto;
 import fr.tduf.libunlimited.high.files.db.patcher.helper.PatchPropertiesReadWriteHelper;
 import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import javafx.beans.property.*;
+import javafx.beans.value.ChangeListener;
+import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.DirectoryChooser;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -48,6 +46,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static fr.tduf.gui.installer.common.DisplayConstants.*;
 import static fr.tduf.gui.installer.common.InstallerConstants.DIRECTORY_DATABASE;
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_JSON;
 import static java.util.Objects.requireNonNull;
@@ -195,72 +194,22 @@ public class MainStageController extends AbstractGuiController {
     private void initActionToolbar() {
         tduDirectoryProperty = new SimpleStringProperty();
 
-        tduLocationTextField.setPromptText(DisplayConstants.PROMPT_TEXT_TDU_LOCATION);
+        tduLocationTextField.setPromptText(PROMPT_TEXT_TDU_LOCATION);
         tduLocationTextField.textProperty().bindBidirectional(tduDirectoryProperty);
     }
 
     private void initServiceListeners() {
-        databaseChecker.stateProperty().addListener((observableValue, oldState, newState) -> {
-            if (SUCCEEDED == newState) {
-                final Set<IntegrityError> integrityErrors = databaseChecker.integrityErrorsProperty().get();
-                if (integrityErrors.isEmpty()) {
-                    SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
-                            .withContext(INFORMATION)
-                            .withTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_CHECK_DB)
-                            .withMessage(DisplayConstants.MESSAGE_DB_CHECK_OK)
-                            .withDescription(DisplayConstants.MESSAGE_DB_ZERO_ERROR)
-                            .build();
-                    CommonDialogsHelper.showDialog(dialogOptions, getWindow());
-                    return;
-                }
-                if (DatabaseOpsHelper.displayCheckResultDialog(integrityErrors, getWindow(), DisplayConstants.TITLE_APPLICATION)) {
-                    fixDatabase();
-                }
-            } else if (FAILED == newState) {
-                handleServiceFailure(databaseChecker.exceptionProperty().get(), DisplayConstants.TITLE_SUB_CHECK_DB, DisplayConstants.MESSAGE_DB_CHECK_KO);
-            }
-        });
+        databaseChecker.stateProperty().addListener(getCheckerStateChangeListener());
 
-        databaseFixer.stateProperty().addListener((observableValue, oldState, newState) -> {
-            if (SUCCEEDED == newState) {
-                final Set<IntegrityError> remainingErrors = databaseFixer.integrityErrorsProperty().get();
-                if (remainingErrors.isEmpty()) {
-                    SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
-                            .withContext(INFORMATION)
-                            .withTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_FIX_DB)
-                            .withMessage(DisplayConstants.MESSAGE_DB_FIX_OK)
-                            .withDescription(DisplayConstants.MESSAGE_DB_ZERO_ERROR)
-                            .build();
-                    CommonDialogsHelper.showDialog(dialogOptions, getWindow());
-                } else {
-                    SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
-                            .withContext(WARNING)
-                            .withTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_FIX_DB)
-                            .withMessage(DisplayConstants.MESSAGE_DB_FIX_KO)
-                            .withDescription(DisplayConstants.MESSAGE_DB_REMAINING_ERRORS)
-                            .build();
-                    CommonDialogsHelper.showDialog(dialogOptions, getWindow());
-                }
-            } else if (FAILED == newState) {
-                handleServiceFailure(databaseFixer.exceptionProperty().get(), DisplayConstants.TITLE_SUB_FIX_DB, DisplayConstants.MESSAGE_DB_FIX_KO);
-            }
-        });
+        databaseFixer.stateProperty().addListener(getFixerStateChangeListener());
 
-        stepsCoordinator.stateProperty().addListener((observable, oldValue, newState) -> {
-            if (SUCCEEDED == newState) {
-                handleCoordinatorSuccess();
-            } else if (FAILED == newState) {
-                handleCoordinatorFailure();
-            }
+        stepsCoordinator.stateProperty().addListener(getCoordinatorStateChangeListener());
 
-            if (SUCCEEDED == newState || FAILED == newState) {
-                progressProperty.unbind();
-                progressProperty.setValue(0);
-                statusLabel.textProperty().unbind();
-            }
-        });
+        databaseLoader.stateProperty().addListener(getLoaderStateChangeListener());
+    }
 
-        databaseLoader.stateProperty().addListener((observable, oldValue, newState) -> {
+    private ChangeListener<Worker.State> getLoaderStateChangeListener() {
+        return (observable, oldValue, newState) -> {
             TaskType objective = databaseLoader.objectiveProperty().get();
             if (SUCCEEDED == newState) {
                 switch(objective) {
@@ -275,19 +224,69 @@ public class MainStageController extends AbstractGuiController {
                         break;
                 }
             } else if (FAILED == newState) {
+                String effectiveSubTitle;
                 switch(objective) {
                     case INSTALL:
-                        handleServiceFailure(databaseLoader.exceptionProperty().get(), DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_DB_LOAD_KO);
+                        effectiveSubTitle = TITLE_SUB_INSTALL;
                         break;
                     case UNINSTALL:
-                        handleServiceFailure(databaseLoader.exceptionProperty().get(), DisplayConstants.TITLE_SUB_UNINSTALL, DisplayConstants.MESSAGE_DB_LOAD_KO);
+                        effectiveSubTitle = TITLE_SUB_UNINSTALL;
                         break;
                     case RESET_SLOT:
-                        handleServiceFailure(databaseLoader.exceptionProperty().get(), DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_DB_LOAD_KO);
+                        effectiveSubTitle = TITLE_SUB_RESET_TDUCP_SLOT;
                         break;
+                    default:
+                        effectiveSubTitle = "";
                 }
+                handleServiceFailure(databaseLoader.exceptionProperty().get(), effectiveSubTitle, MESSAGE_DB_LOAD_KO);
             }
-        });
+        };
+    }
+
+    private ChangeListener<Worker.State> getCoordinatorStateChangeListener() {
+        return (observable, oldValue, newState) -> {
+            if (SUCCEEDED == newState) {
+                handleCoordinatorSuccess();
+            } else if (FAILED == newState) {
+                handleCoordinatorFailure();
+            }
+
+            if (SUCCEEDED == newState || FAILED == newState) {
+                progressProperty.unbind();
+                progressProperty.setValue(0);
+                statusLabel.textProperty().unbind();
+            }
+        };
+    }
+
+    private ChangeListener<Worker.State> getFixerStateChangeListener() {
+        return (observableValue, oldState, newState) -> {
+            if (SUCCEEDED == newState) {
+                final Set<IntegrityError> remainingErrors = databaseFixer.integrityErrorsProperty().get();
+                if (remainingErrors.isEmpty()) {
+                    notifyActionTermination(INFORMATION, TITLE_SUB_FIX_DB, MESSAGE_DB_FIX_OK, MESSAGE_DB_ZERO_ERROR);
+                } else {
+                    notifyActionTermination(WARNING, TITLE_SUB_FIX_DB, MESSAGE_DB_FIX_KO, MESSAGE_DB_REMAINING_ERRORS);
+                }
+            } else if (FAILED == newState) {
+                handleServiceFailure(databaseFixer.exceptionProperty().get(), TITLE_SUB_FIX_DB, MESSAGE_DB_FIX_KO);
+            }
+        };
+    }
+
+    private ChangeListener<Worker.State> getCheckerStateChangeListener() {
+        return (observableValue, oldState, newState) -> {
+            if (SUCCEEDED == newState) {
+                final Set<IntegrityError> integrityErrors = databaseChecker.integrityErrorsProperty().get();
+                if (integrityErrors.isEmpty()) {
+                    notifyActionTermination(INFORMATION, TITLE_SUB_CHECK_DB, MESSAGE_DB_CHECK_OK, MESSAGE_DB_ZERO_ERROR);
+                } else if (DatabaseOpsHelper.displayCheckResultDialog(integrityErrors, getWindow(), TITLE_APPLICATION)) {
+                    fixDatabase();
+                }
+            } else if (FAILED == newState) {
+                handleServiceFailure(databaseChecker.exceptionProperty().get(), TITLE_SUB_CHECK_DB, MESSAGE_DB_CHECK_KO);
+            }
+        };
     }
 
     private void browseForTduDirectory() {
@@ -322,13 +321,7 @@ public class MainStageController extends AbstractGuiController {
         GenericStep.starterStep(configuration, null)
                 .nextStep(GenericStep.StepType.UPDATE_MAGIC_MAP).start();
 
-        SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
-                .withContext(INFORMATION)
-                .withTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_MAP_UPDATE)
-                .withMessage(DisplayConstants.MESSAGE_UPDATED_MAP)
-                .withDescription(configuration.resolveMagicMapFile())
-                .build();
-        CommonDialogsHelper.showDialog(dialogOptions, getWindow());
+        notifyActionTermination(INFORMATION, TITLE_SUB_MAP_UPDATE, MESSAGE_UPDATED_MAP, configuration.resolveMagicMapFile());
     }
 
     private void resetDatabaseCache() throws IOException {
@@ -343,13 +336,7 @@ public class MainStageController extends AbstractGuiController {
         Path databasePath = Paths.get(configuration.resolveDatabaseDirectory());
         DatabaseBanksCacheHelper.clearCache(databasePath);
 
-        SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
-                .withContext(INFORMATION)
-                .withTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_DB_CACHE)
-                .withMessage(DisplayConstants.MESSAGE_DELETED_CACHE)
-                .withDescription(databasePath.toString())
-                .build();
-        CommonDialogsHelper.showDialog(dialogOptions, getWindow());
+        notifyActionTermination(INFORMATION, TITLE_SUB_RESET_DB_CACHE, MESSAGE_DELETED_CACHE, databasePath.toString());
     }
 
     private void checkDatabase() {
@@ -411,8 +398,8 @@ public class MainStageController extends AbstractGuiController {
         try {
             loadCurrentPatch(configuration, context);
         } catch (IOException ioe) {
-            StepException se = new StepException(GenericStep.StepType.LOAD_PATCH, DisplayConstants.MESSAGE_PATCH_LOAD_KO, ioe);
-            handleServiceFailure(se, DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_NOT_INSTALLED);
+            StepException se = new StepException(GenericStep.StepType.LOAD_PATCH, MESSAGE_PATCH_LOAD_KO, ioe);
+            handleServiceFailure(se, TITLE_SUB_INSTALL, MESSAGE_NOT_INSTALLED);
 
             progressProperty.setValue(0);
             return;
@@ -423,8 +410,8 @@ public class MainStageController extends AbstractGuiController {
 
             DealerSlotUserInputHelper.selectAndDefineDealerSlot(context, getWindow());
         } catch (Exception e) {
-            StepException se = new StepException(GenericStep.StepType.SELECT_SLOTS, DisplayConstants.MESSAGE_INSTALL_ABORTED, e);
-            handleServiceFailure(se, DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_NOT_INSTALLED);
+            StepException se = new StepException(GenericStep.StepType.SELECT_SLOTS, MESSAGE_INSTALL_ABORTED, e);
+            handleServiceFailure(se, TITLE_SUB_INSTALL, MESSAGE_NOT_INSTALLED);
 
             progressProperty.setValue(0);
             return;
@@ -468,8 +455,8 @@ public class MainStageController extends AbstractGuiController {
         try {
             VehicleSlotUserInputHelper.quickSelectVehicleSlot(VehicleSlotsHelper.SlotKind.TDUCP_NEW, context, getWindow());
         } catch (Exception e) {
-            StepException se = new StepException(GenericStep.StepType.SELECT_SLOTS, DisplayConstants.MESSAGE_OPERATION_ABORTED, e);
-            handleServiceFailure(se, DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_NOT_RESET);
+            StepException se = new StepException(GenericStep.StepType.SELECT_SLOTS, MESSAGE_OPERATION_ABORTED, e);
+            handleServiceFailure(se, TITLE_SUB_RESET_TDUCP_SLOT, MESSAGE_NOT_RESET);
             return;
         }
 
@@ -493,55 +480,44 @@ public class MainStageController extends AbstractGuiController {
         TaskType currentTask = stepsCoordinator.taskTypeProperty().getValue();
         Throwable currentException = stepsCoordinator.exceptionProperty().get();
         if (TaskType.UNINSTALL == currentTask) {
-            handleServiceFailure(currentException, DisplayConstants.TITLE_SUB_UNINSTALL, DisplayConstants.MESSAGE_NOT_UNINSTALLED);
+            handleServiceFailure(currentException, TITLE_SUB_UNINSTALL, MESSAGE_NOT_UNINSTALLED);
         } else if (TaskType.INSTALL == currentTask) {
-            handleServiceFailure(currentException, DisplayConstants.TITLE_SUB_INSTALL, DisplayConstants.MESSAGE_NOT_INSTALLED);
+            handleServiceFailure(currentException, TITLE_SUB_INSTALL, MESSAGE_NOT_INSTALLED);
         } else if(TaskType.RESET_SLOT == currentTask) {
-            handleServiceFailure(currentException, DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT, DisplayConstants.MESSAGE_NOT_RESET);
+            handleServiceFailure(currentException, TITLE_SUB_RESET_TDUCP_SLOT, MESSAGE_NOT_RESET);
         }
     }
 
     private void handleServiceFailure(Throwable throwable, String subTitle, String mainMessage) {
         Log.error(THIS_CLASS_NAME, ExceptionUtils.getStackTrace(throwable));
 
-        String stepName = DisplayConstants.LABEL_STEP_UNKNOWN;
+        String stepName = LABEL_STEP_UNKNOWN;
         if (throwable instanceof StepException) {
             stepName = ((StepException) throwable).getStepName();
         }
 
-        SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
-                .withContext(ERROR)
-                .withTitle(DisplayConstants.TITLE_APPLICATION + subTitle)
-                .withMessage(mainMessage)
-                .withDescription(MessagesHelper.getAdvancedErrorMessage(throwable, String.format(DisplayConstants.FORMAT_MESSAGE_STEP, stepName)))
-                .build();
-        CommonDialogsHelper.showDialog(dialogOptions, getWindow());
+        notifyActionTermination(ERROR, subTitle, mainMessage, MessagesHelper.getAdvancedErrorMessage(throwable, String.format(FORMAT_MESSAGE_STEP, stepName)));
     }
 
     private void handleCoordinatorSuccess() {
         TaskType currentTask = stepsCoordinator.taskTypeProperty().getValue();
         if (TaskType.UNINSTALL == currentTask) {
-            SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
-                    .withContext(INFORMATION)
-                    .withTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_UNINSTALL)
-                    .withMessage(DisplayConstants.MESSAGE_UNINSTALLED)
-                    .build();
-            CommonDialogsHelper.showDialog(dialogOptions, getWindow());
+            notifyActionTermination(INFORMATION, TITLE_SUB_UNINSTALL, MESSAGE_UNINSTALLED, "");
         } else if (TaskType.INSTALL == currentTask) {
-            SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
-                    .withContext(INFORMATION)
-                    .withTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_INSTALL)
-                    .withMessage(DisplayConstants.MESSAGE_INSTALLED)
-                    .build();
-            CommonDialogsHelper.showDialog(dialogOptions, getWindow());
+            notifyActionTermination(INFORMATION, TITLE_SUB_INSTALL, MESSAGE_INSTALLED, "");
         } else if(TaskType.RESET_SLOT == currentTask) {
-            SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
-                    .withContext(INFORMATION)
-                    .withTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESET_TDUCP_SLOT)
-                    .withMessage(DisplayConstants.MESSAGE_RESET_SLOT)
-                    .build();
-            CommonDialogsHelper.showDialog(dialogOptions, getWindow());
+            notifyActionTermination(INFORMATION, TITLE_SUB_RESET_TDUCP_SLOT, MESSAGE_RESET_SLOT, "");
         }
+    }
+
+    private void notifyActionTermination(Alert.AlertType alertType, String subTitle, String message, String description) {
+        final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                .withContext(alertType)
+                .withTitle(TITLE_APPLICATION + subTitle)
+                .withMessage(message)
+                .withDescription(description)
+                .build();
+        CommonDialogsHelper.showDialog(dialogOptions, getWindow());
     }
 
     private static void loadCurrentPatch(InstallerConfiguration configuration, DatabaseContext context) throws IOException {
@@ -553,7 +529,7 @@ public class MainStageController extends AbstractGuiController {
                     .filter(Files::isRegularFile)
                     .filter(path -> EXTENSION_JSON.equalsIgnoreCase(FilesHelper.getExtension(path.toString())))
                     .findFirst()
-                    .orElseThrow(() -> new IOException(String.format(DisplayConstants.MESSAGE_FMT_PATCH_NOT_FOUND, DIRECTORY_DATABASE)))
+                    .orElseThrow(() -> new IOException(String.format(MESSAGE_FMT_PATCH_NOT_FOUND, DIRECTORY_DATABASE)))
                     .toFile();
         }
 
@@ -561,7 +537,7 @@ public class MainStageController extends AbstractGuiController {
 
         DatabasePatchProperties patchProperties = PatchPropertiesReadWriteHelper.readDatabasePatchProperties(patchFile);
         if (patchProperties.isEmpty()) {
-            throw new IOException(DisplayConstants.MESSAGE_INVALID_PROPERTIES);
+            throw new IOException(MESSAGE_INVALID_PROPERTIES);
         }
 
         context.setPatch(patchObject, patchProperties);
