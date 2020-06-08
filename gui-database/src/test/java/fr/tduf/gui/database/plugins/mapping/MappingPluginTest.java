@@ -1,6 +1,6 @@
 package fr.tduf.gui.database.plugins.mapping;
 
-import fr.tduf.gui.database.controllers.MainStageController;
+import fr.tduf.gui.database.controllers.main.MainStageController;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import fr.tduf.gui.database.plugins.mapping.domain.MappingEntry;

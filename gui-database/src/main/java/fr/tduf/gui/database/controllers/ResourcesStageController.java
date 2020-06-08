@@ -8,6 +8,8 @@ import fr.tduf.gui.common.javafx.helper.options.SimpleDialogOptions;
 import fr.tduf.gui.common.javafx.scene.control.SearchValueDialog;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.controllers.helper.DialogsHelper;
+import fr.tduf.gui.database.controllers.main.MainStageChangeDataController;
+import fr.tduf.gui.database.controllers.main.MainStageController;
 import fr.tduf.gui.database.domain.LocalizedResource;
 import fr.tduf.gui.database.domain.javafx.ResourceEntryDataItem;
 import fr.tduf.libunlimited.common.game.domain.Locale;
@@ -17,7 +19,6 @@ import javafx.beans.binding.StringExpression;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -35,9 +36,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import static fr.tduf.gui.database.common.DisplayConstants.LABEL_HEADER_SEARCH_VALUE;
-import static fr.tduf.gui.database.common.DisplayConstants.LABEL_SEARCH_ENTRY;
-import static fr.tduf.gui.database.common.DisplayConstants.TITLE_SEARCH_RESOURCE_ENTRY;
+import static fr.tduf.gui.database.common.DisplayConstants.*;
 import static fr.tduf.libunlimited.common.game.domain.Locale.DEFAULT;
 import static fr.tduf.libunlimited.common.game.domain.Locale.fromOrder;
 import static java.util.Optional.ofNullable;
@@ -51,7 +50,7 @@ import static javafx.scene.control.Alert.AlertType.ERROR;
 public class ResourcesStageController extends AbstractGuiController {
     private static final String THIS_CLASS_NAME = ResourcesStageController.class.getSimpleName();
 
-    private DialogsHelper dialogsHelper = new DialogsHelper();
+    private final DialogsHelper dialogsHelper = new DialogsHelper();
 
     private SearchValueDialog searchValueDialog;
 
@@ -174,7 +173,7 @@ public class ResourcesStageController extends AbstractGuiController {
         selectResourceInTableAndScroll(newResource.getReference());
     }
 
-    void initAndShowDialog(StringProperty referenceProperty, int entryFieldRank, Locale locale, DbDto.Topic targetTopic) {
+    public void initAndShowDialog(StringProperty referenceProperty, int entryFieldRank, Locale locale, DbDto.Topic targetTopic) {
         resourceReferenceProperty = referenceProperty;
         fieldRank = entryFieldRank;
         currentLocale = locale;
@@ -236,14 +235,15 @@ public class ResourcesStageController extends AbstractGuiController {
                 .addListener((observable, oldValue, newValue) -> handleTopicChoiceChanged(newValue));
     }
 
+    @SuppressWarnings("unchecked")
     private void initTablePane() {
-        TableColumn<ResourceEntryDataItem, ?> refColumn = resourcesTableView.getColumns().get(0);
-        refColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().referenceProperty());
+        TableColumn<ResourceEntryDataItem, String> refColumn = (TableColumn<ResourceEntryDataItem, String>) resourcesTableView.getColumns().get(0);
+        refColumn.setCellValueFactory(cellData -> cellData.getValue().referenceProperty());
 
         for (int columnIndex = 1; columnIndex < resourcesTableView.getColumns().size(); columnIndex++) {
-            TableColumn<ResourceEntryDataItem, ?> valueColumn = resourcesTableView.getColumns().get(columnIndex);
+            TableColumn<ResourceEntryDataItem, String> valueColumn = (TableColumn<ResourceEntryDataItem, String>) resourcesTableView.getColumns().get(columnIndex);
             Locale locale = fromOrder(columnIndex);
-            valueColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().valuePropertyForLocale(locale));
+            valueColumn.setCellValueFactory(cellData -> cellData.getValue().valuePropertyForLocale(locale));
         }
 
         resourcesTableView.setItems(resourceData);

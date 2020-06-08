@@ -2,8 +2,8 @@ package fr.tduf.gui.database.controllers.helper;
 
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
-import fr.tduf.gui.database.controllers.MainStageChangeDataController;
-import fr.tduf.gui.database.controllers.MainStageController;
+import fr.tduf.gui.database.controllers.main.MainStageChangeDataController;
+import fr.tduf.gui.database.controllers.main.MainStageController;
 import fr.tduf.gui.database.domain.ItemViewModel;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;

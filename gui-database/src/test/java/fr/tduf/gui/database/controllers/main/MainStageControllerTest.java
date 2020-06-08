@@ -1,6 +1,8 @@
-package fr.tduf.gui.database.controllers;
+package fr.tduf.gui.database.controllers.main;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.database.controllers.main.MainStageController;
+import fr.tduf.gui.database.controllers.main.MainStageViewDataController;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.services.DatabaseLoader;

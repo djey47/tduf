@@ -1,4 +1,4 @@
-package fr.tduf.gui.database.controllers;
+package fr.tduf.gui.database.controllers.main;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.AppConstants;
@@ -11,6 +11,9 @@ import fr.tduf.gui.common.javafx.helper.options.SimpleDialogOptions;
 import fr.tduf.gui.common.services.DatabaseChecker;
 import fr.tduf.gui.common.services.DatabaseFixer;
 import fr.tduf.gui.database.common.DisplayConstants;
+import fr.tduf.gui.database.controllers.EntriesStageController;
+import fr.tduf.gui.database.controllers.FieldsBrowserStageController;
+import fr.tduf.gui.database.controllers.ResourcesStageController;
 import fr.tduf.gui.database.controllers.helper.DialogsHelper;
 import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
@@ -756,7 +759,7 @@ public class MainStageController extends AbstractGuiController {
         return databaseMiner;
     }
 
-    public Property<Integer> getCurrentEntryIndexProperty() {
+    public Property<Integer> currentEntryIndexProperty() {
         return currentEntryIndexProperty;
     }
 
@@ -788,19 +791,15 @@ public class MainStageController extends AbstractGuiController {
         this.layoutObject = layoutObject;
     }
 
-    void setMiner(BulkDatabaseMiner databaseMiner) {
-        this.databaseMiner = databaseMiner;
-    }
-
     Deque<EditorLocation> getNavigationHistory() {
         return navigationHistory;
     }
 
-    Property<DbDto.Topic> getCurrentTopicProperty() {
+    Property<DbDto.Topic> currentTopicProperty() {
         return currentTopicProperty;
     }
 
-    StringProperty getCurrentEntryLabelProperty() {
+    StringProperty currentEntryLabelProperty() {
         return currentEntryLabelProperty;
     }
 
@@ -842,11 +841,11 @@ public class MainStageController extends AbstractGuiController {
 
     TextField getEntryFilterTextField() { return entryFilterTextField; }
 
-    ObjectProperty<Cursor> getMouseCursorProperty() {
-        return mouseCursorProperty();
+    ObjectProperty<Cursor> mouseCursorProperty() {
+        return rootCursorProperty();
     }
 
-    BooleanProperty getRunningServiceProperty() {
+    BooleanProperty runningServiceProperty() {
         return runningServiceProperty;
     }
 

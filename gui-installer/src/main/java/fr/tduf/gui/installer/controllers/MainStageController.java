@@ -93,7 +93,7 @@ public class MainStageController extends AbstractGuiController {
                         .or(stepsCoordinator.runningProperty())
                         .or(databaseLoader.runningProperty())
         );
-        mouseCursorProperty().bind(
+        rootCursorProperty().bind(
                 when(runningServiceProperty)
                         .then(Cursor.WAIT)
                         .otherwise(Cursor.DEFAULT)

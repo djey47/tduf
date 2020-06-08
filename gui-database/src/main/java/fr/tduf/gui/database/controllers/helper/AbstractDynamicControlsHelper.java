@@ -3,7 +3,7 @@ package fr.tduf.gui.database.controllers.helper;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.javafx.helper.ControlHelper;
 import fr.tduf.gui.database.common.FxConstants;
-import fr.tduf.gui.database.controllers.MainStageController;
+import fr.tduf.gui.database.controllers.main.MainStageController;
 import fr.tduf.gui.database.listener.ErrorChangeListener;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import javafx.beans.property.BooleanProperty;

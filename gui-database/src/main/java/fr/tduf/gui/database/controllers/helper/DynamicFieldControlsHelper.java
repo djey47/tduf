@@ -3,8 +3,8 @@ package fr.tduf.gui.database.controllers.helper;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
-import fr.tduf.gui.database.controllers.MainStageController;
-import fr.tduf.gui.database.controllers.MainStageViewDataController;
+import fr.tduf.gui.database.controllers.main.MainStageController;
+import fr.tduf.gui.database.controllers.main.MainStageViewDataController;
 import fr.tduf.gui.database.domain.ItemViewModel;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
@@ -77,7 +77,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     private void addFieldControls(DbStructureDto.Field field, DbDto.Topic currentTopic) {
         int fieldRank = field.getRank();
         final MainStageViewDataController viewData = controller.getViewData();
-        Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(fieldRank, viewData.currentProfile().getValue().getName(), controller.getLayoutObject());
+        Optional<FieldSettingsDto> potentialFieldSettings = EditorLayoutHelper.getFieldSettingsByRankAndProfileName(fieldRank, viewData.currentProfileProperty().getValue().getName(), controller.getLayoutObject());
         if (!potentialFieldSettings.isPresent()) {
             return;
         }
@@ -146,7 +146,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     private void addPluginControls(String pluginName, DbDto.Topic currentTopic, HBox fieldBox, FieldSettingsDto fieldSettings, StringProperty rawValueProperty, StringProperty errorMessageProperty, BooleanProperty errorProperty, String fieldTargetRef) {
         OnTheFlyContext onTheFlyContext = PluginHandler.initializeOnTheFlyContextForPlugin(pluginName);
         onTheFlyContext.setCurrentTopic(currentTopic);
-        onTheFlyContext.setContentEntryIndexProperty(controller.getCurrentEntryIndexProperty());
+        onTheFlyContext.setContentEntryIndexProperty(controller.currentEntryIndexProperty());
         onTheFlyContext.setRemoteTopic(getEffectiveTopic(currentTopic, fieldTargetRef));
         onTheFlyContext.setFieldRank(fieldSettings.getRank());
         onTheFlyContext.setFieldReadOnly(fieldSettings.isReadOnly());
@@ -179,7 +179,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         ItemViewModel itemViewModel = viewData.getItemPropsByFieldRank();
         BooleanProperty errorProperty = itemViewModel.errorPropertyAtFieldRank(fieldRank);
 
-        EditorLayoutHelper.getFieldSettingsByRank(fieldRank, viewData.currentProfile().getValue())
+        EditorLayoutHelper.getFieldSettingsByRank(fieldRank, viewData.currentProfileProperty().getValue())
                 .ifPresent(fieldSettings -> {
                     String targetProfileName = fieldSettings.getRemoteReferenceProfile();
                     List<Integer> labelFieldRanks = EditorLayoutHelper.getAvailableProfileByName(targetProfileName, controller.getLayoutObject()).getEntryLabelFieldRanks();

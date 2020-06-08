@@ -1,6 +1,6 @@
 package fr.tduf.gui.database.plugins.common;
 
-import fr.tduf.gui.database.controllers.MainStageChangeDataController;
+import fr.tduf.gui.database.controllers.main.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import fr.tduf.libtesting.common.helper.javafx.ApplicationTestHelper;
 import javafx.collections.FXCollections;

@@ -3,7 +3,7 @@ package fr.tduf.gui.database.plugins.common;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.javafx.helper.options.SimpleDialogOptions;
-import fr.tduf.gui.database.controllers.MainStageChangeDataController;
+import fr.tduf.gui.database.controllers.main.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import javafx.collections.ObservableList;

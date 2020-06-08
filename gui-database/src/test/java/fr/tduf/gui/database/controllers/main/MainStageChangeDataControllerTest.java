@@ -1,4 +1,4 @@
-package fr.tduf.gui.database.controllers;
+package fr.tduf.gui.database.controllers.main;
 
 import com.esotericsoftware.minlog.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -166,7 +166,7 @@ class MainStageChangeDataControllerTest {
                 .addItem(ContentItemDto.builder().ofFieldRank(2).withRawValue("36").build())
                 .build();
         when(mainStageController.getCurrentEntryIndex()).thenReturn(1);
-        when(mainStageController.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(CAR_PHYSICS_DATA));
+        when(mainStageController.currentTopicProperty()).thenReturn(new SimpleObjectProperty<>(CAR_PHYSICS_DATA));
         when(mainStageController.getMiner()).thenReturn(minerMock);
         when(minerMock.getContentEntryFromTopicWithInternalIdentifier(1, CAR_PHYSICS_DATA)).thenReturn(Optional.of(entry));
 
@@ -229,7 +229,7 @@ class MainStageChangeDataControllerTest {
                 .orElse("NO REF");
 
         when(mainStageController.getDatabaseObjects()).thenReturn(databaseObjects);
-        when(mainStageController.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(1));
+        when(mainStageController.currentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(1));
 
 
         // WHEN

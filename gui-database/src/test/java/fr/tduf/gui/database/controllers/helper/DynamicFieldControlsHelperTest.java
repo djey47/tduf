@@ -1,7 +1,7 @@
 package fr.tduf.gui.database.controllers.helper;
 
-import fr.tduf.gui.database.controllers.MainStageController;
-import fr.tduf.gui.database.controllers.MainStageViewDataController;
+import fr.tduf.gui.database.controllers.main.MainStageController;
+import fr.tduf.gui.database.controllers.main.MainStageViewDataController;
 import fr.tduf.gui.database.domain.ItemViewModel;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
@@ -81,7 +81,7 @@ class DynamicFieldControlsHelperTest {
         when(controllerMock.getCurrentTopicObject()).thenReturn(currentTopicObject);
         when(controllerMock.getLayoutObject()).thenReturn(layout);
         when(controllerMock.getViewData()).thenReturn(viewDataMock);
-        when(viewDataMock.currentProfile()).thenReturn(new SimpleObjectProperty<>(profile));
+        when(viewDataMock.currentProfileProperty()).thenReturn(new SimpleObjectProperty<>(profile));
 
 
         // WHEN-THEN
@@ -93,7 +93,7 @@ class DynamicFieldControlsHelperTest {
         // given
         HBox fieldBox = new HBox();
         when(applicationConfigurationMock.isEditorPluginsEnabled()).thenReturn(true);
-        when(controllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(1));
+        when(controllerMock.currentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(1));
 
         // when
         helper.addCustomControls(fieldBox, createField(), createFieldSettingsForPlugin(), CAR_PHYSICS_DATA, new SimpleStringProperty("RAW_VALUE"));

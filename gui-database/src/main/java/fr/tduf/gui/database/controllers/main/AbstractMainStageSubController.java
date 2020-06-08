@@ -1,5 +1,6 @@
-package fr.tduf.gui.database.controllers;
+package fr.tduf.gui.database.controllers.main;
 
+import fr.tduf.gui.database.controllers.*;
 import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
@@ -7,6 +8,7 @@ import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
@@ -34,10 +36,6 @@ abstract class AbstractMainStageSubController {
         return mainStageController.getMiner();
     }
 
-    protected void setMiner(BulkDatabaseMiner miner) {
-        mainStageController.setMiner(miner);
-    }
-
     protected MainStageViewDataController getViewDataController() {
         return mainStageController.getViewData();
     }
@@ -58,76 +56,31 @@ abstract class AbstractMainStageSubController {
         mainStageController.setLayoutObject(editorLayoutDto);
     }
 
-    protected EditorLayoutDto getLayoutObject() {
-        // Getter kept for testing
-        return mainStageController.getLayoutObject();
-    }
-
-    protected List<DbDto> getDatabaseObjects() {
-        // Getter kept for testing
-        return mainStageController.getDatabaseObjects();
-    }
-
-    protected DbDto getCurrentTopicObject() {
-        return mainStageController.getCurrentTopicObject();
-    }
-
-    protected DbDto.Topic getCurrentTopic() {
+    protected DbStructureDto getCurrentStructure() {
         if (mainStageController.getCurrentTopicObject() == null) {
             return null;
         }
-        return mainStageController.getCurrentTopicObject().getTopic();
+        return mainStageController.getCurrentTopicObject().getStructure();
     }
 
-    protected void setCurrentTopicObject(DbDto currentTopicObject) {
-        // Setter kept for testing
-        mainStageController.setCurrentTopicObject(currentTopicObject);
+    protected DbDto.Topic getCurrentTopic() {
+        return mainStageController.currentTopicProperty().getValue();
     }
 
     protected Deque<EditorLocation> getNavigationHistory() {
         return mainStageController.getNavigationHistory();
     }
 
-    protected ApplicationConfiguration getApplicationConfiguration() {
-        // Getter kept for testing
-        return mainStageController.getApplicationConfiguration();
+    protected Label getCreditsLabel() {
+        return mainStageController.creditsLabel;
     }
 
-    protected int getCurrentEntryIndex() {
-        // Getter kept for testing
-        return mainStageController.getCurrentEntryIndex();
-    }
-
-    protected Property<Integer> currentEntryIndexProperty() {
-        // Getter kept for testing
-        return mainStageController.getCurrentEntryIndexProperty();
-    }
-
-    protected Property<DbDto.Topic> currentTopicProperty() {
-        // Getter kept for testing
-        return mainStageController.getCurrentTopicProperty();
-    }
-
-    protected StringProperty currentEntryLabelProperty() {
-        // Getter kept for testing
-        return mainStageController.getCurrentEntryLabelProperty();
-    }
-
-    protected ObjectProperty<Cursor> getMouseCursorProperty() {
-        return mainStageController.getMouseCursorProperty();
+    protected ObjectProperty<Cursor> mouseCursorProperty() {
+        return mainStageController.mouseCursorProperty();
     }
 
     protected TextField getDatabaseLocationTextField() {
         return mainStageController.getDatabaseLocationTextField();
-    }
-
-    protected ChoiceBox<EditorLayoutDto.EditorProfileDto> getProfilesChoiceBox() {
-        // Getter kept for testing
-        return mainStageController.getProfilesChoiceBox();
-    }
-
-    protected Label getCreditsLabel() {
-        return mainStageController.creditsLabel;
     }
 
     protected TitledPane getSettingsPane() {
@@ -179,6 +132,51 @@ abstract class AbstractMainStageSubController {
     }
 
     protected BooleanProperty getRunningServiceProperty() {
-        return mainStageController.getRunningServiceProperty();
+        return mainStageController.runningServiceProperty();
+    }
+
+    void setCurrentTopicObject(DbDto currentTopicObject) {
+        // Setter kept for testing
+        mainStageController.setCurrentTopicObject(currentTopicObject);
+    }
+
+    ApplicationConfiguration getApplicationConfiguration() {
+        // Getter kept for testing
+        return mainStageController.getApplicationConfiguration();
+    }
+
+    int getCurrentEntryIndex() {
+        // Getter kept for testing
+        return mainStageController.getCurrentEntryIndex();
+    }
+
+    Property<Integer> currentEntryIndexProperty() {
+        // Getter kept for testing
+        return mainStageController.currentEntryIndexProperty();
+    }
+
+    Property<DbDto.Topic> currentTopicProperty() {
+        // Getter kept for testing
+        return mainStageController.currentTopicProperty();
+    }
+
+    StringProperty currentEntryLabelProperty() {
+        // Getter kept for testing
+        return mainStageController.currentEntryLabelProperty();
+    }
+
+    ChoiceBox<EditorLayoutDto.EditorProfileDto> getProfilesChoiceBox() {
+        // Getter kept for testing
+        return mainStageController.getProfilesChoiceBox();
+    }
+
+    EditorLayoutDto getLayoutObject() {
+        // Getter kept for testing
+        return mainStageController.getLayoutObject();
+    }
+
+    List<DbDto> getDatabaseObjects() {
+        // Getter kept for testing
+        return mainStageController.getDatabaseObjects();
     }
 }

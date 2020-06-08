@@ -7,6 +7,7 @@ import fr.tduf.gui.common.javafx.helper.TableViewHelper;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.helper.DatabaseQueryHelper;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
+import fr.tduf.gui.database.controllers.main.MainStageController;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
@@ -93,7 +94,7 @@ public class EntriesStageController extends AbstractGuiController {
         askForReferenceAndSelectItem();
     }
 
-    void initAndShowDialog(String entryReference, int entryFieldRank, DbDto.Topic topic, List<Integer> labelFieldRanks) {
+    public void initAndShowDialog(String entryReference, int entryFieldRank, DbDto.Topic topic, List<Integer> labelFieldRanks) {
         switchMultiSelectMode(false);
 
         fieldRankForUpdate = entryFieldRank;
@@ -109,13 +110,13 @@ public class EntriesStageController extends AbstractGuiController {
         showWindow();
     }
 
-    Optional<ContentEntryDataItem> initAndShowModalDialog(DbDto.Topic topic, String targetProfileName) {
+    public Optional<ContentEntryDataItem> initAndShowModalDialog(DbDto.Topic topic, String targetProfileName) {
         initAndShowModalDialog(null, topic, targetProfileName, false);
 
         return selectedEntries.stream().findAny();
     }
 
-    List<ContentEntryDataItem> initAndShowModalDialogForMultiSelect(String entryReference, DbDto.Topic topic, String targetProfileName) {
+    public List<ContentEntryDataItem> initAndShowModalDialogForMultiSelect(String entryReference, DbDto.Topic topic, String targetProfileName) {
         initAndShowModalDialog(entryReference, topic, targetProfileName, true);
 
         return selectedEntries;
@@ -200,7 +201,7 @@ public class EntriesStageController extends AbstractGuiController {
                 String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(
                         entryInternalIdentifier,
                         topic,
-                        mainStageController.getViewData().currentLocaleProperty.getValue(),
+                        mainStageController.getViewData().currentLocaleProperty().getValue(),
                         labelFieldRanks,
                         getMiner(),
                         getLayoutObject());

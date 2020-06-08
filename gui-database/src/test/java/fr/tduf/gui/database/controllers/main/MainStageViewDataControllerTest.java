@@ -1,4 +1,4 @@
-package fr.tduf.gui.database.controllers;
+package fr.tduf.gui.database.controllers.main;
 
 import fr.tduf.gui.database.DatabaseEditor;
 import fr.tduf.gui.database.domain.EditorLocation;
@@ -112,19 +112,19 @@ class MainStageViewDataControllerTest {
         when(mainStageControllerMock.getMiner()).thenReturn(minerMock);
         when(mainStageControllerMock.getLayoutObject()).thenReturn(layoutObject);
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(topicObject);
-        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>());
+        when(mainStageControllerMock.currentTopicProperty()).thenReturn(new SimpleObjectProperty<>());
 
-        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(currentEntryIndexProperty);
-        when(mainStageControllerMock.getCurrentEntryLabelProperty()).thenReturn(currentEntryLabelProperty);
+        when(mainStageControllerMock.currentEntryIndexProperty()).thenReturn(currentEntryIndexProperty);
+        when(mainStageControllerMock.currentEntryLabelProperty()).thenReturn(currentEntryLabelProperty);
 
         profilesChoiceBox = new ChoiceBox<>(observableArrayList(TEST_PROFILE, TEST_REMOTE_PROFILE, TEST_REMOTE_ASSO_PROFILE));
         profilesChoiceBox.valueProperty().setValue(TEST_PROFILE);
         profilesChoiceBox.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (TEST_PROFILE.equals(newValue)) {
-                        controller.currentProfile().setValue(getSecondLayoutProfile());
+                        controller.currentProfileProperty().setValue(getSecondLayoutProfile());
                     } else if (TEST_REMOTE_PROFILE.equals(newValue)) {
-                        controller.currentProfile().setValue(getThirdLayoutProfile());
+                        controller.currentProfileProperty().setValue(getThirdLayoutProfile());
                     } else {
                         throw new IllegalArgumentException("Unknown profile name!");
                     }
@@ -284,7 +284,7 @@ class MainStageViewDataControllerTest {
     void applyProfile_whenProfileExists_shouldSwitchProperties_andUpdateConfiguration() throws IOException {
         // GIVEN
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(createTopicObjectWithoutStructureFields());
-        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>());
+        when(mainStageControllerMock.currentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>());
         final EditorLayoutDto.EditorProfileDto profileObject = getSecondLayoutProfile();
         when(minerMock.getContentEntryFromTopicWithInternalIdentifier(0, TOPIC2)).thenReturn(empty());
 
@@ -294,7 +294,7 @@ class MainStageViewDataControllerTest {
 
 
         // THEN
-        assertThat(controller.currentProfile().getValue().getName()).isEqualTo(profileObject.getName());
+        assertThat(controller.currentProfileProperty().getValue().getName()).isEqualTo(profileObject.getName());
         assertThat(controller.currentTopicProperty().getValue()).isEqualTo(TOPIC2);
         verify(mainStageControllerMock).setCurrentTopicObject(topicObject);
 
@@ -305,9 +305,9 @@ class MainStageViewDataControllerTest {
     @Test
     void applySelectedLocale_shouldUpdateConfiguration() throws IOException {
         // GIVEN
-        controller.currentProfile().setValue(getSecondLayoutProfile());
-        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0));
-        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(TOPIC1));
+        controller.currentProfileProperty().setValue(getSecondLayoutProfile());
+        when(mainStageControllerMock.currentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0));
+        when(mainStageControllerMock.currentTopicProperty()).thenReturn(new SimpleObjectProperty<>(TOPIC1));
         when(minerMock.getContentEntryFromTopicWithInternalIdentifier(anyInt(), any(DbDto.Topic.class))).thenReturn(empty());
 
         // WHEN
@@ -335,7 +335,7 @@ class MainStageViewDataControllerTest {
         final String profileName = getSecondLayoutProfile().getName();
         assertThat(navigationHistory).isEmpty();
         assertThat(profilesChoiceBox.getSelectionModel().getSelectedItem().getName()).isEqualTo(profileName);
-        assertThat(controller.currentProfile().getValue()).isEqualTo(getSecondLayoutProfile());
+        assertThat(controller.currentProfileProperty().getValue()).isEqualTo(getSecondLayoutProfile());
 
         verify(applicationConfigurationMock).setDatabasePath("location");
         verify(applicationConfigurationMock).setEditorProfile(profileName);
@@ -357,7 +357,7 @@ class MainStageViewDataControllerTest {
 
         // THEN
         assertThat(profilesChoiceBox.getSelectionModel().getSelectedItem().getName()).isEqualTo(profileName);
-        assertThat(controller.currentProfile().getValue()).isEqualTo(getThirdLayoutProfile());
+        assertThat(controller.currentProfileProperty().getValue()).isEqualTo(getThirdLayoutProfile());
 
         verify(applicationConfigurationMock).setEditorProfile(profileName);
         verify(applicationConfigurationMock).store();
@@ -381,7 +381,7 @@ class MainStageViewDataControllerTest {
     @Test
     void updateEntriesAndSwitchTo_whenNoEntry_shouldSetEmptyList() {
         // GIVEN
-        controller.currentProfile().setValue(getSecondLayoutProfile());
+        controller.currentProfileProperty().setValue(getSecondLayoutProfile());
         controller.getBrowsableEntries().add(new ContentEntryDataItem());
 
         // WHEN
@@ -396,9 +396,9 @@ class MainStageViewDataControllerTest {
         // GIVEN
         ObservableList<ContentEntryDataItem> browsableEntries = controller.getBrowsableEntries();
         browsableEntries.add(new ContentEntryDataItem());
-        controller.currentProfile().setValue(getSecondLayoutProfile());
+        controller.currentProfileProperty().setValue(getSecondLayoutProfile());
 
-        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(TOPIC2));
+        when(mainStageControllerMock.currentTopicProperty()).thenReturn(new SimpleObjectProperty<>(TOPIC2));
 
         when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(createTopicObjectWithDataEntryAndRef()));
         when(minerMock.getContentEntryReferenceWithInternalIdentifier(0, TOPIC2)).thenReturn(empty());
@@ -421,11 +421,11 @@ class MainStageViewDataControllerTest {
         // GIVEN
         final DbDto topicObjectWithDataEntry = createTopicObjectWithDataEntry();
 
-        controller.currentProfile().setValue(getSecondLayoutProfile());
+        controller.currentProfileProperty().setValue(getSecondLayoutProfile());
         controller.getBrowsableEntries().add(new ContentEntryDataItem());
 
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(topicObjectWithDataEntry);
-        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(TOPIC2));
+        when(mainStageControllerMock.currentTopicProperty()).thenReturn(new SimpleObjectProperty<>(TOPIC2));
 
         when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(createTopicObjectWithDataEntryAndRef()));
         when(minerMock.getContentEntryReferenceWithInternalIdentifier(0, TOPIC2)).thenReturn(empty());
@@ -445,11 +445,11 @@ class MainStageViewDataControllerTest {
         // GIVEN
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(createTopicObjectWithoutStructureFields());
         final Property<Integer> currentEntryIndexProperty = new SimpleObjectProperty<>();
-        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(currentEntryIndexProperty);
+        when(mainStageControllerMock.currentEntryIndexProperty()).thenReturn(currentEntryIndexProperty);
         final EditorLayoutDto.EditorProfileDto profileObject = getFourthLayoutProfile();
-        controller.currentProfile().setValue(profileObject);
+        controller.currentProfileProperty().setValue(profileObject);
         final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>(TOPIC2);
-        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
+        when(mainStageControllerMock.currentTopicProperty()).thenReturn(currentTopicProperty);
         when(minerMock.getContentEntryFromTopicWithInternalIdentifier(0, TOPIC2)).thenReturn(empty());
 
         // WHEN
@@ -465,11 +465,11 @@ class MainStageViewDataControllerTest {
     void updateAllPropertiesWithItemValues_whenEntryNotFound_shouldNotCrash() {
         // GIVEN
         final EditorLayoutDto.EditorProfileDto profileObject = getSecondLayoutProfile();
-        controller.currentProfile().setValue(profileObject);
+        controller.currentProfileProperty().setValue(profileObject);
         final Property<Integer> currentEntryIndexProperty = new SimpleObjectProperty<>(0);
-        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(currentEntryIndexProperty);
+        when(mainStageControllerMock.currentEntryIndexProperty()).thenReturn(currentEntryIndexProperty);
         final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>(TOPIC1);
-        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
+        when(mainStageControllerMock.currentTopicProperty()).thenReturn(currentTopicProperty);
         when(minerMock.getContentEntryFromTopicWithInternalIdentifier(0, TOPIC1)).thenReturn(empty());
 
         // WHEN-THEN
@@ -484,13 +484,13 @@ class MainStageViewDataControllerTest {
                 .addItem(item)
                 .build();
 
-        controller.currentProfile().setValue(getSecondLayoutProfile());
+        controller.currentProfileProperty().setValue(getSecondLayoutProfile());
         controller.getItemPropsByFieldRank()
                 .rawValuePropertyAtFieldRank(1)
                 .set("VAL1");
 
-        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0));
-        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(TOPIC1));
+        when(mainStageControllerMock.currentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0));
+        when(mainStageControllerMock.currentTopicProperty()).thenReturn(new SimpleObjectProperty<>(TOPIC1));
 
         when(minerMock.getContentEntryFromTopicWithInternalIdentifier(0, TOPIC1)).thenReturn(of(contentEntry));
 
@@ -506,11 +506,11 @@ class MainStageViewDataControllerTest {
     void updateCurrentEntryLabelProperty_whenNoFieldRank_shouldReturnDefaultLabel() {
         // GIVEN
         final EditorLayoutDto.EditorProfileDto profileObject = getSecondLayoutProfile();
-        controller.currentProfile().setValue(profileObject);
+        controller.currentProfileProperty().setValue(profileObject);
         final Property<Integer> currentEntryIndexProperty = new SimpleObjectProperty<>(0);
-        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(currentEntryIndexProperty);
+        when(mainStageControllerMock.currentEntryIndexProperty()).thenReturn(currentEntryIndexProperty);
         final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>(TOPIC1);
-        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
+        when(mainStageControllerMock.currentTopicProperty()).thenReturn(currentTopicProperty);
 
         // WHEN
         controller.updateCurrentEntryLabelProperty();
@@ -524,11 +524,11 @@ class MainStageViewDataControllerTest {
         // GIVEN
         final EditorLayoutDto.EditorProfileDto profileObject = getSecondLayoutProfile();
         profileObject.addDefaultEntryLabelFieldRank();
-        controller.currentProfile().setValue(profileObject);
+        controller.currentProfileProperty().setValue(profileObject);
         final Property<Integer> currentEntryIndexProperty = new SimpleObjectProperty<>(0);
-        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(currentEntryIndexProperty);
+        when(mainStageControllerMock.currentEntryIndexProperty()).thenReturn(currentEntryIndexProperty);
         final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>(TOPIC2);
-        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
+        when(mainStageControllerMock.currentTopicProperty()).thenReturn(currentTopicProperty);
         when(minerMock.getLocalizedResourceValueFromContentEntry(0, 1, TOPIC2, LOCALE)).thenReturn(of("label"));
 
         // WHEN
@@ -617,6 +617,7 @@ class MainStageViewDataControllerTest {
         StringProperty resolvedValueProperty = itemViewModel.resolvedValuePropertyAtFieldRank(1);
         resolvedValueProperty.set("old local resource value");
         when(mainStageControllerMock.getCurrentTopicObject()).thenReturn(createTopicObjectForLocalResource());
+        when(mainStageControllerMock.currentTopicProperty()).thenReturn(new SimpleObjectProperty<>(TOPIC1));
         ContentItemDto itemObject = createContentItem();
 
         when(minerMock.getLocalizedResourceValueFromTopicAndReference("rawValue", TOPIC1, LOCALE)).thenReturn(of("resolved value"));
@@ -655,13 +656,13 @@ class MainStageViewDataControllerTest {
     @Test
     void updateAllLinkProperties_whenReferenceNotAvailable_shouldThrowException() {
         // GIVEN
-        TopicLinkDto topicLinkObject = createTopicLinkObject(TOPIC2);
+        TopicLinkDto topicLinkObject = createTopicLinkObject();
         ContentEntryDataItem item = new ContentEntryDataItem();
         ObservableList<ContentEntryDataItem> resources = observableArrayList(item);
         controller.getResourcesByTopicLink().put(topicLinkObject, resources);
-        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0));
+        when(mainStageControllerMock.currentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0));
         final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>(TOPIC1);
-        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
+        when(mainStageControllerMock.currentTopicProperty()).thenReturn(currentTopicProperty);
         when(minerMock.getContentEntryReferenceWithInternalIdentifier(0, TOPIC1)).thenReturn(empty());
 
         // WHEN-THEN
@@ -672,13 +673,13 @@ class MainStageViewDataControllerTest {
     @Test
     void updateAllLinkProperties_whenLinkedTopicNotFound_shouldThrowException() {
         // GIVEN
-        TopicLinkDto topicLinkObject = createTopicLinkObject(TOPIC2);
+        TopicLinkDto topicLinkObject = createTopicLinkObject();
         ContentEntryDataItem item = new ContentEntryDataItem();
         ObservableList<ContentEntryDataItem> resources = observableArrayList(item);
         controller.getResourcesByTopicLink().put(topicLinkObject, resources);
-        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0));
+        when(mainStageControllerMock.currentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0));
         final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>(TOPIC1);
-        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
+        when(mainStageControllerMock.currentTopicProperty()).thenReturn(currentTopicProperty);
         when(minerMock.getContentEntryReferenceWithInternalIdentifier(0, TOPIC1)).thenReturn(of("entryRef"));
         when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(empty());
 
@@ -690,13 +691,13 @@ class MainStageViewDataControllerTest {
     @Test
     void updateAllLinkProperties_whenEntryFoundInLinkedTopic_shouldUpdateProperties() {
         // GIVEN
-        TopicLinkDto topicLinkObject = createTopicLinkObject(TOPIC2);
+        TopicLinkDto topicLinkObject = createTopicLinkObject();
         ContentEntryDataItem item = new ContentEntryDataItem();
         ObservableList<ContentEntryDataItem> resources = observableArrayList(item);
         controller.getResourcesByTopicLink().put(topicLinkObject, resources);
-        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0));
+        when(mainStageControllerMock.currentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0));
         final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>(TOPIC1);
-        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(currentTopicProperty);
+        when(mainStageControllerMock.currentTopicProperty()).thenReturn(currentTopicProperty);
         when(minerMock.getContentEntryReferenceWithInternalIdentifier(0, TOPIC1)).thenReturn(of("entryRef"));
         when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(createTopicObjectWithDataEntryAndRef()));
         when(minerMock.getLocalizedResourceValueFromContentEntry(0, 1, TOPIC2, LOCALE)).thenReturn(of("remote value"));
@@ -719,8 +720,8 @@ class MainStageViewDataControllerTest {
         ContentEntryDataItem item = new ContentEntryDataItem();
         ObservableList<ContentEntryDataItem> resources = observableArrayList(item);
         controller.getResourcesByTopicLink().put(topicLinkObject, resources);
-        when(mainStageControllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0));
-        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(TOPIC1));
+        when(mainStageControllerMock.currentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(0));
+        when(mainStageControllerMock.currentTopicProperty()).thenReturn(new SimpleObjectProperty<>(TOPIC1));
         when(minerMock.getContentEntryReferenceWithInternalIdentifier(0, TOPIC1)).thenReturn(of("entryRef1"));
         when(minerMock.getDatabaseTopic(TOPIC3)).thenReturn(of(createAssociationTopicObjectWithDataEntriesAndRefs()));
         final DbDto remoteTopicObject = createRemoteTopicObject();
@@ -753,7 +754,7 @@ class MainStageViewDataControllerTest {
 
         when(minerMock.getDatabaseTopic(TOPIC3)).thenReturn(of(createTopicObject(TOPIC3)));
         when(minerMock.getContentEntryReferenceWithInternalIdentifier(-1, TOPIC1)).thenReturn(of("000000"));
-        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(TOPIC1));
+        when(mainStageControllerMock.currentTopicProperty()).thenReturn(new SimpleObjectProperty<>(TOPIC1));
 
 
         // WHEN
@@ -767,7 +768,7 @@ class MainStageViewDataControllerTest {
     @Test
     void selectFieldsFromTopic_whenTopicWithoutREFSupport_shouldReturnEmptyList() {
         // GIVEN
-        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(ACHIEVEMENTS));
+        when(mainStageControllerMock.currentTopicProperty()).thenReturn(new SimpleObjectProperty<>(ACHIEVEMENTS));
 
         // WHEN
         final List<String> actualFields = controller.selectFieldsFromTopic();
@@ -779,7 +780,7 @@ class MainStageViewDataControllerTest {
     @Test
     void selectEntriesFromTopic_whenTopicWithoutREFSupport_shouldReturnEmptyList() {
         // GIVEN
-        when(mainStageControllerMock.getCurrentTopicProperty()).thenReturn(new SimpleObjectProperty<>(ACHIEVEMENTS));
+        when(mainStageControllerMock.currentTopicProperty()).thenReturn(new SimpleObjectProperty<>(ACHIEVEMENTS));
 
         // WHEN
         final List<String> actualEntries = controller.selectEntriesFromTopic();
@@ -1011,9 +1012,9 @@ class MainStageViewDataControllerTest {
                 .build();
     }
 
-    private TopicLinkDto createTopicLinkObject(DbDto.Topic topic) {
+    private TopicLinkDto createTopicLinkObject() {
         TopicLinkDto topicLinkObject = new TopicLinkDto();
-        topicLinkObject.setTopic(topic);
+        topicLinkObject.setTopic(TOPIC2);
         topicLinkObject.setId(-1);
         topicLinkObject.setRemoteReferenceProfile(TEST_REMOTE_PROFILE_NAME);
         return topicLinkObject;

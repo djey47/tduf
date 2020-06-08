@@ -66,5 +66,5 @@ public abstract class AbstractGuiController implements Initializable {
         ((Stage) getWindow()).showAndWait();
     }
 
-    protected ObjectProperty<Cursor> mouseCursorProperty() { return root.cursorProperty(); }
+    protected ObjectProperty<Cursor> rootCursorProperty() { return root.cursorProperty(); }
 }

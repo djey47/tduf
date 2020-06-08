@@ -1,4 +1,4 @@
-package fr.tduf.gui.database.controllers;
+package fr.tduf.gui.database.controllers.main;
 
 import com.esotericsoftware.minlog.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -57,7 +57,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
 
     /**
      * Only use when unit testing
-     * @return a speciol instance
+     * @return a special instance
      */
     public static MainStageChangeDataController testingInstance() {
         return new MainStageChangeDataController(new MainStageController());
@@ -130,19 +130,19 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
         };
     }
 
-    void updateResourceWithReferenceForLocale(DbDto.Topic topic, Locale locale, String resourceReference, String newResourceValue) {
+    public void updateResourceWithReferenceForLocale(DbDto.Topic topic, Locale locale, String resourceReference, String newResourceValue) {
         requireNonNull(getChangeHelper());
 
         getChangeHelper().updateResourceItemWithReference(topic, locale, resourceReference, newResourceValue);
     }
 
-    void updateResourceWithReferenceForAllLocales(DbDto.Topic topic, String oldResourceReference, String newResourceReference, String newResourceValue) {
+    public void updateResourceWithReferenceForAllLocales(DbDto.Topic topic, String oldResourceReference, String newResourceReference, String newResourceValue) {
         requireNonNull(getChangeHelper());
 
         getChangeHelper().updateResourceEntryWithReference(topic, oldResourceReference, newResourceReference, newResourceValue);
     }
 
-    void updateResourceWithReferenceForAllLocales(DbDto.Topic topic, String resourceReference, String newResourceValue) {
+    public void updateResourceWithReferenceForAllLocales(DbDto.Topic topic, String resourceReference, String newResourceValue) {
         Locale.valuesAsStream()
                 .forEach(affectedLocale -> updateResourceWithReferenceForLocale(topic, affectedLocale, resourceReference, newResourceValue));
     }
@@ -152,7 +152,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
         getChangeHelper().removeEntryWithIdentifier(internalEntryId, topic);
     }
 
-    void removeResourceWithReference(DbDto.Topic topic, String resourceReference) {
+    public void removeResourceWithReference(DbDto.Topic topic, String resourceReference) {
         requireNonNull(getChangeHelper());
         getChangeHelper().removeResourceEntryWithReference(topic, resourceReference);
     }
@@ -173,7 +173,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
         return newEntry.getId();
     }
 
-    void addResourceWithReference(DbDto.Topic topic, Locale locale, String newResourceReference, String newResourceValue) {
+    public void addResourceWithReference(DbDto.Topic topic, Locale locale, String newResourceReference, String newResourceValue) {
         requireNonNull(getGenHelper());
         getChangeHelper().addResourceValueWithReference(topic, locale, newResourceReference, newResourceValue);
     }

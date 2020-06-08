@@ -1,4 +1,4 @@
-package fr.tduf.gui.database.controllers;
+package fr.tduf.gui.database.controllers.main;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.database.stages.MainStageDesigner;

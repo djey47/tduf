@@ -1,4 +1,4 @@
-package fr.tduf.gui.database.controllers;
+package fr.tduf.gui.database.controllers.main;
 
 import com.esotericsoftware.minlog.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -75,6 +75,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     private static final Predicate<ContentEntryDataItem> PREDICATE_DEFAULT_ENTRY_FILTER = (ContentEntryDataItem item) -> true;
 
     final Property<Locale> currentLocaleProperty = new SimpleObjectProperty<>(SettingsConstants.DEFAULT_LOCALE);
+
     final Property<EditorLayoutDto.EditorProfileDto> currentProfileProperty = new SimpleObjectProperty<>();
 
     private final DynamicFieldControlsHelper dynamicFieldControlsHelper;
@@ -260,7 +261,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         initTabPane();
     }
 
-    void updateAllPropertiesWithItemValues() {
+    public void updateAllPropertiesWithItemValues() {
         updateCurrentEntryLabelProperty();
 
         int entryIndex = currentEntryIndexProperty().getValue();
@@ -283,7 +284,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
             return;
         }
 
-        DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, getCurrentTopicObject().getStructure().getFields());
+        DbStructureDto.Field structureField = DatabaseStructureQueryHelper.getStructureField(item, getCurrentStructure().getFields());
         if (REFERENCE == structureField.getFieldType()) {
             updateReferenceProperties(item, structureField);
         } else if (structureField.isAResourceField()) {
@@ -585,7 +586,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     }
 
     private void initGUIComponentsProperties() {
-        getMouseCursorProperty().bind(
+        mouseCursorProperty().bind(
                 when(getRunningServiceProperty())
                         .then(Cursor.WAIT)
                         .otherwise(Cursor.DEFAULT)
@@ -808,10 +809,6 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         return resourcesByTopicLink;
     }
 
-    public Property<EditorLayoutDto.EditorProfileDto> currentProfile() {
-        return currentProfileProperty;
-    }
-
     ObservableList<ContentEntryDataItem> getBrowsableEntries() {
         return browsableEntries;
     }
@@ -822,5 +819,13 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     public ItemViewModel getItemPropsByFieldRank() {
         return itemPropsByFieldRank;
+    }
+
+    public Property<Locale> currentLocaleProperty() {
+        return currentLocaleProperty;
+    }
+
+    public Property<EditorLayoutDto.EditorProfileDto> currentProfileProperty() {
+        return currentProfileProperty;
     }
 }

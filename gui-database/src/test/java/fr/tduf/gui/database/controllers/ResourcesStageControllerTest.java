@@ -1,5 +1,8 @@
 package fr.tduf.gui.database.controllers;
 
+import fr.tduf.gui.database.controllers.main.MainStageChangeDataController;
+import fr.tduf.gui.database.controllers.main.MainStageController;
+import fr.tduf.gui.database.controllers.main.MainStageViewDataController;
 import fr.tduf.gui.database.domain.LocalizedResource;
 import fr.tduf.libtesting.common.helper.javafx.ApplicationTestHelper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
