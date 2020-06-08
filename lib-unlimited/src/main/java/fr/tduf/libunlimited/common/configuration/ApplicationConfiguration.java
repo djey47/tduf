@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.Properties;
 
+import static fr.tduf.libunlimited.common.forever.FileConstants.DIRECTORY_CONFIGURATION;
 import static java.util.Optional.ofNullable;
 
 /**
@@ -21,7 +22,7 @@ public class ApplicationConfiguration extends Properties {
 
     // TODO [2.0] Remove genuine location support
     private static String genuineConfigurationFile = Paths.get(System.getProperty("user.home"), "tduf.properties").toString();
-    private static String configurationFile = Paths.get(System.getProperty("user.home"), ".tduf", "tduf.properties").toString();
+    private static String configurationFile = Paths.get(DIRECTORY_CONFIGURATION, "tduf.properties").toString();
 
     private static final String KEY_DATABASE_DIR = "tdu.database.directory";
     private static final String KEY_TDU_DIR = "tdu.root.directory";
