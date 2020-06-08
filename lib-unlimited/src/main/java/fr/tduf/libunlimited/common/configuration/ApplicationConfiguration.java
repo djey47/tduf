@@ -19,6 +19,7 @@ import static java.util.Optional.ofNullable;
 public class ApplicationConfiguration extends Properties {
     private static final String THIS_CLASS_NAME = ApplicationConfiguration.class.getSimpleName();
 
+    // TODO [2.0] Remove genuine location support
     private static String genuineConfigurationFile = Paths.get(System.getProperty("user.home"), "tduf.properties").toString();
     private static String configurationFile = Paths.get(System.getProperty("user.home"), ".tduf", "tduf.properties").toString();
 
