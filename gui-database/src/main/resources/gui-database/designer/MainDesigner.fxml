@@ -90,6 +90,8 @@
                             <SeparatorMenuItem />
                             <MenuItem mnemonicParsing="false" onAction="#handleOpenSettingsFolderMenuItemAction" text="Browse configuration..." />
                             <MenuItem mnemonicParsing="false" onAction="#handleResetSettingsMenuItemAction" text="Reset settings" />
+                            <SeparatorMenuItem />
+                            <MenuItem mnemonicParsing="false" onAction="#handleOpenLogsFolderMenuItemAction" text="Browse logs..." />
                         </items>
                     </MenuButton>
                 </ToolBar>

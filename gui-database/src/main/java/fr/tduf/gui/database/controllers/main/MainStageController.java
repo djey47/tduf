@@ -54,6 +54,7 @@ import java.util.*;
 import static fr.tduf.gui.common.helper.MessagesHelper.getServiceErrorMessage;
 import static fr.tduf.gui.database.common.DisplayConstants.*;
 import static fr.tduf.libunlimited.common.forever.FileConstants.DIRECTORY_CONFIGURATION;
+import static fr.tduf.libunlimited.common.forever.FileConstants.DIRECTORY_LOGS;
 import static java.util.Optional.ofNullable;
 import static javafx.concurrent.Worker.State.FAILED;
 import static javafx.concurrent.Worker.State.SUCCEEDED;
@@ -226,6 +227,13 @@ public class MainStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleOpenSettingsFolderMenuItemAction");
 
         openSettings();
+    }
+
+    @FXML
+    public void handleOpenLogsFolderMenuItemAction() {
+        Log.trace(THIS_CLASS_NAME, "->handleOpenLogsFolderMenuItemAction");
+
+        openLogs();
     }
 
     @FXML
@@ -721,6 +729,10 @@ public class MainStageController extends AbstractGuiController {
 
     private void openSettings() {
         DesktopHelper.openInFiles(Paths.get(DIRECTORY_CONFIGURATION));
+    }
+
+    private void openLogs() {
+        DesktopHelper.openInFiles(Paths.get(DIRECTORY_LOGS));
     }
 
     private void checkDatabase(String databaseLocation) {
