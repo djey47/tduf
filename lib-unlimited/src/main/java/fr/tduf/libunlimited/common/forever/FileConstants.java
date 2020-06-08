@@ -14,11 +14,13 @@ public class FileConstants {
 
     public static String DIRECTORY_ROOT;
     public static String DIRECTORY_EXTERNAL_STRUCTURES;
+    public static String DIRECTORY_CONFIGURATION;
 
     static {
         try {
             DIRECTORY_ROOT = FilesHelper.getRootDirectory().toString();
             DIRECTORY_EXTERNAL_STRUCTURES = Paths.get(DIRECTORY_ROOT, "structures").toString();
+            DIRECTORY_CONFIGURATION = Paths.get(System.getProperty("user.home"), ".tduf").toString();
         } catch (IOException ioe) {
             Log.warn(THIS_CLASS_NAME, "Unable to resolve application root directory", ioe);
             DIRECTORY_ROOT = null;

@@ -53,6 +53,7 @@ import java.util.*;
 
 import static fr.tduf.gui.common.helper.MessagesHelper.getServiceErrorMessage;
 import static fr.tduf.gui.database.common.DisplayConstants.*;
+import static fr.tduf.libunlimited.common.forever.FileConstants.DIRECTORY_CONFIGURATION;
 import static java.util.Optional.ofNullable;
 import static javafx.concurrent.Worker.State.FAILED;
 import static javafx.concurrent.Worker.State.SUCCEEDED;
@@ -218,6 +219,13 @@ public class MainStageController extends AbstractGuiController {
         Log.trace(THIS_CLASS_NAME, "->handleResetSettingsMenuItemAction");
 
         resetSettings();
+    }
+
+    @FXML
+    public void handleOpenSettingsFolderMenuItemAction() {
+        Log.trace(THIS_CLASS_NAME, "->handleOpenSettingsFolderMenuItemAction");
+
+        openSettings();
     }
 
     @FXML
@@ -709,6 +717,10 @@ public class MainStageController extends AbstractGuiController {
         applicationConfiguration.reset();
 
         notifyActionTermination(INFORMATION, DisplayConstants.TITLE_SUB_RESET_SETTINGS, DisplayConstants.MESSAGE_DELETED_SETTINGS, DisplayConstants.MESSAGE_RESTART_APP);
+    }
+
+    private void openSettings() {
+        DesktopHelper.openInFiles(Paths.get(DIRECTORY_CONFIGURATION));
     }
 
     private void checkDatabase(String databaseLocation) {

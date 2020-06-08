@@ -87,6 +87,8 @@
                     <MenuButton mnemonicParsing="false" text="Advanced...">
                         <items>
                             <MenuItem mnemonicParsing="false" onAction="#handleResetDatabaseCacheMenuItemAction" text="Reset database cache" />
+                            <SeparatorMenuItem />
+                            <MenuItem mnemonicParsing="false" onAction="#handleOpenSettingsFolderMenuItemAction" text="Browse configuration..." />
                             <MenuItem mnemonicParsing="false" onAction="#handleResetSettingsMenuItemAction" text="Reset settings" />
                         </items>
                     </MenuButton>
