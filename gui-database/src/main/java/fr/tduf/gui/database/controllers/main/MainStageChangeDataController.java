@@ -63,6 +63,9 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
         return new MainStageChangeDataController(new MainStageController());
     }
 
+    /**
+     * Updates database content item  with new raw value at current entry index, for specified topic and field rank
+     */
     public void updateContentItem(DbDto.Topic topic, int fieldRank, String newRawValue) {
         requireNonNull(getChangeHelper());
 
@@ -72,6 +75,8 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
                     getViewDataController().updateItemProperties(updatedItem);
                     getViewDataController().updateBrowsableEntryLabel(currentEntryIndex);
                     getViewDataController().updateCurrentEntryLabelProperty();
+
+                    modifiedProperty().setValue(true);
                 });
     }
 
@@ -130,18 +135,32 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
         };
     }
 
+    /**
+     * Changes resource value for a single locale within specified topic, at given reference
+     */
     public void updateResourceWithReferenceForLocale(DbDto.Topic topic, Locale locale, String resourceReference, String newResourceValue) {
         requireNonNull(getChangeHelper());
 
         getChangeHelper().updateResourceItemWithReference(topic, locale, resourceReference, newResourceValue);
+
+        modifiedProperty().setValue(true);
     }
 
+    /**
+     * Creates resource value for all locales within specified topic, at given new reference.
+     * Also, removes value for all locales at given old reference.
+     */
     public void updateResourceWithReferenceForAllLocales(DbDto.Topic topic, String oldResourceReference, String newResourceReference, String newResourceValue) {
         requireNonNull(getChangeHelper());
 
         getChangeHelper().updateResourceEntryWithReference(topic, oldResourceReference, newResourceReference, newResourceValue);
+
+        modifiedProperty().setValue(true);
     }
 
+    /**
+     * Updates resource value for all locales within specified topic, at given reference.
+     */
     public void updateResourceWithReferenceForAllLocales(DbDto.Topic topic, String resourceReference, String newResourceValue) {
         Locale.valuesAsStream()
                 .forEach(affectedLocale -> updateResourceWithReferenceForLocale(topic, affectedLocale, resourceReference, newResourceValue));
@@ -149,35 +168,64 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
 
     void removeEntryWithIdentifier(int internalEntryId, DbDto.Topic topic) {
         requireNonNull(getChangeHelper());
+
         getChangeHelper().removeEntryWithIdentifier(internalEntryId, topic);
+
+        modifiedProperty().setValue(true);
     }
 
+    /**
+     * Deletes resource at specified reference within given topic.
+     * Will affect all locales.
+     */
     public void removeResourceWithReference(DbDto.Topic topic, String resourceReference) {
         requireNonNull(getChangeHelper());
+
         getChangeHelper().removeResourceEntryWithReference(topic, resourceReference);
+
+        modifiedProperty().setValue(true);
     }
 
+    /**
+     * Adds entry with default contents within current topic.
+     * @return identifier of newly created entry
+     */
     int addEntryForCurrentTopic() {
         requireNonNull(getChangeHelper());
+
         ContentEntryDto newEntry = getChangeHelper().addContentsEntryWithDefaultItems(currentTopicProperty().getValue());
+
+        modifiedProperty().setValue(true);
 
         return newEntry.getId();
     }
 
+    /**
+     * Adds entry with same contents as current one within current topic.
+     * @return identifier of newly created entry
+     */
     int duplicateCurrentEntry() {
         requireNonNull(getChangeHelper());
+
         ContentEntryDto newEntry = getChangeHelper().duplicateEntryWithIdentifier(
                 currentEntryIndexProperty().getValue(),
                 currentTopicProperty().getValue());
 
+        modifiedProperty().setValue(true);
+
         return newEntry.getId();
     }
 
+    /**
+     * Creates new resource for single locale at given reference, within specified topic.
+     */
     public void addResourceWithReference(DbDto.Topic topic, Locale locale, String newResourceReference, String newResourceValue) {
-        requireNonNull(getGenHelper());
-        getChangeHelper().addResourceValueWithReference(topic, locale, newResourceReference, newResourceValue);
-    }
+        requireNonNull(getChangeHelper());
 
+        getChangeHelper().addResourceValueWithReference(topic, locale, newResourceReference, newResourceValue);
+
+        modifiedProperty().setValue(true);
+    }
 
     String exportCurrentEntryAsLine() {
         List<String> values = getRawValuesFromCurrentEntry();
@@ -216,6 +264,8 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
 
         final DatabasePatchProperties effectiveProperties = patcher.applyWithProperties(patchObject, patchProperties);
 
+        modifiedProperty().setValue(true);
+
         return PatchPropertiesReadWriteHelper.writeEffectivePatchProperties(effectiveProperties, patchFile.getAbsolutePath());
     }
 
@@ -223,6 +273,8 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
         int currentEntryIndex = currentEntryIndexProperty().getValue();
         TdupeGateway gateway = AbstractDatabaseHolder.prepare(TdupeGateway.class, getDatabaseObjects());
         gateway.applyPerformancePackToEntryWithIdentifier(currentEntryIndex, packFile);
+
+        modifiedProperty().setValue(true);
     }
 
     void importLegacyPatch(String patchFile) throws IOException, ReflectiveOperationException {
@@ -231,11 +283,16 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
         final DbPatchDto patchObject = TdumtPatchConverter.pchToJson(patchDocument);
         DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, getDatabaseObjects());
         patcher.apply(patchObject);
+
+        modifiedProperty().setValue(true);
     }
 
-    private void moveEntryWithIdentifier(int step, int internalEntryId, DbDto.Topic topic) {
+    void moveEntryWithIdentifier(int step, int internalEntryId, DbDto.Topic topic) {
         requireNonNull(getChangeHelper());
+
         getChangeHelper().moveEntryWithIdentifier(step, internalEntryId, topic);
+
+        modifiedProperty().setValue(true);
     }
 
     private List<String> getRawValuesFromCurrentEntry() {
@@ -272,10 +329,14 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
         addLinkedEntryWithTargetRefAndUpdateStage(tableViewSelectionModel, targetTopic, null, topicLinkObject);
     }
 
-    private void addLinkedEntry(String sourceEntryRef, String targetEntryRef, DbDto.Topic targetTopic) {
+    void addLinkedEntry(String sourceEntryRef, String targetEntryRef, DbDto.Topic targetTopic) {
         requireNonNull(getChangeHelper());
+
+        // TODO create method in changeHelper with combined ops
         ContentEntryDto newEntry = getChangeHelper().addContentsEntryWithDefaultItems(targetTopic);
-        DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(newEntry, sourceEntryRef, targetEntryRef);
+        getChangeHelper().updateAssociationEntryWithSourceAndTargetReferences(newEntry, sourceEntryRef, targetEntryRef);
+
+        modifiedProperty().setValue(true);
     }
 
     private void removeLinkedEntryAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
@@ -284,7 +345,6 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
         getViewDataController().updateAllLinkProperties(topicLinkObject);
         TableViewHelper.selectRowAndScroll(tableViewSelectionModel.getSelectedIndex(), tableViewSelectionModel.getTableView());
     }
-
 
     private void moveLinkedEntryUpAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
         final TableView<ContentEntryDataItem> tableView = tableViewSelectionModel.getTableView();

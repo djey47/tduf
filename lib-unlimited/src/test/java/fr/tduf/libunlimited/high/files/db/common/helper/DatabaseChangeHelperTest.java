@@ -402,7 +402,7 @@ class DatabaseChangeHelperTest {
         associationEntry.appendItem(ContentItemDto.builder().ofFieldRank(2).build());
 
         // WHEN
-        DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(associationEntry, ENTRY_REFERENCE, null);
+        changeHelper.updateAssociationEntryWithSourceAndTargetReferences(associationEntry, ENTRY_REFERENCE, null);
 
         // THEN
         assertThat(associationEntry.getItems()).extracting("rawValue").containsExactly(ENTRY_REFERENCE, null);
@@ -417,7 +417,7 @@ class DatabaseChangeHelperTest {
         associationEntry.appendItem(ContentItemDto.builder().ofFieldRank(3).build());
 
         // WHEN
-        DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(associationEntry, ENTRY_REFERENCE, ENTRY_REFERENCE_BIS);
+        changeHelper.updateAssociationEntryWithSourceAndTargetReferences(associationEntry, ENTRY_REFERENCE, ENTRY_REFERENCE_BIS);
 
         // THEN
         assertThat(associationEntry.getItems()).extracting("rawValue").containsExactly(ENTRY_REFERENCE, ENTRY_REFERENCE_BIS, null);
@@ -427,7 +427,7 @@ class DatabaseChangeHelperTest {
     void updateAssociationEntryWithSourceAndTargetReferences_whenNullEntry_shouldThrowException() {
         // GIVEN-WHEN-THEN
         assertThrows(NullPointerException.class,
-                () -> DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(null, ENTRY_REFERENCE, ENTRY_REFERENCE_BIS));
+                () -> changeHelper.updateAssociationEntryWithSourceAndTargetReferences(null, ENTRY_REFERENCE, ENTRY_REFERENCE_BIS));
     }
 
     @Test
