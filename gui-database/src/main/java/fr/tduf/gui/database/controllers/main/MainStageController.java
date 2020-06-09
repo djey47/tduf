@@ -4,6 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.AppConstants;
 import fr.tduf.gui.common.controllers.helper.DatabaseOpsHelper;
 import fr.tduf.gui.common.game.helpers.GameSettingsHelper;
+import fr.tduf.gui.common.javafx.application.AbstractGuiApp;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.javafx.helper.DesktopHelper;
@@ -15,6 +16,7 @@ import fr.tduf.gui.database.controllers.EntriesStageController;
 import fr.tduf.gui.database.controllers.FieldsBrowserStageController;
 import fr.tduf.gui.database.controllers.ResourcesStageController;
 import fr.tduf.gui.database.controllers.helper.DialogsHelper;
+import fr.tduf.gui.database.converter.ModifiedFlagToTitleConverter;
 import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
@@ -72,6 +74,8 @@ public class MainStageController extends AbstractGuiController {
     private final Property<DbDto.Topic> currentTopicProperty = new SimpleObjectProperty<>();
     private final StringProperty currentEntryLabelProperty = new SimpleStringProperty(DisplayConstants.LABEL_ITEM_ENTRY_DEFAULT);
 
+    private final BooleanProperty modifiedProperty = new SimpleBooleanProperty(false);
+
     private EditorLayoutDto layoutObject;
 
     private BulkDatabaseMiner databaseMiner;
@@ -85,17 +89,17 @@ public class MainStageController extends AbstractGuiController {
     private EntriesStageController entriesStageController;
     private FieldsBrowserStageController fieldsBrowserStageController;
 
-    private final List<DbDto> databaseObjects = new ArrayList<>(18);
+    private final List<DbDto> databaseObjects = new ArrayList<>(DbDto.Topic.values().length);
     private DbDto currentTopicObject;
 
     private final BooleanProperty runningServiceProperty = new SimpleBooleanProperty();
     private final DatabaseSaver databaseSaver = new DatabaseSaver();
     private final DatabaseChecker databaseChecker = new DatabaseChecker();
     private final DatabaseFixer databaseFixer = new DatabaseFixer();
-
     // Removing final allows it to be mocked in tests
     @SuppressWarnings("FieldMayBeFinal")
     private DatabaseLoader databaseLoader = new DatabaseLoader();
+
     @SuppressWarnings("FieldMayBeFinal")
     private ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
 
@@ -149,6 +153,8 @@ public class MainStageController extends AbstractGuiController {
 
     @Override
     protected void init() throws IOException {
+        AbstractGuiApp.setMainController(this);
+
         initConfiguration();
 
         viewDataController = new MainStageViewDataController(this);
@@ -444,20 +450,21 @@ public class MainStageController extends AbstractGuiController {
     }
 
     void handleDatabaseLoaderSuccess() {
-        if (databaseLoader.fetchValue().isEmpty()) {
+        List<DbDto> loadedDatabaseObjects = databaseLoader.fetchValue();
+        if (loadedDatabaseObjects.isEmpty()) {
             return;
         }
-        databaseObjects.clear();
-        databaseObjects.addAll(databaseLoader.fetchValue());
 
+        databaseObjects.clear();
+        databaseObjects.addAll(loadedDatabaseObjects);
         databaseMiner = BulkDatabaseMiner.load(databaseObjects);
 
-        initPlugins();
-
-        viewDataController.updateDisplayWithLoadedObjects();
+        initAfterDatabaseLoading();
     }
 
     void handleDatabaseSaverSuccess() {
+        modifiedProperty.setValue(false);
+
         if(!applicationConfiguration.isEditorPluginsEnabled()) {
             return;
         }
@@ -508,6 +515,16 @@ public class MainStageController extends AbstractGuiController {
         pluginHandler.initializeAllPlugins();
     }
 
+    private void initAfterDatabaseLoading() {
+        initPlugins();
+
+        viewDataController.updateDisplayWithLoadedObjects();
+
+        titleProperty().bindBidirectional(modifiedProperty, new ModifiedFlagToTitleConverter());
+        modifiedProperty.setValue(false);
+    }
+
+    // TODO move listeners to helper class in services package
     private ChangeListener<Worker.State> getFixerStateChangeListener() {
         return (observableValue, oldState, newState) -> {
             if (SUCCEEDED == newState) {
@@ -807,6 +824,11 @@ public class MainStageController extends AbstractGuiController {
         return pluginHandler;
     }
 
+    protected StringProperty titleProperty() {
+        // getter kept for testing
+        return super.titleProperty();
+    }
+
     void setCurrentTopicObject(DbDto currentTopicObject) {
         this.currentTopicObject = currentTopicObject;
     }
@@ -825,6 +847,10 @@ public class MainStageController extends AbstractGuiController {
 
     StringProperty currentEntryLabelProperty() {
         return currentEntryLabelProperty;
+    }
+
+    BooleanProperty modifiedProperty() {
+        return modifiedProperty;
     }
 
     EntriesStageController getEntriesStageController() {

@@ -1,8 +1,6 @@
 package fr.tduf.gui.database.controllers.main;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.database.controllers.main.MainStageController;
-import fr.tduf.gui.database.controllers.main.MainStageViewDataController;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.services.DatabaseLoader;
@@ -75,10 +73,13 @@ class MainStageControllerTest extends ApplicationTest {
     }
 
     @Test
-    void handleDatabaseLoaderSuccess_whenLoadedObjects_andPluginsEnabled_shouldReplaceObjects_andUpdateDisplay() {
+    void handleDatabaseLoaderSuccess_whenLoadedObjects_andPluginsEnabled_shouldReplaceObjects_andUpdateDisplay_andResetModifiedFlagWithTitleBinding() {
         // given
         DbDto previousDatabaseObject = DbDto.builder().build();
-        controller.getDatabaseObjects().add(previousDatabaseObject);
+        MainStageController spyController = spy(controller);
+        spyController.getDatabaseObjects().add(previousDatabaseObject);
+        spyController.modifiedProperty().setValue(true);
+        doReturn(new SimpleStringProperty()).when(spyController).titleProperty();
         List<DbDto> loadedObjects = singletonList(DbDto.builder().build());
         when(databaseLoaderMock.fetchValue()).thenReturn(loadedObjects);
         when(databaseLoaderMock.databaseLocationProperty()).thenReturn(new SimpleStringProperty("/db"));
@@ -88,14 +89,28 @@ class MainStageControllerTest extends ApplicationTest {
         when(applicationConfigurationMock.isEditorPluginsEnabled()).thenReturn(true);
 
         // when
-        controller.handleDatabaseLoaderSuccess();
+        spyController.handleDatabaseLoaderSuccess();
 
         // then
-        assertThat(controller.getDatabaseObjects()).isEqualTo(loadedObjects);
+        assertThat(spyController.modifiedProperty().getValue()).isFalse();
+        assertThat(spyController.titleProperty().getValue()).isEqualTo("TDUF Database Editor ");
+        assertThat(spyController.getDatabaseObjects()).isEqualTo(loadedObjects);
         assertThat(pluginContext.getDatabaseLocation()).isEqualTo("/db");
         assertThat(pluginContext.getGameLocation()).isEqualTo("/tdu");
         verify(pluginHandlerMock).initializeAllPlugins();
         verify(viewDataControllerMock).updateDisplayWithLoadedObjects();
+    }
+
+    @Test
+    void handleDatabaseSaverSuccess_shouldResetModifiedFlag() {
+        // given
+        controller.modifiedProperty().setValue(true);
+
+        // when
+        controller.handleDatabaseSaverSuccess();
+
+        // then
+        assertThat(controller.modifiedProperty().getValue()).isFalse();
     }
 
     @Test
@@ -111,7 +126,7 @@ class MainStageControllerTest extends ApplicationTest {
     }
 
     @Test
-    void handleDatabaseSaverSuccess_whenPluginsDisabled_shouldInvokePluginHandler() {
+    void handleDatabaseSaverSuccess_whenPluginsDisabled_shouldNotInvokePluginHandler() {
         // given
         when(applicationConfigurationMock.isEditorPluginsEnabled()).thenReturn(false);
 
