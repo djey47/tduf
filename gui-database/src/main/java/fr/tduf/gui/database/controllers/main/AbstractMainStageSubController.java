@@ -165,6 +165,11 @@ abstract class AbstractMainStageSubController {
         return mainStageController.currentEntryLabelProperty();
     }
 
+    BooleanProperty modifiedProperty() {
+        // Getter kept for testing
+        return mainStageController.modifiedProperty();
+    }
+
     ChoiceBox<EditorLayoutDto.EditorProfileDto> getProfilesChoiceBox() {
         // Getter kept for testing
         return mainStageController.getProfilesChoiceBox();
