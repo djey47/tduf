@@ -45,6 +45,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.WindowEvent;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -61,6 +62,7 @@ import static java.util.Optional.ofNullable;
 import static javafx.concurrent.Worker.State.FAILED;
 import static javafx.concurrent.Worker.State.SUCCEEDED;
 import static javafx.scene.control.Alert.AlertType.*;
+import static javafx.scene.control.ButtonType.OK;
 
 /**
  * Makes it a possible to intercept all GUI events.
@@ -449,6 +451,15 @@ public class MainStageController extends AbstractGuiController {
         viewDataController.resetEntryFilter();
     }
 
+    void handleApplicationExit(WindowEvent event) {
+        Log.trace(THIS_CLASS_NAME, "->handleApplicationExit");
+
+        if (!modifiedProperty.get() || confirmLosingChanges(TITLE_SUB_LEAVE)) {
+            return;
+        }
+        event.consume();
+    }
+
     void handleDatabaseLoaderSuccess() {
         List<DbDto> loadedDatabaseObjects = databaseLoader.fetchValue();
         if (loadedDatabaseObjects.isEmpty()) {
@@ -479,6 +490,34 @@ public class MainStageController extends AbstractGuiController {
             Log.set(Log.LEVEL_DEBUG);
             Log.debug(THIS_CLASS_NAME, "/!\\ DEBUG mode enabled via application configuration /!\\");
         }
+    }
+
+    // Visible for testing
+    void loadDatabaseFromDirectory(String databaseLocation) {
+        if (runningServiceProperty.get() || (modifiedProperty.get() && !confirmLosingChanges(TITLE_SUB_LOAD))) {
+            return;
+        }
+
+        statusLabel.textProperty().unbind();
+        statusLabel.textProperty().bind(databaseLoader.messageProperty());
+
+        databaseLoader.bankSupportProperty().setValue(bankSupport);
+        databaseLoader.databaseLocationProperty().setValue(databaseLocation);
+        databaseLoader.restart();
+    }
+
+    // Visible for testing
+    boolean confirmLosingChanges(String promptSubTitle) {
+        final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                .withContext(CONFIRMATION)
+                .withTitle(TITLE_APPLICATION + (promptSubTitle == null ? "" : promptSubTitle))
+                .withMessage(MESSAGE_LOST_UNSAVED)
+                .withDescription(QUESTION_R_U_OK)
+                .build();
+
+        return CommonDialogsHelper.showDialog(dialogOptions, getWindow())
+                .map(buttonType -> buttonType == OK)
+                .orElse(false);
     }
 
     private void initServicePropertiesAndListeners() {
@@ -522,6 +561,8 @@ public class MainStageController extends AbstractGuiController {
 
         titleProperty().bindBidirectional(modifiedProperty, new ModifiedFlagToTitleConverter());
         modifiedProperty.setValue(false);
+
+        getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, this::handleApplicationExit);
     }
 
     // TODO move listeners to helper class in services package
@@ -594,19 +635,6 @@ public class MainStageController extends AbstractGuiController {
         if (selectedDirectory != null) {
             this.databaseLocationTextField.setText(selectedDirectory.getPath());
         }
-    }
-
-    private void loadDatabaseFromDirectory(String databaseLocation) {
-        if (runningServiceProperty.get()) {
-            return;
-        }
-
-        statusLabel.textProperty().unbind();
-        statusLabel.textProperty().bind(databaseLoader.messageProperty());
-
-        databaseLoader.bankSupportProperty().setValue(bankSupport);
-        databaseLoader.databaseLocationProperty().setValue(databaseLocation);
-        databaseLoader.restart();
     }
 
     private void saveDatabaseToDirectory(String databaseLocation) {

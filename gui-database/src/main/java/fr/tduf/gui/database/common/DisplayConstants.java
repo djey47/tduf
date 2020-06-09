@@ -72,6 +72,7 @@ public class DisplayConstants {
     public static final String TITLE_SUB_RESOURCES = " : Resources";
     public static final String TITLE_SUB_SAVE = " : Save database";
     public static final String TITLE_SUB_LOAD = " : Load database";
+    public static final String TITLE_SUB_LEAVE = " : Leaving";
     public static final String TITLE_SUB_EXPORT = " : Export entry";
     public static final String TITLE_SUB_EXPORT_FILE = " : Export contents to file";
     public static final String TITLE_SUB_IMPORT = " : Import entry";
@@ -109,6 +110,9 @@ public class DisplayConstants {
     public static final String MESSAGE_FILE_EXPORT_OK = "Contents were exported to file.";
     public static final String MESSAGE_FILE_EXPORT_KO = "Contents could not be exported to file.";
     public static final String MESSAGE_PLUGIN_SAVE_KO = "Unable to save data via plugin.";
+    public static final String MESSAGE_LOST_UNSAVED = "All unsaved changes will be lost!";
+
+    public static final String QUESTION_R_U_OK = "Are you okay with this?";
 
     public static final String TAB_NAME_DEFAULT = "Default";
 

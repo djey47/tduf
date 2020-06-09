@@ -6,13 +6,14 @@ import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.services.DatabaseLoader;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import javafx.stage.Window;
+import javafx.stage.WindowEvent;
+import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.testfx.framework.junit5.ApplicationTest;
@@ -24,6 +25,7 @@ import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static java.util.Optional.of;
+import static javafx.stage.WindowEvent.WINDOW_CLOSE_REQUEST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -41,8 +43,22 @@ class MainStageControllerTest extends ApplicationTest {
     @Mock
     private ApplicationConfiguration applicationConfigurationMock;
 
+    @Mock
+    private Window windowMock;
+
+    @Mock
+    private WindowEvent eventMock;
+
+    @Mock
+    private Label statusLabel;
+
+    @Mock
+    private ReadOnlyStringProperty messagePropertyMock;
+
     @InjectMocks
     private MainStageController controller;
+    // Controller variant, used to spy JavaFX-related methods
+    private MainStageController spyController;
 
     @BeforeAll
     static void globalSetUp() {
@@ -52,6 +68,14 @@ class MainStageControllerTest extends ApplicationTest {
     @BeforeEach
     void setUp() {
         initMocks(this);
+
+        spyController = spy(controller);
+        doReturn(new SimpleStringProperty()).when(spyController).titleProperty();
+        doReturn(windowMock).when(spyController).getWindow();
+        doReturn(false).when(spyController).confirmLosingChanges(anyString());
+        spyController.modifiedProperty().setValue(false);
+
+        when(databaseLoaderMock.messageProperty()).thenReturn(messagePropertyMock);
     }
 
     @AfterEach
@@ -69,17 +93,15 @@ class MainStageControllerTest extends ApplicationTest {
 
         // then
         assertThat(controller.getDatabaseObjects()).isEmpty();
-        verifyNoInteractions(pluginHandlerMock, viewDataControllerMock);
+        verifyNoInteractions(pluginHandlerMock, viewDataControllerMock, windowMock);
     }
 
     @Test
     void handleDatabaseLoaderSuccess_whenLoadedObjects_andPluginsEnabled_shouldReplaceObjects_andUpdateDisplay_andResetModifiedFlagWithTitleBinding() {
         // given
         DbDto previousDatabaseObject = DbDto.builder().build();
-        MainStageController spyController = spy(controller);
         spyController.getDatabaseObjects().add(previousDatabaseObject);
         spyController.modifiedProperty().setValue(true);
-        doReturn(new SimpleStringProperty()).when(spyController).titleProperty();
         List<DbDto> loadedObjects = singletonList(DbDto.builder().build());
         when(databaseLoaderMock.fetchValue()).thenReturn(loadedObjects);
         when(databaseLoaderMock.databaseLocationProperty()).thenReturn(new SimpleStringProperty("/db"));
@@ -99,6 +121,7 @@ class MainStageControllerTest extends ApplicationTest {
         assertThat(pluginContext.getGameLocation()).isEqualTo("/tdu");
         verify(pluginHandlerMock).initializeAllPlugins();
         verify(viewDataControllerMock).updateDisplayWithLoadedObjects();
+        verify(windowMock).addEventFilter(eq(WINDOW_CLOSE_REQUEST), any());
     }
 
     @Test
@@ -194,5 +217,104 @@ class MainStageControllerTest extends ApplicationTest {
 
         // then
         verify(viewDataControllerMock).applyEntryFilter();
+    }
+
+    @Test
+    void handleApplicationExit_whenModifiedFlagSetToFalse_shouldNotConfirm_norConsumeEvent() {
+        // given-when
+        spyController.handleApplicationExit(eventMock);
+
+        // then
+        verify(spyController, never()).confirmLosingChanges(anyString());
+        verify(eventMock, never()).consume();
+    }
+
+    @Test
+    void handleApplicationExit_whenModifiedFlagSetToTrue_andLosingChangesRefused_shouldConsumeEvent() {
+        // given
+        spyController.modifiedProperty().setValue(true);
+
+        // when
+        spyController.handleApplicationExit(eventMock);
+
+        // then
+        verify(spyController).confirmLosingChanges(" : Leaving");
+        verify(eventMock).consume();
+    }
+
+    @Test
+    void handleApplicationExit_whenModifiedFlagSetToTrue_andConfirmLosingChanges_shouldNotConsumeEvent() {
+        // given
+        spyController.modifiedProperty().setValue(true);
+        doReturn(true).when(spyController).confirmLosingChanges(anyString());
+
+        // when
+        spyController.handleApplicationExit(eventMock);
+
+        // then
+        verify(eventMock, never()).consume();
+    }
+
+    @Test
+    void loadDatabaseFromDirectory_whenServiceAlreadyRunning_shouldDoNothing() {
+        // given
+        spyController.runningServiceProperty().setValue(true);
+        when(statusLabel.textProperty()).thenReturn(new SimpleStringProperty());
+
+        // when
+        spyController.loadDatabaseFromDirectory("/path/to/database");
+
+        // then
+        verifyNoInteractions(statusLabel);
+        verifyNoInteractions(databaseLoaderMock);
+    }
+
+    @Test
+    @Disabled("Bug because of binding???")
+    void loadDatabaseFromDirectory_whenModifiedFlagSetToTrue_andConfirmLosingChanges_shouldBindStatus_andInvokeLoaderService() {
+        // given
+        spyController.modifiedProperty().setValue(true);
+        doReturn(true).when(spyController).confirmLosingChanges(anyString());
+        when(statusLabel.textProperty()).thenReturn(new SimpleStringProperty());
+
+        // when
+        spyController.loadDatabaseFromDirectory("/path/to/database");
+
+        // then
+        verify(statusLabel).textProperty();
+        verify(databaseLoaderMock).bankSupportProperty();
+        verify(databaseLoaderMock).databaseLocationProperty();
+        verify(databaseLoaderMock).restart();
+    }
+
+    @Test
+    void loadDatabaseFromDirectory_whenModifiedFlagSetToTrue_andLosingChangesRefused_shouldDoNothing() {
+        // given
+        spyController.modifiedProperty().setValue(true);
+        doReturn(false).when(spyController).confirmLosingChanges(anyString());
+        when(statusLabel.textProperty()).thenReturn(new SimpleStringProperty());
+
+        // when
+        spyController.loadDatabaseFromDirectory("/path/to/database");
+
+        // then
+        verifyNoInteractions(statusLabel);
+        verifyNoInteractions(databaseLoaderMock);
+    }
+
+    @Test
+    @Disabled("Bug because of binding???")
+    void loadDatabaseFromDirectory_whenModifiedFlagSetToFalse_shouldBindStatus_andInvokeLoaderService() {
+        // given
+        when(statusLabel.textProperty()).thenReturn(new SimpleStringProperty());
+
+        // when
+        spyController.loadDatabaseFromDirectory("/path/to/database");
+
+        // then
+        verify(statusLabel).textProperty();
+        verify(databaseLoaderMock).bankSupportProperty();
+        verify(databaseLoaderMock).databaseLocationProperty();
+        verify(databaseLoaderMock).restart();
     }
 }
