@@ -1,31 +1,32 @@
 package fr.tduf.gui.database.controllers.main;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.database.converter.ModifiedFlagToTitleConverter;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.services.DatabaseLoader;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
-import javafx.beans.property.ReadOnlyStringProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.testfx.framework.junit5.ApplicationTest;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
-import static java.util.Collections.singletonList;
 import static java.util.Optional.of;
-import static javafx.stage.WindowEvent.WINDOW_CLOSE_REQUEST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -35,13 +36,10 @@ class MainStageControllerTest extends ApplicationTest {
     private DatabaseLoader databaseLoaderMock;
 
     @Mock
-    private PluginHandler pluginHandlerMock;
+    private MainStageViewDataController viewDataControllerMock;
 
     @Mock
-    private MainStageViewDataController viewDataControllerMock;
-    
-    @Mock
-    private ApplicationConfiguration applicationConfigurationMock;
+    private MainStageServicesController servicesControllerMock;
 
     @Mock
     private Window windowMock;
@@ -50,14 +48,19 @@ class MainStageControllerTest extends ApplicationTest {
     private WindowEvent eventMock;
 
     @Mock
-    private Label statusLabel;
+    private Label statusLabelMock;
 
     @Mock
-    private ReadOnlyStringProperty messagePropertyMock;
+    private ApplicationConfiguration applicationConfigurationMock;
+
+    @Mock
+    private PluginHandler pluginHandlerMock;
+
+    @Mock
+    private StringProperty titlePropertyMock;
 
     @InjectMocks
     private MainStageController controller;
-    // Controller variant, used to spy JavaFX-related methods
     private MainStageController spyController;
 
     @BeforeAll
@@ -69,95 +72,28 @@ class MainStageControllerTest extends ApplicationTest {
     void setUp() {
         initMocks(this);
 
-        spyController = spy(controller);
-        doReturn(new SimpleStringProperty()).when(spyController).titleProperty();
-        doReturn(windowMock).when(spyController).getWindow();
-        doReturn(false).when(spyController).confirmLosingChanges(anyString());
-        spyController.modifiedProperty().setValue(false);
+        when(servicesControllerMock.runningServiceProperty()).thenReturn(new SimpleBooleanProperty(false));
+        when(servicesControllerMock.getDatabaseLoader()).thenReturn(databaseLoaderMock);
 
-        when(databaseLoaderMock.messageProperty()).thenReturn(messagePropertyMock);
+        when(applicationConfigurationMock.isEditorPluginsEnabled()).thenReturn(false);
+
+        when(statusLabelMock.textProperty()).thenReturn(mock(StringProperty.class));
+
+        when(databaseLoaderMock.bankSupportProperty()).thenReturn(new SimpleObjectProperty<>());
+        when(databaseLoaderMock.databaseLocationProperty()).thenReturn(new SimpleStringProperty());
+
+        // Spy instance to mock some JavaFx-tied calls
+        spyController = spy(controller);
+        spyController.modifiedProperty().setValue(false);
+        spyController.statusLabel = statusLabelMock;
+        doReturn(titlePropertyMock).when(spyController).titleProperty();
+        doReturn(false).when(spyController).confirmLosingChanges(anyString());
+        doReturn(windowMock).when(spyController).getWindow();
     }
 
     @AfterEach
     void tearDown() {
         Log.set(Log.LEVEL_INFO);
-    }
-
-    @Test
-    void handleDatabaseLoaderSuccess_whenNoLoadedObjects_shouldDoNothing() {
-        // given
-        when(databaseLoaderMock.fetchValue()).thenReturn(new ArrayList<>(0));
-
-        // when
-        controller.handleDatabaseLoaderSuccess();
-
-        // then
-        assertThat(controller.getDatabaseObjects()).isEmpty();
-        verifyNoInteractions(pluginHandlerMock, viewDataControllerMock, windowMock);
-    }
-
-    @Test
-    void handleDatabaseLoaderSuccess_whenLoadedObjects_andPluginsEnabled_shouldReplaceObjects_andUpdateDisplay_andResetModifiedFlagWithTitleBinding() {
-        // given
-        DbDto previousDatabaseObject = DbDto.builder().build();
-        spyController.getDatabaseObjects().add(previousDatabaseObject);
-        spyController.modifiedProperty().setValue(true);
-        List<DbDto> loadedObjects = singletonList(DbDto.builder().build());
-        when(databaseLoaderMock.fetchValue()).thenReturn(loadedObjects);
-        when(databaseLoaderMock.databaseLocationProperty()).thenReturn(new SimpleStringProperty("/db"));
-        EditorContext pluginContext = new EditorContext();
-        when(pluginHandlerMock.getEditorContext()).thenReturn(pluginContext);
-        when(applicationConfigurationMock.getGamePath()).thenReturn(of(Paths.get("/tdu")));
-        when(applicationConfigurationMock.isEditorPluginsEnabled()).thenReturn(true);
-
-        // when
-        spyController.handleDatabaseLoaderSuccess();
-
-        // then
-        assertThat(spyController.modifiedProperty().getValue()).isFalse();
-        assertThat(spyController.titleProperty().getValue()).isEqualTo("TDUF Database Editor ");
-        assertThat(spyController.getDatabaseObjects()).isEqualTo(loadedObjects);
-        assertThat(pluginContext.getDatabaseLocation()).isEqualTo("/db");
-        assertThat(pluginContext.getGameLocation()).isEqualTo("/tdu");
-        verify(pluginHandlerMock).initializeAllPlugins();
-        verify(viewDataControllerMock).updateDisplayWithLoadedObjects();
-        verify(windowMock).addEventFilter(eq(WINDOW_CLOSE_REQUEST), any());
-    }
-
-    @Test
-    void handleDatabaseSaverSuccess_shouldResetModifiedFlag() {
-        // given
-        controller.modifiedProperty().setValue(true);
-
-        // when
-        controller.handleDatabaseSaverSuccess();
-
-        // then
-        assertThat(controller.modifiedProperty().getValue()).isFalse();
-    }
-
-    @Test
-    void handleDatabaseSaverSuccess_whenPluginsEnabled_shouldInvokePluginHandler() {
-        // given
-        when(applicationConfigurationMock.isEditorPluginsEnabled()).thenReturn(true);
-
-        // when
-        controller.handleDatabaseSaverSuccess();
-
-        // then
-        verify(pluginHandlerMock).triggerOnSaveForAllPLugins();
-    }
-
-    @Test
-    void handleDatabaseSaverSuccess_whenPluginsDisabled_shouldNotInvokePluginHandler() {
-        // given
-        when(applicationConfigurationMock.isEditorPluginsEnabled()).thenReturn(false);
-
-        // when
-        controller.handleDatabaseSaverSuccess();
-
-        // then
-        verifyNoInteractions(pluginHandlerMock);
     }
 
     @Test
@@ -181,6 +117,53 @@ class MainStageControllerTest extends ApplicationTest {
         // then
         verify(applicationConfigurationMock).load();
         assertThat(Log.ERROR).isTrue();
+    }
+
+    @Test
+    void initAfterDatabaseLoading_whenPluginsEnabled_shouldInitPlugins() {
+        // given
+        when(applicationConfigurationMock.isEditorPluginsEnabled()).thenReturn(true);
+        when(applicationConfigurationMock.getGamePath()).thenReturn(of(Paths.get("/path/to/tdu")));
+        when(servicesControllerMock.getDatabaseLoader()).thenReturn(databaseLoaderMock);
+        when(databaseLoaderMock.databaseLocationProperty()).thenReturn(new SimpleStringProperty("/path/to/database"));
+        EditorContext editorContext = new EditorContext();
+        when(pluginHandlerMock.getEditorContext()).thenReturn(editorContext);
+
+        // when
+        spyController.initAfterDatabaseLoading();
+
+        // then
+        verify(pluginHandlerMock).initializeAllPlugins();
+        assertThat(editorContext.getDatabaseLocation()).isEqualTo("/path/to/database");
+        assertThat(editorContext.getGameLocation()).isEqualTo("/path/to/tdu");
+        assertThat(editorContext.getMiner()).isNotNull();
+        assertThat(editorContext.getMainWindow()).isSameAs(windowMock);
+        assertThat(editorContext.getMainStageController()).isSameAs(spyController);
+    }
+
+    @Test
+    void initAfterDatabaseLoading_whenPluginsDisabled_shouldNotInitPlugins() {
+        // given-when
+        spyController.initAfterDatabaseLoading();
+
+        // then
+        verifyNoInteractions(pluginHandlerMock);
+    }
+
+    @Test
+    void initAfterDatabaseLoading_shouldUpdateDisplay_andResetModifiedFlag() {
+        // given
+        spyController.modifiedProperty().setValue(true);
+
+        // when
+        spyController.initAfterDatabaseLoading();
+
+        // then
+        verify(viewDataControllerMock).updateDisplayWithLoadedObjects();
+        verify(windowMock).addEventFilter(eq(WindowEvent.WINDOW_CLOSE_REQUEST), any());
+        verify(titlePropertyMock).bindBidirectional(eq(spyController.modifiedProperty()), any(ModifiedFlagToTitleConverter.class));
+        assertThat(spyController.getMiner()).isNotNull();
+        assertThat(spyController.modifiedProperty().getValue()).isFalse();
     }
 
     @Test
@@ -258,32 +241,30 @@ class MainStageControllerTest extends ApplicationTest {
     @Test
     void loadDatabaseFromDirectory_whenServiceAlreadyRunning_shouldDoNothing() {
         // given
-        spyController.runningServiceProperty().setValue(true);
-        when(statusLabel.textProperty()).thenReturn(new SimpleStringProperty());
+        when(servicesControllerMock.runningServiceProperty()).thenReturn(new SimpleBooleanProperty(true));
 
         // when
-        spyController.loadDatabaseFromDirectory("/path/to/database");
+        controller.loadDatabaseFromDirectory("/path/to/database");
 
         // then
-        verifyNoInteractions(statusLabel);
+        verifyNoInteractions(statusLabelMock);
         verifyNoInteractions(databaseLoaderMock);
     }
 
     @Test
-    @Disabled("Bug because of binding???")
     void loadDatabaseFromDirectory_whenModifiedFlagSetToTrue_andConfirmLosingChanges_shouldBindStatus_andInvokeLoaderService() {
         // given
         spyController.modifiedProperty().setValue(true);
         doReturn(true).when(spyController).confirmLosingChanges(anyString());
-        when(statusLabel.textProperty()).thenReturn(new SimpleStringProperty());
 
         // when
         spyController.loadDatabaseFromDirectory("/path/to/database");
 
         // then
-        verify(statusLabel).textProperty();
-        verify(databaseLoaderMock).bankSupportProperty();
-        verify(databaseLoaderMock).databaseLocationProperty();
+        assertThat(databaseLoaderMock.bankSupportProperty().getValue()).isNotNull();
+        assertThat(databaseLoaderMock.databaseLocationProperty().getValue()).isEqualTo("/path/to/database");
+        verify(statusLabelMock.textProperty()).unbind();
+        verify(statusLabelMock.textProperty()).bind(same(databaseLoaderMock.messageProperty()));
         verify(databaseLoaderMock).restart();
     }
 
@@ -292,29 +273,21 @@ class MainStageControllerTest extends ApplicationTest {
         // given
         spyController.modifiedProperty().setValue(true);
         doReturn(false).when(spyController).confirmLosingChanges(anyString());
-        when(statusLabel.textProperty()).thenReturn(new SimpleStringProperty());
 
         // when
         spyController.loadDatabaseFromDirectory("/path/to/database");
 
         // then
-        verifyNoInteractions(statusLabel);
+        verifyNoInteractions(statusLabelMock);
         verifyNoInteractions(databaseLoaderMock);
     }
 
     @Test
-    @Disabled("Bug because of binding???")
-    void loadDatabaseFromDirectory_whenModifiedFlagSetToFalse_shouldBindStatus_andInvokeLoaderService() {
-        // given
-        when(statusLabel.textProperty()).thenReturn(new SimpleStringProperty());
-
-        // when
+    void loadDatabaseFromDirectory_whenModifiedFlagSetToFalse_shouldInvokeLoaderService() {
+        // given-when
         spyController.loadDatabaseFromDirectory("/path/to/database");
 
         // then
-        verify(statusLabel).textProperty();
-        verify(databaseLoaderMock).bankSupportProperty();
-        verify(databaseLoaderMock).databaseLocationProperty();
         verify(databaseLoaderMock).restart();
     }
 }

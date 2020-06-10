@@ -2,7 +2,6 @@ package fr.tduf.gui.database.controllers.main;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.AppConstants;
-import fr.tduf.gui.common.controllers.helper.DatabaseOpsHelper;
 import fr.tduf.gui.common.game.helpers.GameSettingsHelper;
 import fr.tduf.gui.common.javafx.application.AbstractGuiApp;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
@@ -34,11 +33,8 @@ import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.low.files.db.domain.IntegrityError;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.*;
-import javafx.beans.value.ChangeListener;
-import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
@@ -54,13 +50,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static fr.tduf.gui.common.helper.MessagesHelper.getServiceErrorMessage;
 import static fr.tduf.gui.database.common.DisplayConstants.*;
 import static fr.tduf.libunlimited.common.forever.FileConstants.DIRECTORY_CONFIGURATION;
 import static fr.tduf.libunlimited.common.forever.FileConstants.DIRECTORY_LOGS;
 import static java.util.Optional.ofNullable;
-import static javafx.concurrent.Worker.State.FAILED;
-import static javafx.concurrent.Worker.State.SUCCEEDED;
 import static javafx.scene.control.Alert.AlertType.*;
 import static javafx.scene.control.ButtonType.OK;
 
@@ -87,6 +80,8 @@ public class MainStageController extends AbstractGuiController {
 
     private MainStageViewDataController viewDataController;
     private MainStageChangeDataController changeDataController;
+    private MainStageServicesController servicesController;
+
     private ResourcesStageController resourcesStageController;
     private EntriesStageController entriesStageController;
     private FieldsBrowserStageController fieldsBrowserStageController;
@@ -94,13 +89,6 @@ public class MainStageController extends AbstractGuiController {
     private final List<DbDto> databaseObjects = new ArrayList<>(DbDto.Topic.values().length);
     private DbDto currentTopicObject;
 
-    private final BooleanProperty runningServiceProperty = new SimpleBooleanProperty();
-    private final DatabaseSaver databaseSaver = new DatabaseSaver();
-    private final DatabaseChecker databaseChecker = new DatabaseChecker();
-    private final DatabaseFixer databaseFixer = new DatabaseFixer();
-    // Removing final allows it to be mocked in tests
-    @SuppressWarnings("FieldMayBeFinal")
-    private DatabaseLoader databaseLoader = new DatabaseLoader();
 
     @SuppressWarnings("FieldMayBeFinal")
     private ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
@@ -136,6 +124,9 @@ public class MainStageController extends AbstractGuiController {
     Button entryEmptyFilterButton;
 
     @FXML
+    Label statusLabel;
+
+    @FXML
     private TextField databaseLocationTextField;
 
     @FXML
@@ -150,9 +141,6 @@ public class MainStageController extends AbstractGuiController {
     @FXML
     private TabPane tabPane;
 
-    @FXML
-    private Label statusLabel;
-
     @Override
     protected void init() throws IOException {
         AbstractGuiApp.setMainController(this);
@@ -161,6 +149,8 @@ public class MainStageController extends AbstractGuiController {
 
         viewDataController = new MainStageViewDataController(this);
         changeDataController = new MainStageChangeDataController(this);
+        servicesController = new MainStageServicesController(this);
+
         resourcesStageController = ResourcesDesigner.init(this);
         entriesStageController = EntriesDesigner.init(this);
         fieldsBrowserStageController = FieldsBrowserDesigner.init(this);
@@ -171,7 +161,7 @@ public class MainStageController extends AbstractGuiController {
 
         Optional<String> initialDatabaseDirectory = viewDataController.initSubController();
 
-        initServicePropertiesAndListeners();
+        servicesController.initServicePropertiesAndListeners();
 
         initialDatabaseDirectory.ifPresent(databaseLocation -> {
             Log.trace(THIS_CLASS_NAME, "->init: database auto load");
@@ -460,28 +450,6 @@ public class MainStageController extends AbstractGuiController {
         event.consume();
     }
 
-    void handleDatabaseLoaderSuccess() {
-        List<DbDto> loadedDatabaseObjects = databaseLoader.fetchValue();
-        if (loadedDatabaseObjects.isEmpty()) {
-            return;
-        }
-
-        databaseObjects.clear();
-        databaseObjects.addAll(loadedDatabaseObjects);
-        databaseMiner = BulkDatabaseMiner.load(databaseObjects);
-
-        initAfterDatabaseLoading();
-    }
-
-    void handleDatabaseSaverSuccess() {
-        modifiedProperty.setValue(false);
-
-        if(!applicationConfiguration.isEditorPluginsEnabled()) {
-            return;
-        }
-        pluginHandler.triggerOnSaveForAllPLugins();
-    }
-
     void initConfiguration() throws IOException {
         applicationConfiguration.load();
 
@@ -492,11 +460,26 @@ public class MainStageController extends AbstractGuiController {
         }
     }
 
+    void initAfterDatabaseLoading() {
+        databaseMiner = BulkDatabaseMiner.load(databaseObjects);
+
+        initPlugins();
+
+        viewDataController.updateDisplayWithLoadedObjects();
+
+        titleProperty().bindBidirectional(modifiedProperty, new ModifiedFlagToTitleConverter());
+        modifiedProperty.setValue(false);
+
+        getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, this::handleApplicationExit);
+    }
+
     // Visible for testing
     void loadDatabaseFromDirectory(String databaseLocation) {
-        if (runningServiceProperty.get() || (modifiedProperty.get() && !confirmLosingChanges(TITLE_SUB_LOAD))) {
+        if (isServiceRunning() || (modifiedProperty.get() && !confirmLosingChanges(TITLE_SUB_LOAD))) {
             return;
         }
+
+        DatabaseLoader databaseLoader = servicesController.getDatabaseLoader();
 
         statusLabel.textProperty().unbind();
         statusLabel.textProperty().bind(databaseLoader.messageProperty());
@@ -520,21 +503,6 @@ public class MainStageController extends AbstractGuiController {
                 .orElse(false);
     }
 
-    private void initServicePropertiesAndListeners() {
-        runningServiceProperty.bind(databaseLoader.runningProperty()
-                        .or(databaseSaver.runningProperty())
-                        .or(databaseChecker.runningProperty())
-                        .or(databaseFixer.runningProperty()));
-
-        databaseLoader.stateProperty().addListener(getLoaderStateChangeListener());
-
-        databaseSaver.stateProperty().addListener(getSaverStateChangeListener());
-
-        databaseChecker.stateProperty().addListener(getCheckerStateChangeListener());
-
-        databaseFixer.stateProperty().addListener(getFixerStateChangeListener());
-    }
-
     private void initPlugins() {
         if (!applicationConfiguration.isEditorPluginsEnabled()) {
             Log.info(THIS_CLASS_NAME, "Editor plugins were disabled via application configuration");
@@ -542,7 +510,7 @@ public class MainStageController extends AbstractGuiController {
         }
         
         EditorContext editorContext = pluginHandler.getEditorContext();
-        editorContext.setDatabaseLocation(databaseLoader.databaseLocationProperty().get());
+        editorContext.setDatabaseLocation(servicesController.getDatabaseLoader().databaseLocationProperty().get());
         editorContext.setGameLocation(applicationConfiguration.getGamePath()
                 .map(Path::toString)
                 .orElseGet(
@@ -554,72 +522,8 @@ public class MainStageController extends AbstractGuiController {
         pluginHandler.initializeAllPlugins();
     }
 
-    private void initAfterDatabaseLoading() {
-        initPlugins();
-
-        viewDataController.updateDisplayWithLoadedObjects();
-
-        titleProperty().bindBidirectional(modifiedProperty, new ModifiedFlagToTitleConverter());
-        modifiedProperty.setValue(false);
-
-        getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, this::handleApplicationExit);
-    }
-
-    // TODO move listeners to helper class in services package
-    private ChangeListener<Worker.State> getFixerStateChangeListener() {
-        return (observableValue, oldState, newState) -> {
-            if (SUCCEEDED == newState) {
-                final Set<IntegrityError> remainingErrors = databaseFixer.integrityErrorsProperty().get();
-                if (remainingErrors.isEmpty()) {
-                    notifyActionTermination(INFORMATION, fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_OK, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_ZERO_ERROR_AFTER_FIX);
-                } else {
-                    notifyActionTermination(WARNING, fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_KO, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_REMAINING_ERRORS);
-                }
-                viewDataController.refreshAll();
-            } else if (FAILED == newState) {
-                notifyActionTermination(ERROR, fr.tduf.gui.common.DisplayConstants.TITLE_SUB_FIX_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_FIX_KO, getServiceErrorMessage(databaseFixer));
-            }
-        };
-    }
-
-    private ChangeListener<Worker.State> getCheckerStateChangeListener() {
-        return (observableValue, oldState, newState) -> {
-            if (SUCCEEDED == newState) {
-                final Set<IntegrityError> integrityErrors = databaseChecker.integrityErrorsProperty().get();
-                if (integrityErrors.isEmpty()) {
-                    notifyActionTermination(INFORMATION, fr.tduf.gui.common.DisplayConstants.TITLE_SUB_CHECK_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_CHECK_OK, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_ZERO_ERROR);
-                } else if (DatabaseOpsHelper.displayCheckResultDialog(integrityErrors, getWindow(), TITLE_APPLICATION)) {
-                    fixDatabase();
-                }
-            } else if (FAILED == newState) {
-                notifyActionTermination(ERROR, fr.tduf.gui.common.DisplayConstants.TITLE_SUB_CHECK_DB, fr.tduf.gui.common.DisplayConstants.MESSAGE_DB_CHECK_KO, getServiceErrorMessage(databaseChecker));
-            }
-        };
-    }
-
-    private ChangeListener<Worker.State> getSaverStateChangeListener() {
-        return (observableValue, oldState, newState) -> {
-            if (SUCCEEDED == newState) {
-                handleDatabaseSaverSuccess();
-                notifyActionTermination(INFORMATION, DisplayConstants.TITLE_SUB_SAVE, DisplayConstants.MESSAGE_DATABASE_SAVED, databaseSaver.getValue());
-            } else if (FAILED == newState) {
-                notifyActionTermination(ERROR, DisplayConstants.TITLE_SUB_SAVE, DisplayConstants.MESSAGE_DATABASE_SAVE_KO, getServiceErrorMessage(databaseSaver));
-            }
-        };
-    }
-
-    private ChangeListener<Worker.State> getLoaderStateChangeListener() {
-        return (observableValue, oldState, newState) -> {
-            if (SUCCEEDED == newState) {
-                handleDatabaseLoaderSuccess();
-            } else if (FAILED == newState) {
-                notifyActionTermination(ERROR, DisplayConstants.TITLE_SUB_LOAD, DisplayConstants.MESSAGE_DATABASE_LOAD_KO, getServiceErrorMessage(databaseLoader));
-            }
-        };
-    }
-
     private void browseForDatabaseDirectory() {
-        if (runningServiceProperty.get()) {
+        if (isServiceRunning()) {
             return;
         }
 
@@ -638,9 +542,11 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void saveDatabaseToDirectory(String databaseLocation) {
-        if (runningServiceProperty.get()) {
+        if (isServiceRunning()) {
             return;
         }
+
+        DatabaseSaver databaseSaver = servicesController.getDatabaseSaver();
 
         statusLabel.textProperty().unbind();
         statusLabel.textProperty().bind(databaseSaver.messageProperty());
@@ -781,9 +687,11 @@ public class MainStageController extends AbstractGuiController {
     }
 
     private void checkDatabase(String databaseLocation) {
-        if (runningServiceProperty.get()) {
+        if (isServiceRunning()) {
             return;
         }
+
+        DatabaseChecker databaseChecker = servicesController.getDatabaseChecker();
 
         statusLabel.textProperty().unbind();
         statusLabel.textProperty().bind(databaseChecker.messageProperty());
@@ -796,8 +704,10 @@ public class MainStageController extends AbstractGuiController {
         databaseChecker.restart();
     }
 
-    private void fixDatabase() {
+    void fixDatabase() {
         // Do not check for service here, as checker may still be in running state.
+        DatabaseFixer databaseFixer = servicesController.getDatabaseFixer();
+        DatabaseChecker databaseChecker = servicesController.getDatabaseChecker();
 
         statusLabel.textProperty().unbind();
         statusLabel.textProperty().bind(databaseFixer.messageProperty());
@@ -806,7 +716,7 @@ public class MainStageController extends AbstractGuiController {
         databaseFixer.restart();
     }
 
-    private void notifyActionTermination(Alert.AlertType alertType, String subTitle, String message, String description) {
+    void notifyActionTermination(Alert.AlertType alertType, String subTitle, String message, String description) {
         final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
                 .withContext(alertType)
                 .withTitle(TITLE_APPLICATION + subTitle)
@@ -923,15 +833,19 @@ public class MainStageController extends AbstractGuiController {
         return rootCursorProperty();
     }
 
-    BooleanProperty runningServiceProperty() {
-        return runningServiceProperty;
-    }
-
     Button getEntryEmptyFilterButton() {
         return entryEmptyFilterButton;
     }
 
     Button getEntryFilterButton() {
         return entryFilterButton;
+    }
+
+    BooleanProperty runningServiceProperty() {
+        return servicesController.runningServiceProperty();
+    }
+
+    boolean isServiceRunning() {
+        return servicesController.runningServiceProperty().get();
     }
 }

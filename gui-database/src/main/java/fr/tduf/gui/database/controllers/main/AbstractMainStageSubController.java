@@ -4,6 +4,7 @@ import fr.tduf.gui.database.controllers.*;
 import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
+import fr.tduf.gui.database.plugins.common.PluginHandler;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
@@ -15,6 +16,7 @@ import javafx.beans.property.Property;
 import javafx.beans.property.StringProperty;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
+import javafx.stage.Window;
 
 import java.util.Deque;
 import java.util.List;
@@ -32,10 +34,39 @@ abstract class AbstractMainStageSubController {
         this.mainStageController = mainStageControllerInstance;
     }
 
+    /**
+     * @see fr.tduf.gui.database.controllers.main.MainStageController#notifyActionTermination(javafx.scene.control.Alert.AlertType, java.lang.String, java.lang.String, java.lang.String)
+     */
+    protected void notifyActionTermination(Alert.AlertType alertType, String subTitle, String message, String description) {
+        mainStageController.notifyActionTermination(alertType, subTitle, message, description);
+    }
+
+    /**
+     * @see MainStageController#fixDatabase()
+     */
+    protected void fixDatabase() {
+        mainStageController.fixDatabase();
+    }
+
+    /**
+     * @see MainStageViewDataController#refreshAll()
+     */
+    protected void refreshAllViewComponents() {
+        getViewDataController().refreshAll();
+    }
+
+    /**
+     * @see MainStageController#initAfterDatabaseLoading()
+     */
+    protected void initAfterDatabaseLoading() {
+        mainStageController.initAfterDatabaseLoading();
+    }
+
     protected BulkDatabaseMiner getMiner() {
         return mainStageController.getMiner();
     }
 
+    // TODO replace with view data methods
     protected MainStageViewDataController getViewDataController() {
         return mainStageController.getViewData();
     }
@@ -133,6 +164,14 @@ abstract class AbstractMainStageSubController {
 
     protected BooleanProperty getRunningServiceProperty() {
         return mainStageController.runningServiceProperty();
+    }
+
+    protected Window getWindow() {
+        return mainStageController.getWindow();
+    }
+
+    protected PluginHandler getPluginHandler() {
+        return mainStageController.getPluginHandler();
     }
 
     void setCurrentTopicObject(DbDto currentTopicObject) {
