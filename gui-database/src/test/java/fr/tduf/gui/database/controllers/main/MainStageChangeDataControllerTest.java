@@ -304,9 +304,7 @@ class MainStageChangeDataControllerTest {
         controller.updateContentItem(CAR_PHYSICS_DATA, 1, "RAW");
 
         // then
-        verify(viewDataControllerMock).updateItemProperties(eq(contentItemDto));
-        verify(viewDataControllerMock).updateBrowsableEntryLabel(0);
-        verify(viewDataControllerMock).updateCurrentEntryLabelProperty();
+        verify(viewDataControllerMock).updateViewForContentItem(eq(0), eq(contentItemDto));
         assertThat(controller.modifiedProperty().getValue()).isTrue();
     }
 
@@ -393,7 +391,7 @@ class MainStageChangeDataControllerTest {
         controller.addLinkedEntry("SOURCE_REF", "TARGET_REF", BRANDS);
 
         // then
-        verify(changeHelperMock).updateAssociationEntryWithSourceAndTargetReferences(eq(contentEntryDto), eq("SOURCE_REF"), eq("TARGET_REF"));
+        verify(changeHelperMock).addContentsEntryWithDefaultItemsAndUpdateAssociation(BRANDS, "SOURCE_REF", "TARGET_REF");
         assertThat(controller.modifiedProperty().getValue()).isTrue();
     }
 

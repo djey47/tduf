@@ -108,6 +108,20 @@ public class DatabaseChangeHelper {
     }
 
     /**
+     * @param targetTopic       : database topic where content entry should be added
+     * @param sourceEntryRef    : reference of entry to create
+     * @param targetEntryRef    : reference of entry to link with this one
+     * @return created content entry with REF support, items having default values
+     * @throws java.util.NoSuchElementException when specified topic has no loaded content.
+     */
+    public ContentEntryDto addContentsEntryWithDefaultItemsAndUpdateAssociation(DbDto.Topic targetTopic, String sourceEntryRef, String targetEntryRef){
+        ContentEntryDto newEntry = addContentsEntryWithDefaultItems(targetTopic);
+        updateAssociationEntryWithSourceAndTargetReferences(newEntry, sourceEntryRef, targetEntryRef);
+
+        return newEntry;
+    }
+
+    /**
      * Changes raw value of existing item at specified index and field rank
      * @param topic         : database topic where content item should be changed
      * @param entryIndex    : index of entry in topic

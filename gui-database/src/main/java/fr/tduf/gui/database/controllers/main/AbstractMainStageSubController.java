@@ -4,12 +4,14 @@ import fr.tduf.gui.database.controllers.*;
 import fr.tduf.gui.database.domain.EditorLocation;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
+import fr.tduf.gui.database.dto.TopicLinkDto;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
+import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
@@ -35,7 +37,7 @@ abstract class AbstractMainStageSubController {
     }
 
     /**
-     * @see fr.tduf.gui.database.controllers.main.MainStageController#notifyActionTermination(javafx.scene.control.Alert.AlertType, java.lang.String, java.lang.String, java.lang.String)
+     * @see MainStageController#notifyActionTermination(javafx.scene.control.Alert.AlertType, java.lang.String, java.lang.String, java.lang.String)
      */
     protected void notifyActionTermination(Alert.AlertType alertType, String subTitle, String message, String description) {
         mainStageController.notifyActionTermination(alertType, subTitle, message, description);
@@ -56,6 +58,20 @@ abstract class AbstractMainStageSubController {
     }
 
     /**
+     * @see MainStageViewDataController#updateViewComponentsForContentItem(int, ContentItemDto)
+     */
+    protected void updateViewComponentsForContentItem(int entryIndex, ContentItemDto updatedItem) {
+        getViewDataController().updateViewForContentItem(entryIndex, updatedItem);
+    }
+
+    /**
+     * @see MainStageViewDataController#updateViewComponentsForContentItem(int, ContentItemDto)
+     */
+    protected void updateAllPropertiesForLink(TopicLinkDto topicLinkObject) {
+        getViewDataController().updateAllLinkProperties(topicLinkObject);
+    }
+
+    /**
      * @see MainStageController#initAfterDatabaseLoading()
      */
     protected void initAfterDatabaseLoading() {
@@ -64,11 +80,6 @@ abstract class AbstractMainStageSubController {
 
     protected BulkDatabaseMiner getMiner() {
         return mainStageController.getMiner();
-    }
-
-    // TODO replace with view data methods
-    protected MainStageViewDataController getViewDataController() {
-        return mainStageController.getViewData();
     }
 
     protected FieldsBrowserStageController getFieldsBrowserStageController() {
@@ -222,5 +233,9 @@ abstract class AbstractMainStageSubController {
     List<DbDto> getDatabaseObjects() {
         // Getter kept for testing
         return mainStageController.getDatabaseObjects();
+    }
+
+    private MainStageViewDataController getViewDataController() {
+        return mainStageController.getViewData();
     }
 }

@@ -217,20 +217,6 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
         updateConfiguration();
     }
 
-    void updateBrowsableEntryLabel(int internalEntryId) {
-        browsableEntries.stream()
-                .filter(entry -> entry.internalEntryIdProperty().get() == internalEntryId)
-                .findAny()
-                .ifPresent(entry -> {
-                    final List<Integer> labelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(
-                            currentProfileProperty.getValue().getName(),
-                            getLayoutObject());
-
-                    String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(internalEntryId, getCurrentTopic(), currentLocaleProperty.getValue(), labelFieldRanks, getMiner(), getLayoutObject());
-                    entry.setValue(entryValue);
-                });
-    }
-
     void applyProfile(EditorLayoutDto.EditorProfileDto profile) {
         final DbDto.Topic topic = profile.getTopic();
         final DbDto currentTopicObject = getMiner().getDatabaseTopic(topic)
@@ -270,6 +256,12 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                 .ifPresent(entry -> entry.getItems().forEach(this::updateItemProperties));
 
         resourcesByTopicLink.entrySet().forEach(this::updateLinkProperties);
+    }
+
+    void updateViewForContentItem(int entryIndex, ContentItemDto updatedItem) {
+        updateItemProperties(updatedItem);
+        updateBrowsableEntryLabel(entryIndex);
+        updateCurrentEntryLabelProperty();
     }
 
     void updateItemProperties(ContentItemDto item) {
@@ -648,6 +640,20 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
                                 .map(topicEntry -> getDisplayableEntryForCurrentLocale(topicEntry, labelFieldRanks, currentTopic))
                                 .collect(toList()))
                         .orElse(new ArrayList<>()));
+    }
+
+    private void updateBrowsableEntryLabel(int internalEntryId) {
+        browsableEntries.stream()
+                .filter(entry -> entry.internalEntryIdProperty().get() == internalEntryId)
+                .findAny()
+                .ifPresent(entry -> {
+                    final List<Integer> labelFieldRanks = EditorLayoutHelper.getEntryLabelFieldRanksSettingByProfile(
+                            currentProfileProperty.getValue().getName(),
+                            getLayoutObject());
+
+                    String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(internalEntryId, getCurrentTopic(), currentLocaleProperty.getValue(), labelFieldRanks, getMiner(), getLayoutObject());
+                    entry.setValue(entryValue);
+                });
     }
 
     private ContentEntryDataItem getDisplayableEntryForCurrentLocale(ContentEntryDto topicEntry, List<Integer> labelFieldRanks, DbDto.Topic topic) {

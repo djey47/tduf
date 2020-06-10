@@ -72,9 +72,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
         final int currentEntryIndex = currentEntryIndexProperty().getValue();
         getChangeHelper().updateItemRawValueAtIndexAndFieldRank(topic, currentEntryIndex, fieldRank, newRawValue)
                 .ifPresent(updatedItem -> {
-                    getViewDataController().updateItemProperties(updatedItem);
-                    getViewDataController().updateBrowsableEntryLabel(currentEntryIndex);
-                    getViewDataController().updateCurrentEntryLabelProperty();
+                    updateViewComponentsForContentItem(currentEntryIndex, updatedItem);
 
                     modifiedProperty().setValue(true);
                 });
@@ -320,10 +318,9 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
 
     private void addLinkedEntryWithTargetRefAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, ContentEntryDataItem linkedEntry, TopicLinkDto topicLinkObject) {
         addLinkedEntryWithTargetRef(targetTopic, linkedEntry);
-        getViewDataController().updateAllLinkProperties(topicLinkObject);
+        updateAllPropertiesForLink(topicLinkObject);
         TableViewHelper.selectLastRowAndScroll(tableViewSelectionModel.getTableView());
     }
-
 
     private void addLinkedEntryWithoutTargetRefAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, DbDto.Topic targetTopic, TopicLinkDto topicLinkObject) {
         addLinkedEntryWithTargetRefAndUpdateStage(tableViewSelectionModel, targetTopic, null, topicLinkObject);
@@ -332,9 +329,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
     void addLinkedEntry(String sourceEntryRef, String targetEntryRef, DbDto.Topic targetTopic) {
         requireNonNull(getChangeHelper());
 
-        // TODO create method in changeHelper with combined ops
-        ContentEntryDto newEntry = getChangeHelper().addContentsEntryWithDefaultItems(targetTopic);
-        getChangeHelper().updateAssociationEntryWithSourceAndTargetReferences(newEntry, sourceEntryRef, targetEntryRef);
+        getChangeHelper().addContentsEntryWithDefaultItemsAndUpdateAssociation(targetTopic, sourceEntryRef, targetEntryRef);
 
         modifiedProperty().setValue(true);
     }
@@ -342,7 +337,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
     private void removeLinkedEntryAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
         ContentEntryDataItem selectedItem = tableViewSelectionModel.getSelectedItem();
         removeEntryWithIdentifier(selectedItem.internalEntryIdProperty().get(), topicLinkObject.getTopic());
-        getViewDataController().updateAllLinkProperties(topicLinkObject);
+        updateAllPropertiesForLink(topicLinkObject);
         TableViewHelper.selectRowAndScroll(tableViewSelectionModel.getSelectedIndex(), tableViewSelectionModel.getTableView());
     }
 
@@ -354,7 +349,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
         }
 
         moveEntryWithIdentifier(-1, tableViewSelectionModel.getSelectedItem().internalEntryIdProperty().get(), topicLinkObject.getTopic());
-        getViewDataController().updateAllLinkProperties(topicLinkObject);
+        updateAllPropertiesForLink(topicLinkObject);
         TableViewHelper.selectRowAndScroll(initialRowIndex - 1, tableView);
     }
 
@@ -366,7 +361,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
         }
 
         moveEntryWithIdentifier(1, tableViewSelectionModel.getSelectedItem().internalEntryIdProperty().get(), topicLinkObject.getTopic());
-        getViewDataController().updateAllLinkProperties(topicLinkObject);
+        updateAllPropertiesForLink(topicLinkObject);
         TableViewHelper.selectRowAndScroll(initialRowIndex + 1, tableView);
     }
 

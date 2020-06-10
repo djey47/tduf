@@ -503,6 +503,17 @@ class MainStageViewDataControllerTest {
     }
 
     @Test
+    void updateViewForContentItem() {
+        // given
+        controller.currentProfileProperty().setValue(getSecondLayoutProfile());
+        ContentItemDto updatedItem = createContentItem();
+
+        // when-then
+        controller.updateViewForContentItem(0, updatedItem);
+
+    }
+
+    @Test
     void updateCurrentEntryLabelProperty_whenNoFieldRank_shouldReturnDefaultLabel() {
         // GIVEN
         final EditorLayoutDto.EditorProfileDto profileObject = getSecondLayoutProfile();
