@@ -4,17 +4,16 @@ import fr.tduf.gui.database.controllers.main.MainStageChangeDataController;
 import fr.tduf.gui.database.controllers.main.MainStageController;
 import fr.tduf.gui.database.controllers.main.MainStageViewDataController;
 import fr.tduf.gui.database.domain.LocalizedResource;
-import fr.tduf.libtesting.common.helper.javafx.ApplicationTestHelper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.scene.control.ChoiceBox;
 import javafx.util.Pair;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.testfx.framework.junit5.ApplicationTest;
 
 import static fr.tduf.libunlimited.common.game.domain.Locale.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
@@ -22,12 +21,7 @@ import static java.util.Optional.empty;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-class ResourcesStageControllerTest {
-    @BeforeAll
-    static void globalSetUp() {
-        ApplicationTestHelper.initJavaFX();
-    }
-
+class ResourcesStageControllerTest extends ApplicationTest {
     @Mock
     private MainStageController mainStageControllerMock;
 

@@ -5,23 +5,22 @@ import fr.tduf.gui.database.controllers.main.MainStageViewDataController;
 import fr.tduf.gui.database.domain.ItemViewModel;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
-import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
+import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
-import fr.tduf.libtesting.common.helper.javafx.ApplicationTestHelper;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.layout.HBox;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.testfx.framework.junit5.ApplicationTest;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.INTEGER;
@@ -29,12 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-class DynamicFieldControlsHelperTest {
-    @BeforeAll
-    static void globalSetUp() {
-        ApplicationTestHelper.initJavaFX();
-    }
-
+class DynamicFieldControlsHelperTest extends ApplicationTest {
     @Mock
     private MainStageController controllerMock;
 

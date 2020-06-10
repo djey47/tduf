@@ -15,10 +15,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.testfx.framework.junit5.ApplicationTest;
@@ -94,6 +91,10 @@ class MainStageControllerTest extends ApplicationTest {
     @AfterEach
     void tearDown() {
         Log.set(Log.LEVEL_INFO);
+    }
+
+    @AfterAll
+    static void globalTearDown() {
     }
 
     @Test
