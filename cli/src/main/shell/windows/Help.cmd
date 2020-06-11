@@ -13,6 +13,7 @@ DIR *Tool.cmd /B
 ECHO --- Help and troubleshooting ---
 ECHO help: this page
 ECHO logs: open all log files in default editor
+ECHO settings: open settings file in default editor
 ECHO.
 ECHO Just type and run any of these scripts to get usage details. Enjoy!
 ECHO.

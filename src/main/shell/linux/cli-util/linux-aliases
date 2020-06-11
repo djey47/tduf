@@ -1,5 +1,6 @@
 alias help="./Help.sh"
 alias logs="./Logs.sh"
+alias settings="./Settings.sh"
 alias jre="./tools/cli/JavaAuto.sh"
 alias CameraTool="./CameraTool.sh"
 alias DatabaseEditor="./DatabaseEditor.sh"
