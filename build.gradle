@@ -338,7 +338,19 @@ databaseEditorJar jarOps
 task ikJar( type: Jar , dependsOn: 'gatherIKContentsForJar' )
 ikJar jarOps
 
-task packFull(dependsOn: getFullDependencies(project.hasProperty('target') ? target : WINDOWS_TARGET), type: Zip) {
+task packCore(dependsOn: getCoreDependencies(), type: Zip) {
+    description 'Create single release Zip with CORE components releases directory.'
+
+    def targetName = (project.hasProperty('target') && target == LINUX_TARGET) ? 'linux' : 'windows'
+    archiveName "tduf-core-$project.version-${targetName}.zip"
+
+    doLast {
+        println("(i) Core packaging for target *$targetName*")
+    }
+}
+packCore packOps
+
+task packFull(dependsOn: getFullDependencies(), type: Zip) {
     description 'Create single release Zip with ALL components except InstallerKit in releases directory.'
 
     def targetName = (project.hasProperty('target') && target == LINUX_TARGET) ? 'linux' : 'windows'
@@ -350,7 +362,7 @@ task packFull(dependsOn: getFullDependencies(project.hasProperty('target') ? tar
 }
 packFull packOps
 
-task packInstallerKit(dependsOn: getInstallerDependencies(project.hasProperty('target') ? target : WINDOWS_TARGET), type: Zip) {
+task packInstallerKit(dependsOn: getInstallerDependencies(), type: Zip) {
     description 'Zips only IK, LIB files from pack folder.'
     
     def targetName = (project.hasProperty('target') && target == LINUX_TARGET) ? 'linux' : 'windows'
@@ -362,7 +374,7 @@ task packInstallerKit(dependsOn: getInstallerDependencies(project.hasProperty('t
 }
 packInstallerKit packOps
 
-task packDatabaseEditor(dependsOn: getDatabaseEditorDependencies(project.hasProperty('target') ? target : WINDOWS_TARGET), type: Zip) {
+task packDatabaseEditor(dependsOn: getDatabaseEditorDependencies(), type: Zip) {
     description 'Zips only DatabaseEditor, LIB files from pack folder.'
     
     def targetName = (project.hasProperty('target') && target == LINUX_TARGET) ? 'linux' : 'windows'

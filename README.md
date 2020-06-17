@@ -55,7 +55,11 @@ Copy *tools* directory into *gui-database* to make it work properly.
 This needs a release tag to be set, see *Releasing* section above.
 
 * Checkout project from target release tag *tduf-[version]*
-* Execute either *packFull* or *packInstallerKit* tasks from Gradle.
+* Execute one ok *pack...* tasks from Gradle:
+    - packCore: minimal set to run CLI with LIB
+    - packDatabaseEditor: minimal set to run Database Editor
+    - packInstallerKit: redistributable Installer Kit 
+    - packFull: all TDUF in a single package.
 
 ...it will:
 

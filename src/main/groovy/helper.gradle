@@ -9,16 +9,30 @@ def PARAM_WINDOWS_TARGET = 'windows'
 // Task dependencies
 def fullCleanDeps = [ 'cleanTempJarDir', 'cleanPackDir' ]
 def externalDeps = [ 'copyExternalTools', 'copyVersionInfo', 'copyIcons' ]
+def coreExternalDeps = [ 'copyExternalTools', 'copyVersionInfo' ]
 
 // List of subprojects to include in the jar.
+def coreProjects = [':lib-unlimited', ':cli']
 def fullProjects = [':lib-unlimited', ':cli', ':gui-common', ':gui-database', ':gui-launcher']
 def ikProjects = [':lib-unlimited', ':gui-common', ':gui-installer']
 def databaseEditorProjects = [':lib-unlimited', ':gui-common', ':gui-database']
 
 /**
+ * @returns List of tasks to depend on for CORE packaging, according to target (linux or windows)
+ */
+def corePackDependencies = { ->
+    def packDeps = [    *coreExternalDeps,
+                        'cli:copyMainScripts', 'copyUtilScripts',
+                        'fullJar' ]
+
+    return [ *fullCleanDeps,
+             *packDeps ]
+}
+
+/**
  * @returns List of tasks to depend on for FULL packaging, according to target (linux or windows)
  */
-def fullPackDependencies = { String target ->
+def fullPackDependencies = { ->
     def commonPackDeps = [ ':gui-database:markdownToHtml', ':gui-launcher:markdownToHtml', 'markdownToHtml',
                            ':gui-database:copyDoc', ':gui-launcher:copyDoc', 'copyDoc',
                            *externalDeps,
@@ -26,60 +40,53 @@ def fullPackDependencies = { String target ->
                            ':gui-database:copyProfiles',
                            'fullJar' ]
 
-    def winPackDeps = [  'cli:copyMainScripts', ':gui-database:copyMainScripts', ':gui-launcher:copyMainScripts', 'copySharedScripts', 'copyUtilScripts' ]
+    def packDeps = [  'cli:copyMainScripts', ':gui-database:copyMainScripts', ':gui-launcher:copyMainScripts', 'copySharedScripts', 'copyUtilScripts' ]
 
-    def linuxPackDeps = [ 'cli:copyMainScripts', ':gui-database:copyMainScripts', ':gui-launcher:copyMainScripts', 'copySharedScripts', 'copyUtilScripts' ]
-
-    def isLinuxPackaging = target == PARAM_LINUX_TARGET
     return [ *fullCleanDeps,
-             *(isLinuxPackaging ? linuxPackDeps : winPackDeps),
+             *packDeps,
              *commonPackDeps ]
 }
 
 /**
  * @returns List of tasks to depend on for IK packaging, according to target (linux or windows)
  */
-def installerPackDependencies = { String target ->
+def installerPackDependencies = { ->
     def commonPackDeps = [ ':gui-installer:markdownToHtml',
                            ':gui-installer:copyDoc',
                            *externalDeps,
                            ':gui-installer:copyAssets', ':gui-installer:copyTemplates',
                            'ikJar' ]
 
-    def winPackDeps = [ ':gui-installer:copyMainScripts', ':gui-installer:copyUtilScripts', 'copySharedScripts' ]
+    def packDeps = [ ':gui-installer:copyMainScripts', ':gui-installer:copyUtilScripts', 'copySharedScripts' ]
 
-    def linuxPackDeps = [ ':gui-installer:copyMainScripts', ':gui-installer:copyUtilScripts', 'copySharedScripts' ]
-
-    def isLinuxPackaging = target == PARAM_LINUX_TARGET
     return [ *fullCleanDeps,
-             *(isLinuxPackaging ? linuxPackDeps : winPackDeps),
+             *packDeps,
              *commonPackDeps ]
 }
 
 /**
  * @returns List of tasks to depend on for DatabaseEditor packaging, according to target (linux or windows)
  */
-def databaseEditorPackDependencies = { String target ->
+def databaseEditorPackDependencies = { ->
     def commonPackDeps = [ ':gui-database:markdownToHtml',
                            ':gui-database:copyDoc',
                            *externalDeps,
                            ':gui-database:copyProfiles',
                            'databaseEditorJar' ]
 
-    def winPackDeps = [ ':gui-database:copyMainScripts', ':gui-database:copyUtilScripts', 'copySharedScripts' ]
+    def packDeps = [ ':gui-database:copyMainScripts', ':gui-database:copyUtilScripts', 'copySharedScripts' ]
 
-    def linuxPackDeps = [ ':gui-database:copyMainScripts', ':gui-database:copyUtilScripts', 'copySharedScripts' ]
-
-    def isLinuxPackaging = target == PARAM_LINUX_TARGET
     return [ *fullCleanDeps,
-             *(isLinuxPackaging ? linuxPackDeps : winPackDeps),
+             *packDeps,
              *commonPackDeps ]
 }
 
 ext {
+    getCoreProjects = { -> coreProjects }
     getFullProjects = { -> fullProjects }
     getIKProjects = { -> ikProjects }
     getDatabaseEditorProjects = { -> databaseEditorProjects }
+    getCoreDependencies = corePackDependencies
     getFullDependencies = fullPackDependencies
     getInstallerDependencies = installerPackDependencies
     getDatabaseEditorDependencies = databaseEditorPackDependencies
