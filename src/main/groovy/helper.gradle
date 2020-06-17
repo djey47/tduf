@@ -13,8 +13,7 @@ def coreExternalDeps = [ 'copyExternalTools', 'copyVersionInfo' ]
 
 // List of subprojects to include in the jar.
 def coreProjects = [':lib-unlimited', ':cli']
-def fullProjects = [':lib-unlimited', ':cli', ':gui-common', ':gui-database', ':gui-launcher']
-def ikProjects = [':lib-unlimited', ':gui-common', ':gui-installer']
+def fullProjects = [':lib-unlimited', ':cli', ':gui-common', ':gui-database']
 def databaseEditorProjects = [':lib-unlimited', ':gui-common', ':gui-database']
 
 /**
@@ -33,31 +32,14 @@ def corePackDependencies = { ->
  * @returns List of tasks to depend on for FULL packaging, according to target (linux or windows)
  */
 def fullPackDependencies = { ->
-    def commonPackDeps = [ ':gui-database:markdownToHtml', ':gui-launcher:markdownToHtml', 'markdownToHtml',
-                           ':gui-database:copyDoc', ':gui-launcher:copyDoc', 'copyDoc',
+    def commonPackDeps = [ ':gui-database:markdownToHtml', 'markdownToHtml',
+                           ':gui-database:copyDoc', 'copyDoc',
                            *externalDeps,
                            ':lib-unlimited:copyStructures',
                            ':gui-database:copyProfiles',
                            'fullJar' ]
 
-    def packDeps = [  'cli:copyMainScripts', ':gui-database:copyMainScripts', ':gui-launcher:copyMainScripts', 'copySharedScripts', 'copyUtilScripts' ]
-
-    return [ *fullCleanDeps,
-             *packDeps,
-             *commonPackDeps ]
-}
-
-/**
- * @returns List of tasks to depend on for IK packaging, according to target (linux or windows)
- */
-def installerPackDependencies = { ->
-    def commonPackDeps = [ ':gui-installer:markdownToHtml',
-                           ':gui-installer:copyDoc',
-                           *externalDeps,
-                           ':gui-installer:copyAssets', ':gui-installer:copyTemplates',
-                           'ikJar' ]
-
-    def packDeps = [ ':gui-installer:copyMainScripts', ':gui-installer:copyUtilScripts', 'copySharedScripts' ]
+    def packDeps = [  'cli:copyMainScripts', ':gui-database:copyMainScripts', 'copySharedScripts', 'copyUtilScripts' ]
 
     return [ *fullCleanDeps,
              *packDeps,
@@ -84,11 +66,9 @@ def databaseEditorPackDependencies = { ->
 ext {
     getCoreProjects = { -> coreProjects }
     getFullProjects = { -> fullProjects }
-    getIKProjects = { -> ikProjects }
     getDatabaseEditorProjects = { -> databaseEditorProjects }
     getCoreDependencies = corePackDependencies
     getFullDependencies = fullPackDependencies
-    getInstallerDependencies = installerPackDependencies
     getDatabaseEditorDependencies = databaseEditorPackDependencies
     LINUX_TARGET = PARAM_LINUX_TARGET
     WINDOWS_TARGET = PARAM_WINDOWS_TARGET

@@ -13,10 +13,6 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
 See **README-database-editor.md*
 
 
-### TDU Launcher main features
-See **README-launcher.md*
-
-
 ### What's new?
 * (CLI) Intro interface has been removed as it's not used. It has been replaced with `help` command
 * (CLI) `logs`: new command to display all log files in default editor

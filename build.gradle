@@ -217,46 +217,6 @@ project(':gui-database') {
     }
 }
 
-project(':gui-launcher') {
-    dependencies {
-        implementation project(':gui-common')
-    }
-
-    task execute(type:JavaExec) {
-        group 'binaries'
-
-        main 'fr.tduf.gui.launcher.Launcher'
-        classpath sourceSets.main.runtimeClasspath
-    }
-}
-
-project(':gui-installer') {
-    dependencies {
-        implementation project(':gui-common')
-    }
-
-    task execute(type: JavaExec) {
-        main 'fr.tduf.gui.installer.Installer'
-        classpath sourceSets.main.runtimeClasspath
-    }
-
-    task copyAssets(type: Copy) {
-        description 'Copies all assets directory structure to release directory.'
-        mustRunAfter ':cleanPackDir'
-
-        from 'assets/'
-        into '../pack/assets/'
-    }
-
-    task copyTemplates(type: Copy) {
-        description 'Copies all patch templates to release directory.'
-        mustRunAfter ':cleanPackDir'
-
-        from 'patchTemplates/'
-        into '../pack/tools/patchTemplates/'
-    }
-}
-
 project(':integ-tests') {
     dependencies {
         testImplementation project(':lib-testing')
@@ -301,17 +261,6 @@ task gatherDatabaseEditorContentsForJar(type: Copy, dependsOn: getDatabaseEditor
     into tempJarDirectory
 }
 
-task gatherIKContentsForJar(type: Copy, dependsOn: getIKProjects().collect{ it+":compileJava"}) {
-    description 'Copies contents to temp directory (Installer Kit packaging).'
-    group 'build'
-
-    // Project sources
-    from files(getIKProjects().collect{ project(it).sourceSets.main.output })
-    // External libraries
-    from files(getIKProjects().collect{ project(it).configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } } )
-    into tempJarDirectory
-}
-
 // Common operations
 def jarOps = {
     description 'Creates jar with all contents from temp directory.'
@@ -334,9 +283,6 @@ fullJar jarOps
 
 task databaseEditorJar( type: Jar , dependsOn: 'gatherDatabaseEditorContentsForJar' )
 databaseEditorJar jarOps
-
-task ikJar( type: Jar , dependsOn: 'gatherIKContentsForJar' )
-ikJar jarOps
 
 task packCore(dependsOn: getCoreDependencies(), type: Zip) {
     description 'Create single release Zip with CORE components releases directory.'
@@ -361,18 +307,6 @@ task packFull(dependsOn: getFullDependencies(), type: Zip) {
     }
 }
 packFull packOps
-
-task packInstallerKit(dependsOn: getInstallerDependencies(), type: Zip) {
-    description 'Zips only IK, LIB files from pack folder.'
-    
-    def targetName = (project.hasProperty('target') && target == LINUX_TARGET) ? 'linux' : 'windows'
-    archiveName "tduf-InstallerKit-$project.version-${targetName}.zip"
-    
-    doLast {
-        println("(i) Installer Kit packaging for target *$targetName*")
-    }
-}
-packInstallerKit packOps
 
 task packDatabaseEditor(dependsOn: getDatabaseEditorDependencies(), type: Zip) {
     description 'Zips only DatabaseEditor, LIB files from pack folder.'

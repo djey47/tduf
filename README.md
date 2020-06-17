@@ -15,8 +15,6 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * **cli** : Command Line Interface to use lib-unlimited library
 * **gui-common** : Components to be used with any graphical user interface
 * **gui-database** : Database Editor module
-* **gui-installer** : Mod installer
-* **gui-savegame** : Savegame Editor
 * **lib-testing** : Components to help with unit testing in any module
 * **lib-unlimited** : Stand-alone component providing API for building TDU modding applications.
 
@@ -58,7 +56,6 @@ This needs a release tag to be set, see *Releasing* section above.
 * Execute one ok *pack...* tasks from Gradle:
     - packCore: minimal set to run CLI with LIB
     - packDatabaseEditor: minimal set to run Database Editor
-    - packInstallerKit: redistributable Installer Kit 
     - packFull: all TDUF in a single package.
 
 ...it will:
