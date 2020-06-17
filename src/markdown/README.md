@@ -18,11 +18,13 @@ See **README-launcher.md*
 
 
 ### What's new?
-* (CLI) Intro interface has been removed as it's not used. It has been replaced with `help` command.
+* (CLI) Intro interface has been removed as it's not used. It has been replaced with `help` command
 * (CLI) `logs`: new command to display all log files in default editor
+* (CLI) `settings`: new command to open TDUF settings file in default editor.
+
 * (CLI/FileTool) jsonify: verbose mode now displays dumped items during parsing (not only after succesful parsing)
 * (CLI/FileTool) jsonify: adds access key to repeated item in new meta section
-* (CLI/FileTool) jsonify/applyjson: support remaining bytes
+* (CLI/FileTool) jsonify/applyjson: support remaining bytes.
 
 * (Library/Files) 2DM files preliminary support (thanks to Speeder, Lean and TDUZoqqer)
 * (Library/Files) Global and field comment support [WIKI](https://github.com/djey47/tduf/wiki/Reverse-Engineering-Structure)
@@ -31,7 +33,7 @@ See **README-launcher.md*
 * (Library/Files) Repeated contents size (bytes) support [WIKI](https://github.com/djey47/tduf/wiki/Reverse-Engineering-Structure#contentssize-attribute)
 * (Library/Files) References support [WIKI](https://github.com/djey47/tduf/wiki/Reverse-Engineering-Structure#references)
 * (Library/Files) Meta field added to JSON output for repeated items
-* (Library/Files) Support for remaining data while parsing/writing
+* (Library/Files) Support for remaining data while parsing/writing.
 
 
 ### Fixed issues

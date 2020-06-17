@@ -1,7 +1,14 @@
 # TDUF(orever) - Database Editor
 
 ### What's new?
-* Enhanced item display in locales list
+* User confirmation now asked on leaving application or reloading database when unsaved changes  
+
+* Entry filter: pressing ENTER on text field now triggers search
+
+* Settings: locales list: enhanced item display
+* Settings: added ability to display TDUF configuration files and logs in Explorer
+
+* Some more code optimizations and fixes!
 
 
 ### Fixed issues
