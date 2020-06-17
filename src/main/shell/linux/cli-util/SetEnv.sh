@@ -4,7 +4,7 @@
 shopt -s expand_aliases && source ./linux-aliases
 
 # 2-Java check
-./Java.sh -version
+./JavaAuto.sh -version
 
 if [ $? -eq 0 ]
 then

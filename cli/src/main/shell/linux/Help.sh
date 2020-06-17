@@ -9,7 +9,7 @@ echo "*** Welcome to TDUF: Command Line Interface v$TDUF_VERSION ***"
 echo
 echo "--- Visual tools ---"
 ls -1 *Editor.sh
-echo "Launcher.sh"
+ls -1 Launcher.sh
 echo "--- (Advanced) CLI tools ---"
 ls -1 *Tool.sh
 echo "--- Help and troubleshooting ---"

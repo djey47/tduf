@@ -8,6 +8,7 @@ ECHO *** Welcome to TDUF: Command Line Interface v%TDUF_VERSION% ***
 ECHO.
 ECHO --- Visual tools ---
 DIR *Editor.cmd /B
+DIR Launcher.cmd /B
 ECHO --- (Advanced) CLI tools ---
 DIR *Tool.cmd /B
 ECHO --- Help and troubleshooting ---
