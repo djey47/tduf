@@ -1,7 +1,6 @@
 @ECHO OFF
 
 REM Will find appropriate JRE (embedded or system)
-REM Must be run from TDUF root directory
 
 REM Default is system-wide
 SET JAVA_EXECUTABLE=java

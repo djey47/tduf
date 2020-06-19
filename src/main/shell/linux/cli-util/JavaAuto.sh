@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 # Will find appropriate JRE (embedded or system)
-# Must be run from TDUF root directory
 
 # Default is system-wide
 JAVA_EXECUTABLE=java
