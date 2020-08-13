@@ -42,6 +42,8 @@ See **README-database-editor.md*
 
 ### What you will need to run TDUF
 
+- TDUF relies on both Java Runtime and .net Framework -
+
 #### Java Runtime
 
 Make sure Java apps can be run.
@@ -55,9 +57,9 @@ Make sure Java apps can be run.
     - Download compatible Runtime (current edition: *8*):
         - Windows: [8u241](https://bit.ly/2yOta0C)
         - Linux: [8u251](https://bit.ly/3dfBRzL)
+     - Important: TDUF won't be released with the Runtime, so you should keep runtime zip in a safe place for future use
      - Extract downloaded zip file to TDUF directory
-     - If all went well, you should see *java* executable (and many other things) into *tools/jre/bin* directory
-     - Important: TDUF won't be released with the Runtime, so you should keep runtime zip in a safe place for future use.
+     - If all went well, you should see *java* executable (and many other things) into *tools/jre/bin* directory.
 
 #### .net Runtime
 * Make sure .net apps can be run, as well (if TDUMT/TDUPE actually run, you're fine):
