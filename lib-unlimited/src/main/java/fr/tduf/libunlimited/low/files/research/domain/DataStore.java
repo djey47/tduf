@@ -326,7 +326,7 @@ public class DataStore {
         }
 
         Entry entry = this.store.get(fieldName);
-        assertSimpleCondition(() -> TEXT == entry.getType());
+        checkEntryType(fieldName, entry, TEXT);
 
         byte[] rawValue = entry.getRawValue();
         return of(
@@ -345,7 +345,7 @@ public class DataStore {
         }
 
         Entry entry = this.store.get(fieldName);
-        assertSimpleCondition(() -> INTEGER == entry.getType());
+        checkEntryType(fieldName, entry, INTEGER);
 
         return of(
                 rawToInteger(entry.getRawValue(), entry.isSigned(), entry.getSize()));
@@ -363,8 +363,7 @@ public class DataStore {
         }
 
         Entry entry = this.store.get(fieldName);
-        Type entryType = entry.getType();
-        assertSimpleCondition(() -> FPOINT == entryType, "Wrong entry type: " + entryType + ", expected: " + FPOINT);
+        checkEntryType(fieldName, entry, FPOINT);
 
         return of(
                 rawToFloatingPoint(entry.getRawValue()));
@@ -450,6 +449,14 @@ public class DataStore {
         }
 
         return repeatedValues;
+    }
+
+    /**
+     * @return target key at address given by provided source fieldname
+     */
+    public Optional<String> getTargetKeyAtAddress(String sourceFieldName) {
+        return getInteger(sourceFieldName)
+                .flatMap(address -> getLinksContainer().getTargetFieldKeyWithAddress(address.intValue()));
     }
 
     /**
@@ -547,6 +554,11 @@ public class DataStore {
         store.forEach( (key, entry) -> storeCopy.put(key, entry.copy()));
 
         return storeCopy;
+    }
+
+    private static void checkEntryType(String fieldName, Entry entry, Type expectedType) {
+        String message = String.format("Invalid type for entry %s: expected %s, actual %s", fieldName, expectedType, entry.getType());
+        assertSimpleCondition(() -> expectedType == entry.getType(), message);
     }
 
     Map<String, Entry> getStore() {
