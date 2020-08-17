@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static fr.tduf.libunlimited.low.files.research.domain.Type.UNKNOWN;
 import static java.util.Arrays.asList;
@@ -212,5 +213,34 @@ class DataStore_focusOnGettingValuesTest {
         DataStore subStoreLvl2AtIndex1 = actualStoresLvl2.get(1);
         assertThat(subStoreLvl2AtIndex1.size()).isEqualTo(1);
         assertThat(subStoreLvl2AtIndex1.getInteger("number")).contains(501L);
+    }
+
+    @Test
+    void getRepeatedValues_shouldProvideLinksContainer() {
+        // GIVEN
+        DataStoreFixture.createStoreEntries(dataStore);
+
+        // WHEN
+        List<DataStore> actualValues = dataStore.getRepeatedValues("entry_list");
+
+        // THEN
+        assertThat(actualValues)
+                .isNotNull()
+                .hasSize(3);
+        final DataStore subStore0 = actualValues.get(0);
+        assertThat(subStore0.getLinksContainer().getSources()).isEqualTo(dataStore.getLinksContainer().getSources());
+        assertThat(subStore0.getLinksContainer().getTargets()).isEqualTo(dataStore.getLinksContainer().getTargets());
+    }
+
+    @Test
+    void getTargetKeyAtAddress_whenExistingSourceAndTarget_shouldRetrieveKey() {
+        // given
+        DataStoreFixture.createStoreEntriesForLinkSources(dataStore);
+
+        // when
+        Optional<String> actualKey = dataStore.getTargetKeyAtAddress("linkSource1");
+
+        // then
+        assertThat(actualKey).contains("linkedEntries[0].");
     }
 }

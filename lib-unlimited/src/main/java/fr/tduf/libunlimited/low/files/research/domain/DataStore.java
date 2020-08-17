@@ -445,6 +445,7 @@ public class DataStore {
             for (String key : entry.getValue()) {
                 String parentKey = String.format(SUB_FIELD_WITH_PARENT_KEY_PREFIX_FORMAT, parentRepeaterKey, repeaterFieldName, currentIndex);
                 subDataStore.getStore().put(key.replace(parentKey, ""), store.get(key)); // extracts field name part
+                subDataStore.getLinksContainer().populateFromDatastore(this);
             }
         }
 
