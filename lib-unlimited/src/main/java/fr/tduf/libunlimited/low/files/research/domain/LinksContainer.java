@@ -101,6 +101,19 @@ public class LinksContainer {
     }
 
     /**
+     * Replaces all link sources and targets with those from provided dataStore
+     * @param dataStore original data store
+     */
+    public void populateFromDatastore(DataStore dataStore) {
+        linkSources.clear();
+        linkTargets.clear();
+
+        LinksContainer originalContainer = requireNonNull(dataStore, "original data store instance is required").getLinksContainer();
+        linkSources.putAll(originalContainer.linkSources);
+        linkTargets.putAll(originalContainer.linkTargets);
+    }
+
+    /**
      * Visible for testing
      */
     void register(String fieldKey, int address, Map<Integer, String> register) {

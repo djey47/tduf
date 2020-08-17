@@ -1,7 +1,9 @@
 package fr.tduf.libunlimited.low.files.research.domain;
 
+import fr.tduf.libunlimited.low.files.research.domain.fixture.DataStoreFixture;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -165,5 +167,20 @@ class LinksContainerTest {
     void getFieldKeyWithAddress_whenLinkDoesNotExist_shouldReturnEmpty() {
         // given-when-then
         assertThat(linksContainer.getFieldKeyWithAddress(1024, linksContainer.getSources())).isEmpty();
+    }
+
+    @Test
+    void populateFromDatastore() throws IOException {
+        // given
+        DataStore dataStore = DataStoreFixture.createEmptyStore();
+        DataStoreFixture.createStoreEntriesForLinkSources(dataStore);
+
+        // when
+        linksContainer.populateFromDatastore(dataStore);
+
+        // then
+        LinksContainer actualContainer = dataStore.getLinksContainer();
+        assertThat(linksContainer.getSources()).isEqualTo(actualContainer.getSources());
+        assertThat(linksContainer.getTargets()).isEqualTo(actualContainer.getTargets());
     }
 }
