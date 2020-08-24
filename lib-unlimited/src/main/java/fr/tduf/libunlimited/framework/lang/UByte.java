@@ -1,10 +1,6 @@
 package fr.tduf.libunlimited.framework.lang;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import java.util.Objects;
-import java.util.StringJoiner;
 
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 
@@ -21,7 +17,7 @@ public class UByte {
     }
 
     public static UByte fromSigned(byte signedByte) {
-        return new UByte(signedByte, 255 - signedByte);
+        return new UByte(signedByte, (int) signedByte & 0xff);
     }
 
     public int get() {
