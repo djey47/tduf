@@ -804,7 +804,8 @@
         },
         {
           "name": "Color_ID_1",
-          "rank": 2
+          "rank": 2,
+          "pluginName": "MATERIALS"
         },
         {
           "name": "Color_Name",
@@ -812,11 +813,13 @@
         },
         {
           "name": "Color_ID_2",
-          "rank": 4
+          "rank": 4,
+          "pluginName": "MATERIALS"
         },
         {
           "name": "Callipers",
-          "rank": 5
+          "rank": 5,
+          "pluginName": "MATERIALS"
         },
         {
           "name": "Price_dollar",
@@ -940,15 +943,18 @@
         },
         {
           "name": "Interior_Color_1",
-          "rank": 4
+          "rank": 4,
+          "pluginName": "MATERIALS"
         },
         {
           "name": "Interior_Color_2",
-          "rank": 5
+          "rank": 5,
+          "pluginName": "MATERIALS"
         },
         {
           "name": "Material",
-          "rank": 6
+          "rank": 6,
+          "pluginName": "MATERIALS"
         },
         {
           "name": "Price_dollar",

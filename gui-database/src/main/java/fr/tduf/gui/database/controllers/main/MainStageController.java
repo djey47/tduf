@@ -75,6 +75,7 @@ public class MainStageController extends AbstractGuiController {
 
     private BulkDatabaseMiner databaseMiner;
     private DialogsHelper dialogsHelper;
+
     private final BankSupport bankSupport = new GenuineBnkGateway(new CommandLineHelper());
     private PluginHandler pluginHandler;
 
@@ -760,6 +761,10 @@ public class MainStageController extends AbstractGuiController {
 
     public PluginHandler getPluginHandler() {
         return pluginHandler;
+    }
+
+    public BankSupport getBankSupport() {
+        return bankSupport;
     }
 
     protected StringProperty titleProperty() {
