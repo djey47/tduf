@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.gfx.materials.rw;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.Material;
@@ -19,6 +20,8 @@ class MaterialsParserTest {
     static void setUp() throws IOException {
         matColorsContents = FilesHelper.readBytesFromResourceFile("/materials/colors-sample.2DM");
         matCarContents = FilesHelper.readBytesFromResourceFile("/materials/car-sample.2DM");
+
+//        Log.set(Log.LEVEL_DEBUG);
     }
 
     @Test
@@ -35,7 +38,7 @@ class MaterialsParserTest {
         assertThat(actualDefs.getMaterials()).hasSize(523);
         Material firstMaterial = actualDefs.getMaterials().get(0);
         assertThat(firstMaterial.getName()).isEqualTo("B_10");
-        assertThat(firstMaterial.getSettings()).isNotNull();
+        assertThat(firstMaterial.getProperties()).isNotNull();
     }
 
     @Test
@@ -52,6 +55,6 @@ class MaterialsParserTest {
         assertThat(actualDefs.getMaterials()).hasSize(36);
         Material firstMaterial = actualDefs.getMaterials().get(0);
         assertThat(firstMaterial.getName()).isEqualTo("FRL_F");
-        assertThat(firstMaterial.getSettings()).isNotNull();
+        assertThat(firstMaterial.getProperties()).isNotNull();
     }
 }

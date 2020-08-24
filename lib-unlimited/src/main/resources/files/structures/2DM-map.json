@@ -297,12 +297,12 @@
           "size": 1
         },
         {
-          "name": "saturation1",
+          "name": "alphaBlend1",
           "type": "INTEGER",
           "size": 1
         },
         {
-          "name": "saturation2",
+          "name": "alphaBlend2",
           "type": "INTEGER",
           "size": 1
         },
@@ -312,82 +312,82 @@
           "size": 118
         },
         {
-          "name": "ambient1",
+          "name": "ambientColorR",
           "type": "FPOINT",
           "size": 4
         },
         {
-          "name": "ambient2",
+          "name": "ambientColorG",
           "type": "FPOINT",
           "size": 4
         },
         {
-          "name": "ambient3",
+          "name": "ambientColorB",
           "type": "FPOINT",
           "size": 4
         },
         {
-          "name": "ambient4",
+          "name": "ambientColorO",
           "type": "FPOINT",
           "size": 4
         },
         {
-          "name": "diffuse1",
+          "name": "diffuseColorR",
           "type": "FPOINT",
           "size": 4
         },
         {
-          "name": "diffuse2",
+          "name": "diffuseColorG",
           "type": "FPOINT",
           "size": 4
         },
         {
-          "name": "diffuse3",
+          "name": "diffuseColorB",
           "type": "FPOINT",
           "size": 4
         },
         {
-          "name": "diffuse4",
+          "name": "diffuseColorO",
           "type": "FPOINT",
           "size": 4
         },
         {
-          "name": "specular1",
+          "name": "specularColorR",
           "type": "FPOINT",
           "size": 4
         },
         {
-          "name": "specular2",
+          "name": "specularColorG",
           "type": "FPOINT",
           "size": 4
         },
         {
-          "name": "specular3",
+          "name": "specularColorB",
           "type": "FPOINT",
           "size": 4
         },
         {
-          "name": "specular4",
+          "name": "specularColorO",
           "type": "FPOINT",
           "size": 4
         },
         {
-          "name": "other1",
+          "name": "otherColorR",
           "type": "FPOINT",
           "size": 4
         },
         {
-          "name": "other2",
+          "name": "otherColorG",
           "type": "FPOINT",
           "size": 4
         },
         {
-          "name": "other3",
+          "name": "otherColorB",
           "type": "FPOINT",
           "size": 4
         },
         {
-          "name": "other4",
+          "name": "otherColorO",
           "type": "FPOINT",
           "size": 4
         },

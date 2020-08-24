@@ -1,6 +1,6 @@
 package fr.tduf.libunlimited.low.files.gfx.materials.domain;
 
-import org.apache.commons.lang3.ArrayUtils;
+import fr.tduf.libunlimited.framework.lang.UByte;
 
 import java.util.List;
 
@@ -9,14 +9,14 @@ import java.util.List;
  */
 public class MaterialSettings {
 
-    protected byte alpha;
-    protected byte[] saturation;
-    protected float[] ambient;
-    protected float[] diffuse;
-    protected float[] specular;
-    protected float[] other;
+    protected UByte alpha;
+    protected UByte[] alphaBlending;
+    protected Color ambientColor;
+    protected Color diffuseColor;
+    protected Color specularColor;
+    protected Color otherColor;
     protected byte[] unknown;
-    protected ShaderParameters shaderParameters;
+    protected Shader shader;
 
     private MaterialSettings() {}
 
@@ -24,71 +24,75 @@ public class MaterialSettings {
         return new MaterialSettingsBuilder();
     }
 
-    public byte getAlpha() {
+    public UByte getAlpha() {
         return alpha;
     }
 
-    public byte[] getSaturation() {
-        return saturation;
+    public UByte[] getAlphaBlending() {
+        return alphaBlending;
     }
 
-    public float[] getAmbient() {
-        return ambient;
+    public Color getAmbientColor() {
+        return ambientColor;
     }
 
-    public float[] getDiffuse() {
-        return diffuse;
+    public Color getDiffuseColor() {
+        return diffuseColor;
     }
 
-    public float[] getSpecular() {
-        return specular;
+    public Color getSpecularColor() {
+        return specularColor;
     }
 
-    public float[] getOther() {
-        return other;
+    public Color getOtherColor() {
+        return otherColor;
     }
 
-    public ShaderParameters getShaderParameters() {
-        return shaderParameters;
+    public Shader getShaderParameters() {
+        return shader;
     }
 
     public byte[] getUnknown() {
         return unknown;
     }
 
+    public Shader getShader() {
+        return shader;
+    }
+
     public static class MaterialSettingsBuilder extends MaterialSettings {
-        public MaterialSettingsBuilder withAlpha(byte alpha) {
+        public MaterialSettingsBuilder withAlpha(UByte alpha) {
             this.alpha = alpha;
             return this;
         }
 
-        public MaterialSettingsBuilder withAmbient(List<Float> ambientValues) {
-            this.ambient = ArrayUtils.toPrimitive(ambientValues.toArray(new Float[0]));
+        public MaterialSettingsBuilder withAmbientColor(Color ambientColor) {
+            this.ambientColor = ambientColor;
             return this;
         }
 
-        public MaterialSettingsBuilder withDiffuse(List<Float> ambientValues) {
-            this.diffuse = ArrayUtils.toPrimitive(ambientValues.toArray(new Float[0]));
+        public MaterialSettingsBuilder withDiffuseColor(Color diffuseColor) {
+            this.diffuseColor = diffuseColor;
             return this;
         }
 
-        public MaterialSettingsBuilder withSpecular(List<Float> specularValues) {
-            this.specular = ArrayUtils.toPrimitive(specularValues.toArray(new Float[0]));
+        public MaterialSettingsBuilder withSpecularColor(Color specularColor) {
+            this.specularColor = specularColor;
             return this;
         }
 
-        public MaterialSettingsBuilder withSaturation(List<Byte> saturationValues) {
-            this.saturation = ArrayUtils.toPrimitive(saturationValues.toArray(new Byte[0]));
+        public MaterialSettingsBuilder withAlphaBlending(List<UByte> alphaBlendValues) {
+            this.alphaBlending = alphaBlendValues.toArray(new UByte[0]);
             return this;
         }
 
-        public MaterialSettingsBuilder withOtherSettings(List<Float> otherValues) {
-            this.other = ArrayUtils.toPrimitive(otherValues.toArray(new Float[0]));
+        public MaterialSettingsBuilder withOtherColor(Color otherColor) {
+            this.otherColor = otherColor;
             return this;
         }
 
-        public MaterialSettingsBuilder withShaderParameters(ShaderParameters shaderParameters) {
-            this.shaderParameters = shaderParameters;
+        public MaterialSettingsBuilder withShaderParameters(Shader shader) {
+            this.shader = shader;
             return this;
         }
 
@@ -100,14 +104,13 @@ public class MaterialSettings {
         public MaterialSettings build() {
             MaterialSettings materialSettings = new MaterialSettings();
             materialSettings.alpha = alpha;
-            materialSettings.ambient = ambient;
-            materialSettings.diffuse = diffuse;
-            materialSettings.other = other;
-            materialSettings.saturation = saturation;
-            materialSettings.specular = specular;
-            materialSettings.shaderParameters = shaderParameters;
+            materialSettings.ambientColor = ambientColor;
+            materialSettings.diffuseColor = diffuseColor;
+            materialSettings.otherColor = otherColor;
+            materialSettings.alphaBlending = alphaBlending;
+            materialSettings.specularColor = specularColor;
+            materialSettings.shader = shader;
             materialSettings.unknown = unknown;
-
             return materialSettings;
         }
     }

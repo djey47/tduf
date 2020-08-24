@@ -5,7 +5,10 @@ package fr.tduf.libunlimited.low.files.gfx.materials.domain;
  */
 public class Material {
     protected String name;
-    protected MaterialSettings settings;
+    protected MaterialSettings properties;
+    protected LayerGroup layerGroup;
+
+    private Material() {}
 
     public static MaterialBuilder builder() {
         return new MaterialBuilder();
@@ -15,8 +18,12 @@ public class Material {
         return name;
     }
 
-    public MaterialSettings getSettings() {
-        return settings;
+    public MaterialSettings getProperties() {
+        return properties;
+    }
+
+    public LayerGroup getLayerGroup() {
+        return layerGroup;
     }
 
     public static class MaterialBuilder extends Material {
@@ -26,14 +33,20 @@ public class Material {
         }
 
         public MaterialBuilder withGlobalSettings(MaterialSettings materialSettings) {
-            this.settings = materialSettings;
+            this.properties = materialSettings;
+            return this;
+        }
+
+        public MaterialBuilder withLayerGroup(LayerGroup layerGroup) {
+            this.layerGroup = layerGroup;
             return this;
         }
 
         public Material build() {
             Material material = new Material();
-            material.name = this.name;
-            material.settings = this.settings;
+            material.name = name;
+            material.properties = properties;
+            material.layerGroup = layerGroup;
             return material;
         }
     }

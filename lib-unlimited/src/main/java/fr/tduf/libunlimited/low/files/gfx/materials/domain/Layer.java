@@ -1,6 +1,6 @@
 package fr.tduf.libunlimited.low.files.gfx.materials.domain;
 
-import org.apache.commons.lang3.ArrayUtils;
+import fr.tduf.libunlimited.framework.lang.UByte;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
 public class Layer {
     protected String name;
     protected String textureFile;
-    protected byte[] flags;
+    protected UByte[] flags;
     protected AnimationSettings animationSettings;
 
     public static LayerBuilder builder() {
@@ -25,7 +25,7 @@ public class Layer {
         return textureFile;
     }
 
-    public byte[] getFlags() {
+    public UByte[] getFlags() {
         return flags;
     }
 
@@ -40,8 +40,8 @@ public class Layer {
             return this;
         }
 
-        public LayerBuilder withFlags(List<Byte> flagValues) {
-            this.flags = ArrayUtils.toPrimitive(flagValues.toArray(new Byte[0]));
+        public LayerBuilder withFlags(List<UByte> flagValues) {
+            this.flags = flagValues.toArray(new UByte[0]);
             return this;
         }
 

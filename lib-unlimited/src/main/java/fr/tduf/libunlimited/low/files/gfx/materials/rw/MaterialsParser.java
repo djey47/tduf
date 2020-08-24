@@ -1,6 +1,8 @@
 package fr.tduf.libunlimited.low.files.gfx.materials.rw;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
+import fr.tduf.libunlimited.framework.lang.UByte;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.*;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
@@ -11,6 +13,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static fr.tduf.libunlimited.framework.lang.UByte.fromSigned;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -51,10 +54,16 @@ public class MaterialsParser extends GenericParser<MaterialDefs> {
                     String materialName = matStore.getText("h")
                             .orElseThrow(() -> new IllegalStateException("Material store should contain hash data"))
                             .trim();
-                    MaterialSettings materialSettings = parseGlobalSettings(matStore);
+                    String defsKeyName = matStore.getTargetKeyAtAddress("materialAddress")
+                            .orElseThrow(() -> new IllegalStateException("No global settings available at key: materialAddress"));
+                    String parameterAddressKeyName = getDataStore().getTargetKeyAtAddress(defsKeyName + "parameterAddress")
+                            .orElseThrow(() -> new IllegalStateException(String.format("No shader parameters available at key: %s", defsKeyName + "parameterAddress")));
+                    MaterialSettings materialSettings = parseGlobalSettings(parameterAddressKeyName, defsKeyName);
+                    LayerGroup layerGroup = parseMaterialLayerGroup(parameterAddressKeyName);
                     return Material.builder()
                             .withName(materialName)
                             .withGlobalSettings(materialSettings)
+                            .withLayerGroup(layerGroup)
                             .build();
                 })
                 .collect(toList());
@@ -77,45 +86,45 @@ public class MaterialsParser extends GenericParser<MaterialDefs> {
                 .collect(toList());
     }
 
-    private MaterialSettings parseGlobalSettings(DataStore matStore) {
-        String settingsKeyName = matStore.getTargetKeyAtAddress("materialAddress")
-                .orElseThrow(() -> new IllegalStateException("No global settings available at key: materialAddress"));
+    private MaterialSettings parseGlobalSettings(String parameterAddressKeyName, String settingsKeyName) {
         byte alpha = getDataStore().getInteger(settingsKeyName + "alpha")
                 .orElseThrow(() -> new IllegalStateException("Settings alpha data should be present in store"))
                 .byteValue();
-        List<Byte> saturationValues = parseSettingsGroupAsByte(getDataStore(), settingsKeyName, "saturation", 2);
-        List<Float> ambientValues = parseSettingsGroupAsFloatingPoint(settingsKeyName, "ambient", 4);
-        List<Float> diffuseValues = parseSettingsGroupAsFloatingPoint(settingsKeyName, "diffuse", 4);
-        List<Float> specularValues = parseSettingsGroupAsFloatingPoint(settingsKeyName, "specular", 4);
-        List<Float> otherValues = parseSettingsGroupAsFloatingPoint(settingsKeyName, "other", 4);
-        ShaderParameters shaderParameters = parseShaderParameters(settingsKeyName + "parameterAddress");
+        List<UByte> alphaBlendValues = parseSettingsGroupAsUnsignedByte(getDataStore(), settingsKeyName, "alphaBlend", 2);
+        Color ambientColor = parseSettingsGroupAsColor(settingsKeyName, "ambientColor");
+        Color diffuseColor = parseSettingsGroupAsColor(settingsKeyName, "diffuseColor");
+        Color specularColor = parseSettingsGroupAsColor(settingsKeyName, "specularColor");
+        Color otherColor = parseSettingsGroupAsColor(settingsKeyName, "otherColor");
+        Shader shader = parseShaderParameters(parameterAddressKeyName);
         byte[] unknownSettings = getDataStore().getRawValue(settingsKeyName + "unk1")
                 .orElseThrow(() -> new IllegalStateException("unk1 data should be present in store"));
-
         return MaterialSettings.builder()
-                .withAlpha(alpha)
-                .withAmbient(ambientValues)
-                .withDiffuse(diffuseValues)
-                .withSaturation(saturationValues)
-                .withSpecular(specularValues)
-                .withOtherSettings(otherValues)
-                .withShaderParameters(shaderParameters)
+                .withAlpha(fromSigned(alpha))
+                .withAlphaBlending(alphaBlendValues)
+                .withAmbientColor(ambientColor)
+                .withDiffuseColor(diffuseColor)
+                .withSpecularColor(specularColor)
+                .withOtherColor(otherColor)
+                .withShaderParameters(shader)
                 .withUnknownSettings(unknownSettings)
                 .build();
     }
 
-    private ShaderParameters parseShaderParameters(String parameterAddressKeyName) {
-        String paramsKeyName = getDataStore().getTargetKeyAtAddress(parameterAddressKeyName)
-                .orElseThrow(() -> new IllegalStateException(String.format("No shader parameters available at key: %s", parameterAddressKeyName)));
+    private Shader parseShaderParameters(String paramsKeyName) {
         byte[] shaderConfiguration = getDataStore().getRawValue(paramsKeyName + "shaderConfiguration")
                 .orElseThrow(() -> new IllegalStateException("Shader configuration data should be present in store"));
         MaterialPiece configuration = MaterialPiece.fromBinaryContents(shaderConfiguration);
         List<MaterialSubSetting> subSettings = parseMaterialSubSettings(paramsKeyName);
-        LayerGroup layerGroup = parseMaterialLayerGroup(paramsKeyName);
-        return ShaderParameters.builder()
+        List<Float> reflectionLayerScaleValues = null;
+        try {
+            reflectionLayerScaleValues = parseSettingsGroupAsFloatingPoint(getDataStore(), paramsKeyName, "reflectionLayerScale", 2);
+        } catch (IllegalStateException ise) {
+            Log.debug("No reflection layer scale settings");
+        }
+        return Shader.builder()
                 .withConfiguration(configuration)
                 .withSubSettings(subSettings)
-                .withLayerGroup(layerGroup)
+                .withReflectionLayerScale(reflectionLayerScaleValues)
                 .build();
     }
 
@@ -144,7 +153,7 @@ public class MaterialsParser extends GenericParser<MaterialDefs> {
                     String targetFile = layerStore.getText("textureFile")
                             .orElseThrow(() -> new IllegalStateException("Texture file data should be present in store"))
                             .trim();
-                    List<Byte> flagValues = parseSettingsGroupAsByte(layerStore, "", "layerFlag", 4);
+                    List<UByte> flagValues = parseSettingsGroupAsUnsignedByte(layerStore, "", "layerFlag", 4);
                     // TODO
                     AnimationSettings animationSettings = new AnimationSettings();
                     return Layer.builder()
@@ -175,24 +184,42 @@ public class MaterialsParser extends GenericParser<MaterialDefs> {
                 .collect(toList());
     }
 
-    private List<Float> parseSettingsGroupAsFloatingPoint(String groupKeyName, String settingKeyName, int groupSize) {
-        return getSettingsKeyStream(groupKeyName, settingKeyName, groupSize)
+    private Color parseSettingsGroupAsColor(String groupKeyName, String settingKeyName) {
+        List<Float> values = getColorSettingsKeyStream(groupKeyName, settingKeyName)
                 .map(itemKey -> getDataStore().getFloatingPoint(itemKey)
-                        .orElseThrow(() -> new IllegalStateException(String.format("Settings data ashould be present in store at key %s", itemKey))))
+                        .orElseThrow(() -> new IllegalStateException(String.format("Color settings data should be present in store at key %s", itemKey))))
+                .collect(toList());
+        return Color.builder().fromRGBAndOpacity(values).build();
+    }
+
+    private List<UByte> parseSettingsGroupAsUnsignedByte(DataStore store, String groupKeyName, String settingKeyName, int groupSize) {
+        return getSettingsKeyStream(groupKeyName, settingKeyName, groupSize)
+                .map(itemKey -> store.getInteger(itemKey)
+                        .orElseThrow(() -> new IllegalStateException(String.format("Settings data should be present in store at key %s", itemKey)))
+                        .byteValue())
+                .map(UByte::fromSigned)
                 .collect(toList());
     }
 
-    private List<Byte> parseSettingsGroupAsByte(DataStore store, String groupKeyName, String settingKeyName, int groupSize) {
+    private List<Float> parseSettingsGroupAsFloatingPoint(DataStore store, String groupKeyName, String settingKeyName, int groupSize) {
         return getSettingsKeyStream(groupKeyName, settingKeyName, groupSize)
-                .map(itemKey -> store.getInteger(itemKey)
-                        .orElseThrow(() -> new IllegalStateException(String.format("Settings data ashould be present in store at key %s", itemKey)))
-                        .byteValue())
+                .map(itemKey -> store.getFloatingPoint(itemKey)
+                        .orElseThrow(() -> new IllegalStateException(String.format("Settings data should be present in store at key %s", itemKey))))
                 .collect(toList());
     }
 
     private static Stream<String> getSettingsKeyStream(String groupKeyName, String settingKeyName, int groupSize) {
         return IntStream.range(1, groupSize + 1)
                 .mapToObj(itemIndex -> String.format("%s%s%d", groupKeyName, settingKeyName, itemIndex));
+    }
+
+    private static Stream<String> getColorSettingsKeyStream(String groupKeyName, String settingKeyName) {
+        String[] keySuffixes = new String[]{ "R", "G", "B", "O"};
+        return IntStream.range(0, 4)
+                .mapToObj(itemIndex -> {
+                    String currentSuffix = keySuffixes[itemIndex];
+                    return String.format("%s%s%s", groupKeyName, settingKeyName, currentSuffix);
+                });
     }
 
     @Override
