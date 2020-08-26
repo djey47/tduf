@@ -2,24 +2,40 @@ package fr.tduf.gui.database.plugins.materials;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
+import fr.tduf.gui.database.plugins.common.PluginComponentBuilders;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import fr.tduf.gui.database.plugins.common.contexts.PluginContext;
-import fr.tduf.libunlimited.common.game.FileConstants;
+import fr.tduf.gui.database.plugins.materials.converter.MaterialToItemConverter;
 import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
+import fr.tduf.libunlimited.low.files.gfx.materials.domain.Material;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.MaterialDefs;
 import fr.tduf.libunlimited.low.files.gfx.materials.rw.MaterialsParser;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Separator;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.Set;
 
+import static fr.tduf.gui.database.plugins.common.PluginComponentBuilders.createBrowseResourceButton;
+import static fr.tduf.gui.database.plugins.materials.common.DisplayConstants.FORMAT_MESSAGE_WARN_NO_MATERIALS;
+import static fr.tduf.gui.database.plugins.materials.common.FxConstants.*;
+import static fr.tduf.libunlimited.common.game.FileConstants.*;
 import static java.nio.file.Files.readAllBytes;
+import static java.util.Collections.singletonList;
+import static java.util.Comparator.comparing;
+import static javafx.geometry.Orientation.VERTICAL;
 
 public class MaterialsPlugin extends AbstractDatabasePlugin {
     private static final Class<MaterialsPlugin> thisClass = MaterialsPlugin.class;
@@ -30,11 +46,12 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
     private final PluginContext materialsContext = new PluginContext();
     private final Property<MaterialDefs> materialsInfoEnhancedProperty = new SimpleObjectProperty<>();
 
+    private ObservableList<Material> materialInfos;
 
     /**
      * Required contextual information:
      * - gameLocation
-     * - materialsContext
+     * - mainStageController (for bank support)
      *
      * @param pluginName : name of plugin to initialize
      * @param context : all required information about Database Editor
@@ -50,7 +67,14 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
         String gameLocation = context.getGameLocation();
 
         // Extracts all files from colors.bnk
-        Path bankFilePath = resolveBankFilePath(gameLocation, FILE_COLORS_BANK);
+        Path bankFilePath = resolveBankFilePath(gameLocation);
+        if (!Files.exists(bankFilePath)) {
+            String warningMessage = String.format(FORMAT_MESSAGE_WARN_NO_MATERIALS, bankFilePath.toString());
+            Log.warn(THIS_CLASS_NAME, warningMessage);
+
+            throw new IOException(warningMessage);
+        }
+
         String extractedDirectory = createTempDirectory();
         Log.debug(THIS_CLASS_NAME, String.format("Extracting materials info from %s to %s...", bankFilePath, extractedDirectory));
         context.getMainStageController().getBankSupport().extractAll(bankFilePath.toString(), extractedDirectory);
@@ -73,22 +97,70 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
     }
 
     @Override
-    public void onSave() throws IOException {
-
+    public void onSave() {
+        // Not implemented
     }
 
     @Override
     public Node renderControls(OnTheFlyContext onTheFlyContext) {
-        return null;
+        HBox hBox = new HBox();
+        if (!materialsContext.isPluginLoaded()) {
+            Log.warn(THIS_CLASS_NAME, "Materials plugin not loaded, no rendering will be performed");
+            return hBox;
+        }
+
+        VBox mainColumnBox = createMainColumn();
+        VBox buttonColumnBox = createButtonColumn(onTheFlyContext);
+
+        ObservableList<Node> mainRowChildren = hBox.getChildren();
+        mainRowChildren.add(mainColumnBox);
+        mainRowChildren.add(new Separator(VERTICAL));
+        mainRowChildren.add(buttonColumnBox);
+        mainRowChildren.add(new Separator(VERTICAL));
+
+        return hBox;
+    }
+
+    private VBox createButtonColumn(OnTheFlyContext onTheFlyContext) {
+        return PluginComponentBuilders.buttonColumn()
+            .withButton(createBrowseResourceButton(getEditorContext(), onTheFlyContext))
+            .build();
+    }
+
+    private VBox createMainColumn() {
+        materialInfos = FXCollections.observableArrayList(materialsInfoEnhancedProperty.getValue().getMaterials());
+        ComboBox<Material> materialSelectorComboBox = new ComboBox<>(materialInfos.sorted(comparing(Material::getName)));
+
+        materialSelectorComboBox.getStyleClass().add(CSS_CLASS_MAT_SELECTOR_COMBOBOX);
+        materialSelectorComboBox.setConverter(new MaterialToItemConverter());
+
+        VBox mainColumnBox = new VBox();
+        mainColumnBox.getStyleClass().add(CSS_CLASS_MAIN_COLUMN);
+        ObservableList<Node> mainColumnChildren = mainColumnBox.getChildren();
+
+        HBox camSelectorBox = createMaterialSelectorBox(materialSelectorComboBox);
+
+        mainColumnChildren.add(camSelectorBox);
+
+        return mainColumnBox;
+    }
+
+    private HBox createMaterialSelectorBox(ComboBox<Material> materialSelectorComboBox) {
+        HBox matSelectorBox = new HBox();
+
+        matSelectorBox.getStyleClass().add(CSS_CLASS_MAT_SELECTOR_BOX);
+        matSelectorBox.getChildren().add(materialSelectorComboBox);
+
+        return matSelectorBox;
     }
 
     @Override
     public Set<String> getCss() {
-        return null;
+        return new HashSet<>(singletonList(thisClass.getResource(PATH_RESOURCE_CSS_MATERIALS).toExternalForm()));
     }
 
-    private static Path resolveBankFilePath(String gameLocation, String filePath) {
-        return Paths.get(gameLocation, FileConstants.DIRECTORY_EURO, FileConstants.DIRECTORY_BANKS, FileConstants.DIRECTORY_VEHICLES, filePath);
+    private static Path resolveBankFilePath(String gameLocation) {
+        return Paths.get(gameLocation, DIRECTORY_EURO, DIRECTORY_BANKS, DIRECTORY_VEHICLES, FILE_COLORS_BANK);
     }
 
     private static String createTempDirectory() throws IOException {

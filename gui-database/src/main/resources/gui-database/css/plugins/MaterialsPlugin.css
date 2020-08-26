@@ -1,0 +1,11 @@
+.matMainColumn {
+    -fx-spacing: 5.0;
+}
+
+.matSelectorBox {
+    -fx-pref-width: 625.0;
+}
+
+.matSelectorComboBox {
+    -fx-pref-width: 455.0;
+}
