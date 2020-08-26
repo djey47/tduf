@@ -5,6 +5,7 @@ import fr.tduf.gui.common.javafx.helper.ControlHelper;
 import fr.tduf.gui.common.javafx.helper.DesktopHelper;
 import fr.tduf.gui.database.plugins.cameras.common.FxConstants;
 import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
+import fr.tduf.gui.database.plugins.common.PluginComponentBuilders;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import fr.tduf.gui.database.plugins.common.contexts.PluginContext;
@@ -45,6 +46,7 @@ import java.util.Set;
 
 import static fr.tduf.gui.database.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.common.FxConstants.*;
+import static fr.tduf.gui.database.plugins.common.PluginComponentBuilders.createBrowseResourceButton;
 import static fr.tduf.gui.database.plugins.mapping.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.mapping.common.FxConstants.*;
 import static fr.tduf.libunlimited.common.game.FileConstants.*;
@@ -53,7 +55,6 @@ import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static javafx.geometry.Orientation.HORIZONTAL;
 import static javafx.geometry.Orientation.VERTICAL;
 
 /**
@@ -261,19 +262,11 @@ public class MappingPlugin extends AbstractDatabasePlugin {
     }
 
     private VBox createButtonColumn(TableView.TableViewSelectionModel<MappingEntry> selectionModel, OnTheFlyMappingContext onTheFlyMappingContext) {
-        VBox buttonColumnBox = new VBox();
-        buttonColumnBox.getStyleClass().add(fr.tduf.gui.database.common.FxConstants.CSS_CLASS_VERTICAL_BUTTON_BOX);
+        EditorContext editorContext = getEditorContext();
 
         Button refreshMappingButton = new Button(LABEL_BUTTON_REFRESH);
         refreshMappingButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
         refreshMappingButton.setOnAction(handleRefreshButtonAction(onTheFlyMappingContext));
-
-        Button browseResourceButton = new Button(LABEL_BUTTON_BROWSE);
-        browseResourceButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
-        ControlHelper.setTooltipText(browseResourceButton, TOOLTIP_BUTTON_BROWSE_RESOURCES);
-        EditorContext editorContext = getEditorContext();
-        browseResourceButton.setOnAction(
-                editorContext.getMainStageController().getViewData().handleBrowseResourcesButtonMouseClick(onTheFlyMappingContext.getRemoteTopic(), onTheFlyMappingContext.getRawValueProperty(), onTheFlyMappingContext.getFieldRank()));
 
         Button seeDirectoryButton = new Button(LABEL_BUTTON_GOTO);
         seeDirectoryButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
@@ -285,14 +278,13 @@ public class MappingPlugin extends AbstractDatabasePlugin {
         ControlHelper.setTooltipText(registerButton, TOOLTIP_BUTTON_REGISTER);
         registerButton.setOnAction(handleRegisterButtonAction(selectionModel));
 
-        buttonColumnBox.getChildren().addAll(
-                refreshMappingButton,
-                new Separator(HORIZONTAL),
-                browseResourceButton,
-                seeDirectoryButton,
-                registerButton);
-
-        return buttonColumnBox;
+        return PluginComponentBuilders.buttonColumn()
+                .withButton(refreshMappingButton)
+                .withSeparator()
+                .withButton(createBrowseResourceButton(editorContext, onTheFlyMappingContext))
+                .withButton(seeDirectoryButton)
+                .withButton(registerButton)
+                .build();
     }
 
     private TableView<MappingEntry> createFilesTableView(OnTheFlyMappingContext onTheFlyMappingContext) {

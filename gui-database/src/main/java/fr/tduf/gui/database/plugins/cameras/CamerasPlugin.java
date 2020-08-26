@@ -11,6 +11,7 @@ import fr.tduf.gui.database.plugins.cameras.converter.CameraInfoToRawValueConver
 import fr.tduf.gui.database.plugins.cameras.converter.CameraViewToItemConverter;
 import fr.tduf.gui.database.plugins.cameras.helper.CamerasDialogsHelper;
 import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
+import fr.tduf.gui.database.plugins.common.PluginComponentBuilders;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import fr.tduf.gui.database.plugins.common.contexts.PluginContext;
@@ -224,9 +225,6 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
     }
 
     private VBox createButtonColumn(EventHandler<ActionEvent> onAddSetAction, EventHandler<ActionEvent> onDeleteSetAction, EventHandler<ActionEvent> onImportSetAction, EventHandler<ActionEvent> onExportCurrentViewAction, EventHandler<ActionEvent> onExportAllViewsAction) {
-        VBox buttonColumnBox = new VBox();
-        buttonColumnBox.getStyleClass().add(fr.tduf.gui.database.common.FxConstants.CSS_CLASS_VERTICAL_BUTTON_BOX);
-
         Button addSetButton = new Button(LABEL_ADD_BUTTON);
         addSetButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
         ControlHelper.setTooltipText(addSetButton, TOOLTIP_ADD_BUTTON);
@@ -253,13 +251,12 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
         exportSetMenuButton.getItems().add(exportCurrentViewMenuItem);
         exportSetMenuButton.getItems().add(exportAllViewsMenuItem);
 
-        ObservableList<Node> children = buttonColumnBox.getChildren();
-        children.add(addSetButton);
-        children.add(delSetButton);
-        children.add(importSetButton);
-        children.add(exportSetMenuButton);
-
-        return buttonColumnBox;
+        return PluginComponentBuilders.buttonColumn()
+                .withButton(addSetButton)
+                .withButton(delSetButton)
+                .withButton(importSetButton)
+                .withButton(exportSetMenuButton)
+                .build();
     }
 
     private TableView<Map.Entry<ViewProps, ?>> createPropertiesTableView(OnTheFlyContext context, ObservableList<Map.Entry<ViewProps, ?>> viewProps, ObjectProperty<CameraView> currentViewProperty) {
