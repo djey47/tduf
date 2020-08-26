@@ -102,7 +102,7 @@ public class MappingPlugin extends AbstractDatabasePlugin {
         BankMap bankMap = MapParser.load(mapFileName).parse();
         bankMapProperty.setValue(bankMap);
 
-        Log.info(THIS_CLASS_NAME, "Mapping info loaded");        
+        Log.info(THIS_CLASS_NAME, String.format("Mapping info loaded, %d entries available", bankMap.getEntries().size()));
         mappingContext.setPluginLoaded(true);
         mappingContext.setBinaryFileLocation(mapFileName);
     }

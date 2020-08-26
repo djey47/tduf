@@ -54,7 +54,7 @@ public class IKsPlugin extends AbstractDatabasePlugin {
         super.onInit(pluginName, editorContext);
 
         ikRefHelper = new CameraAndIKHelper();
-        Log.info(THIS_CLASS_NAME, "IK reference loaded");
+        Log.info(THIS_CLASS_NAME, String.format("IK reference loaded, %d entries available", ikRefHelper.getIKReference().size()));
     }
 
     /**

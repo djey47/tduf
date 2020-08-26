@@ -111,7 +111,7 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
         cameraInfoEnhancedProperty.setValue(camerasDatabase);
 
         cameraRefHelper = new CameraAndIKHelper();
-        Log.info(THIS_CLASS_NAME, "Camera reference loaded");
+        Log.info(THIS_CLASS_NAME, String.format("Camera reference loaded, %d sets available", camerasDatabase.getSetsCount()));
 
         dialogsHelper = new CamerasDialogsHelper();
         imExHelper = new CamerasImExHelper();
