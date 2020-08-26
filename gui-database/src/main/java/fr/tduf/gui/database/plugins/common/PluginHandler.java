@@ -116,20 +116,19 @@ public class PluginHandler {
 
     void renderPluginInstance(DatabasePlugin pluginInstance, OnTheFlyContext onTheFlyContext) {
         String pluginName = pluginInstance.getName();
-        Node renderedNode;
+        ObservableList<Node> children = onTheFlyContext.getParentPane().getChildren();
         try {
             // Init error handling
             Optional<Exception> initError = pluginInstance.getInitError();
-            renderedNode = initError
+            Node renderedNode = initError
                     .map(e -> renderErrorPlaceholder(e, pluginName, FORMAT_TITLE_PLUGIN_INIT_ERROR))
                     .orElseGet(() -> pluginInstance.renderControls(onTheFlyContext));
-
+            children.add(renderedNode);
         } catch(Exception e) {
             // Render error handling
             Log.error(THIS_CLASS_NAME, "Error occurred while rendering plugin: " + pluginName, e);
-            renderedNode = renderErrorPlaceholder(e, pluginName, FORMAT_TITLE_PLUGIN_RENDER_ERROR);
+            children.add(renderErrorPlaceholder(e, pluginName, FORMAT_TITLE_PLUGIN_RENDER_ERROR));
         }
-        onTheFlyContext.getParentPane().getChildren().add(renderedNode);
     }
 
     void triggerOnSaveForPluginInstance(DatabasePlugin pluginInstance) throws IOException {

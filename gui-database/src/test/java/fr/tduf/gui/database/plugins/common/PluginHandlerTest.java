@@ -168,6 +168,18 @@ class PluginHandlerTest {
     }
 
     @Test
+    void renderPluginInstance_whenNullRenderResult_shouldRenderErrorPlaceholder() {
+        // given
+        when(pluginInstanceMock.renderControls(any(OnTheFlyContext.class))).thenReturn(null);
+
+        // when
+        pluginHandler.renderPluginInstance(pluginInstanceMock, onTheFlyContextMock);
+
+        // then
+        assertThat(parentPaneChildren).hasSize(1);
+    }
+
+    @Test
     void triggerOnSaveForPluginInstance_whenNoError_shouldClearPreviousError() throws IOException {
         // given-when
         pluginHandler.triggerOnSaveForPluginInstance(pluginInstanceMock);
