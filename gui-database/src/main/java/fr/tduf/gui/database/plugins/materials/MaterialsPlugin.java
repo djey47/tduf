@@ -7,16 +7,22 @@ import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import fr.tduf.gui.database.plugins.common.contexts.PluginContext;
 import fr.tduf.gui.database.plugins.materials.converter.MaterialToItemConverter;
+import fr.tduf.gui.database.plugins.materials.converter.MaterialToRawValueConverter;
 import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.Material;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.MaterialDefs;
+import fr.tduf.libunlimited.low.files.gfx.materials.helper.MaterialsHelper;
 import fr.tduf.libunlimited.low.files.gfx.materials.rw.MaterialsParser;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -26,10 +32,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
+import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_ITEM_LABEL;
 import static fr.tduf.gui.database.plugins.common.PluginComponentBuilders.createBrowseResourceButton;
 import static fr.tduf.gui.database.plugins.materials.common.DisplayConstants.FORMAT_MESSAGE_WARN_NO_MATERIALS;
+import static fr.tduf.gui.database.plugins.materials.common.DisplayConstants.LABEL_AVAILABLE_MATERIALS;
 import static fr.tduf.gui.database.plugins.materials.common.FxConstants.*;
 import static fr.tduf.libunlimited.common.game.FileConstants.*;
 import static java.nio.file.Files.readAllBytes;
@@ -45,8 +55,7 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
 
     private final PluginContext materialsContext = new PluginContext();
     private final Property<MaterialDefs> materialsInfoEnhancedProperty = new SimpleObjectProperty<>();
-
-    private ObservableList<Material> materialInfos;
+    private Map<String, String> normalizedNamesDictionary;
 
     /**
      * Required contextual information:
@@ -93,6 +102,8 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
 
         Log.info(THIS_CLASS_NAME, String.format("Material definitions loaded, %d materials available", materialDefs.getMaterials().size()));
 
+        normalizedNamesDictionary = MaterialsHelper.buildNormalizedDictionary(context.getMiner());
+
         materialsContext.setPluginLoaded(true);
     }
 
@@ -109,7 +120,7 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
             return hBox;
         }
 
-        VBox mainColumnBox = createMainColumn();
+        VBox mainColumnBox = createMainColumn(onTheFlyContext);
         VBox buttonColumnBox = createButtonColumn(onTheFlyContext);
 
         ObservableList<Node> mainRowChildren = hBox.getChildren();
@@ -127,8 +138,8 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
             .build();
     }
 
-    private VBox createMainColumn() {
-        materialInfos = FXCollections.observableArrayList(materialsInfoEnhancedProperty.getValue().getMaterials());
+    private VBox createMainColumn(OnTheFlyContext onTheFlyContext) {
+        ObservableList<Material> materialInfos = FXCollections.observableArrayList(materialsInfoEnhancedProperty.getValue().getMaterials());
         ComboBox<Material> materialSelectorComboBox = new ComboBox<>(materialInfos.sorted(comparing(Material::getName)));
 
         materialSelectorComboBox.getStyleClass().add(CSS_CLASS_MAT_SELECTOR_COMBOBOX);
@@ -138,20 +149,39 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
         mainColumnBox.getStyleClass().add(CSS_CLASS_MAIN_COLUMN);
         ObservableList<Node> mainColumnChildren = mainColumnBox.getChildren();
 
-        HBox camSelectorBox = createMaterialSelectorBox(materialSelectorComboBox);
+        HBox camSelectorBox = createMaterialSelectorBox(materialSelectorComboBox, onTheFlyContext);
 
         mainColumnChildren.add(camSelectorBox);
 
         return mainColumnBox;
     }
 
-    private HBox createMaterialSelectorBox(ComboBox<Material> materialSelectorComboBox) {
+    private HBox createMaterialSelectorBox(ComboBox<Material> materialSelectorComboBox, OnTheFlyContext onTheFlyContext) {
         HBox matSelectorBox = new HBox();
 
         matSelectorBox.getStyleClass().add(CSS_CLASS_MAT_SELECTOR_BOX);
+
+        materialSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
+                getMaterialSelectorChangeListener());
+        Bindings.bindBidirectional(
+                onTheFlyContext.getRawValueProperty(), materialSelectorComboBox.valueProperty(), new MaterialToRawValueConverter(this.materialsInfoEnhancedProperty.getValue(), getEditorContext(), onTheFlyContext.getCurrentTopic(), normalizedNamesDictionary));
+
+        Label availableMaterialsLabel = new Label(LABEL_AVAILABLE_MATERIALS);
+        availableMaterialsLabel.setLabelFor(materialSelectorComboBox);
+        availableMaterialsLabel.getStyleClass().add(CSS_CLASS_ITEM_LABEL);
+
+        matSelectorBox.getChildren().add(availableMaterialsLabel);
         matSelectorBox.getChildren().add(materialSelectorComboBox);
 
         return matSelectorBox;
+    }
+
+    private ChangeListener<Material> getMaterialSelectorChangeListener() {
+        return (ObservableValue<? extends Material> observable, Material oldValue, Material newValue) -> {
+            if (Objects.equals(oldValue, newValue)) {
+                return;
+            }
+        };
     }
 
     @Override
