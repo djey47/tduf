@@ -10,6 +10,7 @@ import javafx.util.StringConverter;
 import java.util.Map;
 
 import static fr.tduf.libunlimited.common.game.helper.GameEngineHelper.normalizeString;
+import static fr.tduf.libunlimited.high.files.db.common.DatabaseConstants.RESOURCE_VALUE_NONE;
 
 public class MaterialToRawValueConverter extends StringConverter<Material> {
     private final MaterialDefs materialDefs;
@@ -50,6 +51,10 @@ public class MaterialToRawValueConverter extends StringConverter<Material> {
         String materialName = editorContext.getMiner().getLocalizedResourceValueFromTopicAndReference(materialRawValue, currentTopic, Locale.DEFAULT)
                 .orElseThrow(() -> new IllegalStateException("No resource with raw value " + materialRawValue))
                 .toUpperCase();
+        if (RESOURCE_VALUE_NONE.equals(materialName)) {
+            return null;
+        }
+
         String materialNameNormalized = normalizeString(materialName);
 
         return materialDefs.getMaterials().stream()

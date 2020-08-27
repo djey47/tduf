@@ -8,6 +8,7 @@ import fr.tduf.gui.database.plugins.iks.IKsPlugin;
 import fr.tduf.gui.database.plugins.mapping.MappingPlugin;
 import fr.tduf.gui.database.plugins.mapping.OnTheFlyMappingContext;
 import fr.tduf.gui.database.plugins.materials.MaterialsPlugin;
+import fr.tduf.gui.database.plugins.materials.OnTheFlyMaterialsContext;
 import fr.tduf.gui.database.plugins.nope.NopePlugin;
 import fr.tduf.gui.database.plugins.percent.PercentPlugin;
 
@@ -24,7 +25,7 @@ enum PluginIndex {
     PERCENT("Allows to make percent value changes easier", new PercentPlugin()),
     CONTENT_REF("Displays warning image and label", new ContentRefPlugin()),
     MAPPING("Shows files required by content entries and registration status in Bnk1.map", new MappingPlugin(), OnTheFlyMappingContext.class),
-    MATERIALS("Display associated material information (properties, shader, layers...)", new MaterialsPlugin());
+    MATERIALS("Display associated material information (properties, shader, layers...)", new MaterialsPlugin(), OnTheFlyMaterialsContext.class);
 
     private final String description;
     private final DatabasePlugin pluginInstance;

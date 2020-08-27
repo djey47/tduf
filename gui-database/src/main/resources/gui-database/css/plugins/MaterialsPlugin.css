@@ -3,10 +3,35 @@
     -fx-padding: 0.0 0.0 0.0 5.0;
 }
 
-.matSelectorBox {
+.matSelectorBox, .matSettingsBox {
     -fx-pref-width: 625.0;
 }
 
 .matSelectorComboBox {
     -fx-pref-width: 125.0;
+}
+
+.colorsBox, propertiesBox {
+    -fx-padding: 5.0 0.0;
+}
+
+.colorBox {
+    -fx-padding: 0.0 0.0 5.0 0.0;
+}
+
+.colorTypeLabel {
+    -fx-padding: 0.0 0.0 0.0 10.0;
+    -fx-pref-width: 150.0;
+}
+
+.colorDescriptionLabel{
+    -fx-padding: 0.0 0.0 0.0 5.0;
+}
+
+.colorPreviewBox {
+    -fx-pref-width: 100.0;
+}
+
+.shaderBox {
+    -fx-padding: 5.0 0.0 0.0 10.0;
 }

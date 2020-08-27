@@ -6,26 +6,30 @@ import fr.tduf.gui.database.plugins.common.PluginComponentBuilders;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import fr.tduf.gui.database.plugins.common.contexts.PluginContext;
+import fr.tduf.gui.database.plugins.materials.common.DisplayConstants;
 import fr.tduf.gui.database.plugins.materials.converter.MaterialToItemConverter;
 import fr.tduf.gui.database.plugins.materials.converter.MaterialToRawValueConverter;
 import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.Material;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.MaterialDefs;
+import fr.tduf.libunlimited.low.files.gfx.materials.domain.MaterialSettings;
 import fr.tduf.libunlimited.low.files.gfx.materials.helper.MaterialsHelper;
 import fr.tduf.libunlimited.low.files.gfx.materials.rw.MaterialsParser;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,13 +42,14 @@ import java.util.Set;
 
 import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_ITEM_LABEL;
 import static fr.tduf.gui.database.plugins.common.PluginComponentBuilders.createBrowseResourceButton;
-import static fr.tduf.gui.database.plugins.materials.common.DisplayConstants.FORMAT_MESSAGE_WARN_NO_MATERIALS;
-import static fr.tduf.gui.database.plugins.materials.common.DisplayConstants.LABEL_AVAILABLE_MATERIALS;
+import static fr.tduf.gui.database.plugins.materials.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.materials.common.FxConstants.*;
 import static fr.tduf.libunlimited.common.game.FileConstants.*;
 import static java.nio.file.Files.readAllBytes;
 import static java.util.Collections.singletonList;
 import static java.util.Comparator.comparing;
+import static javafx.beans.binding.Bindings.createObjectBinding;
+import static javafx.geometry.Orientation.HORIZONTAL;
 import static javafx.geometry.Orientation.VERTICAL;
 
 public class MaterialsPlugin extends AbstractDatabasePlugin {
@@ -149,12 +154,128 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
         mainColumnBox.getStyleClass().add(CSS_CLASS_MAIN_COLUMN);
         ObservableList<Node> mainColumnChildren = mainColumnBox.getChildren();
 
-        HBox camSelectorBox = createMaterialSelectorBox(materialSelectorComboBox, onTheFlyContext);
+        HBox matSelectorBox = createMaterialSelectorBox(materialSelectorComboBox, onTheFlyContext);
+        VBox matSettingsBox = createMaterialSettingsBox(onTheFlyContext);
 
-        mainColumnChildren.add(camSelectorBox);
+        mainColumnChildren.add(matSelectorBox);
+        mainColumnChildren.add(matSettingsBox);
 
         return mainColumnBox;
     }
+
+    private VBox createMaterialSettingsBox(OnTheFlyContext onTheFlyContext) {
+        VBox matSettingsBox = new VBox();
+
+        matSettingsBox.getStyleClass().add(CSS_CLASS_MAT_SETTINGS_BOX);
+
+        VBox colorsBox = createColorsBox((OnTheFlyMaterialsContext) onTheFlyContext);
+        VBox propertiesBox = createPropertiesBox((OnTheFlyMaterialsContext) onTheFlyContext);
+
+        matSettingsBox.getChildren().addAll(
+                colorsBox,
+                new Separator(HORIZONTAL),
+                propertiesBox
+        );
+
+        return matSettingsBox;
+    }
+
+    private VBox createPropertiesBox(OnTheFlyMaterialsContext onTheFlyContext) {
+        VBox propertiesBox = new VBox();
+
+        propertiesBox.getStyleClass().addAll(CSS_CLASS_PROPERTIES_BOX);
+
+        propertiesBox.getChildren().addAll(
+            createShaderBox(onTheFlyContext)
+        );
+
+        return propertiesBox;
+    }
+
+    private HBox createShaderBox(OnTheFlyMaterialsContext onTheFlyContext) {
+        HBox shaderBox = new HBox();
+
+        shaderBox.getStyleClass().addAll(CSS_CLASS_SHADER_BOX);
+
+        Label shaderValueLabel = new Label();
+        shaderValueLabel.textProperty().bind(createShaderValueBinding(onTheFlyContext));
+
+        shaderBox.getChildren().addAll(
+                new Label(DisplayConstants.LABEL_SHADER),
+                shaderValueLabel
+        );
+
+        return shaderBox;
+    }
+
+    private VBox createColorsBox(OnTheFlyMaterialsContext onTheFlyContext) {
+        VBox colorsBox = new VBox();
+
+        colorsBox.getStyleClass().addAll(CSS_CLASS_COLORS_BOX);
+
+        colorsBox.getChildren().addAll(
+            createColorBox(LABEL_COLOR_AMBIENT, onTheFlyContext),
+            createColorBox(LABEL_COLOR_DIFFUSE, onTheFlyContext),
+            createColorBox(LABEL_COLOR_SPECULAR, onTheFlyContext),
+            createColorBox(LABEL_COLOR_OTHER, onTheFlyContext)
+        );
+
+        return colorsBox;
+    }
+
+    private HBox createColorBox(String label, OnTheFlyMaterialsContext onTheFlyMaterialsContext) {
+        HBox colorBox = new HBox();
+        colorBox.getStyleClass().add(CSS_CLASS_COLOR_BOX);
+
+        Label colorTypeLabel = new Label(label);
+        colorTypeLabel.getStyleClass().add(CSS_CLASS_COLOR_TYPE_LABEL);
+
+        Label colorDescriptionLabel = new Label();
+        colorDescriptionLabel.getStyleClass().add(CSS_CLASS_COLOR_DESC_LABEL);
+        colorDescriptionLabel.textProperty().bind(createDescriptionBinding(onTheFlyMaterialsContext, label));
+
+        HBox colorPreviewField = new HBox();
+        colorPreviewField.getStyleClass().add(CSS_CLASS_COLOR_PREVIEW_BOX);
+        colorPreviewField.backgroundProperty().bind(createBackgroundBinding(onTheFlyMaterialsContext, label));
+
+        colorBox.getChildren().addAll(
+                colorTypeLabel,
+                colorPreviewField,
+                colorDescriptionLabel
+        );
+
+        return colorBox;
+    }
+
+    private ObjectBinding<Background> createBackgroundBinding(OnTheFlyMaterialsContext onTheFlyMaterialsContext, String label) {
+        return createObjectBinding(() -> {
+            MaterialSettings materialSettings = onTheFlyMaterialsContext.getCurrentMaterialProperty().getValue().getProperties();
+            fr.tduf.libunlimited.low.files.gfx.materials.domain.Color currentColor = retrieveColorFromSettings(label, materialSettings);
+            Color backColor = Color.color(
+                    currentColor.getRedCompound(),
+                    currentColor.getGreenCompound(),
+                    currentColor.getBlueCompound(),
+                    currentColor.getOpacity());
+            BackgroundFill fill = new BackgroundFill(backColor, CornerRadii.EMPTY, Insets.EMPTY);
+            return new Background(fill);
+        }, onTheFlyMaterialsContext.getCurrentMaterialProperty());
+    }
+
+    private ObjectBinding<String> createDescriptionBinding(OnTheFlyMaterialsContext onTheFlyMaterialsContext, String label) {
+        return createObjectBinding(() -> {
+            MaterialSettings materialSettings = onTheFlyMaterialsContext.getCurrentMaterialProperty().getValue().getProperties();
+            fr.tduf.libunlimited.low.files.gfx.materials.domain.Color currentColor = retrieveColorFromSettings(label, materialSettings);
+            return String.format(FORMAT_COLOR_DESCRIPTION, currentColor.getRedCompound(), currentColor.getGreenCompound(), currentColor.getBlueCompound(), currentColor.getOpacity());
+        }, onTheFlyMaterialsContext.getCurrentMaterialProperty());
+    }
+
+    private ObjectBinding<String> createShaderValueBinding(OnTheFlyMaterialsContext onTheFlyMaterialsContext) {
+        return createObjectBinding(() -> {
+            MaterialSettings materialSettings = onTheFlyMaterialsContext.getCurrentMaterialProperty().getValue().getProperties();
+            return String.format(FORMAT_SHADER_VALUE, materialSettings.getShader().getConfiguration().getName(), materialSettings.getShader().getConfiguration().name());
+        }, onTheFlyMaterialsContext.getCurrentMaterialProperty());
+    }
+
 
     private HBox createMaterialSelectorBox(ComboBox<Material> materialSelectorComboBox, OnTheFlyContext onTheFlyContext) {
         HBox matSelectorBox = new HBox();
@@ -162,7 +283,7 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
         matSelectorBox.getStyleClass().add(CSS_CLASS_MAT_SELECTOR_BOX);
 
         materialSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
-                getMaterialSelectorChangeListener());
+                getMaterialSelectorChangeListener((OnTheFlyMaterialsContext) onTheFlyContext));
         Bindings.bindBidirectional(
                 onTheFlyContext.getRawValueProperty(), materialSelectorComboBox.valueProperty(), new MaterialToRawValueConverter(this.materialsInfoEnhancedProperty.getValue(), getEditorContext(), onTheFlyContext.getCurrentTopic(), normalizedNamesDictionary));
 
@@ -176,11 +297,13 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
         return matSelectorBox;
     }
 
-    private ChangeListener<Material> getMaterialSelectorChangeListener() {
+    private ChangeListener<Material> getMaterialSelectorChangeListener(OnTheFlyMaterialsContext onTheFlyContext) {
         return (ObservableValue<? extends Material> observable, Material oldValue, Material newValue) -> {
             if (Objects.equals(oldValue, newValue)) {
                 return;
             }
+
+            onTheFlyContext.setCurrentMaterial(newValue);
         };
     }
 
@@ -203,5 +326,22 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
 
     private static XByteArrayInputStream getMaterialsInputStream(String sourceMaterialsFile) throws IOException {
         return new XByteArrayInputStream(readAllBytes(Paths.get(sourceMaterialsFile)));
+    }
+
+    private static fr.tduf.libunlimited.low.files.gfx.materials.domain.Color retrieveColorFromSettings(String label, MaterialSettings materialSettings) {
+        switch (label) {
+            case LABEL_COLOR_AMBIENT:
+                return materialSettings.getAmbientColor();
+            case LABEL_COLOR_DIFFUSE:
+                return materialSettings.getDiffuseColor();
+            case LABEL_COLOR_OTHER:
+                return materialSettings.getOtherColor();
+            case LABEL_COLOR_SPECULAR:
+                return materialSettings.getSpecularColor();
+            default:
+                return fr.tduf.libunlimited.low.files.gfx.materials.domain.Color.builder()
+                        .fromRGB(0.0f, 0.0f, 0.0f)
+                        .build();
+        }
     }
 }
