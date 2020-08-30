@@ -21,7 +21,7 @@ class MaterialsParserTest {
         matColorsContents = FilesHelper.readBytesFromResourceFile("/materials/colors-sample.2DM");
         matCarContents = FilesHelper.readBytesFromResourceFile("/materials/car-sample.2DM");
 
-//        Log.set(Log.LEVEL_DEBUG);
+        Log.set(Log.LEVEL_INFO);
     }
 
     @Test
