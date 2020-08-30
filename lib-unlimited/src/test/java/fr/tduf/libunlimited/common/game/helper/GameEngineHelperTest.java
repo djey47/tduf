@@ -34,6 +34,6 @@ class GameEngineHelperTest {
     @Test
     void normalizeString_when24CharString_shouldNormalizeIt() {
         // given-when-then
-        assertThat(GameEngineHelper.normalizeString("FORDGT_03_NOPQRSTUVWXYZ0")).isEqualTo("Íăöêïþċ");
+        assertThat(GameEngineHelper.normalizeString("FORDGT_03_NOPQRSTUVWXYZ0")).isEqualTo("Íăöêïþċ³");
     }
 }
