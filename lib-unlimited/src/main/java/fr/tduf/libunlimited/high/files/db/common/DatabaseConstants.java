@@ -83,6 +83,7 @@ public class DatabaseConstants {
     public static final String REF_NO_INTERIOR = "11319636";
     public static final String CODE_INTERIOR_COLOR_NONE = "53364643";
     public static final String RESOURCE_REF_NONE_INTERIOR_NAME = "53365512";
+    public static final String RESOURCE_VALUE_INTERIOR_COLOR_NONE = "NOCOLOR";
 
     // RIMS
     public static final int FIELD_RANK_RIM_REF = 1;
