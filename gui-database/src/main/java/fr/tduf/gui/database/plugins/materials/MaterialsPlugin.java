@@ -249,7 +249,11 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
 
     private ObjectBinding<Background> createBackgroundBinding(OnTheFlyMaterialsContext onTheFlyMaterialsContext, String label) {
         return createObjectBinding(() -> {
-            MaterialSettings materialSettings = onTheFlyMaterialsContext.getCurrentMaterialProperty().getValue().getProperties();
+            Material currentMaterial = onTheFlyMaterialsContext.getCurrentMaterialProperty().getValue();
+            if (currentMaterial == null) {
+                return Background.EMPTY;
+            }
+            MaterialSettings materialSettings = currentMaterial.getProperties();
             fr.tduf.libunlimited.low.files.gfx.materials.domain.Color currentColor = retrieveColorFromSettings(label, materialSettings);
             Color backColor = Color.color(
                     currentColor.getRedCompound(),
@@ -263,7 +267,11 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
 
     private ObjectBinding<String> createDescriptionBinding(OnTheFlyMaterialsContext onTheFlyMaterialsContext, String label) {
         return createObjectBinding(() -> {
-            MaterialSettings materialSettings = onTheFlyMaterialsContext.getCurrentMaterialProperty().getValue().getProperties();
+            Material currentMaterial = onTheFlyMaterialsContext.getCurrentMaterialProperty().getValue();
+            if (currentMaterial == null) {
+                return "";
+            }
+            MaterialSettings materialSettings = currentMaterial.getProperties();
             fr.tduf.libunlimited.low.files.gfx.materials.domain.Color currentColor = retrieveColorFromSettings(label, materialSettings);
             return String.format(FORMAT_COLOR_DESCRIPTION, currentColor.getRedCompound(), currentColor.getGreenCompound(), currentColor.getBlueCompound(), currentColor.getOpacity());
         }, onTheFlyMaterialsContext.getCurrentMaterialProperty());
@@ -271,7 +279,11 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
 
     private ObjectBinding<String> createShaderValueBinding(OnTheFlyMaterialsContext onTheFlyMaterialsContext) {
         return createObjectBinding(() -> {
-            MaterialSettings materialSettings = onTheFlyMaterialsContext.getCurrentMaterialProperty().getValue().getProperties();
+            Material currentMaterial = onTheFlyMaterialsContext.getCurrentMaterialProperty().getValue();
+            if (currentMaterial == null) {
+                return "";
+            }
+            MaterialSettings materialSettings = currentMaterial.getProperties();
             return String.format(FORMAT_SHADER_VALUE, materialSettings.getShader().getConfiguration().getName(), materialSettings.getShader().getConfiguration().name());
         }, onTheFlyMaterialsContext.getCurrentMaterialProperty());
     }
