@@ -155,7 +155,7 @@
                 </tooltip>
             </ComboBox>
          <Pane HBox.hgrow="ALWAYS" />
-         <TextField fx:id="entryFilterTextField" prefWidth="175.0" onKeyPressed="#handleFilterTextFieldKeyPressed">
+         <TextField fx:id="entryFilterTextField" prefWidth="175.0" onKeyPressed="#handleFilterTextFieldKeyPressed" styleClass="entryFilterTextField">
             <tooltip>
                 <Tooltip text="Search criteria: either rank, or part of label, or internal reference." />
             </tooltip>
@@ -202,7 +202,7 @@
                     <Tooltip text="Goes to previous entry." />
                 </tooltip>
             </Button>
-            <TextField fx:id="entryNumberTextField" alignment="CENTER" onKeyPressed="#handleEntryNumberTextFieldKeyPressed" prefWidth="50.0" />
+            <TextField fx:id="entryNumberTextField" alignment="CENTER" onKeyPressed="#handleEntryNumberTextFieldKeyPressed" prefWidth="50.0" styleClass="entryNumberTextField" />
             <Label fx:id="entryItemsCountLabel" prefWidth="50.0" />
             <Button mnemonicParsing="false" onAction="#handleNextButtonMouseClick" prefWidth="40.0" text="▶">
                 <tooltip>

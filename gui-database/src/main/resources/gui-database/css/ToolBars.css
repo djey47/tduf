@@ -22,8 +22,17 @@
     -fx-text-fill: white;
 }
 
+/* Search */
+.entryFilterTextField {
+    -fx-text-fill: white;
+}
+
 /* Nav */
 .navigationToolbar {
     -fx-base: black;
+}
+
+.entryNumberTextField {
+    -fx-text-fill: white;
 }
 
