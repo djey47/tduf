@@ -8,7 +8,7 @@
 }
 
 .matSelectorComboBox {
-    -fx-pref-width: 125.0;
+    -fx-pref-width: 250.0;
 }
 
 .colorsBox, propertiesBox {
@@ -29,9 +29,18 @@
 }
 
 .colorPreviewBox {
-    -fx-pref-width: 100.0;
+    -fx-pref-width: 75.0;
+    -fx-border-style: solid inside;
+    -fx-border-color: silver;
+    -fx-border-width: 1;
 }
 
-.shaderBox {
-    -fx-padding: 5.0 0.0 0.0 10.0;
+.shaderBox, .alphaBox {
+    -fx-padding: 5.0 0.0 5.0 10.0;
+}
+
+.layersInfoButton {
+}
+
+.shaderSettingsButton {
 }

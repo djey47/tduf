@@ -1,7 +1,6 @@
 package fr.tduf.gui.database.plugins.materials.converter;
 
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
-import fr.tduf.libunlimited.common.game.domain.Locale;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.Material;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.MaterialDefs;
@@ -9,6 +8,7 @@ import javafx.util.StringConverter;
 
 import java.util.Map;
 
+import static fr.tduf.libunlimited.common.game.domain.Locale.DEFAULT;
 import static fr.tduf.libunlimited.common.game.helper.GameEngineHelper.normalizeString;
 import static fr.tduf.libunlimited.high.files.db.common.DatabaseConstants.RESOURCE_VALUE_INTERIOR_COLOR_NONE;
 import static fr.tduf.libunlimited.high.files.db.common.DatabaseConstants.RESOURCE_VALUE_NONE;
@@ -50,7 +50,7 @@ public class MaterialToRawValueConverter extends StringConverter<Material> {
 
     @Override
     public Material fromString(String materialRawValue) {
-        String materialName = editorContext.getMiner().getLocalizedResourceValueFromTopicAndReference(materialRawValue, currentTopic, Locale.DEFAULT)
+        String materialName = editorContext.getMiner().getLocalizedResourceValueFromTopicAndReference(materialRawValue, currentTopic, DEFAULT)
                 .orElseThrow(() -> new IllegalStateException("No resource with raw value " + materialRawValue))
                 .toUpperCase();
         if (asList(RESOURCE_VALUE_NONE, RESOURCE_VALUE_INTERIOR_COLOR_NONE).contains(materialName)) {
@@ -62,7 +62,7 @@ public class MaterialToRawValueConverter extends StringConverter<Material> {
         return materialDefs.getMaterials().stream()
                 .filter(material -> material.getName().equals(materialNameNormalized))
                 .findAny()
-                // TODO Material not found => error
+                // TODO Material not found => warning
                 .orElseThrow(() -> new IllegalStateException("No material available for name " + materialNameNormalized));
     }
 }

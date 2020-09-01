@@ -7,9 +7,11 @@ import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import fr.tduf.gui.database.plugins.common.contexts.PluginContext;
 import fr.tduf.gui.database.plugins.materials.common.DisplayConstants;
+import fr.tduf.gui.database.plugins.materials.common.FxConstants;
 import fr.tduf.gui.database.plugins.materials.converter.MaterialToItemConverter;
 import fr.tduf.gui.database.plugins.materials.converter.MaterialToRawValueConverter;
 import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
+import fr.tduf.libunlimited.framework.lang.UByte;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.Material;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.MaterialDefs;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.MaterialSettings;
@@ -25,9 +27,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
@@ -139,8 +139,23 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
 
     private VBox createButtonColumn(OnTheFlyContext onTheFlyContext) {
         return PluginComponentBuilders.buttonColumn()
-            .withButton(createBrowseResourceButton(getEditorContext(), onTheFlyContext))
-            .build();
+                .withButton(createBrowseResourceButton(getEditorContext(), onTheFlyContext))
+                .withSeparator()
+                .withButton(createLayersInfoButton())
+                .withButton(createShaderSettingsButton())
+                .build();
+    }
+
+    private Button createLayersInfoButton() {
+        Button button = new Button(LABEL_BUTTON_LAYERS);
+        button.getStyleClass().addAll(CSS_CLASS_LAYERS_INFO_BUTTON, fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_BUTTON_MEDIUM);
+        return button;
+    }
+
+    private Button createShaderSettingsButton() {
+        Button button = new Button(LABEL_BUTTON_SHADER);
+        button.getStyleClass().addAll(CSS_CLASS_SHADER_SETTINGS_BUTTON, fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_BUTTON_MEDIUM);
+        return button;
     }
 
     private VBox createMainColumn(OnTheFlyContext onTheFlyContext) {
@@ -148,7 +163,7 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
         ComboBox<Material> materialSelectorComboBox = new ComboBox<>(materialInfos.sorted(comparing(Material::getName)));
 
         materialSelectorComboBox.getStyleClass().add(CSS_CLASS_MAT_SELECTOR_COMBOBOX);
-        materialSelectorComboBox.setConverter(new MaterialToItemConverter());
+        materialSelectorComboBox.setConverter(new MaterialToItemConverter(normalizedNamesDictionary));
 
         VBox mainColumnBox = new VBox();
         mainColumnBox.getStyleClass().add(CSS_CLASS_MAIN_COLUMN);
@@ -174,7 +189,8 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
         matSettingsBox.getChildren().addAll(
                 colorsBox,
                 new Separator(HORIZONTAL),
-                propertiesBox
+                propertiesBox,
+                new Separator(HORIZONTAL)
         );
 
         return matSettingsBox;
@@ -198,11 +214,27 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
         shaderBox.getStyleClass().addAll(CSS_CLASS_SHADER_BOX);
 
         Label shaderValueLabel = new Label();
-        shaderValueLabel.textProperty().bind(createShaderValueBinding(onTheFlyContext));
+        shaderValueLabel.textProperty().bind(createShaderValueBinding(onTheFlyContext.getCurrentMaterialProperty()));
 
         shaderBox.getChildren().addAll(
                 new Label(DisplayConstants.LABEL_SHADER),
                 shaderValueLabel
+        );
+
+        return shaderBox;
+    }
+
+    private HBox createAlphaBox(OnTheFlyMaterialsContext onTheFlyContext) {
+        HBox shaderBox = new HBox();
+
+        shaderBox.getStyleClass().addAll(CSS_CLASS_ALPHA_BOX);
+
+        Label alphaValueLabel = new Label();
+        alphaValueLabel.textProperty().bind(createAlphaValueBinding(onTheFlyContext.getCurrentMaterialProperty()));
+
+        shaderBox.getChildren().addAll(
+                new Label(LABEL_ALPHA),
+                alphaValueLabel
         );
 
         return shaderBox;
@@ -214,10 +246,11 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
         colorsBox.getStyleClass().addAll(CSS_CLASS_COLORS_BOX);
 
         colorsBox.getChildren().addAll(
-            createColorBox(LABEL_COLOR_AMBIENT, onTheFlyContext),
-            createColorBox(LABEL_COLOR_DIFFUSE, onTheFlyContext),
-            createColorBox(LABEL_COLOR_SPECULAR, onTheFlyContext),
-            createColorBox(LABEL_COLOR_OTHER, onTheFlyContext)
+                createColorBox(LABEL_COLOR_AMBIENT, onTheFlyContext),
+                createColorBox(LABEL_COLOR_DIFFUSE, onTheFlyContext),
+                createColorBox(LABEL_COLOR_SPECULAR, onTheFlyContext),
+                createColorBox(LABEL_COLOR_OTHER, onTheFlyContext),
+                createAlphaBox(onTheFlyContext)
         );
 
         return colorsBox;
@@ -277,15 +310,27 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
         }, onTheFlyMaterialsContext.getCurrentMaterialProperty());
     }
 
-    private ObjectBinding<String> createShaderValueBinding(OnTheFlyMaterialsContext onTheFlyMaterialsContext) {
+    private ObjectBinding<String> createShaderValueBinding(Property<Material> currentMaterialProperty) {
         return createObjectBinding(() -> {
-            Material currentMaterial = onTheFlyMaterialsContext.getCurrentMaterialProperty().getValue();
+            Material currentMaterial = currentMaterialProperty.getValue();
             if (currentMaterial == null) {
                 return "";
             }
             MaterialSettings materialSettings = currentMaterial.getProperties();
             return String.format(FORMAT_SHADER_VALUE, materialSettings.getShader().getConfiguration().getName(), materialSettings.getShader().getConfiguration().name());
-        }, onTheFlyMaterialsContext.getCurrentMaterialProperty());
+        }, currentMaterialProperty);
+    }
+
+    private ObjectBinding<String> createAlphaValueBinding(Property<Material> currentMaterialProperty) {
+        return createObjectBinding(() -> {
+            Material currentMaterial = currentMaterialProperty.getValue();
+            if (currentMaterial == null) {
+                return "";
+            }
+            MaterialSettings materialSettings = currentMaterial.getProperties();
+            UByte[] alphaBlending = materialSettings.getAlphaBlending();
+            return String.format(FORMAT_ALPHA_VALUE, materialSettings.getAlpha().get(), alphaBlending[0].getSigned(), alphaBlending[1].getSigned());
+        }, currentMaterialProperty);
     }
 
 

@@ -14,4 +14,7 @@ public class FxConstants {
     public static final String CSS_CLASS_COLOR_TYPE_LABEL = "colorTypeLabel";
     public static final String CSS_CLASS_COLOR_DESC_LABEL = "colorDescriptionLabel";
     public static final String CSS_CLASS_SHADER_BOX = "shaderBox";
+    public static final String CSS_CLASS_ALPHA_BOX = "alphaBox";
+    public static final String CSS_CLASS_LAYERS_INFO_BUTTON = "layersInfoButton";
+    public static final String CSS_CLASS_SHADER_SETTINGS_BUTTON = "shaderSettingsButton";
 }
