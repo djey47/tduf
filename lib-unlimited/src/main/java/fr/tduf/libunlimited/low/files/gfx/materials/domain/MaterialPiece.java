@@ -37,6 +37,8 @@ public enum MaterialPiece {
     SHADER_ASPHALT_TUNNEL("Asphalt tunnel shader 3", BINARIES.SHADER_ASPHALT_TUNNEL),
     SHADER_ASPHALT_TUNNEL_ARROWS("Asphalt tunnel arrows shader", BINARIES.SHADER_ASPHALT_TUNNEL_ARROWS),
     SHADER_BORD_BLANC("White edge shader", BINARIES.SHADER_BORD_BLANC),
+    SHADER_CALIPERS("Brake calipers shader", BINARIES.SHADER_CALIPERS),
+    SHADER_CALIPERS2("Brake calipers shader 2", BINARIES.SHADER_CALIPERS2),
     SHADER_COLOR_BLEND("Color blend shader", BINARIES.SHADER_COLOR_BLEND),
     SHADER_COLOR_BLEND2("Color blend shader 2", BINARIES.SHADER_COLOR_BLEND2),
     SHADER_ECUME("Ocean foam shader", BINARIES.SHADER_ECUME),
@@ -52,6 +54,7 @@ public enum MaterialPiece {
     SHADER_LIGHT_FLARE4("Light flare shader 4", BINARIES.SHADER_LIGHT_FLARE4),
     SHADER_LIGHT_FLARE5("Light flare shader 5", BINARIES.SHADER_LIGHT_FLARE5),
     SHADER_LIGHT_FLARE6("Light flare shader 6", BINARIES.SHADER_LIGHT_FLARE6),
+    SHADER_LIGHT_FLARE7("Light flare shader 7", BINARIES.SHADER_LIGHT_FLARE7),
     SHADER_METAL("Metal bits shader", BINARIES.SHADER_METAL),
     SHADER_METAL2("Metal bits shader 2", BINARIES.SHADER_METAL2),
     SHADER_METAL3("Metal bits shader 3", BINARIES.SHADER_METAL3),
@@ -94,6 +97,17 @@ public enum MaterialPiece {
     SHADER_VEHICLE_ILLUMINATED5("Vehicle illuminated shader 5", BINARIES.SHADER_VEHICLE_ILLUMINATED5),
     SHADER_VEHICLE_ILLUMINATED6("Vehicle illuminated shader 6", BINARIES.SHADER_VEHICLE_ILLUMINATED6),
     SHADER_VEHICLE_ILLUMINATED7("Vehicle illuminated shader 7", BINARIES.SHADER_VEHICLE_ILLUMINATED7),
+    SHADER_VEHICLE_ILLUMINATED8("Vehicle illuminated shader 8", BINARIES.SHADER_VEHICLE_ILLUMINATED8),
+    SHADER_VEHICLE_INTERIOR_C("Vehicle interior (leather?) shader", BINARIES.SHADER_VEHICLE_INTERIOR_C),
+    SHADER_VEHICLE_INTERIOR_C2("Vehicle interior (leather?) shader 2", BINARIES.SHADER_VEHICLE_INTERIOR_C2),
+    SHADER_VEHICLE_INTERIOR_C3("Vehicle interior (leather?) shader 3", BINARIES.SHADER_VEHICLE_INTERIOR_C3),
+    SHADER_VEHICLE_INTERIOR_MAT("Vehicle interior matte shader", BINARIES.SHADER_VEHICLE_INTERIOR_MAT),
+    SHADER_VEHICLE_INTERIOR_MAT2("Vehicle interior matte shader", BINARIES.SHADER_VEHICLE_INTERIOR_MAT2),
+    SHADER_VEHICLE_INTERIOR_MATERIAL("Vehicle interior material", BINARIES.SHADER_VEHICLE_INTERIOR_MATERIAL),
+    SHADER_VEHICLE_INTERIOR_MATERIAL2("Vehicle interior material 2", BINARIES.SHADER_VEHICLE_INTERIOR_MATERIAL2),
+    SHADER_VEHICLE_INTERIOR_MATERIAL3("Vehicle interior material 3", BINARIES.SHADER_VEHICLE_INTERIOR_MATERIAL3),
+    SHADER_VEHICLE_PEARL("Vehicle pearl paint shader", BINARIES.SHADER_VEHICLE_PEARL),
+    SHADER_VEHICLE_PEARL2("Vehicle pearl paint shade 2r", BINARIES.SHADER_VEHICLE_PEARL2),
     SHADER_VEHICLE_SHADOW("Vehicle shadow shader", BINARIES.SHADER_VEHICLE_SHADOW),
     SHADER_VEHICLE_SHADOW2("Vehicle shadow shader 2", BINARIES.SHADER_VEHICLE_SHADOW2),
     SHADER_VEHICLE_SHADOW3("Vehicle shadow shader 3", BINARIES.SHADER_VEHICLE_SHADOW3),
@@ -2673,6 +2687,51 @@ public enum MaterialPiece {
                 2, 0, 0, 0, 1, 0, 0, 0, 87, 115, 108, 28, -72, 87, 49, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         };
 
+        static byte[] SHADER_VEHICLE_ILLUMINATED8 = new byte[]{
+                2, 0, 0, 0, 1, 0, 0, 0, 87, 115, 108, 28, -72, 87, 49, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0
+        };
+
+        static byte[] SHADER_VEHICLE_INTERIOR_C = new byte[]{
+                2, 0, 0, 0, 1, 0, 0, 0, 92, -26, -119, 87, 1, 53, -100, -77, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0
+        };
+
+        static byte[] SHADER_VEHICLE_INTERIOR_C2 = new byte[]{
+                2, 0, 0, 0, 1, 0, 0, 0, 92, -26, -119, 87, 1, 53, -100, -77, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0
+        };
+
+        static byte[] SHADER_VEHICLE_INTERIOR_C3 = new byte[]{
+                2, 0, 0, 0, 1, 0, 0, 0, 78, 92, 13, -96, -112, 33, -79, -54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0
+        };
+
+        static byte[] SHADER_VEHICLE_INTERIOR_MAT = new byte[]{
+                2, 0, 0, 0, 1, 0, 0, 0, 92, -26, -119, 87, 1, 53, -100, -77, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0
+        };
+
+        static byte[] SHADER_VEHICLE_INTERIOR_MAT2 = new byte[]{
+                2, 0, 0, 0, 1, 0, 0, 0, 78, 92, 13, -96, -112, 33, -79, -54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0
+        };
+
+        static byte[] SHADER_VEHICLE_INTERIOR_MATERIAL = new byte[]{
+                2, 0, 0, 0, 1, 0, 0, 0, 99, 115, 108, -68, -72, 87, 49, 33, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0
+        };
+
+        static byte[] SHADER_VEHICLE_INTERIOR_MATERIAL2 = new byte[]{
+                2, 0, 0, 0, 1, 0, 0, 0, 99, 115, 108, -68, -72, 87, 49, 33, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0
+        };
+
+        static byte[] SHADER_VEHICLE_INTERIOR_MATERIAL3 = new byte[]{
+                2, 0, 0, 0, 1, 0, 0, 0, 17, 113, 108, -68, -72, 87, 17, 17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0
+        };
+
+
+        static byte[] SHADER_VEHICLE_PEARL = new byte[]{
+                2, 0, 0, 0, 1, 0, 0, 0, 92, -26, -119, 87, 1, 53, -100, -77, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        };
+
+        static byte[] SHADER_VEHICLE_PEARL2 = new byte[]{
+                2, 0, 0, 0, 1, 0, 0, 0, 78, 92, 13, -96, -112, 33, -79, -54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        };
+
         static byte[] SHADER_ILLUMINATION = new byte[]{
                 2,
                 0,
@@ -2807,9 +2866,7 @@ public enum MaterialPiece {
                 0
         };
 
-        static byte[] SHADER_OBJECT_COLOR3 = new byte[]
-
-                {
+        static byte[] SHADER_OBJECT_COLOR3 = new byte[]{
                         2,
                         0,
                         0,
@@ -3618,9 +3675,7 @@ public enum MaterialPiece {
                         0
                 };
 
-        static byte[] SHADER_ASPHALT_TUNNEL_ARROWS = new byte[]
-
-                {
+        static byte[] SHADER_ASPHALT_TUNNEL_ARROWS = new byte[] {
                         2,
                         0,
                         0,
@@ -3687,9 +3742,7 @@ public enum MaterialPiece {
                         0
                 };
 
-        static byte[] SHADER_ASPHALT_COLORMAP3 = new byte[]
-
-                {
+        static byte[] SHADER_ASPHALT_COLORMAP3 = new byte[] {
                         2,
                         0,
                         0,
@@ -3756,9 +3809,7 @@ public enum MaterialPiece {
                         0
                 };
 
-        static byte[] SHADER_COLOR_BLEND2 = new byte[]
-
-                {
+        static byte[] SHADER_COLOR_BLEND2 = new byte[] {
                         2,
                         0,
                         0,
@@ -4403,6 +4454,10 @@ public enum MaterialPiece {
                 2, 0, 0, 0, 1, 0, 0, 0, -8, 94, -82, 85, -60, -33, -120, -62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0
         };
 
+        static final byte[] SHADER_LIGHT_FLARE7 = new byte[] {
+                2, 0, 0, 0, 1, 0, 0, 0, -8, 94, -82, 85, -60, -33, -120, -62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0
+        };
+
         static final byte[] SHADER_VEHICLE_SHADOW = new byte[] {
                 2, 0, 0, 0, 1, 0, 0, 0, -18, -119, 69, -68, 50, -50, 120, -84, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         };
@@ -4417,6 +4472,14 @@ public enum MaterialPiece {
 
         static final byte[] SHADER_VEHICLE_UNKNOWN = new byte[]{
                 2, 0, 0, 0, 1, 0, 0, 0, 78, 92, 13, -96, -112, 33, -79, -54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0
+        };
+
+        static final byte[] SHADER_CALIPERS = new byte[]{
+                2, 0, 0, 0, 1, 0, 0, 0, 87, 115, 108, 28, -72, 87, 49, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0
+        };
+
+        static final byte[] SHADER_CALIPERS2 = new byte[]{
+                2, 0, 0, 0, 1, 0, 0, 0, 87, 115, 108, 28, -72, 87, 49, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0
         };
     }
 }
