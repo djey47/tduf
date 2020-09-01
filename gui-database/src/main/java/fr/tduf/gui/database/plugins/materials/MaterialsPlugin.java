@@ -7,7 +7,6 @@ import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import fr.tduf.gui.database.plugins.common.contexts.PluginContext;
 import fr.tduf.gui.database.plugins.materials.common.DisplayConstants;
-import fr.tduf.gui.database.plugins.materials.common.FxConstants;
 import fr.tduf.gui.database.plugins.materials.converter.MaterialToItemConverter;
 import fr.tduf.gui.database.plugins.materials.converter.MaterialToRawValueConverter;
 import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
@@ -27,7 +26,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
@@ -41,7 +43,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_ITEM_LABEL;
-import static fr.tduf.gui.database.plugins.common.PluginComponentBuilders.createBrowseResourceButton;
 import static fr.tduf.gui.database.plugins.materials.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.materials.common.FxConstants.*;
 import static fr.tduf.libunlimited.common.game.FileConstants.*;
@@ -139,7 +140,7 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
 
     private VBox createButtonColumn(OnTheFlyContext onTheFlyContext) {
         return PluginComponentBuilders.buttonColumn()
-                .withButton(createBrowseResourceButton(getEditorContext(), onTheFlyContext))
+                .withBrowseResourceButton(getEditorContext(), onTheFlyContext)
                 .withSeparator()
                 .withButton(createLayersInfoButton())
                 .withButton(createShaderSettingsButton())

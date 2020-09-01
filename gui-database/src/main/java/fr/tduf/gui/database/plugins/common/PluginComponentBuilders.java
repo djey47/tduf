@@ -30,22 +30,6 @@ public class PluginComponentBuilders {
     }
 
     /**
-     * @param editorContext - global context, providing main stage controller
-     * @param onTheFlyContext - runtime context, providing location of requested resource (topic - field rank - raw value)
-     * @return a button instance, allowing to browse resources within topic
-     */
-    public static Button createBrowseResourceButton(EditorContext editorContext, OnTheFlyContext onTheFlyContext) {
-        Button browseResourceButton = new Button(LABEL_BUTTON_BROWSE);
-
-        browseResourceButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
-        ControlHelper.setTooltipText(browseResourceButton, TOOLTIP_BUTTON_BROWSE_RESOURCES);
-        browseResourceButton.setOnAction(
-                editorContext.getMainStageController().getViewData().handleBrowseResourcesButtonMouseClick(onTheFlyContext.getRemoteTopic(), onTheFlyContext.getRawValueProperty(), onTheFlyContext.getFieldRank()));
-
-        return browseResourceButton;
-    }
-
-    /**
      * 'A la carte' builder for buttons in column layout
      */
     public static class ButtonColumnBuilder {
@@ -53,6 +37,17 @@ public class PluginComponentBuilders {
 
         public ButtonColumnBuilder withButton(ButtonBase button) {
             buttonsOrSeparator.add(button);
+            return this;
+        }
+
+        /**
+         * Adds a new "browse resources" button
+         * @param editorContext - global context, providing main stage controller
+         * @param onTheFlyContext - runtime context, providing location of requested resource (topic - field rank - raw value)
+         * @return current builder instance for chaining
+         */
+        public ButtonColumnBuilder withBrowseResourceButton(EditorContext editorContext, OnTheFlyContext onTheFlyContext) {
+            buttonsOrSeparator.add(createBrowseResourceButton(editorContext, onTheFlyContext));
             return this;
         }
 
@@ -68,6 +63,17 @@ public class PluginComponentBuilders {
             buttonColumnBox.getChildren().addAll(buttonsOrSeparator);
 
             return buttonColumnBox;
+        }
+
+        private static Button createBrowseResourceButton(EditorContext editorContext, OnTheFlyContext onTheFlyContext) {
+            Button browseResourceButton = new Button(LABEL_BUTTON_BROWSE);
+
+            browseResourceButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
+            ControlHelper.setTooltipText(browseResourceButton, TOOLTIP_BUTTON_BROWSE_RESOURCES);
+            browseResourceButton.setOnAction(
+                    editorContext.getMainStageController().getViewData().handleBrowseResourcesButtonMouseClick(onTheFlyContext.getRemoteTopic(), onTheFlyContext.getRawValueProperty(), onTheFlyContext.getFieldRank()));
+
+            return browseResourceButton;
         }
     }
 }

@@ -46,7 +46,6 @@ import java.util.Set;
 
 import static fr.tduf.gui.database.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.common.FxConstants.*;
-import static fr.tduf.gui.database.plugins.common.PluginComponentBuilders.createBrowseResourceButton;
 import static fr.tduf.gui.database.plugins.mapping.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.mapping.common.FxConstants.*;
 import static fr.tduf.libunlimited.common.game.FileConstants.*;
@@ -281,7 +280,7 @@ public class MappingPlugin extends AbstractDatabasePlugin {
         return PluginComponentBuilders.buttonColumn()
                 .withButton(refreshMappingButton)
                 .withSeparator()
-                .withButton(createBrowseResourceButton(editorContext, onTheFlyMappingContext))
+                .withBrowseResourceButton(editorContext, onTheFlyMappingContext)
                 .withButton(seeDirectoryButton)
                 .withButton(registerButton)
                 .build();
