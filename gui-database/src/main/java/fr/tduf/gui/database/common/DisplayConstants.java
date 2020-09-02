@@ -36,7 +36,7 @@ public class DisplayConstants {
     public static final String LABEL_ITEM_TOPIC_DEFAULT = "";
     public static final String LABEL_SEARCH_ENTRY = "Enter an entry REF";
     public static final String LABEL_HEADER_SEARCH_VALUE = "Enter a resource value";
-    public static final String LABEL_STATUS_VERSION = "TDUF Database Editor by Djey.";
+    public static final String LABEL_STATUS_VERSION = "TDUF Database Editor 2.x by Djey.";
     public static final String LABEL_TEXTFIELD_REFERENCE = "Reference:";
     public static final String LABEL_TEXTFIELD_VALUE = "Value@Locale:";
     public static final String LABEL_ENTRY_SELECT_SINGLE = "Click an entry below to use it.";
