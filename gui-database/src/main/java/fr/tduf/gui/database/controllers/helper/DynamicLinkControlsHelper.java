@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static fr.tduf.gui.database.common.FxConstants.CSS_CLASS_TABLEVIEW;
 import static java.util.Optional.ofNullable;
 import static javafx.geometry.Orientation.VERTICAL;
 
@@ -65,6 +66,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         String targetProfileName = topicLinkObject.getRemoteReferenceProfile();
         DbDto.Topic targetTopic = retrieveTargetTopicForLink(topicLinkObject);
         TableView<ContentEntryDataItem> tableView = addTableViewForLinkedTopic(fieldBox, topicLinkObject, resourceData, targetTopic);
+        tableView.getStyleClass().addAll(CSS_CLASS_TABLEVIEW);
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
 

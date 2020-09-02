@@ -1,3 +1,21 @@
 .settingsPane {
-    -fx-background-color: dodgerBlue;
+    -fx-base: -color-background-secondary;
+    -fx-background-color: -color-background-secondary;
+}
+
+.tabPane .tab-header-area .tab-header-background {
+    -fx-background-color: -color-background-tertiary;
+}
+
+.tab {
+    -fx-font-size: 1.1em;
+    -fx-font-weight: bold;
+    -fx-text-base-color: -color-default;
+    -fx-background-color: -color-background-secondary;
+}
+
+.tabContainer {
+    -fx-text-fill: -color-default;
+    /* -fx-background-color does not work for scroll pane */
+    -fx-background: -color-background-secondary;
 }

@@ -10,10 +10,12 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+import static fr.tduf.gui.database.common.FxConstants.*;
+
 /**
  * Loads graphical interface for main window.
  */
-public class MainStageDesigner {
+public class MainStageDesigner extends AbstractEditorDesigner {
 
     private static final Class<MainStageDesigner> thisClass = MainStageDesigner.class;
 
@@ -29,12 +31,12 @@ public class MainStageDesigner {
     }
 
     private static void initMainWindow(Stage primaryStage, Parent mainRoot) {
-        String styledToolBarCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_TOOLBARS).toExternalForm();
-        String styledTabContentsCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_TABCONTENTS).toExternalForm();
-        String styledPanesCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_PANES).toExternalForm();
-        String styledPluginsCommonCss = thisClass.getResource(fr.tduf.gui.database.plugins.common.FxConstants.PATH_RESOURCE_CSS_PLUGINS_COMMON).toExternalForm();
+        initCommonCss(mainRoot);
 
-        mainRoot.getStylesheets().addAll(styledToolBarCss, styledTabContentsCss, styledPanesCss, styledPluginsCommonCss);
+        String styledTabContentsCss = thisClass.getResource(PATH_RESOURCE_CSS_TABCONTENTS).toExternalForm();
+        String styledPanesCss = thisClass.getResource(PATH_RESOURCE_CSS_PANES).toExternalForm();
+        String styledPluginsCommonCss = thisClass.getResource(fr.tduf.gui.database.plugins.common.FxConstants.PATH_RESOURCE_CSS_PLUGINS_COMMON).toExternalForm();
+        mainRoot.getStylesheets().addAll(styledTabContentsCss, styledPanesCss, styledPluginsCommonCss);
 
         primaryStage.setScene(new Scene(mainRoot, 1280, 720));
         primaryStage.setTitle(DisplayConstants.TITLE_APPLICATION);

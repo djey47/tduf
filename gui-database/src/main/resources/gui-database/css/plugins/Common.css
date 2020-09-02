@@ -7,6 +7,10 @@
 
 .pluginItemLabel {
     -fx-font-weight: bold;
+    -fx-text-fill: -color-default;
+}
+
+.pluginButton {
 }
 
 .pluginButtonMedium {
@@ -30,4 +34,15 @@
 
 .pluginErrorMessageLabel {
     -fx-padding: 8px;
+}
+
+.pluginComboBox {
+}
+
+.pluginCheckbox {
+}
+
+.pluginTableView {
+    -fx-background-color: -color-background-tertiary;
+    -fx-base: -color-background-tertiary;
 }

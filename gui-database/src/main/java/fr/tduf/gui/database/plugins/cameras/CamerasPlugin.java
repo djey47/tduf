@@ -43,6 +43,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import static fr.tduf.gui.database.common.DisplayConstants.MESSAGE_SEE_LOGS;
+import static fr.tduf.gui.database.common.FxConstants.*;
 import static fr.tduf.gui.database.plugins.cameras.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.cameras.common.FxConstants.*;
 import static fr.tduf.gui.database.plugins.common.FxConstants.*;
@@ -161,7 +162,9 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
         cameraSetInfos = FXCollections.observableArrayList(CamerasHelper.fetchAllInformation(cameraInfoEnhancedProperty.getValue()));
         cameraViews = FXCollections.observableArrayList();
         ComboBox<CameraSetInfo> cameraSelectorComboBox = new ComboBox<>(cameraSetInfos.sorted(comparingLong(CameraSetInfo::getCameraIdentifier)));
+        cameraSelectorComboBox.getStyleClass().addAll(CSS_CLASS_COMBOBOX, CSS_CLASS_PLUGIN_COMBOBOX);
         ComboBox<CameraView> viewSelectorComboBox = new ComboBox<>(cameraViews.sorted(comparing(CameraView::getKind)));
+        viewSelectorComboBox.getStyleClass().addAll(CSS_CLASS_COMBOBOX, CSS_CLASS_PLUGIN_COMBOBOX);
         VBox mainColumnBox = createMainColumn(onTheFlyContext, cameraSelectorComboBox, viewSelectorComboBox);
 
         StringProperty rawValueProperty = onTheFlyContext.getRawValueProperty();
@@ -226,22 +229,22 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
 
     private VBox createButtonColumn(EventHandler<ActionEvent> onAddSetAction, EventHandler<ActionEvent> onDeleteSetAction, EventHandler<ActionEvent> onImportSetAction, EventHandler<ActionEvent> onExportCurrentViewAction, EventHandler<ActionEvent> onExportAllViewsAction) {
         Button addSetButton = new Button(LABEL_ADD_BUTTON);
-        addSetButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
+        addSetButton.getStyleClass().addAll(CSS_CLASS_BUTTON, CSS_CLASS_PLUGIN_BUTTON, CSS_CLASS_PLUGIN_BUTTON_MEDIUM);
         ControlHelper.setTooltipText(addSetButton, TOOLTIP_ADD_BUTTON);
         addSetButton.setOnAction(onAddSetAction);
 
         Button delSetButton = new Button(LABEL_DEL_BUTTON);
-        delSetButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
+        delSetButton.getStyleClass().addAll(CSS_CLASS_BUTTON, CSS_CLASS_PLUGIN_BUTTON, CSS_CLASS_PLUGIN_BUTTON_MEDIUM);
         ControlHelper.setTooltipText(delSetButton, TOOLTIP_DEL_BUTTON);
         delSetButton.setOnAction(onDeleteSetAction);
 
         Button importSetButton = new Button(LABEL_IMPORT_SET_BUTTON);
-        importSetButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
+        importSetButton.getStyleClass().addAll(CSS_CLASS_BUTTON, CSS_CLASS_PLUGIN_BUTTON, CSS_CLASS_PLUGIN_BUTTON_MEDIUM);
         ControlHelper.setTooltipText(importSetButton, TOOLTIP_IMPORT_SET_BUTTON);
         importSetButton.setOnAction(onImportSetAction);
 
         MenuButton exportSetMenuButton = new MenuButton(LABEL_EXPORT_SET_BUTTON);
-        exportSetMenuButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
+        exportSetMenuButton.getStyleClass().addAll(CSS_CLASS_BUTTON, CSS_CLASS_PLUGIN_BUTTON, CSS_CLASS_PLUGIN_BUTTON_MEDIUM);
         ControlHelper.setTooltipText(exportSetMenuButton, DisplayConstants.TOOLTIP_EXPORT_SET_BUTTON);
         MenuItem exportCurrentViewMenuItem = new MenuItem(LABEL_EXPORT_CURRENT_BUTTON);
         exportCurrentViewMenuItem.setOnAction(onExportCurrentViewAction);
@@ -261,7 +264,7 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
 
     private TableView<Map.Entry<ViewProps, ?>> createPropertiesTableView(OnTheFlyContext context, ObservableList<Map.Entry<ViewProps, ?>> viewProps, ObjectProperty<CameraView> currentViewProperty) {
         TableView<Map.Entry<ViewProps, ?>> setPropertyTableView = new TableView<>(viewProps);
-        setPropertyTableView.getStyleClass().addAll(CSS_CLASS_TABLEVIEW, CSS_CLASS_SET_PROPERTY_TABLEVIEW);
+        setPropertyTableView.getStyleClass().addAll(CSS_CLASS_TABLEVIEW, CSS_CLASS_PLUGIN_TABLEVIEW, CSS_CLASS_SET_PROPERTY_TABLEVIEW);
         setPropertyTableView.setEditable(true);
 
         TableColumn<Map.Entry<ViewProps, ?>, String> settingColumn = new TableColumn<>(HEADER_PROPTABLE_SETTING);

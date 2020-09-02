@@ -42,7 +42,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_ITEM_LABEL;
+import static fr.tduf.gui.database.common.FxConstants.CSS_CLASS_BUTTON;
+import static fr.tduf.gui.database.common.FxConstants.CSS_CLASS_COMBOBOX;
+import static fr.tduf.gui.database.plugins.common.FxConstants.*;
 import static fr.tduf.gui.database.plugins.materials.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.materials.common.FxConstants.*;
 import static fr.tduf.libunlimited.common.game.FileConstants.*;
@@ -149,13 +151,13 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
 
     private Button createLayersInfoButton() {
         Button button = new Button(LABEL_BUTTON_LAYERS);
-        button.getStyleClass().addAll(CSS_CLASS_LAYERS_INFO_BUTTON, fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_BUTTON_MEDIUM);
+        button.getStyleClass().addAll(CSS_CLASS_BUTTON, CSS_CLASS_PLUGIN_BUTTON, CSS_CLASS_PLUGIN_BUTTON_MEDIUM, CSS_CLASS_LAYERS_INFO_BUTTON);
         return button;
     }
 
     private Button createShaderSettingsButton() {
         Button button = new Button(LABEL_BUTTON_SHADER);
-        button.getStyleClass().addAll(CSS_CLASS_SHADER_SETTINGS_BUTTON, fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_BUTTON_MEDIUM);
+        button.getStyleClass().addAll(CSS_CLASS_BUTTON, CSS_CLASS_PLUGIN_BUTTON, CSS_CLASS_PLUGIN_BUTTON_MEDIUM, CSS_CLASS_SHADER_SETTINGS_BUTTON);
         return button;
     }
 
@@ -163,11 +165,11 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
         ObservableList<Material> materialInfos = FXCollections.observableArrayList(materialsInfoEnhancedProperty.getValue().getMaterials());
         ComboBox<Material> materialSelectorComboBox = new ComboBox<>(materialInfos.sorted(comparing(Material::getName)));
 
-        materialSelectorComboBox.getStyleClass().add(CSS_CLASS_MAT_SELECTOR_COMBOBOX);
+        materialSelectorComboBox.getStyleClass().addAll(CSS_CLASS_COMBOBOX, CSS_CLASS_MAT_SELECTOR_COMBOBOX);
         materialSelectorComboBox.setConverter(new MaterialToItemConverter(normalizedNamesDictionary));
 
         VBox mainColumnBox = new VBox();
-        mainColumnBox.getStyleClass().add(CSS_CLASS_MAIN_COLUMN);
+        mainColumnBox.getStyleClass().add(CSS_CLASS_MAT_MAIN_COLUMN);
         ObservableList<Node> mainColumnChildren = mainColumnBox.getChildren();
 
         HBox matSelectorBox = createMaterialSelectorBox(materialSelectorComboBox, onTheFlyContext);
@@ -200,7 +202,7 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
     private VBox createPropertiesBox(OnTheFlyMaterialsContext onTheFlyContext) {
         VBox propertiesBox = new VBox();
 
-        propertiesBox.getStyleClass().addAll(CSS_CLASS_PROPERTIES_BOX);
+        propertiesBox.getStyleClass().addAll(CSS_CLASS_MAT_PROPERTIES_BOX);
 
         propertiesBox.getChildren().addAll(
             createShaderBox(onTheFlyContext)
@@ -244,7 +246,7 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
     private VBox createColorsBox(OnTheFlyMaterialsContext onTheFlyContext) {
         VBox colorsBox = new VBox();
 
-        colorsBox.getStyleClass().addAll(CSS_CLASS_COLORS_BOX);
+        colorsBox.getStyleClass().addAll(CSS_CLASS_MAT_COLORS_BOX);
 
         colorsBox.getChildren().addAll(
                 createColorBox(LABEL_COLOR_AMBIENT, onTheFlyContext),

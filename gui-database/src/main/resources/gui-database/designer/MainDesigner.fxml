@@ -30,7 +30,7 @@
                     <Font name="System Bold" size="13.0" />
                 </font>
             </Label>
-            <TextField fx:id="databaseLocationTextField" prefHeight="26.0" prefWidth="350.0" />
+            <TextField fx:id="databaseLocationTextField" prefHeight="26.0" prefWidth="350.0" styleClass="textField, databaseLocationTextField" />
             <Button mnemonicParsing="false" onAction="#handleBrowseDirectoryButtonMouseClick" prefWidth="34.0" text="...">
                 <tooltip>
                     <Tooltip text="Selects a directory for JSON/BNK database files." />
@@ -76,15 +76,15 @@
                             <Font name="System Bold" size="13.0" />
                         </font>
                     </Label>
-                    <ChoiceBox fx:id="profilesChoiceBox" prefWidth="325.0" />
+                    <ChoiceBox fx:id="profilesChoiceBox" prefWidth="325.0" styleClass="comboBox" />
                     <Label text="Locale:">
                         <font>
                             <Font name="System Bold" size="13.0" />
                         </font>
                     </Label>
-                    <ChoiceBox fx:id="localesChoiceBox" prefWidth="175.0" />
+                    <ChoiceBox fx:id="localesChoiceBox" prefWidth="175.0" styleClass="comboBox" />
                     <Separator orientation="VERTICAL" />
-                    <MenuButton mnemonicParsing="false" text="Advanced...">
+                    <MenuButton mnemonicParsing="false" text="Advanced..." styleClass="button">
                         <items>
                             <MenuItem mnemonicParsing="false" onAction="#handleResetDatabaseCacheMenuItemAction" text="Reset database cache" />
                             <SeparatorMenuItem />
@@ -109,6 +109,11 @@
                     <Font name="System Bold Italic" size="13.0" />
                 </font>
             </Label>
+            <ComboBox fx:id="entryNumberComboBox" prefHeight="26.0" prefWidth="400.0" visibleRowCount="25" styleClass="comboBox">
+                <tooltip>
+                    <Tooltip text="Quick-selects an entry in current topic." />
+                </tooltip>
+            </ComboBox>
             <Separator orientation="VERTICAL" />
             <Button layoutX="237.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleDuplicateEntryButtonAction" prefWidth="34.0" text="C">
                 <tooltip>
@@ -126,7 +131,7 @@
                 </tooltip>
             </Button>
             <Separator layoutX="189.0" layoutY="10.0" orientation="VERTICAL" />
-            <MenuButton layoutX="361.0" layoutY="10.0" mnemonicParsing="false" prefWidth="80.0" text="Import">
+            <MenuButton layoutX="361.0" layoutY="10.0" mnemonicParsing="false" prefWidth="80.0" text="Import" styleClass="button">
                 <items>
                     <MenuItem mnemonicParsing="false" onAction="#handleImportEntryTdufPatchMenuAction" text="TDUF patch..." />
                     <SeparatorMenuItem mnemonicParsing="false" />
@@ -137,7 +142,7 @@
                     <Tooltip text="Imports to current database." />
                 </tooltip>
             </MenuButton>
-            <MenuButton mnemonicParsing="false" prefWidth="80.0" text="Export">
+            <MenuButton mnemonicParsing="false" prefWidth="80.0" text="Export" styleClass="button">
                 <items>
                     <MenuItem mnemonicParsing="false" onAction="#handleExportEntryTdufPatchMenuAction" text="TDUF patch..." />
                     <SeparatorMenuItem mnemonicParsing="false" />
@@ -148,14 +153,8 @@
                     <Tooltip text="Exports one or more entries." />
                 </tooltip>
             </MenuButton>
-            <Separator layoutX="418.0" layoutY="10.0" orientation="VERTICAL" />
-            <ComboBox fx:id="entryNumberComboBox" prefHeight="26.0" prefWidth="400.0" visibleRowCount="25">
-                <tooltip>
-                    <Tooltip text="Quick-selects an entry in current topic." />
-                </tooltip>
-            </ComboBox>
          <Pane HBox.hgrow="ALWAYS" />
-         <TextField fx:id="entryFilterTextField" prefWidth="175.0" onKeyPressed="#handleFilterTextFieldKeyPressed" styleClass="entryFilterTextField">
+         <TextField fx:id="entryFilterTextField" prefWidth="175.0" onKeyPressed="#handleFilterTextFieldKeyPressed" styleClass="textField, entryFilterTextField">
             <tooltip>
                 <Tooltip text="Search criteria: either rank, or part of label, or internal reference." />
             </tooltip>
@@ -173,13 +172,15 @@
          <Label fx:id="filteredEntryItemsCountLabel" />
          <Label fx:id="unfilteredEntryItemsCountLabel" layoutX="1276.0" layoutY="15.0" />
         </ToolBar>
-        <TabPane fx:id="tabPane" prefHeight="626.0" prefWidth="1303.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
-            <Tab text="Default">
-                <ScrollPane prefViewportHeight="167.0" prefViewportWidth="1303.0">
+
+        <TabPane fx:id="tabPane" prefHeight="626.0" prefWidth="1303.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" styleClass="tabPane">
+            <Tab text="Default" styleClass="tab">
+                <ScrollPane prefViewportHeight="167.0" prefViewportWidth="1303.0" styleClass="tabContainer">
                     <VBox minHeight="0.0" minWidth="0.0" />
                 </ScrollPane>
             </Tab>
         </TabPane>
+
         <ToolBar layoutX="10.0" layoutY="112.0" prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar" VBox.vgrow="NEVER">
             <Button mnemonicParsing="false" onAction="#handleSearchEntryButtonAction" prefWidth="80.0" text="REF...">
                 <tooltip>
@@ -202,7 +203,7 @@
                     <Tooltip text="Goes to previous entry." />
                 </tooltip>
             </Button>
-            <TextField fx:id="entryNumberTextField" alignment="CENTER" onKeyPressed="#handleEntryNumberTextFieldKeyPressed" prefWidth="50.0" styleClass="entryNumberTextField" />
+            <TextField fx:id="entryNumberTextField" alignment="CENTER" onKeyPressed="#handleEntryNumberTextFieldKeyPressed" prefWidth="50.0" styleClass="textField, entryNumberTextField" />
             <Label fx:id="entryItemsCountLabel" prefWidth="50.0" />
             <Button mnemonicParsing="false" onAction="#handleNextButtonMouseClick" prefWidth="40.0" text="▶">
                 <tooltip>

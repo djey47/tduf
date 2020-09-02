@@ -1,38 +1,28 @@
 /* Database location */
 .locationToolbar {
-    -fx-base: dodgerBlue;
+    -fx-base: -color-background-primary;
+}
+.databaseLocationTextField {
 }
 
 /* Settings */
 .settingsToolbar {
-}
-.settingsToolbar .menu-item .label {
-    -fx-text-fill: black;
-}
-
-#localesChoiceBox .label, #profilesChoiceBox .label {
-    -fx-text-fill: black;
+    -fx-base: -color-background-secondary;
 }
 
 /* Actions */
 #entryNumberComboBox .scroll-bar:vertical {
     -fx-background-color:transparent;
 }
-#entryNumberComboBox .list-cell {
-    -fx-text-fill: white;
-}
 
 /* Search */
 .entryFilterTextField {
-    -fx-text-fill: white;
 }
 
 /* Nav */
 .navigationToolbar {
-    -fx-base: black;
+    -fx-base: -color-background-secondary;
 }
 
 .entryNumberTextField {
-    -fx-text-fill: white;
 }
-

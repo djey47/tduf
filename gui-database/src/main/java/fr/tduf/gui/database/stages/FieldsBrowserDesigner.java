@@ -16,7 +16,7 @@ import java.io.IOException;
 /**
  * Loads graphical interface for content fields browsing.
  */
-public class FieldsBrowserDesigner {
+public class FieldsBrowserDesigner extends AbstractEditorDesigner{
     private static final Class<FieldsBrowserDesigner> thisClass = FieldsBrowserDesigner.class;
 
     private FieldsBrowserDesigner() {}
@@ -40,8 +40,7 @@ public class FieldsBrowserDesigner {
     }
 
     private static void initWindow(Stage entriesStage, Parent mainRoot) {
-        String styledToolBarCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_TOOLBARS).toExternalForm();
-        mainRoot.getStylesheets().add(styledToolBarCss);
+        initCommonCss(mainRoot);
 
         entriesStage.setScene(new Scene(mainRoot, 650, 720));
         entriesStage.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_FIELDS);

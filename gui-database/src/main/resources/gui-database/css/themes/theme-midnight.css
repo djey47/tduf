@@ -1,0 +1,11 @@
+/** COLOR THEME: MIDNIGHT **/
+
+* {
+    -color-background-primary: #1a1a2e;
+    -color-background-secondary: #16213e;
+    -color-background-tertiary: #0f3460;
+    -color-background-neutral: #66759a;
+    -color-accent: #e94560;
+    -color-neutral: silver;
+    -color-default: #f6f6f6;
+}

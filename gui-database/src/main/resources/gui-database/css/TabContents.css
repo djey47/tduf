@@ -1,23 +1,28 @@
+.fieldBox {
+}
+
 .fieldName {
     -fx-font-weight: bold;
+    -fx-text-fill: -color-accent;
 }
 
 .readonlyField {
-    -fx-text-fill: gray;
+    -fx-text-fill: -color-neutral;
 }
 
 .fieldLabel {
     -fx-padding: 5,0,0,5;
 }
 
+.valueTextField {
+    -fx-text-fill: -color-default;
+    -fx-background-color: -color-background-neutral;
+}
+
 .error {
-    -fx-text-fill: red;
+    -fx-background-color: salmon;
 }
 
 .verticalButtonBox {
     -fx-spacing: 5.0;
-}
-
-.smallButton {
-    -fx-pref-width: 34.0;
 }

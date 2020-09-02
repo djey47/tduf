@@ -45,6 +45,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static fr.tduf.gui.database.common.DisplayConstants.*;
+import static fr.tduf.gui.database.common.FxConstants.CSS_CLASS_TABLEVIEW;
 import static fr.tduf.gui.database.plugins.common.FxConstants.*;
 import static fr.tduf.gui.database.plugins.mapping.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.mapping.common.FxConstants.*;
@@ -264,16 +265,16 @@ public class MappingPlugin extends AbstractDatabasePlugin {
         EditorContext editorContext = getEditorContext();
 
         Button refreshMappingButton = new Button(LABEL_BUTTON_REFRESH);
-        refreshMappingButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
+        refreshMappingButton.getStyleClass().addAll(CSS_CLASS_PLUGIN_BUTTON, CSS_CLASS_PLUGIN_BUTTON_MEDIUM);
         refreshMappingButton.setOnAction(handleRefreshButtonAction(onTheFlyMappingContext));
 
         Button seeDirectoryButton = new Button(LABEL_BUTTON_GOTO);
-        seeDirectoryButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
+        seeDirectoryButton.getStyleClass().addAll(CSS_CLASS_PLUGIN_BUTTON, CSS_CLASS_PLUGIN_BUTTON_MEDIUM);
         ControlHelper.setTooltipText(seeDirectoryButton, TOOLTIP_BUTTON_SEE_DIRECTORY);
         seeDirectoryButton.setOnAction(handleSeeDirectoryButtonAction(selectionModel, editorContext.getGameLocation()));
 
         Button registerButton = new Button(LABEL_BUTTON_REGISTER);
-        registerButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
+        registerButton.getStyleClass().addAll(CSS_CLASS_PLUGIN_BUTTON, CSS_CLASS_PLUGIN_BUTTON_MEDIUM);
         ControlHelper.setTooltipText(registerButton, TOOLTIP_BUTTON_REGISTER);
         registerButton.setOnAction(handleRegisterButtonAction(selectionModel));
 
@@ -288,7 +289,7 @@ public class MappingPlugin extends AbstractDatabasePlugin {
 
     private TableView<MappingEntry> createFilesTableView(OnTheFlyMappingContext onTheFlyMappingContext) {
         TableView<MappingEntry> mappingInfoTableView = new TableView<>(FXCollections.observableArrayList());
-        mappingInfoTableView.getStyleClass().addAll(CSS_CLASS_TABLEVIEW, CSS_CLASS_MAPPING_TABLEVIEW);
+        mappingInfoTableView.getStyleClass().addAll(CSS_CLASS_TABLEVIEW, CSS_CLASS_PLUGIN_TABLEVIEW, CSS_CLASS_MAPPING_TABLEVIEW);
 
         TableColumn<MappingEntry, String> kindColumn = new TableColumn<>(HEADER_FILESTABLE_KIND);
         kindColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKind()));

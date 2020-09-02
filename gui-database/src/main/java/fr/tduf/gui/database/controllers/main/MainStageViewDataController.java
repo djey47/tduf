@@ -55,6 +55,8 @@ import java.util.function.Predicate;
 import static fr.tduf.gui.common.ImageConstants.Resource.BOX_EMPTY_BLUE;
 import static fr.tduf.gui.common.ImageConstants.Resource.MAGNIFIER_BLUE;
 import static fr.tduf.gui.common.ImageConstants.SIZE_BUTTON_PICTO;
+import static fr.tduf.gui.database.common.FxConstants.CSS_CLASS_TAB;
+import static fr.tduf.gui.database.common.FxConstants.CSS_CLASS_TAB_CONTAINER;
 import static fr.tduf.gui.database.common.SupportConstants.LOG_TARGET_PROFILE_NAME;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.REFERENCE;
 import static java.util.Objects.requireNonNull;
@@ -609,7 +611,10 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
     private void createTabAndAppend(String tabName, ObservableList<Tab> allTabs) {
         VBox tabContainer = new VBox();
-        Tab tab = new Tab(tabName, new ScrollPane(tabContainer));
+        ScrollPane scrollPaneContainer = new ScrollPane(tabContainer);
+        scrollPaneContainer.getStyleClass().addAll(CSS_CLASS_TAB_CONTAINER);
+        Tab tab = new Tab(tabName, scrollPaneContainer);
+        tab.getStyleClass().addAll(CSS_CLASS_TAB);
         allTabs.add(tab);
         tabContentByName.put(tabName, tabContainer);
     }

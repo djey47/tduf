@@ -18,13 +18,23 @@ public class FxConstants {
     public static final String PATH_RESOURCE_CSS_TOOLBARS = "/gui-database/css/ToolBars.css";
     public static final String PATH_RESOURCE_CSS_TABCONTENTS = "/gui-database/css/TabContents.css";
     public static final String PATH_RESOURCE_CSS_PANES = "/gui-database/css/Panes.css";
+    public static final String PATH_RESOURCE_CSS_COLORS = "/gui-database/css/Colors.css";
+    public static final String PATH_RESOURCE_CSS_COMMON = "/gui-database/css/Common.css";
 
     public static final String CSS_CLASS_FIELD_LABEL = "fieldLabel";
     public static final String CSS_CLASS_FIELD_NAME = "fieldName";
     public static final String CSS_CLASS_READONLY_FIELD = "readonlyField";
     public static final String CSS_CLASS_ERROR = "error";
     public static final String CSS_CLASS_VERTICAL_BUTTON_BOX = "verticalButtonBox";
-    public static final String CSS_CLASS_BUTTON_SMALL = "smallButton";    
+    public static final String CSS_CLASS_BUTTON = "button";
+    public static final String CSS_CLASS_BUTTON_SMALL = "smallButton";
+    public static final String CSS_CLASS_FIELD_BOX = "fieldBox";
+    public static final String CSS_CLASS_VALUE_TEXT_FIELD = "valueTextField";
+    public static final String CSS_CLASS_TAB = "tab";
+    public static final String CSS_CLASS_TAB_CONTAINER = "tabContainer";
+    public static final String CSS_CLASS_CHECKBOX = "checkBox";
+    public static final String CSS_CLASS_COMBOBOX = "comboBox";
+    public static final String CSS_CLASS_TABLEVIEW = "tableView";
 
     public static final FileChooser.ExtensionFilter EXTENSION_FILTER_TDUF_PATCH = new FileChooser.ExtensionFilter(DisplayConstants.LABEL_EXTENSION_MINI_JSON, asList("*.mini.json", "*.MINI.JSON"));
     public static final FileChooser.ExtensionFilter EXTENSION_FILTER_TDUMT_PATCH = new FileChooser.ExtensionFilter(DisplayConstants.LABEL_EXTENSION_PCH, asList("*.pch", "*.PCH"));

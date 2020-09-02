@@ -14,8 +14,10 @@ import java.util.List;
 
 import static fr.tduf.gui.database.common.DisplayConstants.LABEL_BUTTON_BROWSE;
 import static fr.tduf.gui.database.common.DisplayConstants.TOOLTIP_BUTTON_BROWSE_RESOURCES;
+import static fr.tduf.gui.database.common.FxConstants.CSS_CLASS_BUTTON;
 import static fr.tduf.gui.database.common.FxConstants.CSS_CLASS_VERTICAL_BUTTON_BOX;
-import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_BUTTON_MEDIUM;
+import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_PLUGIN_BUTTON;
+import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_PLUGIN_BUTTON_MEDIUM;
 import static javafx.geometry.Orientation.HORIZONTAL;
 
 /**
@@ -68,7 +70,7 @@ public class PluginComponentBuilders {
         private static Button createBrowseResourceButton(EditorContext editorContext, OnTheFlyContext onTheFlyContext) {
             Button browseResourceButton = new Button(LABEL_BUTTON_BROWSE);
 
-            browseResourceButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
+            browseResourceButton.getStyleClass().addAll(CSS_CLASS_BUTTON, CSS_CLASS_PLUGIN_BUTTON, CSS_CLASS_PLUGIN_BUTTON_MEDIUM);
             ControlHelper.setTooltipText(browseResourceButton, TOOLTIP_BUTTON_BROWSE_RESOURCES);
             browseResourceButton.setOnAction(
                     editorContext.getMainStageController().getViewData().handleBrowseResourcesButtonMouseClick(onTheFlyContext.getRemoteTopic(), onTheFlyContext.getRawValueProperty(), onTheFlyContext.getFieldRank()));

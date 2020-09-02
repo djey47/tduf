@@ -100,6 +100,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
         String groupName = fieldSettings.getGroup();
 
         HBox fieldBox = addFieldBox(groupName, 25.0);
+        fieldBox.getStyleClass().addAll(FxConstants.CSS_CLASS_FIELD_BOX);
 
         String effectiveFieldName = fieldSettings.getLabel() == null ?
                 field.getName() : fieldSettings.getLabel();
@@ -113,6 +114,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     private void addValueTextField(HBox fieldBox, DbStructureDto.Field field, boolean fieldReadOnly, String toolTip, StringProperty property) {
         boolean valueTextFieldReadOnly = DbStructureDto.FieldType.PERCENT == field.getFieldType() || fieldReadOnly;
         TextField valueTextField = new TextField();
+        valueTextField.getStyleClass().addAll(FxConstants.CSS_CLASS_VALUE_TEXT_FIELD);
 
         int fieldRank = field.getRank();
         controller.getViewData()

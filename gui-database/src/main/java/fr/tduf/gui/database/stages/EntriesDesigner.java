@@ -16,7 +16,7 @@ import java.io.IOException;
 /**
  * Loads graphical interface for content entries.
  */
-public class EntriesDesigner {
+public class EntriesDesigner extends AbstractEditorDesigner{
     private static final Class<EntriesDesigner> thisClass = EntriesDesigner.class;
 
     private EntriesDesigner() {}
@@ -40,8 +40,7 @@ public class EntriesDesigner {
     }
 
     private static void initWindow(Stage entriesStage, Parent mainRoot) {
-        String styledToolBarCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_TOOLBARS).toExternalForm();
-        mainRoot.getStylesheets().add(styledToolBarCss);
+        initCommonCss(mainRoot);
 
         entriesStage.setScene(new Scene(mainRoot, 650, 720));
         entriesStage.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_ENTRIES);
