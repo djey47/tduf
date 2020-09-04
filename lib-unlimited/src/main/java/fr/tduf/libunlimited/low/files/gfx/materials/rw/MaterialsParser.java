@@ -14,13 +14,15 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.framework.lang.UByte.fromSigned;
+import static fr.tduf.libunlimited.low.files.gfx.materials.rw.StoreConstants.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
- * Allow to read data from a .2DM file.
+ * Allows to read data from a .2DM file.
  */
 public class MaterialsParser extends GenericParser<MaterialDefs> {
+
     private MaterialsParser(XByteArrayInputStream inputStream) throws IOException {
         super(inputStream);
     }
@@ -37,7 +39,7 @@ public class MaterialsParser extends GenericParser<MaterialDefs> {
     protected MaterialDefs generate() {
         List<Material> materials = parseMaterialsFromStore();
         List<AdditionalSetting> additionalSettings = parseAdditionalSettingsFromStore();
-        long fileSize = getDataStore().getInteger("fileSizeBytes")
+        long fileSize = getDataStore().getInteger(FIELD_FILE_SIZE_BYTES)
                 .orElseThrow(() -> new IllegalStateException("Datastore should contain fileSizeBytes data"));
         return MaterialDefs.builder()
                 .withFileSize(fileSize)
@@ -48,16 +50,17 @@ public class MaterialsParser extends GenericParser<MaterialDefs> {
     }
 
     private List<Material> parseMaterialsFromStore() {
-        List<DataStore> materialStores = getDataStore().getRepeatedValues("hashes");
+        List<DataStore> materialStores = getDataStore().getRepeatedValues(FIELD_HASHES);
         return materialStores.stream()
                 .map(matStore -> {
-                    String materialName = matStore.getText("h")
+                    String materialName = matStore.getText(StoreConstants.FIELD_H)
                             .orElseThrow(() -> new IllegalStateException("Material store should contain hash data"))
                             .trim();
-                    String defsKeyName = matStore.getTargetKeyAtAddress("materialAddress")
+                    String defsKeyName = matStore.getTargetKeyAtAddress(FIELD_MATERIAL_ADDRESS)
                             .orElseThrow(() -> new IllegalStateException("No global settings available at key: materialAddress"));
-                    String parameterAddressKeyName = getDataStore().getTargetKeyAtAddress(defsKeyName + "parameterAddress")
-                            .orElseThrow(() -> new IllegalStateException(String.format("No shader parameters available at key: %s", defsKeyName + "parameterAddress")));
+                    String parameterAddressFieldName = defsKeyName + FIELD_PARAMETER_ADDRESS;
+                    String parameterAddressKeyName = getDataStore().getTargetKeyAtAddress(parameterAddressFieldName)
+                            .orElseThrow(() -> new IllegalStateException(String.format("No shader parameters available at key: %s", parameterAddressFieldName)));
                     MaterialSettings materialSettings = parseGlobalSettings(parameterAddressKeyName, defsKeyName);
                     LayerGroup layerGroup = parseMaterialLayerGroup(parameterAddressKeyName);
                     return Material.builder()
@@ -70,13 +73,13 @@ public class MaterialsParser extends GenericParser<MaterialDefs> {
    }
 
     private List<AdditionalSetting> parseAdditionalSettingsFromStore() {
-        List<DataStore> settingsStore = getDataStore().getRepeatedValues("additionalSection");
+        List<DataStore> settingsStore = getDataStore().getRepeatedValues(FIELD_ADDITIONAL_SECTION);
         return settingsStore.stream()
                 .map(settingStore -> {
-                    String tag = settingStore.getText("entryTag")
+                    String tag = settingStore.getText(FIELD_ENTRY_TAG)
                             .orElseThrow(() -> new IllegalStateException("Additional settings should contain name data"))
                             .trim();
-                    byte[] data = settingStore.getRawValue("rest")
+                    byte[] data = settingStore.getRawValue(FIELD_REST)
                             .orElseThrow(() -> new IllegalStateException("Additional settings should contain rest data"));
                     return AdditionalSetting.builder()
                             .withName(tag)
@@ -87,16 +90,16 @@ public class MaterialsParser extends GenericParser<MaterialDefs> {
     }
 
     private MaterialSettings parseGlobalSettings(String parameterAddressKeyName, String settingsKeyName) {
-        byte alpha = getDataStore().getInteger(settingsKeyName + "alpha")
+        byte alpha = getDataStore().getInteger(settingsKeyName + FIELD_ALPHA)
                 .orElseThrow(() -> new IllegalStateException("Settings alpha data should be present in store"))
                 .byteValue();
-        List<UByte> alphaBlendValues = parseSettingsGroupAsUnsignedByte(getDataStore(), settingsKeyName, "alphaBlend", 2);
-        Color ambientColor = parseSettingsGroupAsColor(settingsKeyName, "ambientColor");
-        Color diffuseColor = parseSettingsGroupAsColor(settingsKeyName, "diffuseColor");
-        Color specularColor = parseSettingsGroupAsColor(settingsKeyName, "specularColor");
-        Color otherColor = parseSettingsGroupAsColor(settingsKeyName, "otherColor");
+        List<UByte> alphaBlendValues = parseSettingsGroupAsUnsignedByte(getDataStore(), settingsKeyName, FIELD_ALPHA_BLEND, 2);
+        Color ambientColor = parseSettingsGroupAsColor(settingsKeyName, FIELD_AMBIENT_COLOR);
+        Color diffuseColor = parseSettingsGroupAsColor(settingsKeyName, FIELD_DIFFUSE_COLOR);
+        Color specularColor = parseSettingsGroupAsColor(settingsKeyName, FIELD_SPECULAR_COLOR);
+        Color otherColor = parseSettingsGroupAsColor(settingsKeyName, FIELD_OTHER_COLOR);
         Shader shader = parseShaderParameters(parameterAddressKeyName);
-        byte[] unknownSettings = getDataStore().getRawValue(settingsKeyName + "unk1")
+        byte[] unknownSettings = getDataStore().getRawValue(settingsKeyName + FIELD_UNK_1)
                 .orElseThrow(() -> new IllegalStateException("unk1 data should be present in store"));
         return MaterialSettings.builder()
                 .withAlpha(fromSigned(alpha))
@@ -111,13 +114,13 @@ public class MaterialsParser extends GenericParser<MaterialDefs> {
     }
 
     private Shader parseShaderParameters(String paramsKeyName) {
-        byte[] shaderConfiguration = getDataStore().getRawValue(paramsKeyName + "shaderConfiguration")
+        byte[] shaderConfiguration = getDataStore().getRawValue(paramsKeyName + FIELD_SHADER_CONFIGURATION)
                 .orElseThrow(() -> new IllegalStateException("Shader configuration data should be present in store"));
         MaterialPiece configuration = MaterialPiece.fromBinaryContents(shaderConfiguration);
         List<MaterialSubSetting> subSettings = parseMaterialSubSettings(paramsKeyName);
         List<Float> reflectionLayerScaleValues = null;
         try {
-            reflectionLayerScaleValues = parseSettingsGroupAsFloatingPoint(getDataStore(), paramsKeyName, "reflectionLayerScale", 2);
+            reflectionLayerScaleValues = parseSettingsGroupAsFloatingPoint(getDataStore(), paramsKeyName, FIELD_REFLECTION_LAYER_SCALE, 2);
         } catch (IllegalStateException ise) {
             Log.debug("No reflection layer scale settings");
         }
@@ -129,13 +132,13 @@ public class MaterialsParser extends GenericParser<MaterialDefs> {
     }
 
     private LayerGroup parseMaterialLayerGroup(String paramsKeyName) {
-        String layerGroupKeyName = getDataStore().getTargetKeyAtAddress(paramsKeyName + "layerGroupAddress")
+        String layerGroupKeyName = getDataStore().getTargetKeyAtAddress(paramsKeyName + FIELD_LAYER_GROUP_ADDRESS)
                 .orElseThrow(() -> new IllegalStateException("No layer groups available at key: layerGroupAddress"));
-        int layerCount = getDataStore().getInteger(layerGroupKeyName + "layersCount")
+        int layerCount = getDataStore().getInteger(layerGroupKeyName + FIELD_LAYERS_COUNT)
                 .orElseThrow(() -> new IllegalStateException("No layer count available at key: layersCount"))
                 .intValue();
         List<Layer> layers = parseLayers(layerGroupKeyName);
-        byte[] magic = getDataStore().getRawValue(layerGroupKeyName + "layerGroupMagic2")
+        byte[] magic = getDataStore().getRawValue(layerGroupKeyName + FIELD_LAYER_GROUP_MAGIC_2)
                 .orElseThrow(() -> new IllegalStateException("layerGroupMagic2 data should be present in store"));
         return LayerGroup.builder()
                 .withLayerCount(layerCount)
@@ -145,15 +148,15 @@ public class MaterialsParser extends GenericParser<MaterialDefs> {
     }
 
     private List<Layer> parseLayers(String layerGroupKeyName) {
-        return getDataStore().getRepeatedValues("layers", layerGroupKeyName).stream()
+        return getDataStore().getRepeatedValues(FIELD_LAYERS, layerGroupKeyName).stream()
                 .map(layerStore -> {
-                    String name = layerStore.getText("layerName")
+                    String name = layerStore.getText(FIELD_LAYER_NAME)
                             .orElseThrow(() -> new IllegalStateException("Layer name data should be present in store"))
                             .trim();
-                    String targetFile = layerStore.getText("textureFile")
+                    String targetFile = layerStore.getText(FIELD_TEXTURE_FILE)
                             .orElseThrow(() -> new IllegalStateException("Texture file data should be present in store"))
                             .trim();
-                    List<UByte> flagValues = parseSettingsGroupAsUnsignedByte(layerStore, "", "layerFlag", 4);
+                    List<UByte> flagValues = parseSettingsGroupAsUnsignedByte(layerStore, "", FIELD_LAYER_FLAG, 4);
                     // TODO
                     AnimationSettings animationSettings = new AnimationSettings();
                     return Layer.builder()
@@ -167,15 +170,15 @@ public class MaterialsParser extends GenericParser<MaterialDefs> {
     }
 
     private List<MaterialSubSetting> parseMaterialSubSettings(String paramsKeyName) {
-        List<DataStore> subSettingsStores = getDataStore().getRepeatedValues("settings", paramsKeyName);
+        List<DataStore> subSettingsStores = getDataStore().getRepeatedValues(FIELD_SETTINGS, paramsKeyName);
 
         return subSettingsStores.stream()
                 .map(subSettingStore -> {
-                    long id = subSettingStore.getInteger("subId")
+                    long id = subSettingStore.getInteger(FIELD_SUB_ID)
                             .orElseThrow(() -> new IllegalStateException("No id data available in store"));
-                    long value1 = subSettingStore.getInteger("unk1")
+                    long value1 = subSettingStore.getInteger(FIELD_UNK_1)
                             .orElseThrow(() -> new IllegalStateException("No unk1 data available in store"));
-                    long value2 = subSettingStore.getInteger("unk2")
+                    long value2 = subSettingStore.getInteger(FIELD_UNK_2)
                             .orElseThrow(() -> new IllegalStateException("No unk2 data available in store"));
                     long value3 = subSettingStore.getInteger("unk3")
                             .orElseThrow(() -> new IllegalStateException("No unk3 data available in store"));
@@ -210,15 +213,14 @@ public class MaterialsParser extends GenericParser<MaterialDefs> {
 
     private static Stream<String> getSettingsKeyStream(String groupKeyName, String settingKeyName, int groupSize) {
         return IntStream.range(1, groupSize + 1)
-                .mapToObj(itemIndex -> String.format("%s%s%d", groupKeyName, settingKeyName, itemIndex));
+                .mapToObj(itemIndex -> String.format(FORMAT_SETTINGS_KEY, groupKeyName, settingKeyName, itemIndex));
     }
 
     private static Stream<String> getColorSettingsKeyStream(String groupKeyName, String settingKeyName) {
-        String[] keySuffixes = new String[]{ "R", "G", "B", "O"};
         return IntStream.range(0, 4)
                 .mapToObj(itemIndex -> {
-                    String currentSuffix = keySuffixes[itemIndex];
-                    return String.format("%s%s%s", groupKeyName, settingKeyName, currentSuffix);
+                    String currentSuffix = FIELD_SUFFIXES_COLORS[itemIndex];
+                    return String.format(FORMAT_COLOR_SETTINGS_KEY, groupKeyName, settingKeyName, currentSuffix);
                 });
     }
 
