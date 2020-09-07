@@ -1,6 +1,9 @@
 package fr.tduf.gui.database.plugins.materials;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
+import fr.tduf.gui.common.javafx.helper.options.SimpleDialogOptions;
+import fr.tduf.gui.database.controllers.main.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
 import fr.tduf.gui.database.plugins.common.PluginComponentBuilders;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
@@ -11,6 +14,8 @@ import fr.tduf.gui.database.plugins.materials.converter.MaterialToItemConverter;
 import fr.tduf.gui.database.plugins.materials.converter.MaterialToRawValueConverter;
 import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.framework.lang.UByte;
+import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
+import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.Material;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.MaterialDefs;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.MaterialSettings;
@@ -26,10 +31,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
@@ -37,10 +39,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import static fr.tduf.gui.database.common.FxConstants.CSS_CLASS_BUTTON;
 import static fr.tduf.gui.database.common.FxConstants.CSS_CLASS_COMBOBOX;
@@ -48,12 +47,15 @@ import static fr.tduf.gui.database.plugins.common.FxConstants.*;
 import static fr.tduf.gui.database.plugins.materials.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.materials.common.FxConstants.*;
 import static fr.tduf.libunlimited.common.game.FileConstants.*;
+import static fr.tduf.libunlimited.common.game.domain.Locale.DEFAULT;
 import static java.nio.file.Files.readAllBytes;
 import static java.util.Collections.singletonList;
 import static java.util.Comparator.comparing;
 import static javafx.beans.binding.Bindings.createObjectBinding;
 import static javafx.geometry.Orientation.HORIZONTAL;
 import static javafx.geometry.Orientation.VERTICAL;
+import static javafx.scene.control.Alert.AlertType.CONFIRMATION;
+import static javafx.scene.control.ButtonType.OK;
 
 public class MaterialsPlugin extends AbstractDatabasePlugin {
     private static final Class<MaterialsPlugin> thisClass = MaterialsPlugin.class;
@@ -175,7 +177,7 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
         ComboBox<Material> materialSelectorComboBox = new ComboBox<>(materialInfos.sorted(comparing(Material::getName)));
 
         materialSelectorComboBox.getStyleClass().addAll(CSS_CLASS_COMBOBOX, CSS_CLASS_MAT_SELECTOR_COMBOBOX);
-        materialSelectorComboBox.setConverter(new MaterialToItemConverter(normalizedNamesDictionary));
+        materialSelectorComboBox.setConverter(new MaterialToItemConverter(this::getFullNameFromDictionary));
 
         VBox mainColumnBox = new VBox();
         mainColumnBox.getStyleClass().add(CSS_CLASS_MAT_MAIN_COLUMN);
@@ -354,7 +356,7 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
         materialSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
                 getMaterialSelectorChangeListener((OnTheFlyMaterialsContext) onTheFlyContext));
         Bindings.bindBidirectional(
-                onTheFlyContext.getRawValueProperty(), materialSelectorComboBox.valueProperty(), new MaterialToRawValueConverter(this.materialsInfoEnhancedProperty, getEditorContext(), onTheFlyContext.getCurrentTopic(), normalizedNamesDictionary));
+                onTheFlyContext.getRawValueProperty(), materialSelectorComboBox.valueProperty(), new MaterialToRawValueConverter(this.materialsInfoEnhancedProperty, getEditorContext(), onTheFlyContext.getCurrentTopic(), this::getFullNameFromDictionary));
 
         Label availableMaterialsLabel = new Label(LABEL_AVAILABLE_MATERIALS);
         availableMaterialsLabel.setLabelFor(materialSelectorComboBox);
@@ -372,13 +374,54 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
                 return;
             }
 
-            // TODO Reference not found => ask and create resource entry in current topic
-//            CommonDialogsHelper.showDialog(dialogOptions);
+            DbDto.Topic currentTopic = onTheFlyContext.getCurrentTopic();
 
-            getEditorContext().getChangeDataController().updateContentItem(onTheFlyContext.getCurrentTopic(), onTheFlyContext.getFieldRank(), onTheFlyContext.getRawValueProperty().getValue());
+            String materialNormalizedName = newValue.getName();
+            String materialFullName = getFullNameFromDictionary(materialNormalizedName);
 
+            MainStageChangeDataController changeDataController = getEditorContext().getChangeDataController();
+
+            DbDto currentTopicObject = getEditorContext().getMiner().getDatabaseTopic(currentTopic)
+                    .orElseThrow(() -> new IllegalStateException(String.format("Database topic should exist: %s", currentTopic)));
+            if (materialFullName == null) {
+                // no material in dictionary, resource must be created
+                handleAutoResourceCreation(currentTopicObject, materialNormalizedName, onTheFlyContext);
+            } else {
+                // material exists in dictionary, check in resources
+                if (!MaterialsHelper.isExistingMaterialNameInResources(materialFullName, currentTopic, getEditorContext().getMiner())) {
+                    handleAutoResourceCreation(currentTopicObject, materialNormalizedName, onTheFlyContext);
+                }
+            }
+
+            changeDataController.updateContentItem(currentTopic, onTheFlyContext.getFieldRank(), onTheFlyContext.getRawValueProperty().getValue());
             onTheFlyContext.setCurrentMaterial(newValue);
         };
+    }
+
+    private String getFullNameFromDictionary(String materialNormalizedName) {
+        return normalizedNamesDictionary.get(materialNormalizedName);
+    }
+
+    private void handleAutoResourceCreation(DbDto topicObject, String materialName, OnTheFlyMaterialsContext onTheFlyContext) {
+        String newReference = DatabaseGenHelper.generateUniqueResourceEntryIdentifier(topicObject);
+        DbDto.Topic currentTopic = onTheFlyContext.getCurrentTopic();
+        if (askForResourceCreation(currentTopic, newReference, materialName)) {
+            getEditorContext().getChangeDataController().addResourceWithReference(currentTopic, DEFAULT, newReference, materialName);
+            onTheFlyContext.getRawValueProperty().setValue(newReference);
+            MaterialsHelper.updateNormalizedDictionary(normalizedNamesDictionary, getEditorContext().getMiner());
+        }
+    }
+
+    private boolean askForResourceCreation(DbDto.Topic topic, String ref, String value) {
+        SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                .withContext(CONFIRMATION)
+                .withTitle(TITLE_SELECTING_MATERIAL)
+                .withMessage(String.format(FORMAT_MESSAGE_RESOURCE_NAME_NOT_FOUND, value))
+                .withDescription(String.format(FORMAT_DESCRIPTION_RESOURCE_CREATION, ref, topic.getLabel()))
+                .build();
+        Optional<ButtonType> buttonResult = CommonDialogsHelper.showDialog(dialogOptions, getEditorContext().getMainWindow());
+
+        return buttonResult.isPresent() && OK == buttonResult.get();
     }
 
     @Override

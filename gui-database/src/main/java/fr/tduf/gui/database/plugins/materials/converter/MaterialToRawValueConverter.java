@@ -1,13 +1,15 @@
 package fr.tduf.gui.database.plugins.materials.converter;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.Material;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.MaterialDefs;
+import fr.tduf.libunlimited.low.files.gfx.materials.helper.MaterialsHelper;
 import javafx.beans.property.Property;
 import javafx.util.StringConverter;
 
-import java.util.Map;
+import java.util.function.Function;
 
 import static fr.tduf.libunlimited.common.game.domain.Locale.DEFAULT;
 import static fr.tduf.libunlimited.common.game.helper.GameEngineHelper.normalizeString;
@@ -16,16 +18,19 @@ import static fr.tduf.libunlimited.high.files.db.common.DatabaseConstants.RESOUR
 import static java.util.Arrays.asList;
 
 public class MaterialToRawValueConverter extends StringConverter<Material> {
+    private static final Class<MaterialToRawValueConverter> thisClass = MaterialToRawValueConverter.class;
+    private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
+
     private final Property<MaterialDefs> materialDefsProperty;
     private final EditorContext editorContext;
     private final DbDto.Topic currentTopic;
-    private final Map<String, String> normalizedNamesDictionary;
+    private final Function<String, String> fullNameProvider;
 
-    public MaterialToRawValueConverter(Property<MaterialDefs> materialDefsProperty, EditorContext editorContext, DbDto.Topic currentTopic, Map<String, String> normalizedNamesDictionary) {
+    public MaterialToRawValueConverter(Property<MaterialDefs> materialDefsProperty, EditorContext editorContext, DbDto.Topic currentTopic, Function<String, String> fullNameProvider ) {
         this.materialDefsProperty = materialDefsProperty;
         this.editorContext = editorContext;
         this.currentTopic = currentTopic;
-        this.normalizedNamesDictionary = normalizedNamesDictionary;
+        this.fullNameProvider = fullNameProvider;
     }
 
     @Override
@@ -33,19 +38,8 @@ public class MaterialToRawValueConverter extends StringConverter<Material> {
         if (material == null) {
             return "";
         }
-
-        String materialName = material.getName();
-        String materialNameAsResourceValue = normalizedNamesDictionary.get(materialName);
-
-        return editorContext.getMiner().getResourcesFromTopic(currentTopic)
-                .orElseThrow(() -> new IllegalStateException("No resources for topic " + currentTopic))
-                .getEntries().parallelStream()
-                .filter(resourceEntry -> resourceEntry.pickValue()
-                        .map(String::toUpperCase)
-                        .orElseThrow(() -> new IllegalStateException("No resource value")).equals(materialNameAsResourceValue))
-                .findAny()
-                .orElseThrow(() -> new IllegalStateException("No resource entry for material name " + materialName))
-                .getReference();
+        String materialNameAsResourceValue = fullNameProvider.apply(material.getName());
+        return MaterialsHelper.getResourceRefForMaterialName(materialNameAsResourceValue, currentTopic, editorContext.getMiner());
     }
 
     @Override
@@ -62,7 +56,9 @@ public class MaterialToRawValueConverter extends StringConverter<Material> {
         return materialDefsProperty.getValue().getMaterials().stream()
                 .filter(material -> material.getName().equals(materialNameNormalized))
                 .findAny()
-                // TODO Material not found => warning
-                .orElseThrow(() -> new IllegalStateException("No material available for name " + materialNameNormalized));
+                .orElseGet(() -> {
+                    Log.warn(THIS_CLASS_NAME, "No material available for name " + materialNameNormalized);
+                    return null;
+                });
     }
 }

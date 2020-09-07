@@ -19,4 +19,8 @@ public class DisplayConstants {
     public static final String FORMAT_SHADER_VALUE = "%s (%s)";
     public static final String FORMAT_ALPHA_VALUE = "%d with blending (x=%s y=%d)";
     public static final String FORMAT_MATERIAL_LABEL = "%s (%s)";
+    public static final String FORMAT_DESCRIPTION_RESOURCE_CREATION = "It will be created automatically at REF %s in %s topic.";
+    public static final String FORMAT_MESSAGE_RESOURCE_NAME_NOT_FOUND = "A resource was not found for material name: %s";
+
+    public static final String TITLE_SELECTING_MATERIAL = "Selecting new material...";
 }
