@@ -10,6 +10,7 @@ public class PluginContext {
     private boolean pluginLoaded = false;
 
     private String binaryFileLocation;
+    private String bankExtractedDirectory;
 
     private StringProperty errorMessageProperty = null;
 
@@ -55,5 +56,13 @@ public class PluginContext {
 
     public String getBinaryFileLocation() {
         return binaryFileLocation;
+    }
+
+    public void setBankExtractedDirectory(String extractedDirectory) {
+        this.bankExtractedDirectory = extractedDirectory;
+    }
+
+    public String getBankExtractedDirectory() {
+        return bankExtractedDirectory;
     }
 }

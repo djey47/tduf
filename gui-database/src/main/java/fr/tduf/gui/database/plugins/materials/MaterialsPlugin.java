@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.plugins.materials;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.database.domain.LocalizedResource;
 import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
 import fr.tduf.gui.database.plugins.common.PluginComponentBuilders;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
@@ -84,13 +85,7 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
         String gameLocation = context.getGameLocation();
 
         // Extracts all files from colors.bnk
-        Path bankFilePath = resolveBankFilePath(gameLocation);
-        if (!Files.exists(bankFilePath)) {
-            String warningMessage = String.format(FORMAT_MESSAGE_WARN_NO_MATERIALS, bankFilePath.toString());
-            Log.warn(THIS_CLASS_NAME, warningMessage);
-
-            throw new IOException(warningMessage);
-        }
+        Path bankFilePath = resolveAndCheckBankFilePath(gameLocation);
 
         String extractedDirectory = createTempDirectory();
         Log.debug(THIS_CLASS_NAME, String.format("Extracting materials info from %s to %s...", bankFilePath, extractedDirectory));
@@ -100,6 +95,7 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
         String binaryFileLocation = resolveColorsFileLocation(extractedDirectory).toString();
         Log.debug(THIS_CLASS_NAME, String.format("Materials binary location: %s", binaryFileLocation));
         materialsContext.setBinaryFileLocation(binaryFileLocation);
+        materialsContext.setBankExtractedDirectory(extractedDirectory);
 
         // Loads binary file and create domain objects
         Log.info(THIS_CLASS_NAME, String.format("Loading materials info from %s...", binaryFileLocation));
@@ -116,8 +112,22 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
     }
 
     @Override
-    public void onSave() {
-        // Not implemented
+    public void onSave() throws IOException {
+        if (!materialsContext.isPluginLoaded()) {
+            Log.warn(THIS_CLASS_NAME, "Materials plugin not loaded, no saving will be performed");
+            return;
+        }
+
+        String materialsFile = materialsContext.getBinaryFileLocation();
+        Log.info(THIS_CLASS_NAME, "Saving material definitions to " + materialsFile);
+        MaterialsHelper.saveMaterialDefinitions(materialsInfoEnhancedProperty.getValue(), materialsFile);
+
+        // Repacking to Colors.bnk
+        EditorContext context = getEditorContext();
+        Path bankFilePath = resolveAndCheckBankFilePath(context.getGameLocation());
+        String extractedDirectory = materialsContext.getBankExtractedDirectory();
+        Log.debug(THIS_CLASS_NAME, String.format("Repacking materials info from %s to %s...", extractedDirectory, bankFilePath));
+        context.getMainStageController().getBankSupport().packAll(extractedDirectory, bankFilePath.toString());
     }
 
     @Override
@@ -372,8 +382,15 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
         return new HashSet<>(singletonList(thisClass.getResource(PATH_RESOURCE_CSS_MATERIALS).toExternalForm()));
     }
 
-    private static Path resolveBankFilePath(String gameLocation) {
-        return Paths.get(gameLocation, DIRECTORY_EURO, DIRECTORY_BANKS, DIRECTORY_VEHICLES, FILE_COLORS_BANK);
+    private static Path resolveAndCheckBankFilePath(String gameLocation) throws IOException {
+        Path bankFilePath = Paths.get(gameLocation, DIRECTORY_EURO, DIRECTORY_BANKS, DIRECTORY_VEHICLES, FILE_COLORS_BANK);
+        if (!Files.exists(bankFilePath)) {
+            String warningMessage = String.format(FORMAT_MESSAGE_WARN_NO_MATERIALS, bankFilePath.toString());
+            Log.warn(THIS_CLASS_NAME, warningMessage);
+
+            throw new IOException(warningMessage);
+        }
+        return bankFilePath;
     }
 
     private static String createTempDirectory() throws IOException {
