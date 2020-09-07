@@ -1,7 +1,6 @@
 package fr.tduf.gui.database.plugins.materials;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.database.domain.LocalizedResource;
 import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
 import fr.tduf.gui.database.plugins.common.PluginComponentBuilders;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
@@ -355,7 +354,7 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
         materialSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
                 getMaterialSelectorChangeListener((OnTheFlyMaterialsContext) onTheFlyContext));
         Bindings.bindBidirectional(
-                onTheFlyContext.getRawValueProperty(), materialSelectorComboBox.valueProperty(), new MaterialToRawValueConverter(this.materialsInfoEnhancedProperty.getValue(), getEditorContext(), onTheFlyContext.getCurrentTopic(), normalizedNamesDictionary));
+                onTheFlyContext.getRawValueProperty(), materialSelectorComboBox.valueProperty(), new MaterialToRawValueConverter(this.materialsInfoEnhancedProperty, getEditorContext(), onTheFlyContext.getCurrentTopic(), normalizedNamesDictionary));
 
         Label availableMaterialsLabel = new Label(LABEL_AVAILABLE_MATERIALS);
         availableMaterialsLabel.setLabelFor(materialSelectorComboBox);
@@ -372,6 +371,11 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
             if (Objects.equals(oldValue, newValue)) {
                 return;
             }
+
+            // TODO Reference not found => ask and create resource entry in current topic
+//            CommonDialogsHelper.showDialog(dialogOptions);
+
+            getEditorContext().getChangeDataController().updateContentItem(onTheFlyContext.getCurrentTopic(), onTheFlyContext.getFieldRank(), onTheFlyContext.getRawValueProperty().getValue());
 
             onTheFlyContext.setCurrentMaterial(newValue);
         };

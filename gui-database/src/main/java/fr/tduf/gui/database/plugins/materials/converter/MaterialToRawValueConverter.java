@@ -4,6 +4,7 @@ import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.Material;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.MaterialDefs;
+import javafx.beans.property.Property;
 import javafx.util.StringConverter;
 
 import java.util.Map;
@@ -15,13 +16,13 @@ import static fr.tduf.libunlimited.high.files.db.common.DatabaseConstants.RESOUR
 import static java.util.Arrays.asList;
 
 public class MaterialToRawValueConverter extends StringConverter<Material> {
-    private final MaterialDefs materialDefs;
+    private final Property<MaterialDefs> materialDefsProperty;
     private final EditorContext editorContext;
     private final DbDto.Topic currentTopic;
     private final Map<String, String> normalizedNamesDictionary;
 
-    public MaterialToRawValueConverter(MaterialDefs materialDefs, EditorContext editorContext, DbDto.Topic currentTopic, Map<String, String> normalizedNamesDictionary) {
-        this.materialDefs = materialDefs;
+    public MaterialToRawValueConverter(Property<MaterialDefs> materialDefsProperty, EditorContext editorContext, DbDto.Topic currentTopic, Map<String, String> normalizedNamesDictionary) {
+        this.materialDefsProperty = materialDefsProperty;
         this.editorContext = editorContext;
         this.currentTopic = currentTopic;
         this.normalizedNamesDictionary = normalizedNamesDictionary;
@@ -43,7 +44,6 @@ public class MaterialToRawValueConverter extends StringConverter<Material> {
                         .map(String::toUpperCase)
                         .orElseThrow(() -> new IllegalStateException("No resource value")).equals(materialNameAsResourceValue))
                 .findAny()
-                // TODO Reference not found => ask and create resource entry in current topic
                 .orElseThrow(() -> new IllegalStateException("No resource entry for material name " + materialName))
                 .getReference();
     }
@@ -59,7 +59,7 @@ public class MaterialToRawValueConverter extends StringConverter<Material> {
 
         String materialNameNormalized = normalizeString(materialName);
 
-        return materialDefs.getMaterials().stream()
+        return materialDefsProperty.getValue().getMaterials().stream()
                 .filter(material -> material.getName().equals(materialNameNormalized))
                 .findAny()
                 // TODO Material not found => warning
