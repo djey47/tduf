@@ -4,6 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.framework.lang.UByte;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.*;
+import fr.tduf.libunlimited.low.files.gfx.materials.helper.StoreConstants;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
@@ -14,7 +15,8 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.framework.lang.UByte.fromSigned;
-import static fr.tduf.libunlimited.low.files.gfx.materials.rw.StoreConstants.*;
+import static fr.tduf.libunlimited.low.files.gfx.materials.helper.MaterialsHelper.getColorSettingsKeyStream;
+import static fr.tduf.libunlimited.low.files.gfx.materials.helper.StoreConstants.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -214,14 +216,6 @@ public class MaterialsParser extends GenericParser<MaterialDefs> {
     private static Stream<String> getSettingsKeyStream(String groupKeyName, String settingKeyName, int groupSize) {
         return IntStream.range(1, groupSize + 1)
                 .mapToObj(itemIndex -> String.format(FORMAT_SETTINGS_KEY, groupKeyName, settingKeyName, itemIndex));
-    }
-
-    private static Stream<String> getColorSettingsKeyStream(String groupKeyName, String settingKeyName) {
-        return IntStream.range(0, 4)
-                .mapToObj(itemIndex -> {
-                    String currentSuffix = FIELD_SUFFIXES_COLORS[itemIndex];
-                    return String.format(FORMAT_COLOR_SETTINGS_KEY, groupKeyName, settingKeyName, currentSuffix);
-                });
     }
 
     @Override
