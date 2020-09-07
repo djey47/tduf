@@ -20,6 +20,13 @@ public class DataStoreFixture {
         return new DataStore(DataStoreFixture.getFileStructure("/files/structures/TEST-datastore-map.json"));
     }
 
+    public static DataStore createStoreWithEntries() throws IOException {
+        DataStore store = createEmptyStore();
+        createStoreEntries(store);
+        return store;
+    }
+
+
     public static String getStoreContentsAsJson(String resourcePath) throws IOException {
         return FilesHelper.readTextFromResourceFile(resourcePath);
     }

@@ -295,14 +295,8 @@ public class DataStore {
      * @return the stored raw value whose key match provided identifier, or empty if it does not exist
      */
     public Optional<byte[]> getRawValue(String fieldName) {
-        // TODO simplify by chaining
-        Entry entry = this.store.get(fieldName);
-
-        if (entry == null) {
-            return Optional.empty();
-        }
-
-        return ofNullable(entry.getRawValue());
+        return ofNullable(store.get(fieldName))
+                .map(Entry::getRawValue);
     }
 
     /**
@@ -460,6 +454,20 @@ public class DataStore {
     }
 
     /**
+     * Takes all data from provided store and append it to current
+     * @param otherStore - store to get all data from
+     */
+    public void merge(DataStore otherStore) {
+        LinksContainer currentLinksContainer = this.getLinksContainer();
+        Map<Integer, String> otherLinkSources = otherStore.getLinksContainer().getSources();
+        Map<Integer, String> otherLinkTargets = otherStore.getLinksContainer().getTargets();
+
+        this.getStore().putAll(otherStore.getStore());
+        currentLinksContainer.getSources().putAll(otherLinkSources);
+        currentLinksContainer.getTargets().putAll(otherLinkTargets);
+    }
+
+    /**
      * @return a full copy of data store instance.
      */
     public DataStore copy() {
@@ -572,4 +580,5 @@ public class DataStore {
     public LinksContainer getLinksContainer() {
         return linksContainer;
     }
+
 }

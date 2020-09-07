@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import static fr.tduf.libunlimited.low.files.research.domain.fixture.DataStoreFixture.createEmptyStore;
+import static fr.tduf.libunlimited.low.files.research.domain.fixture.DataStoreFixture.*;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -79,7 +79,7 @@ class DataStoreTest {
     @Test
     void copy_shouldMakeDataStoreCopy() {
         // GIVEN
-        DataStoreFixture.createStoreEntries(dataStore);
+        createStoreEntries(dataStore);
 
 
         // WHEN
@@ -105,7 +105,7 @@ class DataStoreTest {
     @Test
     void copyFields_toSameStore_withoutRepeater_shouldNotChangeValue() {
         // GIVEN
-        DataStoreFixture.createStoreEntries(dataStore);
+        createStoreEntries(dataStore);
         DataStore subStore = dataStore.getRepeatedValues("entry_list").get(0);
         Set<String> fieldNames = new HashSet<>(singletonList("my_field"));
 
@@ -123,7 +123,7 @@ class DataStoreTest {
     @Test
     void copyFields_toSameStore_withRepeater_shouldAddValue() {
         // GIVEN
-        DataStoreFixture.createStoreEntries(dataStore);
+        createStoreEntries(dataStore);
         DataStore subStore = dataStore.getRepeatedValues("entry_list").get(0);
         Set<String> fieldNames = new HashSet<>(singletonList("my_field"));
 
@@ -142,7 +142,7 @@ class DataStoreTest {
     void copyFields_toAnotherStore_withoutRepeater_shouldAddValue() throws IOException {
         // GIVEN
         DataStore targetStore = createEmptyStore();
-        DataStoreFixture.createStoreEntries(dataStore);
+        createStoreEntries(dataStore);
         DataStore subStore = dataStore.getRepeatedValues("entry_list").get(0);
         Set<String> fieldNames = new HashSet<>(singletonList("my_field"));
 
@@ -161,7 +161,7 @@ class DataStoreTest {
     void copyFields_toAnotherStore_withRepeater_shouldAddValue() throws IOException {
         // GIVEN
         DataStore targetStore = createEmptyStore();
-        DataStoreFixture.createStoreEntries(dataStore);
+        createStoreEntries(dataStore);
         DataStore subStore = dataStore.getRepeatedValues("entry_list").get(0);
         Set<String> fieldNames = new HashSet<>(singletonList("my_field"));
 
@@ -174,5 +174,21 @@ class DataStoreTest {
         assertThat(pickedActualEntry)
                 .isEqualTo(pickedOriginalEntry)
                 .isNotSameAs(pickedOriginalEntry);
+    }
+
+    @Test
+    void merge_shouldAppendSourceEntriesAndLinks() throws IOException {
+        // given
+        createStoreEntries(dataStore);
+        DataStore sourceStore = DataStoreFixture.createEmptyStore();
+        createStoreEntriesForLinkSources(sourceStore);
+
+        // when
+        dataStore.merge(sourceStore);
+
+        // then
+        assertThat(dataStore.size()).isEqualTo(16); // 12 + 4
+        assertThat(dataStore.getLinksContainer().getTargets()).hasSize(2);
+        assertThat(dataStore.getLinksContainer().getSources()).hasSize(2);
     }
 }
