@@ -32,12 +32,21 @@ public class MaterialsHelper {
     private static final Set<DbDto.Topic> MATERIAL_TOPICS = new HashSet<>(asList(CAR_COLORS, INTERIOR));
 
     /**
-     * @param miner - database miner
+     * @param miner : database miner
      * @return a map, with key = normalized material name, value = database material name
      */
     public static Map<String, String> buildNormalizedDictionary(BulkDatabaseMiner miner) {
         final Map<String, String> completeDic = new HashMap<>();
+        updateNormalizedDictionary(completeDic, miner);
+        return completeDic;
+    }
 
+    /**
+     * Updates dictionary
+     * @param dicToUpdate   : dictionary instance
+     * @param miner         : database miner
+     */
+    public static void updateNormalizedDictionary(Map<String, String> dicToUpdate, BulkDatabaseMiner miner) {
         MATERIAL_TOPICS.forEach(topic -> {
             Map<String, String> topicDic = miner.getResourcesFromTopic(topic)
                     .orElseThrow(() -> new IllegalStateException("No resources for topic " + topic))
@@ -47,10 +56,8 @@ public class MaterialsHelper {
                             value -> normalizeString(value.toUpperCase()),
                             value -> value,
                             (v1, v2) -> v1));
-            completeDic.putAll(topicDic);
+            dicToUpdate.putAll(topicDic);
         });
-
-        return completeDic;
     }
 
     /**
