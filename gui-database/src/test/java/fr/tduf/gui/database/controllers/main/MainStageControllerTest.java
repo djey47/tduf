@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.controllers.main;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.database.DatabaseEditor;
 import fr.tduf.gui.database.converter.ModifiedFlagToTitleConverter;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
@@ -20,7 +21,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.testfx.framework.junit5.ApplicationTest;
 
-import java.io.IOException;
 import java.nio.file.Paths;
 
 import static java.util.Optional.of;
@@ -67,6 +67,9 @@ class MainStageControllerTest extends ApplicationTest {
 
     @BeforeEach
     void setUp() {
+        // Inits application singleton
+        new DatabaseEditor();
+
         initMocks(this);
 
         when(servicesControllerMock.runningServiceProperty()).thenReturn(new SimpleBooleanProperty(false));
@@ -95,29 +98,6 @@ class MainStageControllerTest extends ApplicationTest {
 
     @AfterAll
     static void globalTearDown() {
-    }
-
-    @Test
-    void initConfiguration_shouldLoadConfiguration_andKeepDefaultLogLevel() throws IOException {
-        // given-when
-        controller.initConfiguration();
-
-        // then
-        verify(applicationConfigurationMock).load();
-        assertThat(Log.ERROR).isTrue();
-    }
-
-    @Test
-    void initConfiguration_whenDebuggingModeEnabled_shouldLoadConfiguration_andApplyDebugLogLevel() throws IOException {
-        // given
-        when(applicationConfigurationMock.isEditorDebuggingEnabled()).thenReturn(true);
-
-        // when
-        controller.initConfiguration();
-
-        // then
-        verify(applicationConfigurationMock).load();
-        assertThat(Log.ERROR).isTrue();
     }
 
     @Test

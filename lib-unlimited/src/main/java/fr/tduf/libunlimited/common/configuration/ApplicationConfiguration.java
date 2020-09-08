@@ -8,9 +8,13 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.TreeSet;
 
 import static fr.tduf.libunlimited.common.forever.FileConstants.DIRECTORY_CONFIGURATION;
+import static fr.tduf.libunlimited.common.forever.FileConstants.FORMAT_THEME_FILE;
 import static java.util.Collections.enumeration;
 import static java.util.Optional.ofNullable;
 
@@ -30,6 +34,7 @@ public class ApplicationConfiguration extends Properties {
     private static final String KEY_EDITOR_PROFILE = "tduf.editor.profile";
     private static final String KEY_EDITOR_PLUGINS_ENABLED = "tduf.editor.plugins.enabled";
     private static final String KEY_EDITOR_DEBUGGING_ENABLED = "tduf.editor.debugging.enabled";
+    private static final String KEY_EDITOR_CUSTOM_THEME = "tduf.editor.theme";
 
     /**
      * Solves the issue of random key ordering
@@ -124,7 +129,15 @@ public class ApplicationConfiguration extends Properties {
     public boolean isEditorDebuggingEnabled() {
         return resolveBooleanProperty(KEY_EDITOR_DEBUGGING_ENABLED, false);
     }
-    
+
+    /**
+     * @return path for custom theme css
+     */
+    public Optional<Path> getEditorCustomThemeCss() {
+       return(ofNullable(getProperty(KEY_EDITOR_CUSTOM_THEME))
+               .map(theme -> Paths.get(DIRECTORY_CONFIGURATION, String.format(FORMAT_THEME_FILE, theme))));
+    }
+
     /**
      * Saves current configuration into user home directory.
      * @throws IOException when storage error occurs

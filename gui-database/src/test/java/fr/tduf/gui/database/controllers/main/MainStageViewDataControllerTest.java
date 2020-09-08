@@ -100,12 +100,15 @@ class MainStageViewDataControllerTest {
 
     @BeforeEach
     void setUp() {
+        // Inits application singleton
+        new DatabaseEditor();
+
         initMocks(this);
 
         TEST_PROFILE.setTopic(TOPIC2);
         TEST_UNEXISTING_PROFILE.setTopic(TOPIC2);
 
-        DatabaseEditor.getCommandLineParameters().clear();
+        DatabaseEditor.getInstance().getCommandLineParameters().clear();
 
         when(mainStageControllerMock.getApplicationConfiguration()).thenReturn(applicationConfigurationMock);
 
@@ -233,7 +236,7 @@ class MainStageViewDataControllerTest {
     @Test
     void resolveInitialDatabaseDirectory_whenWrongCommandLineParameter_andNoConfiguration_shouldReturnEmpty() {
         // GIVEN
-        DatabaseEditor.getCommandLineParameters().add("-p");
+        DatabaseEditor.getInstance().getCommandLineParameters().add("-p");
         when(applicationConfigurationMock.getDatabasePath()).thenReturn(empty());
 
         // WHEN
@@ -246,7 +249,7 @@ class MainStageViewDataControllerTest {
     @Test
     void resolveInitialDatabaseDirectory_whenRightCommandLineParameter_shouldReturnLocation() {
         // GIVEN
-        DatabaseEditor.getCommandLineParameters().add("/tdu/euro/bnk/database");
+        DatabaseEditor.getInstance().getCommandLineParameters().add("/tdu/euro/bnk/database");
 
         // WHEN
         final Optional<String> actualDirectory = controller.resolveInitialDatabaseDirectory();

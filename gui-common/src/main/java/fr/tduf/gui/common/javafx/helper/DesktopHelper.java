@@ -1,6 +1,7 @@
 package fr.tduf.gui.common.javafx.helper;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.common.javafx.application.AbstractGuiApp;
 
 import java.awt.*;
 import java.io.File;
@@ -9,7 +10,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 
-import static fr.tduf.gui.common.javafx.application.AbstractGuiApp.getHostServicesInstance;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -42,7 +42,7 @@ public class DesktopHelper {
         requireNonNull(address, "Address to open is required");
         
         try {
-            getHostServicesInstance().showDocument(address);
+            AbstractGuiApp.getInstance().getHostServicesInstance().showDocument(address);
         } catch (NullPointerException npe) {
             // Workaround for OpenJDK, falling back to AWT's Desktop...
             Log.warn(THIS_CLASS_NAME, "Host services are not supported, falling back to AWT Desktop services...");

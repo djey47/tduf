@@ -3,13 +3,13 @@ package fr.tduf.gui.database.controllers.main;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.AppConstants;
 import fr.tduf.gui.common.game.helpers.GameSettingsHelper;
-import fr.tduf.gui.common.javafx.application.AbstractGuiApp;
 import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.javafx.helper.DesktopHelper;
 import fr.tduf.gui.common.javafx.helper.options.SimpleDialogOptions;
 import fr.tduf.gui.common.services.DatabaseChecker;
 import fr.tduf.gui.common.services.DatabaseFixer;
+import fr.tduf.gui.database.DatabaseEditor;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.controllers.EntriesStageController;
 import fr.tduf.gui.database.controllers.FieldsBrowserStageController;
@@ -90,9 +90,8 @@ public class MainStageController extends AbstractGuiController {
     private final List<DbDto> databaseObjects = new ArrayList<>(DbDto.Topic.values().length);
     private DbDto currentTopicObject;
 
-
     @SuppressWarnings("FieldMayBeFinal")
-    private ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
+    private ApplicationConfiguration applicationConfiguration = DatabaseEditor.getInstance().getApplicationConfiguration();
 
     @FXML
     Label creditsLabel;
@@ -144,9 +143,7 @@ public class MainStageController extends AbstractGuiController {
 
     @Override
     protected void init() throws IOException {
-        AbstractGuiApp.setMainController(this);
-
-        initConfiguration();
+        DatabaseEditor.getInstance().setMainController(this);
 
         viewDataController = new MainStageViewDataController(this);
         changeDataController = new MainStageChangeDataController(this);
@@ -449,16 +446,6 @@ public class MainStageController extends AbstractGuiController {
             return;
         }
         event.consume();
-    }
-
-    void initConfiguration() throws IOException {
-        applicationConfiguration.load();
-
-        // Debugging mode?
-        if (applicationConfiguration.isEditorDebuggingEnabled()) {
-            Log.set(Log.LEVEL_DEBUG);
-            Log.debug(THIS_CLASS_NAME, "/!\\ DEBUG mode enabled via application configuration /!\\");
-        }
     }
 
     void initAfterDatabaseLoading() {

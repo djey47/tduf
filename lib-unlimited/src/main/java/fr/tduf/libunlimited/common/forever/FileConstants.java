@@ -32,6 +32,11 @@ public class FileConstants {
      */
     public static String DIRECTORY_LOGS;
 
+    /**
+     * Format of custom theme CSS file
+     */
+    public static String FORMAT_THEME_FILE = "theme-%s.css";
+
     static {
         try {
             DIRECTORY_ROOT = FilesHelper.getRootDirectory().toString();

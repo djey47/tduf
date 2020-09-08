@@ -452,7 +452,7 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     }
 
     Optional<String> resolveInitialDatabaseDirectory() {
-        final Optional<String> pathParameter = DatabaseEditor.getCommandLineParameters().stream()
+        final Optional<String> pathParameter = DatabaseEditor.getInstance().getCommandLineParameters().stream()
                 .filter(p -> !p.startsWith(AppConstants.SWITCH_PREFIX))
                 .findAny();
 

@@ -188,6 +188,28 @@ class ApplicationConfigurationTest {
     }
 
     @Test
+    void getEditorCustomThemeCss_whenPropertyDoesNotExist_shouldReturnEmpty() {
+        // given-when
+        Optional<Path> actualPath = applicationConfiguration.getEditorCustomThemeCss();
+
+        // then
+        assertThat(actualPath).isEmpty();
+    }
+
+    @Test
+    void getEditorCustomThemeCss_whenPropertyExists_shouldReturnCorrectPath() {
+        // given
+        applicationConfiguration.setProperty("tduf.editor.theme", "clear");
+
+        // when
+        Optional<Path> actualPath = applicationConfiguration.getEditorCustomThemeCss();
+
+        // then
+        assertThat(actualPath).isPresent();
+        assertThat(actualPath.get()).endsWith(Paths.get(".tduf", "theme-clear.css"));
+    }
+
+    @Test
     void keys_shouldReturnKeysSortedAlphabetically() {
         // given
         applicationConfiguration.setProperty("f", "value");

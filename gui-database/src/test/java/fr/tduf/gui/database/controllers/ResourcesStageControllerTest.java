@@ -1,5 +1,6 @@
 package fr.tduf.gui.database.controllers;
 
+import fr.tduf.gui.database.DatabaseEditor;
 import fr.tduf.gui.database.controllers.main.MainStageChangeDataController;
 import fr.tduf.gui.database.controllers.main.MainStageController;
 import fr.tduf.gui.database.controllers.main.MainStageViewDataController;
@@ -39,6 +40,9 @@ class ResourcesStageControllerTest extends ApplicationTest {
 
     @BeforeEach
     void setUp() {
+        // Inits application singleton
+        new DatabaseEditor();
+
         initMocks(this);
         
         ChoiceBox<DbDto.Topic> topicsChoiceBox = new ChoiceBox<>();
