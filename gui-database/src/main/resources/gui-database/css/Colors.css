@@ -1,11 +1,11 @@
-/** DEFAULT COLOR THEME: midnight-dodger **/
+/** DEFAULT COLOR THEME: clear **/
 
 * {
-    -color-background-primary: #1a1a2e;
-    -color-background-secondary: #16213e;
-    -color-background-tertiary: #0f3460;
-    -color-background-neutral: #66759a;
+    -color-background-primary: #f6f5f5;
+    -color-background-secondary: #f6f5f5;
+    -color-background-tertiary: white;
+    -color-background-neutral: white;
     -color-accent: dodgerBlue;
-    -color-neutral: silver;
-    -color-default: #f6f6f6;
+    -color-neutral: white;
+    -color-default: black;
 }
