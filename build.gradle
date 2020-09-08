@@ -207,13 +207,14 @@ project(':gui-database') {
         classpath sourceSets.main.runtimeClasspath
     }
 
-    task copyProfiles(type: Copy) {
-        description 'Copies all default profiles to release directory.'
+    task copyThemes(type: Copy) {
+        description 'Copies all default themes to release directory.'
         group 'packaging'
         mustRunAfter ':cleanPackDir'
 
-        from 'editorProfiles/'
-        into '../pack/editorProfiles/'
+        from 'src/main/resources/gui-database/css/themes/'
+        include '*.css'
+        into '../pack/themes/'
     }
 }
 

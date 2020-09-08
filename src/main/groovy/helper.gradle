@@ -36,7 +36,7 @@ def fullPackDependencies = { ->
                            ':gui-database:copyDoc', 'copyDoc',
                            *externalDeps,
                            ':lib-unlimited:copyStructures',
-                           ':gui-database:copyProfiles',
+                           ':gui-database:copyThemes',
                            'fullJar' ]
 
     def packDeps = [  'cli:copyMainScripts', ':gui-database:copyMainScripts', 'copySharedScripts', 'copyUtilScripts' ]
@@ -53,7 +53,7 @@ def databaseEditorPackDependencies = { ->
     def commonPackDeps = [ ':gui-database:markdownToHtml',
                            ':gui-database:copyDoc',
                            *externalDeps,
-                           ':gui-database:copyProfiles',
+                           ':gui-database:copyThemes',
                            'databaseEditorJar' ]
 
     def packDeps = [ ':gui-database:copyMainScripts', ':gui-database:copyUtilScripts', 'copySharedScripts' ]
