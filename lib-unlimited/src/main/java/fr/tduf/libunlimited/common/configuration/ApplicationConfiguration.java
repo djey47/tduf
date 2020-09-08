@@ -8,10 +8,10 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.*;
 
 import static fr.tduf.libunlimited.common.forever.FileConstants.DIRECTORY_CONFIGURATION;
+import static java.util.Collections.enumeration;
 import static java.util.Optional.ofNullable;
 
 /**
@@ -30,6 +30,15 @@ public class ApplicationConfiguration extends Properties {
     private static final String KEY_EDITOR_PROFILE = "tduf.editor.profile";
     private static final String KEY_EDITOR_PLUGINS_ENABLED = "tduf.editor.plugins.enabled";
     private static final String KEY_EDITOR_DEBUGGING_ENABLED = "tduf.editor.debugging.enabled";
+
+    /**
+     * Solves the issue of random key ordering
+     * @return sorted keys as enumeration
+     */
+    @Override
+    public synchronized Enumeration<Object> keys() {
+        return enumeration(new TreeSet<>(super.keySet()));
+    }
 
     /**
      * @return full path to game database if it exists, else return default location from game directory, or empty otherwise

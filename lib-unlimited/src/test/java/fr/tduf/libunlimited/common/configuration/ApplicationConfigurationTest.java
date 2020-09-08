@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -183,6 +185,23 @@ class ApplicationConfigurationTest {
         //then
         Path expectedDatabasePath = Paths.get(customDatabaseDir);
         assertThat(actualDatabasePath).contains(expectedDatabasePath);
+    }
+
+    @Test
+    void keys_shouldReturnKeysSortedAlphabetically() {
+        // given
+        applicationConfiguration.setProperty("f", "value");
+        applicationConfiguration.setProperty("e", "value");
+        applicationConfiguration.setProperty("d", "value");
+        applicationConfiguration.setProperty("c", "value");
+        applicationConfiguration.setProperty("b", "value");
+        applicationConfiguration.setProperty("a", "value");
+
+        // when
+        Enumeration<Object> actualKeys = applicationConfiguration.keys();
+
+        // then
+        assertThat(Collections.list(actualKeys)).containsExactly("a", "b", "c", "d", "e" ,"f");
     }
 
 }
