@@ -9,8 +9,13 @@
 }
 
 .comboBox .list-cell {
-    -fx-background-color: -color-background-tertiary;
+    -fx-background-color: transparent;
     -fx-text-fill: -color-default;
+}
+
+.comboBox .list-cell .scrollbar-vertical, .scrollbar-horizontal {
+    -fx-background-color: transparent;
+    -fx-base: -color-tertiary;
 }
 
 /** BUTTONS **/
