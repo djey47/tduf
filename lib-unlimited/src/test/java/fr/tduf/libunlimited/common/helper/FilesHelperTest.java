@@ -10,9 +10,11 @@ import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Set;
@@ -319,5 +321,27 @@ class FilesHelperTest {
         // THEN
         final Path expectedPath = Paths.get("/", "home", "user", "dev", "tduf");
         assertThat(actualDirectory).isEqualTo(expectedPath);
+    }
+
+    @Test
+    void readTextFromFile_whenFileFound_shouldReturnContents() throws IOException {
+        // given
+        Path tempPath = Paths.get(TestingFilesHelper.createTempDirectoryForLibrary(), "testfile.txt");
+        FileWriter fileWriter = new FileWriter(tempPath.toString());
+        fileWriter.write("Files in Java might be tricky, but it is fun enough!");
+        fileWriter.close();
+
+        // when
+        String actualContents = FilesHelper.readTextFromFile(tempPath);
+
+        // then
+        assertThat(actualContents).hasSize(52);
+    }
+
+    @Test
+    void readTextFromFile_whenFileNotFound_shouldThrowException() {
+        // given-when-then
+        assertThrows(NoSuchFileException.class,
+                () -> FilesHelper.readTextFromFile(Paths.get("foo")));
     }
 }

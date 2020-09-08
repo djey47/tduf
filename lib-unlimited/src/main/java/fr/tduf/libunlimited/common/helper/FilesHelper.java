@@ -64,6 +64,16 @@ public class FilesHelper {
     private FilesHelper() {}
 
     /**
+     * Reads text file at provided location. Used charset is the default one.
+     * @param filePath  : path of file
+     * @return a String with resource file contents.
+     */
+    public static String readTextFromFile(Path filePath) throws IOException {
+        byte[] encoded = Files.readAllBytes(filePath);
+        return new String(encoded, CHARSET_DEFAULT);
+    }
+
+    /**
      * Reads text file at provided resource location. Used charset is the default one.
      * @param resourcePath  : path of resource
      * @return a String with resource file contents.
