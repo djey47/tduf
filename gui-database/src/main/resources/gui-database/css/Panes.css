@@ -19,3 +19,8 @@
     /* -fx-background-color does not work for scroll pane */
     -fx-background: -color-background-secondary;
 }
+
+.tabContainer .scroll-bar:horizontal, .scroll-bar:vertical{
+    -fx-base: -color-background-tertiary;
+    -fx-background-color:transparent;
+}
