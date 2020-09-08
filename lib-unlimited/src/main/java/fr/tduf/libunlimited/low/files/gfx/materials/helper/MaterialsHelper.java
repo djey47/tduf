@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.gfx.materials.helper;
 
+import fr.tduf.libunlimited.high.files.db.common.DatabaseConstants;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
@@ -18,8 +19,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.common.game.helper.GameEngineHelper.normalizeString;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_COLORS;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.INTERIOR;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static fr.tduf.libunlimited.low.files.gfx.materials.helper.StoreConstants.FIELD_SUFFIXES_COLORS;
 import static fr.tduf.libunlimited.low.files.gfx.materials.helper.StoreConstants.FORMAT_COLOR_SETTINGS_KEY;
 import static java.util.Arrays.asList;
@@ -107,6 +107,19 @@ public class MaterialsHelper {
         return getAllResourcesAsParallelStream(topic, miner)
                 .map(MaterialsHelper::pickResourceValue)
                 .anyMatch(value -> value.equalsIgnoreCase(materialName));
+    }
+
+    /**
+     * @param topic : topic including resources
+     * @return REF of 'no material' resource value
+     */
+    public static String resolveNoMaterialReference(DbDto.Topic topic) {
+       if (CAR_COLORS == topic) {
+           return DatabaseConstants.CODE_EXTERIOR_COLOR_NONE;
+       } else if (INTERIOR == topic) {
+           return DatabaseConstants.CODE_INTERIOR_COLOR_NONE;
+       }
+       throw new IllegalArgumentException("Unsupported topiic for materials: " + topic);
     }
 
     private static String pickResourceValue(ResourceEntryDto resourceEntry) {

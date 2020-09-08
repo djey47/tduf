@@ -3,6 +3,7 @@ package fr.tduf.libunlimited.low.files.gfx.materials.helper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
+import fr.tduf.libunlimited.low.files.gfx.materials.domain.Material;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -10,8 +11,7 @@ import org.mockito.Mock;
 import java.util.HashMap;
 import java.util.Map;
 
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_COLORS;
-import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.INTERIOR;
+import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.of;
@@ -91,6 +91,21 @@ class MaterialsHelperTest {
 
         // then
         assertThat(actualRef).isEqualTo("REF1");
+    }
+
+    @Test
+    void resolveNoMaterialReference_whenSupportedTopicsshouldReturnRightRefs() {
+        // given-when-then
+        assertThat(MaterialsHelper.resolveNoMaterialReference(CAR_COLORS)).isEqualTo("53356127");
+        assertThat(MaterialsHelper.resolveNoMaterialReference(INTERIOR)).isEqualTo("53364643");
+    }
+
+    @Test
+    void resolveNoMaterialReference_whenUnsupprtedTopic_shouldThrowException() {
+        // given-when-then
+        //noinspection ResultOfMethodCallIgnored
+        assertThrows(IllegalArgumentException.class,
+                () -> MaterialsHelper.resolveNoMaterialReference(CAR_PHYSICS_DATA));
     }
 
     private void initResourceMocks() {

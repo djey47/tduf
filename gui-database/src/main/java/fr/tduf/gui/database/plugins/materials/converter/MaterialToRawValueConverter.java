@@ -39,7 +39,8 @@ public class MaterialToRawValueConverter extends StringConverter<Material> {
             return "";
         }
         String materialNameAsResourceValue = fullNameProvider.apply(material.getName());
-        return MaterialsHelper.getResourceRefForMaterialName(materialNameAsResourceValue, currentTopic, editorContext.getMiner());
+        String resourceRef = MaterialsHelper.getResourceRefForMaterialName(materialNameAsResourceValue, currentTopic, editorContext.getMiner());
+        return resourceRef == null ? MaterialsHelper.resolveNoMaterialReference(currentTopic) : resourceRef;
     }
 
     @Override
