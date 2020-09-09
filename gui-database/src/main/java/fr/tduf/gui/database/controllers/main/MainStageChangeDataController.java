@@ -24,6 +24,8 @@ import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.rw.DatabaseParser;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
+import fr.tduf.libunlimited.low.files.gfx.materials.domain.Material;
+import fr.tduf.libunlimited.low.files.gfx.materials.domain.MaterialPiece;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
@@ -74,7 +76,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
                 .ifPresent(updatedItem -> {
                     updateViewComponentsForContentItem(currentEntryIndex, updatedItem);
 
-                    modifiedProperty().setValue(true);
+                    markChangesMade();
                 });
     }
 
@@ -141,7 +143,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
 
         getChangeHelper().updateResourceItemWithReference(topic, locale, resourceReference, newResourceValue);
 
-        modifiedProperty().setValue(true);
+        markChangesMade();
     }
 
     /**
@@ -153,7 +155,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
 
         getChangeHelper().updateResourceEntryWithReference(topic, oldResourceReference, newResourceReference, newResourceValue);
 
-        modifiedProperty().setValue(true);
+        markChangesMade();
     }
 
     /**
@@ -169,7 +171,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
 
         getChangeHelper().removeEntryWithIdentifier(internalEntryId, topic);
 
-        modifiedProperty().setValue(true);
+        markChangesMade();
     }
 
     /**
@@ -181,7 +183,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
 
         getChangeHelper().removeResourceEntryWithReference(topic, resourceReference);
 
-        modifiedProperty().setValue(true);
+        markChangesMade();
     }
 
     /**
@@ -193,7 +195,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
 
         ContentEntryDto newEntry = getChangeHelper().addContentsEntryWithDefaultItems(currentTopicProperty().getValue());
 
-        modifiedProperty().setValue(true);
+        markChangesMade();
 
         return newEntry.getId();
     }
@@ -209,7 +211,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
                 currentEntryIndexProperty().getValue(),
                 currentTopicProperty().getValue());
 
-        modifiedProperty().setValue(true);
+        markChangesMade();
 
         return newEntry.getId();
     }
@@ -222,7 +224,18 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
 
         getChangeHelper().addResourceValueWithReference(topic, locale, newResourceReference, newResourceValue);
 
-        modifiedProperty().setValue(true);
+        markChangesMade();
+    }
+
+    /**
+     * Changes shader configuration for provided material
+     * @param material                  : material to be updated
+     * @param newShaderConfiguration    : new configuration to be applied
+     */
+    public void updateShaderConfiguration(Material material, MaterialPiece newShaderConfiguration) {
+        material.getProperties().getShader().updateConfiguration(newShaderConfiguration);
+
+        markChangesMade();
     }
 
     String exportCurrentEntryAsLine() {
@@ -262,7 +275,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
 
         final DatabasePatchProperties effectiveProperties = patcher.applyWithProperties(patchObject, patchProperties);
 
-        modifiedProperty().setValue(true);
+        markChangesMade();
 
         return PatchPropertiesReadWriteHelper.writeEffectivePatchProperties(effectiveProperties, patchFile.getAbsolutePath());
     }
@@ -272,7 +285,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
         TdupeGateway gateway = AbstractDatabaseHolder.prepare(TdupeGateway.class, getDatabaseObjects());
         gateway.applyPerformancePackToEntryWithIdentifier(currentEntryIndex, packFile);
 
-        modifiedProperty().setValue(true);
+        markChangesMade();
     }
 
     void importLegacyPatch(String patchFile) throws IOException, ReflectiveOperationException {
@@ -282,7 +295,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
         DatabasePatcher patcher = AbstractDatabaseHolder.prepare(DatabasePatcher.class, getDatabaseObjects());
         patcher.apply(patchObject);
 
-        modifiedProperty().setValue(true);
+        markChangesMade();
     }
 
     void moveEntryWithIdentifier(int step, int internalEntryId, DbDto.Topic topic) {
@@ -290,7 +303,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
 
         getChangeHelper().moveEntryWithIdentifier(step, internalEntryId, topic);
 
-        modifiedProperty().setValue(true);
+        markChangesMade();
     }
 
     private List<String> getRawValuesFromCurrentEntry() {
@@ -331,7 +344,7 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
 
         getChangeHelper().addContentsEntryWithDefaultItemsAndUpdateAssociation(targetTopic, sourceEntryRef, targetEntryRef);
 
-        modifiedProperty().setValue(true);
+        markChangesMade();
     }
 
     private void removeLinkedEntryAndUpdateStage(TableView.TableViewSelectionModel<ContentEntryDataItem> tableViewSelectionModel, TopicLinkDto topicLinkObject) {
@@ -363,6 +376,10 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
         moveEntryWithIdentifier(1, tableViewSelectionModel.getSelectedItem().internalEntryIdProperty().get(), topicLinkObject.getTopic());
         updateAllPropertiesForLink(topicLinkObject);
         TableViewHelper.selectRowAndScroll(initialRowIndex + 1, tableView);
+    }
+
+    private void markChangesMade() {
+        modifiedProperty().setValue(true);
     }
 
     private static Optional<DbPatchDto> generatePatchObject(DbDto.Topic currentTopic, List<String> entryReferences, List<String> entryFields, List<DbDto> databaseObjects) {

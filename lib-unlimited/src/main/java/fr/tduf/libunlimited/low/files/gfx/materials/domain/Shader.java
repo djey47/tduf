@@ -4,6 +4,8 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Represents all parameters for a shader
  */
@@ -24,6 +26,14 @@ public class Shader {
 
     public List<MaterialSubSetting> getSubSettings() {
         return subSettings;
+    }
+
+    /**
+     * Changes shader configuration
+     * @param materialPiece : new configuration to apply
+     */
+    public void updateConfiguration(MaterialPiece materialPiece) {
+        configuration = requireNonNull(materialPiece, "A material piece member is required");
     }
 
     public static class ShaderBuilder extends Shader {
