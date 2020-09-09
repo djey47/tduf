@@ -12,12 +12,14 @@ import fr.tduf.gui.database.plugins.common.contexts.PluginContext;
 import fr.tduf.gui.database.plugins.materials.common.DisplayConstants;
 import fr.tduf.gui.database.plugins.materials.converter.MaterialToItemConverter;
 import fr.tduf.gui.database.plugins.materials.converter.MaterialToRawValueConverter;
+import fr.tduf.gui.database.plugins.materials.converter.ShaderToItemConverter;
 import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.framework.lang.UByte;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.Material;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.MaterialDefs;
+import fr.tduf.libunlimited.low.files.gfx.materials.domain.MaterialPiece;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.MaterialSettings;
 import fr.tduf.libunlimited.low.files.gfx.materials.helper.MaterialsHelper;
 import fr.tduf.libunlimited.low.files.gfx.materials.rw.MaterialsParser;
@@ -27,7 +29,6 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -49,9 +50,12 @@ import static fr.tduf.gui.database.plugins.materials.common.FxConstants.*;
 import static fr.tduf.libunlimited.common.game.FileConstants.*;
 import static fr.tduf.libunlimited.common.game.domain.Locale.DEFAULT;
 import static java.nio.file.Files.readAllBytes;
+import static java.util.Arrays.stream;
 import static java.util.Collections.singletonList;
 import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 import static javafx.beans.binding.Bindings.createObjectBinding;
+import static javafx.collections.FXCollections.observableArrayList;
 import static javafx.geometry.Orientation.HORIZONTAL;
 import static javafx.geometry.Orientation.VERTICAL;
 import static javafx.scene.control.Alert.AlertType.CONFIRMATION;
@@ -173,18 +177,26 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
     }
 
     private VBox createMainColumn(OnTheFlyContext onTheFlyContext) {
-        ObservableList<Material> materialInfos = FXCollections.observableArrayList(materialsInfoEnhancedProperty.getValue().getMaterials());
+        ObservableList<Material> materialInfos = observableArrayList(materialsInfoEnhancedProperty.getValue().getMaterials());
         ComboBox<Material> materialSelectorComboBox = new ComboBox<>(materialInfos.sorted(comparing(Material::getName)));
 
         materialSelectorComboBox.getStyleClass().addAll(CSS_CLASS_COMBOBOX, CSS_CLASS_MAT_SELECTOR_COMBOBOX);
         materialSelectorComboBox.setConverter(new MaterialToItemConverter(this::getFullNameFromDictionary));
+
+        ObservableList<MaterialPiece> availableShaders = observableArrayList(stream(MaterialPiece.values())
+                .sorted()
+                .collect(toList()));
+        ComboBox<MaterialPiece> shaderSelectorComboBox = new ComboBox<>(availableShaders);
+
+        shaderSelectorComboBox.getStyleClass().addAll(CSS_CLASS_COMBOBOX, CSS_CLASS_SHADER_SELECTOR_COMBOBOX);
+        shaderSelectorComboBox.setConverter(new ShaderToItemConverter());
 
         VBox mainColumnBox = new VBox();
         mainColumnBox.getStyleClass().add(CSS_CLASS_MAT_MAIN_COLUMN);
         ObservableList<Node> mainColumnChildren = mainColumnBox.getChildren();
 
         HBox matSelectorBox = createMaterialSelectorBox(materialSelectorComboBox, onTheFlyContext);
-        VBox matSettingsBox = createMaterialSettingsBox(onTheFlyContext);
+        VBox matSettingsBox = createMaterialSettingsBox(shaderSelectorComboBox, onTheFlyContext);
 
         mainColumnChildren.add(matSelectorBox);
         mainColumnChildren.add(matSettingsBox);
@@ -192,13 +204,13 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
         return mainColumnBox;
     }
 
-    private VBox createMaterialSettingsBox(OnTheFlyContext onTheFlyContext) {
+    private VBox createMaterialSettingsBox(ComboBox<MaterialPiece> shaderSelectorComboBox, OnTheFlyContext onTheFlyContext) {
         VBox matSettingsBox = new VBox();
 
         matSettingsBox.getStyleClass().add(CSS_CLASS_MAT_SETTINGS_BOX);
 
         VBox colorsBox = createColorsBox((OnTheFlyMaterialsContext) onTheFlyContext);
-        VBox propertiesBox = createPropertiesBox((OnTheFlyMaterialsContext) onTheFlyContext);
+        VBox propertiesBox = createPropertiesBox(shaderSelectorComboBox, (OnTheFlyMaterialsContext) onTheFlyContext);
 
         matSettingsBox.getChildren().addAll(
                 colorsBox,
@@ -210,29 +222,35 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
         return matSettingsBox;
     }
 
-    private VBox createPropertiesBox(OnTheFlyMaterialsContext onTheFlyContext) {
+    private VBox createPropertiesBox(ComboBox<MaterialPiece> shaderSelectorComboBox, OnTheFlyMaterialsContext onTheFlyContext) {
         VBox propertiesBox = new VBox();
 
         propertiesBox.getStyleClass().addAll(CSS_CLASS_MAT_PROPERTIES_BOX);
 
         propertiesBox.getChildren().addAll(
-            createShaderBox(onTheFlyContext)
+            createShaderBox(shaderSelectorComboBox, onTheFlyContext)
         );
 
         return propertiesBox;
     }
 
-    private HBox createShaderBox(OnTheFlyMaterialsContext onTheFlyContext) {
+    private HBox createShaderBox(ComboBox<MaterialPiece> shaderSelectorComboBox, OnTheFlyMaterialsContext onTheFlyContext) {
         HBox shaderBox = new HBox();
 
         shaderBox.getStyleClass().addAll(CSS_CLASS_SHADER_BOX);
 
-        Label shaderValueLabel = new Label();
-        shaderValueLabel.textProperty().bind(createShaderValueBinding(onTheFlyContext.getCurrentMaterialProperty()));
+        Label shaderValueLabel = new Label(DisplayConstants.LABEL_SHADER);
+        shaderValueLabel.setLabelFor(shaderSelectorComboBox);
+        shaderValueLabel.getStyleClass().add(CSS_CLASS_ITEM_LABEL);
+
+        shaderSelectorComboBox.getSelectionModel().selectedItemProperty().addListener(
+                getShaderSelectorChangeListener(onTheFlyContext));
+        Bindings.bindBidirectional(
+                onTheFlyContext.getCurrentShaderProperty(), shaderSelectorComboBox.valueProperty());
 
         shaderBox.getChildren().addAll(
-                new Label(DisplayConstants.LABEL_SHADER),
-                shaderValueLabel
+                shaderValueLabel,
+                shaderSelectorComboBox
         );
 
         return shaderBox;
@@ -324,17 +342,6 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
         }, onTheFlyMaterialsContext.getCurrentMaterialProperty());
     }
 
-    private ObjectBinding<String> createShaderValueBinding(Property<Material> currentMaterialProperty) {
-        return createObjectBinding(() -> {
-            Material currentMaterial = currentMaterialProperty.getValue();
-            if (currentMaterial == null) {
-                return "";
-            }
-            MaterialSettings materialSettings = currentMaterial.getProperties();
-            return String.format(FORMAT_SHADER_VALUE, materialSettings.getShader().getConfiguration().getName(), materialSettings.getShader().getConfiguration().name());
-        }, currentMaterialProperty);
-    }
-
     private ObjectBinding<String> createAlphaValueBinding(Property<Material> currentMaterialProperty) {
         return createObjectBinding(() -> {
             Material currentMaterial = currentMaterialProperty.getValue();
@@ -346,7 +353,6 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
             return String.format(FORMAT_ALPHA_VALUE, materialSettings.getAlpha().get(), alphaBlending[0].getSigned(), alphaBlending[1].getSigned());
         }, currentMaterialProperty);
     }
-
 
     private HBox createMaterialSelectorBox(ComboBox<Material> materialSelectorComboBox, OnTheFlyContext onTheFlyContext) {
         HBox matSelectorBox = new HBox();
@@ -362,8 +368,9 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
         availableMaterialsLabel.setLabelFor(materialSelectorComboBox);
         availableMaterialsLabel.getStyleClass().add(CSS_CLASS_ITEM_LABEL);
 
-        matSelectorBox.getChildren().add(availableMaterialsLabel);
-        matSelectorBox.getChildren().add(materialSelectorComboBox);
+        matSelectorBox.getChildren().addAll(
+                availableMaterialsLabel,
+                materialSelectorComboBox);
 
         return matSelectorBox;
     }
@@ -395,6 +402,22 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
 
             changeDataController.updateContentItem(currentTopic, onTheFlyContext.getFieldRank(), onTheFlyContext.getRawValueProperty().getValue());
             onTheFlyContext.setCurrentMaterial(newValue);
+            onTheFlyContext.setCurrentShader(newValue.getProperties().getShader().getConfiguration());
+        };
+    }
+
+    private ChangeListener<MaterialPiece> getShaderSelectorChangeListener(OnTheFlyMaterialsContext onTheFlyContext) {
+        return (ObservableValue<? extends MaterialPiece> observable, MaterialPiece oldValue, MaterialPiece newValue) -> {
+            if (Objects.equals(oldValue, newValue)) {
+                return;
+            }
+
+            Material currentMaterial = onTheFlyContext.getCurrentMaterialProperty().getValue();
+            if (currentMaterial != null) {
+                getEditorContext().getChangeDataController().updateShaderConfiguration(currentMaterial, newValue);
+            }
+
+            onTheFlyContext.setCurrentShader(newValue);
         };
     }
 

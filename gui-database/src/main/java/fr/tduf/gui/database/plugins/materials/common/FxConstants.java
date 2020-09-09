@@ -7,6 +7,7 @@ public class FxConstants {
     public static final String CSS_CLASS_MAT_SELECTOR_BOX = "matSelectorBox";
     public static final String CSS_CLASS_MAT_SETTINGS_BOX = "matSettingsBox";
     public static final String CSS_CLASS_MAT_SELECTOR_COMBOBOX = "matSelectorComboBox";
+    public static final String CSS_CLASS_SHADER_SELECTOR_COMBOBOX = "shaderSelectorComboBox";
     public static final String CSS_CLASS_MAT_COLORS_BOX = "colorsBox";
     public static final String CSS_CLASS_MAT_PROPERTIES_BOX = "propertiesBox";
     public static final String CSS_CLASS_COLOR_BOX = "colorBox";

@@ -11,6 +11,10 @@
     -fx-pref-width: 250.0;
 }
 
+.shaderSelectorComboBox {
+    -fx-pref-width: 475.0;
+}
+
 .colorsBox, propertiesBox {
     -fx-padding: 5.0 0.0;
 }
