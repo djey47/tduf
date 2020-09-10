@@ -102,12 +102,12 @@ public enum MaterialPiece {
     SHADER_VEHICLE_INTERIOR_C2("Vehicle interior (leather?) shader 2", BINARIES.SHADER_VEHICLE_INTERIOR_C2),
     SHADER_VEHICLE_INTERIOR_C3("Vehicle interior (leather?) shader 3", BINARIES.SHADER_VEHICLE_INTERIOR_C3),
     SHADER_VEHICLE_INTERIOR_MAT("Vehicle interior matte shader", BINARIES.SHADER_VEHICLE_INTERIOR_MAT),
-    SHADER_VEHICLE_INTERIOR_MAT2("Vehicle interior matte shader", BINARIES.SHADER_VEHICLE_INTERIOR_MAT2),
+    SHADER_VEHICLE_INTERIOR_MAT2("Vehicle interior matte shader 2", BINARIES.SHADER_VEHICLE_INTERIOR_MAT2),
     SHADER_VEHICLE_INTERIOR_MATERIAL("Vehicle interior material", BINARIES.SHADER_VEHICLE_INTERIOR_MATERIAL),
     SHADER_VEHICLE_INTERIOR_MATERIAL2("Vehicle interior material 2", BINARIES.SHADER_VEHICLE_INTERIOR_MATERIAL2),
     SHADER_VEHICLE_INTERIOR_MATERIAL3("Vehicle interior material 3", BINARIES.SHADER_VEHICLE_INTERIOR_MATERIAL3),
     SHADER_VEHICLE_PEARL("Vehicle pearl paint shader", BINARIES.SHADER_VEHICLE_PEARL),
-    SHADER_VEHICLE_PEARL2("Vehicle pearl paint shade 2r", BINARIES.SHADER_VEHICLE_PEARL2),
+    SHADER_VEHICLE_PEARL2("Vehicle pearl paint shader 2", BINARIES.SHADER_VEHICLE_PEARL2),
     SHADER_VEHICLE_SHADOW("Vehicle shadow shader", BINARIES.SHADER_VEHICLE_SHADOW),
     SHADER_VEHICLE_SHADOW2("Vehicle shadow shader 2", BINARIES.SHADER_VEHICLE_SHADOW2),
     SHADER_VEHICLE_SHADOW3("Vehicle shadow shader 3", BINARIES.SHADER_VEHICLE_SHADOW3),
@@ -115,6 +115,7 @@ public enum MaterialPiece {
 
     private final String name;
     private final byte[] contents;
+
     private final byte[] normalizedContents;
 
     MaterialPiece(String name) {
@@ -143,6 +144,10 @@ public enum MaterialPiece {
 
     public String getName() {
         return name;
+    }
+
+    public byte[] getNormalizedContents() {
+        return normalizedContents;
     }
 
     private static byte[] normalizeContents(byte[] cSharpBinaryContents) {

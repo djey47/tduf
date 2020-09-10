@@ -2,14 +2,19 @@ package fr.tduf.libunlimited.low.files.gfx.materials.rw;
 
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.Color;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.MaterialDefs;
+import fr.tduf.libunlimited.low.files.gfx.materials.domain.MaterialPiece;
+import fr.tduf.libunlimited.low.files.gfx.materials.domain.MaterialSettings;
 import fr.tduf.libunlimited.low.files.gfx.materials.helper.MaterialsHelper;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import fr.tduf.libunlimited.low.files.research.rw.GenericWriter;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static fr.tduf.libunlimited.low.files.gfx.materials.helper.StoreConstants.*;
+import static fr.tduf.libunlimited.low.files.research.domain.Type.UNKNOWN;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -33,10 +38,10 @@ public class MaterialsWriter extends GenericWriter<MaterialDefs> {
         // Q&D method: we get original data store and only update supported fields...
         getDataStore().merge(getData().getOriginalDataStore());
 
-        updateAllColors();
+        updateAllColorsAndMaterialPieces();
     }
 
-    private void updateAllColors() {
+    private void updateAllColorsAndMaterialPieces() {
         AtomicInteger materialIndex = new AtomicInteger(0);
         getData().getMaterials()
                 .forEach(material -> {
@@ -44,20 +49,32 @@ public class MaterialsWriter extends GenericWriter<MaterialDefs> {
                     String sourceFieldName = String.format("%s[%d].%s", FIELD_HASHES, index, FIELD_MATERIAL_ADDRESS);
                     String defsKeyName = getDataStore().getTargetKeyAtAddress(sourceFieldName)
                             .orElseThrow(() -> new IllegalStateException("No global settings available at key: materialAddress"));
-                    Color ambientColor = material.getProperties().getAmbientColor();
-                    Color diffuseColor = material.getProperties().getDiffuseColor();
-                    Color specularColor = material.getProperties().getSpecularColor();
-                    Color otherColor = material.getProperties().getOtherColor();
+                    MaterialSettings materialProperties = material.getProperties();
 
-                    updateColorAtMaterialIndex(ambientColor, FIELD_AMBIENT_COLOR, defsKeyName);
-                    updateColorAtMaterialIndex(diffuseColor, FIELD_DIFFUSE_COLOR, defsKeyName);
-                    updateColorAtMaterialIndex(specularColor, FIELD_SPECULAR_COLOR, defsKeyName);
-                    updateColorAtMaterialIndex(otherColor, FIELD_OTHER_COLOR, defsKeyName);
+                    updateAllColorsInStore(materialProperties, defsKeyName);
+                    updateShaderConfigurationInStore(materialProperties.getShader().getConfiguration(), defsKeyName);
                 });
-
     }
 
-    private void updateColorAtMaterialIndex(Color color, String fieldPrefix, String defsKeyName) {
+    private void updateShaderConfigurationInStore(MaterialPiece shaderConfiguration, String defsKeyName) {
+        String parameterSourceFieldName = defsKeyName + FIELD_PARAMETER_ADDRESS;
+        String parameterKeyName = getDataStore().getTargetKeyAtAddress(parameterSourceFieldName)
+                .orElseThrow(() -> new IllegalStateException("No shader settings available at key: parameterAddress"));
+
+        getDataStore().addValue(parameterKeyName + FIELD_SHADER_CONFIGURATION, UNKNOWN, shaderConfiguration.getNormalizedContents());
+    }
+
+    private void updateAllColorsInStore(MaterialSettings materialProperties, String defsKeyName) {
+        Map<String, Color> colorFieldsDictionary = new HashMap<>();
+        colorFieldsDictionary.put(FIELD_AMBIENT_COLOR, materialProperties.getAmbientColor());
+        colorFieldsDictionary.put(FIELD_DIFFUSE_COLOR, materialProperties.getDiffuseColor());
+        colorFieldsDictionary.put(FIELD_SPECULAR_COLOR, materialProperties.getSpecularColor());
+        colorFieldsDictionary.put(FIELD_OTHER_COLOR, materialProperties.getOtherColor());
+
+        colorFieldsDictionary.forEach((field, color) -> updateColorAtMaterialDefs(color, field, defsKeyName));
+    }
+
+    private void updateColorAtMaterialDefs(Color color, String fieldPrefix, String defsKeyName) {
         MaterialsHelper.getColorSettingsKeyStream(defsKeyName, fieldPrefix)
                 .forEach(settingsKey -> {
                     float currentCompoundValue;

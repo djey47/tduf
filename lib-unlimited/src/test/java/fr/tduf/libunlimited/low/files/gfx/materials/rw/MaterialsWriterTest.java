@@ -28,7 +28,7 @@ class MaterialsWriterTest {
     }
 
     @Test
-    void write_shouldReturnOriginalContentsBack() throws IOException {
+    void write_whenNoChanges_shouldReturnOriginalContentsBack() throws IOException {
         // To regen json input file:
         // FileTool jsonify -i [..]/tduf/lib-testing/src/main/resources/materials/car-sample.2DM -s [..]/tduf/lib-unlimited/src/main/resources/files/structures/2DM-map.json
 
