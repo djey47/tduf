@@ -1,7 +1,6 @@
 package fr.tduf.gui.database.controllers;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.javafx.helper.TableViewHelper;
 import fr.tduf.gui.common.javafx.helper.options.SimpleDialogOptions;
@@ -9,7 +8,6 @@ import fr.tduf.gui.common.javafx.scene.control.SearchValueDialog;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.controllers.helper.DialogsHelper;
 import fr.tduf.gui.database.controllers.main.MainStageChangeDataController;
-import fr.tduf.gui.database.controllers.main.MainStageController;
 import fr.tduf.gui.database.domain.LocalizedResource;
 import fr.tduf.gui.database.domain.javafx.ResourceEntryDataItem;
 import fr.tduf.libunlimited.common.game.domain.Locale;
@@ -47,7 +45,7 @@ import static javafx.scene.control.Alert.AlertType.ERROR;
 /**
  * Controller to display and modify database resources via dedicated dialog.
  */
-public class ResourcesStageController extends AbstractGuiController {
+public class ResourcesStageController extends AbstractEditorController {
     private static final String THIS_CLASS_NAME = ResourcesStageController.class.getSimpleName();
 
     private final DialogsHelper dialogsHelper = new DialogsHelper();
@@ -62,8 +60,6 @@ public class ResourcesStageController extends AbstractGuiController {
 
     @FXML
     private Label resourceEntryCountLabel;
-
-    private MainStageController mainStageController;
 
     private final ObservableList<ResourceEntryDataItem> resourceData = FXCollections.observableArrayList();
 
@@ -370,10 +366,6 @@ public class ResourcesStageController extends AbstractGuiController {
                 .withDescription(DisplayConstants.MESSAGE_DIFFERENT_RESOURCE)
                 .build();
         CommonDialogsHelper.showDialog(dialogOptions, getWindow());
-    }
-
-    public void setMainStageController(MainStageController mainStageController) {
-        this.mainStageController = mainStageController;
     }
 
     private DbDto.Topic getCurrentTopic() {

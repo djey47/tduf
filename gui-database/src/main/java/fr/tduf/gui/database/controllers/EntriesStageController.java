@@ -34,7 +34,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * FX Controller for content entry selection dialog
  */
-public class EntriesStageController extends AbstractGuiController {
+public class EntriesStageController extends AbstractEditorController {
     private static final String THIS_CLASS_NAME = EntriesStageController.class.getSimpleName();
 
     @FXML
@@ -48,8 +48,6 @@ public class EntriesStageController extends AbstractGuiController {
 
     @FXML
     private TableView<ContentEntryDataItem> entriesTableView;
-
-    private MainStageController mainStageController;
 
     private final ObservableList<ContentEntryDataItem> entriesData = FXCollections.observableArrayList();
 
@@ -233,10 +231,6 @@ public class EntriesStageController extends AbstractGuiController {
                 .ifPresent(entryReference -> TableViewHelper.selectItemAndScroll(
                         (oneItem, row) -> oneItem.referenceProperty().getValue().equals(entryReference),
                         entriesTableView));
-    }
-
-    public void setMainStageController(MainStageController mainStageController) {
-        this.mainStageController = mainStageController;
     }
 
     private BulkDatabaseMiner getMiner() {

@@ -1,9 +1,7 @@
 package fr.tduf.gui.database.controllers;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
-import fr.tduf.gui.database.controllers.main.MainStageController;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.domain.javafx.ContentFieldDataItem;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
@@ -22,7 +20,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-public class FieldsBrowserStageController extends AbstractGuiController {
+public class FieldsBrowserStageController extends AbstractEditorController {
 
     private static final String THIS_CLASS_NAME = FieldsBrowserStageController.class.getSimpleName();
 
@@ -31,8 +29,6 @@ public class FieldsBrowserStageController extends AbstractGuiController {
 
     @FXML
     private TableView<ContentFieldDataItem> fieldsTableView;
-
-    private MainStageController mainStageController;
 
     private final ObservableList<ContentFieldDataItem> fieldsData = FXCollections.observableArrayList();
 
@@ -128,9 +124,5 @@ public class FieldsBrowserStageController extends AbstractGuiController {
 
                                 .collect(toList()))
                 );
-    }
-
-    public void setMainStageController(MainStageController mainStageController) {
-        this.mainStageController = mainStageController;
     }
 }
