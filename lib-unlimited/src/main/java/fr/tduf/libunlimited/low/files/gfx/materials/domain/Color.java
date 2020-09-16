@@ -52,11 +52,11 @@ public class Color {
             return this;
         }
 
-        public ColorBuilder fromRGBAndOpacity(List<Float> ambientValues) {
-            redCompound = ambientValues.get(0);
-            greenCompound = ambientValues.get(1);
-            blueCompound = ambientValues.get(2);
-            opacity = ambientValues.get(3);
+        public ColorBuilder fromRGBAndOpacity(List<Float> values) {
+            redCompound = values.get(0);
+            greenCompound = values.get(1);
+            blueCompound = values.get(2);
+            opacity = values.get(3);
             return this;
         }
 
