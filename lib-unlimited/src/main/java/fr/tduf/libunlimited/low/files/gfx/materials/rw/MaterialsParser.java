@@ -96,10 +96,10 @@ public class MaterialsParser extends GenericParser<MaterialDefs> {
                 .orElseThrow(() -> new IllegalStateException("Settings alpha data should be present in store"))
                 .byteValue();
         List<UByte> alphaBlendValues = parseSettingsGroupAsUnsignedByte(getDataStore(), settingsKeyName, FIELD_ALPHA_BLEND, 2);
-        Color ambientColor = parseSettingsGroupAsColor(settingsKeyName, FIELD_AMBIENT_COLOR);
-        Color diffuseColor = parseSettingsGroupAsColor(settingsKeyName, FIELD_DIFFUSE_COLOR);
-        Color specularColor = parseSettingsGroupAsColor(settingsKeyName, FIELD_SPECULAR_COLOR);
-        Color otherColor = parseSettingsGroupAsColor(settingsKeyName, FIELD_OTHER_COLOR);
+        Color ambientColor = parseSettingsGroupAsColor(settingsKeyName, FIELD_AMBIENT_COLOR, Color.ColorKind.AMBIENT);
+        Color diffuseColor = parseSettingsGroupAsColor(settingsKeyName, FIELD_DIFFUSE_COLOR, Color.ColorKind.DIFFUSE);
+        Color specularColor = parseSettingsGroupAsColor(settingsKeyName, FIELD_SPECULAR_COLOR, Color.ColorKind.SPECULAR);
+        Color otherColor = parseSettingsGroupAsColor(settingsKeyName, FIELD_OTHER_COLOR, Color.ColorKind.OTHER);
         Shader shader = parseShaderParameters(parameterAddressKeyName);
         byte[] unknownSettings = getDataStore().getRawValue(settingsKeyName + FIELD_UNK_1)
                 .orElseThrow(() -> new IllegalStateException("unk1 data should be present in store"));
@@ -189,12 +189,14 @@ public class MaterialsParser extends GenericParser<MaterialDefs> {
                 .collect(toList());
     }
 
-    private Color parseSettingsGroupAsColor(String groupKeyName, String settingKeyName) {
+    private Color parseSettingsGroupAsColor(String groupKeyName, String settingKeyName, Color.ColorKind colorKind) {
         List<Float> values = getColorSettingsKeyStream(groupKeyName, settingKeyName)
                 .map(itemKey -> getDataStore().getFloatingPoint(itemKey)
                         .orElseThrow(() -> new IllegalStateException(String.format("Color settings data should be present in store at key %s", itemKey))))
                 .collect(toList());
-        return Color.builder().fromRGBAndOpacity(values).build();
+        return Color.builder()
+                .ofKind(colorKind)
+                .fromRGBAndOpacity(values).build();
     }
 
     private List<UByte> parseSettingsGroupAsUnsignedByte(DataStore store, String groupKeyName, String settingKeyName, int groupSize) {
