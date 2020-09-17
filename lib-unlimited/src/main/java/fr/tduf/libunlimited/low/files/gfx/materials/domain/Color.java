@@ -11,6 +11,7 @@ public class Color {
     protected float greenCompound;
     protected float blueCompound;
     protected float opacity;
+    protected ColorKind kind = ColorKind.OTHER;
 
     private Color() {}
 
@@ -30,9 +31,14 @@ public class Color {
         return opacity;
     }
 
+    public ColorKind getKind() {
+        return kind;
+    }
+
     @Override
     public String toString() {
         return new StringJoiner(", ", getClass().getSimpleName() + "[", "]")
+                .add("Kind=" + kind)
                 .add("R=" + redCompound)
                 .add("G=" + greenCompound)
                 .add("B=" + blueCompound)
@@ -45,6 +51,11 @@ public class Color {
     }
 
     public final static class ColorBuilder extends Color {
+        public ColorBuilder ofKind(ColorKind colorKind) {
+            kind = colorKind;
+            return this;
+        }
+
         public ColorBuilder fromRGB(float r, float g, float b) {
             redCompound = r;
             greenCompound = g;
@@ -71,7 +82,15 @@ public class Color {
             color.greenCompound = greenCompound;
             color.blueCompound = blueCompound;
             color.opacity = opacity;
+            color.kind = kind;
             return color;
         }
+    }
+
+    /**
+     * All available color kinds
+     */
+    public enum ColorKind {
+        AMBIENT, DIFFUSE, SPECULAR, OTHER
     }
 }
