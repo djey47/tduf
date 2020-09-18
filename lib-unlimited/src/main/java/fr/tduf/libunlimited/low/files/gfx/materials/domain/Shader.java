@@ -31,9 +31,15 @@ public class Shader {
     /**
      * Changes shader configuration
      * @param materialPiece : new configuration to apply
+     * @return true if configuration needed to be changed, false otherwise
      */
-    public void updateConfiguration(MaterialPiece materialPiece) {
-        configuration = requireNonNull(materialPiece, "A material piece member is required");
+    public boolean updateConfiguration(MaterialPiece materialPiece) {
+        if (requireNonNull(materialPiece, "A material piece is required for update") == configuration) {
+            return false;
+        }
+
+        configuration = materialPiece;
+        return true;
     }
 
     public static class ShaderBuilder extends Shader {

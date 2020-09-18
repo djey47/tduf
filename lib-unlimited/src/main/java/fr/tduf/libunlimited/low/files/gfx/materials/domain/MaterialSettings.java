@@ -3,6 +3,10 @@ package fr.tduf.libunlimited.low.files.gfx.materials.domain;
 import fr.tduf.libunlimited.framework.lang.UByte;
 
 import java.util.List;
+import java.util.Objects;
+
+import static fr.tduf.libunlimited.low.files.gfx.materials.domain.Color.ColorKind.AMBIENT;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Represents global settings for a given material
@@ -58,6 +62,41 @@ public class MaterialSettings {
 
     public Shader getShader() {
         return shader;
+    }
+
+    /**
+     * Updates a color given its kind
+     * @param color : color to be updated
+     * @return true if color needed to be changed, false otherwise
+     */
+    public boolean updateColor(Color color) {
+        switch (requireNonNull(color, "A color is required for material update").kind) {
+            case AMBIENT:
+                if (Objects.equals(ambientColor, color)) {
+                    return false;
+                }
+                ambientColor = color;
+                break;
+            case DIFFUSE:
+                if (Objects.equals(diffuseColor, color)) {
+                    return false;
+                }
+                diffuseColor = color;
+                break;
+            case OTHER:
+                if (Objects.equals(otherColor, color)) {
+                    return false;
+                }
+                otherColor = color;
+                break;
+            case SPECULAR:
+                if (Objects.equals(specularColor, color)) {
+                    return false;
+                }
+                specularColor = color;
+                break;
+        }
+        return true;
     }
 
     public static class MaterialSettingsBuilder extends MaterialSettings {

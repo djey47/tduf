@@ -3,6 +3,9 @@ package fr.tduf.libunlimited.low.files.gfx.materials.domain;
 import java.util.List;
 import java.util.StringJoiner;
 
+import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
+import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode;
+
 /**
  * Represents a basic color structure, hosting RGB and opacity percents
  */
@@ -57,6 +60,17 @@ public class Color {
                 .add("B=" + blueCompound)
                 .add("Opacity=" + opacity)
                 .toString();
+    }
+
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+    @Override
+    public boolean equals(Object o) {
+        return reflectionEquals(this, o);
+    }
+
+    @Override
+    public int hashCode() {
+        return reflectionHashCode(this);
     }
 
     private static int toByteCompound(float compound) {
