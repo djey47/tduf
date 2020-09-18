@@ -7,6 +7,8 @@ import java.util.StringJoiner;
  * Represents a basic color structure, hosting RGB and opacity percents
  */
 public class Color {
+    private static final String FORMAT_COLOR_DESCRIPTION = "#%02x%02x%02x - (%d,%d,%d,%d)";
+
     protected float redCompound;
     protected float greenCompound;
     protected float blueCompound;
@@ -35,6 +37,17 @@ public class Color {
         return kind;
     }
 
+    /**
+     * @return a normalized description (hex and argb specs)
+     */
+    public String getDescription() {
+        int r = toByteCompound(redCompound);
+        int g = toByteCompound(greenCompound);
+        int b = toByteCompound(blueCompound);
+        int o = toByteCompound(opacity);
+        return String.format(FORMAT_COLOR_DESCRIPTION, r, g, b, r, g, b, o);
+    }
+
     @Override
     public String toString() {
         return new StringJoiner(", ", getClass().getSimpleName() + "[", "]")
@@ -44,6 +57,10 @@ public class Color {
                 .add("B=" + blueCompound)
                 .add("Opacity=" + opacity)
                 .toString();
+    }
+
+    private static int toByteCompound(float compound) {
+        return new Float(compound * 255).intValue();
     }
 
     public static ColorBuilder builder() {
@@ -86,6 +103,8 @@ public class Color {
             return color;
         }
     }
+
+
 
     /**
      * All available color kinds
