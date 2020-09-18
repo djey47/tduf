@@ -24,6 +24,7 @@ import fr.tduf.libunlimited.low.files.db.dto.content.ContentEntryDto;
 import fr.tduf.libunlimited.low.files.db.dto.content.ContentItemDto;
 import fr.tduf.libunlimited.low.files.db.rw.DatabaseParser;
 import fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseStructureQueryHelper;
+import fr.tduf.libunlimited.low.files.gfx.materials.domain.Color;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.Material;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.MaterialPiece;
 import javafx.beans.property.StringProperty;
@@ -233,9 +234,20 @@ public class MainStageChangeDataController extends AbstractMainStageSubControlle
      * @param newShaderConfiguration    : new configuration to be applied
      */
     public void updateShaderConfiguration(Material material, MaterialPiece newShaderConfiguration) {
-        material.getProperties().getShader().updateConfiguration(newShaderConfiguration);
+        if (material.getProperties().getShader().updateConfiguration(newShaderConfiguration)) {
+            markChangesMade();
+        }
+    }
 
-        markChangesMade();
+    /**
+     * Changes color for provided material
+     * @param material                  : material to be updated
+     * @param newColor                  : new color to be applied
+     */
+    public void updateMaterialColor(Material material, Color newColor) {
+        if (material.getProperties().updateColor(newColor)) {
+            markChangesMade();
+        }
     }
 
     String exportCurrentEntryAsLine() {
