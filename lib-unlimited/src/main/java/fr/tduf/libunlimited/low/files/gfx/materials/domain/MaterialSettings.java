@@ -5,7 +5,7 @@ import fr.tduf.libunlimited.framework.lang.UByte;
 import java.util.List;
 import java.util.Objects;
 
-import static fr.tduf.libunlimited.low.files.gfx.materials.domain.Color.ColorKind.AMBIENT;
+import static fr.tduf.libunlimited.low.files.gfx.materials.domain.Color.ColorKind.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -107,16 +107,19 @@ public class MaterialSettings {
 
         public MaterialSettingsBuilder withAmbientColor(Color ambientColor) {
             this.ambientColor = ambientColor;
+            this.ambientColor.kind = AMBIENT;
             return this;
         }
 
         public MaterialSettingsBuilder withDiffuseColor(Color diffuseColor) {
             this.diffuseColor = diffuseColor;
+            this.ambientColor.kind = DIFFUSE;
             return this;
         }
 
         public MaterialSettingsBuilder withSpecularColor(Color specularColor) {
             this.specularColor = specularColor;
+            this.ambientColor.kind = SPECULAR;
             return this;
         }
 
@@ -127,6 +130,7 @@ public class MaterialSettings {
 
         public MaterialSettingsBuilder withOtherColor(Color otherColor) {
             this.otherColor = otherColor;
+            this.ambientColor.kind = OTHER;
             return this;
         }
 
