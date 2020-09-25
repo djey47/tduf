@@ -113,24 +113,24 @@ public class MaterialSettings {
 
         public MaterialSettingsBuilder withDiffuseColor(Color diffuseColor) {
             this.diffuseColor = diffuseColor;
-            this.ambientColor.kind = DIFFUSE;
+            this.diffuseColor.kind = DIFFUSE;
             return this;
         }
 
         public MaterialSettingsBuilder withSpecularColor(Color specularColor) {
             this.specularColor = specularColor;
-            this.ambientColor.kind = SPECULAR;
-            return this;
-        }
-
-        public MaterialSettingsBuilder withAlphaBlending(List<UByte> alphaBlendValues) {
-            this.alphaBlending = alphaBlendValues.toArray(new UByte[0]);
+            this.specularColor.kind = SPECULAR;
             return this;
         }
 
         public MaterialSettingsBuilder withOtherColor(Color otherColor) {
             this.otherColor = otherColor;
-            this.ambientColor.kind = OTHER;
+            this.otherColor.kind = OTHER;
+            return this;
+        }
+
+        public MaterialSettingsBuilder withAlphaBlending(List<UByte> alphaBlendValues) {
+            this.alphaBlending = alphaBlendValues.toArray(new UByte[0]);
             return this;
         }
 
