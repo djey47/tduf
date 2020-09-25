@@ -24,6 +24,7 @@ import javafx.scene.layout.HBox;
 import java.util.List;
 import java.util.Optional;
 
+import static fr.tduf.gui.common.FxConstants.CSS_CLASS_TEXT_FIELD;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.REFERENCE;
 import static javafx.beans.binding.Bindings.not;
 import static javafx.geometry.Orientation.VERTICAL;
@@ -114,7 +115,7 @@ public class DynamicFieldControlsHelper extends AbstractDynamicControlsHelper {
     private void addValueTextField(HBox fieldBox, DbStructureDto.Field field, boolean fieldReadOnly, String toolTip, StringProperty property) {
         boolean valueTextFieldReadOnly = DbStructureDto.FieldType.PERCENT == field.getFieldType() || fieldReadOnly;
         TextField valueTextField = new TextField();
-        valueTextField.getStyleClass().addAll(FxConstants.CSS_CLASS_VALUE_TEXT_FIELD);
+        valueTextField.getStyleClass().addAll(CSS_CLASS_TEXT_FIELD, FxConstants.CSS_CLASS_VALUE_TEXT_FIELD);
 
         int fieldRank = field.getRank();
         controller.getViewData()

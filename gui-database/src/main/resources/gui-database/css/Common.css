@@ -55,7 +55,10 @@
 
 /** TEXT FIELDS **/
 .textField {
+    -fx-base: -color-background-tertiary;
     -fx-text-fill: -color-default;
+    -fx-text-box-border: -color-background-secondary;
+    -fx-focus-color: -color-accent;
 }
 
 /** CHECK BOXES **/

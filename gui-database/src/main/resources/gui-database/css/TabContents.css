@@ -14,10 +14,7 @@
     -fx-padding: 5,0,0,5;
 }
 
-.valueTextField {
-    -fx-text-fill: -color-default;
-    -fx-background-color: -color-background-neutral;
-}
+.valueTextField {}
 
 .error {
     -fx-background-color: salmon;

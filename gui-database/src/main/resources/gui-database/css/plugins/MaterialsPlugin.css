@@ -51,6 +51,8 @@
 }
 
 .colorPicker {
+    -fx-base: -color-background-tertiary;
+    -fx-text-fill: -color-default;
     -fx-pref-width: 28.0;
 }
 
