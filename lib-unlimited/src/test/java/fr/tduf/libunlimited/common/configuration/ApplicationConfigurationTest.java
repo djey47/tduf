@@ -206,7 +206,9 @@ class ApplicationConfigurationTest {
 
         // then
         assertThat(actualPath).isPresent();
-        assertThat(actualPath.get()).endsWith(Paths.get(".tduf", "theme-clear.css"));
+        Path actual = actualPath.get();
+        assertThat(actual.getParent().toString()).endsWith(".tduf");
+        assertThat(actual.toString()).endsWith("theme-clear.css");
     }
 
     @Test
