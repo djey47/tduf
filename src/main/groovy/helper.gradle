@@ -7,6 +7,12 @@ def PARAM_LINUX_TARGET = 'linux'
 def PARAM_WINDOWS_TARGET = 'windows'
 
 // Task dependencies
+def databaseEditorDocDeps = [   ':gui-database:markdownToHtml',
+                                ':gui-database:copyDoc' ]
+def coreDocDeps = [     'markdownToHtml',
+                        'copyDoc' ]
+def fullDocDeps = [     *coreDocDeps,
+                        *databaseEditorDocDeps ]
 def fullCleanDeps = [ 'cleanTempJarDir', 'cleanPackDir' ]
 def externalDeps = [ 'copyExternalTools', 'copyVersionInfo', 'copyIcons' ]
 def coreExternalDeps = [ 'copyExternalTools', 'copyVersionInfo' ]
@@ -20,7 +26,8 @@ def databaseEditorProjects = [':lib-unlimited', ':gui-common', ':gui-database']
  * @returns List of tasks to depend on for CORE packaging, according to target (linux or windows)
  */
 def corePackDependencies = { ->
-    def packDeps = [    *coreExternalDeps,
+    def packDeps = [    *coreDocDeps,
+                        *coreExternalDeps,
                         'cli:copyMainScripts', 'copyUtilScripts',
                         'fullJar' ]
 
@@ -32,8 +39,7 @@ def corePackDependencies = { ->
  * @returns List of tasks to depend on for FULL packaging, according to target (linux or windows)
  */
 def fullPackDependencies = { ->
-    def commonPackDeps = [ ':gui-database:markdownToHtml', 'markdownToHtml',
-                           ':gui-database:copyDoc', 'copyDoc',
+    def commonPackDeps = [ *fullDocDeps,
                            *externalDeps,
                            ':lib-unlimited:copyStructures',
                            ':gui-database:copyThemes',
@@ -50,8 +56,7 @@ def fullPackDependencies = { ->
  * @returns List of tasks to depend on for DatabaseEditor packaging, according to target (linux or windows)
  */
 def databaseEditorPackDependencies = { ->
-    def commonPackDeps = [ ':gui-database:markdownToHtml',
-                           ':gui-database:copyDoc',
+    def commonPackDeps = [ *databaseEditorDocDeps,
                            *externalDeps,
                            ':gui-database:copyThemes',
                            'databaseEditorJar' ]
