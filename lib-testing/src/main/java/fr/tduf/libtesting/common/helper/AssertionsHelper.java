@@ -1,6 +1,7 @@
 package fr.tduf.libtesting.common.helper;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import javafx.application.Platform;
 import org.json.JSONException;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -14,6 +15,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
@@ -23,7 +25,7 @@ import static org.skyscreamer.jsonassert.JSONAssert.assertEquals;
  */
 public class AssertionsHelper {
 
-    private static Class<AssertionsHelper> thisClass = AssertionsHelper.class;
+    private static final Class<AssertionsHelper> thisClass = AssertionsHelper.class;
 
     /**
      * Checks if specified file exists or not and return {@link java.io.File} instance if OK.
@@ -155,6 +157,21 @@ public class AssertionsHelper {
     public static void assertOutputStreamContainsSubsequence(OutputStream outputStream, String... expectedItems) throws IOException {
         finalizeOutputStream(outputStream);
         assertThat(outputStream.toString()).containsSubsequence(expectedItems);
+    }
+
+    /**
+     * @param runnable : code to run when Java FX events have terminated.
+     * @throws InterruptedException when process has been interrupted unexpectedly
+     */
+    public static void assertAfterJavaFxPlatformEventsAreDone(Runnable runnable) throws InterruptedException {
+        waitOnJavaFxPlatformEventsDone();
+        runnable.run();
+    }
+
+    private static void waitOnJavaFxPlatformEventsDone() throws InterruptedException {
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        Platform.runLater(countDownLatch::countDown);
+        countDownLatch.await();
     }
 
     private static String assertAndReadJsonFileContents(String fileName1) throws IOException {
