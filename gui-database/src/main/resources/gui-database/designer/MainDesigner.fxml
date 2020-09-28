@@ -16,14 +16,15 @@
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.controllers.main.MainStageController">
-    <VBox id="mainVbox" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="1280.0" styleClass="mainAnchorPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.controllers.main.MainStageController">
+    <VBox id="mainVbox" fx:id="mainVBox" prefWidth="1280.0" styleClass="mainVbox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <ToolBar styleClass="locationToolbar" VBox.vgrow="NEVER">
             <Label text="TDU database:">
                 <font>
@@ -84,7 +85,7 @@
                     </Label>
                     <ChoiceBox fx:id="localesChoiceBox" prefWidth="175.0" styleClass="comboBox" />
                     <Separator orientation="VERTICAL" />
-                    <MenuButton mnemonicParsing="false" text="Advanced..." styleClass="button">
+                    <MenuButton mnemonicParsing="false" styleClass="button" text="Advanced...">
                         <items>
                             <MenuItem mnemonicParsing="false" onAction="#handleResetDatabaseCacheMenuItemAction" text="Reset database cache" />
                             <SeparatorMenuItem />
@@ -109,7 +110,7 @@
                     <Font name="System Bold Italic" size="13.0" />
                 </font>
             </Label>
-            <ComboBox fx:id="entryNumberComboBox" prefHeight="26.0" prefWidth="400.0" visibleRowCount="25" styleClass="comboBox">
+            <ComboBox fx:id="entryNumberComboBox" prefHeight="26.0" prefWidth="400.0" styleClass="comboBox" visibleRowCount="25">
                 <tooltip>
                     <Tooltip text="Quick-selects an entry in current topic." />
                 </tooltip>
@@ -131,7 +132,7 @@
                 </tooltip>
             </Button>
             <Separator layoutX="189.0" layoutY="10.0" orientation="VERTICAL" />
-            <MenuButton layoutX="361.0" layoutY="10.0" mnemonicParsing="false" prefWidth="80.0" text="Import" styleClass="button">
+            <MenuButton layoutX="361.0" layoutY="10.0" mnemonicParsing="false" prefWidth="80.0" styleClass="button" text="Import">
                 <items>
                     <MenuItem mnemonicParsing="false" onAction="#handleImportEntryTdufPatchMenuAction" text="TDUF patch..." />
                     <SeparatorMenuItem mnemonicParsing="false" />
@@ -142,7 +143,7 @@
                     <Tooltip text="Imports to current database." />
                 </tooltip>
             </MenuButton>
-            <MenuButton mnemonicParsing="false" prefWidth="80.0" text="Export" styleClass="button">
+            <MenuButton mnemonicParsing="false" prefWidth="80.0" styleClass="button" text="Export">
                 <items>
                     <MenuItem mnemonicParsing="false" onAction="#handleExportEntryTdufPatchMenuAction" text="TDUF patch..." />
                     <SeparatorMenuItem mnemonicParsing="false" />
@@ -154,7 +155,7 @@
                 </tooltip>
             </MenuButton>
          <Pane HBox.hgrow="ALWAYS" />
-         <TextField fx:id="entryFilterTextField" prefWidth="175.0" onKeyPressed="#handleFilterTextFieldKeyPressed" styleClass="textField, entryFilterTextField">
+         <TextField fx:id="entryFilterTextField" onKeyPressed="#handleFilterTextFieldKeyPressed" prefWidth="175.0" styleClass="textField, entryFilterTextField">
             <tooltip>
                 <Tooltip text="Search criteria: either rank, or part of label, or internal reference." />
             </tooltip>
@@ -173,8 +174,8 @@
          <Label fx:id="unfilteredEntryItemsCountLabel" layoutX="1276.0" layoutY="15.0" />
         </ToolBar>
 
-        <TabPane fx:id="tabPane" prefHeight="626.0" prefWidth="1303.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" styleClass="tabPane">
-            <Tab text="Default" styleClass="tab">
+        <TabPane fx:id="tabPane" prefHeight="626.0" prefWidth="1303.0" styleClass="tabPane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+            <Tab styleClass="tab" text="Default">
                 <ScrollPane prefViewportHeight="167.0" prefViewportWidth="1303.0" styleClass="tabContainer">
                     <VBox minHeight="0.0" minWidth="0.0" />
                 </ScrollPane>
@@ -228,4 +229,9 @@
             </Label>
         </ToolBar>
     </VBox>
+   <HBox fx:id="mainSplashHBox" alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <children>
+         <ImageView id="mainSplashImage" fx:id="mainSplashImage" pickOnBounds="true" preserveRatio="true" />
+      </children>
+   </HBox>
 </AnchorPane>

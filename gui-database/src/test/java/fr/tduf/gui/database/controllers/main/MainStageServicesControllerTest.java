@@ -36,6 +36,9 @@ class MainStageServicesControllerTest {
     private MainStageController mainStageControllerMock;
 
     @Mock
+    private MainStageViewDataController viewDataControllerMock;
+
+    @Mock
     private ReadOnlyStringProperty messagePropertyMock;
 
     @InjectMocks
@@ -59,6 +62,7 @@ class MainStageServicesControllerTest {
         when(mainStageControllerMock.getWindow()).thenReturn(windowMock);
         when(mainStageControllerMock.getPluginHandler()).thenReturn(pluginHandlerMock);
         when(mainStageControllerMock.getApplicationConfiguration()).thenReturn(applicationConfigurationMock);
+        when(mainStageControllerMock.getViewData()).thenReturn(viewDataControllerMock);
 
         when(databaseLoaderMock.fetchValue()).thenReturn(new ArrayList<>(0));
         when(databaseLoaderMock.messageProperty()).thenReturn(messagePropertyMock);
@@ -130,5 +134,32 @@ class MainStageServicesControllerTest {
     void initServicePropertiesAndListeners() {
         // given-when-then
         controller.initServicePropertiesAndListeners();
+    }
+
+    @Test
+    void getLoaderStateChangeListenerCallback_whenRunning_shouldToggleSplashON() {
+        // when
+        controller.getLoaderStateChangeListener().changed(null, null, Worker.State.RUNNING);
+
+        // then
+        verify(viewDataControllerMock).toggleSplashImage(true);
+    }
+
+    @Test
+    void getLoaderStateChangeListenerCallback_whenSuccess_shouldToggleSplashOFF() {
+        // when
+        controller.getLoaderStateChangeListener().changed(null, null, Worker.State.SUCCEEDED);
+
+        // then
+        verify(viewDataControllerMock).toggleSplashImage(false);
+    }
+
+    @Test
+    void getLoaderStateChangeListenerCallback_whenFailure_shouldToggleSplashOFF() {
+        // when
+        controller.getLoaderStateChangeListener().changed(null, null, Worker.State.FAILED);
+
+        // then
+        verify(viewDataControllerMock).toggleSplashImage(false);
     }
 }

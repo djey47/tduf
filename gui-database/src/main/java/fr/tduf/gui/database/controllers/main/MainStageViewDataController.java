@@ -55,8 +55,7 @@ import java.util.function.Predicate;
 import static fr.tduf.gui.common.ImageConstants.Resource.BOX_EMPTY_BLUE;
 import static fr.tduf.gui.common.ImageConstants.Resource.MAGNIFIER_BLUE;
 import static fr.tduf.gui.common.ImageConstants.SIZE_BUTTON_PICTO;
-import static fr.tduf.gui.database.common.FxConstants.CSS_CLASS_TAB;
-import static fr.tduf.gui.database.common.FxConstants.CSS_CLASS_TAB_CONTAINER;
+import static fr.tduf.gui.database.common.FxConstants.*;
 import static fr.tduf.gui.database.common.SupportConstants.LOG_TARGET_PROFILE_NAME;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.REFERENCE;
 import static java.util.Objects.requireNonNull;
@@ -144,6 +143,15 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
     }
 
     /**
+     * Toggles ON/OFF splash image
+     * @param isSplashOn    : true to display splash, false otherwise
+     */
+    public void toggleSplashImage(boolean isSplashOn) {
+        getMainSplashHBox().setVisible(isSplashOn);
+        getMainVBox().setVisible(!isSplashOn);
+    }
+
+    /**
      * @return initial database directory
      */
     Optional<String> initSubController() throws IOException {
@@ -173,6 +181,11 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
         Image emptyFilterImage = new Image(BOX_EMPTY_BLUE.getStream(), SIZE_BUTTON_PICTO, SIZE_BUTTON_PICTO, true, true);
         getEntryEmptyFilterButton().setGraphic(new ImageView(emptyFilterImage));
+
+        ImageView mainSplashImageView = getMainSplashImage();
+        Image splashImage = new Image(PATH_RESOURCE_IMG_SPLASH);
+        mainSplashImageView.fitWidthProperty().bind(getMainSplashHBox().widthProperty());
+        mainSplashImageView.setImage(splashImage);
     }
 
     void initTopToolbar() {

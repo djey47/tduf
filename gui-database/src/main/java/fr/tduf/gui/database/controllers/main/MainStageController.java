@@ -34,12 +34,17 @@ import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.WindowEvent;
 import org.apache.commons.lang3.StringUtils;
@@ -92,6 +97,18 @@ public class MainStageController extends AbstractGuiController {
 
     @SuppressWarnings("FieldMayBeFinal")
     private ApplicationConfiguration applicationConfiguration = DatabaseEditor.getInstance().getApplicationConfiguration();
+
+    @FXML
+    AnchorPane root;
+
+    @FXML
+    HBox mainSplashHBox;
+
+    @FXML
+    ImageView mainSplashImage;
+
+    @FXML
+    VBox mainVBox;
 
     @FXML
     Label creditsLabel;
@@ -474,7 +491,8 @@ public class MainStageController extends AbstractGuiController {
 
         databaseLoader.bankSupportProperty().setValue(bankSupport);
         databaseLoader.databaseLocationProperty().setValue(databaseLocation);
-        databaseLoader.restart();
+
+        Platform.runLater(databaseLoader::restart);
     }
 
     // Visible for testing
@@ -767,6 +785,10 @@ public class MainStageController extends AbstractGuiController {
         this.layoutObject = layoutObject;
     }
 
+    VBox getMainVBox() {
+        return mainVBox;
+    }
+
     Deque<EditorLocation> getNavigationHistory() {
         return navigationHistory;
     }
@@ -839,5 +861,13 @@ public class MainStageController extends AbstractGuiController {
 
     boolean isServiceRunning() {
         return servicesController.runningServiceProperty().get();
+    }
+
+    ImageView getMainSplashImage() {
+        return mainSplashImage;
+    }
+
+    HBox getMainSplashBox() {
+        return mainSplashHBox;
     }
 }

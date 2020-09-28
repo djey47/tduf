@@ -23,6 +23,7 @@ import org.testfx.framework.junit5.ApplicationTest;
 
 import java.nio.file.Paths;
 
+import static fr.tduf.libtesting.common.helper.AssertionsHelper.assertAfterJavaFxPlatformEventsAreDone;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -233,7 +234,7 @@ class MainStageControllerTest extends ApplicationTest {
     }
 
     @Test
-    void loadDatabaseFromDirectory_whenModifiedFlagSetToTrue_andConfirmLosingChanges_shouldBindStatus_andInvokeLoaderService() {
+    void loadDatabaseFromDirectory_whenModifiedFlagSetToTrue_andConfirmLosingChanges_shouldBindStatus_toggleSplash_andInvokeLoaderService() throws InterruptedException {
         // given
         spyController.modifiedProperty().setValue(true);
         doReturn(true).when(spyController).confirmLosingChanges(anyString());
@@ -246,7 +247,7 @@ class MainStageControllerTest extends ApplicationTest {
         assertThat(databaseLoaderMock.databaseLocationProperty().getValue()).isEqualTo("/path/to/database");
         verify(statusLabelMock.textProperty()).unbind();
         verify(statusLabelMock.textProperty()).bind(same(databaseLoaderMock.messageProperty()));
-        verify(databaseLoaderMock).restart();
+        assertAfterJavaFxPlatformEventsAreDone(() -> verify(databaseLoaderMock).restart());
     }
 
     @Test
@@ -264,11 +265,11 @@ class MainStageControllerTest extends ApplicationTest {
     }
 
     @Test
-    void loadDatabaseFromDirectory_whenModifiedFlagSetToFalse_shouldInvokeLoaderService() {
+    void loadDatabaseFromDirectory_whenModifiedFlagSetToFalse_shouldToggleSplash_andInvokeLoaderService() throws InterruptedException {
         // given-when
         spyController.loadDatabaseFromDirectory("/path/to/database");
 
         // then
-        verify(databaseLoaderMock).restart();
+        assertAfterJavaFxPlatformEventsAreDone(() -> verify(databaseLoaderMock).restart());
     }
 }

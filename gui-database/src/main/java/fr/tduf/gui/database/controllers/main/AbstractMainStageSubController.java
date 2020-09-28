@@ -18,6 +18,10 @@ import javafx.beans.property.Property;
 import javafx.beans.property.StringProperty;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Window;
 
 import java.util.Deque;
@@ -76,6 +80,21 @@ abstract class AbstractMainStageSubController {
      */
     protected void initAfterDatabaseLoading() {
         mainStageController.initAfterDatabaseLoading();
+    }
+
+    /**
+     * @see MainStageViewDataController#toggleSplashImage(boolean)
+     */
+    protected void toggleSplashImage(boolean isSplashOn) {
+        getViewDataController().toggleSplashImage(isSplashOn);
+    }
+
+    protected AnchorPane getRoot() {
+        return mainStageController.root;
+    }
+
+    protected VBox getMainVBox() {
+        return mainStageController.getMainVBox();
     }
 
     protected BulkDatabaseMiner getMiner() {
@@ -183,6 +202,14 @@ abstract class AbstractMainStageSubController {
 
     protected PluginHandler getPluginHandler() {
         return mainStageController.getPluginHandler();
+    }
+
+    protected HBox getMainSplashHBox() {
+        return mainStageController.getMainSplashBox();
+    }
+
+    protected ImageView getMainSplashImage() {
+        return mainStageController.getMainSplashImage();
     }
 
     void setCurrentTopicObject(DbDto currentTopicObject) {

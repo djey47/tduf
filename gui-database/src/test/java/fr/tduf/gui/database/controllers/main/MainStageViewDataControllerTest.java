@@ -23,6 +23,9 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -153,6 +156,10 @@ class MainStageViewDataControllerTest {
         Button emptyEntryFilterButton = new Button();
         when(mainStageControllerMock.getEntryEmptyFilterButton()).thenReturn(emptyEntryFilterButton);
 
+        when(mainStageControllerMock.getMainSplashImage()).thenReturn(new ImageView());
+        when(mainStageControllerMock.getMainSplashBox()).thenReturn(new HBox());
+        when(mainStageControllerMock.getMainVBox()).thenReturn(new VBox());
+
         when(minerMock.getDatabaseTopic(TOPIC2)).thenReturn(of(topicObject));
 
         when(applicationConfigurationMock.getEditorProfile()).thenReturn(empty());
@@ -212,13 +219,14 @@ class MainStageViewDataControllerTest {
     }
 
     @Test
-    void initGUIComponentsGraphics_shouldSetButtonGraphics() {
+    void initGUIComponentsGraphics_shouldSetButtonGraphics_andSplashImage() {
         // given-when
         controller.initGUIComponentsGraphics();
 
         // then
         assertThat(controller.getEntryFilterButton().getGraphic()).isNotNull();
         assertThat(controller.getEntryEmptyFilterButton().getGraphic()).isNotNull();
+        assertThat(controller.getMainSplashImage().getImage()).isNotNull();
     }
 
     @Test
@@ -835,38 +843,6 @@ class MainStageViewDataControllerTest {
         assertThat(actualValue).isEqualTo("<?>");
     }
 
-    private EditorLayoutDto createLayoutObject() {
-        EditorLayoutDto layoutObject = new EditorLayoutDto();
-
-        EditorLayoutDto.EditorProfileDto defaultProfileObject = new EditorLayoutDto.EditorProfileDto("Vehicle slots");
-        defaultProfileObject.setTopic(TOPIC2);
-        layoutObject.getProfiles().add(defaultProfileObject);
-
-        EditorLayoutDto.EditorProfileDto profileObject = new EditorLayoutDto.EditorProfileDto(TEST_PROFILE_NAME);
-        profileObject.setTopic(TOPIC2);
-        FieldSettingsDto fieldSettings = new FieldSettingsDto();
-        fieldSettings.setRank(1);
-        fieldSettings.setRemoteReferenceProfile(TEST_REMOTE_PROFILE_NAME);
-        profileObject.getFieldSettings().add(fieldSettings);
-        layoutObject.getProfiles().add(profileObject);
-
-        EditorLayoutDto.EditorProfileDto remoteProfileObject = new EditorLayoutDto.EditorProfileDto(TEST_REMOTE_PROFILE_NAME);
-        remoteProfileObject.setTopic(TOPIC1);
-        remoteProfileObject.addDefaultEntryLabelFieldRank();
-        layoutObject.getProfiles().add(remoteProfileObject);
-
-        EditorLayoutDto.EditorProfileDto simpleProfileObject = new EditorLayoutDto.EditorProfileDto(TEST_PROFILE_NAME);
-        simpleProfileObject.setTopic(TOPIC2);
-        layoutObject.getProfiles().add(simpleProfileObject);
-
-        EditorLayoutDto.EditorProfileDto remoteAssociationProfileObject = new EditorLayoutDto.EditorProfileDto(TEST_REMOTE_ASSO_PROFILE_NAME);
-        remoteAssociationProfileObject.setTopic(TOPIC3);
-        remoteAssociationProfileObject.addDefaultEntryLabelFieldRank();
-        layoutObject.getProfiles().add(remoteAssociationProfileObject);
-
-        return layoutObject;
-    }
-
     @Test
     void switchToFirstFilteredEntry_whenNotEmptyList_shouldSetCurrentIndexProperty() {
         // given
@@ -937,6 +913,58 @@ class MainStageViewDataControllerTest {
         // then
         assertThat(controller.getFilteredEntries().getPredicate()).isSameAs(defaultPredicate);
         assertThat(entryFilterTextField.textProperty().getValue()).isEmpty();
+    }
+
+    @Test
+    void toggleSplashImage_whenTrue_shouldHideMainVbox_andDisplayMainSplashHbox() {
+        // given-when
+        controller.toggleSplashImage(true);
+
+        // then
+        assertThat(controller.getMainSplashHBox().isVisible()).isTrue();
+        assertThat(controller.getMainVBox().isVisible()).isFalse();
+    }
+
+    @Test
+    void toggleSplashImage_whenFalse_shouldDisplayMainVbox_andHideMainSplashHbox() {
+        // given-when
+        controller.toggleSplashImage(true);
+
+        // then
+        assertThat(controller.getMainSplashHBox().isVisible()).isTrue();
+        assertThat(controller.getMainVBox().isVisible()).isFalse();
+    }
+
+    private EditorLayoutDto createLayoutObject() {
+        EditorLayoutDto layoutObject = new EditorLayoutDto();
+
+        EditorLayoutDto.EditorProfileDto defaultProfileObject = new EditorLayoutDto.EditorProfileDto("Vehicle slots");
+        defaultProfileObject.setTopic(TOPIC2);
+        layoutObject.getProfiles().add(defaultProfileObject);
+
+        EditorLayoutDto.EditorProfileDto profileObject = new EditorLayoutDto.EditorProfileDto(TEST_PROFILE_NAME);
+        profileObject.setTopic(TOPIC2);
+        FieldSettingsDto fieldSettings = new FieldSettingsDto();
+        fieldSettings.setRank(1);
+        fieldSettings.setRemoteReferenceProfile(TEST_REMOTE_PROFILE_NAME);
+        profileObject.getFieldSettings().add(fieldSettings);
+        layoutObject.getProfiles().add(profileObject);
+
+        EditorLayoutDto.EditorProfileDto remoteProfileObject = new EditorLayoutDto.EditorProfileDto(TEST_REMOTE_PROFILE_NAME);
+        remoteProfileObject.setTopic(TOPIC1);
+        remoteProfileObject.addDefaultEntryLabelFieldRank();
+        layoutObject.getProfiles().add(remoteProfileObject);
+
+        EditorLayoutDto.EditorProfileDto simpleProfileObject = new EditorLayoutDto.EditorProfileDto(TEST_PROFILE_NAME);
+        simpleProfileObject.setTopic(TOPIC2);
+        layoutObject.getProfiles().add(simpleProfileObject);
+
+        EditorLayoutDto.EditorProfileDto remoteAssociationProfileObject = new EditorLayoutDto.EditorProfileDto(TEST_REMOTE_ASSO_PROFILE_NAME);
+        remoteAssociationProfileObject.setTopic(TOPIC3);
+        remoteAssociationProfileObject.addDefaultEntryLabelFieldRank();
+        layoutObject.getProfiles().add(remoteAssociationProfileObject);
+
+        return layoutObject;
     }
 
     private DbDto createTopicObject(DbDto.Topic topic) {

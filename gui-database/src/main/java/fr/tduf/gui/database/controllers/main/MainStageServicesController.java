@@ -18,8 +18,7 @@ import java.util.Set;
 
 import static fr.tduf.gui.common.helper.MessagesHelper.getServiceErrorMessage;
 import static fr.tduf.gui.database.common.DisplayConstants.TITLE_APPLICATION;
-import static javafx.concurrent.Worker.State.FAILED;
-import static javafx.concurrent.Worker.State.SUCCEEDED;
+import static javafx.concurrent.Worker.State.*;
 import static javafx.scene.control.Alert.AlertType.*;
 
 /**
@@ -81,6 +80,21 @@ public class MainStageServicesController extends AbstractMainStageSubController 
         getPluginHandler().triggerOnSaveForAllPLugins();
     }
 
+    ChangeListener<Worker.State> getLoaderStateChangeListener() {
+        return (observableValue, oldState, newState) -> {
+            if (RUNNING == newState) {
+                toggleSplashImage(true);
+            }
+            else if (SUCCEEDED == newState) {
+                toggleSplashImage(false);
+                handleDatabaseLoaderSuccess();
+            } else if (FAILED == newState) {
+                toggleSplashImage(false);
+                notifyActionTermination(ERROR, DisplayConstants.TITLE_SUB_LOAD, DisplayConstants.MESSAGE_DATABASE_LOAD_KO, getServiceErrorMessage(databaseLoader));
+            }
+        };
+    }
+
     private ChangeListener<Worker.State> getFixerStateChangeListener() {
         return (observableValue, oldState, newState) -> {
             if (SUCCEEDED == newState) {
@@ -119,16 +133,6 @@ public class MainStageServicesController extends AbstractMainStageSubController 
                 notifyActionTermination(INFORMATION, DisplayConstants.TITLE_SUB_SAVE, DisplayConstants.MESSAGE_DATABASE_SAVED, databaseSaver.getValue());
             } else if (FAILED == newState) {
                 notifyActionTermination(ERROR, DisplayConstants.TITLE_SUB_SAVE, DisplayConstants.MESSAGE_DATABASE_SAVE_KO, getServiceErrorMessage(databaseSaver));
-            }
-        };
-    }
-
-    private ChangeListener<Worker.State> getLoaderStateChangeListener() {
-        return (observableValue, oldState, newState) -> {
-            if (SUCCEEDED == newState) {
-                handleDatabaseLoaderSuccess();
-            } else if (FAILED == newState) {
-                notifyActionTermination(ERROR, DisplayConstants.TITLE_SUB_LOAD, DisplayConstants.MESSAGE_DATABASE_LOAD_KO, getServiceErrorMessage(databaseLoader));
             }
         };
     }

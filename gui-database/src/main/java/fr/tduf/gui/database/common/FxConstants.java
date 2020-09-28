@@ -21,6 +21,8 @@ public class FxConstants {
     public static final String PATH_RESOURCE_CSS_COLORS = "/gui-database/css/Colors.css";
     public static final String PATH_RESOURCE_CSS_COMMON = "/gui-database/css/Common.css";
 
+    public static final String PATH_RESOURCE_IMG_SPLASH = "/gui-database/img/splash.png";
+
     public static final String CSS_CLASS_FIELD_LABEL = "fieldLabel";
     public static final String CSS_CLASS_FIELD_NAME = "fieldName";
     public static final String CSS_CLASS_READONLY_FIELD = "readonlyField";
