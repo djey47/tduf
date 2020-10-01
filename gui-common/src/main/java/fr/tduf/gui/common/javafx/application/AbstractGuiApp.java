@@ -110,4 +110,11 @@ public abstract class AbstractGuiApp extends Application {
     public static AbstractGuiApp getInstance() {
         return instance;
     }
+
+    /**
+     * For test use only
+     */
+    public static void setTestInstance(AbstractGuiApp testInstance) {
+        instance = testInstance;
+    }
 }
