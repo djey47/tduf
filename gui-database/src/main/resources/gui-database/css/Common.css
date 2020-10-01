@@ -18,6 +18,11 @@
     -fx-base: -color-tertiary;
 }
 
+.comboBox .combo-box-popup .list-view .list-cell:hover {
+    -fx-text-fill: -color-neutral;
+    -fx-background-color: -color-accent;
+}
+
 /** BUTTONS **/
 .button {
     -fx-base: -color-background-tertiary;

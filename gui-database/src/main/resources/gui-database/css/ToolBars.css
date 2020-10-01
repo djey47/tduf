@@ -2,7 +2,12 @@
 .locationToolbar {
     -fx-base: -color-background-primary;
 }
+
 .databaseLocationTextField {
+}
+
+.databaseLocationLabel {
+    -fx-text-fill: -color-accent;
 }
 
 /* Settings */
@@ -10,9 +15,17 @@
     -fx-base: -color-background-secondary;
 }
 
+.settingsPane > .title {
+    -fx-font-weight: bold;
+}
+
+.profileSettingLabel, .localeSettingLabel {
+    -fx-text-fill: -color-accent;
+}
+
 /* Actions */
 #entryNumberComboBox .scroll-bar:vertical {
-    -fx-background-color:transparent;
+    -fx-background-color: transparent;
 }
 
 /* Search */
@@ -22,6 +35,14 @@
 /* Nav */
 .navigationToolbar {
     -fx-base: -color-background-secondary;
+}
+
+.entryNavComboBox {
+    -fx-font-weight: bold;
+}
+
+.entryNavComboBox .combo-box-popup .list-view .list-cell {
+    -fx-font-weight: normal;
 }
 
 .entryNumberTextField {

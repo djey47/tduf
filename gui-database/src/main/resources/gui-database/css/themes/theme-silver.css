@@ -1,0 +1,11 @@
+/** COLOR THEME: SILVER **/
+
+* {
+    -color-background-primary: silver;
+    -color-background-secondary: silver;
+    -color-background-tertiary: silver;
+    -color-background-neutral: white;
+    -color-accent: white;
+    -color-neutral: black;
+    -color-default: black;
+}

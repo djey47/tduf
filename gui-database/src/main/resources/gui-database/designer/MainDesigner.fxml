@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
@@ -26,7 +27,7 @@
 <AnchorPane fx:id="root" prefHeight="720.0" prefWidth="1280.0" styleClass="mainAnchorPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.controllers.main.MainStageController">
     <VBox id="mainVbox" fx:id="mainVBox" prefWidth="1280.0" styleClass="mainVbox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <ToolBar styleClass="locationToolbar" VBox.vgrow="NEVER">
-            <Label text="TDU database:">
+            <Label styleClass="databaseLocationLabel" text="TDU database:">
                 <font>
                     <Font name="System Bold" size="13.0" />
                 </font>
@@ -72,13 +73,13 @@
                     <Insets bottom="-1.0" left="-1.0" right="-1.0" top="-1.0" />
                 </padding>
                 <ToolBar styleClass="settingsToolbar" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <Label text="Profile:">
+                    <Label styleClass="profileSettingLabel" text="Profile:">
                         <font>
                             <Font name="System Bold" size="13.0" />
                         </font>
                     </Label>
                     <ChoiceBox fx:id="profilesChoiceBox" prefWidth="325.0" styleClass="comboBox" />
-                    <Label text="Locale:">
+                    <Label styleClass="localeSettingLabel" text="Locale:">
                         <font>
                             <Font name="System Bold" size="13.0" />
                         </font>
@@ -105,15 +106,19 @@
                     <Tooltip text="Goes back to previous topic location." />
                 </tooltip>
             </Button>
-            <Label fx:id="currentTopicLabel" alignment="TOP_CENTER" prefWidth="175.0" text="&lt;TOPIC&gt;">
+            <Label fx:id="currentTopicLabel" alignment="TOP_CENTER" prefWidth="175.0" styleClass="databaseLocationLabel" text="&lt;TOPIC&gt;">
                 <font>
                     <Font name="System Bold Italic" size="13.0" />
                 </font>
             </Label>
-            <ComboBox fx:id="entryNumberComboBox" prefHeight="26.0" prefWidth="400.0" styleClass="comboBox" visibleRowCount="25">
+            <ComboBox fx:id="entryNumberComboBox" prefHeight="26.0" prefWidth="400.0" visibleRowCount="25">
                 <tooltip>
                     <Tooltip text="Quick-selects an entry in current topic." />
                 </tooltip>
+            <styleClass>
+               <String fx:value="comboBox" />
+               <String fx:value="entryNavComboBox" />
+            </styleClass>
             </ComboBox>
             <Separator orientation="VERTICAL" />
             <Button layoutX="237.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleDuplicateEntryButtonAction" prefWidth="34.0" text="C">
@@ -229,9 +234,9 @@
             </Label>
         </ToolBar>
     </VBox>
-   <HBox fx:id="mainSplashHBox" alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-      <children>
-         <ImageView id="mainSplashImage" fx:id="mainSplashImage" pickOnBounds="true" preserveRatio="true" />
-      </children>
-   </HBox>
+    <HBox fx:id="mainSplashHBox" alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" visible="false"
+          AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+          AnchorPane.topAnchor="0.0">
+        <ImageView id="mainSplashImage" fx:id="mainSplashImage" pickOnBounds="true" preserveRatio="true"/>
+    </HBox>
 </AnchorPane>
