@@ -11,10 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -89,12 +86,11 @@ public class MaterialsHelper {
      * @param miner         : database miner, to perform lookup ops
      * @return existing resource reference for given material name
      */
-    public static String getResourceRefForMaterialName(String materialName, DbDto.Topic topic, BulkDatabaseMiner miner) {
+    public static Optional<String> getResourceRefForMaterialName(String materialName, DbDto.Topic topic, BulkDatabaseMiner miner) {
         return getAllResourcesAsParallelStream(topic, miner)
                 .filter(resourceEntry -> pickResourceValue(resourceEntry).equalsIgnoreCase(materialName))
                 .findAny()
-                .orElseThrow(() -> new IllegalStateException("No resource entry for material name " + materialName))
-                .getReference();
+                .map(ResourceEntryDto::getReference);
     }
 
     /**
@@ -104,6 +100,9 @@ public class MaterialsHelper {
      * @return true if such a material name exists in resources, false otherwise
      */
     public static boolean isExistingMaterialNameInResources(String materialName, DbDto.Topic topic, BulkDatabaseMiner miner) {
+        if (materialName == null) {
+            return false;
+        }
         return getAllResourcesAsParallelStream(topic, miner)
                 .map(MaterialsHelper::pickResourceValue)
                 .anyMatch(value -> value.equalsIgnoreCase(materialName));

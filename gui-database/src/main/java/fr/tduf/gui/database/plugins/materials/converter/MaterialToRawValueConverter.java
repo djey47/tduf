@@ -2,6 +2,7 @@ package fr.tduf.gui.database.plugins.materials.converter;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
+import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.Material;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.MaterialDefs;
@@ -38,16 +39,18 @@ public class MaterialToRawValueConverter extends StringConverter<Material> {
         if (material == null) {
             return "";
         }
-        String materialNameAsResourceValue = fullNameProvider.apply(material.getName());
-        String resourceRef = MaterialsHelper.getResourceRefForMaterialName(materialNameAsResourceValue, currentTopic, editorContext.getMiner());
-        return resourceRef == null ? MaterialsHelper.resolveNoMaterialReference(currentTopic) : resourceRef;
+
+        String materialName = material.getName();
+        BulkDatabaseMiner miner = editorContext.getMiner();
+        return MaterialsHelper.getResourceRefForMaterialName(materialName, currentTopic, miner)
+                .orElse(MaterialsHelper.getResourceRefForMaterialName(fullNameProvider.apply(materialName), currentTopic, miner)
+                        .orElse(MaterialsHelper.resolveNoMaterialReference(currentTopic)));
     }
 
     @Override
     public Material fromString(String materialRawValue) {
         String materialName = editorContext.getMiner().getLocalizedResourceValueFromTopicAndReference(materialRawValue, currentTopic, DEFAULT)
-                .orElseThrow(() -> new IllegalStateException("No resource with raw value " + materialRawValue))
-                .toUpperCase();
+                .orElseThrow(() -> new IllegalStateException("No resource with raw value " + materialRawValue));
         if (asList(RESOURCE_VALUE_NONE, RESOURCE_VALUE_INTERIOR_COLOR_NONE).contains(materialName)) {
             return null;
         }

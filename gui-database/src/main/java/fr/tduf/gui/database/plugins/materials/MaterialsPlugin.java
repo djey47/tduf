@@ -16,6 +16,7 @@ import fr.tduf.gui.database.plugins.materials.converter.ShaderToItemConverter;
 import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.framework.lang.UByte;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
+import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.Material;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.MaterialDefs;
@@ -447,16 +448,12 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
 
             MainStageChangeDataController changeDataController = getEditorContext().getChangeDataController();
 
-            DbDto currentTopicObject = getEditorContext().getMiner().getDatabaseTopic(currentTopic)
+            BulkDatabaseMiner miner = getEditorContext().getMiner();
+            DbDto currentTopicObject = miner.getDatabaseTopic(currentTopic)
                     .orElseThrow(() -> new IllegalStateException(String.format("Database topic should exist: %s", currentTopic)));
-            if (materialFullName == null) {
-                // no material in dictionary, resource must be created
+            if (!MaterialsHelper.isExistingMaterialNameInResources(materialFullName, currentTopic, miner)
+                    && !MaterialsHelper.isExistingMaterialNameInResources(materialNormalizedName, currentTopic, miner)) {
                 handleAutoResourceCreation(currentTopicObject, materialNormalizedName, onTheFlyMaterialsContext);
-            } else {
-                // material exists in dictionary, check in resources
-                if (!MaterialsHelper.isExistingMaterialNameInResources(materialFullName, currentTopic, getEditorContext().getMiner())) {
-                    handleAutoResourceCreation(currentTopicObject, materialNormalizedName, onTheFlyMaterialsContext);
-                }
             }
 
             onTheFlyMaterialsContext.setCurrentMaterial(newValue);

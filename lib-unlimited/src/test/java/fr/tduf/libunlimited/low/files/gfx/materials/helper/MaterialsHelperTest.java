@@ -3,13 +3,13 @@ package fr.tduf.libunlimited.low.files.gfx.materials.helper;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
-import fr.tduf.libunlimited.low.files.gfx.materials.domain.Material;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
@@ -57,6 +57,12 @@ class MaterialsHelperTest {
     }
 
     @Test
+    void isExistingMaterialNameInResources_whenNameIsNull_shouldReturnFalse() {
+        // given-when-then
+        assertThat(MaterialsHelper.isExistingMaterialNameInResources(null, INTERIOR, minerMock)).isFalse();
+    }
+
+    @Test
     void isExistingMaterialNameInResources_whenNonExistingResource_shouldReturnFalse() {
         // given-when-then
         assertThat(MaterialsHelper.isExistingMaterialNameInResources("Value___1", INTERIOR, minerMock)).isFalse();
@@ -69,28 +75,27 @@ class MaterialsHelperTest {
     }
 
     @Test
-    void getResourceRefForMaterialName_whenNonExistingResource_shouldThrowException() {
+    void getResourceRefForMaterialName_whenNonExistingResource_shouldReturnAbsent() {
         // given-when-then
-        assertThrows(IllegalStateException.class,
-                () -> MaterialsHelper.getResourceRefForMaterialName("Value___1", INTERIOR, minerMock));
+        assertThat(MaterialsHelper.getResourceRefForMaterialName("Value___1", INTERIOR, minerMock)).isEmpty();
     }
 
     @Test
     void getResourceRefForMaterialName_shouldReturnExistingRef() {
         // given-when
-        String actualRef = MaterialsHelper.getResourceRefForMaterialName("Value___1", CAR_COLORS, minerMock);
+        Optional<String> actualRef = MaterialsHelper.getResourceRefForMaterialName("Value___1", CAR_COLORS, minerMock);
 
         // then
-        assertThat(actualRef).isEqualTo("REF1");
+        assertThat(actualRef).contains("REF1");
     }
 
     @Test
     void getResourceRefForMaterialName_shouldReturnExistingRef_caseUnsensitive() {
         // given-when
-        String actualRef = MaterialsHelper.getResourceRefForMaterialName("VALUE___1", CAR_COLORS, minerMock);
+        Optional<String> actualRef = MaterialsHelper.getResourceRefForMaterialName("VALUE___1", CAR_COLORS, minerMock);
 
         // then
-        assertThat(actualRef).isEqualTo("REF1");
+        assertThat(actualRef).contains("REF1");
     }
 
     @Test
