@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.plugins.materials.common;
 
 public class FxConstants {
+    public static final String PATH_RESOURCE_ADVANCED_INFO_STAGE_DESIGNER = "/gui-database/designer/plugins/MaterialAdvancedInfoDesigner.fxml";
     public static final String PATH_RESOURCE_CSS_MATERIALS = "/gui-database/css/plugins/MaterialsPlugin.css";
 
     public static final String CSS_CLASS_MAT_MAIN_COLUMN = "matMainColumn";

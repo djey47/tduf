@@ -10,9 +10,11 @@ import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import fr.tduf.gui.database.plugins.common.contexts.PluginContext;
 import fr.tduf.gui.database.plugins.materials.common.DisplayConstants;
+import fr.tduf.gui.database.plugins.materials.controllers.MaterialAdvancedInfoStageController;
 import fr.tduf.gui.database.plugins.materials.converter.MaterialToItemConverter;
 import fr.tduf.gui.database.plugins.materials.converter.MaterialToRawValueConverter;
 import fr.tduf.gui.database.plugins.materials.converter.ShaderToItemConverter;
+import fr.tduf.gui.database.plugins.materials.stages.MaterialAdvancedInfoDesigner;
 import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.framework.lang.UByte;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
@@ -31,6 +33,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -68,6 +72,7 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
     private static final Class<MaterialsPlugin> thisClass = MaterialsPlugin.class;
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 
+    // TODO move to FilesHelper (lib)
     private static final String FILE_COLORS_BANK = "colors.bnk";
 
     private final PluginContext materialsContext = new PluginContext();
@@ -75,6 +80,8 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
     private final Property<MaterialDefs> materialsInfoEnhancedProperty = new SimpleObjectProperty<>();
 
     private Map<String, String> normalizedNamesDictionary;
+
+    private MaterialAdvancedInfoStageController advancedInfoController;
 
     /**
      * Required contextual information:
@@ -118,6 +125,8 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
 
         normalizedNamesDictionary = MaterialsHelper.buildNormalizedDictionary(context.getMiner());
 
+        advancedInfoController = MaterialAdvancedInfoDesigner.init(context.getMainStageController(), getCss());
+
         materialsContext.setPluginLoaded(true);
     }
 
@@ -153,28 +162,32 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
             return hBox;
         }
 
+        OnTheFlyMaterialsContext onTheFlyMaterialsContext = (OnTheFlyMaterialsContext) onTheFlyContext;
         hBox.getChildren().addAll(
-                createMainColumn(onTheFlyContext),
+                createMainColumn(onTheFlyMaterialsContext),
                 new Separator(VERTICAL),
-                createButtonColumn(onTheFlyContext),
+                createButtonColumn(onTheFlyMaterialsContext),
                 new Separator(VERTICAL)
         );
 
         return hBox;
     }
 
-    private VBox createButtonColumn(OnTheFlyContext onTheFlyContext) {
+    private VBox createButtonColumn(OnTheFlyMaterialsContext onTheFlyContext) {
         return PluginComponentBuilders.buttonColumn()
                 .withBrowseResourceButton(getEditorContext(), onTheFlyContext)
                 .withSeparator()
-                .withButton(createAdvancedInfoButton())
+                .withButton(createAdvancedInfoButton(onTheFlyContext))
                 .build();
     }
 
-    private Button createAdvancedInfoButton() {
+    private Button createAdvancedInfoButton(OnTheFlyMaterialsContext onTheFlyContext) {
         Button button = new Button(LABEL_BUTTON_ADVANCED_INFO);
         button.getStyleClass().addAll(CSS_CLASS_BUTTON, CSS_CLASS_PLUGIN_BUTTON, CSS_CLASS_PLUGIN_BUTTON_MEDIUM, CSS_CLASS_ADVANCED_INFO_BUTTON);
         button.setTooltip(new Tooltip(LABEL_TOOLTIP_ADVANCED_INFO));
+        button.setOnAction(handleAdvancedInfoButtonMouseClick(onTheFlyContext));
+        button.disableProperty().bind(((SimpleObjectProperty<Material>) onTheFlyContext.getCurrentMaterialProperty()).isNull());
+
         return button;
     }
 
@@ -478,6 +491,15 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
 
     private String getFullNameFromDictionary(String materialNormalizedName) {
         return normalizedNamesDictionary.get(materialNormalizedName);
+    }
+
+    private EventHandler<ActionEvent> handleAdvancedInfoButtonMouseClick(OnTheFlyMaterialsContext onTheFlyContext) {
+        return actionEvent -> {
+            Log.trace(THIS_CLASS_NAME, "->materialAdvancedInfoButton clicked");
+
+            advancedInfoController.initAndShowDialog(onTheFlyContext.getCurrentMaterialProperty(), this::getFullNameFromDictionary);
+        };
+
     }
 
     private void handleAutoResourceCreation(DbDto topicObject, String materialName, OnTheFlyMaterialsContext onTheFlyContext) {

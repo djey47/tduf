@@ -16,7 +16,7 @@ public class DisplayConstants {
     public static final String LABEL_SHADER = "Shader: ";
     public static final String LABEL_ALPHA = "Alpha: ";
     public static final String LABEL_NO_NAME = "?";
-    public static final String LABEL_BUTTON_ADVANCED_INFO = "Advanced...";
+    public static final String LABEL_BUTTON_ADVANCED_INFO = "More...";
     public static final String LABEL_COLOR_DESCRIPTION_DEFAULT = "(no color)";
     public static final String LABEL_TOOLTIP_COLOR_PICKER = "Allows to pick a color from palette";
     public static final String LABEL_TOOLTIP_ADVANCED_INFO = "Displays advanced information on shader and layers";
@@ -34,8 +34,8 @@ public class DisplayConstants {
     public static final String FORMAT_SHADER_LABEL = "%s (%s)";
     public static final String FORMAT_DESCRIPTION_RESOURCE_CREATION = "It will be created automatically at REF %s in %s topic.";
     public static final String FORMAT_MESSAGE_RESOURCE_NAME_NOT_FOUND = "A resource was not found for material name: %s";
+    public static final String FORMAT_TITLE_ADVANCED = "Advanced info for material: %s";
 
     public static final String TITLE_SELECTING_MATERIAL = "Selecting new material...";
-
-
+    public static final String TITLE_SUB_ADVANCED_INFO = " : Material advanced information";
 }
