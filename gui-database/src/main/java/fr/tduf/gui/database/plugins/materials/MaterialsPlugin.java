@@ -167,20 +167,14 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
         return PluginComponentBuilders.buttonColumn()
                 .withBrowseResourceButton(getEditorContext(), onTheFlyContext)
                 .withSeparator()
-                .withButton(createLayersInfoButton())
-                .withButton(createShaderSettingsButton())
+                .withButton(createAdvancedInfoButton())
                 .build();
     }
 
-    private Button createLayersInfoButton() {
-        Button button = new Button(LABEL_BUTTON_LAYERS);
-        button.getStyleClass().addAll(CSS_CLASS_BUTTON, CSS_CLASS_PLUGIN_BUTTON, CSS_CLASS_PLUGIN_BUTTON_MEDIUM, CSS_CLASS_LAYERS_INFO_BUTTON);
-        return button;
-    }
-
-    private Button createShaderSettingsButton() {
-        Button button = new Button(LABEL_BUTTON_SHADER);
-        button.getStyleClass().addAll(CSS_CLASS_BUTTON, CSS_CLASS_PLUGIN_BUTTON, CSS_CLASS_PLUGIN_BUTTON_MEDIUM, CSS_CLASS_SHADER_SETTINGS_BUTTON);
+    private Button createAdvancedInfoButton() {
+        Button button = new Button(LABEL_BUTTON_ADVANCED_INFO);
+        button.getStyleClass().addAll(CSS_CLASS_BUTTON, CSS_CLASS_PLUGIN_BUTTON, CSS_CLASS_PLUGIN_BUTTON_MEDIUM, CSS_CLASS_ADVANCED_INFO_BUTTON);
+        button.setTooltip(new Tooltip(LABEL_TOOLTIP_ADVANCED_INFO));
         return button;
     }
 

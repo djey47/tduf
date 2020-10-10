@@ -16,10 +16,10 @@ public class DisplayConstants {
     public static final String LABEL_SHADER = "Shader: ";
     public static final String LABEL_ALPHA = "Alpha: ";
     public static final String LABEL_NO_NAME = "?";
-    public static final String LABEL_BUTTON_LAYERS = "Layers...";
-    public static final String LABEL_BUTTON_SHADER = "Shader...";
-    public static final String LABEL_TOOLTIP_COLOR_PICKER = "Pick a color from palette";
+    public static final String LABEL_BUTTON_ADVANCED_INFO = "Advanced...";
     public static final String LABEL_COLOR_DESCRIPTION_DEFAULT = "(no color)";
+    public static final String LABEL_TOOLTIP_COLOR_PICKER = "Allows to pick a color from palette";
+    public static final String LABEL_TOOLTIP_ADVANCED_INFO = "Displays advanced information on shader and layers";
 
     public static final Map<Color.ColorKind, String> DICTIONARY_LABELS_COLORS = new HashMap<>();
     static {
