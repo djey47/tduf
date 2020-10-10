@@ -6,44 +6,50 @@
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane fx:id="root" prefHeight="720.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.tduf.gui.database.plugins.materials.controllers.MaterialAdvancedInfoStageController">
-   <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-      <items>
-         <Label fx:id="titleLabel" styleClass="pluginItemLabel" text="Advanced info for material: &lt;&gt;" />
-      </items>
-   </ToolBar>
-   <AnchorPane prefHeight="640.0" prefWidth="650.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
-      <children>
-         <Accordion AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-           <panes>
-             <TitledPane fx:id="shaderInfoPane" animated="false" text="Shader configuration">
-               <content>
-                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-               </content>
-             </TitledPane>
-             <TitledPane fx:id="layersInfoPane" animated="false" expanded="false" text="Layers">
-               <content>
-                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+    <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="navigationToolbar" AnchorPane.leftAnchor="0.0"
+             AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <Label fx:id="titleLabel" styleClass="pluginItemLabel" text="Advanced info for material: &lt;&gt;"/>
+    </ToolBar>
+    <AnchorPane prefHeight="640.0" prefWidth="650.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0"
+                AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
+        <Accordion AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                   AnchorPane.topAnchor="0.0">
+            <panes>
+                <TitledPane fx:id="shaderInfoPane" animated="false" text="Shader configuration">
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"/>
+                </TitledPane>
+                <TitledPane fx:id="layersInfoPane" animated="false" expanded="false" text="Layers">
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                         <children>
-                           <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                              <children>
-                                 <ChoiceBox fx:id="topicsChoiceBox" prefHeight="25.0" prefWidth="180.0" styleClass="comboBox" />
-                              </children>
-                           </VBox>
+                            <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0"
+                                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                  AnchorPane.topAnchor="0.0">
+                                <HBox prefHeight="50.0" prefWidth="200.0">
+                                    <Label styleClass="pluginItemLabel" text="Available layers:"/>
+                                    <ChoiceBox fx:id="layersChoiceBox" prefHeight="25.0" prefWidth="300.0"
+                                               styleClass="comboBox"/>
+                                </HBox>
+                                <HBox prefHeight="50.0" prefWidth="200.0">
+                                    <Label styleClass="pluginItemLabel" text="Flags:"/>
+                                    <Label fx:id="layerFlagsLabel" text="&lt;&gt;"/>
+                                </HBox>
+                                <HBox layoutX="10.0" layoutY="60.0" prefHeight="50.0" prefWidth="200.0">
+                                    <Label prefHeight="16.0" styleClass="pluginItemLabel" text="Texture:"/>
+                                    <Label fx:id="layerTextureNameLabel" text="&lt;&gt;"/>
+                                </HBox>
+                            </VBox>
                         </children>
-                     </AnchorPane>
-               </content>
-             </TitledPane>
-             <TitledPane fx:id="miscInfoPane" animated="false" expanded="false" text="Misc">
-               <content>
-                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-               </content>
-             </TitledPane>
-           </panes>
-         </Accordion>
-      </children>
-   </AnchorPane>
+                    </AnchorPane>
+                </TitledPane>
+                <TitledPane fx:id="miscInfoPane" animated="false" expanded="false" text="Misc">
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"/>
+                </TitledPane>
+            </panes>
+        </Accordion>
+    </AnchorPane>
    <ToolBar prefHeight="40.0" styleClass="navigationToolbar" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
 </AnchorPane>

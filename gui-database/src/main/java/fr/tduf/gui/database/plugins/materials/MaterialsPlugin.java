@@ -497,7 +497,7 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
         return actionEvent -> {
             Log.trace(THIS_CLASS_NAME, "->materialAdvancedInfoButton clicked");
 
-            advancedInfoController.initAndShowDialog(onTheFlyContext.getCurrentMaterialProperty(), this::getFullNameFromDictionary);
+            advancedInfoController.showDialog(onTheFlyContext.getCurrentMaterialProperty(), this::getFullNameFromDictionary);
         };
 
     }

@@ -20,6 +20,7 @@ public class DisplayConstants {
     public static final String LABEL_COLOR_DESCRIPTION_DEFAULT = "(no color)";
     public static final String LABEL_TOOLTIP_COLOR_PICKER = "Allows to pick a color from palette";
     public static final String LABEL_TOOLTIP_ADVANCED_INFO = "Displays advanced information on shader and layers";
+    public static final String LABEL_NO_TEXTURE = "N/A";
 
     public static final Map<Color.ColorKind, String> DICTIONARY_LABELS_COLORS = new HashMap<>();
     static {
@@ -32,6 +33,8 @@ public class DisplayConstants {
     public static final String FORMAT_ALPHA_VALUE = "%d with blending (x=%s y=%d)";
     public static final String FORMAT_MATERIAL_LABEL = "%s (%s)";
     public static final String FORMAT_SHADER_LABEL = "%s (%s)";
+    public static final String FORMAT_LAYER_LABEL = "%s (%s)";
+    public static final String FORMAT_TEXTURE_LABEL = "%s.2DB";
     public static final String FORMAT_DESCRIPTION_RESOURCE_CREATION = "It will be created automatically at REF %s in %s topic.";
     public static final String FORMAT_MESSAGE_RESOURCE_NAME_NOT_FOUND = "A resource was not found for material name: %s";
     public static final String FORMAT_TITLE_ADVANCED = "Advanced info for material: %s";

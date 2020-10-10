@@ -1,75 +1,40 @@
 package fr.tduf.gui.database.plugins.materials.controllers;
 
-import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
-import fr.tduf.gui.common.javafx.helper.TableViewHelper;
-import fr.tduf.gui.common.javafx.helper.options.SimpleDialogOptions;
-import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.controllers.AbstractEditorController;
-import fr.tduf.gui.database.controllers.helper.DialogsHelper;
-import fr.tduf.gui.database.controllers.main.MainStageChangeDataController;
-import fr.tduf.gui.database.domain.LocalizedResource;
-import fr.tduf.gui.database.domain.javafx.ResourceEntryDataItem;
+import fr.tduf.gui.database.plugins.materials.converter.LayerFlagsToLabelConverter;
+import fr.tduf.gui.database.plugins.materials.converter.LayerTextureToLabelConverter;
+import fr.tduf.gui.database.plugins.materials.converter.LayerToItemConverter;
 import fr.tduf.gui.database.plugins.materials.converter.MaterialToAdvancedTitleConverter;
-import fr.tduf.libunlimited.common.game.domain.Locale;
-import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
-import fr.tduf.libunlimited.low.files.db.dto.DbDto;
+import fr.tduf.libunlimited.low.files.gfx.materials.domain.Layer;
+import fr.tduf.libunlimited.low.files.gfx.materials.domain.LayerGroup;
 import fr.tduf.libunlimited.low.files.gfx.materials.domain.Material;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
-
-import static fr.tduf.libunlimited.common.game.domain.Locale.DEFAULT;
-import static fr.tduf.libunlimited.common.game.domain.Locale.fromOrder;
-import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toList;
-import static javafx.scene.control.Alert.AlertType.ERROR;
 
 /**
  * Controller to display advanced material info via dedicated dialog.
  */
 public class MaterialAdvancedInfoStageController extends AbstractEditorController {
-    private static final String THIS_CLASS_NAME = MaterialAdvancedInfoStageController.class.getSimpleName();
-
-    private final DialogsHelper dialogsHelper = new DialogsHelper();
-
-    @FXML
-    AnchorPane root;
 
     @FXML
     private Label titleLabel;
 
     @FXML
-    private ChoiceBox<DbDto.Topic> topicsChoiceBox;
+    private ChoiceBox<Layer> layersChoiceBox;
 
     @FXML
-    private TableView<ResourceEntryDataItem> resourcesTableView;
+    private Label layerFlagsLabel;
 
-    private final ObservableList<ResourceEntryDataItem> resourceData = FXCollections.observableArrayList();
+    @FXML
+    private Label layerTextureNameLabel;
 
-    private final Property<LocalizedResource> browsedResourceProperty = new SimpleObjectProperty<>();
-
-    private StringProperty resourceReferenceProperty;
-
-    private int fieldRank;
-
-    private Locale currentLocale;
+    private final Property<Layer> currentLayerProperty = new SimpleObjectProperty<>();
 
     private final Property<Material> materialProperty = new SimpleObjectProperty<>();
 
@@ -79,16 +44,9 @@ public class MaterialAdvancedInfoStageController extends AbstractEditorControlle
     public void init() {
         initTopBar();
 
+        initLayersPane();
+
         initStatusBar();
-
-/*        browsedResourceProperty
-                .addListener((observable, oldValue, newValue) -> handleBrowseToResource(newValue));
-
-        initSearchValueDialog();
-
-        initTopicPane();
-
-        initTablePane();*/
     }
 
     /**
@@ -96,94 +54,26 @@ public class MaterialAdvancedInfoStageController extends AbstractEditorControlle
      * @param materialProperty  : material used to provide info
      * @param fullNameProvider  : function allowing to resolve material full name from normalized one
      */
-    public void initAndShowDialog(Property<Material> materialProperty, Function<String, String> fullNameProvider) {
+    public void showDialog(Property<Material> materialProperty, Function<String, String> fullNameProvider) {
         this.materialProperty.setValue(materialProperty.getValue());
         this.fullNameProvider = fullNameProvider;
 
         refreshTopBar();
 
-        topicsChoiceBox.getSelectionModel().clearSelection();
-
-        //browsedResourceProperty.setValue(new LocalizedResource(targetTopic, referenceProperty.get()));
+        refreshLayersPane();
 
         showWindow();
     }
 
-    @FXML
-    private void handleResourceTableMouseClick(MouseEvent mouseEvent) {
-        Log.trace(THIS_CLASS_NAME, "->handleResourceTableMouseClick");
-
-        if (MouseButton.PRIMARY == mouseEvent.getButton() && mouseEvent.getClickCount() == 2) {
-            TableViewHelper.getMouseSelectedItem(mouseEvent, ResourceEntryDataItem.class)
-                    .ifPresent(this::applyResourceSelectionToMainStageAndClose);
-        }
-    }
-
-    @FXML
-    private void handleSelectResourceButtonMouseClick() {
-        Log.trace(THIS_CLASS_NAME, "->handleSelectResourceButtonMouseClick");
-
-        ResourceEntryDataItem selectedResource = resourcesTableView.getSelectionModel().selectedItemProperty().getValue();
-        if (selectedResource != null && resourceReferenceProperty != null) {
-            applyResourceSelectionToMainStageAndClose(selectedResource);
-        }
-    }
-
-    @FXML
-    private void handleEditResourceButtonMouseClick() {
-        Log.trace(THIS_CLASS_NAME, "->handleEditResourceButtonMouseClick");
-
-        ofNullable(resourcesTableView.getSelectionModel().selectedItemProperty().getValue())
-                .ifPresent(selectedResource -> {
-                    String currentResourceReference = selectedResource.referenceProperty().get();
-                    DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic())
-                            .orElseThrow(() -> new IllegalArgumentException("Topic not found: " + getCurrentTopic()));
-                    dialogsHelper.showEditResourceDialog(currentTopicObject, selectedResource, currentLocale)
-                            .ifPresent(localizedResource -> editResourceAndUpdateMainStage(getCurrentTopic(), currentResourceReference, localizedResource));
-                });
-    }
-
-    @FXML
-    private void handleAddResourceButtonMouseClick() {
-        Log.trace(THIS_CLASS_NAME, "->handleAddResourceButtonMouseClick");
-
-        DbDto currentTopicObject = getMiner().getDatabaseTopic(getCurrentTopic())
-                .orElseThrow(() -> new IllegalArgumentException("Topic not found: " + getCurrentTopic()));
-        dialogsHelper.showAddResourceDialog(currentTopicObject, currentLocale)
-                .ifPresent(newLocalizedResource -> editNewResourceAndUpdateMainStage(getCurrentTopic(), newLocalizedResource));
-    }
-
-    @FXML
-    private void handleRemoveResourceButtonMouseClick() {
-        Log.trace(THIS_CLASS_NAME, "->handleRemoveResourceButtonMouseClick");
-
-        ofNullable(resourcesTableView.getSelectionModel().selectedItemProperty().getValue())
-                .ifPresent(selectedResource -> {
-                    int selectedRow = resourcesTableView.getSelectionModel().getSelectedIndex();
-                    removeResourceAndUpdateMainStage(getCurrentTopic(), selectedResource, selectedRow);
-                });
-    }
-
-    private void handleTopicChoiceChanged(DbDto.Topic newTopic) {
-        Log.trace(THIS_CLASS_NAME, "->handleTopicChoiceChanged: " + newTopic);
-
-        if (newTopic == null) {
-            return;
-        }
-
-        updateResourcesStageData();
-    }
-
-    private void handleBrowseToResource(LocalizedResource newResource) {
-        Log.trace(THIS_CLASS_NAME, "->handleBrowseToResource: " + newResource);
-
-        topicsChoiceBox.setValue(newResource.getTopic()
-                .orElseThrow(IllegalArgumentException::new));
-
-        selectResourceInTableAndScroll(newResource.getReference());
-    }
-
     private void initTopBar() {
+    }
+
+    private void initLayersPane() {
+        layersChoiceBox.setConverter(new LayerToItemConverter());
+        currentLayerProperty.bind(layersChoiceBox.getSelectionModel().selectedItemProperty());
+
+        layerFlagsLabel.textProperty().bindBidirectional(currentLayerProperty, new LayerFlagsToLabelConverter());
+        layerTextureNameLabel.textProperty().bindBidirectional(currentLayerProperty, new LayerTextureToLabelConverter());
     }
 
     private void initStatusBar() {
@@ -194,165 +84,18 @@ public class MaterialAdvancedInfoStageController extends AbstractEditorControlle
         titleLabel.textProperty().bindBidirectional(materialProperty, new MaterialToAdvancedTitleConverter(fullNameProvider));
     }
 
-    void editResourceAndUpdateMainStage(DbDto.Topic topic, String currentResourceReference, LocalizedResource newLocalizedResource) {
-        try {
-            updateResource(topic, currentResourceReference, newLocalizedResource.getReferenceValuePair(), newLocalizedResource.getLocale().orElse(null));
-        } catch (IllegalArgumentException iae) {
-            Log.error(THIS_CLASS_NAME, "Unable to update resource", iae);
-            showResourceErrorDialog(iae);
-        } finally {
-            updateAllStagesWithResourceReference(newLocalizedResource.getReferenceValuePair().getKey());
+    private void refreshLayersPane() {
+        fillLayers();
+    }
+
+    private void fillLayers() {
+        final ObservableList<Layer> items = layersChoiceBox.getItems();
+        items.clear();
+        LayerGroup layerGroup = materialProperty.getValue().getLayerGroup();
+        items.addAll(layerGroup.getLayers().subList(0, layerGroup.getLayerCount() - 1));
+
+        if (!items.isEmpty()) {
+            layersChoiceBox.getSelectionModel().clearAndSelect(0);
         }
-    }
-
-    void editNewResourceAndUpdateMainStage(DbDto.Topic topic, LocalizedResource newLocalizedResource) {
-        try {
-            createResource(topic, newLocalizedResource.getReferenceValuePair(), newLocalizedResource.getLocale().orElse(null));
-        } catch (IllegalArgumentException iae) {
-            Log.error(THIS_CLASS_NAME, "Unable to create resource", iae);
-            showResourceErrorDialog(iae);
-        } finally {
-            updateAllStagesWithResourceReference(newLocalizedResource.getReferenceValuePair().getKey());
-        }
-    }
-
-    private void initTopicPane() {
-        fillTopics();
-        topicsChoiceBox.getSelectionModel().selectedItemProperty()
-                .addListener((observable, oldValue, newValue) -> handleTopicChoiceChanged(newValue));
-    }
-
-    @SuppressWarnings("unchecked")
-    private void initTablePane() {
-        TableColumn<ResourceEntryDataItem, String> refColumn = (TableColumn<ResourceEntryDataItem, String>) resourcesTableView.getColumns().get(0);
-        refColumn.setCellValueFactory(cellData -> cellData.getValue().referenceProperty());
-
-        for (int columnIndex = 1; columnIndex < resourcesTableView.getColumns().size(); columnIndex++) {
-            TableColumn<ResourceEntryDataItem, String> valueColumn = (TableColumn<ResourceEntryDataItem, String>) resourcesTableView.getColumns().get(columnIndex);
-            Locale locale = fromOrder(columnIndex);
-            valueColumn.setCellValueFactory(cellData -> cellData.getValue().valuePropertyForLocale(locale));
-        }
-
-        resourcesTableView.setItems(resourceData);
-    }
-
-    private void fillTopics() {
-        final ObservableList<DbDto.Topic> items = topicsChoiceBox.getItems();
-        DbDto.Topic.valuesAsStream().forEach(items::add);
-    }
-
-    private void selectResourceInTableAndScroll(String reference) {
-        resourceData.stream()
-                .filter(remoteResource -> remoteResource.referenceProperty().get().equals(reference))
-                .findAny()
-                .ifPresent(browsedResource -> {
-                    resourcesTableView.getSelectionModel().select(browsedResource);
-                    resourcesTableView.scrollTo(browsedResource);
-                });
-    }
-
-    private void applyResourceSelectionToMainStageAndClose(ResourceEntryDataItem selectedResource) {
-        String resourceReference = selectedResource.referenceProperty().getValue();
-        resourceReferenceProperty.set(resourceReference);
-
-        mainStageController.getChangeData().updateContentItem(mainStageController.getCurrentTopicObject().getTopic(), fieldRank, resourceReference);
-
-        closeWindow();
-    }
-
-    private void removeResourceAndUpdateMainStage(DbDto.Topic topic, ResourceEntryDataItem selectedResource, int selectedRowIndex) {
-        mainStageController.getChangeData().removeResourceWithReference(topic, selectedResource.referenceProperty().getValue());
-
-        updateAllStages();
-
-        TableViewHelper.selectRowAndScroll(selectedRowIndex, resourcesTableView);
-    }
-
-    private void updateResource(DbDto.Topic topic, String currentRef, Pair<String, String> referenceValuePair, Locale affectedLocale) {
-        String newResourceReference = referenceValuePair.getKey();
-        String newResourceValue = referenceValuePair.getValue();
-
-        if (currentRef.equals(newResourceReference)) {
-            Optional<Locale> potentialAffectedLocale = ofNullable(affectedLocale);
-            if (potentialAffectedLocale.isPresent()) {
-                mainStageController.getChangeData().updateResourceWithReferenceForLocale(topic, potentialAffectedLocale.get(), currentRef, newResourceValue);
-            } else {
-                mainStageController.getChangeData().updateResourceWithReferenceForAllLocales(topic, currentRef, newResourceValue);
-            }
-        } else {
-            mainStageController.getChangeData().updateResourceWithReferenceForAllLocales(topic, currentRef, newResourceReference, newResourceValue);
-        }
-    }
-
-    private void createResource(DbDto.Topic topic, Pair<String, String> referenceValuePair, Locale affectedLocale) {
-        String newResourceReference = referenceValuePair.getKey();
-        String newResourceValue = referenceValuePair.getValue();
-
-        MainStageChangeDataController changeDataController = mainStageController.getChangeData();
-        Optional<Locale> potentialAffectedLocale = ofNullable(affectedLocale);
-        if (potentialAffectedLocale.isPresent()) {
-            changeDataController.addResourceWithReference(topic, potentialAffectedLocale.get(), newResourceReference, newResourceValue);
-        } else {
-            changeDataController.addResourceWithReference(topic, DEFAULT, newResourceReference, newResourceValue);
-        }
-    }
-
-    private void updateAllStagesWithResourceReference(String resourceReference) {
-        updateResourcesStageData();
-        selectResourceInTableAndScroll(resourceReference);
-
-        mainStageController.getViewData().updateAllPropertiesWithItemValues();
-    }
-
-    private void updateAllStages() {
-        updateResourcesStageData();
-
-        mainStageController.getViewData().updateAllPropertiesWithItemValues();
-    }
-
-    private void updateResourcesStageData() {
-        resourceData.clear();
-
-        DbDto.Topic currentTopic = getCurrentTopic();
-        List<ResourceEntryDataItem> resourceEntryDataItems = getMiner().getResourcesFromTopic(currentTopic)
-                .map(resourceObject -> resourceObject.getEntries().stream()
-                        .map(entry -> {
-                            ResourceEntryDataItem tableResource = new ResourceEntryDataItem();
-                            tableResource.setReference(entry.getReference());
-
-                            Locale.valuesAsStream()
-                                    .forEach(locale -> tableResource.setValueForLocale(
-                                            locale,
-                                            entry.getValueForLocale(locale)
-                                                    .orElse("")));
-
-                            return tableResource;
-                        })
-                        .collect(toList()))
-                .orElse(new ArrayList<>());
-
-        resourceData.addAll(resourceEntryDataItems);
-    }
-
-    private void showResourceErrorDialog(IllegalArgumentException iae) {
-        SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
-                .withContext(ERROR)
-                .withTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES)
-                .withMessage(iae.getMessage())
-                .withDescription(DisplayConstants.MESSAGE_DIFFERENT_RESOURCE)
-                .build();
-        CommonDialogsHelper.showDialog(dialogOptions, getWindow());
-    }
-
-    private DbDto.Topic getCurrentTopic() {
-        return topicsChoiceBox.getValue();
-    }
-
-    private BulkDatabaseMiner getMiner() {
-        return mainStageController.getMiner();
-    }
-
-    void setTopicsChoiceBox(ChoiceBox<DbDto.Topic> topicsChoiceBox) {
-        this.topicsChoiceBox = topicsChoiceBox;
     }
 }
