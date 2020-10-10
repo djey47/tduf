@@ -4,12 +4,14 @@ import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.resource.DbResourceDto;
 import fr.tduf.libunlimited.low.files.db.dto.resource.ResourceEntryDto;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
@@ -112,6 +114,23 @@ class MaterialsHelperTest {
         assertThrows(IllegalArgumentException.class,
                 () -> MaterialsHelper.resolveNoMaterialReference(CAR_PHYSICS_DATA));
     }
+
+    @Test
+    void getColorSettingsKeyStream_shouldReturnStreamOfAllColorKeys() {
+        // given-when
+        Stream<String> actualStream = MaterialsHelper.getColorSettingsKeyStream("groupKeyName.", "settingKeyName");
+
+        // then
+        assertThat(actualStream).containsExactly(
+                "groupKeyName.settingKeyNameR",
+                "groupKeyName.settingKeyNameG",
+                "groupKeyName.settingKeyNameB",
+                "groupKeyName.settingKeyNameO");
+    }
+
+    @Test
+    @Disabled("Would require mocking static method from MaterialsWriter")
+    void saveMaterialDefinitions() {}
 
     private void initResourceMocks() {
         DbResourceDto carColorsResources = DbResourceDto.builder()
