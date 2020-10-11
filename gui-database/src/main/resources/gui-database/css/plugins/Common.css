@@ -10,6 +10,20 @@
     -fx-text-fill: -color-default;
 }
 
+.advancedItemLabel {
+    -fx-pref-width: 135.0;
+
+    /* To emulate missing -fx-margin prop */
+    -fx-padding: 0 4.0 0 0;
+    -fx-border-insets: 0 4.0 0 0;
+    -fx-background-insets: 0 4.0 0 0;
+}
+
+.advancedSubItemLabel {
+    /* To emulate missing -fx-margin prop */
+    -fx-padding: 0 4.0 0 8.0;
+}
+
 .pluginButton {
 }
 

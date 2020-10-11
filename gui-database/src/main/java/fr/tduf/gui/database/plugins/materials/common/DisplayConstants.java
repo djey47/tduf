@@ -41,4 +41,6 @@ public class DisplayConstants {
 
     public static final String TITLE_SELECTING_MATERIAL = "Selecting new material...";
     public static final String TITLE_SUB_ADVANCED_INFO = " : Material advanced information";
+
+    public static final String SEPARATOR_FLAGS = "/";
 }

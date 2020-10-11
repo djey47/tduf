@@ -12,8 +12,10 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TitledPane;
 
 import java.util.function.Function;
 
@@ -24,6 +26,12 @@ public class MaterialAdvancedInfoStageController extends AbstractEditorControlle
 
     @FXML
     private Label titleLabel;
+
+    @FXML
+    private Accordion infoAccordion;
+
+    @FXML
+    private TitledPane shaderInfoPane;
 
     @FXML
     private ChoiceBox<Layer> layersChoiceBox;
@@ -86,6 +94,8 @@ public class MaterialAdvancedInfoStageController extends AbstractEditorControlle
 
     private void refreshLayersPane() {
         fillLayers();
+
+        infoAccordion.setExpandedPane(shaderInfoPane);
     }
 
     private void fillLayers() {
