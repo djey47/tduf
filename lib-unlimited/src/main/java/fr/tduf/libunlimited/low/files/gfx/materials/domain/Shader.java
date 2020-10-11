@@ -28,6 +28,10 @@ public class Shader {
         return subSettings;
     }
 
+    public float[] getReflectionLayerScale() {
+        return reflectionLayerScale;
+    }
+
     /**
      * Changes shader configuration
      * @param materialPiece : new configuration to apply

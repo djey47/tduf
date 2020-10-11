@@ -11,7 +11,7 @@
 }
 
 .advancedItemLabel {
-    -fx-pref-width: 135.0;
+    -fx-pref-width: 175.0;
 
     /* To emulate missing -fx-margin prop */
     -fx-padding: 0 4.0 0 0;

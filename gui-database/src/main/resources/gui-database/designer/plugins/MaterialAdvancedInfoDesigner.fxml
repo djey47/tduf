@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -18,7 +19,31 @@
         <Accordion fx:id="infoAccordion" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <panes>
                 <TitledPane fx:id="shaderInfoPane" animated="false" text="Shader configuration">
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <children>
+                     <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <children>
+                           <HBox minHeight="50.0" prefHeight="50.0" prefWidth="200.0">
+                              <children>
+                                 <Label text="Reflection layer scale:">
+                                    <styleClass>
+                                       <String fx:value="pluginItemLabel" />
+                                       <String fx:value="advancedItemLabel" />
+                                    </styleClass>
+                                 </Label>
+                                 <Label fx:id="reflectionLayerScaleLabel" text="&lt;&gt;" />
+                              </children>
+                           </HBox>
+                           <Label text="Sub settings:">
+                              <styleClass>
+                                 <String fx:value="pluginItemLabel" />
+                                 <String fx:value="advancedItemLabel" />
+                              </styleClass>
+                           </Label>
+                           <TableView fx:id="subSettingsTableView" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="300.0" prefWidth="628.0" />
+                        </children>
+                     </VBox>
+                  </children></AnchorPane>
                 </TitledPane>
                 <TitledPane fx:id="layersInfoPane" animated="false" expanded="false" text="Layers">
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
@@ -55,7 +80,14 @@
                     </AnchorPane>
                 </TitledPane>
                 <TitledPane fx:id="miscInfoPane" animated="false" expanded="false" text="Misc">
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <children>
+                     <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <children>
+                           <HBox prefHeight="100.0" prefWidth="200.0" />
+                        </children>
+                     </VBox>
+                  </children></AnchorPane>
                 </TitledPane>
             </panes>
         </Accordion>

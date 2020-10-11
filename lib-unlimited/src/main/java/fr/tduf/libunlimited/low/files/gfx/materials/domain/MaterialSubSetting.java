@@ -15,4 +15,20 @@ public class MaterialSubSetting {
         this.value2 = value2;
         this.value3 = value3;
     }
+
+    public long getId() {
+        return id;
+    }
+
+    public long getValue1() {
+        return value1;
+    }
+
+    public long getValue2() {
+        return value2;
+    }
+
+    public long getValue3() {
+        return value3;
+    }
 }

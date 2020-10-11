@@ -43,4 +43,9 @@ public class DisplayConstants {
     public static final String TITLE_SUB_ADVANCED_INFO = " : Material advanced information";
 
     public static final String SEPARATOR_FLAGS = "/";
+
+    public static final String HEADER_SUBTABLE_ID = "Id";
+    public static final String HEADER_SUBTABLE_VALUE1 = "Value #1";
+    public static final String HEADER_SUBTABLE_VALUE2 = "Value #2";
+    public static final String HEADER_SUBTABLE_VALUE3 = "Value #3";
 }
