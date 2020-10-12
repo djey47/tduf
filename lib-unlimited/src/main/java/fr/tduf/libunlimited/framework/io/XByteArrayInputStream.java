@@ -22,12 +22,23 @@ public class XByteArrayInputStream extends ByteArrayInputStream {
     }
 
     /**
-     *
      * @return current position in the stream
      */
     public int position() {
         return pos;
     }
 
-    // TODO implement seek: https://stackoverflow.com/questions/3792747/seeking-a-bytearrayinputstream-using-java-io
+    /**
+     * Changes current position in the stream
+     * @param position  : position in bytes
+     * @throws IllegalArgumentException when provided position is not reachable
+     */
+    public void seek(int position) throws IllegalArgumentException {
+        if (position < 0 || position >= buf.length) {
+            String message = String.format("Seeking to invalid position (%d). Valid positions are 0..%d", position, buf.length - 1);
+            throw new IllegalArgumentException(message);
+        }
+
+        pos = position;
+    }
 }
