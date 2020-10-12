@@ -324,7 +324,7 @@ public class DataStore {
 
         byte[] rawValue = entry.getRawValue();
         return of(
-                rawToText(rawValue, rawValue.length));
+                rawToText(rawValue));
     }
 
     /**

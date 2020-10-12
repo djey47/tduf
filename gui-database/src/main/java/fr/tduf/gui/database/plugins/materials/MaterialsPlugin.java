@@ -15,6 +15,7 @@ import fr.tduf.gui.database.plugins.materials.converter.MaterialToItemConverter;
 import fr.tduf.gui.database.plugins.materials.converter.MaterialToRawValueConverter;
 import fr.tduf.gui.database.plugins.materials.converter.ShaderToItemConverter;
 import fr.tduf.gui.database.plugins.materials.stages.MaterialAdvancedInfoDesigner;
+import fr.tduf.libunlimited.common.game.FileConstants;
 import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.framework.lang.UByte;
 import fr.tduf.libunlimited.high.files.db.common.helper.DatabaseGenHelper;
@@ -71,9 +72,6 @@ import static javafx.scene.control.ButtonType.OK;
 public class MaterialsPlugin extends AbstractDatabasePlugin {
     private static final Class<MaterialsPlugin> thisClass = MaterialsPlugin.class;
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
-
-    // TODO move to FilesHelper (lib)
-    private static final String FILE_COLORS_BANK = "colors.bnk";
 
     private final PluginContext materialsContext = new PluginContext();
 
@@ -559,7 +557,7 @@ public class MaterialsPlugin extends AbstractDatabasePlugin {
     }
 
     private static Path resolveAndCheckBankFilePath(String gameLocation) throws IOException {
-        Path bankFilePath = Paths.get(gameLocation, DIRECTORY_EURO, DIRECTORY_BANKS, DIRECTORY_VEHICLES, FILE_COLORS_BANK);
+        Path bankFilePath = Paths.get(gameLocation, DIRECTORY_EURO, DIRECTORY_BANKS, DIRECTORY_VEHICLES, FileConstants.FILE_COLORS_COMMON_BANK);
         if (!Files.exists(bankFilePath)) {
             String warningMessage = String.format(FORMAT_MESSAGE_WARN_NO_MATERIALS, bankFilePath.toString());
             Log.warn(THIS_CLASS_NAME, warningMessage);

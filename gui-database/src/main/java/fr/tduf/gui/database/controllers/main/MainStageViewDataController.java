@@ -767,7 +767,6 @@ public class MainStageViewDataController extends AbstractMainStageSubController 
 
         final Optional<EditorLayoutDto.EditorProfileDto> potentialProfile = getApplicationConfiguration().getEditorProfile()
                 .flatMap(this::lookupChoiceboxProfileByName);
-        // TODO [2.0] Java 9: https://docs.oracle.com/javase/9/docs/api/java/util/Optional.html#ifPresentOrElse-java.util.function.Consumer-java.lang.Runnable-
         if (potentialProfile.isPresent()) {
             selectionModel.select(potentialProfile.get());
         } else {

@@ -10,7 +10,7 @@ public class LayerTextureToLabelConverter extends StringConverter<Layer> {
         if (layer == null) {
             return "";
         }
-        // TODO full file name??
+        // TODO Improvement: full file name??
         String textureFile = layer.getTextureFile();
         return textureFile.isEmpty() ?
                 DisplayConstants.LABEL_NO_TEXTURE : String.format(DisplayConstants.FORMAT_TEXTURE_LABEL, textureFile);

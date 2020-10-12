@@ -110,7 +110,7 @@ public class JsonAdapter {
 
         switch (fieldType) {
             case TEXT:
-                currentObjectNode.put(fieldName, rawToText(rawValue, rawValue.length));
+                currentObjectNode.put(fieldName, rawToText(rawValue));
                 break;
             case FPOINT:
                 currentObjectNode.put(fieldName, rawToFloatingPoint(rawValue));

@@ -26,7 +26,6 @@ public class TypeHelper {
      * @return corresponding value as String
      */
     public static String rawToText(byte[] rawValueBytes) {
-        // TODO convert all other usages with simplified signature
         return rawToText(rawValueBytes, rawValueBytes.length);
     }
 
