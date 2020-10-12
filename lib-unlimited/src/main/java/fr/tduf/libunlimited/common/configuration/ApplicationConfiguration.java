@@ -24,8 +24,6 @@ import static java.util.Optional.ofNullable;
 public class ApplicationConfiguration extends Properties {
     private static final String THIS_CLASS_NAME = ApplicationConfiguration.class.getSimpleName();
 
-    // TODO [2.0] Remove genuine location support
-    private static String genuineConfigurationFile = Paths.get(System.getProperty("user.home"), "tduf.properties").toString();
     private static String configurationFile = Paths.get(DIRECTORY_CONFIGURATION, "tduf.properties").toString();
 
     private static final String KEY_DATABASE_DIR = "tdu.database.directory";
@@ -157,18 +155,8 @@ public class ApplicationConfiguration extends Properties {
      */
     public void load() throws IOException {
         try {
-            Path genuinePath = Paths.get(genuineConfigurationFile);
-            if (Files.exists(genuinePath)) {
-                Log.warn(THIS_CLASS_NAME, "Configuration file exists at obsolete location. It will be relocated to " + configurationFile);
-                try (InputStream is = new FileInputStream(genuineConfigurationFile)) {
-                    load(is);
-                }
-                store();
-                Files.delete(genuinePath);
-            } else {
-                try (InputStream is = new FileInputStream(configurationFile)) {
-                    load(is);
-                }
+            try (InputStream is = new FileInputStream(configurationFile)) {
+                load(is);
             }
         } catch (FileNotFoundException fnfe) {
             Log.info(THIS_CLASS_NAME, "Configuration file does not exist, still. It will be created.", fnfe);
@@ -199,8 +187,5 @@ public class ApplicationConfiguration extends Properties {
     // For tests
     static void setConfigurationFile(String file) {
         configurationFile = file;
-    }
-    static void setGenuineConfigurationFile(String file) {
-        genuineConfigurationFile = file;
     }
 }

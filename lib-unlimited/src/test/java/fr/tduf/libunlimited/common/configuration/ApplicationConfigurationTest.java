@@ -21,14 +21,11 @@ class ApplicationConfigurationTest {
     private final ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
 
     private String configFileName;
-    private String genuineConfigFileName;
 
     @BeforeEach
     void setUp() throws IOException {
         configFileName = Paths.get(TestingFilesHelper.createTempDirectoryForLibrary(), ".tduf", "test.properties").toString();
-        genuineConfigFileName = Paths.get(TestingFilesHelper.createTempDirectoryForLibrary(), "test.properties").toString();
         ApplicationConfiguration.setConfigurationFile(configFileName);
-        ApplicationConfiguration.setGenuineConfigurationFile(genuineConfigFileName);
     }
 
     @Test
@@ -58,19 +55,6 @@ class ApplicationConfigurationTest {
 
         // WHEN-THEN
         applicationConfiguration.load();
-    }
-
-    @Test
-    void load_whenConfigFileAtGenuineLocation_shouldCreateAtNewLocation_andDeleteOriginalFile() throws Exception {
-        // GIVEN
-        Files.createFile(Paths.get(genuineConfigFileName));
-
-        // WHEN
-        applicationConfiguration.load();
-
-        // THEN
-        assertThat(new File(configFileName)).exists();
-        assertThat(new File(genuineConfigFileName)).doesNotExist();
     }
 
     @Test
