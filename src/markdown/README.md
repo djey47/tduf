@@ -22,6 +22,7 @@ See **README-database-editor.md*
 * (CLI/FileTool) jsonify: adds access key to repeated item in new meta section
 * (CLI/FileTool) jsonify/applyjson: support remaining bytes.
 
+* (Library/Common) Removed support of genuine configuration file (formerly ~/tduf.properties)
 * (Library/Files) 2DM files preliminary support (thanks to Speeder, Lean and TDUZoqqer)
 * (Library/Files) Global and field comment support [WIKI](https://github.com/djey47/tduf/wiki/Reverse-Engineering-Structure)
 * (Library/Files) When parsing, CONSTANT and GAP field values are now checked by default, can be disabled on demand [WIKI](https://github.com/djey47/tduf/wiki/Reverse-Engineering-Structure)
@@ -33,7 +34,7 @@ See **README-database-editor.md*
 
 
 ### Fixed issues
-* (Library/Files) Some parsing and writing errors have been found and fixed
+* (Library/Files) Some parsing and writing errors have been found and fixed.
 
 
 ### Known bugs
