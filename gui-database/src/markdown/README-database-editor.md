@@ -1,12 +1,20 @@
 # TDUF(orever) - Database Editor
 
 ### What's new?
-* User confirmation now asked on leaving application or reloading database when unsaved changes  
+* (general) User confirmation now asked on leaving application or reloading database when unsaved changes
+* (general) Splash screen while loading database, due to increased time required (additional material file now has to be loaded)
+* (general) Settings: locales list: enhanced item display
+* (general) Settings: added ability to display TDUF configuration files and logs in default file browser [WIKI here](https://github.com/djey47/tduf/wiki/Advanced-Editor#enable-debugging-mode-via-tduf-settings-file) and [there](https://github.com/djey47/tduf/wiki/Troubleshooting-Editor#basic-troubleshooting)
+* (general) Themes support, starter pack provided, and ability to customize: [WIKI](https://github.com/djey47/tduf/wiki/Settings#using-color-theme)
 
-* Entry filter: pressing ENTER on text field now triggers search
+* (main) Entry filter: pressing ENTER on text field now triggers search
 
-* Settings: locales list: enhanced item display
-* Settings: added ability to display TDUF configuration files and logs in Explorer
+* (plugins) Material Editor: new plugin inserted in CarColors and Interior topics, allowing:
+    - [WIKI](https://github.com/djey47/tduf/wiki/Materials-Editor)
+    - selection of a different material for exterior paint (main + secondary, brake calipers) and interior (main + secondary)
+    - update of colors used (ambient, diffuse, specular)
+    - change of shader configuration
+    - viewing of more parameters (read-only for now).
 
 * Some more code optimizations and fixes!
 
@@ -64,7 +72,7 @@
 
 ### What you will need to run TDUF
 
-#### Java Runtime
+#### Java Runtime
 
 Make sure Java apps can be run.
 

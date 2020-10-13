@@ -45,7 +45,7 @@ See **README-database-editor.md*
 
 - TDUF relies on both Java Runtime and .net Framework -
 
-#### Java Runtime
+#### Java Runtime
 
 Make sure Java apps can be run.
 
@@ -69,7 +69,7 @@ Make sure Java apps can be run.
 
 
 ### Running Command Line tools!
-- Open console (cmd in Windows or bash-compatible in Linux)
+- Open console (cmd, powershell in Windows or bash-compatible in Linux)
 - `cd` to TDUF directory
 - For Linux users, apply aliases: `source ./tools/cli/linux-aliases`
 - Type and launch `help`

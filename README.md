@@ -21,6 +21,8 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 
 ### Setting-up ###
 
+TDUF development can be made on Windows, Windows-WSL, Linux... your choice!
+
 * Clone this repository
 * To set-up Gradle: run *gradlew* script from command line
 * Import *build.gradle* file into your favourite IDE
