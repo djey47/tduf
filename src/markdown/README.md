@@ -10,7 +10,7 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
 
 
 ### Database Editor main features
-See **README-database-editor.md*
+See *README-database-editor.md*
 
 
 ### What's new?
@@ -75,6 +75,7 @@ Make sure Java apps can be run.
 - Type and launch `help`
 - Follow instructions.
 
+Note: for powershell users, command names are slightly modified, e.g **.\Help** for help, etc...
 
 ### Troubleshooting
 Now hosted on its own WIKI:
