@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 DATABASE_EDITOR_LOGS=./logs/DatabaseEditor.log
-LAUNCHER_LOGS=./logs/Launcher.log
 
 view_logs () {
   if [ -f "$1" ]; then
@@ -11,4 +10,3 @@ view_logs () {
 }
 
 view_logs $DATABASE_EDITOR_LOGS
-view_logs $LAUNCHER_LOGS
