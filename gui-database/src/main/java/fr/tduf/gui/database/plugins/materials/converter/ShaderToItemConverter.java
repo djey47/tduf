@@ -8,6 +8,10 @@ import static fr.tduf.gui.database.plugins.materials.common.DisplayConstants.FOR
 public class ShaderToItemConverter extends StringConverter<MaterialPiece> {
     @Override
     public String toString(MaterialPiece shader) {
+        if (shader == null) {
+            return "";
+        }
+
         return String.format(FORMAT_SHADER_LABEL, shader.getName(), shader.name());
     }
 
