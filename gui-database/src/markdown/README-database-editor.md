@@ -1,6 +1,9 @@
 # TDUF(orever) - Database Editor
 
 ### What's new?
+
+**(ALPHA)** tagged features are not stable enough and/or much tested, so use them at your own risk! I hope to enhance them in the future.
+
 * (general) User confirmation now asked on leaving application or reloading database when unsaved changes
 * (general) Splash screen while loading database, due to increased time required (additional material file now has to be loaded)
 * (general) Settings: locales list: enhanced item display
@@ -12,12 +15,11 @@
 * (plugins) Material Editor: new plugin inserted in CarColors and Interior topics, allowing:
     - [WIKI](https://github.com/djey47/tduf/wiki/Materials-Editor)
     - selection of a different material for exterior paint (main + secondary, brake calipers) and interior (main + secondary)
-    - update of colors used (ambient, diffuse, specular)
-    - change of shader configuration
+    - **(ALPHA)** update of colors used (ambient, diffuse, specular)
+    - **(ALPHA)** change of shader configuration
     - viewing of more parameters (read-only for now).
 
 * Some more code optimizations and fixes!
-
 
 ### Fixed issues
 
