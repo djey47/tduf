@@ -29,7 +29,7 @@ def corePackDependencies = { ->
     def packDeps = [    *coreDocDeps,
                         *coreExternalDeps,
                         'cli:copyMainScripts', 'copyUtilScripts',
-                        'fullJar' ]
+                        'coreJar' ]
 
     return [ *fullCleanDeps,
              *packDeps ]

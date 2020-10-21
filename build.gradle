@@ -229,6 +229,7 @@ project(':integ-tests') {
         group 'verification'
 
         doLast {
+            // TODO on CI, publish report to AWS then run integ tests
             def reportFileAbsolutePath = file('./build/reports/tests/test/index.html').toString().replaceAll('\\\\', '/')
             Desktop.desktop.browse(('file://' + reportFileAbsolutePath).toURI())
         }
@@ -262,6 +263,17 @@ task gatherDatabaseEditorContentsForJar(type: Copy, dependsOn: getDatabaseEditor
     into tempJarDirectory
 }
 
+task gatherCoreContentsForJar(type: Copy, dependsOn: getCoreProjects().collect{ it+":compileJava"}) {
+    description 'Copies contents to temp directory (Core packaging).'
+    group 'build'
+
+    // Project sources
+    from files(getCoreProjects().collect{ project(it).sourceSets.main.output })
+    // External libraries
+    from files(getCoreProjects().collect{ project(it).configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } } )
+    into tempJarDirectory
+}
+
 // Common operations
 def jarOps = {
     description 'Creates jar with all contents from temp directory.'
@@ -284,6 +296,9 @@ fullJar jarOps
 
 task databaseEditorJar( type: Jar , dependsOn: 'gatherDatabaseEditorContentsForJar' )
 databaseEditorJar jarOps
+
+task coreJar( type: Jar , dependsOn: 'gatherCoreContentsForJar' )
+coreJar jarOps
 
 task packCore(dependsOn: getCoreDependencies(), type: Zip) {
     description 'Create single release Zip with CORE components releases directory.'
