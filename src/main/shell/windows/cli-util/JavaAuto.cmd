@@ -7,9 +7,9 @@ SET JAVA_EXECUTABLE=java
 SET EMBEDDED=false
 
 REM Lookup in tools\jre\bin\java from many source locations
-SET JAVA_EMBEDDED=.\tools\jre\bin\java
-SET JAVA_EMBEDDED_ALT=..\tools\jre\bin\java
-SET JAVA_EMBEDDED_ALT2=..\jre\bin\java
+SET JAVA_EMBEDDED=.\tools\jre\bin\java.exe
+SET JAVA_EMBEDDED_ALT=..\tools\jre\bin\java.exe
+SET JAVA_EMBEDDED_ALT2=..\jre\bin\java.exe
 IF EXIST "%JAVA_EMBEDDED%" (
   SET EMBEDDED=true
   SET JAVA_EXECUTABLE=%JAVA_EMBEDDED%
