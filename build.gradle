@@ -229,13 +229,20 @@ project(':integ-tests') {
         group 'verification'
 
         doLast {
-            // TODO on CI, publish report to AWS then run integ tests
-            def reportFileAbsolutePath = file('./build/reports/tests/test/index.html').toString().replaceAll('\\\\', '/')
-            Desktop.desktop.browse(('file://' + reportFileAbsolutePath).toURI())
+            // On CI, reports are published to AWS
+            if (System.getenv('CI') == null) {
+                // Local dev machine
+                def reportFileAbsolutePath = file('./build/reports/tests/test/index.html').toString().replaceAll('\\\\', '/')
+                try {
+                    Desktop.desktop.browse(('file://' + reportFileAbsolutePath).toURI())
+                } catch (error) {
+                    System.err.println('Could not display integ test results!')
+                    System.err.println(error)
+                }
+            }
         }
     }
-    // Unsupported by codeship CI
-//    tasks.test.finalizedBy tasks.integTestReport
+    tasks.test.finalizedBy tasks.integTestReport
 }
 
 // Main tasks
