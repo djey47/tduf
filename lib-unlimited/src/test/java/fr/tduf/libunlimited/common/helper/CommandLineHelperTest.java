@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CommandLineHelperTest {
 
-    private CommandLineHelper commandLineHelper = new CommandLineHelper();
+    private final CommandLineHelper commandLineHelper = new CommandLineHelper();
 
     @Test
     void runCliCommand_whenNullCommand_shouldThrowException() throws IOException {

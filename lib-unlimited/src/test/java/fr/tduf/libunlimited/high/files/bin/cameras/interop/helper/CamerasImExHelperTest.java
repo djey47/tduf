@@ -24,7 +24,7 @@ class CamerasImExHelperTest {
     @Mock
     private CamerasDatabase camerasDatabaseMock;
 
-    private CamerasImExHelper imExHelper = new CamerasImExHelper();
+    private final CamerasImExHelper imExHelper = new CamerasImExHelper();
 
     @BeforeEach
     void setUp() {

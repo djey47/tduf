@@ -53,7 +53,7 @@ public class CamPatchDto {
     }
 
     public static class CamPatchDtoBuilder {
-        private List<SetChangeDto> setChanges = new ArrayList<>();
+        private final List<SetChangeDto> setChanges = new ArrayList<>();
         private String comment;
 
         public CamPatchDtoBuilder addChanges(Collection<SetChangeDto> setChanges) {

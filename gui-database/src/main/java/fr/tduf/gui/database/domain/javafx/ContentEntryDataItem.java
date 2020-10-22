@@ -13,11 +13,11 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
  * Also includes database entry identifier (optional).
  */
 public class ContentEntryDataItem {
-    private IntegerProperty internalEntryId = new SimpleIntegerProperty();
+    private final IntegerProperty internalEntryId = new SimpleIntegerProperty();
 
-    private StringProperty reference = new SimpleStringProperty();
+    private final StringProperty reference = new SimpleStringProperty();
 
-    private StringProperty value = new SimpleStringProperty();
+    private final StringProperty value = new SimpleStringProperty();
 
     public StringProperty referenceProperty() {
         return reference;

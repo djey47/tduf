@@ -43,13 +43,13 @@ class DatabaseGenHelperTest {
     }
 
     @Test
-    void generateUniqueResourceEntryIdentifier_whenNullTopicObject_shouldReturnNull() throws Exception {
+    void generateUniqueResourceEntryIdentifier_whenNullTopicObject_shouldReturnNull() {
         // GIVEN-WHEN-THEN
         assertThat(DatabaseGenHelper.generateUniqueResourceEntryIdentifier(null)).isNull();
     }
 
     @Test
-    void generateUniqueResourceEntryIdentifier_shouldReturnCorrectIdentifier() throws Exception {
+    void generateUniqueResourceEntryIdentifier_shouldReturnCorrectIdentifier() {
         // GIVEN
         DbDto topicObject = DbDto.builder()
                 .withResource(DbResourceDto.builder()
@@ -70,13 +70,13 @@ class DatabaseGenHelperTest {
     }
 
     @Test
-    void generateUniqueContentsEntryIdentifier_whenNullTopicObject_shouldReturnNull() throws Exception {
+    void generateUniqueContentsEntryIdentifier_whenNullTopicObject_shouldReturnNull() {
         // GIVEN-WHEN-THEN
         assertThat(DatabaseGenHelper.generateUniqueContentsEntryIdentifier(null)).isNull();
     }
 
     @Test
-    void generateUniqueContentsEntryIdentifier_whenTopicObjectWithoutIdentifierField_shouldThrowIllegalArgumentException() throws Exception {
+    void generateUniqueContentsEntryIdentifier_whenTopicObjectWithoutIdentifierField_shouldThrowIllegalArgumentException() {
         // GIVEN
         DbDto topicObject = createTopicObjectOneField(DbStructureDto.FieldType.INTEGER);
 
@@ -86,7 +86,7 @@ class DatabaseGenHelperTest {
     }
 
     @Test
-    void generateUniqueContentsEntryIdentifier_whenTopicObjectWithIdentifierField_shouldReturnCorrectIdentifier() throws Exception {
+    void generateUniqueContentsEntryIdentifier_whenTopicObjectWithIdentifierField_shouldReturnCorrectIdentifier() {
         // GIVEN
         DbDto topicObject = createTopicObjectOneUIDField();
 
@@ -291,7 +291,7 @@ class DatabaseGenHelperTest {
         // THEN
         assertThat(actualResourceReference).isEqualTo("12345");
 
-        verifyZeroInteractions(changeHelperMock);
+        verifyNoMoreInteractions(changeHelperMock);
     }
 
     @Test
@@ -405,7 +405,9 @@ class DatabaseGenHelperTest {
     private static void assertResourceExistsWithDefaultItem(DbDto topicObject) {
         final Collection<ResourceEntryDto> actualEntries = topicObject.getResource().getEntries();
         assertThat(actualEntries).hasSize(1);
-        final ResourceEntryDto uniqueEntry = actualEntries.stream().findAny().get();
+        final ResourceEntryDto uniqueEntry = actualEntries.stream()
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException("entry should exist"));
         assertThat(uniqueEntry.getItemCount()).isEqualTo(8);
         assertThat(uniqueEntry.pickValue()).contains("??");
     }

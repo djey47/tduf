@@ -28,7 +28,7 @@ public class StartGameStep extends GenericStep {
     private static final String THIS_CLASS_NAME = StartGameStep.class.getSimpleName();
 
     @Override
-    protected void perform() throws IOException, ReflectiveOperationException, URISyntaxException {
+    protected void perform() throws IOException {
 
         Log.debug(THIS_CLASS_NAME, "TDU root dir: " + getApplicationConfiguration().getGamePath());
 

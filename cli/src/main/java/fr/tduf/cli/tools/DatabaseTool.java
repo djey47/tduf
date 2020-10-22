@@ -672,11 +672,10 @@ public class DatabaseTool extends GenericTool {
             outLine("  .Read topic with basic checking: " + currentTopic + ", " + (integrityErrorsWhileProcessing.size() - initialErrorCount) + " error(s).");
             outLine("  .Content line count: " + dbDto.getData().getEntries().size());
             outLine("  .Resource entry count: " + dbDto.getResource().getEntries().size());
-            outLine();
         } else {
             outLine("  (!)Database contents not found for topic " + currentTopic + ", skipping.");
-            outLine();
         }
+        outLine();
 
         return potentialDbDto;
     }

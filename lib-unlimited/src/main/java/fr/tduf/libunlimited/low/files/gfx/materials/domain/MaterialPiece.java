@@ -114,7 +114,6 @@ public enum MaterialPiece {
     SHADER_VEHICLE_UNKNOWN("Unknown vehicle shader", BINARIES.SHADER_VEHICLE_UNKNOWN);
 
     private final String name;
-    private final byte[] contents;
 
     private final byte[] normalizedContents;
 
@@ -124,7 +123,6 @@ public enum MaterialPiece {
 
     MaterialPiece(String name, byte[] contents) {
         this.name = name;
-        this.contents = contents;
         this.normalizedContents = normalizeContents(contents);
     }
 

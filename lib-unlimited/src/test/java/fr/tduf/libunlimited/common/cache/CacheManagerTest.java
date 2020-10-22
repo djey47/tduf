@@ -76,7 +76,7 @@ public class CacheManagerTest {
 
     @Test
     public void getValueFromKey_whenStoreExists_andKeyAsWell_shouldRetrieveValueFromCache_andNotCallRealMethod(){
-        if (!cacheManagerInstance.isEnabled()) {
+        if (cacheManagerInstance.isDisabled()) {
             return;
         }
 
@@ -105,7 +105,7 @@ public class CacheManagerTest {
 
     @Test
     public void clearStoreByName_whenStoreExists_shouldForceCallRealMethod() {
-        if (!cacheManagerInstance.isEnabled()) {
+        if (cacheManagerInstance.isDisabled()) {
             return;
         }
 
@@ -125,7 +125,7 @@ public class CacheManagerTest {
 
     @Test
     public void clearStoreByName_whenStoreDoesNotExist_shouldRetrieveValueFromCache() {
-        if (!cacheManagerInstance.isEnabled()) {
+        if (cacheManagerInstance.isDisabled()) {
             return;
         }
 
@@ -142,7 +142,7 @@ public class CacheManagerTest {
 
     @Test
     public void clearStoreByName_whenStoreExists_shouldNotAffectOtherStore() {
-        if (!cacheManagerInstance.isEnabled()) {
+        if (cacheManagerInstance.isDisabled()) {
             return;
         }
 

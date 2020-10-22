@@ -57,7 +57,7 @@ public class CameraSetInfo {
 
     public static class CameraInfoBuilder {
         private int cameraIdentifier;
-        private List<CameraView> views = new ArrayList<>();
+        private final List<CameraView> views = new ArrayList<>();
 
         public CameraInfoBuilder forIdentifier(int cameraIdentifier) {
             this.cameraIdentifier = cameraIdentifier;

@@ -19,7 +19,7 @@ public class BitfieldToStringConverter extends StringConverter<Boolean>{
     private final StringProperty rawValueProperty;
     private final int bitIndex;
     private final DbDto.Topic currentTopic;
-    private BitfieldHelper bitfieldHelper;
+    private final BitfieldHelper bitfieldHelper;
 
     public BitfieldToStringConverter(DbDto.Topic topic, int bitIndex, StringProperty rawValueProperty, BitfieldHelper bitfieldHelper) {
         requireNonNull(bitfieldHelper, "BitfieldHelper instance is required.");
