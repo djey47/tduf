@@ -32,7 +32,7 @@ class AbstractGuiAppTest extends ApplicationTest {
     private static final String[] ARGS_VERBOSE = new String[]{"arg1", "-v", "arg3"};
 
     @Mock
-    ApplicationConfiguration applicationConfigurationMock;
+    private ApplicationConfiguration applicationConfigurationMock;
 
     @Mock
     private MiniSpy spy;

@@ -65,6 +65,10 @@ public class DisplayConstants {
     public static final String COLUMN_HEADER_REF = "REF";
 
     public static final String TITLE_APPLICATION = "TDUF Database Editor";
+    public static final String TITLE_FORMAT_APP = "%s%s %s";
+    public static final String TITLE_FORMAT_MODE = " {%s}";
+    public static final String TITLE_MODE_DEBUG = "DEBUG";
+    public static final String TITLE_MODE_TRACE = "TRACE";
     public static final String TITLE_FRAGMENT_MODIFIED = "*";
     public static final String TITLE_BROWSE_DB_DIRECTORY = "Browse game database directory...";
     public static final String TITLE_SUB_ENTRIES = " : Content entries";

@@ -1,7 +1,6 @@
 package fr.tduf.gui.database.stages;
 
 import fr.tduf.gui.common.stages.StageHelper;
-import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,7 +9,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-import static fr.tduf.gui.database.common.FxConstants.*;
+import static fr.tduf.gui.database.common.DisplayConstants.TITLE_APPLICATION;
+import static fr.tduf.gui.database.common.FxConstants.PATH_RESOURCE_CSS_PANES;
+import static fr.tduf.gui.database.common.FxConstants.PATH_RESOURCE_CSS_TABCONTENTS;
 
 /**
  * Loads graphical interface for main window.
@@ -39,7 +40,7 @@ public class MainStageDesigner extends AbstractEditorDesigner {
         mainRoot.getStylesheets().addAll(styledTabContentsCss, styledPanesCss, styledPluginsCommonCss);
 
         primaryStage.setScene(new Scene(mainRoot, 1280, 720));
-        primaryStage.setTitle(DisplayConstants.TITLE_APPLICATION);
+        primaryStage.setTitle(TITLE_APPLICATION);
 
         StageHelper.setStandardIcon(primaryStage);
     }

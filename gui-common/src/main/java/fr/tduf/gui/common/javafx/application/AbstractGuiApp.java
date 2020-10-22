@@ -71,7 +71,7 @@ public abstract class AbstractGuiApp extends Application {
 
         if (potentialVerboseSwitch.isPresent()) {
             effectiveLogLevel = Log.LEVEL_TRACE;
-            Log.debug(THIS_CLASS_NAME, "/!\\ TRACE mode enabled via verbosecommand line switch /!\\");
+            Log.debug(THIS_CLASS_NAME, "/!\\ TRACE mode enabled via verbose command line switch (-v) /!\\");
         } else if (applicationConfiguration.isEditorDebuggingEnabled()) {
             effectiveLogLevel = Log.LEVEL_DEBUG;
             Log.debug(THIS_CLASS_NAME, "/!\\ DEBUG mode enabled via application configuration /!\\");
