@@ -1,7 +1,7 @@
 package fr.tduf.gui.database.plugins.common.contexts;
 
-import fr.tduf.gui.database.controllers.MainStageChangeDataController;
-import fr.tduf.gui.database.controllers.MainStageController;
+import fr.tduf.gui.database.controllers.main.MainStageChangeDataController;
+import fr.tduf.gui.database.controllers.main.MainStageController;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import javafx.stage.Window;
 

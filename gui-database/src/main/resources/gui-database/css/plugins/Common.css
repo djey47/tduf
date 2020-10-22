@@ -7,6 +7,24 @@
 
 .pluginItemLabel {
     -fx-font-weight: bold;
+    -fx-text-fill: -color-default;
+}
+
+.advancedItemLabel {
+    -fx-pref-width: 175.0;
+
+    /* To emulate missing -fx-margin prop */
+    -fx-padding: 0 4.0 0 0;
+    -fx-border-insets: 0 4.0 0 0;
+    -fx-background-insets: 0 4.0 0 0;
+}
+
+.advancedSubItemLabel {
+    /* To emulate missing -fx-margin prop */
+    -fx-padding: 0 4.0 0 8.0;
+}
+
+.pluginButton {
 }
 
 .pluginButtonMedium {
@@ -30,4 +48,15 @@
 
 .pluginErrorMessageLabel {
     -fx-padding: 8px;
+}
+
+.pluginComboBox {
+}
+
+.pluginCheckbox {
+}
+
+.pluginTableView {
+    -fx-background-color: -color-background-tertiary;
+    -fx-base: -color-background-tertiary;
 }

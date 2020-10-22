@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 
-import static fr.tduf.libunlimited.common.game.FileConstants.DATABASE_BANK_FILE_NAME;
+import static fr.tduf.libunlimited.common.game.FileConstants.FILE_DATABASE_BANK;
 import static fr.tduf.libunlimited.common.game.FileConstants.FORMAT_DATABASE_RES_BANK;
 import static fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway.EXTENSION_BANKS;
 import static fr.tduf.libunlimited.low.files.db.rw.helper.DatabaseReadWriteHelper.EXTENSION_DB_CONTENTS;
@@ -94,7 +94,7 @@ public class DatabaseBankHelper {
         List<String> databaseBankFileNames = Locale.valuesAsStream()
                 .map((locale) -> String.format(FORMAT_DATABASE_RES_BANK, locale.getCode().toUpperCase()))
                 .collect(toList());
-        databaseBankFileNames.add(DATABASE_BANK_FILE_NAME);
+        databaseBankFileNames.add(FILE_DATABASE_BANK);
 
         return databaseBankFileNames;
     }
@@ -129,7 +129,7 @@ public class DatabaseBankHelper {
 
                     String fileExtension = FilesHelper.getExtension(filePath.toString());
                     String hierarchy = null;
-                    if (targetBankFileName.equalsIgnoreCase(DATABASE_BANK_FILE_NAME)
+                    if (targetBankFileName.equalsIgnoreCase(FILE_DATABASE_BANK)
                             && EXTENSION_DB_CONTENTS.equalsIgnoreCase(fileExtension)) {
                         hierarchy = "4Build/PC/Euro/BDD/Db_encrypted";
                     } else {

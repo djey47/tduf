@@ -1,0 +1,11 @@
+/** COLOR THEME: CLEAR + RED **/
+
+* {
+    -color-background-primary: #f6f5f5;
+    -color-background-secondary: #f6f5f5;
+    -color-background-tertiary: white;
+    -color-background-neutral: white;
+    -color-accent: #e94560;
+    -color-neutral: white;
+    -color-default: black;
+}

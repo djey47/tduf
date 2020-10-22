@@ -10,16 +10,20 @@ import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class FilesHelperTest {
+    private static final Path TOOL_PATH = Paths.get("tools", "tdumt-cli");
 
     private String tempDirectory;
 
@@ -264,5 +268,80 @@ class FilesHelperTest {
 
         // when-then
         assertThat(FilesHelper.isPathContained(subPath, fullPath)).isFalse();
+    }
+
+    @Test
+    void getResourcesFromDirectory_whenMatchingResources_shouldReturnPopulatedSet() {
+        // given-when
+        Set<String> actualResources = FilesHelper.getResourcesFromDirectory("files/structures", "json");
+
+        // then
+        assertThat(actualResources).isNotEmpty();
+    }
+
+    @Test
+    void getResourcesFromDirectory_whenNonMatchingResources_shouldReturnEmptySet() {
+        // given-when
+        Set<String> actualResources = FilesHelper.getResourcesFromDirectory("files/structures", "foo");
+
+        // then
+        assertThat(actualResources).isEmpty();
+    }
+
+    @Test
+    void getRootDirectory_whenInTestMode_shouldRetrieveToolsDirectoryAtRoot() throws Exception {
+        // GIVEN-WHEN
+        final Path actualDirectory = FilesHelper.getRootDirectory();
+
+        // THEN
+        assertThat(actualDirectory.resolve(TOOL_PATH)).exists();
+    }
+
+    @Test
+    void getRootDirectory_whenProvidedProdSourcePath_asProdBuild_shouldRetrieveRootDirectory() {
+        // GIVEN
+        final Path sourcePath = Paths.get("/", "home", "user", "apps", "tduf", "tools", "lib", "tduf.jar");
+
+        // WHEN
+        final Path actualDirectory = FilesHelper.getRootDirectory(sourcePath);
+
+        // THEN
+        final Path expectedPath = Paths.get("/", "home", "user", "apps", "tduf");
+        assertThat(actualDirectory).isEqualTo(expectedPath);
+    }
+
+    @Test
+    void getRootDirectory_whenProvidedProdSourcePath_asDevBuild_shouldRetrieveRootDirectory() {
+        // GIVEN
+        final Path sourcePath = Paths.get("/", "home", "user", "dev", "tduf", "lib-unlimited", "build", "libs", "lib-unlimited-1.13.0-SNAPSHOT.jar");
+
+        // WHEN
+        final Path actualDirectory = FilesHelper.getRootDirectory(sourcePath);
+
+        // THEN
+        final Path expectedPath = Paths.get("/", "home", "user", "dev", "tduf");
+        assertThat(actualDirectory).isEqualTo(expectedPath);
+    }
+
+    @Test
+    void readTextFromFile_whenFileFound_shouldReturnContents() throws IOException {
+        // given
+        Path tempPath = Paths.get(TestingFilesHelper.createTempDirectoryForLibrary(), "testfile.txt");
+        FileWriter fileWriter = new FileWriter(tempPath.toString());
+        fileWriter.write("Files in Java might be tricky, but it is fun enough!");
+        fileWriter.close();
+
+        // when
+        String actualContents = FilesHelper.readTextFromFile(tempPath);
+
+        // then
+        assertThat(actualContents).hasSize(52);
+    }
+
+    @Test
+    void readTextFromFile_whenFileNotFound_shouldThrowException() {
+        // given-when-then
+        assertThrows(NoSuchFileException.class,
+                () -> FilesHelper.readTextFromFile(Paths.get("foo")));
     }
 }

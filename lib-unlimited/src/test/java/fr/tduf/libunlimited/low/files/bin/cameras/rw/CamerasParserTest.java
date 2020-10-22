@@ -1,17 +1,16 @@
 package fr.tduf.libunlimited.low.files.bin.cameras.rw;
 
 import fr.tduf.libunlimited.common.helper.FilesHelper;
-import fr.tduf.libunlimited.low.files.bin.cameras.domain.CamerasDatabase;
+import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraView;
+import fr.tduf.libunlimited.low.files.bin.cameras.domain.CamerasDatabase;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.EnumMap;
 import java.util.List;
 
@@ -32,7 +31,7 @@ class CamerasParserTest {
     @Test
     void parse_whenRealFiles_shouldLoadCamerasContents_andFillCaches() throws IOException {
         // GIVEN
-        ByteArrayInputStream camInputStream = new ByteArrayInputStream(camContents);
+        XByteArrayInputStream camInputStream = new XByteArrayInputStream(camContents);
 
         // WHEN
         CamerasParser camerasParser = CamerasParser.load(camInputStream);
@@ -47,7 +46,7 @@ class CamerasParserTest {
     @Test
     void getViewProps_whenNullDataStore_shouldThrowException() throws IOException {
         // GIVEN
-        ByteArrayInputStream camInputStream = new ByteArrayInputStream(camContents);
+        XByteArrayInputStream camInputStream = new XByteArrayInputStream(camContents);
         CamerasParser camerasParser = CamerasParser.load(camInputStream);
         camerasParser.parse();
 
@@ -59,7 +58,7 @@ class CamerasParserTest {
     @Test
     void getViewProps_whenViewDataStore_shouldReturnProperties() throws IOException {
         // GIVEN
-        ByteArrayInputStream camInputStream = new ByteArrayInputStream(camContents);
+        XByteArrayInputStream camInputStream = new XByteArrayInputStream(camContents);
         CamerasParser camerasParser = CamerasParser.load(camInputStream);
         camerasParser.parse();
         DataStore dataStore = new DataStore(FileStructureDto.builder().build());
@@ -83,7 +82,7 @@ class CamerasParserTest {
     @Test
     void generate_whenRealFiles_shouldReturnDomainObject() throws IOException {
         // GIVEN
-        CamerasParser camerasParser = CamerasParser.load(new ByteArrayInputStream(camContents));
+        CamerasParser camerasParser = CamerasParser.load(new XByteArrayInputStream(camContents));
         camerasParser.parse();
 
         // WHEN

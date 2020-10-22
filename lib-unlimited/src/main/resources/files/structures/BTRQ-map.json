@@ -1,5 +1,6 @@
 {
   "name": "TDU BTRQ (BinaryTorque?)",
+  "fileName": "*.btrq",
   "littleEndian": true,
   "cryptoMode": 1,
   "fields": [

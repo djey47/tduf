@@ -13,7 +13,7 @@ public enum Type {
      */
     TEXT(true),
     /**
-     * Numeric Integer value. Currently handled: 32bit only.
+     * Numeric Integer value. Currently handled: 8,16,32 bits.
      */
     INTEGER(true),
     /**

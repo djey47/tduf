@@ -2,8 +2,8 @@ package fr.tduf.gui.database.controllers.helper;
 
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
-import fr.tduf.gui.database.controllers.MainStageChangeDataController;
-import fr.tduf.gui.database.controllers.MainStageController;
+import fr.tduf.gui.database.controllers.main.MainStageChangeDataController;
+import fr.tduf.gui.database.controllers.main.MainStageController;
 import fr.tduf.gui.database.domain.ItemViewModel;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static fr.tduf.gui.database.common.FxConstants.CSS_CLASS_TABLEVIEW;
 import static java.util.Optional.ofNullable;
 import static javafx.geometry.Orientation.VERTICAL;
 
@@ -65,6 +66,7 @@ public class DynamicLinkControlsHelper extends AbstractDynamicControlsHelper {
         String targetProfileName = topicLinkObject.getRemoteReferenceProfile();
         DbDto.Topic targetTopic = retrieveTargetTopicForLink(topicLinkObject);
         TableView<ContentEntryDataItem> tableView = addTableViewForLinkedTopic(fieldBox, topicLinkObject, resourceData, targetTopic);
+        tableView.getStyleClass().addAll(CSS_CLASS_TABLEVIEW);
 
         fieldBox.getChildren().add(new Separator(VERTICAL));
 

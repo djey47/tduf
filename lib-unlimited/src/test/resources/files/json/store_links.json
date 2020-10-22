@@ -1,0 +1,28 @@
+{
+  "linkSource1": 10,
+  "linkSource2": 14,
+  "linkedEntries": [
+    {
+      "#meta#": {
+        "accessKeyPrefix": "linkedEntries[0]."
+      },
+      "linkTarget": 100
+    },
+    {
+      "#meta#": {
+        "accessKeyPrefix": "linkedEntries[1]."
+      },
+      "linkTarget": 200
+    }
+  ],
+  "#links#": [
+    {
+      "sourceKey": "linkSource1",
+      "targetKey": "linkedEntries[0]."
+    },
+    {
+      "sourceKey": "linkSource2",
+      "targetKey": "linkedEntries[1]."
+    }
+  ]
+}

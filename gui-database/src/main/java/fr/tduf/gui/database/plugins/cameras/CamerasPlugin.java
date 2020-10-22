@@ -11,8 +11,10 @@ import fr.tduf.gui.database.plugins.cameras.converter.CameraInfoToRawValueConver
 import fr.tduf.gui.database.plugins.cameras.converter.CameraViewToItemConverter;
 import fr.tduf.gui.database.plugins.cameras.helper.CamerasDialogsHelper;
 import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
+import fr.tduf.gui.database.plugins.common.PluginComponentBuilders;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
+import fr.tduf.gui.database.plugins.common.contexts.PluginContext;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.helper.CamerasImExHelper;
 import fr.tduf.libunlimited.high.files.db.common.helper.CameraAndIKHelper;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.*;
@@ -41,6 +43,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import static fr.tduf.gui.database.common.DisplayConstants.MESSAGE_SEE_LOGS;
+import static fr.tduf.gui.database.common.FxConstants.*;
 import static fr.tduf.gui.database.plugins.cameras.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.cameras.common.FxConstants.*;
 import static fr.tduf.gui.database.plugins.common.FxConstants.*;
@@ -66,7 +69,7 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
     private static final Class<CamerasPlugin> thisClass = CamerasPlugin.class;
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 
-    private final CamerasContext camerasContext = new CamerasContext();
+    private final PluginContext camerasContext = new PluginContext();
 
     private CameraAndIKHelper cameraRefHelper;
     private CamerasDialogsHelper dialogsHelper;
@@ -110,7 +113,7 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
         cameraInfoEnhancedProperty.setValue(camerasDatabase);
 
         cameraRefHelper = new CameraAndIKHelper();
-        Log.info(THIS_CLASS_NAME, "Camera reference loaded");
+        Log.info(THIS_CLASS_NAME, String.format("Camera reference loaded, %d sets available", camerasDatabase.getSetsCount()));
 
         dialogsHelper = new CamerasDialogsHelper();
         imExHelper = new CamerasImExHelper();
@@ -159,7 +162,9 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
         cameraSetInfos = FXCollections.observableArrayList(CamerasHelper.fetchAllInformation(cameraInfoEnhancedProperty.getValue()));
         cameraViews = FXCollections.observableArrayList();
         ComboBox<CameraSetInfo> cameraSelectorComboBox = new ComboBox<>(cameraSetInfos.sorted(comparingLong(CameraSetInfo::getCameraIdentifier)));
+        cameraSelectorComboBox.getStyleClass().addAll(CSS_CLASS_COMBOBOX, CSS_CLASS_PLUGIN_COMBOBOX);
         ComboBox<CameraView> viewSelectorComboBox = new ComboBox<>(cameraViews.sorted(comparing(CameraView::getKind)));
+        viewSelectorComboBox.getStyleClass().addAll(CSS_CLASS_COMBOBOX, CSS_CLASS_PLUGIN_COMBOBOX);
         VBox mainColumnBox = createMainColumn(onTheFlyContext, cameraSelectorComboBox, viewSelectorComboBox);
 
         StringProperty rawValueProperty = onTheFlyContext.getRawValueProperty();
@@ -223,26 +228,23 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
     }
 
     private VBox createButtonColumn(EventHandler<ActionEvent> onAddSetAction, EventHandler<ActionEvent> onDeleteSetAction, EventHandler<ActionEvent> onImportSetAction, EventHandler<ActionEvent> onExportCurrentViewAction, EventHandler<ActionEvent> onExportAllViewsAction) {
-        VBox buttonColumnBox = new VBox();
-        buttonColumnBox.getStyleClass().add(fr.tduf.gui.database.common.FxConstants.CSS_CLASS_VERTICAL_BUTTON_BOX);
-
         Button addSetButton = new Button(LABEL_ADD_BUTTON);
-        addSetButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
+        addSetButton.getStyleClass().addAll(CSS_CLASS_BUTTON, CSS_CLASS_PLUGIN_BUTTON, CSS_CLASS_PLUGIN_BUTTON_MEDIUM);
         ControlHelper.setTooltipText(addSetButton, TOOLTIP_ADD_BUTTON);
         addSetButton.setOnAction(onAddSetAction);
 
         Button delSetButton = new Button(LABEL_DEL_BUTTON);
-        delSetButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
+        delSetButton.getStyleClass().addAll(CSS_CLASS_BUTTON, CSS_CLASS_PLUGIN_BUTTON, CSS_CLASS_PLUGIN_BUTTON_MEDIUM);
         ControlHelper.setTooltipText(delSetButton, TOOLTIP_DEL_BUTTON);
         delSetButton.setOnAction(onDeleteSetAction);
 
         Button importSetButton = new Button(LABEL_IMPORT_SET_BUTTON);
-        importSetButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
+        importSetButton.getStyleClass().addAll(CSS_CLASS_BUTTON, CSS_CLASS_PLUGIN_BUTTON, CSS_CLASS_PLUGIN_BUTTON_MEDIUM);
         ControlHelper.setTooltipText(importSetButton, TOOLTIP_IMPORT_SET_BUTTON);
         importSetButton.setOnAction(onImportSetAction);
 
         MenuButton exportSetMenuButton = new MenuButton(LABEL_EXPORT_SET_BUTTON);
-        exportSetMenuButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
+        exportSetMenuButton.getStyleClass().addAll(CSS_CLASS_BUTTON, CSS_CLASS_PLUGIN_BUTTON, CSS_CLASS_PLUGIN_BUTTON_MEDIUM);
         ControlHelper.setTooltipText(exportSetMenuButton, DisplayConstants.TOOLTIP_EXPORT_SET_BUTTON);
         MenuItem exportCurrentViewMenuItem = new MenuItem(LABEL_EXPORT_CURRENT_BUTTON);
         exportCurrentViewMenuItem.setOnAction(onExportCurrentViewAction);
@@ -252,18 +254,17 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
         exportSetMenuButton.getItems().add(exportCurrentViewMenuItem);
         exportSetMenuButton.getItems().add(exportAllViewsMenuItem);
 
-        ObservableList<Node> children = buttonColumnBox.getChildren();
-        children.add(addSetButton);
-        children.add(delSetButton);
-        children.add(importSetButton);
-        children.add(exportSetMenuButton);
-
-        return buttonColumnBox;
+        return PluginComponentBuilders.buttonColumn()
+                .withButton(addSetButton)
+                .withButton(delSetButton)
+                .withButton(importSetButton)
+                .withButton(exportSetMenuButton)
+                .build();
     }
 
     private TableView<Map.Entry<ViewProps, ?>> createPropertiesTableView(OnTheFlyContext context, ObservableList<Map.Entry<ViewProps, ?>> viewProps, ObjectProperty<CameraView> currentViewProperty) {
         TableView<Map.Entry<ViewProps, ?>> setPropertyTableView = new TableView<>(viewProps);
-        setPropertyTableView.getStyleClass().addAll(CSS_CLASS_TABLEVIEW, CSS_CLASS_SET_PROPERTY_TABLEVIEW);
+        setPropertyTableView.getStyleClass().addAll(CSS_CLASS_TABLEVIEW, CSS_CLASS_PLUGIN_TABLEVIEW, CSS_CLASS_SET_PROPERTY_TABLEVIEW);
         setPropertyTableView.setEditable(true);
 
         TableColumn<Map.Entry<ViewProps, ?>, String> settingColumn = new TableColumn<>(HEADER_PROPTABLE_SETTING);
@@ -537,7 +538,7 @@ public class CamerasPlugin extends AbstractDatabasePlugin {
         super.setEditorContext(editorContext);
     }
 
-    public CamerasContext getCamerasContext() {
+    PluginContext getCamerasContext() {
         return camerasContext;
     }
 }

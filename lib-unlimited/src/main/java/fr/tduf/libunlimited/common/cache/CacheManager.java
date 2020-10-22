@@ -36,11 +36,11 @@ public enum CacheManager {
 
     public static class CacheManagerInstance {
 
-        private final boolean enabled;
+        private final boolean disabled;
         private final Map<String, Map<String, ?>> stores;
 
         private CacheManagerInstance(boolean enabled) {
-            this.enabled = enabled;
+            this.disabled = !enabled;
             this.stores = new ConcurrentHashMap<>(16);
         }
 
@@ -57,7 +57,7 @@ public enum CacheManager {
                 throw new IllegalArgumentException("Supplier instance must not be null");
             }
 
-            if (enabled) {
+            if (!disabled) {
                 if (storeName == null || key == null) {
                     return supplier.get();
                 }
@@ -85,7 +85,7 @@ public enum CacheManager {
          * Removes all cached information.
          */
         public void clearAllStores() {
-            if (!enabled) {
+            if (disabled) {
                 return;
             }
 
@@ -98,7 +98,7 @@ public enum CacheManager {
          * @param storeName : name of store in which all keys will be removed.
          */
         public void clearStoreByName(String storeName) {
-            if (!enabled) {
+            if (disabled) {
                 return;
             }
 
@@ -110,8 +110,8 @@ public enum CacheManager {
         /**
          * @return true if caching feature is enabled.
          */
-        public boolean isEnabled() {
-            return enabled;
+        public boolean isDisabled() {
+            return disabled;
         }
     }
 }

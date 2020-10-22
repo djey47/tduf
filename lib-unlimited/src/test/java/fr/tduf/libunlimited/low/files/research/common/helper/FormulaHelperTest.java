@@ -64,6 +64,18 @@ class FormulaHelperTest {
     }
 
     @Test
+    void resolveToInteger_whenSimpleFormulaWithManyPointers_shouldReturnValue() {
+        // GIVEN
+        DataStore dataStore = createDefaultDataStore();
+        dataStore.addInteger32("sizeIndicator", 500);
+        dataStore.addInteger32("other", 500);
+        dataStore.addInteger32("lastOne", 100);
+
+        // WHEN-THEN
+        assertThat(FormulaHelper.resolveToInteger("=?sizeIndicator?*4+?other?-?lastOne?", null, dataStore)).isEqualTo(2400);
+    }
+
+    @Test
     void resolveToInteger_whenFormulaWithPointerAndValueNotInStore_shouldThrowException() {
         // GIVEN
         DataStore dataStore = createDefaultDataStore();
@@ -99,6 +111,41 @@ class FormulaHelperTest {
         // GIVEN-WHEN-THEN
         assertThrows(IllegalArgumentException.class,
                 () -> FormulaHelper.resolveToInteger("=AZERTY", null, null));
+    }
+
+    @Test
+    void resolveCondition_whenNullCondition_shouldThrowException() {
+        // given-when-then
+        NullPointerException actualException = assertThrows(NullPointerException.class,
+                () -> FormulaHelper.resolveCondition(null, null, null));
+        assertThat(actualException).hasMessage("Condition to evaluate is required");
+    }
+
+    @Test
+    void resolveCondition_whenVerySimpleCondition_shouldReturnTrue() {
+        // given-when-then
+        assertThat(FormulaHelper.resolveCondition("5 > 3", null, null)).isTrue();
+    }
+
+    @Test
+    void resolveToInteger_whenVerySimpleConditionWithPointer_shouldReturnFalse() {
+        // GIVEN
+        DataStore dataStore = createDefaultDataStore();
+        dataStore.addInteger32("itemsCount", 5);
+
+        // WHEN-THEN
+        assertThat(FormulaHelper.resolveCondition("?itemsCount?=0", null, dataStore)).isFalse();
+    }
+
+    @Test
+    void resolveToInteger_whenVerySimpleConditionWithOnlyPointers_shouldReturnTrue() {
+        // GIVEN
+        DataStore dataStore = createDefaultDataStore();
+        dataStore.addInteger32("itemsCount", 5);
+        dataStore.addInteger32("otherItemsCount", 10);
+
+        // WHEN-THEN
+        assertThat(FormulaHelper.resolveCondition("?itemsCount?<?otherItemsCount?", null, dataStore)).isTrue();
     }
 
     private DataStore createDefaultDataStore() {

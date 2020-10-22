@@ -7,6 +7,7 @@ import fr.tduf.gui.common.javafx.helper.TableViewHelper;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.helper.DatabaseQueryHelper;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
+import fr.tduf.gui.database.controllers.main.MainStageController;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.domain.javafx.ContentEntryDataItem;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
@@ -33,7 +34,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * FX Controller for content entry selection dialog
  */
-public class EntriesStageController extends AbstractGuiController {
+public class EntriesStageController extends AbstractEditorController {
     private static final String THIS_CLASS_NAME = EntriesStageController.class.getSimpleName();
 
     @FXML
@@ -47,8 +48,6 @@ public class EntriesStageController extends AbstractGuiController {
 
     @FXML
     private TableView<ContentEntryDataItem> entriesTableView;
-
-    private MainStageController mainStageController;
 
     private final ObservableList<ContentEntryDataItem> entriesData = FXCollections.observableArrayList();
 
@@ -93,7 +92,7 @@ public class EntriesStageController extends AbstractGuiController {
         askForReferenceAndSelectItem();
     }
 
-    void initAndShowDialog(String entryReference, int entryFieldRank, DbDto.Topic topic, List<Integer> labelFieldRanks) {
+    public void initAndShowDialog(String entryReference, int entryFieldRank, DbDto.Topic topic, List<Integer> labelFieldRanks) {
         switchMultiSelectMode(false);
 
         fieldRankForUpdate = entryFieldRank;
@@ -109,13 +108,13 @@ public class EntriesStageController extends AbstractGuiController {
         showWindow();
     }
 
-    Optional<ContentEntryDataItem> initAndShowModalDialog(DbDto.Topic topic, String targetProfileName) {
+    public Optional<ContentEntryDataItem> initAndShowModalDialog(DbDto.Topic topic, String targetProfileName) {
         initAndShowModalDialog(null, topic, targetProfileName, false);
 
         return selectedEntries.stream().findAny();
     }
 
-    List<ContentEntryDataItem> initAndShowModalDialogForMultiSelect(String entryReference, DbDto.Topic topic, String targetProfileName) {
+    public List<ContentEntryDataItem> initAndShowModalDialogForMultiSelect(String entryReference, DbDto.Topic topic, String targetProfileName) {
         initAndShowModalDialog(entryReference, topic, targetProfileName, true);
 
         return selectedEntries;
@@ -200,7 +199,7 @@ public class EntriesStageController extends AbstractGuiController {
                 String entryValue = DatabaseQueryHelper.fetchResourceValuesWithEntryId(
                         entryInternalIdentifier,
                         topic,
-                        mainStageController.getViewData().currentLocaleProperty.getValue(),
+                        mainStageController.getViewData().currentLocaleProperty().getValue(),
                         labelFieldRanks,
                         getMiner(),
                         getLayoutObject());
@@ -232,10 +231,6 @@ public class EntriesStageController extends AbstractGuiController {
                 .ifPresent(entryReference -> TableViewHelper.selectItemAndScroll(
                         (oneItem, row) -> oneItem.referenceProperty().getValue().equals(entryReference),
                         entriesTableView));
-    }
-
-    public void setMainStageController(MainStageController mainStageController) {
-        this.mainStageController = mainStageController;
     }
 
     private BulkDatabaseMiner getMiner() {

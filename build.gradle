@@ -16,6 +16,9 @@ scmVersion {
     }
 }
 
+// Helper script
+apply from: './src/main/groovy/helper.gradle'
+
 // Project definition
 allprojects {
     project.group = 'fr.tduf'
@@ -53,6 +56,7 @@ allprojects {
 
 subprojects {
     apply plugin: 'java'
+    apply plugin: 'org.kordamp.markdown.convert'
 
     repositories {
         maven  {
@@ -79,17 +83,60 @@ subprojects {
     compileJava {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+
+        options.encoding = 'UTF-8'
     }
 
-    task fatJar(type: Jar) {
-        description 'Generates jar with all dependencies bundled into it.'
-        group 'build'
-        mustRunAfter 'jar'
-
-        getArchiveBaseName().set('tduf-' + project.name + '-all')
-        from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-        with jar
+    compileTestJava {
+        options.encoding = 'UTF-8'
     }
+
+    task copyMainScripts(type: Copy) {
+        description 'Copies CLI main scripts to release directory (for single module packaging).'
+        mustRunAfter ':cleanPackDir'
+
+        if (project.hasProperty('target') && target == LINUX_TARGET) {
+            from 'src/main/shell/linux/'
+            include '*.sh'
+        } else {
+            from 'src/main/shell/windows/'
+            include '*.cmd'
+        }
+
+        into '../pack/'
+    }
+
+    task copyUtilScripts(type: Copy) {
+        description 'Copies CLI utility scripts to pack/tools/cli directory (for single module packaging).'
+        mustRunAfter ':cleanPackDir'
+
+        if (project.hasProperty('target') && target == LINUX_TARGET) {
+            from '../src/main/shell/linux/cli-util/'
+            include '*.sh'
+            include 'linux-aliases'
+        } else {
+            from '../src/main/shell/windows/cli-util/'
+            include '*.cmd'
+        }
+
+        into '../pack/tools/cli'
+    }
+
+    task copyDoc(type: Copy) {
+        description 'Copies formatted README to release directory (for single module packaging).'
+        mustRunAfter 'markdownToHtml'
+
+        from "$buildDir/gen-html"
+        include '*.html'
+        into '../pack/'
+    }
+
+    task updateExternalTools(type: Copy) {
+        description 'Copies external tools to installer development tree to ensure proper functioning.'
+
+        from '../tools/'
+        into 'tools/'
+    }    
 }
 
 project(':lib-testing') {
@@ -112,6 +159,7 @@ project(':lib-unlimited') {
     dependencies {
         implementation group: 'net.objecthunter', name: 'exp4j', version: "$exp4jVersion"
         implementation group: 'javax.xml.bind', name: 'jaxb-api', version: "$jaxbapiVersion"
+        implementation group: 'io.github.classgraph', name: 'classgraph', version: "4.8.80"
 
         api group: 'commons-io', name: 'commons-io', version: '2.6'
     }
@@ -159,98 +207,14 @@ project(':gui-database') {
         classpath sourceSets.main.runtimeClasspath
     }
 
-    task copyProfiles(type: Copy) {
-        description 'Copies all default profiles to release directory.'
+    task copyThemes(type: Copy) {
+        description 'Copies all default themes to release directory.'
         group 'packaging'
         mustRunAfter ':cleanPackDir'
 
-        from 'editorProfiles/'
-        into '../pack/editorProfiles/'
-    }
-}
-
-project(':gui-launcher') {
-    dependencies {
-        implementation project(':gui-common')
-    }
-
-    task execute(type:JavaExec) {
-        group 'binaries'
-
-        main 'fr.tduf.gui.launcher.Launcher'
-        classpath sourceSets.main.runtimeClasspath
-    }
-}
-
-project(':gui-installer') {
-    apply plugin: 'org.kordamp.markdown.convert'
-
-    dependencies {
-        implementation project(':gui-common')
-    }
-
-    task execute(type: JavaExec) {
-        main 'fr.tduf.gui.installer.Installer'
-        classpath sourceSets.main.runtimeClasspath
-    }
-
-    task copyDoc(type: Copy) {
-        description 'Copies formatted README to release directory.'
-        mustRunAfter 'markdownToHtml'
-
-        from "$buildDir/gen-html"
-        include '*.html'
-        into '../pack/'
-    }
-
-    task copyAssets(type: Copy) {
-        description 'Copies all assets directory structure to release directory.'
-        mustRunAfter ':cleanPackDir'
-
-        from 'assets/'
-        into '../pack/assets/'
-    }
-
-    task copyTemplates(type: Copy) {
-        description 'Copies all patch templates to release directory.'
-        mustRunAfter ':cleanPackDir'
-
-        from 'patchTemplates/'
-        into '../pack/tools/patchTemplates/'
-    }
-
-    task copyMainScripts(type: Copy) {
-        description 'Copies CLI main scripts to release directory.'
-        mustRunAfter ':cleanPackDir'
-
-        from 'src/main/shell/'
-        include '*.cmd'
-        into '../pack/'
-    }
-
-    task copyUtilScripts(type: Copy) {
-        description 'Copies CLI utility scripts to pack/tools/cli directory.'
-        mustRunAfter ':cleanPackDir'
-
-        from '../src/main/shell/cli-util/'
-        include 'AdminRun.cmd'
-        include 'CheckJava.cmd'
-        include 'SetVersion.cmd'
-        into '../pack/tools/cli'
-    }
-
-    task copyJar(type: Copy) {
-        description 'Copies jar file to release directory.'
-
-        from fatJar
-        into '../pack/tools/lib/'
-    }
-
-    task updateExternalTools(type: Copy) {
-        description 'Copies external tools to installer development tree to ensure proper functioning.'
-
-        from '../tools/'
-        into 'tools/'
+        from 'src/main/resources/gui-database/css/themes/'
+        include '*.css'
+        into '../pack/themes/'
     }
 }
 
@@ -265,67 +229,119 @@ project(':integ-tests') {
         group 'verification'
 
         doLast {
-            def reportFileAbsolutePath = file('./build/reports/tests/test/index.html').toString().replaceAll('\\\\', '/')
-            Desktop.desktop.browse(('file://' + reportFileAbsolutePath).toURI())
+            // On CI, reports are published to AWS
+            if (System.getenv('CI') == null) {
+                // Local dev machine
+                def reportFileAbsolutePath = file('./build/reports/tests/test/index.html').toString().replaceAll('\\\\', '/')
+                try {
+                    Desktop.desktop.browse(('file://' + reportFileAbsolutePath).toURI())
+                } catch (error) {
+                    System.err.println('Could not display integ test results!')
+                    System.err.println(error)
+                }
+            }
         }
     }
-    // Unsupported by codeship CI
-//    tasks.test.finalizedBy tasks.integTestReport
+    tasks.test.finalizedBy tasks.integTestReport
 }
 
 // Main tasks
-// Create a list of subprojects to include in the full jar.
-def fullProjects = [':lib-unlimited', ':cli', ':gui-common', ':gui-database', ':gui-launcher']
 def tempJarDirectory = 'tmp-jarContents/'
 
-task gatherAllContentsForJar(type: Copy, dependsOn: fullProjects.collect{ it+":compileJava"}) {
-    description 'Copies contents to temp directory.'
+task gatherFullContentsForJar(type: Copy, dependsOn: getFullProjects().collect{ it+":compileJava"}) {
+    description 'Copies contents to temp directory (full packaging).'
     group 'build'
 
     // Project sources
-    from files(fullProjects.collect{ project(it).sourceSets.main.output })
+    from files(getFullProjects().collect{ project(it).sourceSets.main.output })
     // External libraries
-    from files(fullProjects.collect{ project(it).configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } } )
+    from files(getFullProjects().collect{ project(it).configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } } )
     into tempJarDirectory
 }
 
-task fullJar( type: Jar , dependsOn: 'gatherAllContentsForJar' ) {
+task gatherDatabaseEditorContentsForJar(type: Copy, dependsOn: getDatabaseEditorProjects().collect{ it+":compileJava"}) {
+    description 'Copies contents to temp directory (Database Editor packaging).'
+    group 'build'
+
+    // Project sources
+    from files(getDatabaseEditorProjects().collect{ project(it).sourceSets.main.output })
+    // External libraries
+    from files(getDatabaseEditorProjects().collect{ project(it).configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } } )
+    into tempJarDirectory
+}
+
+task gatherCoreContentsForJar(type: Copy, dependsOn: getCoreProjects().collect{ it+":compileJava"}) {
+    description 'Copies contents to temp directory (Core packaging).'
+    group 'build'
+
+    // Project sources
+    from files(getCoreProjects().collect{ project(it).sourceSets.main.output })
+    // External libraries
+    from files(getCoreProjects().collect{ project(it).configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } } )
+    into tempJarDirectory
+}
+
+// Common operations
+def jarOps = {
     description 'Creates jar with all contents from temp directory.'
     group 'build'
 
-    getDestinationDirectory().set(file('pack/tools/lib/'))
-    getArchiveBaseName().set('tduf')
-    from tempJarDirectory
+    archiveName 'tduf.jar'
+    destinationDir new File('pack/tools/lib/')
+    from tempJarDirectory 
 }
 
-task packFull(dependsOn: [  'cleanTempJarDir', 'cleanPackDir',
-                            'copyMainScripts', 'copyUserScripts', 'copyUtilScripts',
-                            'markdownToHtml',
-                            'copyDoc', 'copyExternalTools', 'copyVersionInfo', 'copyIcons',
-                            ':lib-unlimited:copyStructures',
-                            ':gui-database:copyProfiles',
-                            'fullJar'], type: Zip) {
+def packOps = {
+    group 'packaging'
+    
+    destinationDir new File('releases/')
+    from  'pack/'
+}
+
+task fullJar( type: Jar , dependsOn: 'gatherFullContentsForJar' )
+fullJar jarOps
+
+task databaseEditorJar( type: Jar , dependsOn: 'gatherDatabaseEditorContentsForJar' )
+databaseEditorJar jarOps
+
+task coreJar( type: Jar , dependsOn: 'gatherCoreContentsForJar' )
+coreJar jarOps
+
+task packCore(dependsOn: getCoreDependencies(), type: Zip) {
+    description 'Create single release Zip with CORE components releases directory.'
+
+    def targetName = (project.hasProperty('target') && target == LINUX_TARGET) ? 'linux' : 'windows'
+    archiveName "tduf-core-$project.version-${targetName}.zip"
+
+    doLast {
+        println("(i) Core packaging for target *$targetName*")
+    }
+}
+packCore packOps
+
+task packFull(dependsOn: getFullDependencies(), type: Zip) {
     description 'Create single release Zip with ALL components except InstallerKit in releases directory.'
-    group 'packaging'
 
-    archiveName  "tduf-" + project.version + ".zip"
-    destinationDir new File('releases/')
-    from  'pack/'
+    def targetName = (project.hasProperty('target') && target == LINUX_TARGET) ? 'linux' : 'windows'
+    archiveName "tduf-$project.version-${targetName}.zip"
+
+    doLast {
+        println("(i) Full packaging for target *$targetName*")
+    }
 }
+packFull packOps
 
-task packInstallerKit(dependsOn: [  'cleanPackDir',
-                                    ':gui-installer:copyMainScripts',
-                                    ':gui-installer:markdownToHtml',
-                                    ':gui-installer:copyDoc', 'copyExternalTools', ':gui-installer:copyUtilScripts', 'copyVersionInfo',
-                                    ':gui-installer:copyAssets', ':gui-installer:copyTemplates',
-                                    ':gui-installer:copyJar'], type: Zip) {
-    description 'Zips only IK, LIB files from pack folder.'
-    group 'packaging'
-
-    archiveName "tduf-IK-" + project.version + ".zip"
-    destinationDir new File('releases/')
-    from  'pack/'
+task packDatabaseEditor(dependsOn: getDatabaseEditorDependencies(), type: Zip) {
+    description 'Zips only DatabaseEditor, LIB files from pack folder.'
+    
+    def targetName = (project.hasProperty('target') && target == LINUX_TARGET) ? 'linux' : 'windows'
+    archiveName "tduf-DatabaseEditor-$project.version-${targetName}.zip"
+    
+    doLast {
+        println("(i) DatabaseEditor packaging for target *$targetName*")
+    }
 }
+packDatabaseEditor packOps
 
 task cleanPackDir(type: Delete) {
     description 'Prepares new package by removing all files in pack directory.'
@@ -351,37 +367,36 @@ task copyDoc(type: Copy) {
     into 'pack/'
 }
 
-task copyMainScripts(type: Copy) {
-    description 'Copies CLI main scripts to release directory.'
+task copySharedScripts(type: Copy) {
+    description 'Copies project-shared scripts to release directory.'
     group 'packaging'
     mustRunAfter ':cleanPackDir'
 
-    from 'src/main/shell/'
-    include '*.cmd'
-    include '*.sh'
+    if (project.hasProperty('target') && target == LINUX_TARGET) {
+        from 'src/main/shell/linux/'
+        include '*.sh'
+    } else {
+        from 'src/main/shell/windows/'
+        include '*.cmd'
+    }
+    
     into 'pack/'
 }
 
-task copyUserScripts(type: Copy) {
-    description 'Copies CLI main scripts to pack/user-scripts directory.'
-    group 'packaging'
-    mustRunAfter ':cleanPackDir'
-
-    from 'src/main/shell/user-scripts'
-    include '*.cmd'
-    include '*.sh'
-    into 'pack/user-scripts'
-}
-
 task copyUtilScripts(type: Copy) {
-    description 'Copies CLI utility scripts to release/tools/cli directory.'
+    description 'Copies support scripts to release/tools/cli directory.'
     group 'packaging'
     mustRunAfter 'cleanPackDir'
 
-    from 'src/main/shell/cli-util/'
-    include '*.cmd'
-    include '*.sh'
-    include 'linux-aliases'
+    if (project.hasProperty('target') && target == LINUX_TARGET) {
+        from 'src/main/shell/linux/cli-util/'
+        include '*.sh'
+        include 'linux-aliases'
+    } else {
+        from 'src/main/shell/windows/cli-util/'
+        include '*.cmd'
+    }
+    
     into 'pack/tools/cli'
 }
 
@@ -391,6 +406,7 @@ task copyExternalTools(type: Copy) {
     mustRunAfter 'cleanPackDir'
 
     from 'tools'
+    exclude 'readme'
     into 'pack/tools'
 }
 

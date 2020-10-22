@@ -36,7 +36,7 @@ public class DisplayConstants {
     public static final String LABEL_ITEM_TOPIC_DEFAULT = "";
     public static final String LABEL_SEARCH_ENTRY = "Enter an entry REF";
     public static final String LABEL_HEADER_SEARCH_VALUE = "Enter a resource value";
-    public static final String LABEL_STATUS_VERSION = "TDUF Database Editor by Djey.";
+    public static final String LABEL_STATUS_VERSION = "Version 2.x by Djey.";
     public static final String LABEL_TEXTFIELD_REFERENCE = "Reference:";
     public static final String LABEL_TEXTFIELD_VALUE = "Value@Locale:";
     public static final String LABEL_ENTRY_SELECT_SINGLE = "Click an entry below to use it.";
@@ -65,12 +65,18 @@ public class DisplayConstants {
     public static final String COLUMN_HEADER_REF = "REF";
 
     public static final String TITLE_APPLICATION = "TDUF Database Editor";
+    public static final String TITLE_FORMAT_APP = "%s%s %s";
+    public static final String TITLE_FORMAT_MODE = " {%s}";
+    public static final String TITLE_MODE_DEBUG = "DEBUG";
+    public static final String TITLE_MODE_TRACE = "TRACE";
+    public static final String TITLE_FRAGMENT_MODIFIED = "*";
     public static final String TITLE_BROWSE_DB_DIRECTORY = "Browse game database directory...";
     public static final String TITLE_SUB_ENTRIES = " : Content entries";
     public static final String TITLE_SUB_FIELDS = " : Content fields";
     public static final String TITLE_SUB_RESOURCES = " : Resources";
     public static final String TITLE_SUB_SAVE = " : Save database";
     public static final String TITLE_SUB_LOAD = " : Load database";
+    public static final String TITLE_SUB_LEAVE = " : Leaving";
     public static final String TITLE_SUB_EXPORT = " : Export entry";
     public static final String TITLE_SUB_EXPORT_FILE = " : Export contents to file";
     public static final String TITLE_SUB_IMPORT = " : Import entry";
@@ -108,6 +114,9 @@ public class DisplayConstants {
     public static final String MESSAGE_FILE_EXPORT_OK = "Contents were exported to file.";
     public static final String MESSAGE_FILE_EXPORT_KO = "Contents could not be exported to file.";
     public static final String MESSAGE_PLUGIN_SAVE_KO = "Unable to save data via plugin.";
+    public static final String MESSAGE_LOST_UNSAVED = "All unsaved changes will be lost!";
+
+    public static final String QUESTION_R_U_OK = "Are you okay with this?";
 
     public static final String TAB_NAME_DEFAULT = "Default";
 
@@ -119,6 +128,7 @@ public class DisplayConstants {
     public static final String STATUS_FORMAT_NOT_LOADED_DATABASE = "Database was not loaded due to errors: %s";
 
     public static final String DATA_FORMAT_LAYOUT_OBJECT = "[%s] %s";
+    public static final String DATA_FORMAT_LOCALE_OBJECT = "[%s] %s";
 
     private DisplayConstants() {}
 }

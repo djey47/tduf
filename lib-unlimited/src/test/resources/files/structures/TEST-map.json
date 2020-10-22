@@ -1,9 +1,11 @@
 {
   "name" : "TEST file format",
   "littleEndian" : false,
+  "comment": "Comment for TEST file format",
   "fields" : [
     {
       "name": "tag",
+      "comment": "Comment for tag field",
       "type": "TEXT",
       "size": 10
     },{
@@ -16,6 +18,7 @@
       "subFields" : [
         {
           "name" : "gap1",
+          "comment": "Comment for gap1 sub-field",
           "type" : "GAP",
           "size" : 1
         },

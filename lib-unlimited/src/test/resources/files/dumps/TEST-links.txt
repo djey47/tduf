@@ -1,0 +1,7 @@
+linkSource1	<unsigned INTEGER: 4 bytes>	0x[00 00 00 0A]	Link source to @0x0000000A (10)
+tag	<CONSTANT: 4 bytes>	0x[41 42 43 44]	"ABCD"
+linkSource2	<unsigned INTEGER: 2 bytes>	0x[00 0E]	Link source to @0x0000000E (14)
+linkedEntries	<REPEATER (link target)>	>>
+linkedEntries[0].linkTarget	<unsigned INTEGER: 4 bytes>	0x[00 00 00 64]	100
+linkedEntries[1].linkTarget	<unsigned INTEGER: 4 bytes>	0x[00 00 00 C8]	200
+<< linkedEntries	<REPEATER: 2 items>

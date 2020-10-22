@@ -1,17 +1,15 @@
 package fr.tduf.libunlimited.high.files.common.interop;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.libunlimited.common.forever.FileConstants;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
-import fr.tduf.libunlimited.common.helper.FilesHelper;
+import fr.tduf.libunlimited.common.helper.JsonHelper;
 import fr.tduf.libunlimited.common.system.domain.ProcessResult;
 import org.apache.commons.lang3.SystemUtils;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +64,7 @@ public abstract class GenuineGateway {
      */
     protected String callCommandLineInterface(CommandLineOperation operation, String... args) throws IOException {
         final String interpreterCommand = getInterpreterCommand();
-        final String cliCommand = getRootDirectory().resolve(EXE_TDUMT_CLI).toString();
+        final String cliCommand = Paths.get(FileConstants.DIRECTORY_ROOT).resolve(EXE_TDUMT_CLI).toString();
         final String binaryPath = interpreterCommand.isEmpty() ? cliCommand : interpreterCommand;
 
         Log.debug(THIS_CLASS_NAME, "TDUMT-CLI Binary or interpreter path: " + binaryPath);
@@ -81,50 +79,10 @@ public abstract class GenuineGateway {
         ProcessResult processResult = commandLineHelper.runCliCommand(binaryPath, allArguments.toArray(new String[0]));
         handleCommandLineErrors(processResult);
 
-        Log.debug(THIS_CLASS_NAME, String.format("Genuine CLI command: '%s' > %s", processResult.getCommandName(), processResult.getOut()));
+        String processOutput = processResult.getOut();
+        Log.debug(THIS_CLASS_NAME, String.format("Genuine CLI command: '%s' > %s", processResult.getCommandName(), processOutput));
 
-        return processResult.getOut();
-    }
-
-    /**
-     * @return Application root path in dev mode or prod mode, detecting current source path automatically
-     * @throws IOException when file system error occurs
-     */
-    static Path getRootDirectory() throws IOException {
-        CodeSource codeSource = GenuineGateway.class.getProtectionDomain().getCodeSource();
-
-        File sourceLocation;
-        try {
-            sourceLocation = new File(codeSource.getLocation().toURI().getPath());
-        } catch (URISyntaxException e) {
-            throw new IOException("Unable to resolve executable directory", e);
-        }
-
-        final Path sourcePath = sourceLocation.toPath();
-        Log.debug(THIS_CLASS_NAME, "Source location: " + sourcePath);
-
-        return getRootDirectory(sourcePath);
-    }
-
-    /**
-     * @return Application root path in dev mode or prod mode, knowing current source path
-     */
-    static Path getRootDirectory(Path sourcePath) {
-        // Run from dev build or JAR?
-        final Path devSrcBuildSubPath = Paths.get("lib-unlimited","build", "classes", "java", "main");
-        final Path devJarBuildSubPath = Paths.get("lib-unlimited","build", "libs", "lib-unlimited-x.y.z-SNAPSHOT.jar");
-        final Path prodBuildSubPath = Paths.get("tools","lib", "tduf.jar");
-
-        Path effectiveSubPath;
-        if (sourcePath.endsWith(prodBuildSubPath)) {
-            effectiveSubPath = prodBuildSubPath;
-        } else {
-            effectiveSubPath = FilesHelper.isPathContained(devSrcBuildSubPath, sourcePath) ? devSrcBuildSubPath : devJarBuildSubPath;
-        }
-        final Path rootPath = sourcePath.getRoot().resolve(sourcePath.subpath(0, sourcePath.getNameCount() - effectiveSubPath.getNameCount()));
-
-        Log.debug(THIS_CLASS_NAME, "Executable location: " + rootPath);
-        return rootPath;
+        return cleanCommandOutput(processOutput);
     }
 
     private static String getInterpreterCommand() {
@@ -136,6 +94,28 @@ public abstract class GenuineGateway {
             String errorMessage = String.format("Unable to execute genuine CLI command: '%s' > (%d) %s", processResult.getCommandName(), processResult.getReturnCode(), processResult.getErr());
             Log.error(THIS_CLASS_NAME, errorMessage);
             throw new IOException(errorMessage);
+        }
+    }
+
+    private static String cleanCommandOutput(String processOutput) throws IOException {
+        try {
+            int jsonStartIndex = processOutput.indexOf("{");
+            int jsonEndIndex = processOutput.lastIndexOf("}");
+            if (jsonStartIndex == -1 || jsonEndIndex == -1) {
+                throw new IOException();
+            }
+
+            String cleanedOutput = processOutput.substring(jsonStartIndex, jsonEndIndex + 1);
+
+            if (!JsonHelper.isValid(cleanedOutput)) {
+                throw new IOException();
+            }
+
+            return cleanedOutput;
+        } catch (IOException ioe) {
+            String errorMessage = String.format("CLI command output is not valid JSON: %s", processOutput);
+            Log.error(THIS_CLASS_NAME, errorMessage);
+            throw new IOException(errorMessage, ioe);
         }
     }
 }

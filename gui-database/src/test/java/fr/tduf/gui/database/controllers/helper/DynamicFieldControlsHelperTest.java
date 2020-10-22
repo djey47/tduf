@@ -1,27 +1,26 @@
 package fr.tduf.gui.database.controllers.helper;
 
-import fr.tduf.gui.database.controllers.MainStageController;
-import fr.tduf.gui.database.controllers.MainStageViewDataController;
+import fr.tduf.gui.database.controllers.main.MainStageController;
+import fr.tduf.gui.database.controllers.main.MainStageViewDataController;
 import fr.tduf.gui.database.domain.ItemViewModel;
 import fr.tduf.gui.database.dto.EditorLayoutDto;
 import fr.tduf.gui.database.dto.FieldSettingsDto;
-import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.PluginHandler;
+import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
-import fr.tduf.libtesting.common.helper.javafx.ApplicationTestHelper;
 import fr.tduf.libunlimited.common.configuration.ApplicationConfiguration;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import fr.tduf.libunlimited.low.files.db.dto.DbStructureDto;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.layout.HBox;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.testfx.framework.junit5.ApplicationTest;
 
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.CAR_PHYSICS_DATA;
 import static fr.tduf.libunlimited.low.files.db.dto.DbStructureDto.FieldType.INTEGER;
@@ -29,12 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-class DynamicFieldControlsHelperTest {
-    @BeforeAll
-    static void globalSetUp() {
-        ApplicationTestHelper.initJavaFX();
-    }
-
+class DynamicFieldControlsHelperTest extends ApplicationTest {
     @Mock
     private MainStageController controllerMock;
 
@@ -81,7 +75,7 @@ class DynamicFieldControlsHelperTest {
         when(controllerMock.getCurrentTopicObject()).thenReturn(currentTopicObject);
         when(controllerMock.getLayoutObject()).thenReturn(layout);
         when(controllerMock.getViewData()).thenReturn(viewDataMock);
-        when(viewDataMock.currentProfile()).thenReturn(new SimpleObjectProperty<>(profile));
+        when(viewDataMock.currentProfileProperty()).thenReturn(new SimpleObjectProperty<>(profile));
 
 
         // WHEN-THEN
@@ -93,7 +87,7 @@ class DynamicFieldControlsHelperTest {
         // given
         HBox fieldBox = new HBox();
         when(applicationConfigurationMock.isEditorPluginsEnabled()).thenReturn(true);
-        when(controllerMock.getCurrentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(1));
+        when(controllerMock.currentEntryIndexProperty()).thenReturn(new SimpleObjectProperty<>(1));
 
         // when
         helper.addCustomControls(fieldBox, createField(), createFieldSettingsForPlugin(), CAR_PHYSICS_DATA, new SimpleStringProperty("RAW_VALUE"));

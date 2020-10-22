@@ -5,8 +5,10 @@ import fr.tduf.gui.common.javafx.helper.ControlHelper;
 import fr.tduf.gui.common.javafx.helper.DesktopHelper;
 import fr.tduf.gui.database.plugins.cameras.common.FxConstants;
 import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
+import fr.tduf.gui.database.plugins.common.PluginComponentBuilders;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
+import fr.tduf.gui.database.plugins.common.contexts.PluginContext;
 import fr.tduf.gui.database.plugins.mapping.converter.BooleanStatusToDisplayConverter;
 import fr.tduf.gui.database.plugins.mapping.domain.MappingEntry;
 import fr.tduf.libunlimited.common.game.FileConstants;
@@ -43,6 +45,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static fr.tduf.gui.database.common.DisplayConstants.*;
+import static fr.tduf.gui.database.common.FxConstants.CSS_CLASS_TABLEVIEW;
 import static fr.tduf.gui.database.plugins.common.FxConstants.*;
 import static fr.tduf.gui.database.plugins.mapping.common.DisplayConstants.*;
 import static fr.tduf.gui.database.plugins.mapping.common.FxConstants.*;
@@ -52,7 +55,6 @@ import static fr.tduf.libunlimited.low.files.banks.domain.MappedFileKind.*;
 import static fr.tduf.libunlimited.low.files.db.dto.DbDto.Topic.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static javafx.geometry.Orientation.HORIZONTAL;
 import static javafx.geometry.Orientation.VERTICAL;
 
 /**
@@ -66,7 +68,7 @@ public class MappingPlugin extends AbstractDatabasePlugin {
             CAR_PHYSICS_DATA, CAR_PACKS, CAR_SHOPS, CLOTHES, HOUSES, RIMS, TUTORIALS
     ));
 
-    private final MappingContext mappingContext = new MappingContext();
+    private final PluginContext mappingContext = new PluginContext();
 
     @SuppressWarnings("FieldMayBeFinal")
     private Property<BankMap> bankMapProperty = new SimpleObjectProperty<>();
@@ -101,7 +103,7 @@ public class MappingPlugin extends AbstractDatabasePlugin {
         BankMap bankMap = MapParser.load(mapFileName).parse();
         bankMapProperty.setValue(bankMap);
 
-        Log.info(THIS_CLASS_NAME, "Mapping info loaded");        
+        Log.info(THIS_CLASS_NAME, String.format("Mapping info loaded, %d entries available", bankMap.getEntries().size()));
         mappingContext.setPluginLoaded(true);
         mappingContext.setBinaryFileLocation(mapFileName);
     }
@@ -120,8 +122,10 @@ public class MappingPlugin extends AbstractDatabasePlugin {
 
     @Override
     public Node renderControls(OnTheFlyContext onTheFlyContext) {
-        mappingContext.setErrorProperty(onTheFlyContext.getErrorProperty());
-        mappingContext.setErrorMessageProperty(onTheFlyContext.getErrorMessageProperty());
+        OnTheFlyMappingContext onTheFlyMappingContext = (OnTheFlyMappingContext) onTheFlyContext;
+
+        mappingContext.setErrorProperty(onTheFlyMappingContext.getErrorProperty());
+        mappingContext.setErrorMessageProperty(onTheFlyMappingContext.getErrorMessageProperty());
 
         HBox hBox = new HBox();
         hBox.getStyleClass().add(CSS_CLASS_PLUGIN_BOX);
@@ -131,10 +135,10 @@ public class MappingPlugin extends AbstractDatabasePlugin {
             return hBox;
         }
         
-        TableView<MappingEntry> filesTableView = createFilesTableView(onTheFlyContext);
+        TableView<MappingEntry> filesTableView = createFilesTableView(onTheFlyMappingContext);
 
-        VBox mainColumnBox = createMainColumn(filesTableView, onTheFlyContext);
-        VBox buttonColumnBox = createButtonColumn(filesTableView.getSelectionModel(), onTheFlyContext);
+        VBox mainColumnBox = createMainColumn(filesTableView, onTheFlyMappingContext);
+        VBox buttonColumnBox = createButtonColumn(filesTableView.getSelectionModel(), onTheFlyMappingContext);
         
         ObservableList<Node> mainRowChildren = hBox.getChildren();
         mainRowChildren.add(mainColumnBox);
@@ -158,7 +162,7 @@ public class MappingPlugin extends AbstractDatabasePlugin {
         return Paths.get(gameLocation, FileConstants.DIRECTORY_EURO, FileConstants.DIRECTORY_BANKS, filePath);
     }
 
-    MappingEntry createMappingEntry(String resourceValue, MappedFileKind kind, OnTheFlyContext onTheFlyContext) {
+    MappingEntry createMappingEntry(String resourceValue, MappedFileKind kind, OnTheFlyMappingContext onTheFlyMappingContext) {
         String fileName = String.format(kind.getFileNameFormat(), resourceValue);
         int lastPartIndex = fileName.lastIndexOf("_");
         int dotIndex = fileName.lastIndexOf(".");
@@ -168,7 +172,7 @@ public class MappingPlugin extends AbstractDatabasePlugin {
         switch(kind) {
             case FRONT_RIMS_3D:
             case REAR_RIMS_3D:
-                filePath = parentPath.resolve(resolveRimDirectoryName(onTheFlyContext)).resolve(fileName);
+                filePath = parentPath.resolve(resolveRimDirectoryName(onTheFlyMappingContext)).resolve(fileName);
                 break;
             case SHOP_EXT_3D:
             case HOUSE_EXT_3D:
@@ -186,7 +190,7 @@ public class MappingPlugin extends AbstractDatabasePlugin {
                 filePath = parentPath.resolve(PREFIX_SPOT_GARAGE_BANK + fileName.substring(1, lastPartIndex).toLowerCase() + fileName.substring(dotIndex));
                 break;
             case CLOTHES_3D:
-                filePath = parentPath.resolve(resolveClothesBrandDirectoryName(onTheFlyContext)).resolve(fileName);
+                filePath = parentPath.resolve(resolveClothesBrandDirectoryName(onTheFlyMappingContext)).resolve(fileName);
                 break;
             default:
                 filePath = parentPath.resolve(fileName);
@@ -197,45 +201,45 @@ public class MappingPlugin extends AbstractDatabasePlugin {
         return new MappingEntry(kind.getDescription(), filePath.toString(), exists, registered);
     }
 
-    void refreshMapping(String resourceReference, OnTheFlyContext onTheFlyContext) {
+    void refreshMapping(String resourceReference, OnTheFlyMappingContext onTheFlyMappingContext) {
         StringProperty errorMessageProperty = mappingContext.getErrorMessageProperty();
         BooleanProperty errorProperty = mappingContext.getErrorProperty();
 
-        ObservableList<MappingEntry> files = onTheFlyContext.getFiles();
+        ObservableList<MappingEntry> files = onTheFlyMappingContext.getFiles();
         files.clear();
 
-        if (!HANDLED_TOPICS.contains(onTheFlyContext.getCurrentTopic())) {
+        if (!HANDLED_TOPICS.contains(onTheFlyMappingContext.getCurrentTopic())) {
             errorMessageProperty.setValue(null);
             errorProperty.setValue(null);
             return;
         }
 
         BulkDatabaseMiner miner = getEditorContext().getMiner();
-        String resourceValue = miner.getResourceEntryFromTopicAndReference(onTheFlyContext.getRemoteTopic(), resourceReference)
+        String resourceValue = miner.getResourceEntryFromTopicAndReference(onTheFlyMappingContext.getRemoteTopic(), resourceReference)
                 .flatMap(ResourceEntryDto::pickValue)
                 .orElse(VALUE_RESOURCE_DEFAULT);
 
-        switch (onTheFlyContext.getCurrentTopic()) {
+        switch (onTheFlyMappingContext.getCurrentTopic()) {
             case CAR_PHYSICS_DATA:
-                addCarPhysicsEntries(resourceValue, onTheFlyContext);
+                addCarPhysicsEntries(resourceValue, onTheFlyMappingContext);
                 break;
             case CAR_PACKS:
-                addCarPacksEntries(resourceValue, onTheFlyContext);
+                addCarPacksEntries(resourceValue, onTheFlyMappingContext);
                 break;
             case CAR_SHOPS:
-                addCarShopsEntries(resourceValue, onTheFlyContext);
+                addCarShopsEntries(resourceValue, onTheFlyMappingContext);
                 break;
             case CLOTHES:
-                addClothesEntries(resourceValue, onTheFlyContext);
+                addClothesEntries(resourceValue, onTheFlyMappingContext);
                 break;
             case HOUSES:
-                addHousesEntries(resourceValue, onTheFlyContext);
+                addHousesEntries(resourceValue, onTheFlyMappingContext);
                 break;
             case RIMS:
-                addRimsEntries(resourceValue, onTheFlyContext);
+                addRimsEntries(resourceValue, onTheFlyMappingContext);
                 break;
             case TUTORIALS:
-                addTutorialsEntries(resourceValue, onTheFlyContext);
+                addTutorialsEntries(resourceValue, onTheFlyMappingContext);
                 break;
             default:
         }
@@ -245,56 +249,47 @@ public class MappingPlugin extends AbstractDatabasePlugin {
         errorMessageProperty.setValue(isRegistrationFailure ? LABEL_ERROR_TOOLTIP_UNREGISTERED : "");
     }
 
-    private VBox createMainColumn(TableView<MappingEntry> filesTableView, OnTheFlyContext onTheFlyContext) {
+    private VBox createMainColumn(TableView<MappingEntry> filesTableView, OnTheFlyMappingContext onTheFlyMappingContext) {
         VBox mainColumnBox = new VBox();
         mainColumnBox.getStyleClass().add(FxConstants.CSS_CLASS_MAIN_COLUMN);
         ObservableList<Node> mainColumnChildren = mainColumnBox.getChildren();
 
         mainColumnChildren.add(filesTableView);
 
-        onTheFlyContext.getRawValueProperty().addListener(handleResourceValueChange(onTheFlyContext));
+        onTheFlyMappingContext.getRawValueProperty().addListener(handleResourceValueChange(onTheFlyMappingContext));
 
         return mainColumnBox;
     }
 
-    private VBox createButtonColumn(TableView.TableViewSelectionModel<MappingEntry> selectionModel, OnTheFlyContext onTheFlyContext) {
-        VBox buttonColumnBox = new VBox();
-        buttonColumnBox.getStyleClass().add(fr.tduf.gui.database.common.FxConstants.CSS_CLASS_VERTICAL_BUTTON_BOX);
+    private VBox createButtonColumn(TableView.TableViewSelectionModel<MappingEntry> selectionModel, OnTheFlyMappingContext onTheFlyMappingContext) {
+        EditorContext editorContext = getEditorContext();
 
         Button refreshMappingButton = new Button(LABEL_BUTTON_REFRESH);
-        refreshMappingButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
-        refreshMappingButton.setOnAction(handleRefreshButtonAction(onTheFlyContext));
-
-        Button browseResourceButton = new Button(LABEL_BUTTON_BROWSE);
-        browseResourceButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
-        ControlHelper.setTooltipText(browseResourceButton, TOOLTIP_BUTTON_BROWSE_RESOURCES);
-        EditorContext editorContext = getEditorContext();
-        browseResourceButton.setOnAction(
-                editorContext.getMainStageController().getViewData().handleBrowseResourcesButtonMouseClick(onTheFlyContext.getRemoteTopic(), onTheFlyContext.getRawValueProperty(), onTheFlyContext.getFieldRank()));
+        refreshMappingButton.getStyleClass().addAll(CSS_CLASS_PLUGIN_BUTTON, CSS_CLASS_PLUGIN_BUTTON_MEDIUM);
+        refreshMappingButton.setOnAction(handleRefreshButtonAction(onTheFlyMappingContext));
 
         Button seeDirectoryButton = new Button(LABEL_BUTTON_GOTO);
-        seeDirectoryButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
+        seeDirectoryButton.getStyleClass().addAll(CSS_CLASS_PLUGIN_BUTTON, CSS_CLASS_PLUGIN_BUTTON_MEDIUM);
         ControlHelper.setTooltipText(seeDirectoryButton, TOOLTIP_BUTTON_SEE_DIRECTORY);
         seeDirectoryButton.setOnAction(handleSeeDirectoryButtonAction(selectionModel, editorContext.getGameLocation()));
 
         Button registerButton = new Button(LABEL_BUTTON_REGISTER);
-        registerButton.getStyleClass().add(CSS_CLASS_BUTTON_MEDIUM);
+        registerButton.getStyleClass().addAll(CSS_CLASS_PLUGIN_BUTTON, CSS_CLASS_PLUGIN_BUTTON_MEDIUM);
         ControlHelper.setTooltipText(registerButton, TOOLTIP_BUTTON_REGISTER);
         registerButton.setOnAction(handleRegisterButtonAction(selectionModel));
 
-        buttonColumnBox.getChildren().addAll(
-                refreshMappingButton,
-                new Separator(HORIZONTAL),
-                browseResourceButton,
-                seeDirectoryButton,
-                registerButton);
-
-        return buttonColumnBox;
+        return PluginComponentBuilders.buttonColumn()
+                .withButton(refreshMappingButton)
+                .withSeparator()
+                .withBrowseResourceButton(editorContext, onTheFlyMappingContext)
+                .withButton(seeDirectoryButton)
+                .withButton(registerButton)
+                .build();
     }
 
-    private TableView<MappingEntry> createFilesTableView(OnTheFlyContext onTheFlyContext) {
+    private TableView<MappingEntry> createFilesTableView(OnTheFlyMappingContext onTheFlyMappingContext) {
         TableView<MappingEntry> mappingInfoTableView = new TableView<>(FXCollections.observableArrayList());
-        mappingInfoTableView.getStyleClass().addAll(CSS_CLASS_TABLEVIEW, CSS_CLASS_MAPPING_TABLEVIEW);
+        mappingInfoTableView.getStyleClass().addAll(CSS_CLASS_TABLEVIEW, CSS_CLASS_PLUGIN_TABLEVIEW, CSS_CLASS_MAPPING_TABLEVIEW);
 
         TableColumn<MappingEntry, String> kindColumn = new TableColumn<>(HEADER_FILESTABLE_KIND);
         kindColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKind()));
@@ -323,18 +318,18 @@ public class MappingPlugin extends AbstractDatabasePlugin {
         columns.add(existsColumn);
         columns.add(registeredColumn);
 
-        onTheFlyContext.setFiles(mappingInfoTableView.getItems());
+        onTheFlyMappingContext.setFiles(mappingInfoTableView.getItems());
 
         return mappingInfoTableView;
     }
 
-    private ChangeListener<String> handleResourceValueChange(OnTheFlyContext onTheFlyContext) {
+    private ChangeListener<String> handleResourceValueChange(OnTheFlyMappingContext onTheFlyMappingContext) {
         return (observable, oldValue, newValue) ->  {
             if (Objects.equals(oldValue, newValue)) {
                 return;
             }
 
-            refreshMapping(newValue, onTheFlyContext);
+            refreshMapping(newValue, onTheFlyMappingContext);
         };
     }
 
@@ -363,95 +358,95 @@ public class MappingPlugin extends AbstractDatabasePlugin {
         };
     }
 
-    private EventHandler<ActionEvent> handleRefreshButtonAction(OnTheFlyContext onTheFlyContext) {
-        return event -> refreshMapping(onTheFlyContext.getRawValueProperty().getValue(), onTheFlyContext);
+    private EventHandler<ActionEvent> handleRefreshButtonAction(OnTheFlyMappingContext onTheFlyMappingContext) {
+        return event -> refreshMapping(onTheFlyMappingContext.getRawValueProperty().getValue(), onTheFlyMappingContext);
     }
 
-    private void addTutorialsEntries(String resourceValue, OnTheFlyContext onTheFlyContext) {
-        if (FIELD_RANK_VOICE_FILE == onTheFlyContext.getFieldRank()) {
-            MappingEntry tutoMappingEntry = createMappingEntry(resourceValue, TUTO_INSTRUCTION, onTheFlyContext);
-            ObservableList<MappingEntry> files = onTheFlyContext.getFiles();
+    private void addTutorialsEntries(String resourceValue, OnTheFlyMappingContext onTheFlyMappingContext) {
+        if (FIELD_RANK_VOICE_FILE == onTheFlyMappingContext.getFieldRank()) {
+            MappingEntry tutoMappingEntry = createMappingEntry(resourceValue, TUTO_INSTRUCTION, onTheFlyMappingContext);
+            ObservableList<MappingEntry> files = onTheFlyMappingContext.getFiles();
             files.add(tutoMappingEntry);
         }
     }
 
-    private void addRimsEntries(String resourceValue, OnTheFlyContext onTheFlyContext) {
-        ObservableList<MappingEntry> files = onTheFlyContext.getFiles();
-        int fieldRank = onTheFlyContext.getFieldRank();
+    private void addRimsEntries(String resourceValue, OnTheFlyMappingContext onTheFlyMappingContext) {
+        ObservableList<MappingEntry> files = onTheFlyMappingContext.getFiles();
+        int fieldRank = onTheFlyMappingContext.getFieldRank();
         if (FIELD_RANK_RSC_FILE_NAME_FRONT == fieldRank) {
-            MappingEntry frontMappingEntry = createMappingEntry(resourceValue, FRONT_RIMS_3D, onTheFlyContext);
+            MappingEntry frontMappingEntry = createMappingEntry(resourceValue, FRONT_RIMS_3D, onTheFlyMappingContext);
             files.add(frontMappingEntry);
         } else if (FIELD_RANK_RSC_FILE_NAME_REAR == fieldRank) {
-            MappingEntry rearMappingEntry = createMappingEntry(resourceValue, REAR_RIMS_3D, onTheFlyContext);
+            MappingEntry rearMappingEntry = createMappingEntry(resourceValue, REAR_RIMS_3D, onTheFlyMappingContext);
             files.add(rearMappingEntry);
         }
     }
 
-    private void addClothesEntries(String resourceValue, OnTheFlyContext onTheFlyContext) {
-        if (FIELD_RANK_FURNITURE_FILE == onTheFlyContext.getFieldRank()) {
-            MappingEntry clothesMappingEntry = createMappingEntry(resourceValue, CLOTHES_3D, onTheFlyContext);
-            onTheFlyContext.getFiles().add(clothesMappingEntry);
+    private void addClothesEntries(String resourceValue, OnTheFlyMappingContext onTheFlyMappingContext) {
+        if (FIELD_RANK_FURNITURE_FILE == onTheFlyMappingContext.getFieldRank()) {
+            MappingEntry clothesMappingEntry = createMappingEntry(resourceValue, CLOTHES_3D, onTheFlyMappingContext);
+            onTheFlyMappingContext.getFiles().add(clothesMappingEntry);
         }
     }
 
-    private void addCarShopsEntries(String resourceValue, OnTheFlyContext onTheFlyContext) {
-        if (FIELD_RANK_DEALER_NAME == onTheFlyContext.getFieldRank()) {
-            MappingEntry shopExtMappingEntry = createMappingEntry(resourceValue, SHOP_EXT_3D, onTheFlyContext);
-            MappingEntry shopIntMappingEntry = createMappingEntry(resourceValue, SHOP_INT_3D, onTheFlyContext);
-            MappingEntry shopThumbMappingEntry = createMappingEntry(resourceValue, SPOT_MAP_SCREEN, onTheFlyContext);
-            onTheFlyContext.getFiles().addAll(shopExtMappingEntry, shopIntMappingEntry, shopThumbMappingEntry);
+    private void addCarShopsEntries(String resourceValue, OnTheFlyMappingContext onTheFlyMappingContext) {
+        if (FIELD_RANK_DEALER_NAME == onTheFlyMappingContext.getFieldRank()) {
+            MappingEntry shopExtMappingEntry = createMappingEntry(resourceValue, SHOP_EXT_3D, onTheFlyMappingContext);
+            MappingEntry shopIntMappingEntry = createMappingEntry(resourceValue, SHOP_INT_3D, onTheFlyMappingContext);
+            MappingEntry shopThumbMappingEntry = createMappingEntry(resourceValue, SPOT_MAP_SCREEN, onTheFlyMappingContext);
+            onTheFlyMappingContext.getFiles().addAll(shopExtMappingEntry, shopIntMappingEntry, shopThumbMappingEntry);
         }
     }
 
-    private void addHousesEntries(String resourceValue, OnTheFlyContext onTheFlyContext) {
-        int fieldRank = onTheFlyContext.getFieldRank();
-        ObservableList<MappingEntry> files = onTheFlyContext.getFiles();
+    private void addHousesEntries(String resourceValue, OnTheFlyMappingContext onTheFlyMappingContext) {
+        int fieldRank = onTheFlyMappingContext.getFieldRank();
+        ObservableList<MappingEntry> files = onTheFlyMappingContext.getFiles();
         if (FIELD_RANK_SPOT_NAME == fieldRank) {
-            MappingEntry houseExtMappingEntry = createMappingEntry(resourceValue, HOUSE_EXT_3D, onTheFlyContext);
-            MappingEntry houseLoungeMappingEntry = createMappingEntry(resourceValue, HOUSE_LOUNGE_3D, onTheFlyContext);
-            MappingEntry houseGarageMappingEntry = createMappingEntry(resourceValue, HOUSE_GARAGE_3D, onTheFlyContext);
-            MappingEntry thumbMappingEntry = createMappingEntry(resourceValue, SPOT_MAP_SCREEN, onTheFlyContext);
+            MappingEntry houseExtMappingEntry = createMappingEntry(resourceValue, HOUSE_EXT_3D, onTheFlyMappingContext);
+            MappingEntry houseLoungeMappingEntry = createMappingEntry(resourceValue, HOUSE_LOUNGE_3D, onTheFlyMappingContext);
+            MappingEntry houseGarageMappingEntry = createMappingEntry(resourceValue, HOUSE_GARAGE_3D, onTheFlyMappingContext);
+            MappingEntry thumbMappingEntry = createMappingEntry(resourceValue, SPOT_MAP_SCREEN, onTheFlyMappingContext);
             files.addAll(houseExtMappingEntry, houseLoungeMappingEntry, houseGarageMappingEntry, thumbMappingEntry);
         } else if (FIELD_RANK_REALTOR == fieldRank) {
-            MappingEntry realtorExtMappingEntry = createMappingEntry(resourceValue, REALTOR_EXT_3D, onTheFlyContext);
-            MappingEntry realtorIntMappingEntry = createMappingEntry(resourceValue, REALTOR_INT_3D, onTheFlyContext);
-            MappingEntry thumbMappingEntry = createMappingEntry(resourceValue, SPOT_MAP_SCREEN, onTheFlyContext);
+            MappingEntry realtorExtMappingEntry = createMappingEntry(resourceValue, REALTOR_EXT_3D, onTheFlyMappingContext);
+            MappingEntry realtorIntMappingEntry = createMappingEntry(resourceValue, REALTOR_INT_3D, onTheFlyMappingContext);
+            MappingEntry thumbMappingEntry = createMappingEntry(resourceValue, SPOT_MAP_SCREEN, onTheFlyMappingContext);
             files.addAll(realtorExtMappingEntry, realtorIntMappingEntry,  thumbMappingEntry);
         }
     }
 
-    private void addCarPacksEntries(String resourceValue, OnTheFlyContext onTheFlyContext) {
-        if (FIELD_RANK_CAR_FILE_NAME_SWAP == onTheFlyContext.getFieldRank()) {
-            MappingEntry extMappingEntry = createMappingEntry(resourceValue, EXT_3D, onTheFlyContext);
-            onTheFlyContext.getFiles().add(extMappingEntry);
+    private void addCarPacksEntries(String resourceValue, OnTheFlyMappingContext onTheFlyMappingContext) {
+        if (FIELD_RANK_CAR_FILE_NAME_SWAP == onTheFlyMappingContext.getFieldRank()) {
+            MappingEntry extMappingEntry = createMappingEntry(resourceValue, EXT_3D, onTheFlyMappingContext);
+            onTheFlyMappingContext.getFiles().add(extMappingEntry);
         }
     }
 
-    private void addCarPhysicsEntries(String resourceValue, OnTheFlyContext onTheFlyContext) {
-        int fieldRank = onTheFlyContext.getFieldRank();
-        ObservableList<MappingEntry> files = onTheFlyContext.getFiles();
+    private void addCarPhysicsEntries(String resourceValue, OnTheFlyMappingContext onTheFlyMappingContext) {
+        int fieldRank = onTheFlyMappingContext.getFieldRank();
+        ObservableList<MappingEntry> files = onTheFlyMappingContext.getFiles();
         if (FIELD_RANK_CAR_FILE_NAME == fieldRank) {
-            MappingEntry extMappingEntry = createMappingEntry(resourceValue, EXT_3D, onTheFlyContext);
-            MappingEntry intMappingEntry = createMappingEntry(resourceValue, INT_3D, onTheFlyContext);
-            MappingEntry sndMappingEntry = createMappingEntry(resourceValue, SOUND, onTheFlyContext);
+            MappingEntry extMappingEntry = createMappingEntry(resourceValue, EXT_3D, onTheFlyMappingContext);
+            MappingEntry intMappingEntry = createMappingEntry(resourceValue, INT_3D, onTheFlyMappingContext);
+            MappingEntry sndMappingEntry = createMappingEntry(resourceValue, SOUND, onTheFlyMappingContext);
             files.addAll(extMappingEntry, intMappingEntry, sndMappingEntry);
         } else if (FIELD_RANK_HUD_FILE_NAME == fieldRank) {
-            MappingEntry lgeMappingEntry = createMappingEntry(resourceValue, HUD_LOW, onTheFlyContext);
-            MappingEntry hgeMappingEntry = createMappingEntry(resourceValue, HUD_HIGH, onTheFlyContext);
+            MappingEntry lgeMappingEntry = createMappingEntry(resourceValue, HUD_LOW, onTheFlyMappingContext);
+            MappingEntry hgeMappingEntry = createMappingEntry(resourceValue, HUD_HIGH, onTheFlyMappingContext);
             files.addAll(lgeMappingEntry, hgeMappingEntry);
         }
     }
 
-    private String resolveRimDirectoryName(OnTheFlyContext onTheFlyContext) {
-        String directoryRef = retrieveCurrentRawValueFromContext(onTheFlyContext, FIELD_RANK_RSC_PATH)
+    private String resolveRimDirectoryName(OnTheFlyMappingContext onTheFlyMappingContext) {
+        String directoryRef = retrieveCurrentRawValueFromContext(onTheFlyMappingContext, FIELD_RANK_RSC_PATH)
                 .orElseThrow(() -> new IllegalStateException("No content item for directory name"));
-        return getEditorContext().getMiner().getResourceEntryFromTopicAndReference(onTheFlyContext.getCurrentTopic(), directoryRef)
+        return getEditorContext().getMiner().getResourceEntryFromTopicAndReference(onTheFlyMappingContext.getCurrentTopic(), directoryRef)
                 .flatMap(ResourceEntryDto::pickValue)
                 .orElseThrow(() -> new IllegalStateException("No resource value for ref: " + directoryRef));
     }
 
-    private String resolveClothesBrandDirectoryName(OnTheFlyContext onTheFlyContext) {
-        String brandRef =  retrieveCurrentRawValueFromContext(onTheFlyContext, FIELD_RANK_FURNITURE_BRAND)
+    private String resolveClothesBrandDirectoryName(OnTheFlyMappingContext onTheFlyMappingContext) {
+        String brandRef =  retrieveCurrentRawValueFromContext(onTheFlyMappingContext, FIELD_RANK_FURNITURE_BRAND)
                 .orElseThrow(() -> new IllegalStateException("No content item for brand reference"));
         BulkDatabaseMiner miner = getEditorContext().getMiner();
         return miner.getContentEntryFromTopicWithReference(brandRef, BRANDS)
@@ -462,10 +457,10 @@ public class MappingPlugin extends AbstractDatabasePlugin {
                 .orElseThrow(() -> new IllegalStateException("No manufacturer id available"));
     }
 
-    private Optional<String> retrieveCurrentRawValueFromContext(OnTheFlyContext onTheFlyContext, int itemRank) {
+    private Optional<String> retrieveCurrentRawValueFromContext(OnTheFlyMappingContext onTheFlyMappingContext, int itemRank) {
         BulkDatabaseMiner miner = getEditorContext().getMiner();
-        DbDto.Topic currentTopic = onTheFlyContext.getCurrentTopic();
-        int entryId = onTheFlyContext.getContentEntryIndexProperty().getValue();
+        DbDto.Topic currentTopic = onTheFlyMappingContext.getCurrentTopic();
+        int entryId = onTheFlyMappingContext.getContentEntryIndexProperty().getValue();
         return miner.getContentEntryFromTopicWithInternalIdentifier(entryId, currentTopic)
                 .orElseThrow(() -> new IllegalStateException("No content entry for identifier: " + entryId))
                 .getItemAtRank(itemRank)
@@ -479,7 +474,7 @@ public class MappingPlugin extends AbstractDatabasePlugin {
         super.setEditorContext(editorContext);
     }
 
-    public MappingContext getMappingContext() {
+    PluginContext getMappingContext() {
         return mappingContext;
     }
 }

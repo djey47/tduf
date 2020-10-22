@@ -1,3 +1,3 @@
 rootProject.name = 'tduf'
 
-include 'lib-testing', 'lib-unlimited', 'cli', 'gui-common', 'gui-database', 'gui-installer', 'gui-launcher', 'integ-tests'
+include 'lib-testing', 'lib-unlimited', 'cli', 'gui-common', 'gui-database', 'integ-tests'

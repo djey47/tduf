@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.research.domain.fixture;
 
+import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.StructureHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
@@ -14,6 +15,21 @@ import static fr.tduf.libunlimited.low.files.research.domain.Type.*;
  * Provides data for data store tests.
  */
 public class DataStoreFixture {
+
+    public static DataStore createEmptyStore() throws IOException {
+        return new DataStore(DataStoreFixture.getFileStructure("/files/structures/TEST-datastore-map.json"));
+    }
+
+    public static DataStore createStoreWithEntries() throws IOException {
+        DataStore store = createEmptyStore();
+        createStoreEntries(store);
+        return store;
+    }
+
+
+    public static String getStoreContentsAsJson(String resourcePath) throws IOException {
+        return FilesHelper.readTextFromResourceFile(resourcePath);
+    }
 
     public static void createStoreEntries(DataStore dataStore) {
         dataStore.clearAll();
@@ -39,6 +55,29 @@ public class DataStoreFixture {
         putFloatInStore("entry_list[0].my_fp_field", 0.0f, dataStore);
         putStringInStore("entry_list[0].a_field", "az", dataStore);
         putRawValueInStore("entry_list[0].another_field", new byte[0], dataStore);
+    }
+
+    public static void createStoreEntriesForLevel2Repeater(DataStore dataStore) {
+        dataStore.clearAll();
+
+        putLongInStore("repeaterLvl1[0].repeaterLvl2[0].number", 500L, false, dataStore);
+        putLongInStore("repeaterLvl1[0].repeaterLvl2[1].number", 501L, false, dataStore);
+        putLongInStore("repeaterLvl1[1].repeaterLvl2[0].number", 502L, false, dataStore);
+        putLongInStore("repeaterLvl1[1].repeaterLvl2[1].number", 503L, false, dataStore);
+    }
+
+    public static void createStoreEntriesForLinkSources(DataStore dataStore) {
+        dataStore.clearAll();
+
+        putLongInStore("linkSource1", 10L, false, dataStore);
+        putLongInStore("linkSource2", 14L, false, dataStore);
+        putLongInStore("linkedEntries[0].linkTarget", 100, false, dataStore);
+        putLongInStore("linkedEntries[1].linkTarget", 200, false, dataStore);
+
+        dataStore.getLinksContainer().registerSource("linkSource1", 10);
+        dataStore.getLinksContainer().registerSource("linkSource2", 14);
+        dataStore.getLinksContainer().registerTarget("linkedEntries[0].", 10);
+        dataStore.getLinksContainer().registerTarget("linkedEntries[1].", 14);
     }
 
     public static void putRawValueInStore(String key, byte[] bytes, DataStore dataStore) {

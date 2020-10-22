@@ -2,6 +2,7 @@ package fr.tduf.libunlimited.low.files.bin.cameras.helper;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
+import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.GenuineCamGateway;
 import fr.tduf.libunlimited.high.files.bin.cameras.interop.dto.GenuineCamViewsDto;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.*;
@@ -248,8 +249,8 @@ public class CamerasHelper {
         return configuration.getSetIdentifier();
     }
 
-    private static ByteArrayInputStream getCamerasInputStream(String sourceCameraFile) throws IOException {
-        return new ByteArrayInputStream(readAllBytes(Paths.get(sourceCameraFile)));
+    private static XByteArrayInputStream getCamerasInputStream(String sourceCameraFile) throws IOException {
+        return new XByteArrayInputStream(readAllBytes(Paths.get(sourceCameraFile)));
     }
 
     private static void checkCameraSetExists(int cameraSetId, CamerasDatabase camerasDatabase) {

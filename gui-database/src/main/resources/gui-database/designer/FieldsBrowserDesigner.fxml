@@ -35,7 +35,7 @@
         </ToolBar>
         <AnchorPane VBox.vgrow="ALWAYS">
             <TableView fx:id="fieldsTableView" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                       AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                       AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" styleClass="tableView">
                 <columns>
                     <TableColumn prefWidth="50.0" text="Rank"/>
                     <TableColumn prefWidth="250.0" text="Name"/>

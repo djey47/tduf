@@ -800,23 +800,32 @@
           "rank": 1,
           "name": "Car",
           "label": "Car slot #",
-          "remoteReferenceProfile": "Vehicle slots"
+          "remoteReferenceProfile": "Vehicle slots",
+          "priority": "10000"
         },
         {
           "name": "Color_ID_1",
-          "rank": 2
+          "rank": 2,
+          "pluginName": "MATERIALS",
+          "priority": "9980",
+          "label": "Main material"
         },
         {
           "name": "Color_Name",
-          "rank": 3
+          "rank": 3,
+          "priority": "9990"
         },
         {
           "name": "Color_ID_2",
-          "rank": 4
+          "rank": 4,
+          "pluginName": "MATERIALS",
+          "label": "Secondary material"
         },
         {
           "name": "Callipers",
-          "rank": 5
+          "rank": 5,
+          "pluginName": "MATERIALS",
+          "label": "Material for brake calipers"
         },
         {
           "name": "Price_dollar",
@@ -940,15 +949,18 @@
         },
         {
           "name": "Interior_Color_1",
-          "rank": 4
+          "rank": 4,
+          "pluginName": "MATERIALS"
         },
         {
           "name": "Interior_Color_2",
-          "rank": 5
+          "rank": 5,
+          "pluginName": "MATERIALS"
         },
         {
           "name": "Material",
-          "rank": 6
+          "rank": 6,
+          "pluginName": "MATERIALS"
         },
         {
           "name": "Price_dollar",

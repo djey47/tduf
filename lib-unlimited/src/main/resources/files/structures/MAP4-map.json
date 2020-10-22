@@ -1,5 +1,6 @@
 {
   "name" : "TDU BNK Mapping",
+  "fileName": "bnk1.map",
   "littleEndian" : false,
   "fields" : [
     {

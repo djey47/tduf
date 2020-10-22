@@ -3,7 +3,7 @@ package fr.tduf.gui.database.stages;
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
 import fr.tduf.gui.database.controllers.EntriesStageController;
-import fr.tduf.gui.database.controllers.MainStageController;
+import fr.tduf.gui.database.controllers.main.MainStageController;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,7 +16,7 @@ import java.io.IOException;
 /**
  * Loads graphical interface for content entries.
  */
-public class EntriesDesigner {
+public class EntriesDesigner extends AbstractEditorDesigner{
     private static final Class<EntriesDesigner> thisClass = EntriesDesigner.class;
 
     private EntriesDesigner() {}
@@ -40,8 +40,7 @@ public class EntriesDesigner {
     }
 
     private static void initWindow(Stage entriesStage, Parent mainRoot) {
-        String styledToolBarCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_TOOLBARS).toExternalForm();
-        mainRoot.getStylesheets().add(styledToolBarCss);
+        initCommonCss(mainRoot);
 
         entriesStage.setScene(new Scene(mainRoot, 650, 720));
         entriesStage.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_ENTRIES);

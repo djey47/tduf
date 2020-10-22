@@ -85,7 +85,7 @@ class DatabaseChangeHelperTest {
         // GIVEN-WHEN-THEN
         assertThrows(IllegalStateException.class,
                 () -> changeHelper.addContentsEntryWithDefaultItems(ENTRY_REFERENCE, TOPIC));
-        verifyZeroInteractions(genHelperMock);
+        verifyNoInteractions(genHelperMock);
     }
 
     @Test
@@ -93,13 +93,13 @@ class DatabaseChangeHelperTest {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
         ContentEntryDto entry1 = createDefaultContentEntry();
-        entry1.appendItem(createEntryItemAtRank(1));
+        entry1.appendItem(createEntryItemAtFirstRank());
         dataObject.addEntry(entry1);
         ContentEntryDto entry2 = createDefaultContentEntry();
-        entry2.appendItem(createEntryItemAtRank(1));
+        entry2.appendItem(createEntryItemAtFirstRank());
         dataObject.addEntry(entry2);
         ContentEntryDto entry3 = createDefaultContentEntry();
-        entry3.appendItem(createEntryItemAtRank(1));
+        entry3.appendItem(createEntryItemAtFirstRank());
         dataObject.addEntry(entry3);
 
         DbDto topicObject = createDatabaseObject(dataObject, createDefaultStructureObject());
@@ -206,15 +206,15 @@ class DatabaseChangeHelperTest {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
         ContentEntryDto entry0 = createDefaultContentEntry();
-        entry0.appendItem(createEntryItemAtRank(1));
+        entry0.appendItem(createEntryItemAtFirstRank());
         dataObject.addEntry(entry0);
 
         ContentEntryDto defaultContentEntry = createDefaultContentEntry();
-        defaultContentEntry.appendItem(createEntryItemAtRank(1));
+        defaultContentEntry.appendItem(createEntryItemAtFirstRank());
         dataObject.addEntry(defaultContentEntry);
 
         ContentEntryDto entryToBeCloned = createDefaultContentEntry();
-        entryToBeCloned.appendItem(createEntryItemAtRank(1));
+        entryToBeCloned.appendItem(createEntryItemAtFirstRank());
         dataObject.addEntry(entryToBeCloned);
 
         DbStructureDto stuctureObject = createDefaultStructureObject();
@@ -286,7 +286,9 @@ class DatabaseChangeHelperTest {
         assertThat(dataObject.getEntries()).hasSize(2);
         assertThat(dataObject.getEntries()).extracting("id").containsExactly(0, 1);
 
-        String cloneEntryReference = actualCloneEntry.getItemAtRank(1).get().getRawValue();
+        String cloneEntryReference = actualCloneEntry.getItemAtRank(1)
+                .orElseThrow(() -> new IllegalStateException("Item at rank should be present"))
+                .getRawValue();
         Condition<String> betweenMinAndMaxRefValues = new Condition<>(o -> {
             int i = Integer.parseInt(o);
             return i >= 10000000 && i <= 99999999;
@@ -318,13 +320,13 @@ class DatabaseChangeHelperTest {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
         ContentEntryDto entry0 = createDefaultContentEntry();
-        entry0.appendItem(createEntryItemAtRank(1));
+        entry0.appendItem(createEntryItemAtFirstRank());
         dataObject.addEntry(entry0);
         ContentEntryDto entry1 = createDefaultContentEntry();
-        entry1.appendItem(createEntryItemAtRank(1));
+        entry1.appendItem(createEntryItemAtFirstRank());
         dataObject.addEntry(entry1);
         final ContentEntryDto movedEntry = createDefaultContentEntry();
-        movedEntry.appendItem(createEntryItemAtRank(1));
+        movedEntry.appendItem(createEntryItemAtFirstRank());
         dataObject.addEntry(movedEntry);
 
 
@@ -342,13 +344,13 @@ class DatabaseChangeHelperTest {
         // GIVEN
         DbDataDto dataObject = createDefaultDataObject();
         ContentEntryDto entry0 = createDefaultContentEntry();
-        entry0.appendItem(createEntryItemAtRank(1));
+        entry0.appendItem(createEntryItemAtFirstRank());
         dataObject.addEntry(entry0);
         ContentEntryDto entry1 = createDefaultContentEntry();
-        entry1.appendItem(createEntryItemAtRank(1));
+        entry1.appendItem(createEntryItemAtFirstRank());
         dataObject.addEntry(entry1);
         final ContentEntryDto movedEntry = createDefaultContentEntry();
-        movedEntry.appendItem(createEntryItemAtRank(1));
+        movedEntry.appendItem(createEntryItemAtFirstRank());
         dataObject.addEntry(movedEntry);
         DbDto topicObject = DbDto.builder().withData(dataObject).build();
 
@@ -402,7 +404,7 @@ class DatabaseChangeHelperTest {
         associationEntry.appendItem(ContentItemDto.builder().ofFieldRank(2).build());
 
         // WHEN
-        DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(associationEntry, ENTRY_REFERENCE, null);
+        changeHelper.updateAssociationEntryWithSourceAndTargetReferences(associationEntry, ENTRY_REFERENCE, null);
 
         // THEN
         assertThat(associationEntry.getItems()).extracting("rawValue").containsExactly(ENTRY_REFERENCE, null);
@@ -417,7 +419,7 @@ class DatabaseChangeHelperTest {
         associationEntry.appendItem(ContentItemDto.builder().ofFieldRank(3).build());
 
         // WHEN
-        DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(associationEntry, ENTRY_REFERENCE, ENTRY_REFERENCE_BIS);
+        changeHelper.updateAssociationEntryWithSourceAndTargetReferences(associationEntry, ENTRY_REFERENCE, ENTRY_REFERENCE_BIS);
 
         // THEN
         assertThat(associationEntry.getItems()).extracting("rawValue").containsExactly(ENTRY_REFERENCE, ENTRY_REFERENCE_BIS, null);
@@ -427,7 +429,7 @@ class DatabaseChangeHelperTest {
     void updateAssociationEntryWithSourceAndTargetReferences_whenNullEntry_shouldThrowException() {
         // GIVEN-WHEN-THEN
         assertThrows(NullPointerException.class,
-                () -> DatabaseChangeHelper.updateAssociationEntryWithSourceAndTargetReferences(null, ENTRY_REFERENCE, ENTRY_REFERENCE_BIS));
+                () -> changeHelper.updateAssociationEntryWithSourceAndTargetReferences(null, ENTRY_REFERENCE, ENTRY_REFERENCE_BIS));
     }
 
     @Test
@@ -498,9 +500,9 @@ class DatabaseChangeHelperTest {
                 .build();
     }
 
-    private static ContentItemDto createEntryItemAtRank(int rank) {
+    private static ContentItemDto createEntryItemAtFirstRank() {
         return ContentItemDto.builder()
-                .ofFieldRank(rank)
+                .ofFieldRank(1)
                 .build();
     }
 

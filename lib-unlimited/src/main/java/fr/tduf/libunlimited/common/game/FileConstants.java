@@ -10,10 +10,11 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
  */
 public class FileConstants {
     public static final String PREFIX_LAUNCH_SWITCH = "-%s";
-    
+
+    public static final String FILE_COLORS_COMMON_BANK = "colors.bnk";
+    public static final String FILE_DATABASE_BANK = "DB.bnk";
     public static final String FILE_GAME_EXECUTABLE = "TestDriveUnlimited.exe";
-    public static final String DATABASE_BANK_FILE_NAME = "DB.bnk";
-    
+
     public static final String DIRECTORY_EURO = "Euro";
     public static final String DIRECTORY_BANKS = "Bnk";
     public static final String DIRECTORY_AVATAR = "Avatar";

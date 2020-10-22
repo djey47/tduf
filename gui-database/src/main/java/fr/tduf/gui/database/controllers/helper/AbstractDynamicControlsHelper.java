@@ -3,7 +3,7 @@ package fr.tduf.gui.database.controllers.helper;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.javafx.helper.ControlHelper;
 import fr.tduf.gui.database.common.FxConstants;
-import fr.tduf.gui.database.controllers.MainStageController;
+import fr.tduf.gui.database.controllers.main.MainStageController;
 import fr.tduf.gui.database.listener.ErrorChangeListener;
 import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import javafx.beans.property.BooleanProperty;
@@ -26,6 +26,8 @@ import java.util.Map;
 import static fr.tduf.gui.common.ImageConstants.Resource.ERROR;
 import static fr.tduf.gui.common.ImageConstants.SIZE_DEFAULT_PICTO;
 import static fr.tduf.gui.database.common.DisplayConstants.TAB_NAME_DEFAULT;
+import static fr.tduf.gui.database.common.FxConstants.CSS_CLASS_BUTTON;
+import static fr.tduf.gui.database.common.FxConstants.CSS_CLASS_BUTTON_SMALL;
 import static java.util.Optional.ofNullable;
 import static javafx.beans.binding.Bindings.not;
 
@@ -91,7 +93,7 @@ abstract class AbstractDynamicControlsHelper {
 
     protected static Button addContextualButton(Pane fieldPane, String buttonLabel, String tooltipText, EventHandler<ActionEvent> action) {
         Button contextualButton = new Button(buttonLabel);
-        contextualButton.getStyleClass().add(FxConstants.CSS_CLASS_BUTTON_SMALL);
+        contextualButton.getStyleClass().addAll(CSS_CLASS_BUTTON, CSS_CLASS_BUTTON_SMALL);
         ControlHelper.setTooltipText(contextualButton, tooltipText);
 
         contextualButton.setOnAction(action);

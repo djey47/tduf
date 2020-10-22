@@ -3,7 +3,7 @@ package fr.tduf.gui.database.plugins.common;
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.common.javafx.helper.CommonDialogsHelper;
 import fr.tduf.gui.common.javafx.helper.options.SimpleDialogOptions;
-import fr.tduf.gui.database.controllers.MainStageChangeDataController;
+import fr.tduf.gui.database.controllers.main.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import javafx.collections.ObservableList;
@@ -82,6 +82,20 @@ public class PluginHandler {
     }
 
     /**
+     * @return right "On The Fly" context for given plugin name
+     */
+    public static OnTheFlyContext initializeOnTheFlyContextForPlugin(String pluginName) {
+        try {
+            PluginIndex resolvedPlugin = PluginIndex.valueOf(pluginName);
+            Class<? extends OnTheFlyContext> contextClass = resolvedPlugin.getOnTheFlyContextClass();
+            return contextClass.newInstance();
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException ie) {
+            Log.error(THIS_CLASS_NAME, "Unable to initialize \"On The Fly\" context for plugin: " + pluginName, ie);
+            return new OnTheFlyContext();
+        }
+    }
+
+    /**
      * Utility method to extract CSS from given resource
      * @param cssResource : resource path
      * @return CSS contents to be provided to FX engine
@@ -102,20 +116,19 @@ public class PluginHandler {
 
     void renderPluginInstance(DatabasePlugin pluginInstance, OnTheFlyContext onTheFlyContext) {
         String pluginName = pluginInstance.getName();
-        Node renderedNode;
+        ObservableList<Node> children = onTheFlyContext.getParentPane().getChildren();
         try {
             // Init error handling
             Optional<Exception> initError = pluginInstance.getInitError();
-            renderedNode = initError
+            Node renderedNode = initError
                     .map(e -> renderErrorPlaceholder(e, pluginName, FORMAT_TITLE_PLUGIN_INIT_ERROR))
                     .orElseGet(() -> pluginInstance.renderControls(onTheFlyContext));
-
+            children.add(renderedNode);
         } catch(Exception e) {
             // Render error handling
             Log.error(THIS_CLASS_NAME, "Error occurred while rendering plugin: " + pluginName, e);
-            renderedNode = renderErrorPlaceholder(e, pluginName, FORMAT_TITLE_PLUGIN_RENDER_ERROR);
+            children.add(renderErrorPlaceholder(e, pluginName, FORMAT_TITLE_PLUGIN_RENDER_ERROR));
         }
-        onTheFlyContext.getParentPane().getChildren().add(renderedNode);
     }
 
     void triggerOnSaveForPluginInstance(DatabasePlugin pluginInstance) throws IOException {

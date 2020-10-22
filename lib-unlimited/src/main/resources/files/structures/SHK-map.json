@@ -1,5 +1,6 @@
 {
   "name": "Havok physics for TDU levels",
+  "fileName": "*.shk",
   "littleEndian": true,
   "fields": [
     {

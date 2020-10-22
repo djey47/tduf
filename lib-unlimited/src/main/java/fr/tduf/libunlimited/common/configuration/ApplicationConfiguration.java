@@ -8,9 +8,14 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Enumeration;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.TreeSet;
 
+import static fr.tduf.libunlimited.common.forever.FileConstants.DIRECTORY_CONFIGURATION;
+import static fr.tduf.libunlimited.common.forever.FileConstants.FORMAT_THEME_FILE;
+import static java.util.Collections.enumeration;
 import static java.util.Optional.ofNullable;
 
 /**
@@ -19,8 +24,7 @@ import static java.util.Optional.ofNullable;
 public class ApplicationConfiguration extends Properties {
     private static final String THIS_CLASS_NAME = ApplicationConfiguration.class.getSimpleName();
 
-    private static String genuineConfigurationFile = Paths.get(System.getProperty("user.home"), "tduf.properties").toString();
-    private static String configurationFile = Paths.get(System.getProperty("user.home"), ".tduf", "tduf.properties").toString();
+    private static String configurationFile = Paths.get(DIRECTORY_CONFIGURATION, "tduf.properties").toString();
 
     private static final String KEY_DATABASE_DIR = "tdu.database.directory";
     private static final String KEY_TDU_DIR = "tdu.root.directory";
@@ -28,6 +32,16 @@ public class ApplicationConfiguration extends Properties {
     private static final String KEY_EDITOR_PROFILE = "tduf.editor.profile";
     private static final String KEY_EDITOR_PLUGINS_ENABLED = "tduf.editor.plugins.enabled";
     private static final String KEY_EDITOR_DEBUGGING_ENABLED = "tduf.editor.debugging.enabled";
+    private static final String KEY_EDITOR_CUSTOM_THEME = "tduf.editor.theme";
+
+    /**
+     * Solves the issue of random key ordering
+     * @return sorted keys as enumeration
+     */
+    @Override
+    public synchronized Enumeration<Object> keys() {
+        return enumeration(new TreeSet<>(super.keySet()));
+    }
 
     /**
      * @return full path to game database if it exists, else return default location from game directory, or empty otherwise
@@ -113,7 +127,15 @@ public class ApplicationConfiguration extends Properties {
     public boolean isEditorDebuggingEnabled() {
         return resolveBooleanProperty(KEY_EDITOR_DEBUGGING_ENABLED, false);
     }
-    
+
+    /**
+     * @return path for custom theme css
+     */
+    public Optional<Path> getEditorCustomThemeCss() {
+       return(ofNullable(getProperty(KEY_EDITOR_CUSTOM_THEME))
+               .map(theme -> Paths.get(DIRECTORY_CONFIGURATION, String.format(FORMAT_THEME_FILE, theme))));
+    }
+
     /**
      * Saves current configuration into user home directory.
      * @throws IOException when storage error occurs
@@ -133,18 +155,8 @@ public class ApplicationConfiguration extends Properties {
      */
     public void load() throws IOException {
         try {
-            Path genuinePath = Paths.get(genuineConfigurationFile);
-            if (Files.exists(genuinePath)) {
-                Log.warn(THIS_CLASS_NAME, "Configuration file exists at obsolete location. It will be relocated to " + configurationFile);
-                try (InputStream is = new FileInputStream(genuineConfigurationFile)) {
-                    load(is);
-                }
-                store();
-                Files.delete(genuinePath);
-            } else {
-                try (InputStream is = new FileInputStream(configurationFile)) {
-                    load(is);
-                }
+            try (InputStream is = new FileInputStream(configurationFile)) {
+                load(is);
             }
         } catch (FileNotFoundException fnfe) {
             Log.info(THIS_CLASS_NAME, "Configuration file does not exist, still. It will be created.", fnfe);
@@ -175,8 +187,5 @@ public class ApplicationConfiguration extends Properties {
     // For tests
     static void setConfigurationFile(String file) {
         configurationFile = file;
-    }
-    static void setGenuineConfigurationFile(String file) {
-        genuineConfigurationFile = file;
     }
 }

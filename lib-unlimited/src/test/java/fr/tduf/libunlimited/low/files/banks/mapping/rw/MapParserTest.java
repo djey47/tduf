@@ -17,7 +17,7 @@ class MapParserTest {
 
     @BeforeEach
     void setUp() {
-        Log.set(Log.LEVEL_DEBUG);
+        Log.set(Log.LEVEL_INFO);
     }
 
     @Test

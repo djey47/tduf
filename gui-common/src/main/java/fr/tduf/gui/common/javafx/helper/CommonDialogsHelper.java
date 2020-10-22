@@ -22,7 +22,7 @@ import static javafx.scene.control.ButtonBar.ButtonData.OK_DONE;
  */
 public class CommonDialogsHelper {
 
-    private static FileChooser fileChooser = new FileChooser();
+    private static final FileChooser fileChooser = new FileChooser();
 
     /**
      * Displays a system dialog to browse for file name or existing file
@@ -58,8 +58,9 @@ public class CommonDialogsHelper {
      * Displays a single alert dialog box for different purposes.
      * @param dialogOptions : specifies appearance and behaviour of component
      * @param parent        : owner dialog, or null to be a top-level one
+     * @return if present, value of selected button
      */
-    public static void showDialog(SimpleDialogOptions dialogOptions, Window parent) {
+    public static Optional<ButtonType> showDialog(SimpleDialogOptions dialogOptions, Window parent) {
         Alert alert = new Alert(dialogOptions.getAlertContext());
         alert.initOwner(parent);
         alert.setTitle(dialogOptions.getTitle());
@@ -72,7 +73,7 @@ public class CommonDialogsHelper {
                 .map(node -> ((Label) node))
                 .forEach(label -> label.setMinHeight(Region.USE_PREF_SIZE));
 
-        alert.showAndWait();
+        return alert.showAndWait();
     }
 
     /**

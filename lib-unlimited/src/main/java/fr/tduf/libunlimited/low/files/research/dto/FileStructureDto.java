@@ -1,9 +1,10 @@
 package fr.tduf.libunlimited.low.files.research.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.domain.Type;
 
@@ -23,17 +24,28 @@ import static org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCod
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FileStructureDto implements Serializable {
 
+    @SuppressWarnings("unused")
     @JsonProperty("name")
     private String name;
 
+    @SuppressWarnings("unused")
     @JsonProperty("littleEndian")
     private Boolean littleEndian;
 
+    @SuppressWarnings("unused")
     @JsonProperty("cryptoMode")
     private Integer cryptoMode;
 
     @JsonProperty("fields")
     private List<Field> fields;
+
+    @SuppressWarnings("unused")
+    @JsonIgnore
+    @JsonProperty("comment")
+    private String comment;
+
+    @JsonProperty("fileName")
+    private String fileNamePattern;
 
     /**
      * @return builder, used to generate custom values.
@@ -42,6 +54,7 @@ public class FileStructureDto implements Serializable {
         return new FileStructureDtoBuilder();
     }
 
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override
     public boolean equals(Object o) {
         return reflectionEquals(this, o);
@@ -66,8 +79,16 @@ public class FileStructureDto implements Serializable {
         return cryptoMode;
     }
 
+    public String getFileNamePattern() {
+        return fileNamePattern;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     public static class FileStructureDtoBuilder {
-        private List<Field> fields = new ArrayList<>();
+        private final List<Field> fields = new ArrayList<>();
 
         public FileStructureDtoBuilder addFields(List<Field> fields) {
             this.fields.addAll(fields);
@@ -99,11 +120,31 @@ public class FileStructureDto implements Serializable {
         @JsonProperty("size")
         private String sizeFormula;
 
+        @JsonProperty("contentsSize")
+        private String contentsSizeFormula;
+
         @JsonProperty("constantValue")
         private String constantValue;
 
+        @JsonProperty("constantChecked")
+        private Boolean constantChecked;
+
         @JsonProperty("subFields")
         private List<Field> subFields;
+
+        @JsonProperty("condition")
+        private String condition;
+
+        @SuppressWarnings("unused")
+        @JsonIgnore
+        @JsonProperty("comment")
+        private String comment;
+
+        @JsonProperty("isLinkSource")
+        private Boolean linkSource;
+
+        @JsonProperty("isLinkTarget")
+        private Boolean linkTarget;
 
         private Field() {}
 
@@ -116,10 +157,18 @@ public class FileStructureDto implements Serializable {
             return "Field{" +
                     "name='" + name + '\'' +
                     ", type=" + type +
+                    ", signed=" + signed +
+                    ", linkSource=" + linkSource +
+                    ", linkTarget=" + linkTarget +
                     ", sizeFormula=" + sizeFormula +
+                    ", contentsSizeFormula=" + contentsSizeFormula +
+                    ", constantValue=" + constantValue +
+                    ", constantChecked=" + constantChecked +
+                    ", condition=" + condition +
                     '}';
         }
 
+        @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
         @Override
         public boolean equals(Object o) {
             return reflectionEquals(this, o);
@@ -132,6 +181,10 @@ public class FileStructureDto implements Serializable {
 
         public String getSizeFormula() {
             return sizeFormula;
+        }
+
+        public String getContentsSizeFormula() {
+            return contentsSizeFormula;
         }
 
         public Type getType() {
@@ -154,13 +207,32 @@ public class FileStructureDto implements Serializable {
             return constantValue;
         }
 
+        public boolean isConstantChecked() {
+            return constantChecked == null || constantChecked;
+        }
+
+        public String getCondition() { return condition; }
+
+        public boolean isLinkSource() {
+            return Boolean.TRUE.equals(linkSource);
+        }
+
+        public boolean isLinkTarget() {
+            return Boolean.TRUE.equals(linkTarget);
+        }
+
         public static class FieldBuilder {
             private byte[] constantValueAsByteArray;
             private boolean signed;
             private List<Field> subFields;
             private Type type;
             private String sizeFormula;
+            private String contentsSizeFormula;
             private String name;
+            private String condition;
+            private boolean constantChecked;
+            private boolean linkSource;
+            private boolean linkTarget;
 
             public FieldBuilder forName(String name) {
                 this.name = name;
@@ -172,11 +244,20 @@ public class FileStructureDto implements Serializable {
                 return this;
             }
 
-            public FieldBuilder withConstantValue(byte[] value) {
+            private FieldBuilder withConstantValue(byte[] value, boolean checked) {
                 this.type = CONSTANT;
                 this.constantValueAsByteArray = value;
                 this.sizeFormula = Integer.toString(value.length);
+                this.constantChecked = checked;
                 return this;
+            }
+
+            public FieldBuilder withConstantValueChecked(byte[] value) {
+                return this.withConstantValue(value, true);
+            }
+
+            public FieldBuilder withConstantValueUnchecked(byte[] value) {
+                return this.withConstantValue(value, false);
             }
 
             public FieldBuilder signed(boolean isSigned) {
@@ -186,6 +267,11 @@ public class FileStructureDto implements Serializable {
 
             public FieldBuilder ofSize(String sizeFormula) {
                 this.sizeFormula = sizeFormula;
+                return this;
+            }
+
+            public FieldBuilder ofContentsSize(String contentsSizeFormula) {
+                this.contentsSizeFormula = contentsSizeFormula;
                 return this;
             }
 
@@ -199,15 +285,35 @@ public class FileStructureDto implements Serializable {
                 return this;
             }
 
+            public FieldBuilder atCondition(String condition) {
+                this.condition = condition;
+                return this;
+            }
+
+            public FieldBuilder linkSource() {
+                this.linkSource = true;
+                return this;
+            }
+
+            public FieldBuilder linkTarget() {
+                this.linkTarget = true;
+                return this;
+            }
+
             public Field build() {
                 Field field = new Field();
 
                 field.name = this.name;
                 field.sizeFormula = this.sizeFormula;
+                field.contentsSizeFormula = this.contentsSizeFormula;
                 field.type = this.type;
                 field.subFields = this.subFields;
                 field.signed = this.signed;
                 field.constantValue = TypeHelper.byteArrayToHexRepresentation(constantValueAsByteArray);
+                field.constantChecked = this.constantChecked;
+                field.condition = this.condition;
+                field.linkSource = this.linkSource;
+                field.linkTarget = this.linkTarget;
 
                 return field;
             }

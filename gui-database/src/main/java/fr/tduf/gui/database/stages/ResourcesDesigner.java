@@ -2,7 +2,7 @@ package fr.tduf.gui.database.stages;
 
 import fr.tduf.gui.database.common.DisplayConstants;
 import fr.tduf.gui.database.common.FxConstants;
-import fr.tduf.gui.database.controllers.MainStageController;
+import fr.tduf.gui.database.controllers.main.MainStageController;
 import fr.tduf.gui.database.controllers.ResourcesStageController;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -15,7 +15,7 @@ import java.io.IOException;
 /**
  * Loads graphical interface for resources window.
  */
-public class ResourcesDesigner {
+public class ResourcesDesigner extends AbstractEditorDesigner {
     private static final Class<ResourcesDesigner> thisClass = ResourcesDesigner.class;
 
     private ResourcesDesigner() {}
@@ -40,8 +40,7 @@ public class ResourcesDesigner {
     }
 
     private static void initWindow(Stage resourcesStage, Parent mainRoot) {
-        String styledToolBarCss = thisClass.getResource(FxConstants.PATH_RESOURCE_CSS_TOOLBARS).toExternalForm();
-        mainRoot.getStylesheets().add(styledToolBarCss);
+        initCommonCss(mainRoot);
 
         resourcesStage.setScene(new Scene(mainRoot, 1024, 720));
         resourcesStage.setTitle(DisplayConstants.TITLE_APPLICATION + DisplayConstants.TITLE_SUB_RESOURCES);

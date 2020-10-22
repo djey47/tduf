@@ -2,10 +2,11 @@ package fr.tduf.libunlimited.low.files.bin.cameras.rw;
 
 
 import fr.tduf.libunlimited.common.helper.FilesHelper;
+import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CamerasDatabase;
+import fr.tduf.libunlimited.low.files.research.rw.JsonAdapter;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -31,8 +32,8 @@ class CamerasWriterTest {
 
         // GIVEN
         String camerasContentsFromJSONFile = FilesHelper.readTextFromResourceFile("/bin/Cameras.bin.json");
-        CamerasParser camerasParser = CamerasParser.load(new ByteArrayInputStream(new byte[0]));
-        camerasParser.getDataStore().fromJsonString(camerasContentsFromJSONFile);
+        CamerasParser camerasParser = CamerasParser.load(new XByteArrayInputStream(new byte[0]));
+        new JsonAdapter(camerasParser.getDataStore()).fromJsonString(camerasContentsFromJSONFile);
         CamerasDatabase cameraInfo = camerasParser.generate();
 
         // WHEN

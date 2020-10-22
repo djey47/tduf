@@ -8,6 +8,10 @@ import static fr.tduf.gui.database.plugins.cameras.common.DisplayConstants.LABEL
 public class CameraViewToItemConverter extends StringConverter<CameraView> {
     @Override
     public String toString(CameraView cameraView) {
+        if (cameraView == null) {
+            return "";
+        }
+
         return String.format(LABEL_FORMAT_VIEW_ITEM, cameraView.getKind().getInternalId(), cameraView.getKind().name());
     }
 

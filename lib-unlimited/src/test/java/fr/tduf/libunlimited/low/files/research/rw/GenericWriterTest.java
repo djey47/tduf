@@ -1,6 +1,8 @@
 package fr.tduf.libunlimited.low.files.research.rw;
 
 import fr.tduf.libunlimited.common.helper.FilesHelper;
+import fr.tduf.libunlimited.low.files.research.domain.DataStore;
+import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -234,6 +236,26 @@ class GenericWriterTest {
     }
 
     @Test
+    void write_whenProvidedFiles_andConditionedField_shouldReturnBytes() throws IOException {
+        // GIVEN
+        GenericWriter<String> actualWriter = createGenericWriterForCondition();
+
+
+        // WHEN
+        ByteArrayOutputStream actualOutputStream = actualWriter.write();
+
+
+        // THEN
+        assertThat(actualOutputStream).isNotNull();
+
+        byte[] actualBytes = actualOutputStream.toByteArray();
+        assertThat(actualBytes).hasSize(6);
+
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-conditional-without.bin");
+        assertThat(actualBytes).isEqualTo(expectedBytes);
+    }
+
+    @Test
     void write_whenProvidedFiles_andMissingValue_shouldThrowException() throws IOException {
         // GIVEN
         GenericWriter<String> actualWriter = createGenericWriterWithMissingValues();
@@ -241,6 +263,62 @@ class GenericWriterTest {
         // WHEN-THEN
         assertThrows(NoSuchElementException.class,
                 actualWriter::write);
+    }
+
+    @Test
+    void write_whenProvidedFiles_withLevel2Repeater_shouldReturnBytes() throws IOException {
+        // GIVEN
+        GenericWriter<String> actualWriter = createGenericWriterWithLevel2Repeater();
+
+        // WHEN
+        ByteArrayOutputStream actualOutputStream = actualWriter.write();
+        // Uncomment below to regen output file
+//        Files.write(Paths.get("src/test/resources/files/samples/TEST-repeater-lvl2.bin"), actualOutputStream.toByteArray());
+
+        // THEN
+        assertThat(actualOutputStream).isNotNull();
+
+        byte[] actualBytes = actualOutputStream.toByteArray();
+        assertThat(actualBytes).hasSize(2*2*4); // 2*2*4 bytes
+
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-repeater-lvl2.bin");
+        assertThat(actualBytes).isEqualTo(expectedBytes);
+    }
+
+    @Test
+    void write_whenProvidedFiles_withLinks_shouldReturnBytes() throws IOException {
+        // GIVEN
+        GenericWriter<String> actualWriter = createGenericWriterWithLinks();
+
+        // WHEN
+        ByteArrayOutputStream actualOutputStream = actualWriter.write();
+
+        // THEN
+        assertThat(actualOutputStream).isNotNull();
+
+        byte[] actualBytes = actualOutputStream.toByteArray();
+        assertThat(actualBytes).hasSize(4+4+2+2*4);
+
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-links.bin");
+        assertThat(actualBytes).isEqualTo(expectedBytes);
+    }
+
+    @Test
+    void write_whenProvidedFiles_withRemainingBytes_shouldReturnBytes() throws IOException {
+        // GIVEN
+        GenericWriter<String> actualWriter = createGenericWriterWithRemainingBytes();
+
+        // WHEN
+        ByteArrayOutputStream actualOutputStream = actualWriter.write();
+
+        // THEN
+        assertThat(actualOutputStream).isNotNull();
+
+        byte[] actualBytes = actualOutputStream.toByteArray();
+        assertThat(actualBytes).hasSize(24);
+
+        byte[] expectedBytes = FilesHelper.readBytesFromResourceFile("/files/samples/TEST-remaining.bin");
+        assertThat(actualBytes).isEqualTo(expectedBytes);
     }
 
     private GenericWriter<String> createGenericWriter() throws IOException {
@@ -269,6 +347,86 @@ class GenericWriterTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-map.json";
+            }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
+        };
+    }
+
+    private GenericWriter<String> createGenericWriterWithLevel2Repeater() throws IOException {
+        return new GenericWriter<String>(DATA) {
+            @Override
+            protected void fillStore() {
+                // Field 1 - sub items (lvl2), ranks 0-0
+                getDataStore().addRepeatedInteger32("repeaterLvl1[0].repeaterLvl2", "number", 0, 500L);
+                // Field 2 - sub items (lvl2), ranks 0-1
+                getDataStore().addRepeatedInteger32("repeaterLvl1[0].repeaterLvl2", "number", 1, 501L);
+                // Field 3 - sub items (lvl2), ranks 1-0
+                getDataStore().addRepeatedInteger32("repeaterLvl1[1].repeaterLvl2", "number", 0, 502L);
+                // Field 4 - sub items (lvl2), ranks 1-1
+                getDataStore().addRepeatedInteger32("repeaterLvl1[1].repeaterLvl2", "number", 1, 503L);
+            }
+
+            @Override
+            public String getStructureResource() {
+                return "/files/structures/TEST-repeater-lvl2-map.json";
+            }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
+        };
+    }
+
+    private GenericWriter<String> createGenericWriterWithLinks() throws IOException {
+        return new GenericWriter<String>(DATA) {
+            @Override
+            protected void fillStore() {
+                getDataStore().addInteger("linkSource1", 10, 4);
+                getDataStore().addInteger("linkSource2", 14, 2);
+                getDataStore().addInteger("linkedEntries[0].linkTarget", 100, 4);
+                getDataStore().addInteger("linkedEntries[1].linkTarget", 200, 4);
+            }
+
+            @Override
+            public String getStructureResource() {
+                return "/files/structures/TEST-links-map.json";
+            }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
+        };
+    }
+
+    private GenericWriter<String> createGenericWriterWithRemainingBytes() throws IOException {
+        return new GenericWriter<String>(DATA) {
+            @Override
+            protected void fillStore() {
+                DataStore store = getDataStore();
+                store.addInteger32("sectionSizeBytes", 16L);
+
+                store.addInteger32("repeater[0].number1", 101L);
+                store.addInteger32("repeater[0].number2", 102L);
+                store.addInteger32("repeater[1].number1", 201L);
+                store.addInteger32("repeater[1].number2", 202L);
+                
+                store.addRemainingValue(new byte[] { 0x0, 0x0, 0x1, 0x2d });
+            }
+
+            @Override
+            public String getStructureResource() {
+                return "/files/structures/TEST-remaining-map.json";
+            }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
             }
         };
     }
@@ -301,6 +459,11 @@ class GenericWriterTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -331,6 +494,11 @@ class GenericWriterTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-encrypted-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -351,6 +519,11 @@ class GenericWriterTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-halfFloat-map.json";
+            }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
             }
         };
     }
@@ -373,6 +546,11 @@ class GenericWriterTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-veryShortInt-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -388,6 +566,11 @@ class GenericWriterTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-unsignedLong-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }    
     
@@ -399,6 +582,11 @@ class GenericWriterTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-constants-map.json";
+            }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
             }
         };
     }
@@ -433,6 +621,11 @@ class GenericWriterTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-auto-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -444,6 +637,11 @@ class GenericWriterTest {
             @Override
             public String getStructureResource() {
                 return "./src/test/resources/files/structures/TEST-map.json";
+            }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
             }
         };
     }
@@ -475,6 +673,11 @@ class GenericWriterTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-littleEndian-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -500,6 +703,36 @@ class GenericWriterTest {
             public String getStructureResource() {
                 return "/files/structures/TEST-formulas-map.json";
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
+        };
+    }
+
+    private GenericWriter<String> createGenericWriterForCondition() throws IOException {
+        return new GenericWriter<String>(DATA) {
+            @Override
+            protected void fillStore() {
+                // Field 1
+                getDataStore().addText("tag", "ABCDE");
+
+                // Field 2
+                getDataStore().addInteger("flag", 0, 1);
+
+                // Field 3 - is omitted as unsatisfied condition when parsing
+            }
+
+            @Override
+            public String getStructureResource() {
+                return "/files/structures/TEST-conditional-map.json";
+            }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
+            }
         };
     }
 
@@ -511,6 +744,11 @@ class GenericWriterTest {
             @Override
             public String getStructureResource() {
                 return "/files/structures/TEST-map.json";
+            }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return null;
             }
         };
     }

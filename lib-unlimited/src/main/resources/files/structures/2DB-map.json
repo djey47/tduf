@@ -1,5 +1,6 @@
 {
   "name": "Texture for TDU engine",
+  "fileName": "*.2db",
   "littleEndian": true,
   "fields": [
     {

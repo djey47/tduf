@@ -11,8 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -28,8 +26,6 @@ class GenuineGatewayTest {
             super(commandLineHelper);
         }
     }
-
-    private static final Path TOOL_PATH = Paths.get("tools", "tdumt-cli");
 
     @Mock
     private CommandLineHelper commandLineHelperMock;
@@ -48,51 +44,28 @@ class GenuineGatewayTest {
     }
 
     @Test
-    void getRootDirectory_whenInTestMode_shouldRetrieveToolsDirectoryAtRoot() throws Exception {
-        // GIVEN-WHEN
-        final Path actualDirectory = GenuineGateway.getRootDirectory();
-
-        // THEN
-        assertThat(actualDirectory.resolve(TOOL_PATH)).exists();
-    }
-
-    @Test
-    void getRootDirectory_whenProvidedProdSourcePath_asProdBuild_shouldRetrieveRootDirectory() {
-        // GIVEN
-        final Path sourcePath = Paths.get("/", "home", "user", "apps", "tduf", "tools", "lib", "tduf.jar");
-
-        // WHEN
-        final Path actualDirectory = GenuineGateway.getRootDirectory(sourcePath);
-
-        // THEN
-        final Path expectedPath = Paths.get("/", "home", "user", "apps", "tduf");
-        assertThat(actualDirectory).isEqualTo(expectedPath);
-    }
-
-    @Test
-    void getRootDirectory_whenProvidedProdSourcePath_asDevBuild_shouldRetrieveRootDirectory() {
-        // GIVEN
-        final Path sourcePath = Paths.get("/", "home", "user", "dev", "tduf", "lib-unlimited", "build", "libs", "lib-unlimited-1.13.0-SNAPSHOT.jar");
-
-        // WHEN
-        final Path actualDirectory = GenuineGateway.getRootDirectory(sourcePath);
-
-        // THEN
-        final Path expectedPath = Paths.get("/", "home", "user", "dev", "tduf");
-        assertThat(actualDirectory).isEqualTo(expectedPath);
-    }
-
-    @Test
     void callCommandLineInterface_whenCommandSuccess_shouldReturnOutput() throws IOException {
         // given
-        ProcessResult succesProcessResult = new ProcessResult("TEST", 0, "OUTPUT", "");
-        when(commandLineHelperMock.runCliCommand(anyString(), any())).thenReturn(succesProcessResult);
+        ProcessResult successProcessResult = new ProcessResult("TEST", 0, "{}", "");
+        when(commandLineHelperMock.runCliCommand(anyString(), any())).thenReturn(successProcessResult);
 
         // when
         String actualOutput = genuineGateway.callCommandLineInterface(GenuineGateway.CommandLineOperation.BANK_INFO);
 
         // then
-        assertThat(actualOutput).isEqualTo("OUTPUT");
+        assertThat(actualOutput).isEqualTo("{}");
+    }
+
+    @Test
+    void callCommandLineInterface_whenCommandSuccess_butInvalidJson_shouldThrowException() throws IOException {
+        // given
+        ProcessResult successProcessResult = new ProcessResult("TEST", 0, "NOJSON", "");
+        when(commandLineHelperMock.runCliCommand(anyString(), any())).thenReturn(successProcessResult);
+
+        // when-then
+        IOException actualException = assertThrows(IOException.class,
+                () -> genuineGateway.callCommandLineInterface(GenuineGateway.CommandLineOperation.BANK_INFO));
+        assertThat(actualException).hasMessage("CLI command output is not valid JSON: NOJSON");
     }
 
     @Test

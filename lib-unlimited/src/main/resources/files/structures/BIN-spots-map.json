@@ -1,5 +1,6 @@
 {
   "name": "Spots database (optional)",
+  "fileName": "mssdb.bin",
   "littleEndian": false,
   "fields": [
     {

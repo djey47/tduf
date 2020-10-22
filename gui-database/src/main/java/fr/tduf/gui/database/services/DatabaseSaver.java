@@ -1,6 +1,7 @@
 package fr.tduf.gui.database.services;
 
 import com.esotericsoftware.minlog.Log;
+import fr.tduf.gui.common.services.tasks.GenericServiceTask;
 import fr.tduf.libunlimited.common.cache.DatabaseBanksCacheHelper;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.db.common.helper.BankHelper;
@@ -15,11 +16,9 @@ import javafx.concurrent.Task;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 import static fr.tduf.gui.database.common.DisplayConstants.*;
-import static java.util.Objects.requireNonNull;
 
 /**
  * Background service to save database objects to banks or json files
@@ -34,9 +33,7 @@ public class DatabaseSaver extends Service<String> {
     /**
      * Created for advanced features and easier testing
      */
-    class SaverTask extends Task<String> {
-        private final List<String> messageHistory = new ArrayList<>();
-
+    class SaverTask extends GenericServiceTask<String> {
         @Override
         protected String call() throws Exception {
             updateMessage(STATUS_SAVING);
@@ -60,18 +57,6 @@ public class DatabaseSaver extends Service<String> {
             updateMessage(String.format(STATUS_FORMAT_SAVED_DATABASE, databasePath));
 
             return databasePath;
-        }
-
-        @Override
-        protected void updateMessage(String s) {
-            requireNonNull(s, "Message cannot be null");
-
-            messageHistory.add(s);
-            super.updateMessage(s);
-        }
-
-        protected List<String> getMessageHistory() {
-            return messageHistory;
         }
     }
 

@@ -27,8 +27,10 @@ public class DatabaseChangeHelper {
     private static final String MESSAGE_NO_CONTENT_ENTRY_FOR_TOPIC = "No content entry for topic: ";
     private static final String MESSAGE_AT_ID = " at id: ";
 
+    @SuppressWarnings("FieldMayBeFinal")
     private BulkDatabaseMiner databaseMiner;
 
+    @SuppressWarnings("FieldMayBeFinal")
     private DatabaseGenHelper genHelper;
 
     DatabaseChangeHelper(DatabaseGenHelper genHelper, BulkDatabaseMiner databaseMiner) {
@@ -101,6 +103,20 @@ public class DatabaseChangeHelper {
                 .build();
 
         dataDto.addEntry(newEntry);
+
+        return newEntry;
+    }
+
+    /**
+     * @param targetTopic       : database topic where content entry should be added
+     * @param sourceEntryRef    : reference of entry to create
+     * @param targetEntryRef    : reference of entry to link with this one
+     * @return created content entry with REF support, items having default values
+     * @throws java.util.NoSuchElementException when specified topic has no loaded content.
+     */
+    public ContentEntryDto addContentsEntryWithDefaultItemsAndUpdateAssociation(DbDto.Topic targetTopic, String sourceEntryRef, String targetEntryRef){
+        ContentEntryDto newEntry = addContentsEntryWithDefaultItems(targetTopic);
+        updateAssociationEntryWithSourceAndTargetReferences(newEntry, sourceEntryRef, targetEntryRef);
 
         return newEntry;
     }
@@ -281,7 +297,7 @@ public class DatabaseChangeHelper {
      * @param sourceEntryRef          : reference of source entry (REF field for source topic)
      * @param potentialTargetEntryRef : reference of target entry (REF field for target topic). Mandatory.
      */
-    public static void updateAssociationEntryWithSourceAndTargetReferences(ContentEntryDto entry, String sourceEntryRef, String potentialTargetEntryRef) {
+    public void updateAssociationEntryWithSourceAndTargetReferences(ContentEntryDto entry, String sourceEntryRef, String potentialTargetEntryRef) {
         requireNonNull(entry, "A content entry is required.");
 
         // We assume source reference is first field ... target reference (if any) is second field  ...

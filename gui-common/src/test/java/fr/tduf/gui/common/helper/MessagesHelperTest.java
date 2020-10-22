@@ -1,16 +1,26 @@
 package fr.tduf.gui.common.helper;
 
-import org.junit.jupiter.api.Disabled;
+import javafx.concurrent.Service;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 class MessagesHelperTest {
 
-//    @BeforeAll
-//    static void globalSetUp() {
-//        ApplicationTestHelper.initJavaFX();
-//    }
+    /**
+     * Requires MockMaker extension for mockito
+     */
+    @Mock
+    private Service<Void> mockService;
+
+    @BeforeEach
+    void setUp() {
+        initMocks(this);
+    }
 
     @Test
     void getGenericErrorMessage() {
@@ -50,43 +60,14 @@ class MessagesHelperTest {
     }
 
     @Test
-    @Disabled("No async way of testing")
     void getServiceErrorMessage() {
-        // TODO Find a way to unit test (async issues)
         // given
-//        CompletableFuture<String> serviceCompletionFuture = new CompletableFuture<>();
-//        CompletableFuture<String> helperCompletionFuture = new CompletableFuture<>();
-//        Service<String> service = new Service<String>() {
-//            @Override
-//            protected Task<String> createTask() {
-//                return new Task<String>() {
-//                    @Override
-//                    protected String call() throws Exception {
-//                        updateMessage("This is a service error");
-//                        serviceCompletionFuture.complete("");
-//                        return "";
-//                    }
-//                };
-//            }
-//        };
+        when(mockService.getMessage()).thenReturn("This is a service error");
 
         // when
-//        Platform.runLater(() -> {
-//            service.start();
-//            try {
-//                if (serviceCompletionFuture.get() != null) {
-//                    helperCompletionFuture.complete(MessagesHelper.getServiceErrorMessage(service));
-//                }
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            } catch (ExecutionException e) {
-//                e.printStackTrace();
-//            }
-//        });
-//        String actual = helperCompletionFuture.get();
-//        Log.info(actual);
+        String actualMessage = MessagesHelper.getServiceErrorMessage(mockService);
 
         // then
-//        assertThat(actual).isEqualTo("This is a service error\rCheck logs for details.");
+        assertThat(actualMessage).isEqualTo("This is a service error\nCheck logs for details.");
     }
 }

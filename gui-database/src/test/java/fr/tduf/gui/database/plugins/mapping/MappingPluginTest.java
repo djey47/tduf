@@ -1,6 +1,6 @@
 package fr.tduf.gui.database.plugins.mapping;
 
-import fr.tduf.gui.database.controllers.MainStageController;
+import fr.tduf.gui.database.controllers.main.MainStageController;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import fr.tduf.gui.database.plugins.mapping.domain.MappingEntry;
@@ -53,7 +53,7 @@ class MappingPluginTest {
     private BooleanProperty errorProperty;
 
     @Mock
-    private OnTheFlyContext onTheFlyContextMock;
+    private OnTheFlyMappingContext onTheFlyContextMock;
 
     @InjectMocks
     private MappingPlugin mappingPlugin;
@@ -100,7 +100,7 @@ class MappingPluginTest {
     void renderControls_whenNoMappingLoaded_shouldReturnEmptyComponent() {
         // given
         mappingPlugin.getMappingContext().setPluginLoaded(false);
-        OnTheFlyContext onTheFlyContext = new OnTheFlyContext();
+        OnTheFlyContext onTheFlyContext = new OnTheFlyMappingContext();
 
         // when
         Node actualNode = mappingPlugin.renderControls(onTheFlyContext);

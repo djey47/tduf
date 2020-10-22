@@ -1,5 +1,6 @@
 {
   "name": "TDU PMI",
+  "fileName": "*.pmi",
   "littleEndian": true,
   "fields": [
     {

@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.research.rw;
 
+import com.esotericsoftware.minlog.Log;
 import fr.tduf.libunlimited.common.helper.AssertorHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.FormulaHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.StructureHelper;
@@ -20,6 +21,7 @@ import static java.util.Objects.requireNonNull;
  * Helper to write files whose file structure is available as separate asset.
  */
 public abstract class GenericWriter<T> implements StructureBasedProcessor {
+    private static final String THIS_CLASS_NAME = GenericWriter.class.getSimpleName();
 
     private final DataStore dataStore;
 
@@ -27,10 +29,16 @@ public abstract class GenericWriter<T> implements StructureBasedProcessor {
 
     protected GenericWriter(T data) throws IOException {
         requireNonNull(data, "Data is required");
-        requireNonNull(getStructureResource(), "Data structure resource is required");
+
+        FileStructureDto fileStructure;
+        if (getStructureResource() == null) {
+            fileStructure = requireNonNull(getStructure(), "Data structure object is required");
+        } else {
+            fileStructure = StructureHelper.retrieveStructureFromLocation(getStructureResource());
+        }
 
         this.data = data;
-        this.dataStore = new DataStore(StructureHelper.retrieveStructureFromLocation(getStructureResource()));
+        this.dataStore = new DataStore(fileStructure);
     }
 
     /**
@@ -43,9 +51,10 @@ public abstract class GenericWriter<T> implements StructureBasedProcessor {
         fillStore();
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        writeFields(this.getFileStructure().getFields(), outputStream, "");
+        FileStructureDto fileStructure = getFileStructure();
+        writeFields(fileStructure.getFields(), outputStream, "");
 
-        return StructureHelper.encryptIfNeeded(outputStream, this.getFileStructure().getCryptoMode());
+        return StructureHelper.encryptIfNeeded(outputStream, fileStructure.getCryptoMode());
     }
 
     /**
@@ -53,8 +62,17 @@ public abstract class GenericWriter<T> implements StructureBasedProcessor {
      */
     protected abstract void fillStore();
 
-    private boolean writeFields(List<FileStructureDto.Field> fields, ByteArrayOutputStream outputStream, String repeaterKey) throws IOException {
+    private void writeFields(List<FileStructureDto.Field> fields, ByteArrayOutputStream outputStream, String repeaterKey) throws IOException {
         for(FileStructureDto.Field field : fields) {
+
+            // Check for satisfied condition first
+            String condition = field.getCondition();
+            String fieldKey = repeaterKey + field.getName();
+            boolean isConditionSatisfied = condition == null || FormulaHelper.resolveCondition(condition, repeaterKey, getDataStore());
+            if (!isConditionSatisfied) {
+                Log.debug(THIS_CLASS_NAME, String.format("Unsatisfied condition for field at key %s: '%s', skipping", fieldKey, condition));
+                continue;
+            }
 
             byte[] valueBytes = retrieveValueFromStore(field, repeaterKey);
             Integer length = FormulaHelper.resolveToInteger(field.getSizeFormula(), repeaterKey, this.dataStore);
@@ -85,7 +103,7 @@ public abstract class GenericWriter<T> implements StructureBasedProcessor {
                     break;
 
                 case REPEATER:
-                    writeRepeatedFields(field, outputStream);
+                    writeRepeatedFields(field, repeaterKey, outputStream);
                     break;
 
                 default:
@@ -93,25 +111,24 @@ public abstract class GenericWriter<T> implements StructureBasedProcessor {
             }
         }
 
-        return true;
+        // Handle remaining bytes, if any
+        if (repeaterKey.isEmpty()) {
+            fetchAndWriteRemainingBytes(outputStream);
+        }        
     }
+    
+    private void writeRepeatedFields(FileStructureDto.Field repeaterField, String parentRepeaterKey, ByteArrayOutputStream outputStream) throws IOException {
+        Integer repeatedItemsCount = FormulaHelper.resolveToInteger(repeaterField.getSizeFormula(), parentRepeaterKey, this.dataStore);
 
-    private void writeRepeatedFields(FileStructureDto.Field repeaterField, ByteArrayOutputStream outputStream) throws IOException {
-        int itemIndex = 0;
-        boolean hasMoreFields = true;
-
-        while (hasMoreFields) {
-
-            String newRepeaterKeyPrefix = DataStore.generateKeyPrefixForRepeatedField(repeaterField.getName(), itemIndex);
-            try {
+        try {
+            for (int itemIndex = 0 ; repeatedItemsCount == null || itemIndex < repeatedItemsCount ; itemIndex++) {
+                String newRepeaterKeyPrefix = DataStore.generateKeyPrefixForRepeatedField(repeaterField.getName(), itemIndex, parentRepeaterKey);
                 ByteArrayOutputStream temporayOutputStream = new ByteArrayOutputStream();
                 writeFields(repeaterField.getSubFields(), temporayOutputStream, newRepeaterKeyPrefix);
                 outputStream.write(temporayOutputStream.toByteArray());
-            } catch (NoSuchElementException nsee) {
-                hasMoreFields = false;
             }
-
-            itemIndex++;
+        } catch (NoSuchElementException nsee) {
+            // Ignoring exception is normal, no more items in this repeater
         }
     }
 
@@ -157,6 +174,18 @@ public abstract class GenericWriter<T> implements StructureBasedProcessor {
         }
     }
 
+    private void fetchAndWriteRemainingBytes(ByteArrayOutputStream outputStream) {
+        dataStore.getRemainingValue()
+                .ifPresent(remainingBytes -> {
+                    try {
+                        writeRawValue(remainingBytes, null, outputStream);
+                    } catch (IOException ioe) {
+                        throw new IllegalStateException("Unable to write remaining bytes", ioe);
+                    }
+                });
+    }
+
+    // Visible for testing use
     FileStructureDto getFileStructure() {
         return this.dataStore.getFileStructure();
     }

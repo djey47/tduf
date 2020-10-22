@@ -1,15 +1,12 @@
 package fr.tduf.gui.database.controllers;
 
 import com.esotericsoftware.minlog.Log;
-import fr.tduf.gui.common.javafx.application.AbstractGuiController;
 import fr.tduf.gui.database.common.helper.EditorLayoutHelper;
 import fr.tduf.gui.database.converter.DatabaseTopicToStringConverter;
 import fr.tduf.gui.database.domain.javafx.ContentFieldDataItem;
-import fr.tduf.libunlimited.high.files.db.miner.BulkDatabaseMiner;
 import fr.tduf.libunlimited.low.files.db.dto.DbDto;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -23,7 +20,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-public class FieldsBrowserStageController extends AbstractGuiController {
+public class FieldsBrowserStageController extends AbstractEditorController {
 
     private static final String THIS_CLASS_NAME = FieldsBrowserStageController.class.getSimpleName();
 
@@ -33,13 +30,11 @@ public class FieldsBrowserStageController extends AbstractGuiController {
     @FXML
     private TableView<ContentFieldDataItem> fieldsTableView;
 
-    private MainStageController mainStageController;
-
-    private ObservableList<ContentFieldDataItem> fieldsData = FXCollections.observableArrayList();
+    private final ObservableList<ContentFieldDataItem> fieldsData = FXCollections.observableArrayList();
 
     private Property<DbDto.Topic> currentTopicProperty;
 
-    private List<ContentFieldDataItem> selectedFields = new ArrayList<>();
+    private final List<ContentFieldDataItem> selectedFields = new ArrayList<>();
 
     @Override
     public void init() {
@@ -67,7 +62,7 @@ public class FieldsBrowserStageController extends AbstractGuiController {
     /**
      * @return list of selected fields to export, or empty if global export should be performed
      */
-    List<ContentFieldDataItem> initAndShowModalDialog(DbDto.Topic topic) {
+    public List<ContentFieldDataItem> initAndShowModalDialog(DbDto.Topic topic) {
         currentTopicProperty.setValue(topic);
 
         updateFieldsBrowserStageData();
@@ -87,15 +82,18 @@ public class FieldsBrowserStageController extends AbstractGuiController {
         currentTopicLabel.textProperty().bindBidirectional(currentTopicProperty, new DatabaseTopicToStringConverter());
     }
 
+    @SuppressWarnings({"unchecked"})
     private void initTablePane() {
-        TableColumn<ContentFieldDataItem, ?> rankColumn = fieldsTableView.getColumns().get(0);
-        rankColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().rankProperty());
+        ObservableList<TableColumn<ContentFieldDataItem, ?>> columns = fieldsTableView.getColumns();
 
-        TableColumn<ContentFieldDataItem, ?> nameColumn = fieldsTableView.getColumns().get(1);
-        nameColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().nameProperty());
+        TableColumn<ContentFieldDataItem, Number> rankColumn = (TableColumn<ContentFieldDataItem, Number>) columns.get(0);
+        rankColumn.setCellValueFactory(cellData -> cellData.getValue().rankProperty());
 
-        TableColumn<ContentFieldDataItem, ?> helpColumn = fieldsTableView.getColumns().get(2);
-        helpColumn.setCellValueFactory(cellData -> (ObservableValue) cellData.getValue().helpProperty());
+        TableColumn<ContentFieldDataItem, String> nameColumn = (TableColumn<ContentFieldDataItem, String>) columns.get(1);
+        nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+
+        TableColumn<ContentFieldDataItem, String> helpColumn = (TableColumn<ContentFieldDataItem, String>) columns.get(2);
+        helpColumn.setCellValueFactory(cellData -> cellData.getValue().helpProperty());
 
         fieldsTableView.setItems(fieldsData);
 
@@ -106,7 +104,7 @@ public class FieldsBrowserStageController extends AbstractGuiController {
         fieldsData.clear();
 
         DbDto.Topic topic = currentTopicProperty.getValue();
-        getMiner().getDatabaseTopic(topic)
+        mainStageController.getMiner().getDatabaseTopic(topic)
                 .ifPresent(topicObject -> fieldsData.addAll(topicObject.getStructure().getFields().stream()
                                 .map(structureField -> {
                                     ContentFieldDataItem contentFieldDataItem = new ContentFieldDataItem();
@@ -117,7 +115,7 @@ public class FieldsBrowserStageController extends AbstractGuiController {
                                     contentFieldDataItem.setName(structureField.getName());
 
                                     EditorLayoutHelper.getFieldSettingsByRankAndProfileName(fieldRank,
-                                            mainStageController.getViewData().currentProfileProperty.getValue().getName(),
+                                            mainStageController.getViewData().currentProfileProperty().getValue().getName(),
                                             mainStageController.getLayoutObject())
                                                 .ifPresent(fieldSettings -> contentFieldDataItem.setHelp(fieldSettings.getToolTip()));
 
@@ -126,13 +124,5 @@ public class FieldsBrowserStageController extends AbstractGuiController {
 
                                 .collect(toList()))
                 );
-    }
-
-    public void setMainStageController(MainStageController mainStageController) {
-        this.mainStageController = mainStageController;
-    }
-
-    private BulkDatabaseMiner getMiner() {
-        return mainStageController.getMiner();
     }
 }

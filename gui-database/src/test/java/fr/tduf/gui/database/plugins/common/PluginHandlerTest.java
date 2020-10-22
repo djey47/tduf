@@ -1,6 +1,6 @@
 package fr.tduf.gui.database.plugins.common;
 
-import fr.tduf.gui.database.controllers.MainStageChangeDataController;
+import fr.tduf.gui.database.controllers.main.MainStageChangeDataController;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
 import fr.tduf.libtesting.common.helper.javafx.ApplicationTestHelper;
 import javafx.collections.FXCollections;
@@ -168,6 +168,18 @@ class PluginHandlerTest {
     }
 
     @Test
+    void renderPluginInstance_whenNullRenderResult_shouldRenderErrorPlaceholder() {
+        // given
+        when(pluginInstanceMock.renderControls(any(OnTheFlyContext.class))).thenReturn(null);
+
+        // when
+        pluginHandler.renderPluginInstance(pluginInstanceMock, onTheFlyContextMock);
+
+        // then
+        assertThat(parentPaneChildren).hasSize(1);
+    }
+
+    @Test
     void triggerOnSaveForPluginInstance_whenNoError_shouldClearPreviousError() throws IOException {
         // given-when
         pluginHandler.triggerOnSaveForPluginInstance(pluginInstanceMock);
@@ -189,6 +201,25 @@ class PluginHandlerTest {
         assertThat(actualError).isSameAs(saveError);
         verify(pluginInstanceMock).onSave();
         verify(pluginInstanceMock).setSaveError(eq(saveError));
+    }
+
+    @Test
+    void initializeOnTheFlyContextForPlugin_whenExistingPlugin_shouldReturnNewContextInstance() {
+        // given-when
+        OnTheFlyContext actualContext1 = PluginHandler.initializeOnTheFlyContextForPlugin("NOPE");
+        OnTheFlyContext actualContext2 = PluginHandler.initializeOnTheFlyContextForPlugin("NOPE");
+
+        // then
+        assertThat(actualContext1).isNotSameAs(actualContext2);
+    }
+
+    @Test
+    void initializeOnTheFlyContextForPlugin_whenNonExistingPlugin_shouldNotThrowException() {
+        // given-when
+        OnTheFlyContext actualContext = PluginHandler.initializeOnTheFlyContextForPlugin("NONE");
+
+        // then
+        assertThat(actualContext).isNotNull();
     }
 
     private static class TestingParent extends Parent {

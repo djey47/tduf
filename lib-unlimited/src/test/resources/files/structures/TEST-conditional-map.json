@@ -1,0 +1,22 @@
+{
+  "name" : "TEST file format (conditional)",
+  "littleEndian" : false,
+  "comment": "Comment for TEST file format",
+  "fields" : [
+    {
+      "name": "tag",
+      "type": "TEXT",
+      "size": 5
+    },{
+      "name" : "flag",
+      "comment": "Defines presence of optional field",
+      "type" : "INTEGER",
+      "size" : 1
+    },{
+      "name" : "optional",
+      "type" : "UNKNOWN",
+      "size" : 5,
+      "condition": "?flag?=1"
+    }
+  ]
+}

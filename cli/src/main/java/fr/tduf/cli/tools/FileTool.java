@@ -4,18 +4,26 @@ import fr.tduf.cli.common.helper.CommandHelper;
 import fr.tduf.libunlimited.common.helper.CommandLineHelper;
 import fr.tduf.libunlimited.common.helper.FilesHelper;
 import fr.tduf.libunlimited.common.helper.JsonHelper;
+import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.high.files.banks.BankSupport;
 import fr.tduf.libunlimited.high.files.banks.interop.GenuineBnkGateway;
 import fr.tduf.libunlimited.low.files.banks.dto.BankInfoDto;
 import fr.tduf.libunlimited.low.files.common.crypto.helper.CryptoHelper;
+import fr.tduf.libunlimited.low.files.research.common.helper.StructureHelper;
+import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
+import fr.tduf.libunlimited.low.files.research.rw.JsonAdapter;
 import fr.tduf.libunlimited.low.files.research.rw.GenericParser;
 import fr.tduf.libunlimited.low.files.research.rw.GenericWriter;
+import fr.tduf.libunlimited.low.files.research.rw.StructureBasedProcessor;
 import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,20 +40,23 @@ import static java.util.Arrays.asList;
  */
 public class FileTool extends GenericTool {
 
-    @Option(name="-i", aliases = "--inputFile", usage = "File to process, required.", required = true)
+    @Option(name = "-i", aliases = "--inputFile", usage = "File to process, required.", required = true)
     private String inputFile;
 
-    @Option(name="-o", aliases = "--outputFile", usage = "File to generate, defaults to inputFile.extension according to context." )
+    @Option(name = "-o", aliases = "--outputFile", usage = "File to generate, defaults to inputFile.extension according to context.")
     private String outputFile;
 
-    @Option(name="-s", aliases = "--structureFile", usage = "File describing input file structure, as JSON (required for jsonify and applyjson operations)." )
+    @SuppressWarnings("unused")
+    @Option(name = "-s", aliases = "--structureFile", usage = "File describing input file structure, as JSON (used for jsonify and applyjson operations). Optional, TDUF will try to fetch compatible structure automatically, if it exists.")
     private String structureFile;
 
-    @Option(name="-c", aliases = "--cryptoMode", usage = "Value indicating encrypting method used (required for decrypt and encrypt operations). VAL:  0=savegames, 1=database/btrq..." )
+    @SuppressWarnings("unused")
+    @Option(name = "-c", aliases = "--cryptoMode", usage = "Value indicating encrypting method used (required for decrypt and encrypt operations). VAL:  0=savegames, 1=database/btrq...")
     private String cryptoMode;
 
     private Command command;
 
+    @SuppressWarnings("FieldMayBeFinal")
     private BankSupport bankSupport;
 
     /**
@@ -109,7 +120,7 @@ public class FileTool extends GenericTool {
         if (outputFile == null) {
             String extension;
 
-            switch(command) {
+            switch (command) {
                 case JSONIFY:
                     extension = ".json";
                     break;
@@ -136,15 +147,9 @@ public class FileTool extends GenericTool {
             outputFile = inputFile + extension;
         }
 
-        // Structure file: mandatory with jsonify/applyjson
-        if (structureFile == null
-                &&  (command == JSONIFY || command == APPLYJSON)) {
-            throw new CmdLineException(parser, "Error: structureFile is required.", null);
-        }
-
         // Encryption mode: mandatory with decrypt/encrypt
         if (cryptoMode == null
-                &&  (command == DECRYPT || command == ENCRYPT)) {
+                && (command == DECRYPT || command == ENCRYPT)) {
             throw new CmdLineException(parser, "Error: cryptoMode is required.", null);
         }
 
@@ -160,6 +165,7 @@ public class FileTool extends GenericTool {
         return asList(
                 DECRYPT.label + " -c 1 -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.ok\"",
                 ENCRYPT.label + " -c 1 -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.ok\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\"",
+                JSONIFY.label + " -i \"C:\\Users\\Bill\\Desktop\\Bnk1.map\"",
                 JSONIFY.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"",
                 APPLYJSON.label + " -i \"C:\\Users\\Bill\\Desktop\\Brutal.btrq.json\" -o \"C:\\Users\\Bill\\Desktop\\Brutal.btrq\" -s \"C:\\Users\\Bill\\Desktop\\BTRQ-map.json\"",
                 BANKINFO.label + " -i \"C:\\Users\\Bill\\Desktop\\DB.bnk\"",
@@ -244,7 +250,7 @@ public class FileTool extends GenericTool {
                                 packedFileInfoObject.getShortName(),
                                 packedFileInfoObject.getSize(),
                                 packedFileInfoObject.getType())
-                        ));
+                ));
 
         Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("bankFile", sourceBankFile);
@@ -254,10 +260,10 @@ public class FileTool extends GenericTool {
     }
 
     private Map<String, ?> jsonify(String structureFile, String sourceFile, String targetJsonFile) throws IOException {
-        outLine("Will use structure in file: " + structureFile);
-
         GenericParser<String> genericParser = getFileParser(sourceFile, structureFile);
         genericParser.parse();
+
+        logStructureInfo(structureFile, genericParser);
 
         outLine("\t-> Dump of provided file:\n" + genericParser.dump());
 
@@ -268,20 +274,26 @@ public class FileTool extends GenericTool {
         HashMap<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("tduFile", sourceFile);
         resultInfo.put("jsonFile", targetJsonFile);
+        resultInfo.put("structureJsonFile", structureFile);
+        resultInfo.put("structure", genericParser.getStructure().getName());
 
         return resultInfo;
     }
 
     private Map<String, Object> applyjson(String structureFile, String sourceJsonFile, String targetFile) throws IOException {
-        outLine("Will use structure in file: " + structureFile);
+        GenericWriter<String> genericWriter = getFileWriter(targetFile, structureFile);
 
-        writerToBinaryFile(getFileWriter(), readJsonInputFileContents());
+        logStructureInfo(structureFile, genericWriter);
+
+        writerToBinaryFile(genericWriter, readJsonInputFileContents());
 
         outLine("JSON to TDU conversion done: " + sourceJsonFile + " to " + targetFile);
 
         Map<String, Object> resultInfo = new HashMap<>();
         resultInfo.put("tduFile", targetFile);
         resultInfo.put("jsonFile", sourceJsonFile);
+        resultInfo.put("structureJsonFile", structureFile);
+        resultInfo.put("structure", genericWriter.getStructure().getName());
 
         return resultInfo;
     }
@@ -310,6 +322,14 @@ public class FileTool extends GenericTool {
         return resultInfo;
     }
 
+    private void logStructureInfo(String structureFile, StructureBasedProcessor genericProcessor) {
+        if (structureFile == null) {
+            outLine("-> Will use default structure: " + genericProcessor.getStructure().getName());
+        } else {
+            outLine("-> Will use structure in file: " + structureFile);
+        }
+    }
+
     private GenericParser<String> getFileParser(final String sourceFile, final String structureFile) throws IOException {
         return new GenericParser<String>(getInputStreamForFile(sourceFile)) {
             @Override
@@ -321,32 +341,43 @@ public class FileTool extends GenericTool {
             public String getStructureResource() {
                 return structureFile;
             }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return searchDefaultStructure(sourceFile);
+            }
         };
     }
 
-    private GenericWriter<String> getFileWriter() throws IOException {
+    private GenericWriter<String> getFileWriter(final String targetFile, final String structureFile) throws IOException {
         return new GenericWriter<String>("") {
-                @Override
-                protected void fillStore() {}
+            @Override
+            protected void fillStore() {
+            }
 
-                @Override
-                public String getStructureResource() {
-                    return structureFile;
-                }
-            };
+            @Override
+            public String getStructureResource() {
+                return structureFile;
+            }
+
+            @Override
+            public FileStructureDto getStructure() {
+                return searchDefaultStructure(targetFile);
+            }
+        };
     }
 
     private void writerToBinaryFile(GenericWriter<String> genericWriter, String jsonContents) throws IOException {
-        genericWriter.getDataStore().fromJsonString(jsonContents);
+        new JsonAdapter(genericWriter.getDataStore()).fromJsonString(jsonContents);
 
         Files.write(Paths.get(outputFile), genericWriter.write().toByteArray());
     }
 
     private void parserToJsonFile(String targetJsonFile, GenericParser<String> genericParser) throws IOException {
-        String rawJsonOutput = genericParser.getDataStore().toJsonString();
+        String rawJsonOutput = new JsonAdapter(genericParser.getDataStore()).toJsonString();
         String formattedJsonOutput = JsonHelper.prettify(rawJsonOutput);
 
-        try ( BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(targetJsonFile), StandardCharsets.UTF_8)) {
+        try (BufferedWriter bufferedWriter = Files.newBufferedWriter(Paths.get(targetJsonFile), StandardCharsets.UTF_8)) {
             bufferedWriter.write(formattedJsonOutput);
         }
     }
@@ -358,9 +389,9 @@ public class FileTool extends GenericTool {
 
     private byte[] processInputStream(String sourceFile, boolean withEncryption) throws IOException {
 
-        CryptoHelper.EncryptionModeEnum encryptionModeEnum = CryptoHelper.EncryptionModeEnum.fromIdentifier(Integer.valueOf(cryptoMode));
+        CryptoHelper.EncryptionModeEnum encryptionModeEnum = CryptoHelper.EncryptionModeEnum.fromIdentifier(Integer.parseInt(cryptoMode));
 
-        ByteArrayInputStream inputStream = getInputStreamForFile(sourceFile);
+        XByteArrayInputStream inputStream = getInputStreamForFile(sourceFile);
         ByteArrayOutputStream outputStream;
         if (withEncryption) {
             outputStream = CryptoHelper.encryptXTEA(inputStream, encryptionModeEnum);
@@ -370,8 +401,17 @@ public class FileTool extends GenericTool {
         return outputStream.toByteArray();
     }
 
-    private ByteArrayInputStream getInputStreamForFile(String sourceFile) throws IOException {
+    private XByteArrayInputStream getInputStreamForFile(String sourceFile) throws IOException {
         Path inputFilePath = new File(sourceFile).toPath();
-        return new ByteArrayInputStream(Files.readAllBytes(inputFilePath));
+        return new XByteArrayInputStream(Files.readAllBytes(inputFilePath));
+    }
+
+    private static FileStructureDto searchDefaultStructure(String fileName)  {
+        try {
+            return StructureHelper.retrieveStructureFromSupportedFileName(fileName)
+                    .orElseThrow(() -> new IllegalArgumentException("No default structure found for " + fileName));
+        } catch (IOException ioe) {
+            throw new IllegalArgumentException("Unable to find default structure for " + fileName);
+        }
     }
 }

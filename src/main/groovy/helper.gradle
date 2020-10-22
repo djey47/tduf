@@ -1,0 +1,80 @@
+// Build helpers script
+
+/**
+ * Available values for target argument
+ */
+def PARAM_LINUX_TARGET = 'linux'
+def PARAM_WINDOWS_TARGET = 'windows'
+
+// Task dependencies
+def databaseEditorDocDeps = [   ':gui-database:markdownToHtml',
+                                ':gui-database:copyDoc' ]
+def coreDocDeps = [     'markdownToHtml',
+                        'copyDoc' ]
+def fullDocDeps = [     *coreDocDeps,
+                        *databaseEditorDocDeps ]
+def fullCleanDeps = [ 'cleanTempJarDir', 'cleanPackDir' ]
+def externalDeps = [ 'copyExternalTools', 'copyVersionInfo', 'copyIcons' ]
+def coreExternalDeps = [ 'copyExternalTools', 'copyVersionInfo' ]
+
+// List of subprojects to include in the jar.
+def coreProjects = [':lib-unlimited', ':cli']
+def fullProjects = [':lib-unlimited', ':cli', ':gui-common', ':gui-database']
+def databaseEditorProjects = [':lib-unlimited', ':gui-common', ':gui-database']
+
+/**
+ * @returns List of tasks to depend on for CORE packaging, according to target (linux or windows)
+ */
+def corePackDependencies = { ->
+    def packDeps = [    *coreDocDeps,
+                        *coreExternalDeps,
+                        'cli:copyMainScripts', 'copyUtilScripts',
+                        'coreJar' ]
+
+    return [ *fullCleanDeps,
+             *packDeps ]
+}
+
+/**
+ * @returns List of tasks to depend on for FULL packaging, according to target (linux or windows)
+ */
+def fullPackDependencies = { ->
+    def commonPackDeps = [ *fullDocDeps,
+                           *externalDeps,
+                           ':lib-unlimited:copyStructures',
+                           ':gui-database:copyThemes',
+                           'fullJar' ]
+
+    def packDeps = [  'cli:copyMainScripts', ':gui-database:copyMainScripts', 'copySharedScripts', 'copyUtilScripts' ]
+
+    return [ *fullCleanDeps,
+             *packDeps,
+             *commonPackDeps ]
+}
+
+/**
+ * @returns List of tasks to depend on for DatabaseEditor packaging, according to target (linux or windows)
+ */
+def databaseEditorPackDependencies = { ->
+    def commonPackDeps = [ *databaseEditorDocDeps,
+                           *externalDeps,
+                           ':gui-database:copyThemes',
+                           'databaseEditorJar' ]
+
+    def packDeps = [ ':gui-database:copyMainScripts', ':gui-database:copyUtilScripts', 'copySharedScripts' ]
+
+    return [ *fullCleanDeps,
+             *packDeps,
+             *commonPackDeps ]
+}
+
+ext {
+    getCoreProjects = { -> coreProjects }
+    getFullProjects = { -> fullProjects }
+    getDatabaseEditorProjects = { -> databaseEditorProjects }
+    getCoreDependencies = corePackDependencies
+    getFullDependencies = fullPackDependencies
+    getDatabaseEditorDependencies = databaseEditorPackDependencies
+    LINUX_TARGET = PARAM_LINUX_TARGET
+    WINDOWS_TARGET = PARAM_WINDOWS_TARGET
+}

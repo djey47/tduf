@@ -1,6 +1,7 @@
 package fr.tduf.libunlimited.low.files.banks.mapping.rw;
 
 import fr.tduf.libunlimited.low.files.banks.mapping.domain.BankMap;
+import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import fr.tduf.libunlimited.low.files.research.rw.GenericWriter;
 
 import java.io.IOException;
@@ -51,5 +52,10 @@ public class MapWriter extends GenericWriter<BankMap> {
     @Override
     public String getStructureResource() {
         return "/files/structures/MAP4-map.json";
+    }
+
+    @Override
+    public FileStructureDto getStructure() {
+        return null;
     }
 }

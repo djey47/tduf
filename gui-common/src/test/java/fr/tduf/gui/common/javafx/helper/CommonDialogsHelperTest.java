@@ -3,6 +3,7 @@ package fr.tduf.gui.common.javafx.helper;
 import fr.tduf.gui.common.javafx.helper.options.FileBrowsingOptions;
 import fr.tduf.gui.common.javafx.helper.options.SimpleDialogOptions;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.Disabled;
@@ -33,6 +34,23 @@ class CommonDialogsHelperTest extends ApplicationTest {
 
         // WHEN
         interact(() -> CommonDialogsHelper.showDialog(dialogOptions, null));
+    }
+
+    @Test
+    void confirmationDialog() {
+        // GIVEN
+        final SimpleDialogOptions dialogOptions = SimpleDialogOptions.builder()
+                .withContext(Alert.AlertType.CONFIRMATION)
+                .withTitle("Testing confirmation dialog box")
+                .withMessage("This is a message")
+                .withDescription("OK succeeds - Cancel fails")
+                .build();
+
+        // WHEN
+        interact(() ->  {
+            Optional<ButtonType> buttonType = CommonDialogsHelper.showDialog(dialogOptions, null);
+            assertThat(buttonType).contains(ButtonType.OK);
+        });
     }
 
     @Test

@@ -1,5 +1,6 @@
 {
   "name": "Generic TDU configuration file",
+  "fileName": "*.xmb",
   "littleEndian": true,
   "fields": [
     {

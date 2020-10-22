@@ -13,11 +13,11 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
  * Also includes database entry identifier (optional).
  */
 public class ContentFieldDataItem {
-    private IntegerProperty rank = new SimpleIntegerProperty();
+    private final IntegerProperty rank = new SimpleIntegerProperty();
 
-    private StringProperty name = new SimpleStringProperty();
+    private final StringProperty name = new SimpleStringProperty();
 
-    private StringProperty help = new SimpleStringProperty();
+    private final StringProperty help = new SimpleStringProperty();
 
     public IntegerProperty rankProperty() {
         return rank;

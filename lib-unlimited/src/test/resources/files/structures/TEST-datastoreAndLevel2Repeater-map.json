@@ -1,0 +1,23 @@
+{
+  "name" : "TEST file format with repeater level 2 for statstore testing",
+  "littleEndian" : false,
+  "fields" : [
+    {
+      "name" : "repeaterLvl1",
+      "type" : "REPEATER",
+      "size" : 2,
+      "subFields" : [
+        {
+          "name" : "repeaterLvl2",
+          "type" : "REPEATER",
+          "size" : 2,
+          "subFields" : [
+            {
+              "name" : "number",
+              "type" : "INTEGER",
+              "size" : 4
+            }]
+        }]
+    }
+  ]
+}

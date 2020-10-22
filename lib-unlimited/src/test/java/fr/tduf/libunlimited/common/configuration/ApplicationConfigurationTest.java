@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,14 +21,11 @@ class ApplicationConfigurationTest {
     private final ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
 
     private String configFileName;
-    private String genuineConfigFileName;
 
     @BeforeEach
     void setUp() throws IOException {
         configFileName = Paths.get(TestingFilesHelper.createTempDirectoryForLibrary(), ".tduf", "test.properties").toString();
-        genuineConfigFileName = Paths.get(TestingFilesHelper.createTempDirectoryForLibrary(), "test.properties").toString();
         ApplicationConfiguration.setConfigurationFile(configFileName);
-        ApplicationConfiguration.setGenuineConfigurationFile(genuineConfigFileName);
     }
 
     @Test
@@ -56,19 +55,6 @@ class ApplicationConfigurationTest {
 
         // WHEN-THEN
         applicationConfiguration.load();
-    }
-
-    @Test
-    void load_whenConfigFileAtGenuineLocation_shouldCreateAtNewLocation_andDeleteOriginalFile() throws Exception {
-        // GIVEN
-        Files.createFile(Paths.get(genuineConfigFileName));
-
-        // WHEN
-        applicationConfiguration.load();
-
-        // THEN
-        assertThat(new File(configFileName)).exists();
-        assertThat(new File(genuineConfigFileName)).doesNotExist();
     }
 
     @Test
@@ -183,6 +169,47 @@ class ApplicationConfigurationTest {
         //then
         Path expectedDatabasePath = Paths.get(customDatabaseDir);
         assertThat(actualDatabasePath).contains(expectedDatabasePath);
+    }
+
+    @Test
+    void getEditorCustomThemeCss_whenPropertyDoesNotExist_shouldReturnEmpty() {
+        // given-when
+        Optional<Path> actualPath = applicationConfiguration.getEditorCustomThemeCss();
+
+        // then
+        assertThat(actualPath).isEmpty();
+    }
+
+    @Test
+    void getEditorCustomThemeCss_whenPropertyExists_shouldReturnCorrectPath() {
+        // given
+        applicationConfiguration.setProperty("tduf.editor.theme", "clear");
+
+        // when
+        Optional<Path> actualPath = applicationConfiguration.getEditorCustomThemeCss();
+
+        // then
+        assertThat(actualPath).isPresent();
+        Path actual = actualPath.get();
+        assertThat(actual.getParent().toString()).endsWith(".tduf");
+        assertThat(actual.toString()).endsWith("theme-clear.css");
+    }
+
+    @Test
+    void keys_shouldReturnKeysSortedAlphabetically() {
+        // given
+        applicationConfiguration.setProperty("f", "value");
+        applicationConfiguration.setProperty("e", "value");
+        applicationConfiguration.setProperty("d", "value");
+        applicationConfiguration.setProperty("c", "value");
+        applicationConfiguration.setProperty("b", "value");
+        applicationConfiguration.setProperty("a", "value");
+
+        // when
+        Enumeration<Object> actualKeys = applicationConfiguration.keys();
+
+        // then
+        assertThat(Collections.list(actualKeys)).containsExactly("a", "b", "c", "d", "e" ,"f");
     }
 
 }

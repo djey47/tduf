@@ -1,5 +1,6 @@
 {
   "name": "Direct Draw Surface Texture",
+  "fileName": "*.dds",
   "littleEndian": true,
   "fields": [
     {

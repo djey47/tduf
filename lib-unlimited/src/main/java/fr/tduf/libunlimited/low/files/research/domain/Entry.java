@@ -7,7 +7,7 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 /**
  * Represents a store entry to bring more information.
  */
-class Entry {
+public class Entry {
     private final Type type;
     private final boolean signed;
     private final byte[] rawValue;
@@ -33,6 +33,7 @@ class Entry {
         return new Entry(type, signed, size, rawValueCopy);
     }
 
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override
     public boolean equals(Object o) {
         return reflectionEquals(this, o);
@@ -56,7 +57,7 @@ class Entry {
         return size;
     }
 
-    byte[] getRawValue() {
+    public byte[] getRawValue() {
         return rawValue;
     }
 

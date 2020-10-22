@@ -1,0 +1,62 @@
+.matMainColumn {
+    -fx-spacing: 5.0;
+    -fx-padding: 0.0 0.0 0.0 5.0;
+}
+
+.matSelectorBox, .matSettingsBox {
+    -fx-pref-width: 625.0;
+}
+
+.matSelectorComboBox {
+    -fx-pref-width: 250.0;
+}
+
+.shaderSelectorComboBox {
+    -fx-pref-width: 475.0;
+}
+
+.colorsBox, propertiesBox {
+    -fx-padding: 5.0 0.0;
+}
+
+.colorBox {
+    -fx-padding: 0.0 0.0 5.0 0.0;
+}
+
+.colorTypeLabel {
+    -fx-padding: 0.0 0.0 0.0 10.0;
+    -fx-pref-width: 150.0;
+}
+
+.colorDescriptionLabel{
+    -fx-padding: 0.0 0.0 0.0 5.0;
+    -fx-text-fill: -color-accent;
+}
+
+.colorPreviewBox {
+    -fx-pref-width: 75.0;
+    -fx-border-style: solid inside;
+    -fx-border-color: -color-background-primary;
+    -fx-border-width: 1;
+}
+
+.shaderBox, .alphaBox {
+    -fx-padding: 5.0 0.0 5.0 10.0;
+}
+
+.materialAdvancedInfoButton {
+}
+
+.shaderSettingsButton {
+}
+
+.colorPicker {
+    -fx-base: -color-background-tertiary;
+    -fx-text-fill: -color-default;
+    -fx-pref-width: 28.0;
+}
+
+.colorPicker > .color-picker-label > .picker-color > .picker-color-rect {
+    -fx-stroke: null;
+    -fx-fill : null;
+}

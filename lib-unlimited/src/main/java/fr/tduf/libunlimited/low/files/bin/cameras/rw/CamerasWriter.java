@@ -4,6 +4,7 @@ import fr.tduf.libunlimited.low.files.bin.cameras.domain.CamerasDatabase;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.CameraView;
 import fr.tduf.libunlimited.low.files.bin.cameras.domain.ViewProps;
 import fr.tduf.libunlimited.low.files.research.domain.DataStore;
+import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import fr.tduf.libunlimited.low.files.research.rw.GenericWriter;
 
 import java.io.IOException;
@@ -60,6 +61,11 @@ public class CamerasWriter extends GenericWriter<CamerasDatabase> {
     @Override
     public String getStructureResource() {
         return "/files/structures/BIN-cameras-map.json";
+    }
+
+    @Override
+    public FileStructureDto getStructure() {
+        return null;
     }
 
     private void fillHeadings() {

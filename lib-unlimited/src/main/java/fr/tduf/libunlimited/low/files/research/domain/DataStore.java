@@ -1,15 +1,8 @@
 package fr.tduf.libunlimited.low.files.research.domain;
 
-import com.esotericsoftware.minlog.Log;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.*;
-import fr.tduf.libunlimited.low.files.research.common.helper.FormulaHelper;
-import fr.tduf.libunlimited.low.files.research.common.helper.StructureHelper;
 import fr.tduf.libunlimited.low.files.research.common.helper.TypeHelper;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,19 +21,20 @@ import static java.util.stream.Collectors.toList;
  * and {@link fr.tduf.libunlimited.low.files.research.rw.GenericWriter}
  */
 public class DataStore {
-    private static final String THIS_CLASS_NAME = DataStore.class.getSimpleName();
-
     private static final String REPEATER_FIELD_SEPARATOR = ".";
 
     private static final Pattern FIELD_NAME_PATTERN = Pattern.compile("^(?:.*\\.)?(.+)$");              // e.g 'entry_list[1].my_field', 'my_field'
-    private static final Pattern SUB_FIELD_NAME_PATTERN = Pattern.compile("^(.+)\\[(\\d+)]\\.(.+)$"); // e.g 'entry_list[1].my_field'
 
+    private static final String REST_STORE_KEY = "#rest#";
     private static final String SUB_FIELD_PREFIX_FORMAT = "%s[%d]" + REPEATER_FIELD_SEPARATOR;
+    private static final String SUB_FIELD_WITH_PARENT_KEY_PREFIX_FORMAT = "%s" + SUB_FIELD_PREFIX_FORMAT;
 
     private final Map<String, Entry> store = new HashMap<>();
 
     private final FileStructureDto fileStructure;
     private final int repeatIndex;
+
+    private final LinksContainer linksContainer = new LinksContainer();
 
     /**
      * Creates a datastore.
@@ -69,6 +63,27 @@ public class DataStore {
      */
     public void clearAll() {
         this.store.clear();
+        this.getLinksContainer().clear();
+    }
+
+    /**
+     * Adds generic entry to the store
+     * @param key       : key under which value must be stored
+     * @param type      : value type
+     * @param signed    : true indicated numeric value must be signed
+     * @param size      : optional, indicates length or size of the value. By default, size of rawValue arry is used.
+     * @param rawValue  : value to store
+     */
+    public void putEntry(String key, Type type, boolean signed, Integer size, byte[] rawValue) {
+        Entry entry = new Entry(type, signed, size == null ? rawValue.length : size, rawValue);
+        this.getStore().put(key, entry);
+    }
+
+    /**
+     * @return generic entry, or empty if it does not exist
+     */
+    public Optional<Entry> fetchEntry(String fieldName, String parentRepeaterKey) {
+        return ofNullable(getStore().get(parentRepeaterKey + fieldName));
     }
 
     /**
@@ -106,6 +121,14 @@ public class DataStore {
         }
 
         putEntry(fieldName, type, signed, length, rawValue);
+    }
+
+    /**
+     * Adds provided bytes to the store, as remaining value.
+     * @param rawValue  : value to store
+     */
+    public void addRemainingValue(byte[] rawValue) {
+        putEntry(REST_STORE_KEY, UNKNOWN, false, rawValue.length, rawValue);
     }
 
     /**
@@ -272,13 +295,17 @@ public class DataStore {
      * @return the stored raw value whose key match provided identifier, or empty if it does not exist
      */
     public Optional<byte[]> getRawValue(String fieldName) {
-        Entry entry = this.store.get(fieldName);
+        return ofNullable(store.get(fieldName))
+                .map(Entry::getRawValue);
+    }
 
-        if (entry == null) {
-            return Optional.empty();
-        }
-
-        return ofNullable(entry.getRawValue());
+    /**
+     * Returns all remaining bytes from the store.
+     *
+     * @return the stored raw value which might remain in contents, or empty if it does not exist
+     */
+    public Optional<byte[]> getRemainingValue() {
+        return getRawValue(REST_STORE_KEY);
     }
 
     /**
@@ -293,11 +320,11 @@ public class DataStore {
         }
 
         Entry entry = this.store.get(fieldName);
-        assertSimpleCondition(() -> TEXT == entry.getType());
+        checkEntryType(fieldName, entry, TEXT);
 
         byte[] rawValue = entry.getRawValue();
         return of(
-                rawToText(rawValue, rawValue.length));
+                rawToText(rawValue));
     }
 
     /**
@@ -312,7 +339,7 @@ public class DataStore {
         }
 
         Entry entry = this.store.get(fieldName);
-        assertSimpleCondition(() -> INTEGER == entry.getType());
+        checkEntryType(fieldName, entry, INTEGER);
 
         return of(
                 rawToInteger(entry.getRawValue(), entry.isSigned(), entry.getSize()));
@@ -330,8 +357,7 @@ public class DataStore {
         }
 
         Entry entry = this.store.get(fieldName);
-        Type entryType = entry.getType();
-        assertSimpleCondition(() -> FPOINT == entryType, "Wrong entry type: " + entryType + ", expected: " + FPOINT);
+        checkEntryType(fieldName, entry, FPOINT);
 
         return of(
                 rawToFloatingPoint(entry.getRawValue()));
@@ -373,28 +399,46 @@ public class DataStore {
     }
 
     /**
-     * Returns sub-DataStores of items contained by a repeater field.
+     * Returns sub-DataStores of items contained by a repeater field (level 1).
      *
      * @param repeaterFieldName : name of repeater field
      */
     public List<DataStore> getRepeatedValues(String repeaterFieldName) {
+        return getRepeatedValues(repeaterFieldName, "");
+    }
+
+    /**
+     * Returns sub-DataStores of items contained by a repeater field under parent repeater(s) (level 2+).
+     *
+     * @param repeaterFieldName : name of repeater field
+     * @param parentRepeaterKey : key of parent repeater(s), e.g "lvl1[0].lvl2[1]."
+     */
+    public List<DataStore> getRepeatedValues(String repeaterFieldName, String parentRepeaterKey) {
         Map<Integer, List<String>> groupedKeysByIndex = store.keySet().stream()
-                .filter(key -> key.startsWith(repeaterFieldName))
+                .filter(key -> key.startsWith(parentRepeaterKey + repeaterFieldName))
                 .collect(Collectors.groupingBy(key -> {
-                    Matcher matcher = SUB_FIELD_NAME_PATTERN.matcher(key);
-                    return matcher.matches() ? Integer.parseInt(matcher.group(2)) : 0; // extracts index part
+                    int repeaterFieldPosition = key.indexOf(repeaterFieldName);
+                    int indexPositionStart = key.indexOf("[", repeaterFieldPosition);
+                    int indexPositionEnd = key.indexOf("]", indexPositionStart);
+
+                    if (indexPositionStart == indexPositionEnd || indexPositionStart == -1 || indexPositionEnd == -1) {
+                        return 0;
+                    }
+
+                    String lastIndexAsString = key.substring(indexPositionStart + 1, indexPositionEnd);
+                    return Integer.parseInt(lastIndexAsString);
                 }));
 
         List<DataStore> repeatedValues = createEmptyList(groupedKeysByIndex.size(), this.getFileStructure());
 
         for (Map.Entry<Integer, List<String>> entry: groupedKeysByIndex.entrySet()) {
-            DataStore subDataStore = repeatedValues.get(entry.getKey());
+            int currentIndex = entry.getKey();
+            DataStore subDataStore = repeatedValues.get(currentIndex);
 
             for (String key : entry.getValue()) {
-                Matcher matcher = SUB_FIELD_NAME_PATTERN.matcher(key);
-                if (matcher.matches()) {
-                    subDataStore.getStore().put(matcher.group(3), store.get(key)); // extracts field name part
-                }
+                String parentKey = String.format(SUB_FIELD_WITH_PARENT_KEY_PREFIX_FORMAT, parentRepeaterKey, repeaterFieldName, currentIndex);
+                subDataStore.getStore().put(key.replace(parentKey, ""), store.get(key)); // extracts field name part
+                subDataStore.getLinksContainer().populateFromDatastore(this);
             }
         }
 
@@ -402,27 +446,25 @@ public class DataStore {
     }
 
     /**
-     * @return a String representation of store contents, on JSON format.
+     * @return target key at address given by provided source fieldname
      */
-    public String toJsonString() {
-        ObjectNode rootNode = JsonNodeFactory.instance.objectNode();
-
-        readStructureFields(getFileStructure().getFields(), rootNode, "");
-
-        return rootNode.toString();
+    public Optional<String> getTargetKeyAtAddress(String sourceFieldName) {
+        return getInteger(sourceFieldName)
+                .flatMap(address -> getLinksContainer().getTargetFieldKeyWithAddress(address.intValue()));
     }
 
     /**
-     * Replaces current store contents with those in provided JSON String.
-     *
-     * @param jsonInput : json String containing all values
+     * Takes all data from provided store and append it to current
+     * @param otherStore - store to get all data from
      */
-    public void fromJsonString(String jsonInput) throws IOException {
-        this.getStore().clear();
+    public void merge(DataStore otherStore) {
+        LinksContainer currentLinksContainer = this.getLinksContainer();
+        Map<Integer, String> otherLinkSources = otherStore.getLinksContainer().getSources();
+        Map<Integer, String> otherLinkTargets = otherStore.getLinksContainer().getTargets();
 
-        JsonNode rootNode = new ObjectMapper().readTree(jsonInput);
-
-        readJsonNode(rootNode, "");
+        this.getStore().putAll(otherStore.getStore());
+        currentLinksContainer.getSources().putAll(otherLinkSources);
+        currentLinksContainer.getTargets().putAll(otherLinkTargets);
     }
 
     /**
@@ -462,6 +504,17 @@ public class DataStore {
     }
 
     /**
+     * @return true if specified repeater with provided field name and parent repeater key has sub items
+     */
+    public boolean repeaterHasSubItems(String repeaterFieldName, String parentRepeaterKey) {
+        requireNonNull(repeaterFieldName, "Repeater field name is required");
+        requireNonNull(repeaterFieldName, "Parent repeater key is required (may be empty)");
+
+        return parentRepeaterKey.isEmpty() || getStore().keySet().parallelStream()
+                .anyMatch(k -> k.startsWith(parentRepeaterKey + repeaterFieldName));
+    }
+
+    /**
      * Returns key prefix for repeated (under repeater) field.
      *
      * @param repeaterFieldName : name of parent, repeater field
@@ -469,153 +522,22 @@ public class DataStore {
      * @return a prefix allowing to parse sub-fields.
      */
     public static String generateKeyPrefixForRepeatedField(String repeaterFieldName, long index) {
+        return generateKeyPrefixForRepeatedField(repeaterFieldName, index, null);
+    }
+
+    /**
+     * Returns key prefix for repeated (under repeater) field.
+     *
+     * @param repeaterFieldName : name of parent, repeater field
+     * @param index             : item rank in repeater
+     * @param parentRepeaterKey : (optional) key to beb used as prefix if already under a repeater
+     * @return a prefix allowing to parse sub-fields.
+     */
+    public static String generateKeyPrefixForRepeatedField(String repeaterFieldName, long index, String parentRepeaterKey) {
+        if (parentRepeaterKey != null && !parentRepeaterKey.isEmpty()) {
+            return String.format(SUB_FIELD_WITH_PARENT_KEY_PREFIX_FORMAT, parentRepeaterKey, repeaterFieldName, index);
+        }
         return String.format(SUB_FIELD_PREFIX_FORMAT, repeaterFieldName, index);
-    }
-
-    private void readJsonNode(JsonNode jsonNode, String parentKey) {
-
-        Type type = Type.GAP;
-        byte[] rawValue = new byte[0];
-        boolean signed = false;
-        Integer size = null;
-
-        if (jsonNode instanceof ObjectNode) {
-
-            readJsonObjectNode(jsonNode, parentKey);
-
-        } else if (jsonNode instanceof ArrayNode) {
-
-            readJsonArrayNode(jsonNode, parentKey);
-
-        } else if (jsonNode instanceof DoubleNode) {
-
-            type = FPOINT;
-            rawValue = TypeHelper.floatingPoint32ToRaw(((Double) jsonNode.doubleValue()).floatValue());
-
-        } else {
-
-            FileStructureDto.Field fieldDefinition = StructureHelper.getFieldDefinitionFromFullName(parentKey, fileStructure)
-                    .orElseThrow(() -> new IllegalStateException("Field definition not found for key: " + parentKey));
-            if (jsonNode instanceof IntNode || jsonNode instanceof LongNode) {
-
-                type = INTEGER;
-                rawValue = TypeHelper.integerToRaw(jsonNode.longValue());
-                signed = fieldDefinition.isSigned();
-                size = computeValueLengthWithoutParentKey(fieldDefinition.getSizeFormula());
-
-            } else if (jsonNode instanceof TextNode) {
-
-                String stringValue = jsonNode.textValue();
-                try {
-                    type = UNKNOWN;
-                    rawValue = TypeHelper.hexRepresentationToByteArray(stringValue);
-                } catch (IllegalArgumentException iae) {
-                    type = TEXT;
-                    Optional<String> potentialParentKey = ofNullable(parentKey);
-                    int length = potentialParentKey
-                            .map(k -> computeValueLengthWithParentKey(fieldDefinition.getSizeFormula(), k))
-                            .orElseGet(() -> computeValueLengthWithoutParentKey(fieldDefinition.getSizeFormula()));
-                    rawValue = TypeHelper.textToRaw(stringValue, length);
-                    Log.info(THIS_CLASS_NAME, "Unable to parse hex: '" + stringValue + "', will be considered as text");
-                }
-            }
-        }
-
-        if (type.isValueToBeStored()) {
-            putEntry(parentKey, type, signed, size, rawValue);
-        }
-    }
-
-    private int computeValueLengthWithoutParentKey(String sizeFormula) {
-        return FormulaHelper.resolveToInteger(sizeFormula, null, this);
-    }
-
-    private int computeValueLengthWithParentKey(String sizeFormula, String parentKey) {
-        return FormulaHelper.resolveToInteger(sizeFormula, parentKey, this);
-    }
-
-    private void readJsonArrayNode(JsonNode jsonNode, String parentKey) {
-        int elementIndex = 0;
-        Iterator<JsonNode> elements = jsonNode.elements();
-        while (elements.hasNext()) {
-            readJsonNode(elements.next(), generateKeyPrefixForRepeatedField(parentKey, elementIndex++));
-        }
-    }
-
-    private void readJsonObjectNode(JsonNode jsonNode, String parentKey) {
-        Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.fields();
-        while (fields.hasNext()) {
-            Map.Entry<String, JsonNode> nextField = fields.next();
-            readJsonNode(nextField.getValue(), parentKey + nextField.getKey());
-        }
-    }
-
-    private boolean readStructureFields(List<FileStructureDto.Field> fields, ObjectNode currentObjectNode, String repeaterKey) {
-
-        for (FileStructureDto.Field field : fields) {
-
-            String fieldName = field.getName();
-            Type fieldType = field.getType();
-
-            if (REPEATER == fieldType) {
-
-                readRepeatedFields(field.getSubFields(), currentObjectNode, fieldName);
-
-            } else if (fieldType.isValueToBeStored()) {
-
-                Entry storeEntry = this.getStore().get(repeaterKey + fieldName);
-                if (storeEntry == null) {
-                    return false;
-                }
-
-                readRegularField(field, currentObjectNode, storeEntry);
-            }
-        }
-
-        return true;
-    }
-
-    private void readRepeatedFields(List<FileStructureDto.Field> repeatedFields, ObjectNode objectNode, String repeaterFieldName) {
-        ArrayNode repeaterNode = objectNode.arrayNode();
-        objectNode.set(repeaterFieldName, repeaterNode);
-
-        int parsedCount = 0;
-        boolean hasMoreItems = true;
-        while (hasMoreItems) {
-            ObjectNode itemNode = objectNode.objectNode();
-
-            hasMoreItems = readStructureFields(repeatedFields, itemNode, DataStore.generateKeyPrefixForRepeatedField(repeaterFieldName, parsedCount++));
-
-            if (hasMoreItems) {
-                repeaterNode.add(itemNode);
-            }
-        }
-    }
-
-    private void putEntry(String key, Type type, boolean signed, Integer size, byte[] rawValue) {
-        Entry entry = new Entry(type, signed, size == null ? rawValue.length : size, rawValue);
-        this.getStore().put(key, entry);
-    }
-
-    private void readRegularField(FileStructureDto.Field currentField, ObjectNode currentObjectNode, Entry storeEntry) {
-        Type fieldType = currentField.getType();
-        String fieldName = currentField.getName();
-        byte[] rawValue = storeEntry.getRawValue();
-
-        switch (fieldType) {
-            case TEXT:
-                currentObjectNode.put(fieldName, rawToText(rawValue, rawValue.length));
-                break;
-            case FPOINT:
-                currentObjectNode.put(fieldName, rawToFloatingPoint(rawValue));
-                break;
-            case INTEGER:
-                currentObjectNode.put(fieldName, rawToInteger(rawValue, storeEntry.isSigned(), storeEntry.getSize()));
-                break;
-            default:
-                currentObjectNode.put(fieldName, byteArrayToHexRepresentation(rawValue));
-                break;
-        }
     }
 
     private static String generateKeyForRepeatedField(String repeaterFieldName, String repeatedFieldName, long index) {
@@ -642,6 +564,11 @@ public class DataStore {
         return storeCopy;
     }
 
+    private static void checkEntryType(String fieldName, Entry entry, Type expectedType) {
+        String message = String.format("Invalid type for entry %s: expected %s, actual %s", fieldName, expectedType, entry.getType());
+        assertSimpleCondition(() -> expectedType == entry.getType(), message);
+    }
+
     Map<String, Entry> getStore() {
         return store;
     }
@@ -649,4 +576,9 @@ public class DataStore {
     public FileStructureDto getFileStructure() {
         return fileStructure;
     }
+
+    public LinksContainer getLinksContainer() {
+        return linksContainer;
+    }
+
 }

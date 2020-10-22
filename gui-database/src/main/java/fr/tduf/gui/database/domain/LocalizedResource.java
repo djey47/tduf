@@ -6,6 +6,7 @@ import javafx.util.Pair;
 
 import java.util.Optional;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
@@ -14,19 +15,19 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
  */
 public class LocalizedResource {
 
-    private Pair<String, String> referenceValuePair;
+    private final Pair<String, String> referenceValuePair;
 
-    private Optional<Locale> locale;
+    private Locale locale;
 
-    private Optional<DbDto.Topic> topic;
+    private DbDto.Topic topic;
 
     public LocalizedResource(Pair<String, String> referenceValuePair, Locale locale) {
         this.referenceValuePair = referenceValuePair;
-        this.locale = ofNullable(locale);
+        this.locale = locale;
     }
 
     public LocalizedResource(DbDto.Topic topic, String reference) {
-        this.topic = Optional.of(topic);
+        this.topic = requireNonNull(topic, "Null forbidden for database topic");
         this.referenceValuePair = new Pair<>(reference, "");
     }
 
@@ -44,10 +45,10 @@ public class LocalizedResource {
     }
 
     public Optional<Locale> getLocale() {
-        return locale;
+        return ofNullable(locale);
     }
 
     public Optional<DbDto.Topic> getTopic() {
-        return topic;
+        return ofNullable(topic);
     }
 }

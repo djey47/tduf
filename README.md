@@ -1,6 +1,7 @@
 # TDUF(orever) #
 
-[![Codeship Status for djey47/tduf](https://app.codeship.com/projects/b5716970-4ace-0136-c149-7a9f28d40fd1/status?branch=master)](https://app.codeship.com/projects/292761)
+[![Codeship Status for djey47/tduf](https://app.codeship.com/projects/b5716970-4ace-0136-c149-7a9f28d40fd1/status?branch=tduf-2.0.x)](https://app.codeship.com/projects/292761)
+[Unit test report of latest build failure](http://codeship-ci.s3-website-eu-west-1.amazonaws.com/tduf/index.html)
 
 This repository hosts all Java projects linked to TDUForever initiative.
 
@@ -15,12 +16,12 @@ TDUForever aims at making Test Drive Unlmited modding easier:
 * **cli** : Command Line Interface to use lib-unlimited library
 * **gui-common** : Components to be used with any graphical user interface
 * **gui-database** : Database Editor module
-* **gui-installer** : Mod installer
-* **gui-savegame** : Savegame Editor
 * **lib-testing** : Components to help with unit testing in any module
 * **lib-unlimited** : Stand-alone component providing API for building TDU modding applications.
 
 ### Setting-up ###
+
+TDUF development can be made on Windows, Windows-WSL, Linux... your choice!
 
 * Clone this repository
 * To set-up Gradle: run *gradlew* script from command line
@@ -48,22 +49,26 @@ Copy *tools* directory into *gui-database* to make it work properly.
 
 ### Preparing next development version ###
 
-* Execute *markNextVersionTask -Prelease.forceVersion=[version]* task from Gradle to specify next dev version.
+* Execute *markNextVersion -Prelease.forceVersion=[version]* task from Gradle to specify next dev version.
 
 ### Packaging ###
 
 This needs a release tag to be set, see *Releasing* section above.
 
 * Checkout project from target release tag *tduf-[version]*
-* Execute either *packFull* or *packInstallerKit* tasks from Gradle.
+* Execute one ok *pack...* tasks from Gradle:
+    - packCore: minimal set to run CLI with LIB
+    - packDatabaseEditor: minimal set to run Database Editor
+    - packFull: all TDUF in a single package.
 
 ...it will:
 
-* Create release packages in zip archive, into *releases* directory.
+* Create release packages in zip archive, into *releases* directory
+* Windows OS is the default target; otherwise you can override using the `target` parameter, e.g: `packFull -Ptarget=linux`
 
 ### Contributing to project ###
 
-* Later!
+* Feel free to file issues in this repository, or create PRs.
 
 ### Licensing ###
 

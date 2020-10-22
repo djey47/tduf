@@ -9,6 +9,7 @@ import java.nio.ByteBuffer;
 import java.util.regex.Pattern;
 
 import static fr.tduf.libunlimited.framework.primitives.Ints.asList;
+import static java.lang.Math.min;
 
 /**
  * Helper to class to handle differences between value representations.
@@ -19,7 +20,17 @@ public class TypeHelper {
     private static final String CHARSET = "ISO-8859-1";
 
     /**
-     * Converts a raw value to TEXT.
+     * Converts a raw value to TEXT, using array length.
+     *
+     * @param rawValueBytes : raw value to convert
+     * @return corresponding value as String
+     */
+    public static String rawToText(byte[] rawValueBytes) {
+        return rawToText(rawValueBytes, rawValueBytes.length);
+    }
+
+    /**
+     * Converts a raw value to TEXT, with a specific length.
      *
      * @param rawValueBytes : raw value to convert
      * @param length        : length of String. Actual String will be truncated / followed by 0 when necessary.
@@ -114,7 +125,7 @@ public class TypeHelper {
         }
 
         byte[] targetByteArray = new byte[length];
-        System.arraycopy(valueBytes, 0, targetByteArray, 0, valueBytes.length <= length ? valueBytes.length : length);
+        System.arraycopy(valueBytes, 0, targetByteArray, 0, min(valueBytes.length, length));
 
         return targetByteArray;
     }
@@ -224,16 +235,21 @@ public class TypeHelper {
             return null;
         }
 
-        Pattern hexRepresentationPattern = Pattern.compile("0x\\[([0-9a-fA-F]{2}\\s?)*([0-9a-fA-F]{2})]");
+        Pattern hexRepresentationPattern = Pattern.compile("0x\\[.*]");
+        String errorMessage = "Provided hexadecimal representation is invalid.";
         if(!hexRepresentationPattern.matcher(hexRepresentation).matches()) {
-            throw new IllegalArgumentException("Provided hexadecimal representation is invalid.");
+            throw new IllegalArgumentException(errorMessage);
         }
 
         String extractedBytes = hexRepresentation
                 .substring(3, hexRepresentation.length() - 1)
                 .replace(" ", "");
 
-        return DatatypeConverter.parseHexBinary(extractedBytes);
+        try {
+            return DatatypeConverter.parseHexBinary(extractedBytes);
+        } catch (IllegalArgumentException iae) {
+            throw new IllegalArgumentException(errorMessage, iae);
+        }
     }
 
     private static void checkRegularSize(int size) {

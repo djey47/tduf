@@ -1,5 +1,6 @@
 package fr.tduf.libunlimited.low.files.research.common.helper;
 
+import fr.tduf.libunlimited.framework.io.XByteArrayInputStream;
 import fr.tduf.libunlimited.low.files.research.dto.FileStructureDto;
 import org.junit.jupiter.api.Test;
 
@@ -70,7 +71,7 @@ class StructureHelperTest {
     @Test
     void decryptIfNeeded_whenNoCryptoMode_shouldReturnInitialContents() throws IOException {
         // GIVEN
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[]{ 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8 });
+        XByteArrayInputStream inputStream = new XByteArrayInputStream(new byte[]{ 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8 });
 
         // WHEN
         ByteArrayInputStream actualInputStream = StructureHelper.decryptIfNeeded(inputStream, null);
@@ -82,7 +83,7 @@ class StructureHelperTest {
     @Test
     void decryptIfNeeded_whenCryptoMode_shouldReturnEncryptedContents() throws IOException {
         // GIVEN
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[]{ 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8 });
+        XByteArrayInputStream inputStream = new XByteArrayInputStream(new byte[]{ 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8 });
 
         // WHEN
         ByteArrayInputStream actualInputStream = StructureHelper.decryptIfNeeded(inputStream, 0);
@@ -94,7 +95,7 @@ class StructureHelperTest {
     }
 
     @Test
-    void getFieldDefinitionFromFullName_whenFieldExist_shouldReturnDef() {
+    void getFieldDefinitionFromFullName_whenFieldExist_shouldReturnDef() throws Exception {
         // GIVEN
         FileStructureDto.Field field = FileStructureDto.Field.builder()
                 .forName("my_field")
@@ -111,7 +112,8 @@ class StructureHelperTest {
                 .build();
 
         // WHEN
-        FileStructureDto.Field actualField = StructureHelper.getFieldDefinitionFromFullName("entry_list[0].my_field", fileStructureObject).get();
+        FileStructureDto.Field actualField = StructureHelper.getFieldDefinitionFromFullName("entry_list[0].my_field", fileStructureObject)
+                .orElseThrow(() -> new Exception("Field definition not found."));
 
         // THEN
         assertThat(actualField.isSigned()).isTrue();
@@ -147,5 +149,21 @@ class StructureHelperTest {
         // GIVEN-WHEN-THEN
         assertThrows(NullPointerException.class,
                 () -> StructureHelper.getFieldDefinitionFromFullName("entry_list[0].my_field", null));
+    }
+
+    @Test
+    void retrieveStructureFromSupportedFileName_whenNoCandidate_shouldReturnEmpty() throws IOException {
+        // given-when-then
+        assertThat(StructureHelper.retrieveStructureFromSupportedFileName("hello.txt")).isEmpty();
+    }
+
+    @Test
+    void retrieveStructureFromSupportedFileName_whenEmbeddedCandidate_shouldReturnStructure() throws IOException {
+        // given-when
+        Optional<FileStructureDto> actualStructure = StructureHelper.retrieveStructureFromSupportedFileName("Bnk1.map");
+
+        // then
+        assertThat(actualStructure).isNotEmpty();
+        assertThat(actualStructure.get().getName()).isEqualTo("TDU BNK Mapping");
     }
 }

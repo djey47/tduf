@@ -1,6 +1,9 @@
 {
   "entry_list": [
     {
+      "#meta#": {
+        "accessKeyPrefix": "entry_list[0]."
+      },
       "my_field": 2,
       "my_fp_field": 0.0,
       "a_field": "az",

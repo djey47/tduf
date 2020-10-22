@@ -1,0 +1,74 @@
+/** COMBO BOXES **/
+.comboBox {
+    -fx-base: -color-background-tertiary;
+    -fx-text-fill: -color-default;
+}
+
+.comboBox .label {
+    -fx-text-fill: -color-default;
+}
+
+.comboBox .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -color-default;
+}
+
+.comboBox .list-cell .scrollbar-vertical, .scrollbar-horizontal {
+    -fx-background-color: transparent;
+    -fx-base: -color-tertiary;
+}
+
+.comboBox .combo-box-popup .list-view .list-cell:hover {
+    -fx-text-fill: -color-neutral;
+    -fx-background-color: -color-accent;
+}
+
+/** BUTTONS **/
+.button {
+    -fx-base: -color-background-tertiary;
+}
+
+.smallButton {
+    -fx-pref-width: 34.0;
+}
+
+.menu-item .label {
+    -fx-text-fill: -color-default;
+}
+
+/** TABLE VIEWS **/
+.tableView {
+    -fx-background-color: -color-background-tertiary;
+    -fx-base: -color-background-tertiary;
+}
+
+.tableView .table-cell {
+    -fx-text-fill: -color-default;
+}
+
+.tableView .table-row-cell{
+    -fx-background-color: -fx-table-cell-border-color, -color-background-primary;
+}
+
+.tableView .table-row-cell:odd{
+    -fx-background-color: -fx-table-cell-border-color, -color-background-neutral;
+}
+
+.tableView .table-row-cell:selected{
+    -fx-background-color: -fx-table-cell-border-color, -color-accent;
+}
+
+/** TEXT FIELDS **/
+.textField {
+    -fx-base: -color-background-tertiary;
+    -fx-text-fill: -color-default;
+    -fx-text-box-border: -color-background-secondary;
+    -fx-focus-color: -color-accent;
+}
+
+/** CHECK BOXES **/
+.checkBox {
+    -fx-base: -color-background-tertiary;
+    -fx-text-fill: -color-default;
+    mark-color: -color-accent;
+}

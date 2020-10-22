@@ -21,9 +21,12 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import static fr.tduf.gui.database.common.FxConstants.CSS_CLASS_CHECKBOX;
 import static fr.tduf.gui.database.plugins.bitfield.common.DisplayConstants.LABEL_FORMAT_BITFIELD_CHECKBOX;
 import static fr.tduf.gui.database.plugins.bitfield.common.FxConstants.CSS_CLASS_BITFIELD_CHECKBOX;
 import static fr.tduf.gui.database.plugins.bitfield.common.FxConstants.PATH_RESOURCE_CSS_BITFIELD;
+import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_PLUGIN_BOX;
+import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_PLUGIN_CHECKBOX;
 import static java.util.Collections.singletonList;
 
 /**
@@ -51,6 +54,7 @@ public class BitfieldPlugin extends AbstractDatabasePlugin {
     @Override
     public Node renderControls(OnTheFlyContext onTheFlyContext) {
         VBox vbox = new VBox();
+        vbox.getStyleClass().addAll(CSS_CLASS_PLUGIN_BOX);
 
         bitfieldHelper.getBitfieldReferenceForTopic(onTheFlyContext.getCurrentTopic())
                 .ifPresent(refs -> refs
@@ -71,7 +75,7 @@ public class BitfieldPlugin extends AbstractDatabasePlugin {
         String label = String.format(LABEL_FORMAT_BITFIELD_CHECKBOX, displayedIndex, ref.getLabel());
 
         CheckBox checkBox = new CheckBox(label);
-        checkBox.getStyleClass().add(CSS_CLASS_BITFIELD_CHECKBOX);
+        checkBox.getStyleClass().addAll(CSS_CLASS_CHECKBOX, CSS_CLASS_PLUGIN_CHECKBOX, CSS_CLASS_BITFIELD_CHECKBOX);
         boolean fieldReadOnly = onTheFlyContext.isFieldReadOnly();
         checkBox.setDisable(fieldReadOnly);
 

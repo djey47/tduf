@@ -4,6 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.database.plugins.common.AbstractDatabasePlugin;
 import fr.tduf.gui.database.plugins.common.contexts.EditorContext;
 import fr.tduf.gui.database.plugins.common.contexts.OnTheFlyContext;
+import fr.tduf.gui.database.plugins.common.contexts.PluginContext;
 import fr.tduf.gui.database.plugins.iks.converter.IKReferenceToItemConverter;
 import fr.tduf.gui.database.plugins.iks.converter.IKReferenceToRawValueConverter;
 import fr.tduf.libunlimited.high.files.db.common.helper.CameraAndIKHelper;
@@ -25,8 +26,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_ITEM_LABEL;
-import static fr.tduf.gui.database.plugins.common.FxConstants.CSS_CLASS_PLUGIN_BOX;
+import static fr.tduf.gui.database.common.FxConstants.CSS_CLASS_COMBOBOX;
+import static fr.tduf.gui.database.plugins.common.FxConstants.*;
 import static fr.tduf.gui.database.plugins.iks.common.DisplayConstants.LABEL_AVAILABLE_IKS;
 import static fr.tduf.gui.database.plugins.iks.common.DisplayConstants.LABEL_ERROR_TOOLTIP;
 import static fr.tduf.gui.database.plugins.iks.common.FxConstants.*;
@@ -41,7 +42,7 @@ public class IKsPlugin extends AbstractDatabasePlugin {
     private static final Class<IKsPlugin> thisClass = IKsPlugin.class;
     private static final String THIS_CLASS_NAME = thisClass.getSimpleName();
 
-    private final IKsContext iksContext = new IKsContext();
+    private final PluginContext iksContext = new PluginContext();
 
     private CameraAndIKHelper ikRefHelper;
 
@@ -53,7 +54,7 @@ public class IKsPlugin extends AbstractDatabasePlugin {
         super.onInit(pluginName, editorContext);
 
         ikRefHelper = new CameraAndIKHelper();
-        Log.info(THIS_CLASS_NAME, "IK reference loaded");
+        Log.info(THIS_CLASS_NAME, String.format("IK reference loaded, %d entries available", ikRefHelper.getIKReference().size()));
     }
 
     /**
@@ -78,6 +79,7 @@ public class IKsPlugin extends AbstractDatabasePlugin {
         hBox.getStyleClass().add(CSS_CLASS_PLUGIN_BOX);
 
         VBox mainColumnBox = createMainColumn(onTheFlyContext);
+        mainColumnBox.getStyleClass().addAll(CSS_CLASS_COMBOBOX, CSS_CLASS_PLUGIN_COMBOBOX);
 
         ObservableList<Node> mainRowChildren = hBox.getChildren();
         mainRowChildren.add(mainColumnBox);

@@ -44,4 +44,31 @@ class JsonHelperTest {
                 "}";
         assertThat(actual).isEqualTo(expected);
     }
+
+    @Test
+    void isValidJSON_whenValid_shouldReturnTrue() {
+        // given
+        String trueJson = "{ \"array\": [], \"object\": {}, \"string\": \"a\", \"number\": 0 }";
+
+        // when-then
+        assertThat(JsonHelper.isValid(trueJson)).isTrue();
+    }
+
+    @Test
+    void isValidJSON_whenMixedContents_shouldReturnFalse() {
+        // given
+        String trueJson = "WARNING!\n{ \"array\": [], \"object\": {}, \"string\": \"a\", \"number\": 0 }";
+
+        // when-then
+        assertThat(JsonHelper.isValid(trueJson)).isFalse();
+    }
+
+    @Test
+    void isValidJSON_whenDuplicateKey_shouldReturnFalse() {
+        // given
+        String trueJson = "{ \"array\": [], \"object\": {}, \"string\": \"a\", \"number\": 0, \"number\": 1 }";
+
+        // when-then
+        assertThat(JsonHelper.isValid(trueJson)).isFalse();
+    }
 }
