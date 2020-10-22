@@ -2,13 +2,9 @@ package fr.tduf.gui.database.stages;
 
 import com.esotericsoftware.minlog.Log;
 import fr.tduf.gui.database.DatabaseEditor;
-import fr.tduf.libunlimited.framework.base.Files;
 import javafx.scene.Parent;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Optional;
 
 import static fr.tduf.gui.database.common.FxConstants.*;
 import static java.util.Optional.empty;
@@ -30,16 +26,13 @@ public abstract class AbstractEditorDesigner {
         String styledToolBarCss = thisClass.getResource(PATH_RESOURCE_CSS_TOOLBARS).toExternalForm();
         String themeCss = DatabaseEditor.getInstance().getApplicationConfiguration().getEditorCustomThemeCss()
                 .flatMap(path -> {
-                    String themeFileURI = Files.PROTOCOL_FILE + path.toString();
-                    try {
-                        File themeFile = new File(new URI(themeFileURI));
-                        if (!themeFile.exists()) {
-                            return empty();
-                        }
-                    } catch (URISyntaxException use) {
+                    Log.debug(THIS_CLASS_NAME, "custom theme path=" + path);
+                    File themeFile = path.toFile();
+                    if (!themeFile.exists()) {
+                        Log.debug(THIS_CLASS_NAME, "non existing themeFile:" + themeFile);
                         return empty();
                     }
-                    return of(themeFileURI);
+                    return of(themeFile.toURI().toString());
                 })
                 .orElseGet(() -> {
                     Log.warn(THIS_CLASS_NAME, "Editor theme not found, using default colors");
