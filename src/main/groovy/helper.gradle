@@ -68,6 +68,23 @@ def databaseEditorPackDependencies = { ->
              *commonPackDeps ]
 }
 
+/**
+ * @returns current version, as specified in dist/version.info file
+ */
+def currentVersion = { ->
+    File file = new File('./dist/version.info')
+    def version = ""
+    file.withReader { reader ->
+        def line = reader.readLine()
+        if (line == null) {
+            version = 'NA'
+        } else {
+            version = line
+        }
+    }
+    return version
+}
+
 ext {
     getCoreProjects = { -> coreProjects }
     getFullProjects = { -> fullProjects }
@@ -75,6 +92,7 @@ ext {
     getCoreDependencies = corePackDependencies
     getFullDependencies = fullPackDependencies
     getDatabaseEditorDependencies = databaseEditorPackDependencies
+    getCurrentVersion = currentVersion
     LINUX_TARGET = PARAM_LINUX_TARGET
     WINDOWS_TARGET = PARAM_WINDOWS_TARGET
 }

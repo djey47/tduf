@@ -5,15 +5,7 @@ buildscript {
 }
 
 plugins {
-    id 'pl.allegro.tech.build.axion-release' version '1.8.1'
     id 'org.kordamp.markdown.convert' version '1.2.0'
-}
-
-// configures version for release plugin
-scmVersion {
-    tag {
-        prefix = 'tduf'
-    }
 }
 
 // Helper script
@@ -24,7 +16,7 @@ allprojects {
     project.group = 'fr.tduf'
 
     // version defined by plugin (if changes or ahead commits: x.y.z-SNAPSHOT)
-    project.version = scmVersion.version
+    project.version = getCurrentVersion
 
     // Version for common dependencies
     ext {
@@ -430,3 +422,13 @@ task copyIcons(type: Copy) {
     include 'TDU-256px.ico'
     into 'pack/icons'
 }
+
+task currentVersion() {
+    description('Displays current version to console')
+    group('help')
+
+    doLast {
+        println "Current version is ${project.version}."
+    }
+}
+
