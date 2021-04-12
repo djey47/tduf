@@ -40,16 +40,11 @@ Copy *tools* directory into *gui-database* to make it work properly.
 * Update and commit *dist/version.info* file according to desired version
 * Make working directory clean (commit/push or stash changes)
 * Check version: execute *currentVersion* task from Gradle
-* Execute *release* task from Gradle to automatically select release tag version, or *release -Prelease.forceVersion=[version]* to specify a version.
-
-...it will:
-
-* Set local tag *tduf-[version]*
-* Push it to remote.
+* Perform release manually or via Github
 
 ### Preparing next development version ###
 
-* Execute *markNextVersion -Prelease.forceVersion=[version]* task from Gradle to specify next dev version.
+* Update and commit *dist/version.info* file according to desired development (alpha) version
 
 ### Packaging ###
 
@@ -57,9 +52,9 @@ This needs a release tag to be set, see *Releasing* section above.
 
 * Checkout project from target release tag *tduf-[version]*
 * Execute one ok *pack...* tasks from Gradle:
-    - packCore: minimal set to run CLI with LIB
-    - packDatabaseEditor: minimal set to run Database Editor
-    - packFull: all TDUF in a single package.
+    - `packCore`: minimal set to run CLI with LIB
+    - `packDatabaseEditor`: minimal set to run Database Editor
+    - `packFull`: all TDUF in a single package.
 
 ...it will:
 
