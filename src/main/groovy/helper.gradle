@@ -7,12 +7,12 @@ def PARAM_LINUX_TARGET = 'linux'
 def PARAM_WINDOWS_TARGET = 'windows'
 
 // Task dependencies
-def databaseEditorDocDeps = [   ':gui-database:markdownToHtml',
-                                ':gui-database:copyDoc' ]
 def coreDocDeps = [     'markdownToHtml',
                         'copyDoc' ]
-def fullDocDeps = [     *coreDocDeps,
-                        *databaseEditorDocDeps ]
+def databaseEditorDocDeps = [   *coreDocDeps,
+                                ':gui-database:markdownToHtml',
+                                ':gui-database:copyDoc' ]
+def fullDocDeps = [ *databaseEditorDocDeps ]
 def fullCleanDeps = [ 'cleanTempJarDir', 'cleanPackDir' ]
 def externalDeps = [ 'copyExternalTools', 'copyVersionInfo', 'copyIcons' ]
 def coreExternalDeps = [ 'copyExternalTools', 'copyVersionInfo' ]

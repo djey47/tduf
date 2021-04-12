@@ -10,10 +10,12 @@ TDUF is an effort at making Test Drive Unlmited modding easier:
 
 
 ### Database Editor main features
-See *README-database-editor.md*
+Won't be available through core package. Otherwise see *README-database-editor.md*.
 
 
 ### What's new?
+Following are only applicable to core or full packages:
+
 * (CLI) Intro interface has been removed as it's not used. It has been replaced with `help` command
 * (CLI) `logs`: new command to display all log files in default editor
 * (CLI) `settings`: new command to open TDUF settings file in default editor.
@@ -34,11 +36,13 @@ See *README-database-editor.md*
 
 
 ### Fixed issues
+Following are only applicable to core or full packages:
+
 * (Library/Files) Some parsing and writing errors have been found and fixed.
 
 
 ### Known bugs
-* You tell me!
+* You tell me! Feel free to file an issue at [Github](https://github.com/djey47/tduf/issues) otherwise.
 
 
 ### What you will need to run TDUF
@@ -68,7 +72,7 @@ Make sure Java apps can be run.
     - Linux: check if Mono 2.0 is installed, otherwise you will have to get **mono-complete** package.
 
 
-### Running Command Line tools!
+### Running Command Line tools! (core or full packages only)
 - Open console (cmd, powershell in Windows or bash-compatible in Linux)
 - `cd` to TDUF directory
 - For Linux users, apply aliases: `source ./tools/cli/linux-aliases`

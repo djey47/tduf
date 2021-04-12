@@ -1,5 +1,7 @@
 # TDUF(orever) - Database Editor
 
+*This does not apply to core TDUF package!*
+
 ### What's new?
 
 **(ALPHA)** tagged features are not stable enough and/or much tested, so use them at your own risk! I hope to enhance them in the future.
@@ -28,7 +30,7 @@
 * Entry list may keep invalid names after changing. Switch topic or use filter to force refreshing
 * (Mapping plugin) Mapping errors are not properly described. Will be enhanced later
 * (Mapping plugin) Entry paths may keep invalid names after changing. Hit *Refresh* button to display latest values.
-* You tell me!
+* You tell me! Feel free to file an issue at [Github](https://github.com/djey47/tduf/issues) otherwise.
 
 
 ### Main features
